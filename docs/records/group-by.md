@@ -1,6 +1,6 @@
 # Group By
 
-The plan for grouping a folder's items, in every view and in search results. Designed and agreed with the owner on 2026-11-20; changed the same day once the first build was seen (below, each change with what it replaced). Once it is, what it does moves into [decisions/views.md](../decisions/views.md) as decisions, each with its reason, and this file moves to `records/`.
+The plan for grouping a folder's items, in every view and in search results. Designed and agreed with the owner on 2026-11-20; changed the same day once the first build was seen (below, each change with what it replaced). It is built: what it does is in [decisions/views.md](../decisions/views.md) as decisions, each with its reason, and this file is kept for the record.
 
 ## What it is
 
@@ -123,9 +123,9 @@ Decided 2026-11-20. Grouped by Tags, the tags of every item are read, not only t
 1. **The groups** (FTFoundation, no AppKit): a `GroupByPreference` beside `SortByPreference` (`Preferences/PreferenceTypes.swift`), and one function from the sorted items, the field, the order and Folders First to the groups, with the date boundaries made once from a clock and a calendar given to it (`AppClock`), the size bands, the kinds and the name initials. Tested on its own, the boundaries at the year's start, a time zone change and items without the date included; a `CPUTime.measureThread` test guards making the groups of 150,000 items.
 2. **The pane's setting**: carried, saved with the pane and in workspaces, taken by panes opened from another, the app's for a pane with none; search results' own.
 3. **The commands**: the table's rows, the menus, the right-click menus, the toolbar's Sort menu and the Group button, the column header's item, the header's right-click menu, Help's lines, the palette.
-4. **The views**: List, Icons, Compact List, Previews, each with its keys, selection, collapsing and the place put back by Back and Forward.
+4. **The views**: List, Icons, Compact List, Previews, each with its keys, selection and the place put back by Back and Forward.
 5. **The folder's view**: the setting, the row in Folder Customization, the tag in Folder Customizations.
 6. **The day changing** and the reads for Date Last Opened, Size and Tags while grouped by them.
-7. **The docs**: decisions/views.md, features.md, Help, state/battery.md; this file to `records/`.
+7. **The docs**: decisions/views.md, features.md, Help, state/battery.md; this file to `records/` (done).
 
 The goldens that change are named here so the owner's approval covers them, each edited by hand ([decisions/code.md](../decisions/code.md)): the shortcuts, command availability, preferences, the toolbar, the right-click menus and Help. No new benchmark: the frame times of scrolling stay the release's only one.

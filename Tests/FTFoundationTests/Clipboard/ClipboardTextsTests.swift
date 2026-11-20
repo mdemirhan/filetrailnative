@@ -95,6 +95,10 @@ struct ClipboardTextsTests {
                 == "4 items couldn\u{2019}t be pasted because they were moved or deleted since they were copied: \u{201C}1\u{201D}, \u{201C}2\u{201D}, \u{201C}3\u{201D} and 1 more."
         )
         #expect(
+            ClipboardTexts.missingClipboardItems(["/a/one"], mixed: true)
+                == "\u{201C}one\u{201D} couldn\u{2019}t be pasted because it was moved or deleted since it was put on the clipboard."
+        )
+        #expect(
             ClipboardTexts.missingClipboardItems(["/a/one", "/a/two"], cut: true)
                 == "\u{201C}one\u{201D} and \u{201C}two\u{201D} couldn\u{2019}t be moved because they were deleted or moved elsewhere since they were cut."
         )

@@ -597,12 +597,14 @@ final class PreviewsViewController: IconViewController {
     private var pictureShapes: [String: DragSelectionSize] = [:]
 
     /// A drag-to-select touches a preview on its picture, whatever its shape, or on its name.
-    override func gridHits(box: DragSelectionBox, sizes: [String: DragSelectionSize]) -> [DragSelectionHit] {
+    override func gridHits(
+        box: DragSelectionBox, paths: [String], sizes: [String: DragSelectionSize]
+    ) -> [DragSelectionHit] {
         forEachVisibleItem { item, entry in
             pictureShapes[entry.path] = (item as? IconItem)?.pictureShape
         }
         return DragSelection.previewGridItems(
-            box: box, entryPaths: entryPaths, columns: columns,
+            box: box, entryPaths: paths, columns: columns,
             gridWidth: layout.gridWidth(containerWidth: Double(viewport.width)), layout: layout,
             heightInset: style.heightInset, pictures: pictureShapes, sizes: sizes)
     }

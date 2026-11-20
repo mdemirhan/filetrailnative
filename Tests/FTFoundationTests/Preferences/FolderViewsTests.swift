@@ -265,6 +265,16 @@ struct FolderViewsTests {
 
     // A number of any size can stand in a file edited by hand: one no Previews count could be reads as the default,
     // and the app still starts.
+    // No groups have no order: Reverse left on from an earlier grouping is no setting beside Group By ▸ None, so
+    // choosing None where a folder isn't grouped is no change.
+    @Test func noGroupsKeepNoReverse() {
+        #expect(
+            FolderViewKeeps(groupBy: GroupByPreference.none, groupReversed: true)
+                == FolderViewKeeps(groupBy: GroupByPreference.none))
+        #expect(FolderViewKeeps(groupBy: GroupByPreference.none, groupReversed: true).groupReversed == nil)
+        #expect(FolderViewKeeps(groupBy: .kind, groupReversed: true).groupReversed == true)
+    }
+
     @Test func aPreviewsCountNoNumberCouldBeReadsAsTheDefault() throws {
         let saved = """
             {"version":1,"views":[{"path":"/a","keeps":{"size":{"previewCounts":{"standard":1e30,"finder":-1e30}}}}]}

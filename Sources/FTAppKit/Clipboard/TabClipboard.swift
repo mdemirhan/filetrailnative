@@ -158,7 +158,10 @@ final class TabClipboard {
     private func remove(_ path: String) {
         guard let tab else { return }
         let clipboard = tab.services.clipboard
-        clipboard.set(ClipboardRules.removeItem(clipboard.contents, path), from: tab.windowID)
+        // The same clipboard with an item fewer: what Put Back would bring back stays.
+        clipboard.set(
+            ClipboardRules.removeItem(clipboard.contents, path), follows: clipboard.contents.capturedAt,
+            from: tab.windowID)
         tab.clipboardChanged()
     }
 }

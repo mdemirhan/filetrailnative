@@ -9,6 +9,8 @@ struct ContentSearchDisplay {
     var rootPath: String
     /// `search:<root>:<query>`: a new query or root is a new list, which starts at the top and drops the filter.
     var viewKey: String
+    /// Which run of the search these results are of: the same search run again (⌘R, an option changed) is another.
+    var run = 0
     /// What the search found, narrowed to the committed text and in the chosen order.
     var results: [SearchResultItem]
     var sortBy: SearchResultsSortByPreference

@@ -35,6 +35,25 @@ struct ItemValuesTests {
         #expect(fake.tagNamesRead == paths)
     }
 
+    // A link is ordered and grouped by what its columns show: the dates and size of the file it leads to, its own
+    // size when it leads to a folder, and its own when it leads nowhere.
+    @Test func aLinkHasTheValuesOfWhatItLeadsTo() {
+        let fake = FakeFileSystem()
+        fake.lstatHandler = { _ in
+            fakeStats(directory: false, file: false, size: 11, symbolicLink: true, mtimeMs: 1, birthtimeMs: 1)
+        }
+        fake.statHandler = { path in
+            if path.hasSuffix("broken") { throw FakeError() }
+            return path.hasSuffix("to-folder")
+                ? fakeStats(directory: true, file: false, size: 96, mtimeMs: 300, birthtimeMs: 200)
+                : fakeStats(directory: false, file: true, size: 2_000_000, mtimeMs: 500, birthtimeMs: 400)
+        }
+        let links = ["/r/to-file", "/r/to-folder", "/r/broken"]
+        #expect(ExplorerListing.values(links, field: .size, fake).map(\.number) == [2_000_000, 11, 11])
+        #expect(ExplorerListing.values(links, field: .modified, fake).map(\.number) == [500, 300, 1])
+        #expect(ExplorerListing.values(links, field: .created, fake).map(\.number) == [400, 200, 1])
+    }
+
     // An item that can't be looked at has no value.
     @Test func anItemThatCantBeReadHasNone() async {
         let fake = FakeFileSystem()

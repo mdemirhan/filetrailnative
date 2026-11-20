@@ -252,7 +252,7 @@ extension WindowWriteActions {
             }
             return outcome
         }
-        let missingMessage = ClipboardTexts.missingClipboardItems(missing, cut: cut)
+        let missingMessage = ClipboardTexts.missingClipboardItems(missing, cut: cut, mixed: !cut && moves)
         switch outcome {
         case .blocked(let message), .error(let message):
             dialogs.showRefusal(.operation(action), message: "\(missingMessage) \(message)", in: window)

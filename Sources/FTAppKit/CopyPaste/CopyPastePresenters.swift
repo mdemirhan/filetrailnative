@@ -218,7 +218,7 @@ final class CopyPasteResultPresenter: WriteResultPresenting {
         // Only the clipboard holding these same items lets go of what the retry moves, never an unrelated one.
         var retriedCut: String?
         if moves, let contents = actions.session.clipboard?.contents, let capturedAt = contents.capturedAt,
-            paths.contains(where: { contents.pick(at: $0) != nil })
+            contents.holdsAny(of: paths)
         {
             retriedCut = capturedAt
         }

@@ -290,7 +290,7 @@ public enum ContextMenuRules {
             // A Trash folder itself, the home folder's or another disk's: it isn't deleted, only emptied, and it stays
             // where it is, under its name (the write guard refuses too).
             if Paths.isTrashFolder(target, homePath: world.homePath) {
-                hidden.formUnion([.deleteImmediately, .cut, .move, .rename])
+                hidden.formUnion([.deleteImmediately, .cut, .addToCut, .move, .rename])
             }
             return hidden
         case .search:

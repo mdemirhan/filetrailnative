@@ -286,6 +286,42 @@ struct MixedPasteTests {
         }
     }
 
+    /// Replace in a paste of both: the copied item replaces the file there and stays where it was, the moved one
+    /// replaces and goes, and one Undo puts the originals and the replaced files back. A copy taken for a move here
+    /// would delete a file that was only to be copied.
+    @MainActor @Test func replacingKeepsTheCopiedOriginalAndOneUndoBringsBackWhatWasReplaced() async throws {
+        try await withUndoFolder { root, trashDir in
+            for folder in ["a", "b", "d"] { try UndoDisk.mkdir("\(root)/\(folder)") }
+            try UndoDisk.write("\(root)/a/copied.txt", "new copy")
+            try UndoDisk.write("\(root)/b/moved.txt", "new move")
+            try UndoDisk.write("\(root)/d/copied.txt", "old copy")
+            try UndoDisk.write("\(root)/d/moved.txt", "old move")
+            // Where the replaced files go, as the Trash takes them.
+            let pasteTrash = "\(root)/paste-trash"
+            try UndoDisk.mkdir(pasteTrash)
+            let t = UndoTest(root: root, trashDir: trashDir)
+            let before = t.snapshot().filter { !$0.hasPrefix("paste-trash") }
+            let result = try await t.paste(
+                .copy, ["\(root)/a/copied.txt", "\(root)/b/moved.txt"], into: "\(root)/d",
+                policy: NativePaste.replaceAll, fileSystem: NativePaste.withTrash(pasteTrash),
+                cut: ["\(root)/b/moved.txt"])
+            #expect(UndoDisk.names(pasteTrash).count == 2)
+            #expect(result.status == .completed)
+            #expect(result.items.map(\.mode) == [.copy, .cut])
+            #expect(try UndoDisk.read("\(root)/a/copied.txt") == "new copy")
+            #expect(!UndoDisk.exists("\(root)/b/moved.txt"))
+            #expect(try UndoDisk.read("\(root)/d/copied.txt") == "new copy")
+            #expect(try UndoDisk.read("\(root)/d/moved.txt") == "new move")
+
+            #expect(try await t.undo().status == .completed)
+            #expect(t.snapshot().filter { !$0.hasPrefix("paste-trash") } == before)
+            #expect(try UndoDisk.read("\(root)/d/copied.txt") == "old copy")
+            #expect(try UndoDisk.read("\(root)/d/moved.txt") == "old move")
+            #expect(try UndoDisk.read("\(root)/b/moved.txt") == "new move")
+            await t.shutDown()
+        }
+    }
+
     // MARK: Two items of one name
 
     @Test func theItemMarkedTakesANameOfItsOwnAndTheOtherKeepsItsName() async throws {

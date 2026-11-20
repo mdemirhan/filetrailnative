@@ -196,7 +196,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         let disk = tab.services.startupDisk.name
         content.showSearch(
             ContentSearchDisplay(
-                rootPath: rootPath, viewKey: "search:\(rootPath):\(session.committedQuery)",
+                rootPath: rootPath, viewKey: "search:\(rootPath):\(session.committedQuery)", run: session.runNumber,
                 results: session.shownResults, sortBy: session.sortBy, sortDirection: session.sortDirection,
                 highlight: session.highlightPattern, isRunning: session.isRunning, error: session.error,
                 errorIsQuiet: session.errorIsQuiet, startupDiskName: disk))

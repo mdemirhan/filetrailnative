@@ -847,14 +847,20 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01, execute: work)
     }
 
-    private func requestMetadataNow() {
-        guard let host, !entries.isEmpty else { return }
+    /// The entries on screen and ten either side of them. Grouped, a row is not an entry: the rows on screen are
+    /// looked up, and titles and the rows before them passed over.
+    var entriesNearScreen: Range<Int>? {
         let rows = table.rows(in: table.visibleRect)
-        guard rows.length > 0 else { return }
+        guard rows.length > 0, !entries.isEmpty else { return nil }
+        let onScreen = (rows.location..<rows.location + rows.length).compactMap { entryIndex(atRow: $0) }
+        guard let first = onScreen.first, let last = onScreen.last else { return nil }
         let overscan = 10
-        let lower = max(0, rows.location - overscan)
-        let upper = min(entries.count, rows.location + rows.length + overscan)
-        let shown = Array(entries[lower..<upper])
+        return max(0, first - overscan)..<min(entries.count, last + 1 + overscan)
+    }
+
+    private func requestMetadataNow() {
+        guard let host, let near = entriesNearScreen else { return }
+        let shown = Array(entries[near])
         host.requestMetadata(for: shown)
         host.requestTags(for: shown.map(\.path))
     }

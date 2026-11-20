@@ -90,6 +90,24 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // The same search run again (⌘R, Search Again) finds the files as they are now: what was read for the last
+        // run goes, where a file that had grown stayed in its old group until the grouping was changed and back.
+        @Test func aSearchRunAgainReadsItsValuesAgain() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, reads) = try await searched(harness)
+            tab.perform(.groupBySize)
+            #expect(await waitUntil { tab.groupTitles == ["Zero bytes", "100 KB to 1 MB", "1 to 10 MB"] })
+            #expect(reads.paths.count == 3)
+            try Data(count: 200_000).write(to: harness.folder.appending("Grouped/d-old.txt"))
+            tab.search.session.rerun()
+            #expect(await waitUntil { tab.groupTitles == ["100 KB to 1 MB", "1 to 10 MB"] })
+            #expect(reads.fields == [.size, .size] && reads.paths.count == 6)
+            // Shown again without a new run (the order turned), nothing is read again.
+            tab.perform(.reverseGroupOrder)
+            #expect(tab.groupTitles == ["1 to 10 MB", "100 KB to 1 MB"] && reads.paths.count == 6)
+            await harness.close()
+        }
+
         // Ordered by a date or the size, the results' values are read, and they come in that order, the newest and
         // the largest first; ordered by name again, nothing is read.
         @Test func searchResultsSortByADateOrTheSizeReadOnlyThen() async throws {

@@ -22,6 +22,36 @@ struct ClipboardShelfTests {
             .clipboard
     }
 
+    // MARK: Many items
+
+    // Every file of a large folder copied: the clipboard is described, and the selection looked for on it, in one
+    // look at each item. Looking through the whole clipboard for each item took seconds at 5,000 and stopped the app.
+    @Test func aClipboardOfFiftyThousandItemsIsDescribedAtOnce() {
+        let count = 50_000
+        let paths = (0..<count).map { "/Users/demo/Pictures/Export/IMG_\($0).jpg" }
+        var clipboard = ClipboardRules.set(.copy, paths, capturedAt: Self.t1)
+        // One item kept beside another of its name, so the names are counted too.
+        let added = ClipboardRules.set(.copy, paths + ["/Users/demo/Other/IMG_7.jpg"], capturedAt: Self.t1)
+        if case .ready(var picks, let capturedAt, let grown) = added {
+            picks[count].renamedIfShared = true
+            clipboard = .ready(picks: picks, capturedAt: capturedAt, grown: grown)
+        }
+        // CPU time of this thread, not wall time, so a busy machine does not fail it.
+        let (summary, seconds) = CPUTime.measureThread { ClipboardRules.describe(clipboard) }
+        #expect(summary != nil)
+        let items = ClipboardRules.items(clipboard)
+        #expect(items.count == count + 1)
+        #expect(items.filter(\.pastedUnderAnotherName).map(\.path) == ["/Users/demo/Other/IMG_7.jpg"])
+        #expect(seconds < 1)
+        let elsewhere = (0..<count).map { "/Users/demo/Documents/f\($0)" }
+        let (held, looking) = CPUTime.measureThread {
+            (clipboard.holdsAny(of: elsewhere), clipboard.holdsAny(of: elsewhere + [paths[count - 1]]))
+        }
+        #expect(held == (false, true))
+        #expect(!clipboard.holdsAny(of: []) && !CopyPasteClipboard.empty.holdsAny(of: paths))
+        #expect(looking < 1)
+    }
+
     // MARK: Adding
 
     @Test func anAddJoinsWhatIsThereAndKeepsItsCapture() {

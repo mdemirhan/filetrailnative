@@ -2217,7 +2217,7 @@ extension MainWindowController: ExplorerWindowContext {
             selectedEntry: entries.first { $0.path == lead } ?? entries.first,
             selectedTreeTargetPath: sidebar.selectedTreeTargetPath,
             clipboardHasItems: services.clipboard.contents.hasItems,
-            selectionOnClipboard: clipboardSourcePaths.contains { services.clipboard.contents.pick(at: $0) != nil },
+            selectionOnClipboard: services.clipboard.contents.holdsAny(of: clipboardSourcePaths),
             pasteDestinationPath: pasteDestinationPath,
             isSearchMode: searchRootPath != nil, openItemLimit: preferences.openItemLimit,
             writeOperationLocked: isWriteLocked, canGoBack: canGoBack,

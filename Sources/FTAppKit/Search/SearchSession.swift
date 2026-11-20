@@ -110,6 +110,9 @@ final class SearchSession {
     private(set) var cachedScroll: (top: Double, left: Double)?
     /// Answers from searches that are no longer the one on screen are dropped by this counter.
     private(set) var sessionCounter = 0
+    /// How many searches were started: the results on screen are of the last, and what was read for an earlier run's
+    /// results is not theirs.
+    private(set) var runNumber = 0
     /// The place in the tab's history the results were left from by opening a folder: Back and
     /// Forward bring them back there.
     private(set) var returnPlace: NavigationHistory.Place?
@@ -649,6 +652,7 @@ final class SearchSession {
         keptResultPaths = Set(kept.map(\.path))
         results = kept
         resultsGeneration += 1
+        runNumber += 1
         committedQuery = trimmed
         baseQuery = trimmed
         resultsChanged()

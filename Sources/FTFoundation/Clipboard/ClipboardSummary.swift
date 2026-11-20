@@ -78,7 +78,13 @@ public struct ClipboardItemGroup: Equatable, Sendable {
 
 extension ClipboardRules {
     public static func items(_ clipboard: CopyPasteClipboard) -> [ClipboardItem] {
-        clipboard.picks.map { pick in
+        // How many items have each name, counted once and only when some item is marked: asking for each item in
+        // turn looks through the whole clipboard every time, and a folder's worth of files copied stops the app.
+        var named: [NameKeys.Exact: Int] = [:]
+        if clipboard.picks.contains(where: \.renamedIfShared) {
+            for pick in clipboard.picks { named[sharedNameKey(pick.path), default: 0] += 1 }
+        }
+        return clipboard.picks.map { pick in
             let path = pick.path
             let name = PathText.leafName(path)
             let known = pick.entry
@@ -91,7 +97,7 @@ extension ClipboardRules {
                     kind: known?.kind ?? .other, isHidden: JSString.hasPrefix(name, "."),
                     isSymlink: known?.isSymlink ?? false, isExecutable: known?.isExecutable),
                 isFolder: isFolder, mode: pick.mode,
-                pastedUnderAnotherName: isPastedUnderAnotherName(clipboard, path))
+                pastedUnderAnotherName: pick.renamedIfShared && named[sharedNameKey(path), default: 0] > 1)
         }
     }
 

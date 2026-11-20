@@ -222,7 +222,9 @@ final class BrowserPane {
     var shownGroupBy: GroupByPreference { folderView?.shown.groupBy ?? groupBy }
     /// A folder's view that keeps its grouping keeps its direction with it.
     var shownGroupReversed: Bool {
-        folderView?.shown.groupBy != nil ? folderView?.shown.groupReversed == true : groupReversed
+        // No groups have no order: a Reverse left on from the last grouping waits for the next.
+        guard shownGroupBy != .none else { return false }
+        return folderView?.shown.groupBy != nil ? folderView?.shown.groupReversed == true : groupReversed
     }
     /// What Reverse Group Order shows checked: search results' own while they show.
     var activeGroupReversed: Bool {

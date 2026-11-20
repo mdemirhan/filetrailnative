@@ -428,6 +428,8 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
 
     /// The item under a point of the collection, on a part of it that takes clicks.
     func itemIndex(at point: NSPoint) -> Int? {
+        // A group's title held at the edge covers the items scrolled under it: a press on it is on no item.
+        if headerViews.contains(where: { $0.frame.contains(point) }) { return nil }
         for indexPath in collection.indexPathsForVisibleItems() {
             guard let item = collection.item(at: indexPath), item.view.frame.contains(point),
                 let gridItem = item as? GridItemView

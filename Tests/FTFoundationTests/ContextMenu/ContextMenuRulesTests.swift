@@ -269,6 +269,11 @@ struct ContextMenuRulesTests {
         for action in [ContextMenuActionID.deleteImmediately, .cut, .move, .rename] {
             #expect(theTrash.contains(action))
         }
+        // With something on the clipboard, it isn't added to the items to move either; it can be added to copy.
+        var holding = world()
+        holding.clipboardCopiedPaths = ["/Users/me/Documents/a.txt"]
+        let added = hidden(subject(.treeFolder, [(Self.trash, .directory)]), holding)
+        #expect(added.contains(.addToCut) && !added.contains(.addToCopied))
     }
 
     // Another disk's Trash folders, its ".Trashes" and each user's Trash in it, are kept as the home Trash is; what is

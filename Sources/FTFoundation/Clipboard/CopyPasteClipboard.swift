@@ -102,6 +102,14 @@ public enum CopyPasteClipboard: Equatable, Sendable {
     public func pick(at path: String) -> ClipboardPick? {
         picks.first { JSString.equals($0.path, path) }
     }
+
+    /// Whether any of `paths` is on the clipboard, by its exact bytes: one look at each list, where `pick(at:)` for
+    /// each path looks through the whole clipboard.
+    public func holdsAny(of paths: [String]) -> Bool {
+        guard !paths.isEmpty, !picks.isEmpty else { return false }
+        let held = Set(picks.map { Array($0.path.utf8) })
+        return paths.contains { held.contains(Array($0.utf8)) }
+    }
 }
 
 /// A finished write, as the clipboard follows it (`WriteOperationResult`): its action, how a paste's items were put

@@ -26,17 +26,23 @@ public enum ItemValue: Sendable, Hashable {
 
 extension ExplorerListing {
     /// The value of `field` for each of `paths`, in their order. Only what the field needs is read: one look at each
-    /// item for its times or size (a link itself), Date Added and Date Last Opened from their own attributes, the tags
-    /// from theirs. A folder has no size of its own: its size is measured.
+    /// item for its times or size (a link's are what it leads to, as its columns show; its own when it leads nowhere),
+    /// Date Added and Date Last Opened from their own attributes, the tags from theirs. A folder has no size of its
+    /// own: its size is measured.
     static func values(_ paths: [String], field: ItemValueField, _ fileSystem: any ExplorerFileSystem) -> [ItemValue] {
         switch field {
         case .modified, .created, .size:
             return paths.map { path in
-                let stats = try? fileSystem.lstat(path)
+                let stats = (try? fileSystem.stat(path)) ?? (try? fileSystem.lstat(path))
                 switch field {
                 case .modified: return .number(stats?.mtimeMs)
                 case .created: return .number(stats?.birthtimeMs)
-                default: return .number(stats.flatMap { $0.type == .directory ? nil : $0.size })
+                default:
+                    guard let stats else { return .number(nil) }
+                    guard stats.type == .directory else { return .number(stats.size) }
+                    // A link to a folder has the link's own size, as its Size column shows; a folder has none.
+                    let own = try? fileSystem.lstat(path)
+                    return .number(own?.isSymbolicLink == true ? own?.size : nil)
                 }
             }
         case .added:

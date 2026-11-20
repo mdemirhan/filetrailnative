@@ -51,8 +51,9 @@ public struct CopyPasteAnalysisRequest: Codable, Equatable, Sendable {
     public var movedSourcePaths: [String] {
         if mode == .cut { return sourcePaths }
         guard let cutSourcePaths, !cutSourcePaths.isEmpty else { return [] }
-        let cut = Set(cutSourcePaths.map(NameKeys.Exact.init))
-        return sourcePaths.filter { cut.contains(NameKeys.Exact($0)) }
+        // As the review matches them: a path spelled another way is the same item, and is guarded as one moved.
+        let cut = Set(cutSourcePaths.map { NameKeys.Exact(NodePath.resolve($0)) })
+        return sourcePaths.filter { cut.contains(NameKeys.Exact(NodePath.resolve($0))) }
     }
 }
 

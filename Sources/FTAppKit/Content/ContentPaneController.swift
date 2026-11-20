@@ -1273,8 +1273,9 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
                 hiddenItemCount: hiddenItemCount, details: details,
                 scroll: pane?.scrollPosition ?? (0, 0))
         }
+        // Run again, the search finds the files as they are now: the dates, sizes and tags read for the last run go.
+        if newList || searchDisplay?.run != display.run { searchValues.reset() }
         if newList {
-            searchValues.reset()
             if !filter.isEmpty {
                 listFilter.clear()
                 onFilterChanged?(filter)

@@ -179,7 +179,7 @@ class IconViewController: ItemGridPane {
         let inItems = DragSelectionBox(
             left: box.left - left, top: box.top - top, right: box.right - left, bottom: box.bottom - top)
         guard let lines = lines(width: viewport.width) else {
-            return gridHits(box: inItems, sizes: sizes).map { $0.moved(left: left, top: top) }
+            return gridHits(box: inItems, paths: entryPaths, sizes: sizes).map { $0.moved(left: left, top: top) }
         }
         // Grouped, each group's items as a grid of their own, from its first line.
         var hits: [DragSelectionHit] = []
@@ -190,19 +190,17 @@ class IconViewController: ItemGridPane {
             let groupTop = group.linesStart
             let inGroup = DragSelectionBox(
                 left: box.left - left, top: box.top - groupTop, right: box.right - left, bottom: box.bottom - groupTop)
-            hits += DragSelection.iconGridItems(
-                box: inGroup, entryPaths: Array(paths[group.items]), columns: columns,
-                gridWidth: layout.gridWidth(containerWidth: Double(viewport.width)), layout: layout, sizes: sizes
-            ).map { $0.moved(left: left, top: groupTop) }
+            hits += gridHits(box: inGroup, paths: Array(paths[group.items]), sizes: sizes)
+                .map { $0.moved(left: left, top: groupTop) }
         }
         return hits
     }
 
-    /// The items a box touches, both inside the pane's padding. Sizes are of the names; the hit test places them
-    /// itself.
-    func gridHits(box: DragSelectionBox, sizes: [String: DragSelectionSize]) -> [DragSelectionHit] {
+    /// The items of `paths`, laid out as a grid from the box's origin, that a box touches: all the pane's items, or
+    /// one group's. Sizes are of the names; the hit test places them itself.
+    func gridHits(box: DragSelectionBox, paths: [String], sizes: [String: DragSelectionSize]) -> [DragSelectionHit] {
         DragSelection.iconGridItems(
-            box: box, entryPaths: entryPaths, columns: columns,
+            box: box, entryPaths: paths, columns: columns,
             gridWidth: layout.gridWidth(containerWidth: Double(viewport.width)), layout: layout, sizes: sizes)
     }
 

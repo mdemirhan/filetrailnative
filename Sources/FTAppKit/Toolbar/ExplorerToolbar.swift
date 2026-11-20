@@ -372,7 +372,8 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
                 button.isEnabled = canPerform(.sortByName)
                 let sorted = "Sort By: \(view.sortBy.title), \(view.sortDirection == .asc ? "Ascending" : "Descending")"
                 // Grouped, both: the groups decide where an item is, the order where it is in its group.
-                button.tooltip = view.groupBy == .none ? sorted : "Group By: \(view.groupBy.title) \u{00B7} " + sorted
+                let groups = context.searchRootPath != nil ? view.searchGroupBy : view.groupBy
+                button.tooltip = groups == .none ? sorted : "Group By: \(groups.title) \u{00B7} " + sorted
             case .groupBy:
                 let grouped = context.searchRootPath != nil ? view.searchGroupBy : view.groupBy
                 button.isEnabled = canPerform(.groupByNone)

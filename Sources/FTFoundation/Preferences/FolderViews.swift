@@ -136,7 +136,8 @@ public struct FolderViewKeeps: Codable, Equatable, Sendable {
         self.view = view
         // Folder is search results' own: a folder's view can't keep it.
         self.groupBy = groupBy?.isForFolders == false ? nil : groupBy
-        self.groupReversed = self.groupBy != nil && groupReversed ? true : nil
+        // No groups have no order: a Reverse left on from the last grouping is not a setting of its own.
+        self.groupReversed = self.groupBy != nil && self.groupBy != GroupByPreference.none && groupReversed ? true : nil
         self.sort = sort
         self.foldersFirst = foldersFirst
         self.columns = columns

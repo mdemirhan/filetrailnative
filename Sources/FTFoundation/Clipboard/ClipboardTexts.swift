@@ -12,15 +12,16 @@ public enum ClipboardTexts {
         return "\(names.prefix(maxShown).joined(separator: ", ")) and \(names.count - maxShown) more"
     }
 
-    /// Why items on the clipboard were left out of a paste. A cut is "moved".
-    public static func missingClipboardItems(_ paths: [String], cut: Bool = false) -> String {
+    /// Why items on the clipboard were left out of a paste. A cut is "moved"; in a paste of both (`mixed`) an item
+    /// left out may be either, so neither is said.
+    public static func missingClipboardItems(_ paths: [String], cut: Bool = false, mixed: Bool = false) -> String {
         let one = paths.count == 1
         let subject = one ? "it was" : "they were"
         let verb = cut ? "moved" : "pasted"
         let why =
             cut
             ? "\(subject) deleted or moved elsewhere since \(subject) cut"
-            : "\(subject) moved or deleted since \(subject) copied"
+            : "\(subject) moved or deleted since \(subject) \(mixed ? "put on the clipboard" : "copied")"
         if paths.count <= 3 {
             return "\(quotedNames(paths)) couldn\u{2019}t be \(verb) because \(why)."
         }

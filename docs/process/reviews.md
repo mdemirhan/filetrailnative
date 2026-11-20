@@ -11,6 +11,7 @@ Every finding, fixed or not, says:
 - **How it was checked**: "reproduced" or "read only".
 - **Whether it comes from a fix made in the same review.** Those have a line of their own and are never left for later.
 - **Its level**: blocker, should fix before release, or can wait.
+- **A recommendation**: fix it or leave it, why, and how it would be fixed (the change in a sentence or two, where it goes, and what it costs or puts at risk). A finding left has one too, whichever group it is in: "leave it" says what would change that, and a finding that needs the owner's choice names the choice recommended.
 
 A reviewer also lists, a line each, what it looked at and found right, so that what was covered is known.
 
@@ -33,7 +34,7 @@ A loss that can't be undone but needs a contrived case (a power cut in a given m
 
 ## What was found and not fixed
 
-Each finding left goes into one group, by why it was left, with a line saying so:
+Each finding left goes into one group, by why it was left, with a line saying so, and under it the recommendation: whether it should be fixed after all, why, and how. The group says why it wasn't fixed in the review; the recommendation says what to do about it now, so the owner can answer each with a yes or a no.
 
 - **The fix costs more than the problem.**
 - **It needs a choice from the owner.** How the app behaves, or how it is built, is the owner's to say.

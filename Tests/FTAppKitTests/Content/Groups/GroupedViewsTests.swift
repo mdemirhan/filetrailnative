@@ -73,6 +73,42 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { header(tab)?.nameTitle == "Today" })
         }
 
+        // Grouped, the list has two more rows for each group after the first, so the rows on screen at its end are
+        // numbered past its last item: the details asked for are those of the items on those rows, where the rows'
+        // numbers taken for items' made a range that ends before it starts, and the app stopped.
+        @Test func aGroupedListScrolledToItsEndAsksForTheDetailsOfItsLastItems() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let url = harness.folder.appending("Letters")
+            try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+            let letters = (0..<26).map { String(UnicodeScalar(UInt8(97 + $0))) }
+            for letter in letters {
+                FileManager.default.createFile(atPath: url.appendingPathComponent("\(letter).txt").path, contents: nil)
+            }
+            let tab = try await harness.open(url.path)
+            tab.perform(.viewAsDetails)
+            #expect(await waitUntil { tab.content.entries.count == 26 })
+            tab.perform(.groupByName)
+            #expect(await waitUntil { tab.groupTitles.count == 26 })
+            tab.window?.setContentSize(NSSize(width: 900, height: 260))
+            harness.layout(tab)
+            let pane = try list(tab)
+            #expect(pane.rowCount == 26 + 2 * 25)
+            pane.scrollPosition = (Double(pane.table.rect(ofRow: pane.rowCount - 1).maxY), 0)
+            let rows = pane.table.rows(in: pane.table.visibleRect)
+            // The case: the first row on screen, less the ten before it, is past the last item.
+            #expect(rows.location - 10 > 26)
+            let near = try #require(pane.entriesNearScreen)
+            #expect(near.upperBound == 26 && near.lowerBound < 25 && near.lowerBound >= 0)
+            let first = try #require(
+                pane.entryIndex(atRow: rows.location) ?? pane.entryIndex(atRow: rows.location + 1)
+                    ?? pane.entryIndex(atRow: rows.location + 2))
+            #expect(near.lowerBound == max(0, first - 10))
+            // At the top, the first items and ten after those on screen.
+            pane.scrollPosition = (0, 0)
+            #expect(pane.entriesNearScreen?.lowerBound == 0)
+            await harness.close()
+        }
+
         // The column header's menu groups by the column clicked, and checked, groups by none.
         @Test func theColumnHeadersMenuGroupsByItsColumn() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -128,6 +164,21 @@ extension ExplorerWindowlessTests {
             // Brought into view below the title held at the top.
             let offset = try #require(icons.revealOffset(for: 5))
             #expect(offset.y >= 0)
+            // Scrolled, the first group's title is held at the top over its items: a press on the title is on none
+            // of them, where it selected, opened or gave the menu of the item under it.
+            tab.window?.setContentSize(NSSize(width: 900, height: 220))
+            probe.layout()
+            let firstItem = icons.itemFrame(at: 0, viewport: icons.viewport)
+            icons.scrollPosition = (Double(firstItem.minY) + 20, 0)
+            probe.layout()
+            icons.placeGroupHeaders()
+            let held = try #require(
+                descendants(of: probe.grid, GroupHeaderView.self).first { $0.frame.intersects(firstItem) })
+            let onTitle = NSPoint(x: firstItem.midX, y: held.frame.midY)
+            #expect(
+                firstItem.contains(onTitle) && icons.itemIndex(at: onTitle) == nil && icons.entry(at: onTitle) == nil)
+            let below = NSPoint(x: firstItem.midX, y: held.frame.maxY + 4)
+            #expect(icons.itemIndex(at: below) == 0)
         }
 
         // The Compact List: the groups side by side, each starting a column of its own under its title.
