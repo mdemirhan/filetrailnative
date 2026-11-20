@@ -10991,7 +10991,7 @@
         "rowsPerColumn": 1,
         "compact": false
       },
-      "output": 64151
+      "output": 63860
     },
     {
       "name": "reveal random 5",
@@ -11054,7 +11054,7 @@
         "rowsPerColumn": 1,
         "compact": true
       },
-      "output": 2
+      "output": 0
     },
     {
       "name": "reveal random 10",
@@ -11193,7 +11193,7 @@
         "rowsPerColumn": 1,
         "compact": true
       },
-      "output": 175211
+      "output": 174960
     },
     {
       "name": "reveal random 21",
@@ -11244,7 +11244,7 @@
         "rowsPerColumn": 11,
         "compact": false
       },
-      "output": 291
+      "output": 0
     },
     {
       "name": "reveal random 25",
@@ -11281,7 +11281,7 @@
         "rowsPerColumn": 28,
         "compact": false
       },
-      "output": 16432
+      "output": 16430
     },
     {
       "name": "reveal random 28",
@@ -11293,7 +11293,7 @@
         "rowsPerColumn": 0,
         "compact": true
       },
-      "output": 76121
+      "output": 75870
     },
     {
       "name": "reveal random 29",
@@ -11305,7 +11305,7 @@
         "rowsPerColumn": 1,
         "compact": true
       },
-      "output": 266201
+      "output": 265950
     },
     {
       "name": "reveal random 30",
@@ -11432,7 +11432,7 @@
         "rowsPerColumn": 0,
         "compact": true
       },
-      "output": 251
+      "output": 0
     },
     {
       "name": "reveal random 40",
@@ -11444,7 +11444,7 @@
         "rowsPerColumn": 1,
         "compact": false
       },
-      "output": 291
+      "output": 0
     },
     {
       "name": "reveal random 41",
@@ -11660,7 +11660,7 @@
         "rowsPerColumn": 0,
         "compact": false
       },
-      "output": 394012
+      "output": 394010
     },
     {
       "name": "reveal random 58",
@@ -11789,7 +11789,7 @@
         "compact": true,
         "maxScrollLeft": 3004
       },
-      "output": 251
+      "output": 0
     },
     {
       "name": "reveal random 68",
@@ -11814,7 +11814,7 @@
         "rowsPerColumn": 0,
         "compact": true
       },
-      "output": 265121
+      "output": 264870
     },
     {
       "name": "reveal random 70",
@@ -11839,7 +11839,7 @@
         "rowsPerColumn": 0,
         "compact": false
       },
-      "output": 2
+      "output": 0
     },
     {
       "name": "reveal random 72",
@@ -11877,7 +11877,7 @@
         "rowsPerColumn": 0,
         "compact": true
       },
-      "output": 251
+      "output": 0
     },
     {
       "name": "reveal random 75",
@@ -11901,7 +11901,7 @@
         "rowsPerColumn": 0,
         "compact": false
       },
-      "output": 612851
+      "output": 612560
     },
     {
       "name": "reveal random 77",
@@ -11913,7 +11913,7 @@
         "rowsPerColumn": 2,
         "compact": true
       },
-      "output": 2
+      "output": 0
     },
     {
       "name": "reveal random 78",
@@ -12003,7 +12003,7 @@
         "rowsPerColumn": 1,
         "compact": true
       },
-      "output": 507041
+      "output": 506790
     },
     {
       "name": "reveal random 85",
@@ -12041,7 +12041,7 @@
         "rowsPerColumn": 30,
         "compact": true
       },
-      "output": 2
+      "output": 0
     },
     {
       "name": "reveal random 88",
@@ -12118,7 +12118,7 @@
         "rowsPerColumn": 1,
         "compact": false
       },
-      "output": 291
+      "output": 0
     },
     {
       "name": "reveal random 94",
@@ -12130,7 +12130,7 @@
         "rowsPerColumn": 1,
         "compact": true
       },
-      "output": 257831
+      "output": 257580
     },
     {
       "name": "reveal random 95",
@@ -12255,7 +12255,7 @@
         "rowsPerColumn": 1,
         "compact": false
       },
-      "output": 2
+      "output": 0
     },
     {
       "name": "reveal random 105",
@@ -12267,7 +12267,7 @@
         "rowsPerColumn": 0,
         "compact": true
       },
-      "output": 368531
+      "output": 368280
     },
     {
       "name": "reveal random 106",
@@ -12279,7 +12279,7 @@
         "rowsPerColumn": 0,
         "compact": false
       },
-      "output": 143122
+      "output": 142910
     },
     {
       "name": "reveal random 107",
@@ -12408,7 +12408,7 @@
         "compact": false,
         "maxScrollLeft": 8210
       },
-      "output": 291
+      "output": 0
     },
     {
       "name": "reveal random 117",
@@ -12458,7 +12458,7 @@
         "rowsPerColumn": 17,
         "compact": false
       },
-      "output": 291
+      "output": 0
     },
     {
       "name": "reveal random 121",
@@ -12496,7 +12496,7 @@
         "compact": false,
         "maxScrollLeft": 3913
       },
-      "output": 2
+      "output": 0
     },
     {
       "name": "reveal random 124",
@@ -12624,7 +12624,7 @@
         "compact": false,
         "maxScrollLeft": 7809
       },
-      "output": 2
+      "output": 0
     },
     {
       "name": "reveal random 134",
@@ -12674,7 +12674,7 @@
         "rowsPerColumn": 29,
         "compact": false
       },
-      "output": 17961
+      "output": 17670
     },
     {
       "name": "reveal random 138",
@@ -12698,7 +12698,7 @@
         "rowsPerColumn": 0,
         "compact": false
       },
-      "output": 291
+      "output": 0
     },
     {
       "name": "reveal random 140",
@@ -12722,7 +12722,7 @@
         "rowsPerColumn": 2,
         "compact": false
       },
-      "output": 172672
+      "output": 172670
     },
     {
       "name": "reveal random 142",
@@ -12746,7 +12746,7 @@
         "rowsPerColumn": 0,
         "compact": true
       },
-      "output": 251
+      "output": 0
     },
     {
       "name": "reveal random 144",
@@ -12758,7 +12758,7 @@
         "rowsPerColumn": 1,
         "compact": false
       },
-      "output": 2
+      "output": 0
     },
     {
       "name": "reveal random 145",
@@ -12860,7 +12860,7 @@
         "rowsPerColumn": 1,
         "compact": false
       },
-      "output": 291
+      "output": 0
     },
     {
       "name": "reveal random 153",
@@ -12963,7 +12963,7 @@
         "rowsPerColumn": 0,
         "compact": true
       },
-      "output": 116372
+      "output": 116370
     },
     {
       "name": "reveal random 161",
@@ -12989,7 +12989,7 @@
         "compact": false,
         "maxScrollLeft": 3278
       },
-      "output": 191
+      "output": 0
     },
     {
       "name": "reveal random 163",
@@ -13052,7 +13052,7 @@
         "rowsPerColumn": 38,
         "compact": false
       },
-      "output": 2151
+      "output": 1860
     },
     {
       "name": "reveal random 168",
@@ -13064,7 +13064,7 @@
         "rowsPerColumn": 0,
         "compact": false
       },
-      "output": 291
+      "output": 0
     },
     {
       "name": "reveal random 169",
@@ -13115,7 +13115,7 @@
         "rowsPerColumn": 0,
         "compact": false
       },
-      "output": 101661
+      "output": 101370
     },
     {
       "name": "reveal random 173",
@@ -13128,7 +13128,7 @@
         "compact": true,
         "maxScrollLeft": 8286
       },
-      "output": 251
+      "output": 0
     },
     {
       "name": "reveal random 174",
@@ -13166,7 +13166,7 @@
         "rowsPerColumn": 37,
         "compact": true
       },
-      "output": 251
+      "output": 0
     },
     {
       "name": "reveal random 177",
@@ -13295,7 +13295,7 @@
         "rowsPerColumn": 0,
         "compact": true
       },
-      "output": 2
+      "output": 0
     },
     {
       "name": "reveal random 187",
@@ -13332,7 +13332,7 @@
         "rowsPerColumn": 0,
         "compact": true
       },
-      "output": 137702
+      "output": 137700
     },
     {
       "name": "reveal random 190",
@@ -13369,7 +13369,7 @@
         "rowsPerColumn": 1,
         "compact": false
       },
-      "output": 266891
+      "output": 266600
     },
     {
       "name": "reveal random 193",
@@ -13498,7 +13498,7 @@
         "rowsPerColumn": 1,
         "compact": true
       },
-      "output": 13
+      "output": 0
     },
     {
       "name": "reveal random 203",
@@ -13666,7 +13666,7 @@
         "rowsPerColumn": 32,
         "compact": false
       },
-      "output": 2
+      "output": 0
     },
     {
       "name": "reveal random 216",
@@ -13691,7 +13691,7 @@
         "rowsPerColumn": 7,
         "compact": true
       },
-      "output": 251
+      "output": 0
     },
     {
       "name": "reveal random 218",
@@ -13703,7 +13703,7 @@
         "rowsPerColumn": 1,
         "compact": false
       },
-      "output": 247361
+      "output": 247070
     },
     {
       "name": "reveal random 219",
@@ -13806,7 +13806,7 @@
         "rowsPerColumn": 0,
         "compact": false
       },
-      "output": 2
+      "output": 0
     },
     {
       "name": "reveal random 227",
@@ -13818,7 +13818,7 @@
         "rowsPerColumn": 1,
         "compact": false
       },
-      "output": 110341
+      "output": 110050
     },
     {
       "name": "reveal random 228",
@@ -13893,7 +13893,7 @@
         "rowsPerColumn": 1,
         "compact": true
       },
-      "output": 49931
+      "output": 49680
     },
     {
       "name": "reveal random 234",
@@ -13905,7 +13905,7 @@
         "rowsPerColumn": 28,
         "compact": false
       },
-      "output": 12691
+      "output": 12400
     },
     {
       "name": "reveal random 235",

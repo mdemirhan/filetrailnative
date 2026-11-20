@@ -38,6 +38,20 @@ struct FlowListLayoutTests {
         #expect(Self.reveal(0, 36, finder: true) == 102)
     }
 
+    // A column wider than the pane shows from its start, its icon and the name, whichever way it was scrolled: its
+    // right edge brought in would cut off the start, and the next item brought in would move it back.
+    @Test func showsAColumnWiderThanThePaneFromItsStart() {
+        let narrow = { (scrollLeft: Double, index: Int) in
+            Self.layout.revealScrollLeft(
+                currentScrollLeft: scrollLeft, viewportWidth: 300, itemIndex: index, rowsPerColumn: 12,
+                maxScrollLeft: 3000)
+        }
+        #expect(narrow(0, 3) == 0)
+        #expect(narrow(6, 3) == 0)
+        #expect(narrow(0, 12) == 310)
+        #expect(narrow(330, 12) == 310)
+    }
+
     @Test func clampsTheRevealScrollOffsetToTheAvailableBounds() {
         #expect(Self.reveal(0, 120, maxScrollLeft: 1400) == 1400)
     }

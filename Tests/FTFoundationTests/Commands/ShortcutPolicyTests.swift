@@ -196,6 +196,15 @@ struct ShortcutPolicyTests {
         #expect(Self.badge("trash", treeFolder) == nil)
     }
 
+    // Open in Other Pane shows its key where the key opens what the item does: the list's selection, not the
+    // right-clicked folder of the tree.
+    @Test func showsOpenInOtherPanesKeyInTheListsMenu() {
+        #expect(Self.badge("openInOtherPane", Self.ctx(focusedPane: .content)) == "⌥⌘↓")
+        #expect(
+            Self.badge("openInOtherPane", Self.ctx(focusedPane: .tree, selectedTreeTargetKind: .filesystemFolder))
+                == nil)
+    }
+
     @Test func showsTheSameSafeContextMenuShortcutBadgesForFavoritesAndNoneForFavoritesRoot() {
         let favorite = Self.ctx(focusedPane: .tree, selectedTreeTargetKind: .favorite)
         let favoritesRoot = Self.ctx(focusedPane: .tree, selectedTreeTargetKind: .favoritesRoot)

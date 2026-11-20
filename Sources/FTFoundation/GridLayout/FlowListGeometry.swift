@@ -69,7 +69,11 @@ extension FlowListLayout {
         // The width that shows items: the viewport less the padding on both sides.
         let available = max(1, viewportWidth - paddingInline * 2)
         var next = currentScrollLeft
-        if itemLeft < currentScrollLeft {
+        if itemRight - itemLeft > available {
+            // A column wider than the pane shows from its start, the icon and the name, whichever way it was scrolled:
+            // bringing its right edge in would cut off the start, and the next item brought in would move it back.
+            next = itemLeft
+        } else if itemLeft < currentScrollLeft {
             next = itemLeft
         } else if itemRight > currentScrollLeft + available {
             next = itemRight - available

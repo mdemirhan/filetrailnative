@@ -267,7 +267,8 @@ final class CompactListViewController: ItemGridPane {
             var left = Double(clip.origin.x)
             let start = columns.columnStart(place.column)
             let right = start + layout.itemWidth
-            if start < left {
+            // A column wider than the pane shows from its start, as `FlowListGeometry.revealScrollLeft` has it.
+            if start < left || right - start > Double(clip.width) - 2 * layout.paddingInline {
                 left = start - layout.paddingInline
             } else if right > left + Double(clip.width) {
                 left = right + layout.paddingInline - Double(clip.width)
