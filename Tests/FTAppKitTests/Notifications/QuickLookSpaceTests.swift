@@ -117,6 +117,38 @@ extension ExplorerWindowlessTests {
             #expect(held == nil)
         }
 
+        // The panel is given the item by its path's own bytes, and the item's picture is asked for by the path its
+        // row has, not one read back from the panel's URL.
+        @Test func thePanelIsGivenAnItemStoredWithAComposedAccentAsItsPathSpellsIt() throws {
+            let quickLook = QuickLookController.shared
+            let system = quickLook.panel
+            let fake = FakeQuickLookPanel()
+            quickLook.panel = fake
+            defer { quickLook.panel = system }
+            let folder = try TemporaryDirectory(prefix: "quicklook-spelling")
+            defer { folder.remove() }
+            let path = folder.path + "/caf\u{E9}.txt"
+            #expect(close(open(path, O_CREAT | O_WRONLY, 0o644)) == 0)
+            var asked: [String] = []
+            let source: (String) -> QuickLookPicture? = {
+                asked.append($0)
+                return QuickLookPicture(frame: NSRect(x: 1, y: 2, width: 3, height: 4), image: nil)
+            }
+
+            quickLook.toggle(path, from: nil, source: source)
+            #expect(quickLook.isShowing)
+            let shown = quickLook.url?.withUnsafeFileSystemRepresentation { $0.map { Array(String(cString: $0).utf8) } }
+            #expect(shown == Array(path.utf8))
+            #expect(quickLook.path.map { Array($0.utf8) } == Array(path.utf8))
+            #expect(quickLook.previewPanel(nil, sourceFrameOnScreenFor: nil) == NSRect(x: 1, y: 2, width: 3, height: 4))
+            #expect(asked.map { Array($0.utf8) } == [Array(path.utf8)])
+            // The same path again closes the panel; the other spelling of the name is another path.
+            quickLook.toggle(folder.path + "/cafe\u{301}.txt", from: nil, source: source)
+            #expect(quickLook.isShowing && fake.presented == 1)
+            quickLook.toggle(folder.path + "/cafe\u{301}.txt", from: nil, source: source)
+            #expect(!quickLook.isShowing)
+        }
+
         @Test func spacePreviewsTheSelectedItemWithQuickLookAndSpaceAgainClosesIt() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
@@ -149,7 +181,7 @@ extension ExplorerWindowlessTests {
             #expect(quickLook.numberOfPreviewItems(in: nil) == 1)
             #expect(fake.presented == 2)
             // The transition leaves from the item's row.
-            let frame = quickLook.source?(URL(fileURLWithPath: note.path))?.frame
+            let frame = quickLook.source?(note.path)?.frame
             #expect(frame != nil && frame?.isEmpty == false)
             quickLook.close()
             await harness.close()

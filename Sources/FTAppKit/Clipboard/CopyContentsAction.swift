@@ -1,4 +1,5 @@
 import AppKit
+import FTFileSystem
 import FTFoundation
 
 /// Copy Contents for one window: puts a file's image or text on the system's clipboard, to paste in another app. It
@@ -20,7 +21,7 @@ final class CopyContentsAction {
     /// Where a link at `path` leads, or `path` itself: found off the main thread and out of Swift's shared pool, as it
     /// asks the disk.
     var resolve: (_ path: String) async -> String = { path in
-        await BlockingWork.run { URL(fileURLWithPath: path).resolvingSymlinksInPath().path }
+        await BlockingWork.run { DiskPath(path).asOnDisk().string }
     }
     /// How long a read runs before "Copying…" is shown.
     var slowDelay: Duration = .milliseconds(500)

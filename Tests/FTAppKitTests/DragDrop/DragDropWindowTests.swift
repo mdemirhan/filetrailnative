@@ -25,9 +25,10 @@ extension ExplorerWindowlessTests {
         @Test func aDropOnAFolderOfTheSameDiskMoves() async throws {
             let window = try await WritingWindow.open()
             let drags = window.tab.dragDrop
-            let urls = drags.automationDragStarted([try entry(window, "note.txt")])
-            #expect(urls == [url(window, "note.txt")])
-            #expect(drags.automationDrop(urls, entry: try entry(window, "Alpha"), allowed: [.copy, .move, .generic]))
+            let dragged = drags.automationDragStarted([try entry(window, "note.txt")])
+            #expect(dragged == [url(window, "note.txt").path])
+            #expect(
+                drags.automationDrop(dragged, entry: try entry(window, "Alpha"), allowed: [.copy, .move, .generic]))
             #expect(await waitUntil { window.exists("Alpha/note.txt") && !window.exists("note.txt") })
             #expect(TabDragDrop.ownDrag == nil)
             await window.close()
@@ -70,10 +71,10 @@ extension ExplorerWindowlessTests {
             let drags = window.tab.dragDrop
             let inner = url(window, "Alpha/outside.txt")
             try "o".write(to: inner, atomically: true, encoding: .utf8)
-            #expect(drags.automationDrop([inner], entry: nil, allowed: [.copy, .move, .generic]))
+            #expect(drags.automationDrop([inner.path], entry: nil, allowed: [.copy, .move, .generic]))
             #expect(await waitUntil { window.exists("outside.txt") && !window.exists("Alpha/outside.txt") })
             _ = drags.automationDragStarted([try entry(window, "Gamma")])
-            #expect(!drags.automationDrop([url(window, "Gamma")], entry: nil, allowed: [.copy, .move]))
+            #expect(!drags.automationDrop([url(window, "Gamma").path], entry: nil, allowed: [.copy, .move]))
             await window.close()
         }
 
@@ -98,7 +99,7 @@ extension ExplorerWindowlessTests {
             #expect(TabDragDrop.ownDrag == nil)
             #expect(
                 !tab.dragDrop.automationDrop(
-                    [url(window, "note.txt")], entry: try entry(window, "Alpha"), allowed: .move))
+                    [url(window, "note.txt").path], entry: try entry(window, "Alpha"), allowed: .move))
             #expect(
                 tab.notifications?.toasts.entries.last?.title
                     == "Can't drop while \u{201C}Photos\u{201D} is being copied")

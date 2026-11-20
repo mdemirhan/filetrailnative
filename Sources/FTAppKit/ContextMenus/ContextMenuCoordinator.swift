@@ -445,12 +445,16 @@ final class ContextMenuCoordinator: ContextMenuResponder {
     private func openFolder(_ path: String, subject: ContextMenuSubject, inWindow: Bool) {
         // An alias of a folder opens the folder it points to, as it does when it is opened in place.
         let isAlias = subject.entries.first { $0.path == path }?.kind == .symlinkDirectory
-        let resolved = isAlias ? URL(fileURLWithPath: path).resolvingSymlinksInPath().path : path
-        if inWindow {
-            tab.group?.openNewWindow(from: tab, path: resolved)
-        } else {
-            tab.group?.openTab(path: resolved, from: tab)
+        let open = { [tab] (folder: String) -> Void in
+            if inWindow {
+                tab.group?.openNewWindow(from: tab, path: folder)
+            } else {
+                tab.group?.openTab(path: folder, from: tab)
+            }
         }
+        guard isAlias else { return open(path) }
+        // Where the alias leads, as the disk spells it, asked off the main thread: it may lead into a slow disk.
+        holdingTheTab { open(await BlockingWork.run { DiskPath(path).asOnDisk().string }) }
     }
 
     // MARK: Open, Edit, Open With

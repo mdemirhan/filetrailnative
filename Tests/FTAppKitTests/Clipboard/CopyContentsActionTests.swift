@@ -446,4 +446,38 @@ import UniformTypeIdentifiers
         #expect(fixture.board.string(forType: .string) == "second.txt")
         #expect(fixture.toastTitles == ["Copied text"])
     }
+
+    // Where a link leads is found as the disk spells it: the file's real path, an accent stored composed kept so.
+    @Test func whereALinkLeadsIsSpelledAsTheDiskHasIt() async throws {
+        let fixture = Fixture()
+        let place = Folder()
+        let folder = try #require(realpath(place.path, nil))
+        defer { free(folder) }
+        let real = String(cString: folder)
+        let target = real + "/caf\u{E9}.txt"
+        #expect(close(open(target, O_CREAT | O_WRONLY, 0o644)) == 0)
+        let link = real + "/link.txt"
+        #expect(symlink(real + "/cafe\u{301}.txt", link) == 0)
+        #expect(Array(await fixture.action.resolve(link).utf8) == Array(target.utf8))
+        // A file that is no link is itself, and so is a path with nothing at it.
+        #expect(Array(await fixture.action.resolve(target).utf8) == Array(target.utf8))
+        #expect(await fixture.action.resolve(real + "/gone.txt") == real + "/gone.txt")
+    }
+
+    // The file itself is read by its path's own bytes.
+    @Test func readsAFileStoredWithAComposedAccent() throws {
+        let folder = Folder()
+        let path = folder.path + "/caf\u{E9}.png"
+        let png = Self.image(.png)
+        let descriptor = open(path, O_CREAT | O_WRONLY, 0o644)
+        try #require(descriptor >= 0)
+        #expect(png.withUnsafeBytes { write(descriptor, $0.baseAddress, $0.count) } == png.count)
+        close(descriptor)
+        guard case .success(.image(let type, let data, _)) = FileContents.readNow(path, guess: .unknown) else {
+            Issue.record("expected an image")
+            return
+        }
+        #expect(type == UTType.png.identifier)
+        #expect(data == png)
+    }
 }

@@ -15,20 +15,8 @@
 # then by name.
 Sources/FTAppKit/App/AppDelegate.swift: let taken = openFiles.open(urls.filter(\.isFileURL).map(\.path))
 
-# Where a link leads, against the link's own path by `!=`.
-Sources/FTAppKit/Clipboard/CopyContentsAction.swift: await BlockingWork.run { URL(fileURLWithPath: path).resolvingSymlinksInPath().path }
-
 # `comparablePath` itself: one URL's path against another's, below.
 Sources/FTAppKit/Content/ContentModel.swift: var comparablePath: String { standardizedFileURL.path }
-
-# Where an alias leads: a new tab's or window's folder until its listing spells it.
-Sources/FTAppKit/ContextMenus/ContextMenuCoordinator.swift: let resolved = isAlias ? URL(fileURLWithPath: path).resolvingSymlinksInPath().path : path
-
-# A row's path through a URL and back, against the rows' paths by `==`.
-Sources/FTAppKit/ContextMenus/MainWindowController+ContextMenus.swift: QuickLookItemFrame.picture(of: url.path, entries: content.entries, in: content.view)
-
-# Rows' paths through URLs and back, against the drag's own paths byte for byte (a scenario's drag only).
-Sources/FTAppKit/DragDrop/TabDragHookups.swift: let paths = urls.map(\.path)
 
 # The pane's own reading of its URL: kept only where it differs from the path given by more than an accent's encoding.
 Sources/FTAppKit/Windows/BrowserPane.swift: let tidied = url.path
@@ -63,15 +51,13 @@ Sources/FTAppKit/Windows/MainWindowController.swift: selectedContentFolder: sele
 Sources/FTAppKit/Windows/MainWindowController.swift: case .newTab: group?.openTab(path: url.path, from: self)
 Sources/FTAppKit/Windows/MainWindowController.swift: case .newWindow: group?.openNewWindow(from: self, path: url.path)
 
-# Items dragged in from another app: what a drop copies or moves, each once byte for byte.
+# A URL the system made is all there is (another app's drag, a panel's answer, an app Launch Services offers), and it
+# is read by its `path`, which holds what the system put in it: its file-system representation spells every accent
+# decomposed when the URL was made from text. A dragged item and a panel's choice are then respelled as the disk has
+# them (`DragPasteboard.asOnDisk`, `SystemPickers.chosenPath`); an app's key is only ever met with other keys.
 Sources/FTFileSystem/System/DragPasteboard.swift: let path = (url as NSURL).filePathURL?.path ?? ""
-
-# An app's key among the apps that open a file: every key is read the same way.
-Sources/FTFileSystem/System/OpenWithCatalog.swift: var path = url.standardizedFileURL.path
-
-# The app and the folder chosen in a panel: kept in Settings, and where Move To and Extract To put items.
-Sources/FTFileSystem/System/SystemPickers.swift: let appPath = urls.first?.path
-Sources/FTFileSystem/System/SystemPickers.swift: return DirectoryChoice(canceled: false, path: urls.first?.path)
+Sources/FTFileSystem/System/SystemPickers.swift: let spelled = DiskPath(url.path)
+Sources/FTFileSystem/System/OpenWithCatalog.swift: NodePath.resolve(url.path)
 
 # One URL's path against another's (`comparablePath`): both are spelled the URL's way, so they agree with each other,
 # and say nothing of how the disk spells either.
@@ -89,7 +75,6 @@ Sources/FTAppKit/App/AppDelegate.swift: "userDataPath": .string(userData.path),
 Sources/FTAppKit/Automation/AutomationRunner.swift: guard FileManager.default.fileExists(atPath: url.path) else {
 Sources/FTAppKit/Automation/AutomationRunner.swift: return Outcome(.failed, "no folder at \(url.path)")
 Sources/FTAppKit/Automation/AutomationRunner.swift: return opened ? Outcome(.ok) : Outcome(.failed, "could not open \(url.path)")
-Sources/FTAppKit/QuickLook/QuickLookController.swift: return source?(url)?.image ?? NSWorkspace.shared.icon(forFile: url.path)
 Sources/FTAppKit/Windows/BrowserPane.swift: let path = url.path
 Sources/FTAppKit/Windows/MainWindowController.swift: if let target = await Self.resolved(folder.path) { open(target) }
 
@@ -138,13 +123,6 @@ Sources/FTAppKit/App/AppDelegate.swift: store = AppStateStore(filePath: AppState
 Sources/FTAppKit/App/AppDelegate.swift: let store = store ?? AppStateStore(filePath: AppStatePaths.appState(in: AppStatePaths.userDataDirectory()).path)
 Sources/FTAppKit/App/AppDelegate.swift: let templatesPath = AppStatePaths.templates(in: userDataDirectory ?? AppStatePaths.userDataDirectory()).path
 Sources/FTAppKit/WriteOperations/AppWriteOperations.swift: userData.appendingPathComponent("replace-journal.json").path, diskId: { NativeFS.diskId(of: $0) })
-
-# The system's folder for items being saved, where an archive is taken apart: on another disk it is under the disk's
-# own path, whose name may have an accent; it is made, filled and removed by these paths, and compared with nothing.
-Sources/FTOperations/Archives/ArchiveOperations.swift: let work = NodePath.join(url.path, "Extracted")
-Sources/FTOperations/Archives/ArchiveOperations.swift: let sameDisk = folderDisk != nil && (try? fileSystem.stat(url.path))?.dev == folderDisk
-Sources/FTOperations/Archives/ArchiveOperations.swift: root = url.path
-Sources/FTOperations/Archives/ArchiveOperations.swift: try? fileSystem.rm(url.path, recursive: true, force: true)
 
 # Not URLs: a struct named `folder` with a path of its own, in the module where a tab's and a pane's `folder` is a URL.
 Sources/FTAppKit/BatchRename/BatchRenameSheetModel.swift: folders[folder.path] = BatchRenameFolder(names: folder.names, caseSensitive: folder.caseSensitive)

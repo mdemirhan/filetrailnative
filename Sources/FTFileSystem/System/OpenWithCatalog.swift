@@ -130,11 +130,13 @@ public final class OpenWithCatalog: @unchecked Sendable {
         return LaunchServicesAnswer(defaultApp: defaultApp, apps: apps, kinds: kinds, appInfo: appInfo)
     }
 
-    /// An app's path without a trailing slash, so the same app always has the same key.
+    /// An app's path as its URL holds it, with "." and ".." parts taken out and no trailing slash, so the same app
+    /// always has the same key. Every key is read this way: the apps Launch Services offers, by its own URLs, and a
+    /// pinned app, by the URL made of its saved path's bytes. An app's saved path that spells an accent otherwise
+    /// than Launch Services does is still the same key to a dictionary and to `==`, which take the two spellings of
+    /// a name as equal.
     static func appKey(_ url: URL) -> String {
-        var path = url.standardizedFileURL.path
-        while path.count > 1 && path.hasSuffix("/") { path.removeLast() }
-        return path
+        NodePath.resolve(url.path)
     }
 
     /// The name Finder shows for an app, its version and bundle id; nil when there is no app.
@@ -144,7 +146,7 @@ public final class OpenWithCatalog: @unchecked Sendable {
         }
         let bundle = Bundle(url: url)
         var name = (try? url.resourceValues(forKeys: [.localizedNameKey]).localizedName) ?? ""
-        if name.isEmpty { name = url.lastPathComponent }
+        if name.isEmpty { name = NodePath.basename(appKey(url)) }
         if name.lowercased().hasSuffix(".app") && name.count > 4 { name = String(name.dropLast(4)) }
         let version = bundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
         let bundleId = bundle?.bundleIdentifier

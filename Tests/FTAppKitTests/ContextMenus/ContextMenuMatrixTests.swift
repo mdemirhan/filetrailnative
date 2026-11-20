@@ -64,6 +64,30 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // The folder an alias leads to is opened by its path as the disk spells it, whichever way the alias
+        // spells it.
+        @Test func anAliasOpensAFolderStoredWithAComposedAccentAsTheDiskSpellsIt() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let composed = harness.folder.path + "/caf\u{E9}"
+            #expect(mkdir(composed, 0o755) == 0)
+            #expect(symlink(harness.folder.path + "/cafe\u{301}", harness.folder.path + "/Link") == 0)
+            let tab = try await harness.open()
+            let group = try #require(tab.group)
+            let link = try #require(tab.content.listed.first { $0.name == "Link" })
+            #expect(link.kind == .symlinkDirectory)
+            let real = try #require(realpath(composed, nil))
+            defer { free(real) }
+            let expected = String(cString: real)
+
+            try choose("Open in New Tab", in: tab.contextMenus.contentMenu(for: [link]))
+            #expect(await waitUntil { group.tabs.count == 2 })
+            let opened = try #require(group.tabs.last)
+            #expect(await waitUntil { opened.shownFolderPath == expected && !opened.isNavigating })
+            #expect(Array(opened.shownFolderPath.utf8) == Array(expected.utf8))
+            #expect(opened.historyPaths.map { Array($0.utf8) } == [Array(expected.utf8)])
+            await harness.close()
+        }
+
         // Always Open With cancelled changes nothing and opens nothing.
         @Test func alwaysOpenWithCancelledChangesAndOpensNothing() async throws {
             let harness = try ExplorerHarness.windowless()

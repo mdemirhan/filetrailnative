@@ -35,7 +35,13 @@ extension NativeFS {
         }
         // Moved, even when where to wasn't said: then it can't be found again, but it is in the Trash all
         // the same, which is no failure.
-        return resulting?.path
+        return (resulting as URL?).flatMap(trashedPath)
+    }
+
+    /// The path an item has in the Trash, from the URL the Trash answered with: the URL's own bytes, which name the
+    /// item as the Trash's folder holds it. Undo finds the item again by this path.
+    static func trashedPath(_ resulting: URL) -> String? {
+        DiskPath(urlSpelling: resulting)?.string
     }
 
     /// The error a failed Trash call gives: the Trash's sentence, or the errno's wording without one.

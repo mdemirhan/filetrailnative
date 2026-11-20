@@ -52,19 +52,30 @@ public enum SystemPickers {
         panel.canChooseDirectories = true
         panel.canCreateDirectories = true
         panel.allowsMultipleSelection = false
-        if let defaultPath, !defaultPath.isEmpty { panel.directoryURL = URL(fileURLWithPath: defaultPath) }
+        if let defaultPath, !defaultPath.isEmpty { panel.directoryURL = DiskPath(defaultPath).url(isDirectory: true) }
         return panel
     }
 
-    /// The Other… picker: an app in /Applications.
+    /// The Other… picker: an app in /Applications, named as its disk has it.
     public static func pickApplication(window: NSWindow?, present: PanelPresenter = SystemPickers.present) async
         -> ApplicationChoice
     {
         let urls = await present(applicationPanel(), window)
         guard let urls else { return ApplicationChoice(canceled: true, appPath: nil, appName: nil) }
-        let appPath = urls.first?.path
+        let appPath = await chosenPath(urls.first, isPlace: false)
         return ApplicationChoice(
             canceled: false, appPath: appPath, appName: appPath.map(ApplicationPaths.displayName))
+    }
+
+    /// The path a panel's URL stands for, respelled as its disk has it, since a panel's URL may spell an accent its
+    /// own way and the path is kept beside paths from listings (a destination, a favorite, an app in Settings). A
+    /// folder is a place to go to, so a link is followed; an app is the item chosen, link or not. The disk is asked
+    /// off the main thread, by the URL's own `path`: the file-system representation of a URL the system made from
+    /// text spells every accent decomposed, whatever the URL holds.
+    static func chosenPath(_ url: URL?, isPlace: Bool) async -> String? {
+        guard let url, url.isFileURL else { return nil }
+        let spelled = DiskPath(url.path)
+        return await BlockingWork.run { (isPlace ? spelled.asOnDisk() : spelled.itemAsOnDisk()).string }
     }
 
     public static func pickDirectory(
@@ -72,7 +83,7 @@ public enum SystemPickers {
     ) async -> DirectoryChoice {
         let urls = await present(directoryPanel(defaultPath: defaultPath), window)
         guard let urls else { return DirectoryChoice(canceled: true, path: nil) }
-        return DirectoryChoice(canceled: false, path: urls.first?.path)
+        return DirectoryChoice(canceled: false, path: await chosenPath(urls.first, isPlace: true))
     }
 }
 

@@ -81,8 +81,8 @@ extension SidebarViewController {
 #if DEBUG
     extension TabDragDrop {
         /// A drag through the debug seams: the items it carries are the window's own drag until it is dropped.
-        func automationDragStarted(_ entries: [DirectoryEntry]) -> [URL] {
-            guard let tab, let window = tab.window, !entries.isEmpty else { return entries.map(\.url) }
+        func automationDragStarted(_ entries: [DirectoryEntry]) -> [String] {
+            guard let tab, let window = tab.window, !entries.isEmpty else { return entries.map(\.path) }
             if let session = DragRules.session(
                 sourceSurface: tab.searchRootPath != nil ? .search : .content, draggedPath: entries[0].path,
                 selectedPathsInViewOrder: entries.map(\.path),
@@ -93,13 +93,12 @@ extension SidebarViewController {
                 Self.ownDrag = OwnDrag(
                     session: session, windowNumber: window.windowNumber, tab: tab, pane: tab.activePane)
             }
-            return entries.map(\.url)
+            return entries.map(\.path)
         }
 
-        /// The drag the seam hands over: the window's own when it carries its items, else one from another app
-        /// (another window of the app included).
-        private func automationSession(_ urls: [URL]) -> DragSession? {
-            let paths = urls.map(\.path)
+        /// The drag the seam hands over, by its items' paths: the window's own when it carries its items, else one
+        /// from another app (another window of the app included).
+        private func automationSession(_ paths: [String]) -> DragSession? {
             if let own = Self.ownDrag, own.windowNumber == tab?.window?.windowNumber,
                 own.session.facts.sourcePaths.count == paths.count,
                 zip(own.session.facts.sourcePaths, paths).allSatisfy({ samePath($0, $1) })
@@ -126,8 +125,8 @@ extension SidebarViewController {
             Self.ownDrag = nil
         }
 
-        func automationDrop(_ urls: [URL], entry: DirectoryEntry?, allowed: NSDragOperation) -> Bool {
-            let session = automationSession(urls)
+        func automationDrop(_ paths: [String], entry: DirectoryEntry?, allowed: NSDragOperation) -> Bool {
+            let session = automationSession(paths)
             defer { finishAutomationDrag() }
             let folder = entry.flatMap { $0.kind == .directory || $0.kind == .symlinkDirectory ? $0 : nil }
             let target = session.flatMap { contentTarget($0, entry: folder) }

@@ -46,10 +46,13 @@ final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSou
 {
     static let shared = QuickLookController()
 
-    /// The item the panel previews.
+    /// The item the panel previews: its URL for the panel, made of the path's own bytes.
     private(set) var url: URL?
-    /// Where the item's picture is on screen and what it is, for the zoom transition (nil: no transition).
-    var source: ((URL) -> QuickLookPicture?)?
+    /// The item's path, as its row has it.
+    private(set) var path: String?
+    /// Where the picture of the item at a path is on screen and what it is, for the zoom transition (nil: no
+    /// transition).
+    var source: ((String) -> QuickLookPicture?)?
     /// Told when the panel closes.
     var onClose: (() -> Void)?
     private weak var owner: NSWindow?
@@ -59,17 +62,17 @@ final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSou
     var isShowing: Bool { panel.isVisible && url != nil }
 
     /// The panel shows the item. Showing the item it already shows closes the panel, as Space does.
-    func toggle(_ path: String, from window: NSWindow?, source: @escaping (URL) -> QuickLookPicture?) {
-        let target = URL(fileURLWithPath: path)
-        if isShowing, url == target {
+    func toggle(_ path: String, from window: NSWindow?, source: @escaping (String) -> QuickLookPicture?) {
+        if isShowing, let shown = self.path, DiskPath(shown) == DiskPath(path) {
             close()
             return
         }
         show(path, from: window, source: source)
     }
 
-    func show(_ path: String, from window: NSWindow?, source: @escaping (URL) -> QuickLookPicture?) {
-        url = URL(fileURLWithPath: path)
+    func show(_ path: String, from window: NSWindow?, source: @escaping (String) -> QuickLookPicture?) {
+        url = DiskPath(path).fileURL()
+        self.path = path
         owner = window
         self.source = source
         if panel.isVisible {
@@ -87,6 +90,7 @@ final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSou
 
     func ended() {
         url = nil
+        path = nil
         // It holds the tab's list: let go with the item.
         source = nil
         onClose?()
@@ -105,7 +109,7 @@ final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSou
     // MARK: QLPreviewPanelDelegate
 
     func previewPanel(_ panel: QLPreviewPanel!, sourceFrameOnScreenFor item: (any QLPreviewItem)!) -> NSRect {
-        guard let url, let picture = source?(url) else { return .zero }
+        guard let path, let picture = source?(path) else { return .zero }
         return picture.frame
     }
 
@@ -113,10 +117,10 @@ final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSou
         _ panel: QLPreviewPanel!, transitionImageFor item: (any QLPreviewItem)!,
         contentRect: UnsafeMutablePointer<NSRect>!
     ) -> Any! {
-        guard let url else { return nil }
+        guard let path else { return nil }
         // What the item draws, so the panel shrinks into that picture: a preview stays sharp, and an icon is the one
         // on screen.
-        return source?(url)?.image ?? NSWorkspace.shared.icon(forFile: url.path)
+        return source?(path)?.image ?? NSWorkspace.shared.icon(forFile: path)
     }
 }
 

@@ -316,18 +316,21 @@ struct Staging {
 
     init(near folder: String, _ fileSystem: any LocalWriteFileSystem) throws {
         let folderDisk = (try fileSystem.stat(folder)).dev
+        // The system's folder by its URL's own bytes: on another disk it is under the disk's own path, whose name
+        // may have an accent.
         if let url = try? FileManager.default.url(
-            for: .itemReplacementDirectory, in: .userDomainMask, appropriateFor: URL(fileURLWithPath: folder),
-            create: true)
+            for: .itemReplacementDirectory, in: .userDomainMask,
+            appropriateFor: DiskPath(folder).url(isDirectory: true), create: true),
+            let made = DiskPath(urlSpelling: url)?.string
         {
-            let work = NodePath.join(url.path, "Extracted")
-            let sameDisk = folderDisk != nil && (try? fileSystem.stat(url.path))?.dev == folderDisk
+            let work = NodePath.join(made, "Extracted")
+            let sameDisk = folderDisk != nil && (try? fileSystem.stat(made))?.dev == folderDisk
             if sameDisk, (try? fileSystem.mkdir(work)) != nil {
-                root = url.path
+                root = made
                 self.work = work
                 return
             }
-            try? fileSystem.rm(url.path, recursive: true, force: true)
+            try? fileSystem.rm(made, recursive: true, force: true)
         }
         root = NodePath.join(folder, ".\(UUID().uuidString).filetrail-partial")
         work = root

@@ -1,4 +1,5 @@
 import Darwin
+import FTFoundation
 import FTTestSupport
 import Foundation
 import Testing
@@ -76,10 +77,23 @@ struct NativeTrashTests {
                 try Files.write(volume.path + "/" + name + stored + ".txt", "x")
                 let folder = volume.path + "/" + name + stored
                 try FileManager.default.createDirectory(atPath: folder, withIntermediateDirectories: false)
+                // The folder's name as the disk has it: Foundation made the folder, and spells accents its own way.
+                let folderName = NativeFS.nameOnDisk(folder)
                 let fileInTrash = try NativeFS.trashItem(volume.path + "/" + name + asked + ".txt")
                 let folderInTrash = try NativeFS.trashItem(volume.path + "/" + name + asked)
                 #expect(fileInTrash?.hasPrefix(volume.path + "/.Trashes") == true)
                 #expect(folderInTrash?.hasPrefix(volume.path + "/.Trashes") == true)
+                // Where each went is said as the Trash holds it: the name as it was stored, byte for byte, by which
+                // the item is found there.
+                #expect(
+                    fileInTrash.map { Array(NodePath.basename($0).utf8) } == Array((name + stored + ".txt").utf8))
+                #expect(
+                    folderInTrash.map { Array(NodePath.basename($0).utf8) } == folderName.map { Array($0.utf8) })
+                #expect(fileInTrash.map(Files.exists) == true)
+                #expect(folderInTrash.map(Files.exists) == true)
+                #expect(
+                    fileInTrash.flatMap(NativeFS.nameOnDisk).map { Array($0.utf8) }
+                        == Array((name + stored + ".txt").utf8))
                 #expect(!Files.exists(volume.path + "/" + name + stored + ".txt"))
                 #expect(!Files.exists(folder))
             }

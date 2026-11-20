@@ -48,6 +48,28 @@ struct UndoRealDiskTests {
         }
     }
 
+    // An item stored with a composed accent comes back from the Trash under its name: the path it has in the Trash
+    // is kept as the Trash gave it, and FAT's Trash finds a name only as it was written.
+    @Test(arguments: [DiskImage.Kind.apfs, .fat32])
+    func putsAnItemStoredWithAComposedAccentBackFromTheTrash(kind: DiskImage.Kind) async throws {
+        try await onDisk(kind) { t, disk in
+            TrashProbe.touch()
+            let name = "caf\u{E9}.txt"
+            // Written by `open`, which keeps the name's bytes.
+            try NativeTestFiles.write("\(disk)/\(name)", "a")
+            let trashed = try await t.trash("\(disk)/\(name)")
+            try #require(
+                trashed.status == .completed,
+                Comment(rawValue: "\(trashed.result?.error ?? ""): \(TrashProbe.volumeReferenceReport(of: disk))"))
+            #expect(!NativeTestFiles.exists("\(disk)/\(name)"))
+            #expect(try await t.undo().status == .completed)
+            #expect(try UndoDisk.read("\(disk)/\(name)") == "a")
+            #expect(NativeFS.nameOnDisk("\(disk)/\(name)").map { Array($0.utf8) } == Array(name.utf8))
+            #expect(try await t.undo(.redo).status == .completed)
+            #expect(!NativeTestFiles.exists("\(disk)/\(name)"))
+        }
+    }
+
     @Test func renamesBackANameThatDiffersOnlyInCaseOnADiskThatIgnoresCase() async throws {
         try await onDisk(.apfs) { t, disk in
             try UndoDisk.write("\(disk)/notes.txt", "n")

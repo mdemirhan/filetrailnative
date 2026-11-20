@@ -27,12 +27,20 @@ extension DiskPath {
     public func itemAsOnDisk() -> DiskPath {
         let name = name
         guard !name.isEmpty else { return asOnDisk() }
-        let item = parent.asOnDisk().appending(name)
-        guard let onDisk = Self.nameOnDisk(item.string),
+        return parent.asOnDisk().appending(name).namedAsOnDisk()
+    }
+
+    /// The path with the item's own name as its folder holds it, the folders above it left as they are spelled: the
+    /// last step of `itemAsOnDisk()`, for the items of a folder whose own path the disk was asked for once (a drop
+    /// of many files). The path unchanged when nothing is there, or when the disk names the item otherwise than by
+    /// another spelling of the same name.
+    public func namedAsOnDisk() -> DiskPath {
+        let name = name
+        guard !name.isEmpty, let onDisk = Self.nameOnDisk(string),
             onDisk.precomposedStringWithCanonicalMapping.lowercased()
                 == name.precomposedStringWithCanonicalMapping.lowercased()
-        else { return item }
-        return item.parent.appending(onDisk)
+        else { return self }
+        return parent.appending(onDisk)
     }
 
     /// The path as a file URL that keeps its bytes (`url(isDirectory:)`), the disk asked whether a folder is there,
