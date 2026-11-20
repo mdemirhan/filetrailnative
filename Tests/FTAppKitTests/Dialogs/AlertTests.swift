@@ -305,6 +305,45 @@ struct AlertCardTests {
         #expect(await waitUntil { done })
     }
 
+    // A name typed through an input method (Japanese, Chinese, Korean input): the keys pressed while it composes are
+    // its own. Tab, which chooses among what it offers, doesn't go round the alert's controls; Return, which converts
+    // what was typed, submits nothing; and Escape, which cancels it, leaves the prompt up. Once the text is the
+    // field's own, Return submits it.
+    @Test func theNamePromptLeavesItsKeysToAnInputMethodComposing() async throws {
+        let window = window()
+        var submitted: [String] = []
+        var done = false
+        Task { @MainActor in
+            await InWindowAlerts.askName(.newFolder(in: "/folder/Alpha", initialName: "untitled folder"), in: window) {
+                name in
+                submitted.append(name)
+                return .close
+            }
+            done = true
+        }
+        let alert = try #require(await card(window))
+        let prompt = try #require(alert.content.accessory as? TextPromptAccessory)
+        try DialogKeys.compose("にほん", in: prompt.field)
+        #expect(alert.defaultButton?.isEnabled == true)
+        DialogKeys.press(KeyCode.tab, "\t", in: window)
+        #expect(!alert.keyboardMoved)
+        try DialogKeys.compose("にほん", in: prompt.field)
+        DialogKeys.press(KeyCode.returnKey, "\r", in: window)
+        for _ in 0..<5 { await Task.yield() }
+        #expect(submitted.isEmpty)
+        #expect(!done)
+        #expect(frontAlert(window) === alert)
+        try DialogKeys.compose("にほん", in: prompt.field)
+        DialogKeys.press(KeyCode.escape, "\u{1b}", in: window)
+        for _ in 0..<5 { await Task.yield() }
+        #expect(!done)
+        #expect(frontAlert(window) === alert)
+        try DialogKeys.compose("日本", in: prompt.field).unmarkText()
+        DialogKeys.press(KeyCode.returnKey, "\r", in: window)
+        #expect(await waitUntil { done })
+        #expect(submitted == ["日本"])
+    }
+
     // Given names, the prompt lists them from a button at the field's end; the one chosen replaces the name, selected,
     // and a message that follows the name follows it whether it is chosen or typed.
     @Test func theNamePromptListsNamesToChooseFromAndItsMessageFollowsTheName() async throws {

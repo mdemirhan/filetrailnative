@@ -355,6 +355,11 @@ final class DialogScrim: NSView {
     /// The window's key events while the dialog is in front: the dialog's keys, Tab kept inside the panel, and the
     /// keyboard brought back into the panel when it fell out of it. A press on one of the band's items is the scrim's.
     ///
+    /// The keys pressed while an input method composes text in one of the panel's fields (Japanese, Chinese, Korean
+    /// input) are the input method's, as in any text field: Return converts what was typed, Escape cancels it, and
+    /// the arrows and Tab choose among what it offers. They come here before the field or the input method sees
+    /// them, so they go on untouched: no dialog submits, closes, moves its selection or its keyboard on one.
+    ///
     /// Return held down answers no dialog: the key coming again is taken and does nothing. Return both opens the
     /// Rename sheet and is its Rename button, and confirms a name and then the question about that name, so a key
     /// held a moment too long would answer a dialog before it could be read. Only while an input method composes in
@@ -362,11 +367,8 @@ final class DialogScrim: NSView {
     private func intercept(_ event: NSEvent) -> Bool {
         if interceptTitlebarPress(event) { return true }
         guard event.type == .keyDown, let window, DialogScrim.front(in: window) === self else { return false }
-        if event.isARepeat, KeyCode.isReturn(event),
-            (window.firstResponder as? NSTextView)?.hasMarkedText() != true
-        {
-            return true
-        }
+        if isComposing(in: window) { return false }
+        if event.isARepeat, KeyCode.isReturn(event) { return true }
         if !holdsKeyboard(window), let responder = panel.initialResponder {
             window.makeFirstResponder(responder)
         }
@@ -376,6 +378,13 @@ final class DialogScrim: NSView {
             return true
         }
         return false
+    }
+
+    /// Whether an input method is composing text in a field of the panel: text that is marked, not yet the field's
+    /// own.
+    private func isComposing(in window: NSWindow) -> Bool {
+        guard let editor = window.firstResponder as? NSTextView, editor.hasMarkedText() else { return false }
+        return holdsKeyboard(window)
     }
 
     func holdsKeyboard(_ window: NSWindow) -> Bool {

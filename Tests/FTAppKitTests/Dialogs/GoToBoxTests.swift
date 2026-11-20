@@ -41,6 +41,22 @@ enum DialogKeys {
         box.field.stringValue = text
         box.textChanged(text)
     }
+
+    /// Text an input method is composing in `field` (Japanese, Chinese, Korean input): `text` is all the field
+    /// holds, marked, not yet the field's own. The field takes the keyboard first when it doesn't have it.
+    @discardableResult
+    static func compose(_ text: String, in field: NSTextField) throws -> NSTextView {
+        let window = try #require(field.window)
+        if field.currentEditor() == nil { window.makeFirstResponder(field) }
+        let editor = try #require(field.currentEditor() as? NSTextView)
+        #expect(window.firstResponder === editor)
+        editor.setMarkedText(
+            text, selectedRange: NSRange(location: (text as NSString).length, length: 0),
+            replacementRange: NSRange(location: 0, length: (editor.string as NSString).length))
+        editor.didChangeText()
+        #expect(editor.hasMarkedText())
+        return editor
+    }
 }
 
 extension ExplorerWindowlessTests {
@@ -174,6 +190,36 @@ extension ExplorerWindowlessTests {
             #expect(box.shell.holdsKeyboard)
             timers.advance(0.35)
             #expect(await waitUntil { names(box) == ["Inner"] })
+            await close(harness)
+        }
+
+        // While an input method composes in the field (Japanese, Chinese, Korean input) the keys are its own: the
+        // arrows choose among what it offers, Return converts what was typed and Escape cancels it. None of them
+        // puts a folder of the list in the field, goes to one or closes the box. Once the text is the field's own
+        // they are the box's again.
+        @Test func theKeysAreTheInputMethodsWhileItComposes() async throws {
+            let (harness, tab, _) = try await open()
+            for name in ["Alpha", "Beta"] { harness.store.recordFolderVisit(path(harness, name), kind: .stay) }
+            let before = tab.folder
+            let box = try openBox(tab)
+            try DialogKeys.compose("a", in: box.field)
+            #expect(names(box) == ["Alpha", "Beta"])
+            #expect(selected(box) == "Alpha")
+            DialogKeys.press(KeyCode.down, in: tab.window)
+            #expect(selected(box) == "Alpha")
+            #expect(box.field.stringValue == "a")
+            try DialogKeys.compose("a", in: box.field)
+            DialogKeys.press(KeyCode.returnKey, "\r", in: tab.window)
+            for _ in 0..<5 { await Task.yield() }
+            #expect(tab.goToBox === box)
+            #expect(tab.folder == before)
+            try DialogKeys.compose("a", in: box.field)
+            DialogKeys.press(KeyCode.escape, "\u{1b}", in: tab.window)
+            #expect(tab.goToBox === box)
+            try DialogKeys.compose("a", in: box.field).unmarkText()
+            DialogKeys.press(KeyCode.returnKey, "\r", in: tab.window)
+            #expect(await waitUntil { tab.folder.lastPathComponent == "Alpha" })
+            #expect(await waitUntil { tab.goToBox == nil })
             await close(harness)
         }
 

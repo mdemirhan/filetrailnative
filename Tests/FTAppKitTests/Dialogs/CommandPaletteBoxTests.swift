@@ -118,6 +118,34 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // While an input method composes in the field (Japanese, Chinese, Korean input) the keys are its own: the
+        // arrows choose among what it offers, Return converts what was typed and Escape cancels it. The selection
+        // stays, nothing runs and the box stays up. Once the text is the field's own, Return runs the command.
+        @Test func theKeysAreTheInputMethodsWhileItComposes() async throws {
+            let (harness, tab, menu) = try await open()
+            defer { NSApp.mainMenu = nil }
+            let window = try #require(tab.window)
+            let box = try openBox(tab, menu)
+            try DialogKeys.compose("view as", in: box.field)
+            #expect(box.selectedRow?.entry.id == "viewAsIcons")
+            DialogKeys.press(KeyCode.down, in: window)
+            #expect(box.selectedRow?.entry.id == "viewAsIcons")
+            try DialogKeys.compose("hidden", in: box.field)
+            #expect(box.selectedRow?.entry.title == "Hidden Files")
+            DialogKeys.press(KeyCode.returnKey, "\r", in: window)
+            for _ in 0..<5 { await Task.yield() }
+            #expect(tab.commandPaletteBox === box)
+            #expect(!tab.includeHidden)
+            try DialogKeys.compose("hidden", in: box.field)
+            DialogKeys.press(KeyCode.escape, "\u{1b}", in: window)
+            #expect(tab.commandPaletteBox === box)
+            try DialogKeys.compose("hidden", in: box.field).unmarkText()
+            DialogKeys.press(KeyCode.returnKey, "\r", in: window)
+            #expect(tab.commandPaletteBox == nil)
+            #expect(await waitUntil { tab.includeHidden })
+            await harness.close()
+        }
+
         // A command that can't run now is dimmed and listed last; Return on it leaves the box up.
         @Test func aDimmedCommandStaysUpAndDoesNotRun() async throws {
             let (harness, tab, menu) = try await open()

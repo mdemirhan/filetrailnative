@@ -79,6 +79,28 @@ extension ExplorerWindowlessTests {
             await close(window)
         }
 
+        // A destination typed through an input method (Japanese, Chinese, Korean input): Return and Escape while it
+        // composes are its own, so nothing moves and the box stays. Once the text is the field's own, Return moves.
+        @Test func returnAndEscapeAreTheInputMethodsWhileItComposes() async throws {
+            let window = try await open()
+            let box = try openMove(window, ["note.txt"])
+            let alpha = window.folder.appendingPathComponent("Alpha").path
+            try DialogKeys.compose(alpha, in: box.field)
+            DialogKeys.press(KeyCode.returnKey, "\r", in: window.tab.window)
+            for _ in 0..<5 { await Task.yield() }
+            #expect(!box.state.submitting)
+            #expect(window.exists("note.txt"))
+            #expect(window.tab.goToBox === box)
+            try DialogKeys.compose(alpha, in: box.field)
+            DialogKeys.press(KeyCode.escape, "\u{1b}", in: window.tab.window)
+            #expect(window.tab.goToBox === box)
+            try DialogKeys.compose(alpha, in: box.field).unmarkText()
+            DialogKeys.press(KeyCode.returnKey, "\r", in: window.tab.window)
+            #expect(await waitUntil { window.exists("Alpha/note.txt") })
+            #expect(await waitUntil { window.tab.goToBox == nil })
+            await close(window)
+        }
+
         // A folder that isn't there, in one that is, is offered to be made: the button says Create and Move, and the
         // next Return makes it and moves the item into it. Typing something else takes the offer back.
         @Test func makesAFolderThatIsNotThereYet() async throws {

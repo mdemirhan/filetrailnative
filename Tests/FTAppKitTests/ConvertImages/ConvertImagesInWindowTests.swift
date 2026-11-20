@@ -154,5 +154,38 @@ extension ExplorerWindowlessTests {
             #expect(opened.requests.all.isEmpty)
             await close(opened)
         }
+
+        // A width typed through an input method (Japanese, Chinese, Korean input): the keys pressed while it composes
+        // are its own, so Tab leaves the keyboard in the field, Return converts nothing and Escape leaves the sheet
+        // up. Once the text is the field's own, Return converts.
+        @Test func theKeysAreTheInputMethodsWhileItComposes() async throws {
+            let opened = try await open()
+            select(opened, ["a.jpg"])
+            opened.tab.perform(.convertImages)
+            let sheet = try await sheet(opened.tab)
+            sheet.sizePopUp.choose("Custom\u{2026}")
+            try DialogKeys.compose("1200", in: sheet.widthField.field)
+            #expect(sheet.convertButton.isEnabled)
+            DialogKeys.press(KeyCode.tab, "\t", in: opened.tab.window)
+            #expect(sheet.widthField.holdsKeyboard)
+            try DialogKeys.compose("1200", in: sheet.widthField.field)
+            DialogKeys.press(KeyCode.returnKey, "\r", in: opened.tab.window)
+            for _ in 0..<5 { await Task.yield() }
+            #expect(opened.requests.all.isEmpty)
+            #expect(opened.tab.convertImagesSheet === sheet)
+            try DialogKeys.compose("1200", in: sheet.widthField.field)
+            DialogKeys.press(KeyCode.escape, "\u{1b}", in: opened.tab.window)
+            #expect(opened.tab.convertImagesSheet === sheet)
+            try DialogKeys.compose("1200", in: sheet.widthField.field).unmarkText()
+            DialogKeys.press(KeyCode.returnKey, "\r", in: opened.tab.window)
+            #expect(await waitUntil { opened.requests.all.count == 1 })
+            if case .custom(let width, _, _, _)? = opened.requests.all.first?.options.size {
+                #expect(width == 1200)
+            } else {
+                Issue.record("the size converted to is not the one typed")
+            }
+            #expect(opened.tab.convertImagesSheet == nil)
+            await close(opened)
+        }
     }
 }
