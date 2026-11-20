@@ -136,7 +136,7 @@ public final class OpenWithCatalog: @unchecked Sendable {
     /// than Launch Services does is still the same key to a dictionary and to `==`, which take the two spellings of
     /// a name as equal.
     static func appKey(_ url: URL) -> String {
-        NodePath.resolve(url.path)
+        NodePath.resolve(DiskPath(urlSpelling: url)?.string ?? "")
     }
 
     /// The name Finder shows for an app, its version and bundle id; nil when there is no app.

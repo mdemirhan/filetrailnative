@@ -16,12 +16,13 @@ extension DiskPath {
 
     /// The path a file URL stands for, in the URL's spelling, which is not the disk's: a URL the system made (a
     /// picked folder, a drop, a file to open) may spell an accent decomposed where the disk has it composed, so
-    /// such a path goes through `asOnDisk()` before it is compared with a listing's. Only a URL made by
-    /// `url(isDirectory:)` gives back the bytes it was made from. nil for a URL that isn't a file's.
+    /// such a path goes through `asOnDisk()` before it is compared with a listing's. It is read from the URL's
+    /// `path`, which holds what the URL was made with: the bytes, for one made by `url(isDirectory:)`, and the
+    /// text's own spelling for one the system made from text (a pasteboard's, a panel's), whose file-system
+    /// representation would spell every accent decomposed. This is the one place a URL's `path` is read. nil for a
+    /// URL that isn't a file's.
     public init?(urlSpelling url: URL) {
         guard url.isFileURL else { return nil }
-        let spelled = url.withUnsafeFileSystemRepresentation { bytes in bytes.map { String(cString: $0) } }
-        guard let spelled else { return nil }
-        self.init(spelled)
+        self.init(url.path)
     }
 }

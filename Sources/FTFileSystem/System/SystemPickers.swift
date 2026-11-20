@@ -70,11 +70,9 @@ public enum SystemPickers {
     /// The path a panel's URL stands for, respelled as its disk has it, since a panel's URL may spell an accent its
     /// own way and the path is kept beside paths from listings (a destination, a favorite, an app in Settings). A
     /// folder is a place to go to, so a link is followed; an app is the item chosen, link or not. The disk is asked
-    /// off the main thread, by the URL's own `path`: the file-system representation of a URL the system made from
-    /// text spells every accent decomposed, whatever the URL holds.
+    /// off the main thread.
     static func chosenPath(_ url: URL?, isPlace: Bool) async -> String? {
-        guard let url, url.isFileURL else { return nil }
-        let spelled = DiskPath(url.path)
+        guard let url, let spelled = DiskPath(urlSpelling: url) else { return nil }
         return await BlockingWork.run { (isPlace ? spelled.asOnDisk() : spelled.itemAsOnDisk()).string }
     }
 

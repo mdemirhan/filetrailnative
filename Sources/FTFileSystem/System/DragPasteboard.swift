@@ -27,10 +27,9 @@ public struct DraggedInItem: Equatable, Sendable {
 /// What a drag from another app carries, read from its pasteboard.
 public enum DragPasteboard {
     /// The files `pasteboard` holds: file URLs only, Finder's file references (`file:///.file/id=…`) as their paths,
-    /// each once, in order. Promised files, text and links have none. A path is read as its URL holds it, which is
-    /// how the app that started the drag spelled it, and `draggedIn` respells it as the disk has it. It is the URL's
-    /// `path` that holds it so: the file-system representation of a URL read from a pasteboard spells every accent
-    /// decomposed, which a disk that tells the two spellings apart (some network shares) doesn't find.
+    /// each once, in order. Promised files, text and links have none. A path is read as its URL holds it
+    /// (`DiskPath(urlSpelling:)`), which is how the app that started the drag spelled it, and `draggedIn` respells it
+    /// as the disk has it.
     public static func read(_ pasteboard: NSPasteboard = NSPasteboard(name: .drag)) -> DragPasteboardContents {
         let changeCount = pasteboard.changeCount
         let urls =
@@ -38,7 +37,7 @@ public enum DragPasteboard {
         var seen = Set<FTFoundation.NameKeys.Exact>()
         var paths: [String] = []
         for url in urls {
-            let path = (url as NSURL).filePathURL?.path ?? ""
+            let path = (url as NSURL).filePathURL.flatMap { DiskPath(urlSpelling: $0)?.string } ?? ""
             if !path.isEmpty, seen.insert(FTFoundation.NameKeys.Exact(path)).inserted { paths.append(path) }
         }
         return DragPasteboardContents(changeCount: changeCount, paths: paths)

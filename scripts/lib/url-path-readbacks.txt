@@ -51,13 +51,9 @@ Sources/FTAppKit/Windows/MainWindowController.swift: selectedContentFolder: sele
 Sources/FTAppKit/Windows/MainWindowController.swift: case .newTab: group?.openTab(path: url.path, from: self)
 Sources/FTAppKit/Windows/MainWindowController.swift: case .newWindow: group?.openNewWindow(from: self, path: url.path)
 
-# A URL the system made is all there is (another app's drag, a panel's answer, an app Launch Services offers), and it
-# is read by its `path`, which holds what the system put in it: its file-system representation spells every accent
-# decomposed when the URL was made from text. A dragged item and a panel's choice are then respelled as the disk has
-# them (`DragPasteboard.asOnDisk`, `SystemPickers.chosenPath`); an app's key is only ever met with other keys.
-Sources/FTFileSystem/System/DragPasteboard.swift: let path = (url as NSURL).filePathURL?.path ?? ""
-Sources/FTFileSystem/System/SystemPickers.swift: let spelled = DiskPath(url.path)
-Sources/FTFileSystem/System/OpenWithCatalog.swift: NodePath.resolve(url.path)
+# The one place a URL's path is read (`DiskPath(urlSpelling:)`): what a URL holds is its `path`; its file-system
+# representation spells every accent decomposed when the URL was made from text.
+Sources/FTFoundation/DiskPath+URL.swift: self.init(url.path)
 
 # One URL's path against another's (`comparablePath`): both are spelled the URL's way, so they agree with each other,
 # and say nothing of how the disk spells either.

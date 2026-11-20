@@ -50,6 +50,14 @@ struct DiskPathURLTests {
         #expect(representation(DiskPath(composed).url(isDirectory: false)) == bytes(composed))
     }
 
+    // A URL the system made from text (a pasteboard's, a panel's) holds the text's own spelling in its path, and
+    // spells every accent decomposed in its file-system representation: the path is what is read.
+    @Test func aURLMadeFromTextIsReadAsItHoldsItsPath() throws {
+        let url = try #require(URL(string: "file:///tmp/caf%C3%A9/a.txt"))
+        #expect(representation(url) == bytes("/tmp/cafe\u{301}/a.txt"))
+        #expect(try #require(DiskPath(urlSpelling: url)) == DiskPath("/tmp/caf\u{E9}/a.txt"))
+    }
+
     @Test func aFoldersURLGivesThePathWithoutASlashAtItsEnd() throws {
         let url = DiskPath("/tmp/caf\u{E9}").url(isDirectory: true)
         #expect(url.absoluteString == "file:///tmp/caf%C3%A9/")
