@@ -56,8 +56,8 @@ enum NativeArchive {
         var done: Int64 { ft_archive_control_done(pointer) }
         var total: Int64 { ft_archive_control_total(pointer) }
         var skipped: Int64 { ft_archive_control_skipped(pointer) }
-        /// How many times a zip's names were looked through for their encoding: once for a zip with names that
-        /// aren't UTF-8, never for any other archive.
+        /// How many times the encoding of a zip's names was asked for: once for a zip with names that aren't UTF-8,
+        /// never for any other archive.
         var nameEncodingsAsked: Int64 { ft_archive_control_names_asked(pointer) }
 
         fileprivate var raw: OpaquePointer { pointer }

@@ -42,7 +42,8 @@ typedef int (*ft_archive_charset_detector)(const char *names, size_t length, cha
 /// bytes as `%XX`. Set before the work starts.
 void ft_archive_control_detect_names_with(ft_archive_control *control, ft_archive_charset_detector detect);
 
-/// How many times a zip's headers were read through for the encoding of its names.
+/// How many times the detector was asked for the encoding of a zip's names: once for a zip with a name that isn't
+/// UTF-8.
 int64_t ft_archive_control_names_asked(const ft_archive_control *control);
 
 /// Bytes done so far: of the archive read, when extracting; of the items' data read, when compressing.
@@ -64,15 +65,16 @@ const char *ft_archive_control_failed_path(const ft_archive_control *control);
 /// Takes `archive` apart into `destination`, an empty folder that exists. Names that would reach outside it are
 /// left out; so is `__MACOSX`, and the resource forks and extended attributes it holds are put back on their items.
 /// Permissions lose their setuid, setgid and sticky bits, nothing is replaced, and nothing is written through a
-/// link. A zip's names that aren't UTF-8 (and that it doesn't mark as UTF-8) are read in the encoding the control's
-/// detector names (ft_archive_control_detect_names_with): at the first such name the zip's headers are read through
-/// once for the names, and the zip is opened again with that encoding (libarchive's `hdrcharset`); the checks above
-/// are made on the names as read then. Bytes of a name that still aren't UTF-8 (no detector, another kind of
-/// archive, a name the encoding doesn't fit) are written as `%XX`. A folder's permissions and dates are set once
-/// everything in it is written, and only when the whole archive came out: after a failure or a stop the folders
-/// are left their owner's to write, for the caller to remove. When `quarantine` is set, every item and
-/// `destination` itself get the archive's quarantine, read-only items too, so what came from the internet is
-/// checked as the archive would be; one that refuses it (a link aside) fails the archive with
+/// link. A zip with a name that isn't UTF-8 has every name it doesn't mark as UTF-8 read in the encoding the
+/// control's detector names (ft_archive_control_detect_names_with), also a name whose bytes are UTF-8 as they stand:
+/// at its first name beyond ASCII the zip's headers are read through once for the names that aren't UTF-8, and when
+/// there are any the zip is opened again with that encoding (libarchive's `hdrcharset`); the checks above are made
+/// on the names as read then, and a name the encoding can't read is left out. Bytes of a name that still aren't
+/// UTF-8 (no detector, another kind of archive, a zip read from a pipe) are written as `%XX`. A folder's
+/// permissions and dates are set once everything in it is written, and only when the whole archive came out: after
+/// a failure or a stop the folders are left their owner's to write, for the caller to remove. When `quarantine` is
+/// set, every item and `destination` itself get the archive's quarantine, read-only items too, so what came from
+/// the internet is checked as the archive would be; one that refuses it (a link aside) fails the archive with
 /// FT_ARCHIVE_NOT_QUARANTINED, but for a `._name` file on a disk that keeps attributes in such files (exFAT, FAT),
 /// which the system gives no attributes of its own: it is left out. On a disk that keeps no extended attributes at
 /// all (`destination` refuses the quarantine with ENOTSUP), nothing is quarantined, as nothing could be. Access
