@@ -27,6 +27,14 @@ private func result(_ path: String, kind: FTFileSystem.EntryKind = .file) -> Sea
         #expect(SearchResults.append(current, []) == current)
     }
 
+    // Ordered by a date or the size, results are put in name order here; the values read for them order them after.
+    @Test func anOrderByADateOrTheSizeIsByNameUntilTheValuesCome() {
+        let items = [result("/r/b.txt"), result("/r/a.txt"), result("/r/c.txt")]
+        for field in [SearchResultsSortByPreference.modified, .created, .lastOpened, .added, .size] {
+            #expect(SearchResults.sort(items, by: field, direction: .asc).map(\.name) == ["a.txt", "b.txt", "c.txt"])
+        }
+    }
+
     @Test func sortsByPathWhenRequested() {
         let items = [result("/Users/demo/project/z-dir/alpha.ts"), result("/Users/demo/project/a-dir/zeta.ts")]
         #expect(

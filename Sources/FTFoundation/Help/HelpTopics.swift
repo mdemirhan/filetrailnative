@@ -617,12 +617,12 @@ extension HelpContent {
                         HelpRow(
                             label: "Sort",
                             description:
-                                "The sort button, View > Sort By, or a click on a column heading in List view orders by name, kind, date or size. Choosing the same order again in View > Sort By, or clicking the same heading, reverses it; the sort button has Ascending and Descending. Search results order by name, folder or kind: click their headings in List view."
+                                "The sort button, View > Sort By, or a click on a column heading in List view orders by name, kind, date or size. Choosing the same order again in View > Sort By, or clicking the same heading, reverses it; the sort button has Ascending and Descending. Search results order by name, folder, kind, a date or size: click their headings in List view. Their dates and sizes are read only while they are ordered by them."
                         ),
                         HelpRow(
                             label: "Groups",
                             description:
-                                "View > Group By puts the items in groups by name, a date, size, kind or tag, under a title for each: Today, Yesterday, Previous 7 Days, Previous 30 Days, the earlier months of this year, then each year before; or Zero bytes up to Over 10 GB. The groups keep their own order, the newest dates and the smallest sizes first and the rest A to Z, and the sort orders the items inside each group. Search results group by name, folder or kind. A folder can keep its grouping in its own view."
+                                "View > Group By puts the items in groups by name, a date, size, kind or tag, under a title for each: Today, Yesterday, Previous 7 Days, Previous 30 Days, the earlier months of this year, then each year before; or Zero bytes up to Over 10 GB. The groups keep their own order, the newest dates and the smallest sizes first and the rest A to Z, and the sort orders the items inside each group. Search results group by any of these, or by the folder each is in; their dates, sizes and tags are read only while they are grouped by them. A folder can keep its grouping in its own view."
                         ),
                         HelpRow(
                             label: "Hidden files",

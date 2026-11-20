@@ -1295,6 +1295,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             openPrivacySettings: {
                 Task { _ = await SystemActions.openFullDiskAccessSettings() }
             })
+        content.loaders.values = { [weak self] paths, field in
+            guard let service = self?.services.directoryService else { return paths.map { _ in .number(nil) } }
+            return await service.values(of: paths, field: field)
+        }
         content.onActivate = { [weak self, weak pane] entries, newTab in
             guard let self, let pane else { return }
             self.activate(pane)

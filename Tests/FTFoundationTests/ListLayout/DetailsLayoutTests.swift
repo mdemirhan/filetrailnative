@@ -69,7 +69,10 @@ struct DetailsLayoutTests {
         #expect(DetailsSorting.sortKey(for: .permissions, search: false) == nil)
         #expect(DetailsSorting.sortKey(for: .folder, search: false) == nil)
         #expect(DetailsSorting.sortKey(for: .folder, search: true) == "path")
-        #expect(DetailsSorting.sortKey(for: .size, search: true) == nil)
+        // Search results sort by a date or Size too, from values read for every result while they do.
+        #expect(DetailsSorting.sortKey(for: .size, search: true) == "size")
+        #expect(DetailsSorting.sortKey(for: .lastOpened, search: true) == "lastOpened")
+        #expect(DetailsSorting.sortKey(for: .permissions, search: true) == nil)
         // The same key flips; a new Date Modified or Size starts descending, Name and Kind ascending.
         #expect(DetailsSorting.next(current: .name, direction: .asc, requested: .name) == (.name, .desc))
         #expect(DetailsSorting.next(current: .name, direction: .desc, requested: .name) == (.name, .asc))

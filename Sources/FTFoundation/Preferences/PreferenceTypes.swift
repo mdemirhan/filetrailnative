@@ -47,9 +47,13 @@ public enum SearchMatchScopePreference: String, Codable, CaseIterable, Sendable,
     case name, path
 }
 
-/// Search results sort by name, by the folder they are in, or by kind.
+/// Search results sort by name, by the folder they are in or by kind, from what each result carries; or by a date or
+/// the size, read for every result while they are sorted by it.
 public enum SearchResultsSortByPreference: String, Codable, CaseIterable, Sendable, Hashable {
-    case name, path, kind
+    case name, path, kind, modified, created, lastOpened, added, size
+
+    /// Whether the order needs a value read for every result (a date, the size).
+    public var readsEveryResult: Bool { ![.name, .path, .kind].contains(self) }
 }
 
 public enum SortDirectionPreference: String, Codable, CaseIterable, Sendable, Hashable {
@@ -88,9 +92,11 @@ public enum GroupByPreference: String, Codable, CaseIterable, Sendable, Hashable
         .name, .modified, .created, .lastOpened, .added, .size, .kind, .tags,
     ]
 
-    /// The fields search results are grouped by: what each result carries, as their order is (name, folder, kind).
-    /// Dates, sizes and tags are read for the rows on screen only.
-    public static let searchMenuOrder: [GroupByPreference] = [.name, .folder, .kind]
+    /// The fields search results are grouped by: every field, Folder after Name. A date, the size or the tags are read
+    /// for every result while the results are grouped by it.
+    public static let searchMenuOrder: [GroupByPreference] = [
+        .name, .folder, .modified, .created, .lastOpened, .added, .size, .kind, .tags,
+    ]
 
     /// What every menu calls it.
     public var title: String {
@@ -114,8 +120,11 @@ public enum GroupByPreference: String, Codable, CaseIterable, Sendable, Hashable
     /// Whether a folder can be grouped by it (Folder is search results' own).
     public var isForFolders: Bool { self != .folder }
 
-    /// Whether search results can be grouped by it.
-    public var isForSearch: Bool { self == .none || Self.searchMenuOrder.contains(self) }
+    /// Whether search results can be grouped by it: by every field.
+    public var isForSearch: Bool { true }
+
+    /// Whether groups of search results by it need a value read for every result (a date, the size, the tags).
+    public var readsEveryResult: Bool { ![.none, .name, .folder, .kind].contains(self) }
 
     /// The View ▸ Group By item that groups by it.
     public var command: AppCommand {

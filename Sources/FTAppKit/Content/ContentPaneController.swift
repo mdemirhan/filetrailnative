@@ -19,6 +19,11 @@ struct ContentLoaders {
     var iconStore: @MainActor () -> FileIconStore?
     var homePath: String
     var openPrivacySettings: @MainActor () -> Void
+    /// The value of a field for each of the paths, in their order: what search results ordered or grouped by a date,
+    /// the size or the tags read for every result.
+    var values: @MainActor (_ paths: [String], _ field: ItemValueField) async -> [ItemValue] = { paths, _ in
+        paths.map { _ in .number(nil) }
+    }
     /// The colors of items' Finder tags.
     var tagColors: @MainActor (_ paths: [String]) async -> [String: [FinderTagColor]] = { paths in
         await BlockingWork.run(qos: .utility) {
@@ -177,6 +182,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private var dayObserver: (any NSObjectProtocol)?
     /// The day the date groups count from; tests move it.
     var now: () -> Date = { AppClock.now }
+    /// What search results are ordered or grouped by and don't carry, read for every result while it is needed.
+    private(set) var searchValues = SearchValues(read: { paths, _ in paths.map { _ in .number(nil) } })
     private(set) var includeHidden = false
     private(set) var columnState = ListColumnState.standard
     private(set) var listFilter = ListFilterTyping()
@@ -270,6 +277,10 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         self.loaders = loaders
         super.init(nibName: nil, bundle: nil)
         folderSizes.observe(self) { [weak self] in self?.folderSizesChanged() }
+        searchValues = SearchValues(read: { [weak self] paths, field in
+            await self?.loaders.values(paths, field) ?? []
+        })
+        searchValues.changed = { [weak self] in self?.searchValuesArrived() }
         // The date groups change at midnight; the system says so after a sleep or a clock change too.
         dayObserver = NotificationCenter.default.addObserver(forName: .NSCalendarDayChanged, object: nil, queue: .main)
         {
@@ -836,6 +847,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             lastFiltered = filter.isEmpty ? nil : (filter, filterMode, sourceVersion, filtered)
             entries = filter.isEmpty ? listed : filtered.map(SearchResults.entry)
             applyPin()
+            orderByValues(searchDisplay)
             applyGroups()
             entryPaths = entries.map(\.path)
             positionsCache = nil
@@ -857,6 +869,49 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         positionsCache = nil
         barScaleCache = nil
         updateFilterBar()
+    }
+
+    /// Search results ordered by a date or the size: by the values read for them, in the order's direction, those not
+    /// read yet or without one last either way; among the same value, as the search ordered them (by name).
+    private func orderByValues(_ display: ContentSearchDisplay) {
+        guard let field = display.sortBy.valueField else { return }
+        let ascending = display.sortDirection == .asc
+        let values = entries.map { searchValues.value(field, of: $0.path)?.number }
+        let positions = entries.indices.sorted { left, right in
+            switch (values[left], values[right]) {
+            case (let l?, let r?) where l != r: return ascending ? l < r : l > r
+            case (.some, nil): return true
+            case (nil, .some): return false
+            default: return left < right
+            }
+        }
+        entries = positions.map { entries[$0] }
+    }
+
+    /// What search results' order and groups need read for every result: the field of an order by a date or the
+    /// size, and of groups by a date, the size or the tags. Nothing for a folder, or for search results ordered and
+    /// grouped by what they carry.
+    var searchFieldsNeeded: Set<ItemValueField> {
+        guard let searchDisplay else { return [] }
+        return Set([searchDisplay.sortBy.valueField, searchGroupBy.valueField].compactMap { $0 })
+    }
+
+    /// The results' order or groups need values not read yet: they are read, and those no longer needed go.
+    private func readSearchValues() {
+        searchValues.need(searchFieldsNeeded, paths: listed.map(\.path))
+    }
+
+    /// A batch of values came in: the results are ordered and grouped again with them, where the list is scrolled.
+    private func searchValuesArrived() {
+        guard searchDisplay != nil else { return }
+        let before = entryPaths
+        let groupsBefore = groups
+        reorder()
+        guard entryPaths != before || groups != groupsBefore else { return }
+        resanitizeSelection(previousPaths: before)
+        pane?.reload(scrollToTop: false)
+        pane?.syncSelection()
+        updateStatus()
     }
 
     /// The entries in their groups: each group's items together, in the order shown, the groups in their order.
@@ -895,13 +950,25 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             let dates = DateGroups(now: now())
             let missing =
                 by == .lastOpened ? "Never Opened" : by == .added ? "No Date Added" : "No Date"
+            // A search result's date is the one read for it; a folder's item's, its listing's.
+            if searchDisplay != nil, let field = by.valueField {
+                return shown.map {
+                    dates.key(milliseconds: searchValues.value(field, of: $0.path)?.number, missing: missing)
+                }
+            }
             return shown.map { dates.key(milliseconds: $0.groupTimeMs, missing: missing) }
         case .size:
+            if searchDisplay != nil {
+                return shown.map { SizeGroups.key(bytes: searchValues.value(.size, of: $0.path)?.number) }
+            }
             let sizes = folderSizes
             return shown.map {
                 SizeGroups.key(bytes: FolderContents.sizeBytes(of: $0) { sizes.readySize($0) })
             }
         case .tags:
+            if searchDisplay != nil {
+                return shown.map { TagGroups.key(firstTag: searchValues.value(.tags, of: $0.path)?.text) }
+            }
             return shown.map { TagGroups.key(firstTag: $0.firstTag) }
         case .folder:
             guard let search, let root = searchDisplay?.rootPath else {
@@ -940,6 +1007,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         guard by != searchGroupBy else { return }
         searchGroupBy = by
         guard searchDisplay != nil else { return }
+        readSearchValues()
         regroup()
     }
 
@@ -1188,6 +1256,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
                 scroll: pane?.scrollPosition ?? (0, 0))
         }
         if newList {
+            searchValues.reset()
             if !filter.isEmpty {
                 listFilter.clear()
                 onFilterChanged?(filter)
@@ -1204,6 +1273,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         listed = display.results.map(SearchResults.entry)
         rowsCache = nil
         reorder()
+        readSearchValues()
         // The views see the results' columns and order.
         if newList || previousPaths != entryPaths || groups != groupsBefore {
             selection = selection.sanitized(entryPaths: entryPaths)
@@ -1221,6 +1291,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         guard searchDisplay != nil else { return }
         let kept = keptFolder
         restoredScroll = nil
+        searchValues.reset()
         searchDisplay = nil
         search = nil
         keptFolder = nil

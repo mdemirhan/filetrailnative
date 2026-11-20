@@ -590,13 +590,14 @@ final class SearchSession {
         startSearch(committedQuery, rootPath: path)
     }
 
-    /// The active column flips direction; another starts ascending.
+    /// The active column flips direction; another starts ascending, a date or Size descending (the newest and the
+    /// largest first), as in a folder.
     func sortByColumn(_ value: SearchResultsSortByPreference) {
         if sortBy == value {
             sortDirection = sortDirection == .asc ? .desc : .asc
         } else {
             sortBy = value
-            sortDirection = .asc
+            sortDirection = value.readsEveryResult ? .desc : .asc
         }
         resultsChanged()
         emit(.results)

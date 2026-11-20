@@ -202,12 +202,19 @@ struct EntryGroupsTests {
             GroupByPreference.menuOrder.map(\.title) == [
                 "Name", "Date Modified", "Date Created", "Date Last Opened", "Date Added", "Size", "Kind", "Tags",
             ])
-        #expect(GroupByPreference.searchMenuOrder == [.name, .folder, .kind])
+        #expect(
+            GroupByPreference.searchMenuOrder == [
+                .name, .folder, .modified, .created, .lastOpened, .added, .size, .kind, .tags,
+            ])
+        #expect(
+            GroupByPreference.allCases.filter(\.readsEveryResult) == [
+                .modified, .created, .lastOpened, .added, .size, .tags,
+            ])
         #expect(GroupByPreference.allCases.filter(\.isDate) == [.modified, .created, .lastOpened, .added])
         #expect(!GroupByPreference.folder.isForFolders && GroupByPreference.folder.isForSearch)
-        #expect(!GroupByPreference.size.isForSearch && GroupByPreference.none.isForSearch)
+        #expect(GroupByPreference.allCases.allSatisfy { $0.isForSearch })
         #expect(GroupByPreference.saved(.folder, search: false) == nil)
-        #expect(GroupByPreference.saved(.size, search: true) == nil)
+        #expect(GroupByPreference.saved(.size, search: true) == .size)
         #expect(GroupByPreference.saved(.size, search: false) == .size)
         #expect(GroupByPreference.saved(GroupByPreference.none, search: false) == nil)
     }

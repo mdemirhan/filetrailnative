@@ -363,12 +363,6 @@
           "goForward",
           "goLibrary",
           "goTrash",
-          "groupByAdded",
-          "groupByCreated",
-          "groupByLastOpened",
-          "groupByModified",
-          "groupBySize",
-          "groupByTags",
           "invertSelection",
           "moveItemsHere",
           "moveSelection",
@@ -20628,13 +20622,7 @@
             "sortBySize",
             "toggleFoldersFirst",
             "undo",
-            "updateFolderView",
-            "groupByAdded",
-            "groupByCreated",
-            "groupByLastOpened",
-            "groupByModified",
-            "groupBySize",
-            "groupByTags"
+            "updateFolderView"
           ],
           "$insert": [
             [

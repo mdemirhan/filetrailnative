@@ -138,7 +138,7 @@ struct SavedPanesTests {
         #expect(read[0].groupBy == .modified && read[0].searchGroupBy == .folder)
         #expect(read[0].secondPane?.groupBy == .tags && read[0].secondPane?.searchGroupBy == .kind)
         #expect(read[1].groupBy == nil && read[1].searchGroupBy == nil)
-        #expect(read[2].groupBy == nil && read[2].searchGroupBy == nil)
+        #expect(read[2].groupBy == nil && read[2].searchGroupBy == .size)
         #expect(read[3].groupBy == nil)
         let alone = read[0].activePaneAlone
         #expect(alone.groupBy == .tags && alone.searchGroupBy == .kind && alone.secondPane == nil)

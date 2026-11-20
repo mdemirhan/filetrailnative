@@ -76,6 +76,14 @@ public final class DirectoryService: Sendable {
         }
     }
 
+    /// The value of `field` for each of `paths`, in their order, read off the main thread: what search results
+    /// ordered or grouped by that field need, and nothing more.
+    @concurrent
+    public func values(of paths: [String], field: ItemValueField) async -> [ItemValue] {
+        let fileSystem = fileSystem
+        return await BlockingWork.run(qos: .utility) { ExplorerListing.values(paths, field: field, fileSystem) }
+    }
+
     /// Details of items in one folder, in the order asked; a folder's size is deferred. The folder is named as
     /// asked, not resolved, and only the items not kept are checked to be in it. `listedAdded` has the Date Added the
     /// folder read gave each item that came from a listing (`DirectoryEntry.addedMs`), which is shown as it is; an
