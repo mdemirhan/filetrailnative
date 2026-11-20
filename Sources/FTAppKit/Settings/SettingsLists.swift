@@ -398,6 +398,20 @@ final class SettingsListView: ThemedView, SettingsListBlock, NSTableViewDataSour
     /// The selected row's key, when rows have keys.
     private var selectedKey: String?
     let bar = SettingsListBar()
+    /// What a list with no rows says in their place (the workspaces, before one is saved); nil leaves it bare.
+    var emptyText: String? {
+        didSet {
+            emptyLabel?.removeFromSuperview()
+            emptyLabel = emptyText.map { ThemedText($0, style: SettingsStyle.description, wrapping: true) }
+            if let emptyLabel {
+                emptyLabel.setAccessibilityIdentifier("settings.list.empty")
+                addSubview(emptyLabel)
+            }
+            superview?.needsLayout = true
+        }
+    }
+    private(set) var emptyLabel: ThemedText?
+    private var showsEmptyText: Bool { emptyLabel != nil && rows.isEmpty && fixedRow == nil }
     var drawsSeparator = true { didSet { needsDisplay = true } }
     /// The selection is being set here, not by the table.
     private var settingSelection = false
@@ -542,7 +556,17 @@ final class SettingsListView: ThemedView, SettingsListBlock, NSTableViewDataSour
     // MARK: Layout
 
     func arrange(width: CGFloat) -> CGFloat {
-        let height = ([fixedRow].compactMap { $0 } + rows).reduce(0) { $0 + $1.spec.height }
+        var height = ([fixedRow].compactMap { $0 } + rows).reduce(0) { $0 + $1.spec.height }
+        emptyLabel?.isHidden = !showsEmptyText
+        if showsEmptyText, let emptyLabel {
+            // The line takes a row's place, taller when it wraps.
+            let inset = SettingsMetrics.listRowPadding
+            let textWidth = max(0, width - 2 * inset)
+            let textHeight = ceil(emptyLabel.height(forWidth: textWidth))
+            height = max(SettingsMetrics.listRowHeight, textHeight + 2 * inset)
+            emptyLabel.frame = NSRect(
+                x: inset, y: ((height - textHeight) / 2).rounded(), width: textWidth, height: textHeight)
+        }
         table.tableColumns.first?.width = width
         table.frame = NSRect(x: 0, y: 0, width: width, height: height)
         makeRows()

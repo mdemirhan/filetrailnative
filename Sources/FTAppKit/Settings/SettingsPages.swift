@@ -201,6 +201,7 @@ final class SettingsPageView: NSView {
     /// holds, and the key of the first five.
     private func workspacesList() -> SettingsListView {
         let list = SettingsListView(label: "Workspaces", keys: .items, theme: theme)
+        list.emptyText = "No workspaces yet. Save one from Window \u{25B8} Workspaces."
         let remove = SettingsListBarButton(.remove, label: "Remove", tooltip: "Remove")
         let up = SettingsListBarButton(.moveUp, label: "Move Up", tooltip: "Move Up")
         let down = SettingsListBarButton(.moveDown, label: "Move Down", tooltip: "Move Down")
