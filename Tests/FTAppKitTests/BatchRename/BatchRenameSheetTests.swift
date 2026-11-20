@@ -157,7 +157,12 @@ extension ExplorerWindowlessTests {
             #expect(!fixture.sheet.findMessage.isHidden)
             #expect(message == "The pattern isn\u{2019}t valid.")
             #expect(fixture.sheet.findField.field.accessibilityHelp() == message)
-            #expect(fixture.summary == message)
+            // Said once: the footer says there is nothing to rename, in its usual color.
+            #expect(fixture.summary == "Nothing to rename yet")
+            let theme = AppearanceModel.shared.theme
+            let color = fixture.sheet.summaryLabel.attributedStringValue.attribute(
+                .foregroundColor, at: 0, effectiveRange: nil)
+            #expect(color as? NSColor == NSColor(theme.palette.textSecondary))
             #expect(!fixture.sheet.renameButton.isEnabled)
             // Fixed, the field is no longer marked.
             fixture.type(fixture.sheet.findField, "(a)")

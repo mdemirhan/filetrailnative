@@ -50,6 +50,11 @@ import Testing
         #expect(
             BatchRenameSheetText.summary(plan: broken, checking: true, checkError: nil)
                 == .init(text: "The pattern isn\u{2019}t valid: Missing )", danger: true))
+        // A pattern that isn't valid is said under the Find field, not here as well.
+        let invalid = plan([.unchanged], settingsError: BatchRename.patternIsNotValid)
+        #expect(
+            BatchRenameSheetText.summary(plan: invalid, checking: false, checkError: nil)
+                == .init(text: "Nothing to rename yet", danger: false))
         let fixing = plan([.problem(proposedName: "x", segments: [], problem: .taken(byItemInBatch: false))])
         #expect(
             BatchRenameSheetText.summary(plan: fixing, checking: false, checkError: nil)
