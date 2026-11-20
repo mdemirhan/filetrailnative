@@ -540,12 +540,19 @@ public enum BatchRenameExecution {
     /// old name when it is free, else the new one asked for, else the old one with a number. Never replaces
     /// anything, and moves only what has this app's hidden naming.
     /// An item whose folder is gone from its disk, which is connected (`folderIsGoneForGood`), has nothing left to
-    /// put back; one whose disk may be away stays to be tried again.
+    /// put back; one whose disk may be away stays to be tried again, also when another disk is where its own was
+    /// (`folderIsOnAnotherDisk`).
     public static func recover(
         _ entry: BatchRenameJournalEntry, _ fileSystem: some BatchRenameFileSystem,
         diskId: (String) -> String? = { NativeFS.diskId(of: $0) }
     ) -> BatchRenameRecovery {
         var recovery = BatchRenameRecovery()
+        // The entry's disk is the one its first item's folder was on. With another disk there now, an item that
+        // isn't found may still be under its hidden name on its own disk. While that folder is on the disk written
+        // down, an item not found is done with wherever it is: a rename of search results can span disks, and the
+        // entry keeps only the one.
+        let anotherDiskThere =
+            entry.items.first.map { folderIsOnAnotherDisk($0.temporaryPath, disk: entry.disk, diskId) } ?? false
         for written in entry.items {
             if !isTemporaryName(NodePath.basename(written.temporaryPath)) {
                 continue
@@ -558,7 +565,7 @@ public enum BatchRenameExecution {
                 let folderThere = (try? fileSystem.lstat(NodePath.dirname(written.temporaryPath)).isDirectory) ?? false
                 let goneForGood = folderIsGoneForGood(
                     { try fileSystem.lstat($0) }, written.temporaryPath, disk: entry.disk, diskId)
-                if errorCode(error) != .errno(ENOENT) || !(folderThere || goneForGood) {
+                if errorCode(error) != .errno(ENOENT) || !((folderThere && !anotherDiskThere) || goneForGood) {
                     recovery.remaining.append(written)
                 }
                 continue

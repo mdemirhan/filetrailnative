@@ -574,6 +574,45 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         let recovery = BatchRenameExecution.recover(BatchRenameJournalEntry(id: "1", items: [stuck, away]), disk)
         #expect(recovery == BatchRenameRecovery(restored: [], remaining: [stuck, away]))
     }
+
+    // An item not found under its hidden name on another disk than the one the entry was written for (a second disk
+    // of the same name) may still be on its own disk: it stays written down.
+    @Test func keepsWrittenDownWhatIsNotFoundOnAnotherDiskOfTheSameName() {
+        let disk = MemoryDisk(["/trip/keep.txt"])
+        disk.folderPaths = ["/trip"]
+        let item = BatchRenameJournalEntry.Item(
+            temporaryPath: hidden("a"), originalPath: "/trip/p.txt", newPath: "/trip/q.txt")
+        let entry = BatchRenameJournalEntry(id: "1", items: [item], disk: "stick-1")
+
+        let other = BatchRenameExecution.recover(entry, disk, diskId: { _ in "stick-2" })
+        #expect(other == BatchRenameRecovery(restored: [], remaining: [item]))
+
+        // On its own disk, or with either disk not known, it took its name before the crash.
+        #expect(BatchRenameExecution.recover(entry, disk, diskId: { _ in "stick-1" }).remaining.isEmpty)
+        #expect(BatchRenameExecution.recover(entry, disk, diskId: { _ in nil }).remaining.isEmpty)
+        let undated = BatchRenameJournalEntry(id: "1", items: [item])
+        #expect(BatchRenameExecution.recover(undated, disk, diskId: { _ in "stick-2" }).remaining.isEmpty)
+    }
+
+    // An entry keeps one disk, its first item's. With that folder on the disk written down, an item on another disk
+    // (renamed from search results) that took its name before the crash is done with.
+    @Test func letsGoOfAnItemOnAnotherDiskWhileTheFirstItemsFolderIsOnTheDiskWrittenDown() {
+        let disk = MemoryDisk([hidden("a")])
+        disk.folderPaths = ["/trip", "/other"]
+        let first = BatchRenameJournalEntry.Item(
+            temporaryPath: hidden("a"), originalPath: "/trip/p.txt", newPath: "/trip/q.txt")
+        let elsewhere = BatchRenameJournalEntry.Item(
+            temporaryPath: "/other/.filetrail-rename-bbbbbbbbbbbb", originalPath: "/other/r", newPath: "/other/s")
+        let entry = BatchRenameJournalEntry(id: "1", items: [first, elsewhere], disk: "disk-1")
+
+        let recovery = BatchRenameExecution.recover(
+            entry, disk, diskId: { $0.hasPrefix("/other") ? "disk-2" : "disk-1" })
+
+        #expect(
+            recovery
+                == BatchRenameRecovery(
+                    restored: [.init(originalPath: "/trip/p.txt", path: "/trip/p.txt")], remaining: []))
+    }
 }
 
 @Suite struct BatchRenameNumberedNameTests {

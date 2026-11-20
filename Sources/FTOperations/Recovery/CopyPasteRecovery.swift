@@ -153,9 +153,13 @@ private func removePartialFile(
     do {
         _ = try fileSystem.lstat(path)
     } catch {
-        if errorCode(error) == .errno(ENOENT)
-            && (folderIsThere(fileSystem, path)
-                || folderIsGoneForGood({ try fileSystem.lstat($0) }, path, disk: entry.disk, options.diskId))
+        if errorCode(error) == .errno(ENOENT) && folderIsThere(fileSystem, path) {
+            // Gone from its folder, unless that folder is another disk's: it may then still be on its own.
+            return folderIsOnAnotherDisk(path, disk: entry.disk, options.diskId)
+                ? .unreachable(error: diskNotConnected(entry.finalPath)) : .nothingLeft
+        }
+        if errorCode(error) == .errno(ENOENT),
+            folderIsGoneForGood({ try fileSystem.lstat($0) }, path, disk: entry.disk, options.diskId)
         {
             return .nothingLeft
         }
@@ -235,6 +239,11 @@ private func recoverEntry(
         isDirectory = try fileSystem.lstat(entry.stagingPath).isDirectory
     } catch {
         if errorCode(error) == .errno(ENOENT) && folderIsThere(fileSystem, entry.stagingPath) {
+            // The folder there is another disk's: the item may still be under its hidden name on its own disk, the
+            // only copy of what was moved, so the entry waits for that disk as for one that is away.
+            if folderIsOnAnotherDisk(entry.stagingPath, disk: entry.disk, options.diskId) {
+                return .unreachable(error: diskNotConnected(entry.finalPath))
+            }
             // A folder moved to another disk that was already in place, its originals not all removed yet: it is
             // in both places, and the person is told. A place that can't be read just now may hold it: what is there
             // is said once it can be read, as for its source.
@@ -310,6 +319,20 @@ private func recoverEntry(
 
 private func folderIsThere(_ fileSystem: some IdentityFileSystem, _ path: String) -> Bool {
     (try? fileSystem.lstat(dirnameOf(path)).isDirectory) ?? false
+}
+
+/// Whether the folder that held the hidden item at `path` is now on another disk than the one the entry was written
+/// for (`disk`): a second disk of the same name is where the first was, or a folder was left where it was mounted.
+/// What isn't found in it may still be on its own disk, which is away. Not so when either disk isn't known (an entry
+/// from before it was kept, a disk without an id).
+func folderIsOnAnotherDisk(_ path: String, disk: String?, _ diskId: (String) -> String?) -> Bool {
+    guard let disk, let found = diskId(dirnameOf(path)) else { return false }
+    return found != disk
+}
+
+/// What is said of an item whose own disk is away.
+private func diskNotConnected(_ path: String) -> String {
+    "The disk of \u{201C}\(basenameOf(path))\u{201D} isn't connected."
 }
 
 /// Whether the folder that held the hidden item at `path` is gone though its disk is connected: nothing is at the
