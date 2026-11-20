@@ -23,7 +23,8 @@ Sources/FTAppKit/App/AppDelegate.swift: let store = store ?? AppStateStore(fileP
 Sources/FTAppKit/App/AppDelegate.swift: let templatesPath = AppStatePaths.templates(in: userDataDirectory ?? AppStatePaths.userDataDirectory()).path
 Sources/FTAppKit/WriteOperations/AppWriteOperations.swift: userData.appendingPathComponent("replace-journal.json").path, diskId: { NativeFS.diskId(of: $0) })
 
-# Not URLs: a struct named `folder` with a path of its own, in the module where a tab's and a pane's `folder` is a URL.
+# Not URLs: a struct named `folder` with a path of its own, in the module where the check takes a `folder` read for
+# its path for a URL.
 Sources/FTAppKit/BatchRename/BatchRenameSheetModel.swift: folders[folder.path] = BatchRenameFolder(names: folder.names, caseSensitive: folder.caseSensitive)
 Sources/FTAppKit/PathBar/PathFolderMenu.swift: title: folder.name, checked: folder.path == activePath ? true : nil, tooltip: folder.path,
 Sources/FTAppKit/PathBar/PathFolderMenu.swift: if folder.path != active { onNavigate(folder.path) }

@@ -24,8 +24,9 @@ PATH_READBACKS+='|\b[A-Za-z0-9_]*(urls|URLs|Urls)\b.*\\\.(path|relativePath)\b'
 PATH_READBACKS+='|\bAppStatePaths\.[A-Za-z]+\(.*\)\.path\b'
 PATH_READBACKS+='|\b(currentFolder|selectedFolder|selectedContentFolder|navigationTarget|userData|userDataDirectory)[?!]?\.path\b'
 PATH_READBACKS+='|\.comparablePath\b'
-# In FTAppKit a tab's and a pane's `folder` is a URL; in the other modules `folder` names structs with a path of their
-# own. The lines are searched as grep gives them, `file:line:text`.
+# In FTAppKit a `folder` read for its path is taken for a URL, so that a tab or a pane never keeps one of its folder
+# again (a pane's folder is its `folderPath`); in the other modules `folder` names structs with a path of their own.
+# The lines are searched as grep gives them, `file:line:text`.
 PATH_READBACKS+='|^[^:]*/FTAppKit/[^:]*:.*\bfolder[?!]?\.path\b'
 
 # path_readbacks <sources folder> <allow-list>: fails, naming each, on a readback in the sources that the allow-list
