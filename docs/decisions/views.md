@@ -2,7 +2,7 @@
 
 The List, Icons, Compact List and Previews views, their sizes, Quick Look, and how items are named and drawn. Part of the owner's decisions: [the index](../decisions.md) lists the other parts, and [principles.md](../principles.md) says how a decision is weighed and when to ask about one.
 
-- **A folder's items, and search results, can be put in groups** (2026-11-20). View ▸ Group By, in every view: a folder by name, one of the four dates (Finder's relative groups, counted from midnight), size, kind or first tag; search results by any of these or by Folder (a first step had them group by name, folder and kind only). The plan is [records/group-by.md](../records/group-by.md).
+- **A folder's items, and search results, can be put in groups** (2026-11-20). View ▸ Group By, in every view: a folder by name, one of the four dates (Finder's relative groups, counted from midnight), size, kind or first tag; search results by any of these or by Folder (a first step had them group by name, folder and kind only). A group's title is in the system's secondary label color (2026-11-20), as Finder's, so a title is told from an item. The plan is [records/group-by.md](../records/group-by.md).
   - The groups keep a fixed order whatever the sort (newest dates and smallest sizes first, the rest A to Z) and the sort orders the items inside each, as in Finder. The sort's direction ordering the groups too, as first built, made no sense to the owner. Reverse Group Order turns the groups around, those without a value still last.
   - Groups don't collapse: chevrons, Collapse All and Expand All were built and taken out, the owner seeing no need.
   - Titles are the name alone, in Finder's layout with the app's own fonts.

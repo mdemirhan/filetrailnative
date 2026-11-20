@@ -3,9 +3,11 @@ import AppKit
 import FTFoundation
 
 /// A group's title: the name alone, in the style of the sidebar's section headings (the small size, semibold, the
-/// secondary color). In the List it is a row's height, lined up with the names, under the space that sets its group
-/// apart from the one above; in the Icons view it is over a hairline across the pane, and in the Compact List over one
-/// across its column. It takes no clicks: a press on it is a press on the empty space it is in.
+/// system's secondary label color, as Finder's, so a title is told from an item). The view draws the text itself: a
+/// label draws a color that is partly clear darker than it is, nearly as dark as a name. In the List it is a row's
+/// height, lined up with the names, under the space that sets its group apart from the one above; in the Icons view it
+/// is over a hairline across the pane, and in the Compact List over one across its column. It takes no clicks: a press
+/// on it is a press on the empty space it is in.
 final class GroupHeaderView: NSView {
     enum Style {
         case list
@@ -25,17 +27,20 @@ final class GroupHeaderView: NSView {
         didSet { if spaceAbove != oldValue { needsLayout = true } }
     }
 
-    private let title = NSTextField(labelWithString: "")
+    /// The color of the title.
+    static let titleColor = NSColor.secondaryLabelColor
+    /// The color of a title that goes on with its group from the column before: a step fainter.
+    static let continuedTitleColor = NSColor.tertiaryLabelColor
+
+    private var title = ""
+    private var drawnColor = GroupHeaderView.titleColor
+    private var titleFont = ChromeColors.font(size: DesignTokens.typeScale.small, weight: 600)
     private var style = Style.grid
     private var lineColor = NSColor.separatorColor
     private var backgroundColor = NSColor.clear
 
     override init(frame: NSRect) {
         super.init(frame: frame)
-        title.lineBreakMode = .byTruncatingTail
-        title.maximumNumberOfLines = 1
-        title.setAccessibilityElement(false)
-        addSubview(title)
         setAccessibilityElement(true)
         setAccessibilityRole(.staticText)
         setAccessibilityIdentifier("content.groupHeader")
@@ -47,10 +52,10 @@ final class GroupHeaderView: NSView {
 
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
 
-    // A row or a pane gives its header its width after making it: the title is placed again at the new width.
+    // A row or a pane gives its header its width after making it: the title is drawn again at the new width.
     override func setFrameSize(_ newSize: NSSize) {
         super.setFrameSize(newSize)
-        needsLayout = true
+        needsDisplay = true
     }
 
     /// `background` is what a grid's header, held at the top over the items scrolling under it, is filled with. A
@@ -60,9 +65,9 @@ final class GroupHeaderView: NSView {
     ) {
         self.style = style
         let palette = theme.palette
-        title.stringValue = shown.group.title
-        title.font = ChromeColors.font(size: DesignTokens.typeScale.small, weight: continued ? 400 : 600)
-        title.textColor = NSColor(continued ? palette.textTertiary : palette.textSecondary)
+        title = shown.group.title
+        titleFont = ChromeColors.font(size: DesignTokens.typeScale.small, weight: continued ? 400 : 600)
+        drawnColor = continued ? Self.continuedTitleColor : Self.titleColor
         lineColor = NSColor(palette.borderLight)
         backgroundColor = style == .grid ? background ?? NSColor(palette.bgBase) : .clear
         // The days of Previous 7 Days and Previous 30 Days, which the name alone doesn't say.
@@ -72,22 +77,37 @@ final class GroupHeaderView: NSView {
         needsDisplay = true
     }
 
-    override func layout() {
-        super.layout()
-        // The width the header has, not the title's measured one: a title is cut short only where there is no room.
-        let width = max(0, bounds.width - leadingInset - 8)
-        let height = ceil(title.intrinsicContentSize.height)
+    /// The title as it is drawn: one line, cut short with an ellipsis only where there is no room.
+    var titleText: NSAttributedString {
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.lineBreakMode = .byTruncatingTail
+        return NSAttributedString(
+            string: title,
+            attributes: [.font: titleFont, .foregroundColor: drawnColor, .paragraphStyle: paragraph])
+    }
+
+    /// Where the title is drawn.
+    var titleFrame: NSRect {
+        let text = titleText
+        let height = ceil(text.size().height)
         // A grid's title sits above its hairline; a row's in its middle.
         let y = style == .grid ? bounds.height - height - 6 : spaceAbove + (bounds.height - spaceAbove - height) / 2
-        title.frame = NSRect(x: leadingInset, y: y, width: width, height: height)
+        return NSRect(x: leadingInset + 2, y: y, width: max(0, bounds.width - leadingInset - 12), height: height)
+    }
+
+    override func layout() {
+        super.layout()
+        needsDisplay = true
     }
 
     override func draw(_ dirtyRect: NSRect) {
-        guard style == .grid else { return }
-        backgroundColor.setFill()
-        bounds.fill()
-        lineColor.setFill()
-        let scale = window?.backingScaleFactor ?? 2
-        NSRect(x: 0, y: bounds.height - 1 / scale, width: bounds.width, height: 1 / scale).fill()
+        if style == .grid {
+            backgroundColor.setFill()
+            bounds.fill()
+            lineColor.setFill()
+            let scale = window?.backingScaleFactor ?? 2
+            NSRect(x: 0, y: bounds.height - 1 / scale, width: bounds.width, height: 1 / scale).fill()
+        }
+        titleText.draw(with: titleFrame, options: [.usesLineFragmentOrigin, .truncatesLastVisibleLine])
     }
 }
