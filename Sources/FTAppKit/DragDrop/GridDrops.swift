@@ -29,13 +29,13 @@ extension ItemGridPane {
     var dragView: NSView { collection }
 
     /// Each item in sight among `paths`: its icon and its name, in the collection's coordinates.
-    func dragPlacements(for paths: [String]) -> [String: FileDragPlacement] {
-        var placements: [String: FileDragPlacement] = [:]
+    func dragPlacements(for paths: [String]) -> [PathBox: FileDragPlacement] {
+        var placements: [PathBox: FileDragPlacement] = [:]
         let wanted = Set(paths.map(PathBox.init))
         let visible = collection.visibleRect
         forEachVisibleItem { item, entry in
             guard wanted.contains(PathBox(entry.path)), let dragging = item as? GridItemDragging else { return }
-            placements[entry.path] = dragging.dragPlacement(in: collection, visible: visible)
+            placements[PathBox(entry.path)] = dragging.dragPlacement(in: collection, visible: visible)
         }
         return placements
     }

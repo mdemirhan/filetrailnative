@@ -62,7 +62,7 @@ struct ClipboardMenuAndMarksTests {
             paths, placements: ["/demo/a.txt": placed(100), "/demo/b.txt": placed(124)])
         #expect(images.map(\.index) == [5000])
         let many = (0..<300).map { "/demo/\($0)" }
-        let all = Dictionary(uniqueKeysWithValues: many.map { ($0, placed(0)) })
+        let all = Dictionary(uniqueKeysWithValues: many.map { (DiskPath($0), placed(0)) })
         #expect(FileDragImages.measure(many, placements: all).count == FileDragImages.maxImages)
     }
 

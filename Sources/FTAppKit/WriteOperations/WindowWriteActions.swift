@@ -61,7 +61,7 @@ final class WindowWriteActions {
 
     /// Copy or Cut: the selected items go on the app's clipboard, replacing what was on it
     /// (each path once, empty ones dropped).
-    func putOnClipboard(_ mode: ClipboardMode, paths: [String], entries: [String: ClipboardSourceEntry] = [:]) {
+    func putOnClipboard(_ mode: ClipboardMode, paths: [String], entries: [DiskPath: ClipboardSourceEntry] = [:]) {
         guard !paths.isEmpty, let clipboard = session.clipboard else { return }
         let kept = clipboard.replace(
             with: ClipboardRules.set(mode, paths, capturedAt: Self.clipboardStamp(), entries: entries),

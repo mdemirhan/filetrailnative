@@ -673,7 +673,7 @@ final class ClipboardMenuItemRow: NSView {
             icon.image = nil
             let path = item.path
             iconRequest = iconStore.load(request) { [weak self] image in
-                guard let self, self.toolTip == path else { return }
+                guard let self, self.toolTip.map({ samePath($0, path) }) == true else { return }
                 self.icon.image = image
             }
         }

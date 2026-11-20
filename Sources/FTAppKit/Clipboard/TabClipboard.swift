@@ -211,15 +211,15 @@ extension MainWindowController {
 
     /// What Copy records of each item: from the list, its kind, link and executable flags; from the tree,
     /// a folder.
-    var clipboardSourceEntries: [String: ClipboardSourceEntry] {
+    var clipboardSourceEntries: [DiskPath: ClipboardSourceEntry] {
         if focusedPane == .tree {
             guard let path = sidebarController.selectedTreeTargetPath else { return [:] }
-            return [path: ClipboardSourceEntry(kind: .directory, isSymlink: false)]
+            return [DiskPath(path): ClipboardSourceEntry(kind: .directory, isSymlink: false)]
         }
-        var entries: [String: ClipboardSourceEntry] = [:]
+        var entries: [DiskPath: ClipboardSourceEntry] = [:]
         let selected = Set(selectedPaths.map(PathBox.init))
         for entry in content.entries where selected.contains(PathBox(entry.path)) {
-            entries[entry.path] = ClipboardSourceEntry(
+            entries[DiskPath(entry.path)] = ClipboardSourceEntry(
                 kind: entry.kind.rules, isSymlink: entry.isSymlink, isExecutable: entry.isExecutable)
         }
         return entries
@@ -243,19 +243,8 @@ extension MainWindowController {
         switch action {
         case .copy, .cut:
             guard !subject.paths.isEmpty else { return }
-            let tree = subject.surface == .treeFolder || subject.surface == .favorite
-            var entries: [String: ClipboardSourceEntry] = [:]
-            for entry in subject.entries {
-                entries[entry.path] = ClipboardSourceEntry(kind: tree ? .directory : entry.kind, isSymlink: false)
-            }
-            if !tree {
-                let listed = Set(subject.paths.map(PathBox.init))
-                for entry in content.entries where listed.contains(PathBox(entry.path)) {
-                    entries[entry.path] = ClipboardSourceEntry(
-                        kind: entry.kind.rules, isSymlink: entry.isSymlink, isExecutable: entry.isExecutable)
-                }
-            }
-            actions.putOnClipboard(action == .cut ? .cut : .copy, paths: subject.paths, entries: entries)
+            actions.putOnClipboard(
+                action == .cut ? .cut : .copy, paths: subject.paths, entries: contextMenuClipboardEntries(subject))
         case .paste:
             let home = DiskPath.home.string
             let world = ContextMenuWorld(
@@ -291,17 +280,18 @@ extension MainWindowController {
         }
     }
 
-    /// What Copy records of a right-click menu's items, as `contextMenuFileOperation` does.
-    private func contextMenuClipboardEntries(_ subject: ContextMenuSubject) -> [String: ClipboardSourceEntry] {
+    /// What Copy records of a right-click menu's items, by their paths.
+    private func contextMenuClipboardEntries(_ subject: ContextMenuSubject) -> [DiskPath: ClipboardSourceEntry] {
         let tree = subject.surface == .treeFolder || subject.surface == .favorite
-        var entries: [String: ClipboardSourceEntry] = [:]
+        var entries: [DiskPath: ClipboardSourceEntry] = [:]
         for entry in subject.entries {
-            entries[entry.path] = ClipboardSourceEntry(kind: tree ? .directory : entry.kind, isSymlink: false)
+            entries[DiskPath(entry.path)] = ClipboardSourceEntry(
+                kind: tree ? .directory : entry.kind, isSymlink: false)
         }
         if !tree {
             let listed = Set(subject.paths.map(PathBox.init))
             for entry in content.entries where listed.contains(PathBox(entry.path)) {
-                entries[entry.path] = ClipboardSourceEntry(
+                entries[DiskPath(entry.path)] = ClipboardSourceEntry(
                     kind: entry.kind.rules, isSymlink: entry.isSymlink, isExecutable: entry.isExecutable)
             }
         }

@@ -21,11 +21,11 @@ public struct ClipboardMarks: Equatable, Sendable {
 
     /// The marks of `clipboard` while Settings' "Mark copied and cut items" is on; nil otherwise, or while it is
     /// empty, and no row has marks.
-    public init?(_ clipboard: CopyPasteClipboard, enabled: Bool, flashing: Set<String>? = nil) {
+    public init?(_ clipboard: CopyPasteClipboard, enabled: Bool, flashing: Set<DiskPath>? = nil) {
         guard enabled, clipboard.hasItems else { return nil }
         modes = Dictionary(
             clipboard.picks.map { (ExactKey($0.path), $0.mode) }, uniquingKeysWith: { first, _ in first })
-        self.flashing = flashing.map { Set($0.map(ExactKey.init)) }
+        self.flashing = flashing
     }
 
     /// What every item does; nil when some are copied and others moved.
@@ -47,9 +47,9 @@ public struct ClipboardMarks: Equatable, Sendable {
     }
 
     /// The same marks, with the ones that flash now.
-    public func flashing(_ paths: Set<String>?) -> ClipboardMarks {
+    public func flashing(_ paths: Set<DiskPath>?) -> ClipboardMarks {
         var marks = self
-        marks.flashing = paths.map { Set($0.map(ExactKey.init)) }
+        marks.flashing = paths
         return marks
     }
 
@@ -74,10 +74,10 @@ public struct ClipboardFlashTracker: Sendable {
     /// What flashes after `clipboard` arrived: `.none`, `.all`, or the items at some paths.
     public enum Flash: Equatable, Sendable {
         case none, all
-        case items(Set<String>)
+        case items(Set<DiskPath>)
 
         /// The paths for `ClipboardMarks.flashing`: nil for all.
-        public var paths: Set<String>? {
+        public var paths: Set<DiskPath>? {
             if case .items(let paths) = self { return paths }
             return nil
         }
@@ -95,7 +95,7 @@ public struct ClipboardFlashTracker: Sendable {
         let fresh = clipboard.picks.filter { pick in
             previousMarkedAt.map { Self.isLater(pick.markedAt, than: $0) } ?? true
         }
-        return fresh.isEmpty ? .none : .items(Set(fresh.map(\.path)))
+        return fresh.isEmpty ? .none : .items(Set(fresh.map { DiskPath($0.path) }))
     }
 
     private static func latestMark(_ clipboard: CopyPasteClipboard) -> String? {

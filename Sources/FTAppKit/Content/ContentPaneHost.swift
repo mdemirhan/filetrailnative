@@ -208,7 +208,7 @@ protocol FolderPane: NSViewController {
     /// The items on the clipboard were just copied or cut: their rows flash.
     func flashClipboardMarks()
     /// Where the rows of `paths` are drawn, in `dragView`'s coordinates, for the drag's images.
-    func dragPlacements(for paths: [String]) -> [String: FileDragPlacement]
+    func dragPlacements(for paths: [String]) -> [DiskPath: FileDragPlacement]
     /// The view a drag of items starts from.
     var dragView: NSView { get }
 }
@@ -230,7 +230,7 @@ extension FolderPane {
     func showNothingMatches(_ shown: Bool) {}
     func clipboardMarksChanged() { refresh(paths: nil) }
     func flashClipboardMarks() {}
-    func dragPlacements(for paths: [String]) -> [String: FileDragPlacement] { [:] }
+    func dragPlacements(for paths: [String]) -> [DiskPath: FileDragPlacement] { [:] }
     var dragView: NSView { focusView }
 }
 

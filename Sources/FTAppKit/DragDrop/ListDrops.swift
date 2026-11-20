@@ -26,8 +26,8 @@ extension ListViewController {
     var dragView: NSView { table }
 
     /// Each row in sight among `paths`: its icon and its name, in the table's coordinates.
-    func dragPlacements(for paths: [String]) -> [String: FileDragPlacement] {
-        var placements: [String: FileDragPlacement] = [:]
+    func dragPlacements(for paths: [String]) -> [PathBox: FileDragPlacement] {
+        var placements: [PathBox: FileDragPlacement] = [:]
         let rows = table.rows(in: table.visibleRect)
         guard rows.length > 0 else { return placements }
         let wanted = Set(paths.map(PathBox.init))
@@ -39,7 +39,7 @@ extension ListViewController {
             let label = bar.nameLabel
             var nameRect = label.convert(label.bounds, to: table)
             nameRect.size.width = min(nameRect.width, ceil(label.textWidth))
-            placements[entry.path] = FileDragPlacement(
+            placements[PathBox(entry.path)] = FileDragPlacement(
                 iconRect: icon, nameRect: nameRect, nameFontSize: Double(label.font?.pointSize ?? 13),
                 nameCentered: false, thumbnail: false,
                 inSight: FileDragImages.isInSight(icon, within: [visible]))

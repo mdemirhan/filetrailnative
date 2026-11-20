@@ -23,12 +23,17 @@ extension ContentPaneController {
     func setDropTarget(_ path: String?, _ state: DropTargetState?, background: DropTargetState?) {
         let next = path.flatMap { path in state.map { (path, $0) } }
         let previous = dropTarget
-        if previous?.path != next?.0 || previous?.state != next?.1 {
+        // By the path's bytes: a drag gone from a folder to one whose path differs only in how an accent is stored is
+        // over another row.
+        let sameRow = previous.map { PathBox($0.path) } == next.map { PathBox($0.0) }
+        if !sameRow || previous?.state != next?.1 {
             dropTarget = next.map { (path: $0.0, state: $0.1) }
-            var changed = Set<String>()
-            if let previous { changed.insert(previous.path) }
-            if let next { changed.insert(next.0) }
-            pane?.refresh(paths: changed)
+            var changed: [String] = []
+            if let previous { changed.append(previous.path) }
+            if let next, !sameRow { changed.append(next.0) }
+            // Two such rows are one path to a set of strings: every row in view is drawn again then.
+            let paths = Set(changed)
+            pane?.refresh(paths: paths.count == changed.count ? paths : nil)
         }
         let ring = background == .valid
         if container.dropRing.isHidden == ring {
@@ -38,7 +43,7 @@ extension ContentPaneController {
     }
 
     /// Where the rows of `paths` are drawn, for the drag's images, and the view the drag starts from.
-    func dragPlacements(for paths: [String]) -> (view: NSView, placements: [String: FileDragPlacement])? {
+    func dragPlacements(for paths: [String]) -> (view: NSView, placements: [PathBox: FileDragPlacement])? {
         guard let pane else { return nil }
         return (pane.dragView, pane.dragPlacements(for: paths))
     }

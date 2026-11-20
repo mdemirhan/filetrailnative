@@ -54,12 +54,13 @@ public enum FileDragImages {
     public static let maxPaths = 100_000
 
     /// Each dragged item where it shows, up to `maxImages`. Items out of sight, or not drawn
-    /// at all, are left out and go along unseen. `placements` is what the view draws, looked up once.
-    public static func measure(_ paths: [String], placements: [String: FileDragPlacement]) -> [FileDragImage] {
+    /// at all, are left out and go along unseen. `placements` is what the view draws, by each item's path, looked up
+    /// once.
+    public static func measure(_ paths: [String], placements: [DiskPath: FileDragPlacement]) -> [FileDragImage] {
         var images: [FileDragImage] = []
         for (index, path) in paths.enumerated() {
             if images.count >= maxImages { break }
-            guard let placement = placements[path], placement.inSight,
+            guard let placement = placements[DiskPath(path)], placement.inSight,
                 !(placement.iconRect.width == 0 && placement.iconRect.height == 0)
             else { continue }
             images.append(

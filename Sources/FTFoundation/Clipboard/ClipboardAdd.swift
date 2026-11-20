@@ -13,6 +13,15 @@ public struct ClipboardNameClash: Equatable, Sendable {
         self.path = path
         self.otherPath = otherPath
     }
+
+    public static func == (lhs: ClipboardNameClash, rhs: ClipboardNameClash) -> Bool {
+        JSString.equals(lhs.path, rhs.path) && JSString.equals(lhs.otherPath, rhs.otherPath)
+    }
+}
+
+/// Two lists of paths are the same when each path is, byte for byte.
+private func samePaths(_ left: [String], _ right: [String]) -> Bool {
+    left.elementsEqual(right, by: JSString.equals)
 }
 
 /// What the person answers about the items an Add brings whose names others on the clipboard have.
@@ -40,15 +49,15 @@ public struct ClipboardAddPlan: Equatable, Sendable {
     public var insideListed: [(path: String, folder: String)]
     /// Items added whose names others have: asked about before anything changes.
     public var clashes: [ClipboardNameClash]
-    /// What is known of each item added.
-    public var entries: [String: ClipboardSourceEntry]
+    /// What is known of each item added, by its path.
+    public var entries: [DiskPath: ClipboardSourceEntry]
 
     public static func == (lhs: ClipboardAddPlan, rhs: ClipboardAddPlan) -> Bool {
-        lhs.mode == rhs.mode && lhs.added == rhs.added && lhs.switched == rhs.switched
-            && lhs.alreadyThere == rhs.alreadyThere && lhs.absorbed == rhs.absorbed
-            && lhs.insideListed.map(\.path) == rhs.insideListed.map(\.path)
-            && lhs.insideListed.map(\.folder) == rhs.insideListed.map(\.folder) && lhs.clashes == rhs.clashes
-            && lhs.entries == rhs.entries
+        lhs.mode == rhs.mode && samePaths(lhs.added, rhs.added) && samePaths(lhs.switched, rhs.switched)
+            && samePaths(lhs.alreadyThere, rhs.alreadyThere) && samePaths(lhs.absorbed, rhs.absorbed)
+            && samePaths(lhs.insideListed.map(\.path), rhs.insideListed.map(\.path))
+            && samePaths(lhs.insideListed.map(\.folder), rhs.insideListed.map(\.folder))
+            && lhs.clashes == rhs.clashes && lhs.entries == rhs.entries
     }
 
     /// Nothing would change: every item is on the clipboard already with this intent, or inside a folder there.
@@ -74,11 +83,12 @@ public struct ClipboardAddReport: Equatable, Sendable {
     public var startedClipboard: Bool
 
     public static func == (lhs: ClipboardAddReport, rhs: ClipboardAddReport) -> Bool {
-        lhs.mode == rhs.mode && lhs.added == rhs.added && lhs.switched == rhs.switched
-            && lhs.alreadyThere == rhs.alreadyThere && lhs.absorbed == rhs.absorbed
-            && lhs.insideListed.map(\.path) == rhs.insideListed.map(\.path)
-            && lhs.insideListed.map(\.folder) == rhs.insideListed.map(\.folder) && lhs.keptBoth == rhs.keptBoth
-            && lhs.replacedOnClipboard == rhs.replacedOnClipboard && lhs.leftOff == rhs.leftOff
+        lhs.mode == rhs.mode && samePaths(lhs.added, rhs.added) && samePaths(lhs.switched, rhs.switched)
+            && samePaths(lhs.alreadyThere, rhs.alreadyThere) && samePaths(lhs.absorbed, rhs.absorbed)
+            && samePaths(lhs.insideListed.map(\.path), rhs.insideListed.map(\.path))
+            && samePaths(lhs.insideListed.map(\.folder), rhs.insideListed.map(\.folder))
+            && samePaths(lhs.keptBoth, rhs.keptBoth)
+            && samePaths(lhs.replacedOnClipboard, rhs.replacedOnClipboard) && samePaths(lhs.leftOff, rhs.leftOff)
             && lhs.startedClipboard == rhs.startedClipboard
     }
 }
@@ -87,7 +97,7 @@ extension ClipboardRules {
     /// What adding `paths` with `mode` would do. Nothing is changed: a clash of names is asked about first.
     public static func planAdd(
         _ clipboard: CopyPasteClipboard, _ mode: ClipboardMode, _ paths: [String],
-        entries: [String: ClipboardSourceEntry] = [:]
+        entries: [DiskPath: ClipboardSourceEntry] = [:]
     ) -> ClipboardAddPlan {
         let picked = Paths.withoutNestedPaths(paths.filter { !$0.isEmpty })
         let picks = clipboard.picks
@@ -114,7 +124,7 @@ extension ClipboardRules {
                 continue
             }
             plan.added.append(path)
-            if let entry = entry(entries, path) { plan.entries[path] = entry }
+            if let entry = entry(entries, path) { plan.entries[DiskPath(path)] = entry }
         }
 
         // Items on the clipboard inside a folder now added come off, whatever their intent: they go with it.
@@ -165,7 +175,8 @@ extension ClipboardRules {
         }
         let clashing = Set(plan.clashes.map { ExactKey($0.path) })
         for path in plan.added {
-            var pick = ClipboardPick(path: path, mode: plan.mode, entry: plan.entries[path], markedAt: stamp)
+            var pick = ClipboardPick(
+                path: path, mode: plan.mode, entry: plan.entries[DiskPath(path)], markedAt: stamp)
             if clashing.contains(ExactKey(path)) {
                 switch answer {
                 case .keepBoth:

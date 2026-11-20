@@ -37,7 +37,7 @@ extension MainWindowController {
     /// Add to Copied Items, Add to Cut Items: `paths` join what is on the clipboard, to be copied or moved as `mode`
     /// says; on an empty clipboard it is a Copy or a Cut. An item there already with the other intent switches. An
     /// item whose name another on the clipboard has is asked about first, once for all of them.
-    func addToClipboard(_ mode: ClipboardMode, paths: [String], entries: [String: ClipboardSourceEntry]) {
+    func addToClipboard(_ mode: ClipboardMode, paths: [String], entries: [DiskPath: ClipboardSourceEntry]) {
         guard !paths.isEmpty else { return }
         let plan = ClipboardRules.planAdd(services.clipboard.contents, mode, paths, entries: entries)
         guard !plan.clashes.isEmpty else {
@@ -52,7 +52,8 @@ extension MainWindowController {
 
     /// The Add, on the clipboard as it is now: another window may have changed it while the question was open.
     private func finishAdd(
-        _ mode: ClipboardMode, paths: [String], entries: [String: ClipboardSourceEntry], answer: ClipboardClashAnswer
+        _ mode: ClipboardMode, paths: [String], entries: [DiskPath: ClipboardSourceEntry],
+        answer: ClipboardClashAnswer
     ) {
         let clipboard = services.clipboard
         let current = clipboard.contents

@@ -99,9 +99,9 @@ public struct ClipboardMenuModel: Equatable, Sendable {
     /// Puts `items` on the rows the same items are on now; false when they are other items, or none are shown.
     private mutating func keepPlaces(_ items: [ClipboardItem]) -> Bool {
         guard !orderedItems.isEmpty, items.count == orderedItems.count else { return false }
-        var byPath: [[UInt8]: ClipboardItem] = [:]
-        for item in items { byPath[Array(item.path.utf8)] = item }
-        guard byPath.count == items.count, orderedItems.allSatisfy({ byPath[Array($0.path.utf8)] != nil }) else {
+        var byPath: [ExactKey: ClipboardItem] = [:]
+        for item in items { byPath[ExactKey(item.path)] = item }
+        guard byPath.count == items.count, orderedItems.allSatisfy({ byPath[ExactKey($0.path)] != nil }) else {
             return false
         }
         let cutCount = items.filter { $0.mode == .cut }.count
@@ -109,10 +109,10 @@ public struct ClipboardMenuModel: Equatable, Sendable {
             switch row {
             case .section(let mode, _): .section(mode: mode, count: mode == .cut ? cutCount : items.count - cutCount)
             case .heading: row
-            case .item(let item, let itemIndex): .item(byPath[Array(item.path.utf8)] ?? item, itemIndex: itemIndex)
+            case .item(let item, let itemIndex): .item(byPath[ExactKey(item.path)] ?? item, itemIndex: itemIndex)
             }
         }
-        orderedItems = orderedItems.map { byPath[Array($0.path.utf8)] ?? $0 }
+        orderedItems = orderedItems.map { byPath[ExactKey($0.path)] ?? $0 }
         return true
     }
 

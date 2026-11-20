@@ -232,7 +232,7 @@ extension ExplorerWindowlessTests {
             let window = try await WritingWindow.open()
             let note = url(window, "note.txt").path
             let placed = try #require(window.tab.content.dragPlacements(for: [note, "/nowhere"]))
-            let placement = try #require(placed.placements[note])
+            let placement = try #require(placed.placements[DiskPath(note)])
             #expect(placement.inSight)
             #expect(placement.iconRect.width > 0 && placement.nameRect.minX > placement.iconRect.maxX)
             #expect(placed.placements["/nowhere"] == nil)

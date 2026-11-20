@@ -107,8 +107,8 @@ public enum CopyPasteClipboard: Equatable, Sendable {
     /// each path looks through the whole clipboard.
     public func holdsAny(of paths: [String]) -> Bool {
         guard !paths.isEmpty, !picks.isEmpty else { return false }
-        let held = Set(picks.map { Array($0.path.utf8) })
-        return paths.contains { held.contains(Array($0.utf8)) }
+        let held = Set(picks.map { ExactKey($0.path) })
+        return paths.contains { held.contains(ExactKey($0)) }
     }
 }
 
@@ -132,10 +132,11 @@ public struct ClipboardWrite: Sendable {
 
 /// The clipboard's own rules: what Copy, Cut and the Adds put on it, and how it follows what happens to its items.
 public enum ClipboardRules {
-    /// Copy or Cut: the paths without repeats, empty ones or any inside another, and what is known of each.
+    /// Copy or Cut: the paths without repeats, empty ones or any inside another, and what is known of each, by its
+    /// path.
     public static func set(
         _ mode: ClipboardMode, _ sourcePaths: [String], capturedAt: String,
-        entries: [String: ClipboardSourceEntry] = [:]
+        entries: [DiskPath: ClipboardSourceEntry] = [:]
     ) -> CopyPasteClipboard {
         let paths = Paths.withoutNestedPaths(sourcePaths.filter { !$0.isEmpty })
         let picks = paths.map {
@@ -380,7 +381,7 @@ public enum ClipboardRules {
     }
 
     /// What is known of the item at `path`.
-    static func entry(_ entries: [String: ClipboardSourceEntry], _ path: String) -> ClipboardSourceEntry? {
-        entries[path]
+    static func entry(_ entries: [DiskPath: ClipboardSourceEntry], _ path: String) -> ClipboardSourceEntry? {
+        entries[DiskPath(path)]
     }
 }
