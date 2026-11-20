@@ -237,6 +237,16 @@ struct EdgeCasesTests {
         #expect(itemFor(result, "/source/a.txt")?.error == "There isn't enough free space on the destination disk.")
         #expect(itemFor(result, "/source/c.txt")?.error == "Not started because the destination disk is full.")
         #expect(try fileSystem.readdir("/target") == [])
+        // The result sheet knows the items left by that reason: it says the disk was full, not that the paste was
+        // stopped.
+        let sheet = CopyPasteResultText(
+            action: .paste, targetPath: "/target", error: result.error,
+            items: result.items.map {
+                ResultItem(
+                    sourcePath: $0.sourcePath, destinationPath: $0.destinationPath,
+                    status: ResultItem.Status(rawValue: $0.status.rawValue) ?? .failed, error: $0.error)
+            }, canRetry: true)
+        #expect(sheet.message == "1 item couldn\u{2019}t be copied. 2 items weren't started because the disk is full.")
     }
 
     // A folder being copied when the disk filled up used to be put in place with what fitted, and the items after it

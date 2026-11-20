@@ -54,6 +54,42 @@ import Testing
         #expect(text.retryLabel == nil)
     }
 
+    // A paste the disk ended wasn't stopped by anyone: the items it never reached say the disk was full, in the
+    // message and on their rows. Those a Stop left read as they did.
+    @Test func saysTheDiskWasFullOfTheItemsAFullDiskLeft() {
+        func text(notStarted reason: String?) -> CopyPasteResultText {
+            let done = (1...7).map {
+                ResultItem(sourcePath: "/src/\($0).txt", destinationPath: "/dest/\($0).txt", status: .completed)
+            }
+            let failed = ResultItem(
+                sourcePath: "/src/8.txt", destinationPath: "/dest/8.txt", status: .failed,
+                error: "There isn't enough free space on the destination disk.")
+            let left = (9...20).map {
+                ResultItem(
+                    sourcePath: "/src/\($0).txt", destinationPath: "/dest/\($0).txt", status: .cancelled, error: reason)
+            }
+            return CopyPasteResultText(
+                action: .copyTo, targetPath: "/dest", error: nil, items: done + [failed] + left, canRetry: true)
+        }
+        func rows(_ text: CopyPasteResultText) -> [String] {
+            text.sections.first { $0.label == "Not started" }?.rows.map(\.detail) ?? []
+        }
+
+        let full = text(notStarted: "Not started because the destination disk is full.")
+        #expect(full.title == "Copied 7 of 20 items into \u{201C}dest\u{201D}")
+        #expect(full.message == "1 item couldn\u{2019}t be copied. 12 items weren't started because the disk is full.")
+        #expect(rows(full) == Array(repeating: "Not started because the destination disk is full.", count: 12))
+        #expect(full.retryLabel == "Retry 13 Items")
+
+        for reason in ["Not started because the operation was stopped.", nil] {
+            let stopped = text(notStarted: reason)
+            #expect(
+                stopped.message
+                    == "1 item couldn\u{2019}t be copied. 12 items weren't started because the operation was stopped.")
+            #expect(rows(stopped) == Array(repeating: "The operation was stopped first.", count: 12))
+        }
+    }
+
     @Test func doesNotConfuseASiblingWithASharedNamePrefixForAParent() {
         #expect(
             CopyPasteResultText.retrySourcePaths([item("/src/photo"), item("/src/photos/a.jpg")]) == [

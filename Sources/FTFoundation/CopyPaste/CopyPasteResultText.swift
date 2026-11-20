@@ -71,6 +71,10 @@ public struct ResultSectionText: Equatable, Sendable {
 public struct CopyPasteResultText: Equatable, Sendable {
     /// A result with tens of thousands of problems lists the first ones and says how many more.
     public static let sectionRowLimit = 200
+    /// The reason an item carries when its paste ended before it because the destination disk was full. The write
+    /// engine gives it to each such item, and the sheet knows them by it: a result has no code for why an item
+    /// wasn't started.
+    public static let notStartedDiskFull = "Not started because the destination disk is full."
 
     public var title: String
     public var message: String
@@ -129,10 +133,13 @@ public struct CopyPasteResultText: Equatable, Sendable {
             sentences.append(
                 "\(subject) stopped part way: some of what is inside was \(presentVerb)\(into), the rest wasn't.")
         }
-        if notStartedCount > 0 {
-            let were = notStartedCount == 1 ? "wasn't" : "weren't"
-            sentences.append(
-                "\(ReviewCount.pluralize(notStartedCount, "item")) \(were) started because the operation was stopped.")
+        // What a full disk left is told apart from what a Stop left: a paste the disk ended wasn't stopped by anyone.
+        let diskFullCount = outcome.notStarted.filter { outcome.items[$0].error == Self.notStartedDiskFull }.count
+        for (count, reason) in [
+            (notStartedCount - diskFullCount, "the operation was stopped"), (diskFullCount, "the disk is full"),
+        ] where count > 0 {
+            let were = count == 1 ? "wasn't" : "weren't"
+            sentences.append("\(ReviewCount.pluralize(count, "item")) \(were) started because \(reason).")
         }
         if skippedCount > 0 {
             sentences.append(
@@ -190,9 +197,10 @@ public struct CopyPasteResultText: Equatable, Sendable {
             section("Stopped part way", outcome.stoppedPartWay, .muted) { _ in
                 "Some of what is inside was \(presentVerb) before the stop."
             },
-            // A rename's item put back under another name says which.
+            // A rename's item put back under another name says which, and an item a full disk left says so.
             section("Not started", outcome.notStarted, .muted) { item in
                 if renaming, item.destinationPath != nil, let error = item.error, !error.isEmpty { return error }
+                if let error = item.error, error == Self.notStartedDiskFull { return error }
                 return "The operation was stopped first."
             },
             section("Note", outcome.notes, .muted) { $0.error ?? "" },
