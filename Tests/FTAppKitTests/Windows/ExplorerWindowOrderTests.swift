@@ -107,12 +107,18 @@ import Testing
         #expect(preferences.treeWidth == 345)
         #expect(store.windowPreferences("window-a").treeWidth == 345)
         #expect(changes.last?.preferences == store.preferences())
-        #expect(changes.last?.change == PreferencesChange(keys: [.notificationsEnabled], senderID: 1))
+        #expect(
+            changes.last?.change
+                == PreferencesChange(
+                    keys: [.notificationsEnabled], senderID: 1, written: [.treeWidth, .notificationsEnabled],
+                    changed: [.treeWidth, .notificationsEnabled]))
 
         // From Settings: the app's preferences only.
         channel.update(from: 2) { $0.theme = .light }
         #expect(store.preferences().theme == .light)
-        #expect(changes.last?.change == PreferencesChange(keys: [.theme], senderID: 2))
+        #expect(
+            changes.last?.change == PreferencesChange(keys: [.theme], senderID: 2, written: [.theme], changed: [.theme])
+        )
     }
 
     @Test func asksTheControllerAboutTheWindowAsking() async throws {

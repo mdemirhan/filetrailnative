@@ -79,7 +79,11 @@ private final class CountingFileSystem: StateFileSystem, @unchecked Sendable {
 
         // Each color reaches the app's preferences and every window once, and nothing is sent back.
         #expect(store.preferences().accent == colors.last)
-        #expect(heard == colors.map { _ in PreferencesChange(keys: [.accent], senderID: nil) })
+        #expect(
+            heard
+                == colors.map { _ in
+                    PreferencesChange(keys: [.accent], senderID: nil, written: [.accent], changed: [.accent])
+                })
         #expect(settings.store.preferences.accent == colors.last)
         #expect(swatches.last?.customFill == RGBA(hex: colors.last ?? ""))
         // One write for the burst, a moment after the last color.

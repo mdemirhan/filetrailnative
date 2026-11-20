@@ -19,10 +19,21 @@ public struct WindowTabsAnswer: Equatable, Sendable {
 public struct PreferencesChange: Equatable, Sendable {
     public var keys: Set<PreferenceKey>
     public var senderID: Int?
+    /// Every key the change set, those the window keeps of its own among them, and a key set to the value it had too.
+    /// Nil when that isn't known (a change made past the channel): everything is taken as set.
+    public var written: Set<PreferenceKey>?
+    /// The keys of `written` whose value is another now, as the window that set them sees its preferences or as the
+    /// app keeps them. Nil when that isn't known: everything is taken as changed.
+    public var changed: Set<PreferenceKey>?
 
-    public init(keys: Set<PreferenceKey>, senderID: Int?) {
+    public init(
+        keys: Set<PreferenceKey>, senderID: Int?, written: Set<PreferenceKey>? = nil,
+        changed: Set<PreferenceKey>? = nil
+    ) {
         self.keys = keys
         self.senderID = senderID
+        self.written = written
+        self.changed = changed
     }
 }
 
@@ -55,8 +66,11 @@ public final class WindowPreferenceChannel {
     @discardableResult
     public func update(from senderID: Int?, _ change: (inout EditedPreferences) -> Void) -> AppPreferences {
         var written: [PreferenceKey] = []
+        let windowID = explorerWindowID(senderID)
+        let appBefore = store.preferences()
+        let seenBefore = windowID.map(store.windowPreferences) ?? appBefore
         let preferences =
-            if let windowID = explorerWindowID(senderID) {
+            if let windowID {
                 store.updateWindow(windowID) {
                     change(&$0)
                     written = $0.written
@@ -69,7 +83,13 @@ public final class WindowPreferenceChannel {
             }
         // What belongs to one window (its tabs, panels) stays with it.
         let shared = Set(written.filter { !$0.isWindowSessionKey })
-        onPreferencesChanged(store.preferences(), PreferencesChange(keys: shared, senderID: senderID))
+        let app = store.preferences()
+        // Only a key that was set can have another value now.
+        let changed = written.filter {
+            app.differs(in: $0, from: appBefore) || preferences.differs(in: $0, from: seenBefore)
+        }
+        onPreferencesChanged(
+            app, PreferencesChange(keys: shared, senderID: senderID, written: Set(written), changed: Set(changed)))
         return preferences
     }
 

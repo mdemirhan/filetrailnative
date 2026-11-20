@@ -116,6 +116,11 @@ extension AppPreferences {
         PreferenceKey.allCases.filter { !$0.field.same(self, other) }
     }
 
+    /// Whether the value of `key` here is another than in `other`.
+    public func differs(in key: PreferenceKey, from other: AppPreferences) -> Bool {
+        !key.field.same(self, other)
+    }
+
     /// The value of `key` in `source` put here.
     public mutating func take(_ key: PreferenceKey, from source: AppPreferences) {
         key.field.copy(source, &self)

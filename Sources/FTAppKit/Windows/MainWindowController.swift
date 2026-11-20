@@ -1868,14 +1868,18 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         notify(.clipboard)
     }
 
-    /// A preference changed in any window or in Settings: the keys the whole app shares.
+    /// A preference changed in any window or in Settings. Only what reads a key that changed is done again
+    /// (`PreferenceAreas`): the tree is not built again for a column's width, in this tab or in any other.
     func preferencesChanged(_ change: PreferencesChange) {
-        for pane in panes { pane.sharedSettingsChanged() }
-        sidebar.applyPreferences()
-        refreshColumns()
-        notificationsSettingChanged()
-        if change.keys.contains(.markClipboardItems) || change.keys.isEmpty { clipboardMarksChanged() }
-        notify(.preferences)
+        let areas = PreferenceAreas.touched(by: change, inWindow: windowID)
+        if areas.contains(.columns) {
+            for pane in panes { pane.sharedSettingsChanged() }
+        }
+        if areas.contains(.sidebar) { sidebar.applyPreferences() }
+        if areas.contains(.columns) { refreshColumns() }
+        if areas.contains(.notifications) { notificationsSettingChanged() }
+        if areas.contains(.clipboardMarks) { clipboardMarksChanged() }
+        if areas.contains(.commands) { notify(.preferences) }
     }
 }
 

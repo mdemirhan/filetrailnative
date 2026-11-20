@@ -46,7 +46,8 @@ import Testing
     }
 
     // Every window is told the keys a change set that the whole app shares, a key set to the value it had among them;
-    // a window's own keys are not told, and a change of those alone is still told, with no keys
+    // a window's own keys are not among them, and a change of those alone is still told, with no keys. Beside them:
+    // every key set, and those whose value is another now
     @Test func tellsTheSharedKeysSetEvenWithTheValueTheyHad() throws {
         let store = try makeStore()
         var heard: [PreferencesChange] = []
@@ -61,8 +62,10 @@ import Testing
         channel.update(from: nil) { $0.viewMode = .list }
         #expect(
             heard == [
-                PreferencesChange(keys: [.theme, .markClipboardItems], senderID: 3),
-                PreferencesChange(keys: [], senderID: nil),
+                PreferencesChange(
+                    keys: [.theme, .markClipboardItems], senderID: 3,
+                    written: [.theme, .treeWidth, .markClipboardItems], changed: [.treeWidth, .markClipboardItems]),
+                PreferencesChange(keys: [], senderID: nil, written: [.viewMode], changed: [.viewMode]),
             ])
     }
 

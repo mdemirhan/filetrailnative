@@ -182,8 +182,13 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
 
     // MARK: Preferences
 
+    /// How many times the preferences were read and the rows worked out again from them, for the tests of what a
+    /// preference change does again.
+    private(set) var preferencesAppliedCount = 0
+
     /// Reads the window's preferences: the favorites and layout are the app's, and so is the density.
     func applyPreferences() {
+        preferencesAppliedCount += 1
         let prefs = preferences()
         model.homePath = FileManager.default.homeDirectoryForCurrentUser.path
         if !prefs.favoritesInitialized {
