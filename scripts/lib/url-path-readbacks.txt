@@ -1,0 +1,159 @@
+# The paths read back from a file URL in Sources/ today, for scripts/lib/path-readbacks.sh (the "url-paths" line of
+# scripts/ci.sh). One `path/to/File.swift: the line` each, the line as it is written without the spaces around it; a
+# line is known by its file and its text, so it may move, and a new readback in its file is not covered by it.
+#
+# A path is kept as the disk spells it and never read back from a URL (docs/decisions/must-stay.md, "Byte-exact path
+# comparison"). These are the ones there were when the check was made. None is added without its reason; one that is
+# put right is taken out, and the check fails until it is.
+#
+# By hand: bash -c 'source scripts/lib/path-readbacks.sh; path_readbacks Sources scripts/lib/url-path-readbacks.txt'
+
+# Met with paths as the disk spells them: compared with them, kept beside them or used as a key among them. Each is a
+# place a folder or an item stored with a composed accent can go unrecognised, and the first to change.
+
+# Items another app opens: a tab's folder until its listing spells it, and an item found among the rows by `==`,
+# then by name.
+Sources/FTAppKit/App/AppDelegate.swift: let taken = openFiles.open(urls.filter(\.isFileURL).map(\.path))
+
+# Where a link leads, against the link's own path by `!=`.
+Sources/FTAppKit/Clipboard/CopyContentsAction.swift: await BlockingWork.run { URL(fileURLWithPath: path).resolvingSymlinksInPath().path }
+
+# `comparablePath` itself: one URL's path against another's, below.
+Sources/FTAppKit/Content/ContentModel.swift: var comparablePath: String { standardizedFileURL.path }
+
+# Where an alias leads: a new tab's or window's folder until its listing spells it.
+Sources/FTAppKit/ContextMenus/ContextMenuCoordinator.swift: let resolved = isAlias ? URL(fileURLWithPath: path).resolvingSymlinksInPath().path : path
+
+# A row's path through a URL and back, against the rows' paths by `==`.
+Sources/FTAppKit/ContextMenus/MainWindowController+ContextMenus.swift: QuickLookItemFrame.picture(of: url.path, entries: content.entries, in: content.view)
+
+# Rows' paths through URLs and back, against the drag's own paths byte for byte (a scenario's drag only).
+Sources/FTAppKit/DragDrop/TabDragHookups.swift: let paths = urls.map(\.path)
+
+# The pane's own reading of its URL: kept only where it differs from the path given by more than an accent's encoding.
+Sources/FTAppKit/Windows/BrowserPane.swift: let tidied = url.path
+
+# Looks up the folder's saved view, kept under the path its listing gave.
+Sources/FTAppKit/Windows/BrowserPane.swift: var view = opensAnotherFolder ? folderViewUse(for: url.path).map(FolderViewOnScreen.init) : folderView
+
+# Against the path the listing gave, by `!=`.
+Sources/FTAppKit/Windows/BrowserPane.swift: if opensAnotherFolder, case .success(let snapshot) = read, snapshot.path != url.path {
+
+# The pane's path for a folder that can't be listed.
+Sources/FTAppKit/Windows/BrowserPane.swift: var shownPath = url.path
+
+# Against the history's step.
+Sources/FTAppKit/Windows/BrowserPane.swift: if let step = navigationHistory.current, step == url.path, !samePath(step, shownPath) {
+
+# A disk that went: against the tabs' disks by `==`, and against the clipboard's items byte for byte.
+Sources/FTAppKit/Windows/ExplorerWindows.swift: guard let path = volume?.standardizedFileURL.path else { return }
+
+# The selected folder's path through a URL and back: against the rows by `==`, then a new tab's, window's or pane's
+# folder until its listing spells it.
+Sources/FTAppKit/Windows/MainWindowController.swift: guard content.entries.first(where: { $0.path == folder.path })?.kind == .symlinkDirectory else {
+Sources/FTAppKit/Windows/MainWindowController.swift: open(folder.path)
+
+# A sidebar row's path through a URL and back, against the folder on screen by `==`.
+Sources/FTAppKit/Windows/MainWindowController.swift: let replaces = open.replacesFolderOnScreen && url.path == self.shownFolderPath
+
+# The selected folder's path through a URL and back: the tree's new root.
+Sources/FTAppKit/Windows/MainWindowController.swift: selectedContentFolder: selectedContentFolder?.path, currentPath: shownFolderPath)
+
+# A path bar folder's path through a URL and back: a new tab's or window's folder until its listing spells it.
+Sources/FTAppKit/Windows/MainWindowController.swift: case .newTab: group?.openTab(path: url.path, from: self)
+Sources/FTAppKit/Windows/MainWindowController.swift: case .newWindow: group?.openNewWindow(from: self, path: url.path)
+
+# Items dragged in from another app: what a drop copies or moves, each once byte for byte.
+Sources/FTFileSystem/System/DragPasteboard.swift: let path = (url as NSURL).filePathURL?.path ?? ""
+
+# An app's key among the apps that open a file: every key is read the same way.
+Sources/FTFileSystem/System/OpenWithCatalog.swift: var path = url.standardizedFileURL.path
+
+# The app and the folder chosen in a panel: kept in Settings, and where Move To and Extract To put items.
+Sources/FTFileSystem/System/SystemPickers.swift: let appPath = urls.first?.path
+Sources/FTFileSystem/System/SystemPickers.swift: return DirectoryChoice(canceled: false, path: urls.first?.path)
+
+# One URL's path against another's (`comparablePath`): both are spelled the URL's way, so they agree with each other,
+# and say nothing of how the disk spells either.
+Sources/FTAppKit/Automation/AutomationRunner.swift: if url.comparablePath == controller.folder.comparablePath {
+Sources/FTAppKit/Windows/BrowserPane.swift: ? .nothing : navigationTarget?.comparablePath == folder.comparablePath ? .thisFolder : .anotherFolder
+Sources/FTAppKit/Windows/BrowserPane.swift: if !folderLetGo, url.comparablePath != folder.comparablePath, searchRootPath == nil,
+Sources/FTAppKit/Windows/BrowserPane.swift: !hasShownFolder || folderLetGo || placeTaken || url.comparablePath != folder.comparablePath
+Sources/FTAppKit/Windows/BrowserPane.swift: let sameFolder = shown.comparablePath == folder.comparablePath
+Sources/FTAppKit/Windows/BrowserPane.swift: let carried = url.comparablePath == folder.comparablePath ? carriedView : nil
+Sources/FTAppKit/Windows/MainWindowController.swift: let move: HistoryMove = !folderLetGo && target.comparablePath == folder.comparablePath ? .replace : .push
+Sources/FTAppKit/Windows/MainWindowController.swift: guard !folderLetGo, folder.comparablePath != "/" else { return }
+
+# Handed to the system, which finds an item by either spelling, or shown, and nothing else.
+Sources/FTAppKit/App/AppDelegate.swift: "userDataPath": .string(userData.path),
+Sources/FTAppKit/Automation/AutomationRunner.swift: guard FileManager.default.fileExists(atPath: url.path) else {
+Sources/FTAppKit/Automation/AutomationRunner.swift: return Outcome(.failed, "no folder at \(url.path)")
+Sources/FTAppKit/Automation/AutomationRunner.swift: return opened ? Outcome(.ok) : Outcome(.failed, "could not open \(url.path)")
+Sources/FTAppKit/QuickLook/QuickLookController.swift: return source?(url)?.image ?? NSWorkspace.shared.icon(forFile: url.path)
+Sources/FTAppKit/Windows/BrowserPane.swift: let path = url.path
+Sources/FTAppKit/Windows/MainWindowController.swift: if let target = await Self.resolved(folder.path) { open(target) }
+
+# The home folder, whose path has no accent as an account's name has none. It is compared with paths from listings all
+# over (what is inside Home, the Trash, "~" in a path shown).
+Sources/FTAppKit/App/AppDelegate.swift: windows: windows, trash: .live(homePath: FileManager.default.homeDirectoryForCurrentUser.path),
+Sources/FTAppKit/App/PageWindows.swift: public var homePath = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/Automation/Scenario.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/BatchRename/MainWindowController+BatchRename.swift: let home = actions?.session.coordinator.homePath ?? FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/Clipboard/TabClipboard.swift: isSearchMode: searchRootPath != nil, homePath: FileManager.default.homeDirectoryForCurrentUser.path)
+Sources/FTAppKit/Clipboard/TabClipboard.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/Content/ContentPaneController.swift: homePath: FileManager.default.homeDirectoryForCurrentUser.path, openPrivacySettings: {})
+Sources/FTAppKit/ContextMenus/ContextMenuCoordinator.swift: private var home: String { FileManager.default.homeDirectoryForCurrentUser.path }
+Sources/FTAppKit/Dialogs/GoToFolderBox.swift: var homePath = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/Dialogs/MainWindowController+Dialogs.swift: currentPath: shownFolderPath, homePath: FileManager.default.homeDirectoryForCurrentUser.path,
+Sources/FTAppKit/Dialogs/MainWindowController+Dialogs.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/Dialogs/MainWindowController+Dialogs.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/Dialogs/MainWindowController+Dialogs.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/Dialogs/MainWindowController+Dialogs.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/DragDrop/TabDragDrop.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/DragDrop/TabDragDrop.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/InfoPanel/InfoController.swift: private var homePath: String { FileManager.default.homeDirectoryForCurrentUser.path }
+Sources/FTAppKit/PathBar/PathBarWiring.swift: bar.editor.homePath = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/Search/TabSearch.swift: private static let homePath = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/Sidebar/SidebarViewController+Window.swift: model.homePath = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/Sidebar/SidebarViewController.swift: model.homePath = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/Toolbar/ToolbarMenus.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/UndoHistory/TabUndoHistory.swift: history, homePath: FileManager.default.homeDirectoryForCurrentUser.path, cache: Self.rows)
+Sources/FTAppKit/Windows/BrowserPane.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/Windows/ExplorerTabGroup.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/Windows/ExplorerWindows.swift: var home = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/Windows/MainWindowController.swift: homePath: FileManager.default.homeDirectoryForCurrentUser.path,
+Sources/FTAppKit/Windows/MainWindowController.swift: TrashState.isEmpty(home: FileManager.default.homeDirectoryForCurrentUser.path, uid: getuid())
+Sources/FTAppKit/Windows/MainWindowController.swift: var trashHomePath = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/Windows/MainWindowController.swift: let home = fileManager.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/Windows/MainWindowController.swift: case .goHomeRootTree: sidebar.rootTree(at: fileManager.homeDirectoryForCurrentUser.path)
+Sources/FTAppKit/Windows/MainWindowController.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTAppKit/Windows/MainWindowController.swift: let trashPath = FavoriteLabel.trashPath(homePath: FileManager.default.homeDirectoryForCurrentUser.path)
+Sources/FTAppKit/WriteOperations/AppWriteOperations.swift: let homePath = FileManager.default.homeDirectoryForCurrentUser.path
+Sources/FTFileSystem/System/TrashFolders.swift: homePath: String = FileManager.default.homeDirectoryForCurrentUser.path, uid: UInt32 = getuid(),
+
+# The app's own files and folders (under Application Support or a folder a test names), its bundle and source tree,
+# and the temporary folder: no accents in practice.
+Sources/FTAppKit/App/AppDelegate.swift: let logger = AppLogger(filePath: AppStatePaths.appLog(in: userData).path)
+Sources/FTAppKit/App/AppDelegate.swift: store = AppStateStore(filePath: AppStatePaths.appState(in: userData).path)
+Sources/FTAppKit/App/AppDelegate.swift: let store = store ?? AppStateStore(filePath: AppStatePaths.appState(in: AppStatePaths.userDataDirectory()).path)
+Sources/FTAppKit/App/AppDelegate.swift: let templatesPath = AppStatePaths.templates(in: userDataDirectory ?? AppStatePaths.userDataDirectory()).path
+Sources/FTAppKit/WriteOperations/AppWriteOperations.swift: userData.appendingPathComponent("replace-journal.json").path, diskId: { NativeFS.diskId(of: $0) })
+Sources/FTFileSystem/AboutInfo/Acknowledgements.swift: FileManager.default.fileExists(atPath: $0.appendingPathComponent("index.json").path)
+Sources/FTFileSystem/AppState/AppStateStore.swift: visitsFilePath = AppStatePaths.visitedFolders(besideAppState: URL(fileURLWithPath: filePath)).path
+Sources/FTFileSystem/AppState/AppStateStore.swift: destinationsFilePath = AppStatePaths.destinationFolders(besideAppState: URL(fileURLWithPath: filePath)).path
+Sources/FTFileSystem/AppState/AppStateStore.swift: recentCommandsFilePath = AppStatePaths.recentCommands(besideAppState: URL(fileURLWithPath: filePath)).path
+Sources/FTFileSystem/AppState/AppStateStore.swift: folderViewsFilePath = AppStatePaths.folderViews(besideAppState: URL(fileURLWithPath: filePath)).path
+Sources/FTFileSystem/Icons/IconSamples.swift: try files.setAttributes([.posixPermissions: mode], ofItemAtPath: url.path)
+Sources/FTFileSystem/Logging/LogRotation.swift: return url.deletingLastPathComponent().appendingPathComponent(file).path
+
+# The system's folder for items being saved, where an archive is taken apart: on another disk it is under the disk's
+# own path, whose name may have an accent; it is made, filled and removed by these paths, and compared with nothing.
+Sources/FTOperations/Archives/ArchiveOperations.swift: let work = NodePath.join(url.path, "Extracted")
+Sources/FTOperations/Archives/ArchiveOperations.swift: let sameDisk = folderDisk != nil && (try? fileSystem.stat(url.path))?.dev == folderDisk
+Sources/FTOperations/Archives/ArchiveOperations.swift: root = url.path
+Sources/FTOperations/Archives/ArchiveOperations.swift: try? fileSystem.rm(url.path, recursive: true, force: true)
+
+# Not URLs: a struct named `folder` with a path of its own, in the module where a tab's and a pane's `folder` is a URL.
+Sources/FTAppKit/BatchRename/BatchRenameSheetModel.swift: folders[folder.path] = BatchRenameFolder(names: folder.names, caseSensitive: folder.caseSensitive)
+Sources/FTAppKit/PathBar/PathFolderMenu.swift: title: folder.name, checked: folder.path == activePath ? true : nil, tooltip: folder.path,
+Sources/FTAppKit/PathBar/PathFolderMenu.swift: if folder.path != active { onNavigate(folder.path) }

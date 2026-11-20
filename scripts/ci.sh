@@ -6,6 +6,8 @@ set -uo pipefail
 cd "$(dirname "$0")/.."
 # shellcheck source=lib/test-runs.sh
 source scripts/lib/test-runs.sh
+# shellcheck source=lib/path-readbacks.sh
+source scripts/lib/path-readbacks.sh
 
 scope=""
 affected=0
@@ -359,6 +361,9 @@ format_out="$logs/.ci-format-summary"
     out="$format_out"
     : >"$out"
     failed=0
+    # No new path read back from a file URL (scripts/lib/path-readbacks.sh). Over all of Sources/ in every run, a
+    # scoped or affected one too: it takes a tenth of a second, and its allow-list is checked whole.
+    step url-paths '.' path_readbacks Sources scripts/lib/url-path-readbacks.txt
     if { [ -n "$scope" ] || [ "$affected" = 1 ]; } && ! changed_files | grep -qx '.swift-format'; then
         # A scoped or affected run lints only the Swift files the last commit changed and those changed since, new ones
         # included (`changed_files`); a full run, or a change to the lint's rules in .swift-format, lints everything.
