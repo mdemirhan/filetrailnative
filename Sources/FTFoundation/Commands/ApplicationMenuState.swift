@@ -8,6 +8,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
     /// How many previews the active pane shows at a time in Previews, which View ▸ Show Previews checks.
     public var previewCount: Int
     public var sortBy: SortByPreference
+    /// What the list on screen is grouped by: search results' own while they show.
+    public var groupBy = GroupByPreference.none
     public var foldersFirst: Bool
     public var hiddenFilesShown: Bool
     public var folderTreeOpen: Bool
@@ -77,7 +79,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
     /// run now, and what its checkmarks show.
     public static func build(
         viewMode: ExplorerViewMode, previewCount: Int = PreviewGrid.defaultCount, sortBy: SortByPreference,
-        foldersFirst: Bool, hiddenFilesShown: Bool,
+        groupBy: GroupByPreference = .none, foldersFirst: Bool, hiddenFilesShown: Bool,
         folderTreeOpen: Bool, infoPanelOpen: Bool, infoRowOpen: Bool, twoPanesShown: Bool = false,
         filterPinned: Bool = false, favoriteIsSet: Bool, textEditing: Bool,
         pasteAsFileKind: PasteAsFileKind? = nil,
@@ -91,7 +93,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         let disabled = AppCommand.allCases.filter { command in
             !(textEditing && (command == .undo || command == .redo)) && !canRun(command)
         }
-        return ApplicationMenuState(
+        var state = ApplicationMenuState(
             disabledCommands: disabled, viewMode: viewMode, previewCount: previewCount, sortBy: sortBy,
             foldersFirst: foldersFirst,
             hiddenFilesShown: hiddenFilesShown, folderTreeOpen: folderTreeOpen, infoPanelOpen: infoPanelOpen,
@@ -101,6 +103,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
             compressTitle: compressTitle, convertImagesCount: convertImagesCount,
             folderViewRemembered: folderViewRemembered, shownColumns: shownColumns,
             clipboardCutCount: clipboardCutCount, clipboardCopiedCount: clipboardCopiedCount)
+        state.groupBy = groupBy
+        return state
     }
 }
 
@@ -235,6 +239,9 @@ public enum ApplicationMenu {
             // The pane's count, only while it shows Previews: in another view each item switches to it.
             case .showPreviews9, .showPreviews4, .showPreviews2, .showPreviews1:
                 state.viewMode == .previews && PreviewGrid.valid(state.previewCount) == PreviewGrid.count(of: type)
+            case .groupByNone, .groupByName, .groupByModified, .groupByCreated, .groupByLastOpened, .groupByAdded,
+                .groupBySize, .groupByKind, .groupByTags, .groupByFolder:
+                GroupByPreference(command: type) == state.groupBy
             case .sortByName: state.sortBy == .name
             case .sortByModified: state.sortBy == .modified
             case .sortByCreated: state.sortBy == .created

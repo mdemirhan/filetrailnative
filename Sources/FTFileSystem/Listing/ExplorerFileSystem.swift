@@ -79,6 +79,8 @@ public protocol ExplorerFileSystem: Sendable {
     func realpath(_ path: String) throws -> String
     /// The colors of an item's Finder tags, in their order; none for an item that can't be read.
     func tagColors(_ path: String) -> [FinderTagColor]
+    /// The name of an item's first tag; nil for one without tags or that can't be read.
+    func firstTagName(_ path: String) -> String?
     /// When the item at `path` (a link itself) was put in its folder, in milliseconds since 1970; nil when the disk
     /// doesn't keep it or the item can't be read.
     func addedMs(_ path: String) -> Int64?
@@ -91,6 +93,7 @@ public protocol ExplorerFileSystem: Sendable {
 
 extension ExplorerFileSystem {
     public func tagColors(_ path: String) -> [FinderTagColor] { FinderTags.colors(path) }
+    public func firstTagName(_ path: String) -> String? { FinderTags.firstName(path) }
     public func addedMs(_ path: String) -> Int64? { FileTimes.addedMs(path) }
     public func lastOpenedMs(_ path: String) -> Int64? { FileTimes.lastOpenedMs(path) }
     /// Whatever `lastOpenedMs` is: a stand-in for the disk that answers it itself is asked item by item.

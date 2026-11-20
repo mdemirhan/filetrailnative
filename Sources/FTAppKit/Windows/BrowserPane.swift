@@ -6,6 +6,46 @@ import FTFoundation
 /// One pane of a tab: the folder it shows and its history, the view, order and hidden files it shows it with, its
 /// search, and the file list. The tab (`MainWindowController`) holds the window, the sidebar, the toolbar and the Info
 /// panel, which follow the pane the tab has active.
+/// The folder's order, Folders First and groups as on screen: what the folder is read in, so a change of any of them
+/// reads it again.
+struct ShownOrder: Equatable {
+    var sortBy: SortByPreference
+    var direction: SortDirectionPreference
+    var foldersFirst: Bool
+    var groupBy: GroupByPreference
+}
+
+extension GroupByPreference {
+    /// What the listing reads for these groups besides what the order needs.
+    var listingRead: DirectoryGroupRead {
+        switch self {
+        case .modified: .modified
+        case .created: .created
+        case .added: .added
+        case .lastOpened: .lastOpened
+        case .size: .size
+        case .tags: .tags
+        case .none, .name, .kind, .folder: .none
+        }
+    }
+}
+
+extension GroupByPreference {
+    /// The field a column of the List shows, to group by from its header; nil for Permissions.
+    static func of(_ column: DetailColumn) -> GroupByPreference? {
+        switch column.rawValue {
+        case "name": .name
+        case "modified": .modified
+        case "created": .created
+        case "lastOpened": .lastOpened
+        case "added": .added
+        case "size": .size
+        case "kind": .kind
+        default: nil
+        }
+    }
+}
+
 @MainActor
 final class BrowserPane {
     typealias HistoryMove = MainWindowController.HistoryMove
@@ -29,6 +69,9 @@ final class BrowserPane {
     var sortDirection: SortDirectionPreference
     var includeHidden: Bool
     var foldersFirst: Bool
+    /// What the pane groups folders by (View ▸ Group By), and search results by.
+    var groupBy: GroupByPreference
+    var searchGroupBy: GroupByPreference
     /// The view of the folder on screen, if a folder's view covers it (View ▸ Folder View), with what is changed of it
     /// on screen and not saved yet.
     var folderView: FolderViewOnScreen?
@@ -131,6 +174,8 @@ final class BrowserPane {
         sortDirection = startup.sortDirection
         includeHidden = startup.includeHidden
         foldersFirst = startup.foldersFirst
+        groupBy = startup.groupBy.isForFolders ? startup.groupBy : .none
+        searchGroupBy = startup.searchGroupBy.isForSearch ? startup.searchGroupBy : .none
         viewSizes = startup.viewSizes
         startFilterMode = startup.filterMode
         if let history, history.paths.indices.contains(history.index) {
@@ -165,12 +210,23 @@ final class BrowserPane {
     var shownSortBy: SortByPreference { folderView?.shown.sort?.by ?? sortBy }
     var shownSortDirection: SortDirectionPreference { folderView?.shown.sort?.direction ?? sortDirection }
     var shownFoldersFirst: Bool { folderView?.shown.foldersFirst ?? foldersFirst }
+    var shownGroupBy: GroupByPreference { folderView?.shown.groupBy ?? groupBy }
+
+    /// What Group By shows checked: search results' own while they show.
+    var activeGroupBy: GroupByPreference { searchStore?.showsResults == true ? searchGroupBy : shownGroupBy }
+
+    /// The folder's order and groups as on screen, for telling whether a change needs the folder read again.
+    var shownOrder: ShownOrder {
+        ShownOrder(
+            sortBy: shownSortBy, direction: shownSortDirection, foldersFirst: shownFoldersFirst, groupBy: shownGroupBy)
+    }
 
     /// What the toolbar and the menus show: the view on screen.
     var viewState: ExplorerViewState {
         ExplorerViewState(
             viewMode: shownMode, searchViewMode: searchViewMode, sortBy: shownSortBy,
-            sortDirection: shownSortDirection, includeHidden: includeHidden, foldersFirst: shownFoldersFirst)
+            sortDirection: shownSortDirection, includeHidden: includeHidden, foldersFirst: shownFoldersFirst,
+            groupBy: shownGroupBy, searchGroupBy: searchGroupBy)
     }
 
     // MARK: What the pane keeps
@@ -612,19 +668,21 @@ final class BrowserPane {
         let direction: SortDirection = order.direction == .asc ? .ascending : .descending
         let hidden = includeHidden
         let first = order.foldersFirst
+        let groupRead = order.groupBy.listingRead
         return await Result {
             try await service.snapshot(
-                path: path, includeHidden: hidden, sortBy: key, sortDirection: direction, foldersFirst: first)
+                path: path, includeHidden: hidden, sortBy: key, sortDirection: direction, foldersFirst: first,
+                groupRead: groupRead)
         }
     }
 
     /// The order a folder shown with `view` is read in: the view's where it keeps one, else the pane's.
     private func readOrder(_ view: FolderViewOnScreen?) -> (
-        by: SortByPreference, direction: SortDirectionPreference, foldersFirst: Bool
+        by: SortByPreference, direction: SortDirectionPreference, foldersFirst: Bool, groupBy: GroupByPreference
     ) {
         (
             view?.shown.sort?.by ?? sortBy, view?.shown.sort?.direction ?? sortDirection,
-            view?.shown.foldersFirst ?? foldersFirst
+            view?.shown.foldersFirst ?? foldersFirst, view?.shown.groupBy ?? groupBy
         )
     }
 
@@ -996,6 +1054,27 @@ final class BrowserPane {
         folderViewChanged()
     }
 
+    /// View ▸ Group By: the folder's items, or search results while they show, are put in groups by `field`. A folder
+    /// is read again, as for a new order; the folder's view takes it where it keeps it.
+    func setGroupBy(_ field: GroupByPreference) {
+        if let search = searchStore, search.showsResults {
+            guard field.isForSearch, field != searchGroupBy else { return }
+            searchGroupBy = field
+            content.setSearchGroupBy(field)
+            tab.paneChanged(.view, in: self)
+            tab.group?.tabChanged(tab)
+            return
+        }
+        guard field.isForFolders, field != shownGroupBy else { return }
+        if folderView?.shown.keeps(.groupBy) == true {
+            folderView?.shown.groupBy = field
+        } else {
+            groupBy = field
+        }
+        viewChanged()
+        folderViewChanged()
+    }
+
     /// Folders First on or off, for the folder's view where it keeps it.
     func toggleFoldersFirst() {
         if folderView?.shown.keeps(.foldersFirst) == true {
@@ -1016,7 +1095,7 @@ final class BrowserPane {
     func viewChanged(keepingTree: Bool = false, keepingSelection: Bool = false) {
         content.setView(
             sortBy: shownSortBy, direction: shownSortDirection, foldersFirst: shownFoldersFirst,
-            includeHidden: includeHidden)
+            includeHidden: includeHidden, groupBy: shownGroupBy)
         tab.paneChanged(.view, in: self)
         tab.group?.tabChanged(tab)
         // No folder to read again (`toggleHiddenFiles` with an empty currentPath).

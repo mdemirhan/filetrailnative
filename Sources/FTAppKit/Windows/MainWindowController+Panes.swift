@@ -105,7 +105,8 @@ extension MainWindowController {
             path: saved.path ?? "", rootPath: treeRootPath, favoritePath: nil, viewMode: saved.viewMode,
             searchViewMode: saved.searchViewMode, sortBy: saved.sortBy, sortDirection: saved.sortDirection,
             includeHidden: includeHidden, foldersFirst: saved.foldersFirst, favoritesExpanded: favoritesExpanded,
-            locationsExpanded: locationsExpanded, viewSizes: saved.viewSizes, filterMode: saved.filterMode)
+            locationsExpanded: locationsExpanded, viewSizes: saved.viewSizes, filterMode: saved.filterMode,
+            groupBy: saved.groupBy ?? .none, searchGroupBy: saved.searchGroupBy ?? .none)
         let pane = addSecondPane(start: start, history: history)
         if let view { pane.carry(view) }
         if let split { workspace.setPaneSplit(split) }
@@ -207,7 +208,8 @@ extension MainWindowController {
             path: path, rootPath: treeRootPath, favoritePath: nil, viewMode: pane.viewMode,
             searchViewMode: pane.searchViewMode, sortBy: pane.sortBy, sortDirection: pane.sortDirection,
             includeHidden: pane.includeHidden, foldersFirst: pane.foldersFirst, favoritesExpanded: favoritesExpanded,
-            locationsExpanded: locationsExpanded, viewSizes: pane.viewSizes)
+            locationsExpanded: locationsExpanded, viewSizes: pane.viewSizes, groupBy: pane.groupBy,
+            searchGroupBy: pane.searchGroupBy)
     }
 
     /// Connects a pane's list, path bar, menus and drags to the tab.

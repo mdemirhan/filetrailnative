@@ -620,6 +620,11 @@ extension HelpContent {
                                 "The sort button, View > Sort By, or a click on a column heading in List view orders by name, kind, date or size. Choosing the same order again in View > Sort By, or clicking the same heading, reverses it; the sort button has Ascending and Descending. Search results order by name, folder or kind: click their headings in List view."
                         ),
                         HelpRow(
+                            label: "Groups",
+                            description:
+                                "View > Group By puts the items in groups by name, a date, size, kind or tag, under a title for each: Today, Yesterday, Previous 7 Days, Previous 30 Days, the earlier months of this year, then each year before; or Zero bytes up to Over 10 GB. The groups keep their own order, the newest dates and the smallest sizes first and the rest A to Z, and the sort orders the items inside each group. Search results group by name, folder or kind. A folder can keep its grouping in its own view."
+                        ),
+                        HelpRow(
                             label: "Hidden files",
                             description:
                                 "Files whose names start with a dot, and items macOS marks as hidden, are hidden as in Finder. {toggleHiddenFiles} shows them in the tab on screen, with their icons faded; search follows this setting too."
@@ -891,6 +896,24 @@ extension HelpContent {
         HelpShortcutItem(
             group: .views, .command(.decreaseSize), "Smaller icons, narrower columns, or more and smaller previews"),
         HelpShortcutItem(group: .views, .command(.resetSize), "Icons, columns or previews back to their default size"),
+        HelpShortcutItem(group: .views, .command(.groupByNone), "Show the list without groups"),
+        HelpShortcutItem(group: .views, .command(.groupByName), "Group the list by the first letter of each name"),
+        HelpShortcutItem(
+            group: .views, .command(.groupByModified),
+            "Group the list by when each item last changed: Today, Yesterday, earlier"),
+        HelpShortcutItem(
+            group: .views, .command(.groupByCreated),
+            "Group the list by when each item was made: Today, Yesterday, earlier"),
+        HelpShortcutItem(
+            group: .views, .command(.groupByLastOpened), "Group the list by when each item was last opened"),
+        HelpShortcutItem(
+            group: .views, .command(.groupByAdded), "Group the list by when each item was put in the folder"),
+        HelpShortcutItem(
+            group: .views, .command(.groupBySize), "Group the list by size, from Zero bytes to Over 10 GB"),
+        HelpShortcutItem(
+            group: .views, .command(.groupByKind), "Group the list by kind: folders, images, documents and the rest"),
+        HelpShortcutItem(group: .views, .command(.groupByTags), "Group the list by each item's first tag"),
+        HelpShortcutItem(group: .views, .command(.groupByFolder), "Group search results by the folder each one is in"),
         HelpShortcutItem(group: .views, .command(.sortByName), "Order the list by name, numbers in counting order"),
         HelpShortcutItem(group: .views, .command(.sortByModified), "Order the list by when each item last changed"),
         HelpShortcutItem(group: .views, .command(.sortByCreated), "Order the list by when each item was made"),

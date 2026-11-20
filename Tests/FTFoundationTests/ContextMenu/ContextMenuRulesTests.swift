@@ -317,8 +317,8 @@ struct ContextMenuRulesTests {
         let menu = labels(background, world(pasteDestination: true))
         #expect(
             menu == [
-                "New Folder", "New File", "Show Info", "Calculate Size", "Paste", "Copy Path", "View As", "Sort By",
-                "Folder View", "Open in Terminal", "Show in Finder",
+                "New Folder", "New File", "Show Info", "Calculate Size", "Paste", "Copy Path", "View As", "Group By",
+                "Sort By", "Folder View", "Open in Terminal", "Show in Finder",
             ])
         let inTrash = hidden(background, world(current: Self.trash + "/old"))
         #expect(

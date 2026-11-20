@@ -23,6 +23,9 @@ public struct StartupTab: Equatable, Sendable {
     /// How typing filters its pane's folders, for a pane that comes back; nil for a new one, which starts with the
     /// mode chosen last.
     public var filterMode: NameMatchMode? = nil
+    /// What its pane groups folders by, and search results by.
+    public var groupBy: GroupByPreference = .none
+    public var searchGroupBy: GroupByPreference = .none
 
     /// The tab as it is saved between launches.
     public var openTab: OpenTabPreference {
@@ -31,7 +34,8 @@ public struct StartupTab: Equatable, Sendable {
             favoritePath: favoritePath, viewMode: viewMode, searchViewMode: searchViewMode, sortBy: sortBy,
             sortDirection: sortDirection, includeHidden: includeHidden, foldersFirst: foldersFirst,
             favoritesExpanded: favoritesExpanded, locationsExpanded: locationsExpanded, secondPane: secondPane,
-            activePane: activePane, paneSplit: paneSplit, viewSizes: viewSizes, filterMode: filterMode)
+            activePane: activePane, paneSplit: paneSplit, viewSizes: viewSizes, filterMode: filterMode,
+            groupBy: groupBy, searchGroupBy: searchGroupBy)
     }
 }
 
@@ -65,6 +69,8 @@ public enum StartupTabs {
         start.paneSplit = tab.paneSplit
         start.viewSizes = tab.viewSizes
         start.filterMode = tab.filterMode
+        start.groupBy = tab.groupBy ?? .none
+        start.searchGroupBy = tab.searchGroupBy ?? .none
         return start
     }
 
@@ -117,7 +123,8 @@ public enum StartupTabs {
             favoritePath: nil, viewMode: second.viewMode, searchViewMode: second.searchViewMode,
             sortBy: second.sortBy, sortDirection: second.sortDirection, includeHidden: second.includeHidden,
             foldersFirst: second.foldersFirst, favoritesExpanded: tab.favoritesExpanded,
-            locationsExpanded: tab.locationsExpanded, viewSizes: second.viewSizes, filterMode: second.filterMode)
+            locationsExpanded: tab.locationsExpanded, viewSizes: second.viewSizes, filterMode: second.filterMode,
+            groupBy: second.groupBy ?? .none, searchGroupBy: second.searchGroupBy ?? .none)
     }
 
     /// A tab saved on a favorite removed since opens as the folder it is, so a row is selected and the tree follows it.

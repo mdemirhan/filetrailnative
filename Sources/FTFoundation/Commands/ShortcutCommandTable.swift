@@ -126,6 +126,16 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case increaseSize
     case decreaseSize
     case resetSize
+    case groupByNone
+    case groupByName
+    case groupByModified
+    case groupByCreated
+    case groupByLastOpened
+    case groupByAdded
+    case groupBySize
+    case groupByKind
+    case groupByTags
+    case groupByFolder
     case sortByName
     case sortByKind
     case sortByModified
@@ -450,6 +460,36 @@ extension ShortcutCommands {
             menuPath: "View > Make Smaller"),
         ShortcutCommandDefinition(
             id: .resetSize, label: "Default Size", group: .view, defaults: ["Cmd+0"], menuPath: "View > Default Size"),
+        ShortcutCommandDefinition(
+            id: .groupByNone, label: "Group by None", group: .view, defaults: [],
+            menuPath: "View > Group By > None"),
+        ShortcutCommandDefinition(
+            id: .groupByName, label: "Group by Name", group: .view, defaults: [],
+            menuPath: "View > Group By > Name"),
+        ShortcutCommandDefinition(
+            id: .groupByModified, label: "Group by Date Modified", group: .view, defaults: [],
+            menuPath: "View > Group By > Date Modified"),
+        ShortcutCommandDefinition(
+            id: .groupByCreated, label: "Group by Date Created", group: .view, defaults: [],
+            menuPath: "View > Group By > Date Created"),
+        ShortcutCommandDefinition(
+            id: .groupByLastOpened, label: "Group by Date Last Opened", group: .view, defaults: [],
+            menuPath: "View > Group By > Date Last Opened"),
+        ShortcutCommandDefinition(
+            id: .groupByAdded, label: "Group by Date Added", group: .view, defaults: [],
+            menuPath: "View > Group By > Date Added"),
+        ShortcutCommandDefinition(
+            id: .groupBySize, label: "Group by Size", group: .view, defaults: [],
+            menuPath: "View > Group By > Size"),
+        ShortcutCommandDefinition(
+            id: .groupByKind, label: "Group by Kind", group: .view, defaults: [],
+            menuPath: "View > Group By > Kind"),
+        ShortcutCommandDefinition(
+            id: .groupByTags, label: "Group by Tags", group: .view, defaults: [],
+            menuPath: "View > Group By > Tags"),
+        ShortcutCommandDefinition(
+            id: .groupByFolder, label: "Group by Folder", group: .view, defaults: [],
+            menuPath: "View > Group By > Folder"),
         ShortcutCommandDefinition(
             id: .sortByName, label: "Sort by Name", group: .view, defaults: [], menuPath: "View > Sort By > Name"),
         ShortcutCommandDefinition(

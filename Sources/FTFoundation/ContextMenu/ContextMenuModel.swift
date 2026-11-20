@@ -27,6 +27,8 @@ public enum ContextMenuActionID: String, Sendable, CaseIterable, Hashable, Codab
     case openInOtherPane
     /// View ▸ Folder View's submenu, on the folder's background.
     case folderView
+    /// View ▸ Group By's submenu, on the folder's background.
+    case groupBy
     /// What is right-clicked joins what is on the clipboard, to be copied or moved.
     case addToCopied, addToCut
     /// What is right-clicked, all on the clipboard with one intent, is pasted with the other from now on.
@@ -36,7 +38,7 @@ public enum ContextMenuActionID: String, Sendable, CaseIterable, Hashable, Codab
     /// The items that open a submenu rather than act.
     public var isSubmenu: Bool {
         self == .openWith || self == .viewAs || self == .sortBy || self == .otherPane || self == .newFile
-            || self == .folderView
+            || self == .folderView || self == .groupBy
     }
 }
 
@@ -152,7 +154,8 @@ public enum ContextMenuItems {
                 // Only with an image or text on the system's clipboard (hidden by the caller otherwise).
                 item(.pasteAsFile, options.pasteAsFileLabel ?? PasteAsFile.commandLabel, .pasteAsFile),
                 item(.copyPath, "Copy Path", .copyPath), line("separator-background-clipboard"),
-                item(.viewAs, "View As", .viewAs, submenu: true), item(.sortBy, "Sort By", .sortBy, submenu: true),
+                item(.viewAs, "View As", .viewAs, submenu: true),
+                item(.groupBy, "Group By", .groupBy, submenu: true), item(.sortBy, "Sort By", .sortBy, submenu: true),
                 item(.folderView, "Folder View", .folderView, submenu: true),
                 item(.otherPane, "Other Pane", .twoPanes, submenu: true),
                 line("separator-background-view"),

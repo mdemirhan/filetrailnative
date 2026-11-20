@@ -167,6 +167,16 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private(set) var sortBy = SortByPreference.name
     private(set) var sortDirection = SortDirectionPreference.asc
     private(set) var foldersFirst = true
+    /// What the folder's items are grouped by, and search results by (View ▸ Group By).
+    private(set) var groupBy = GroupByPreference.none
+    private(set) var searchGroupBy = GroupByPreference.none
+    /// What the list on screen is grouped by: search results' own while they show.
+    var activeGroupBy: GroupByPreference { searchDisplay != nil ? searchGroupBy : groupBy }
+    /// The groups shown, in order, each with where its items are in `entries`; none while nothing is grouped.
+    private(set) var groups: [ShownGroup] = []
+    private var dayObserver: (any NSObjectProtocol)?
+    /// The day the date groups count from; tests move it.
+    var now: () -> Date = { AppClock.now }
     private(set) var includeHidden = false
     private(set) var columnState = ListColumnState.standard
     private(set) var listFilter = ListFilterTyping()
@@ -260,12 +270,19 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         self.loaders = loaders
         super.init(nibName: nil, bundle: nil)
         folderSizes.observe(self) { [weak self] in self?.folderSizesChanged() }
+        // The date groups change at midnight; the system says so after a sleep or a clock change too.
+        dayObserver = NotificationCenter.default.addObserver(forName: .NSCalendarDayChanged, object: nil, queue: .main)
+        {
+            [weak self] _ in
+            MainActor.assumeIsolated { self?.dayChanged() }
+        }
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
     isolated deinit {
         for observer in windowObservers { NotificationCenter.default.removeObserver(observer) }
+        if let dayObserver { NotificationCenter.default.removeObserver(dayObserver) }
         loading?.timer?.cancel()
     }
 
@@ -461,6 +478,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         for entry in customIconsChanged { iconStore?.forget(IconRequest(entry: entry.iconEntry)) }
         let customIconPaths = Set(customIconsChanged.map(\.path))
         let previousPaths = entryPaths
+        let groupsBefore = groups
         let orderBefore = takeOrderBeforeRemoval()
         listed = newEntries
         rowsCache = nil
@@ -480,12 +498,14 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             resanitizeSelection(previousPaths: sameFolder ? orderBefore ?? previousPaths : previousPaths)
         }
         closeRenameIfItemLeft()
-        if let kept, !unchanged, keepingScroll, inlineRename == nil, previousPaths == entryPaths {
+        // Other groups are another order, whose rows are all drawn again.
+        let regrouped = groups != groupsBefore
+        if let kept, !unchanged, keepingScroll, inlineRename == nil, previousPaths == entryPaths, !regrouped {
             // The same rows in the same order: only the rows of the items that changed are drawn again.
             let reloaded = Set(kept.changedPaths).union(customIconPaths)
             pane?.reloadRows(paths: reloaded)
             filesChanged(changedPaths, besides: reloaded)
-        } else if !unchanged || !keepingScroll {
+        } else if !unchanged || !keepingScroll || regrouped {
             // Every row drawn again, as a new listing: each preview is checked against its file again.
             // The same folder in another order (a sort, Folders First, hidden files) starts at its top, and the List
             // stays where it was scrolled sideways: the column whose header was clicked stays in view.
@@ -578,12 +598,16 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     /// How the folder is ordered and shown. The window re-reads the folder for a new order; a size order is finished
     /// here, as folder sizes arrive.
-    func setView(sortBy: SortByPreference, direction: SortDirectionPreference, foldersFirst: Bool, includeHidden: Bool)
-    {
+    func setView(
+        sortBy: SortByPreference, direction: SortDirectionPreference, foldersFirst: Bool, includeHidden: Bool,
+        groupBy: GroupByPreference = .none
+    ) {
         self.sortBy = sortBy
         sortDirection = direction
         self.foldersFirst = foldersFirst
         self.includeHidden = includeHidden
+        // The folder is read again for other groups, with the values they need.
+        self.groupBy = groupBy
         barScaleCache = nil
         pane?.refreshLook()
     }
@@ -812,6 +836,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             lastFiltered = filter.isEmpty ? nil : (filter, filterMode, sourceVersion, filtered)
             entries = filter.isEmpty ? listed : filtered.map(SearchResults.entry)
             applyPin()
+            applyGroups()
             entryPaths = entries.map(\.path)
             positionsCache = nil
             barScaleCache = nil
@@ -827,10 +852,95 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             sortBy: sortBy, direction: sortDirection, foldersFirst: foldersFirst
         ) { sizes.readySize($0) }
         applyPin()
+        applyGroups()
         entryPaths = entries.map(\.path)
         positionsCache = nil
         barScaleCache = nil
         updateFilterBar()
+    }
+
+    /// The entries in their groups: each group's items together, in the order shown, the groups in their order.
+    private func applyGroups() {
+        let by = activeGroupBy
+        guard by != .none, !entries.isEmpty else {
+            groups = []
+            return
+        }
+        let spans = EntryGroups.make(
+            keys: groupKeys(entries, by: by), groupBy: by, foldersFirst: searchDisplay == nil && foldersFirst)
+        var ordered: [DirectoryEntry] = []
+        ordered.reserveCapacity(entries.count)
+        var shown: [ShownGroup] = []
+        for span in spans {
+            let start = ordered.count
+            for position in span.positions { ordered.append(entries[position]) }
+            shown.append(ShownGroup(group: span.group, range: start..<ordered.count))
+        }
+        entries = ordered
+        groups = shown
+    }
+
+    /// The group of each entry: by its name, its kind, the date or the size or the tag its listing read, or the
+    /// folder a search result is in.
+    private func groupKeys(_ shown: [DirectoryEntry], by: GroupByPreference) -> [EntryGroupKey] {
+        switch by {
+        case .none:
+            return []
+        case .name:
+            return shown.map { NameGroups.key(name: $0.name) }
+        case .kind:
+            var kinds = KindGroupCache()
+            return shown.map { kinds.group(fileExtension: $0.fileExtension, isFolder: $0.isDirectoryLike).key }
+        case .modified, .created, .added, .lastOpened:
+            let dates = DateGroups(now: now())
+            let missing =
+                by == .lastOpened ? "Never Opened" : by == .added ? "No Date Added" : "No Date"
+            return shown.map { dates.key(milliseconds: $0.groupTimeMs, missing: missing) }
+        case .size:
+            let sizes = folderSizes
+            return shown.map {
+                SizeGroups.key(bytes: FolderContents.sizeBytes(of: $0) { sizes.readySize($0) })
+            }
+        case .tags:
+            return shown.map { TagGroups.key(firstTag: $0.firstTag) }
+        case .folder:
+            guard let search, let root = searchDisplay?.rootPath else {
+                return shown.map { _ in FolderGroups.key(label: "", parent: "", isSearchedFolder: true) }
+            }
+            return shown.map {
+                let parent = NodePath.dirname($0.path)
+                return FolderGroups.key(
+                    label: search.folderLabel($0.path), parent: parent, isSearchedFolder: parent == root)
+            }
+        }
+    }
+
+    // MARK: Groups
+
+    /// The groups made again over the same items (the day changed, search results grouped otherwise): every row is
+    /// drawn again where the list is scrolled.
+    private func regroup() {
+        let previousPaths = entryPaths
+        reorder()
+        resanitizeSelection(previousPaths: previousPaths)
+        pane?.reload(scrollToTop: false)
+        pane?.syncSelection()
+        refreshState()
+        updateStatus()
+    }
+
+    /// Midnight: the date groups move on a day, Today's items into Yesterday.
+    private func dayChanged() {
+        guard activeGroupBy.isDate, !groups.isEmpty else { return }
+        regroup()
+    }
+
+    /// Search results' Group By: they are grouped again at once, as they carry what their groups need.
+    func setSearchGroupBy(_ by: GroupByPreference) {
+        guard by != searchGroupBy else { return }
+        searchGroupBy = by
+        guard searchDisplay != nil else { return }
+        regroup()
     }
 
     /// The pinned filter keeps the folders and the files it matches of what the typed filter left.
@@ -1090,11 +1200,12 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             setSort: { [weak self] key, direction in self?.onSearchSortSet?(key, direction) })
         settle(.loaded)
         let previousPaths = entryPaths
+        let groupsBefore = groups
         listed = display.results.map(SearchResults.entry)
         rowsCache = nil
         reorder()
         // The views see the results' columns and order.
-        if newList || previousPaths != entryPaths {
+        if newList || previousPaths != entryPaths || groups != groupsBefore {
             selection = selection.sanitized(entryPaths: entryPaths)
             pane?.reload(scrollToTop: newList)
         } else {
@@ -1537,11 +1648,12 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     private func folderSizesChanged() {
         barScaleCache = nil
-        if sortBy == .size, !listed.isEmpty {
-            // The list is ordered again as each folder size arrives.
+        if sortBy == .size || (groupBy == .size && searchDisplay == nil), !listed.isEmpty {
+            // The list is ordered, and grouped, again as each folder size arrives.
             let before = entries.map(\.path)
+            let groupsBefore = groups
             reorder()
-            if entries.map(\.path) != before {
+            if entries.map(\.path) != before || groups != groupsBefore {
                 pane?.reload(scrollToTop: false)
                 pane?.syncSelection()
                 updateStatus()

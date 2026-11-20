@@ -23,6 +23,9 @@ struct ExplorerViewState: Equatable, Sendable {
     var sortDirection: SortDirectionPreference
     var includeHidden: Bool
     var foldersFirst: Bool
+    /// What the folder on screen is grouped by, and search results by.
+    var groupBy = GroupByPreference.none
+    var searchGroupBy = GroupByPreference.none
 }
 
 /// What changed in a window, for the panes that show it. A change of a pane's own (its folder, history, view, search

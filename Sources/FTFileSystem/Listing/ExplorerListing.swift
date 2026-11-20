@@ -206,7 +206,8 @@ enum ExplorerListing {
     /// their own paths (the Trash of each disk); one that can't be read has nothing to add.
     static func snapshot(
         path: String, includeHidden: Bool, sortBy: DirectorySortKey, sortDirection: SortDirection,
-        foldersFirst: Bool, alsoListing: [String] = [], trash: TrashFolders? = nil,
+        foldersFirst: Bool, groupRead: DirectoryGroupRead = .none, alsoListing: [String] = [],
+        trash: TrashFolders? = nil,
         _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler, order: NameOrder
     ) throws -> DirectorySnapshot {
         let directoryPath = try resolveDirectoryPath(path, fileSystem)
@@ -226,7 +227,10 @@ enum ExplorerListing {
         var labels: [String] = []
         var tagsLeft = listedTagLimit
         // Asked for once for the read: what it takes to read the date is the same for every item.
-        let lastOpened = sortBy == .lastOpened ? fileSystem.lastOpenedReader() : nil
+        let lastOpened = sortBy == .lastOpened || groupRead == .lastOpened ? fileSystem.lastOpenedReader() : nil
+        // The groups' values are read as an order's are: the dates and sizes from the item's look, which the folder
+        // read gives, Date Last Opened and the tags with one more look at each item.
+        let groupNeedsStats = groupRead == .modified || groupRead == .created || groupRead == .size
         for folder in folders {
             for record in folder.records {
                 let hidden = isHidden(record)
@@ -239,7 +243,8 @@ enum ExplorerListing {
                 // permissions tell apart. Other entries are not looked at unless the sort needs it.
                 let needsExecutableFlag = kind == .file && fileExtension.isEmpty
                 let stats =
-                    sortBy == .modified || sortBy == .created || sortBy == .size || needsExecutableFlag
+                    sortBy == .modified || sortBy == .created || sortBy == .size || groupNeedsStats
+                        || needsExecutableFlag
                     ? bestEffortStats(record, path: entryPath, fileSystem) : nil
                 var entry = DirectoryEntry(
                     path: entryPath, name: record.name, fileExtension: fileExtension, kind: kind, isHidden: hidden,
@@ -258,6 +263,15 @@ enum ExplorerListing {
                     entry.tagColors = fileSystem.tagColors(entryPath)
                     tagsLeft -= 1
                 }
+                switch groupRead {
+                case .modified: entry.groupTimeMs = stats?.mtimeMs
+                case .created: entry.groupTimeMs = stats?.birthtimeMs
+                case .added: entry.groupTimeMs = record.addedMs
+                case .lastOpened: entry.groupTimeMs = lastOpened?(entryPath)
+                case .size: entry.sizeBytes = listedSize(record, kind: kind, stats: stats, path: entryPath, fileSystem)
+                case .tags: entry.firstTag = fileSystem.firstTagName(entryPath)
+                case .none: break
+                }
                 switch sortBy {
                 case .modified:
                     times.append(stats?.mtimeMs)
@@ -271,14 +285,7 @@ enum ExplorerListing {
                     // Not in the folder read: one look at each item, only while sorted by it.
                     times.append(lastOpened?(entryPath))
                 case .size:
-                    // A link to a folder is sized as the link itself (see readEntrySize).
-                    if kind == .symlinkDirectory {
-                        sizes.append((record.lstat ?? safeLstat(entryPath, fileSystem))?.size)
-                    } else if let stats, kind == .file || kind == .symlinkFile {
-                        sizes.append(stats.size)
-                    } else {
-                        sizes.append(nil)
-                    }
+                    sizes.append(listedSize(record, kind: kind, stats: stats, path: entryPath, fileSystem))
                 case .kind:
                     labels.append(kinds.label(for: kind, fileExtension: fileExtension, path: entryPath))
                 case .name:
@@ -302,6 +309,17 @@ enum ExplorerListing {
         }
         return DirectorySnapshot(
             path: directoryPath, parentPath: directoryPath == parent ? nil : parent, entries: sorted)
+    }
+
+    /// The size a listing gives an item: a file's, a link to a folder's own (see readEntrySize); nil for a folder,
+    /// whose size is measured.
+    private static func listedSize(
+        _ record: DirectoryRecord, kind: EntryKind, stats: FileStats?, path: String,
+        _ fileSystem: any ExplorerFileSystem
+    ) -> Int64? {
+        if kind == .symlinkDirectory { return (record.lstat ?? safeLstat(path, fileSystem))?.size }
+        if let stats, kind == .file || kind == .symlinkFile { return stats.size }
+        return nil
     }
 
     /// The order of the entries.

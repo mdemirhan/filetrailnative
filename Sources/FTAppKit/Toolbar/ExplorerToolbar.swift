@@ -347,7 +347,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         let panels = context.panels
         if let button = views[id] as? ToolbarButton {
             // Set once: the items whose tooltip says their state set it below.
-            if ![.viewMenu, .sort, .viewOptions, .theme, .clipboard].contains(id) {
+            if ![.viewMenu, .sort, .groupBy, .viewOptions, .theme, .clipboard].contains(id) {
                 button.tooltip = Tooltips.toolbarItemTooltip(itemID: id, state: tooltipState, shortcuts: shortcuts)
             }
             switch id {
@@ -370,8 +370,14 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
                 button.tooltip = "View as \(mode.menuName)"
             case .sort:
                 button.isEnabled = canPerform(.sortByName)
-                button.tooltip =
-                    "Sort By: \(view.sortBy.title), \(view.sortDirection == .asc ? "Ascending" : "Descending")"
+                let sorted = "Sort By: \(view.sortBy.title), \(view.sortDirection == .asc ? "Ascending" : "Descending")"
+                // Grouped, both: the groups decide where an item is, the order where it is in its group.
+                button.tooltip = view.groupBy == .none ? sorted : "Group By: \(view.groupBy.title) \u{00B7} " + sorted
+            case .groupBy:
+                let grouped = context.searchRootPath != nil ? view.searchGroupBy : view.groupBy
+                button.isEnabled = canPerform(.groupByNone)
+                button.isOn = grouped != .none
+                button.tooltip = "Group By: \(grouped.title)"
             case .viewOptions: button.tooltip = "View Options"
             case .theme:
                 let theme = context.preferences.theme
@@ -800,6 +806,11 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
                 guard let self, let button else { return }
                 self.toggleMenu(from: button) { self.sortMenu(anchor: button) }
             }
+        case .groupBy:
+            button.onClick = { [weak self, weak button] in
+                guard let self, let button else { return }
+                self.toggleMenu(from: button) { self.groupByMenu(anchor: button) }
+            }
         case .viewOptions:
             button.onClick = { [weak self, weak button] in
                 guard let self, let button else { return }
@@ -864,6 +875,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         case .up: "Enclosing Folder"
         case .viewMenu: "View Mode"
         case .sort: "Sort By"
+        case .groupBy: "Group By"
         case .viewOptions: "View Options"
         case .foldersFirst: "Folders First"
         case .hidden: "Hidden Files"

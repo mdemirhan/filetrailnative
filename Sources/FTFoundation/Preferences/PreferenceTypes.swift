@@ -79,6 +79,73 @@ public enum SortByPreference: String, Codable, CaseIterable, Sendable, Hashable 
     }
 }
 
+/// What the items of a folder, or search results, are put in groups by (View ▸ Group By). None shows one list.
+public enum GroupByPreference: String, Codable, CaseIterable, Sendable, Hashable {
+    case none, name, modified, created, lastOpened, added, size, kind, tags, folder
+
+    /// The fields a folder is grouped by, as the menus list them: the order of fields and columns, Tags after Kind.
+    public static let menuOrder: [GroupByPreference] = [
+        .name, .modified, .created, .lastOpened, .added, .size, .kind, .tags,
+    ]
+
+    /// The fields search results are grouped by: what each result carries, as their order is (name, folder, kind).
+    /// Dates, sizes and tags are read for the rows on screen only.
+    public static let searchMenuOrder: [GroupByPreference] = [.name, .folder, .kind]
+
+    /// What every menu calls it.
+    public var title: String {
+        switch self {
+        case .none: "None"
+        case .name: "Name"
+        case .modified: "Date Modified"
+        case .created: "Date Created"
+        case .lastOpened: "Date Last Opened"
+        case .added: "Date Added"
+        case .size: "Size"
+        case .kind: "Kind"
+        case .tags: "Tags"
+        case .folder: "Folder"
+        }
+    }
+
+    /// Whether its groups are of dates, which change at midnight.
+    public var isDate: Bool { [.modified, .created, .lastOpened, .added].contains(self) }
+
+    /// Whether a folder can be grouped by it (Folder is search results' own).
+    public var isForFolders: Bool { self != .folder }
+
+    /// Whether search results can be grouped by it.
+    public var isForSearch: Bool { self == .none || Self.searchMenuOrder.contains(self) }
+
+    /// The View ▸ Group By item that groups by it.
+    public var command: AppCommand {
+        switch self {
+        case .none: .groupByNone
+        case .name: .groupByName
+        case .modified: .groupByModified
+        case .created: .groupByCreated
+        case .lastOpened: .groupByLastOpened
+        case .added: .groupByAdded
+        case .size: .groupBySize
+        case .kind: .groupByKind
+        case .tags: .groupByTags
+        case .folder: .groupByFolder
+        }
+    }
+
+    /// The field a View ▸ Group By item groups by; nil for another command.
+    public init?(command: AppCommand) {
+        guard let field = Self.allCases.first(where: { $0.command == command }) else { return nil }
+        self = field
+    }
+
+    /// As a pane is saved with it: nil for none, and for a field the folders (or the results) can't be grouped by.
+    public static func saved(_ groupBy: GroupByPreference?, search: Bool) -> GroupByPreference? {
+        guard let groupBy, groupBy != .none, search ? groupBy.isForSearch : groupBy.isForFolders else { return nil }
+        return groupBy
+    }
+}
+
 public enum FavoritesPlacement: String, Codable, CaseIterable, Sendable, Hashable {
     case integrated, separate
 }
@@ -504,13 +571,17 @@ public struct OpenTabPreference: Codable, Equatable, Sendable {
     /// How typing filters its first pane's folders, Fuzzy or Contains; nil in a file saved before panes kept
     /// theirs, and for a tab a new window starts from: the pane then starts with the mode chosen last.
     public var filterMode: NameMatchMode?
+    /// What its first pane groups folders by, and search results by; nil for none, as in a file saved before groups.
+    public var groupBy: GroupByPreference?
+    public var searchGroupBy: GroupByPreference?
 
     public init(
         path: String?, treeRootPath: String?, favoritePath: String?, viewMode: ExplorerViewMode,
         searchViewMode: ExplorerViewMode, sortBy: SortByPreference, sortDirection: SortDirectionPreference,
         includeHidden: Bool, foldersFirst: Bool, favoritesExpanded: Bool, locationsExpanded: Bool,
         secondPane: OpenPanePreference? = nil, activePane: Int? = nil, paneSplit: Double? = nil,
-        viewSizes: PaneViewSizes? = nil, filterMode: NameMatchMode? = nil
+        viewSizes: PaneViewSizes? = nil, filterMode: NameMatchMode? = nil, groupBy: GroupByPreference? = nil,
+        searchGroupBy: GroupByPreference? = nil
     ) {
         self.path = path
         self.treeRootPath = treeRootPath
@@ -528,6 +599,8 @@ public struct OpenTabPreference: Codable, Equatable, Sendable {
         self.paneSplit = secondPane == nil ? nil : paneSplit
         self.viewSizes = viewSizes
         self.filterMode = filterMode
+        self.groupBy = GroupByPreference.saved(groupBy, search: false)
+        self.searchGroupBy = GroupByPreference.saved(searchGroupBy, search: true)
     }
 
     /// The tab with its active pane alone, as a new window starts from it: that pane's folder, view, order and sizes.
@@ -544,6 +617,8 @@ public struct OpenTabPreference: Codable, Equatable, Sendable {
             alone.includeHidden = second.includeHidden
             alone.foldersFirst = second.foldersFirst
             alone.viewSizes = second.viewSizes
+            alone.groupBy = second.groupBy
+            alone.searchGroupBy = second.searchGroupBy
         }
         alone.secondPane = nil
         alone.activePane = nil
@@ -567,11 +642,15 @@ public struct OpenPanePreference: Codable, Equatable, Sendable {
     public var viewSizes: PaneViewSizes?
     /// How typing filters the pane's folders; nil in a file saved before panes kept theirs.
     public var filterMode: NameMatchMode?
+    /// What the pane groups folders by, and search results by; nil for none.
+    public var groupBy: GroupByPreference?
+    public var searchGroupBy: GroupByPreference?
 
     public init(
         path: String?, viewMode: ExplorerViewMode, searchViewMode: ExplorerViewMode, sortBy: SortByPreference,
         sortDirection: SortDirectionPreference, includeHidden: Bool, foldersFirst: Bool,
-        viewSizes: PaneViewSizes? = nil, filterMode: NameMatchMode? = nil
+        viewSizes: PaneViewSizes? = nil, filterMode: NameMatchMode? = nil, groupBy: GroupByPreference? = nil,
+        searchGroupBy: GroupByPreference? = nil
     ) {
         self.path = path
         self.viewMode = viewMode
@@ -582,6 +661,8 @@ public struct OpenPanePreference: Codable, Equatable, Sendable {
         self.foldersFirst = foldersFirst
         self.viewSizes = viewSizes
         self.filterMode = filterMode
+        self.groupBy = GroupByPreference.saved(groupBy, search: false)
+        self.searchGroupBy = GroupByPreference.saved(searchGroupBy, search: true)
     }
 }
 

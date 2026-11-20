@@ -183,12 +183,58 @@ final class PreviewsViewController: IconViewController {
         // By the columns the grid on screen was fitted with: counted from the pane's width, which has changed by
         // now, the old places give another number (2 across a pane a little narrower count as 1), and the row kept
         // was another row.
-        let index = min(layout.row(atScrollTop: top + layout.rowHeight / 2) * gridColumns, entries.count - 1)
+        let index = min(firstItem(onRow: layout.row(atScrollTop: top + layout.rowHeight / 2)), entries.count - 1)
         return { [self] in
             placing {
-                scrollClamped(to: NSPoint(x: 0, y: Double(index / max(1, gridColumns)) * layout.rowHeight))
+                scrollClamped(to: NSPoint(x: 0, y: Double(row(ofItem: index)) * layout.rowHeight))
             }
         }
+    }
+
+    /// The first file of a row: grouped, each group starts a row of its own, so rows aren't all full.
+    private func firstItem(onRow row: Int) -> Int {
+        guard let lines = groupedLines else { return row * max(1, gridColumns) }
+        let items = lines.items(onLine: row)
+        return items.isEmpty ? entries.count - 1 : items.lowerBound
+    }
+
+    /// The row a file is on.
+    private func row(ofItem index: Int) -> Int {
+        groupedLines?.place(ofItem: index)?.line ?? index / max(1, gridColumns)
+    }
+
+    // MARK: Groups
+
+    /// No header rows: a row stays exactly the pane's height, which every rule of the file on screen at 1 at a time
+    /// stands on. Each group starts on a row of its own, and a label over the pane names the group on screen.
+    override var groupHeaderExtent: Double { 0 }
+
+    /// The group of the row at the top, over the pane's top left corner on glass; made the first time it shows.
+    private var groupLabelView: GroupLabelView?
+
+    override func placeGroupHeaders() {
+        super.placeGroupHeaders()
+        guard let lines = groupedLines, let host, !entries.isEmpty, layout.rowHeight > 0 else {
+            groupLabelView?.isHidden = true
+            return
+        }
+        let groupLabel = groupLabelView ?? GroupLabelView()
+        groupLabelView = groupLabel
+        let top = Double(scroll.contentView.bounds.origin.y)
+        let row = layout.row(atScrollTop: top + layout.rowHeight / 2)
+        let first = lines.items(onLine: row).lowerBound
+        guard let number = lines.group(ofItem: min(first, entries.count - 1)), groups.indices.contains(number) else {
+            groupLabel.isHidden = true
+            return
+        }
+        let group = groups[number]
+        // At 1 at a time, which of the group's files this is.
+        let place = count == 1 ? "\(first - group.range.lowerBound + 1) of \(group.range.count)" : nil
+        groupLabel.show(title: group.group.title, place: place, theme: host.theme)
+        groupLabel.isHidden = false
+        let size = groupLabel.fittingSize
+        groupLabel.frame = NSRect(x: 12, y: root.roomAboveRows + 10, width: size.width, height: size.height)
+        root.addSubview(groupLabel, positioned: .above, relativeTo: nil)
     }
 
     /// The columns of the grid as it was last fitted (`PreviewGrid.shape`).
@@ -267,7 +313,7 @@ final class PreviewsViewController: IconViewController {
         guard count == 1, layout.rowHeight > 0, let paths = host?.selection.paths, paths.count == 1,
             let index = indexByPath[paths[0]]
         else { return nil }
-        return min(maxScrollTop, Double(index / max(1, gridColumns)) * layout.rowHeight)
+        return min(maxScrollTop, Double(row(ofItem: index)) * layout.rowHeight)
     }
 
     /// A scroll that ends between rows settles on the next row the way it went, or back where it started when it went
@@ -316,7 +362,9 @@ final class PreviewsViewController: IconViewController {
             host.selection.paths.count <= 1
         else { return }
         let top = Double(scroll.contentView.bounds.origin.y)
-        let index = min(layout.row(atScrollTop: top + layout.rowHeight / 2), entries.count - 1)
+        // At 1 at a time a row is a file; grouped, rows are numbered across the groups as well.
+        let row = layout.row(atScrollTop: top + layout.rowHeight / 2)
+        let index = min(groupedLines == nil ? row : firstItem(onRow: row), entries.count - 1)
         let path = entries[index].path
         guard host.selection.paths != [path] else { return }
         host.selectionChanged(.single(path))

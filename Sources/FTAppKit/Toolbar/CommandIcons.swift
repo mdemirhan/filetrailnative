@@ -16,6 +16,8 @@ extension CommandIcon {
         case .list: "rectangle.split.3x1"
         case .previews: "photo.on.rectangle"
         case .sortBy: "arrow.up.arrow.down"
+        // Finder's Group button.
+        case .groupBy: "square.grid.3x1.below.line.grid.1x2"
         case .folderView: "folder.badge.gearshape"
         case .foldersFirst: "text.below.folder"
         case .hidden: "eye.slash"

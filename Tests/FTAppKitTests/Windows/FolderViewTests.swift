@@ -1039,7 +1039,8 @@ extension ExplorerWindowlessTests {
                 pane.setFolderViewValue(.view) { $0.view = mode }
                 popover.refresh()
                 heights.insert(popover.contentView.frame.height)
-                #expect(FolderViewPopover.settings(for: mode).count == 4)
+                #expect(FolderViewPopover.settings(for: mode).count == 5)
+                #expect(FolderViewPopover.settings(for: mode).prefix(3) == [.view, .groupBy, .sort])
             }
             #expect(heights.count == 1)
         }

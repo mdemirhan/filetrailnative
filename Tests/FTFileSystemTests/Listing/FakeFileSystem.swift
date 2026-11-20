@@ -14,12 +14,21 @@ final class FakeFileSystem: ExplorerFileSystem, @unchecked Sendable {
     var tagColorsHandler: @Sendable (String) -> [FinderTagColor] = { _ in [] }
     var lastOpenedHandler: @Sendable (String) -> Int64? = { _ in nil }
     var addedHandler: @Sendable (String) -> Int64? = { _ in nil }
+    var firstTagHandler: @Sendable (String) -> String? = { _ in nil }
 
     private let lock = NSLock()
     private var statPaths: [String] = []
     private var lstatPaths: [String] = []
     private var tagPaths: [String] = []
     private var addedPaths: [String] = []
+    private var tagNamePaths: [String] = []
+
+    /// The paths whose first tag's name was read.
+    var tagNamesRead: [String] {
+        lock.lock()
+        defer { lock.unlock() }
+        return tagNamePaths
+    }
 
     /// The paths asked one by one when they were put in their folder.
     var addedRead: [String] {
@@ -68,6 +77,13 @@ final class FakeFileSystem: ExplorerFileSystem, @unchecked Sendable {
     }
 
     func realpath(_ path: String) throws -> String { try realpathHandler(path) }
+
+    func firstTagName(_ path: String) -> String? {
+        lock.lock()
+        tagNamePaths.append(path)
+        lock.unlock()
+        return firstTagHandler(path)
+    }
 
     func tagColors(_ path: String) -> [FinderTagColor] {
         lock.lock()

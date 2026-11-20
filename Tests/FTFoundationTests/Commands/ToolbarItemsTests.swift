@@ -111,7 +111,8 @@ struct ToolbarItemsTests {
 
     @Test func givesEveryButtonACommandToRunApartFromTheOnesTheToolbarDrawsItself() {
         let drawnByTheToolbar: Set<ToolbarItemID> = [
-            .back, .forward, .up, .view, .viewMenu, .sort, .title, .clipboard, .undoHistory, .viewOptions, .search,
+            .back, .forward, .up, .view, .viewMenu, .sort, .groupBy, .title, .clipboard, .undoHistory, .viewOptions,
+            .search,
             .compactSearch, .foldersFirst, .hidden, .infoPanel, .infoRow, .theme, .topSeparator,
         ]
         let withoutCommand = ToolbarItems.ids.filter { ToolbarItems.definition($0).commandType == nil }

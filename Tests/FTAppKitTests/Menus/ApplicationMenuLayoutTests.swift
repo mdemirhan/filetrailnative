@@ -48,10 +48,16 @@ import Testing
             titles(submenu(main, "View")) == [
                 "as Icons", "as List", "as Compact List", "as Previews", "Show Previews", "-", "Make Bigger",
                 "Make Smaller",
-                "Default Size", "-", "Sort By", "Folders First", "Hidden Files", "Columns", "Folder View", "-",
+                "Default Size", "-", "Group By", "Sort By", "Folders First", "Hidden Files", "Columns", "Folder View",
+                "-",
                 "Pin Filter", "Refresh",
                 "-", "Hide Folder Tree", "Info Panel", "Info Row", "-", "Two Panes", "Duplicate Pane", "Swap Panes",
                 "Make Panes Equal Width", "-", "Customize Toolbar…", "Command Palette…",
+            ])
+        #expect(
+            titles(item(submenu(main, "View"), "Group By").submenu!) == [
+                "None", "-", "Name", "Date Modified", "Date Created", "Date Last Opened", "Date Added", "Size", "Kind",
+                "Tags", "Folder",
             ])
         #expect(
             titles(submenu(main, "Go")) == [

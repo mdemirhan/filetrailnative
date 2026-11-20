@@ -19,6 +19,16 @@ public struct DragSelectionBox: Equatable, Sendable, Codable {
     }
 }
 
+extension DragSelectionHit {
+    /// The same hit, its rectangle moved by `left` and `top`.
+    public func moved(left: Double, top: Double) -> DragSelectionHit {
+        var moved = self
+        moved.rect = DragSelectionBox(
+            left: rect.left + left, top: rect.top + top, right: rect.right + left, bottom: rect.bottom + top)
+        return moved
+    }
+}
+
 public struct DragSelectionHit: Equatable, Sendable, Codable {
     public var path: String
     public var rect: DragSelectionBox

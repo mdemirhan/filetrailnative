@@ -749,7 +749,7 @@ extension ExplorerWindowlessTests {
                 titles(menu) == [
                     "Name", "Date Modified", "Date Created", "Date Last Opened", "Date Added", "Size", "Kind", "-",
                     "Ascending",
-                    "Descending",
+                    "Descending", "-", "Group By: None",
                 ])
             #expect(menu?.nsMenu.minimumWidth == 200)
             choose("Size")

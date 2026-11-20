@@ -104,9 +104,33 @@ extension ExplorerToolbar {
                         if direction != view.sortDirection { self?.context?.perform(Self.sortCommand(view.sortBy)) }
                     }))
         }
+        // One last item for the groups, named for the grouping in use, so the menu stays short.
+        let grouped = context.searchRootPath != nil ? view.searchGroupBy : view.groupBy
+        items.append(.separator)
+        items.append(AppMenuItem(title: "Group By: \(grouped.title)", submenu: groupByRows()))
         let menu = AppMenu(
             items: items, identifier: "toolbarMenu", rowIdentifier: "toolbarMenu.item", minWidth: Self.sortMenuWidth)
         present(menu, from: anchor)
+    }
+
+    /// View ▸ Group By's items, as the menu bar has them now: those of a folder, or of search results while they show.
+    func groupByRows() -> [AppMenuItem] {
+        guard let context else { return [] }
+        let canRun = context.commandAvailability()
+        let view = context.viewState
+        let searching = context.searchRootPath != nil
+        let grouped = searching ? view.searchGroupBy : view.groupBy
+        func row(_ title: String, _ command: AppCommand, checked: Bool? = nil) -> AppMenuItem {
+            AppMenuItem(
+                title: title,
+                key: ShortcutCommandID(rawValue: command.rawValue).flatMap { shortcuts.written($0) }
+                    .flatMap(MenuKeyEquivalent.parse),
+                checked: checked, enabled: canRun(command),
+                action: { [weak self] in self?.context?.perform(command) })
+        }
+        let fields = searching ? GroupByPreference.searchMenuOrder : GroupByPreference.menuOrder
+        return [row("None", .groupByNone, checked: grouped == .none), .separator]
+            + fields.map { row($0.title, $0.command, checked: grouped == $0) }
     }
 
     /// The View Mode Menu's menu: the four views, then the counts of the Previews segment's menu, checked while the pane
@@ -148,6 +172,14 @@ extension ExplorerToolbar {
         case .lastOpened: .sortByLastOpened
         case .size: .sortBySize
         }
+    }
+
+    /// The Group button's menu: View ▸ Group By's items.
+    func groupByMenu(anchor: ToolbarButton) {
+        let menu = AppMenu(
+            items: groupByRows(), identifier: "toolbarMenu", rowIdentifier: "toolbarMenu.item",
+            minWidth: Self.sortMenuWidth)
+        present(menu, from: anchor)
     }
 
     func viewOptionsMenu(anchor: ToolbarButton) {
@@ -277,6 +309,19 @@ extension ExplorerToolbar {
                     overflowItem("Sort by \(value.title)", checked: view.sortBy == value) { [weak self] in
                         if value != view.sortBy { self?.context?.perform(Self.sortCommand(value)) }
                     }
+                })
+        case .groupBy:
+            let searching = context.searchRootPath != nil
+            let grouped = searching ? view.searchGroupBy : view.groupBy
+            let can = canPerform ?? context.commandAvailability()
+            let fields =
+                [GroupByPreference.none] + (searching ? GroupByPreference.searchMenuOrder : GroupByPreference.menuOrder)
+            return submenu(
+                ToolbarItems.definition(id).label,
+                fields.map { field in
+                    overflowItem(
+                        "Group by \(field.title)", checked: grouped == field, enabled: can(field.command),
+                        run: run(field.command))
                 })
         case .viewOptions:
             return submenu(

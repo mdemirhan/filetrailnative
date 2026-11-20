@@ -127,4 +127,27 @@ struct SavedPanesTests {
         let data = try JSONEncoder().encode(read)
         #expect(try JSONDecoder().decode([OpenTabPreference].self, from: data) == read)
     }
+
+    // Each pane keeps what it groups folders by and search results by; a file saved before groups has none, and one
+    // naming a grouping this build doesn't know, or one a folder or results can't use, reads as none. A new window
+    // started from the second pane takes its groupings.
+    @Test func readsEachPanesGroupings() throws {
+        let read = try tabs(
+            #"[{"path": "/a", "groupBy": "modified", "searchGroupBy": "folder", "secondPane": {"path": "/b", "groupBy": "tags", "searchGroupBy": "kind"}, "activePane": 1}, {"path": "/c"}, {"path": "/d", "groupBy": "folder", "searchGroupBy": "size"}, {"path": "/e", "groupBy": "colour"}]"#
+        )
+        #expect(read[0].groupBy == .modified && read[0].searchGroupBy == .folder)
+        #expect(read[0].secondPane?.groupBy == .tags && read[0].secondPane?.searchGroupBy == .kind)
+        #expect(read[1].groupBy == nil && read[1].searchGroupBy == nil)
+        #expect(read[2].groupBy == nil && read[2].searchGroupBy == nil)
+        #expect(read[3].groupBy == nil)
+        let alone = read[0].activePaneAlone
+        #expect(alone.groupBy == .tags && alone.searchGroupBy == .kind && alone.secondPane == nil)
+        // None is saved as nothing, so a tab not grouped is written as before.
+        let plain = OpenPanePreference(
+            path: "/x", viewMode: .list, searchViewMode: .details, sortBy: .name, sortDirection: .asc,
+            includeHidden: false, foldersFirst: true, groupBy: GroupByPreference.none)
+        #expect(plain.groupBy == nil)
+        let text = String(decoding: try JSONEncoder().encode(plain), as: UTF8.self)
+        #expect(!text.contains("groupBy"))
+    }
 }

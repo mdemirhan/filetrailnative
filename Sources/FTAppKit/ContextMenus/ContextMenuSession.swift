@@ -17,6 +17,8 @@ struct ContextMenuRequest {
     var otherPane: [OtherPaneMenuItem] = []
     /// What the Folder View submenu offers, on the folder's background: View ▸ Folder View's items.
     var folderView: [OtherPaneMenuItem] = []
+    /// What the Group By submenu offers, on the folder's background: View ▸ Group By's items.
+    var groupBy: [OtherPaneMenuItem] = []
     /// The files of the Templates folder the New File submenu lists, by name in order.
     var templates: [String] = []
 }
@@ -251,10 +253,16 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
             submenu.addItem(.separator())
             add("Open Templates Folder", .openTemplatesFolder)
             entry.submenu = submenu
-        case .otherPane, .folderView:
+        case .otherPane, .folderView, .groupBy:
             let submenu = NSMenu(title: entry.title)
             submenu.autoenablesItems = false
-            for choice in id == .otherPane ? request.otherPane : request.folderView {
+            let choices =
+                switch id {
+                case .otherPane: request.otherPane
+                case .groupBy: request.groupBy
+                default: request.folderView
+                }
+            for choice in choices {
                 guard let command = choice.command else {
                     submenu.addItem(.separator())
                     continue

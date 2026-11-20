@@ -185,6 +185,18 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.decreaseSize, "Make Smaller"))
             menu.addItem(context.command(.resetSize, "Default Size"))
             menu.addItem(.separator())
+            // Above Sort By, as in Finder's View Options: None, the fields in the columns' order, Folder for search
+            // results.
+            let groupBy = NSMenuItem(title: "Group By", action: nil, keyEquivalent: "")
+            let groupMenu = NSMenu(title: "Group By")
+            groupMenu.addItem(context.command(.groupByNone, "None"))
+            groupMenu.addItem(.separator())
+            for field in GroupByPreference.menuOrder {
+                groupMenu.addItem(context.command(field.command, field.title))
+            }
+            groupMenu.addItem(context.command(.groupByFolder, "Folder"))
+            groupBy.submenu = groupMenu
+            menu.addItem(groupBy)
             let sortBy = NSMenuItem(title: "Sort By", action: nil, keyEquivalent: "")
             let sortMenu = NSMenu(title: "Sort By")
             // The columns' order, as every list of them has it.

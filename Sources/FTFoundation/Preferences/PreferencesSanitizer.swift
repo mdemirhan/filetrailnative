@@ -58,7 +58,8 @@ public enum PreferencesSanitizer {
                     sortDirection: pane["sortDirection"]?.string == "desc" ? .desc : .asc,
                     includeHidden: bool(pane, "includeHidden", firstHidden),
                     foldersFirst: bool(pane, "foldersFirst", showsFoldersFirst),
-                    viewSizes: viewSizes(pane["viewSizes"]), filterMode: filterMode(pane["filterMode"]))
+                    viewSizes: viewSizes(pane["viewSizes"]), filterMode: filterMode(pane["filterMode"]),
+                    groupBy: groupBy(pane["groupBy"]), searchGroupBy: groupBy(pane["searchGroupBy"]))
             }
             let activePane = record["activePane"]?.number == 1 ? 1 : nil
             // Hidden Files is the tab's: a tab saved while each pane had its own takes its active pane's.
@@ -75,7 +76,8 @@ public enum PreferencesSanitizer {
                     favoritesExpanded: bool(record, "favoritesExpanded", favoritesExpanded),
                     locationsExpanded: bool(record, "locationsExpanded", locationsExpanded), secondPane: secondPane,
                     activePane: activePane, paneSplit: split,
-                    viewSizes: viewSizes(record["viewSizes"]), filterMode: filterMode(record["filterMode"])))
+                    viewSizes: viewSizes(record["viewSizes"]), filterMode: filterMode(record["filterMode"]),
+                    groupBy: groupBy(record["groupBy"]), searchGroupBy: groupBy(record["searchGroupBy"])))
             if tabs.count == AppPreferenceLimits.openTabsLimit {
                 break
             }
@@ -86,6 +88,11 @@ public enum PreferencesSanitizer {
     /// A pane's own filter mode; nil when the file has none for it, or one this build doesn't know.
     private static func filterMode(_ value: JSONNode?) -> NameMatchMode? {
         value?.string.flatMap(NameMatchMode.init(rawValue:))
+    }
+
+    /// What a pane groups by; nil when the file has none, or one this build doesn't know.
+    private static func groupBy(_ value: JSONNode?) -> GroupByPreference? {
+        value?.string.flatMap(GroupByPreference.init(rawValue:))
     }
 
     /// A pane's own sizes, each brought into its range; nil when the file has none for it. One it doesn't say is the

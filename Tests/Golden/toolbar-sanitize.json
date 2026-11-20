@@ -36,6 +36,7 @@
           "refresh",
           "newTab",
           "viewMenu",
+          "groupBy",
           "foldersFirst",
           "hidden",
           "folderView",
@@ -95,6 +96,7 @@
           "view",
           "viewMenu",
           "sort",
+          "groupBy",
           "foldersFirst",
           "hidden",
           "viewOptions",
@@ -355,6 +357,7 @@
         ],
         "palette": [
           "viewMenu",
+          "groupBy",
           "folderView",
           "compactSearch",
           "twoPanes",
@@ -493,6 +496,7 @@
         ],
         "palette": [
           "viewMenu",
+          "groupBy",
           "folderView",
           "compactSearch",
           "twoPanes",
@@ -3008,7 +3012,7 @@
               "forward"
             ],
             [
-              "viewMenu",
+              "groupBy",
               "viewOptions"
             ]
           ]

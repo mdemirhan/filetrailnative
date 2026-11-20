@@ -57,7 +57,7 @@ extension ExplorerWindowlessTests {
                 titles(menu) == [
                     "Name", "Date Modified", "Date Created", "Date Last Opened", "Date Added", "Size", "Kind", "-",
                     "Ascending",
-                    "Descending",
+                    "Descending", "-", "Group By: None",
                 ])
             #expect(sort.menuOpen)
             // A press on a row of the menu chooses it.

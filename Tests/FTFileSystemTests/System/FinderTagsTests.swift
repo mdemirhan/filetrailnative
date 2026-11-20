@@ -36,6 +36,16 @@ import Testing
         }
     }
 
+    // Groups of tags go by an item's first tag's name, with a color or not; an item without tags has none.
+    @Test func theFirstTagNamesTheItemsGroup() throws {
+        try withFile { path in
+            #expect(FinderTags.firstName(path) == nil)
+            try (URL(fileURLWithPath: path) as NSURL).setResourceValue(["Project", "Red"], forKey: .tagNamesKey)
+            #expect(FinderTags.firstName(path) == "Project")
+        }
+        #expect(FinderTags.firstName("/no/such/file") == nil)
+    }
+
     // Reading the tags of the home folder's Desktop, Documents or Downloads makes macOS ask for permission, so
     // showing the home folder leaves them unread; the folders inside them, and the others, are read.
     @Test func leavesTheFoldersMacOSAsksAboutUnread() {

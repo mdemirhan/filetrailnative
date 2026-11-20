@@ -275,4 +275,26 @@ import Testing
         #expect(resolve(pathless).tabs.first?.path == "/Users/demo")
         #expect(resolve(pathless).tabs.first?.rootPath == "/Users/demo")
     }
+
+    // A tab keeps what its panes group folders and search results by: saved, read back, and on its second pane alone.
+    @Test func aTabKeepsItsPanesGroupings() throws {
+        var tab = StartupTab(
+            path: "/a", rootPath: Self.home, favoritePath: nil, viewMode: .list, searchViewMode: .details,
+            sortBy: .name, sortDirection: .asc, includeHidden: false, foldersFirst: true, favoritesExpanded: true,
+            locationsExpanded: true, groupBy: .modified, searchGroupBy: .folder)
+        tab.secondPane = OpenPanePreference(
+            path: "/b", viewMode: .icons, searchViewMode: .list, sortBy: .size, sortDirection: .desc,
+            includeHidden: false, foldersFirst: true, groupBy: .tags, searchGroupBy: .kind)
+        let saved = tab.openTab
+        #expect(saved.groupBy == .modified && saved.searchGroupBy == .folder)
+        let back = StartupTabs.startupTab(saved, homePath: Self.home)
+        #expect(back.groupBy == .modified && back.searchGroupBy == .folder)
+        let second = try #require(StartupTabs.onSecondPane(back, homePath: Self.home))
+        #expect(second.groupBy == .tags && second.searchGroupBy == .kind)
+        // A tab saved without groups starts without.
+        var plain = saved
+        plain.groupBy = nil
+        plain.searchGroupBy = nil
+        #expect(StartupTabs.startupTab(plain, homePath: Self.home).groupBy == GroupByPreference.none)
+    }
 }

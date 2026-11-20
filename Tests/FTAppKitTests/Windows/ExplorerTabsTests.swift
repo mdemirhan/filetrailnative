@@ -365,4 +365,20 @@ import Testing
         #expect(fromSecond.includeHidden)
         #expect(!fromSecond.foldersFirst)
     }
+
+    // A new tab started from a tab's second pane groups as that pane does.
+    @Test func aNewTabFromTheSecondPaneGroupsAsItDoes() {
+        var snapshot = TabSnapshot(
+            currentPath: "/a", historyPaths: ["/a"], historyIndex: 0, treeRootPath: "/", focusedPane: .content)
+        snapshot.groupBy = .size
+        snapshot.secondPane = PaneSnapshot(
+            pane: OpenPanePreference(
+                path: "/b", viewMode: .icons, searchViewMode: .list, sortBy: .name, sortDirection: .asc,
+                includeHidden: false, foldersFirst: true, groupBy: .kind, searchGroupBy: .folder),
+            historyPaths: ["/b"], historyIndex: 0)
+        #expect(ExplorerTabs.newTab(from: snapshot).groupBy == .size)
+        snapshot.activePane = 1
+        let new = ExplorerTabs.newTab(from: snapshot)
+        #expect(new.groupBy == .kind && new.searchGroupBy == .folder)
+    }
 }

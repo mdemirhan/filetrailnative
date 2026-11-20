@@ -123,7 +123,10 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             viewMode: tab.searchRootPath != nil ? tab.searchViewMode : tab.activePane.shownMode,
             sortBy: tab.activePane.shownSortBy)
         if tab.showsTwoPanes { request.otherPane = otherPaneItems(subject, request.shortcuts) }
-        if subject.surface == .background { request.folderView = folderViewItems(request.shortcuts) }
+        if subject.surface == .background {
+            request.folderView = folderViewItems(request.shortcuts)
+            request.groupBy = groupByItems(request.shortcuts)
+        }
         if subject.surface == .background, let folder = MainWindowController.templatesFolderPath {
             request.templates = NewFileTemplates.names(in: folder)
         }
@@ -237,6 +240,23 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         ]
     }
 
+    /// View ▸ Group By's items, as the menu bar has them now: a folder's, or search results' while they show.
+    private func groupByItems(_ shortcuts: ShortcutDisplay) -> [OtherPaneMenuItem] {
+        let canRun = tab.commandAvailability()
+        let searching = tab.searchRootPath != nil
+        let grouped = tab.activePane.activeGroupBy
+        func item(_ title: String, _ command: AppCommand, checked: Bool = false) -> OtherPaneMenuItem {
+            OtherPaneMenuItem(
+                title: title, command: command, enabled: canRun(command),
+                key: ShortcutCommandID(rawValue: command.rawValue).flatMap { shortcuts.written($0) }
+                    .flatMap(MenuKeyEquivalent.parse),
+                checked: checked)
+        }
+        let fields = searching ? GroupByPreference.searchMenuOrder : GroupByPreference.menuOrder
+        return [item("None", .groupByNone, checked: grouped == .none), .separator]
+            + fields.map { item($0.title, $0.command, checked: grouped == $0) }
+    }
+
     func contextMenu(otherPane command: AppCommand, subject: ContextMenuSubject) {
         switch command {
         case .openSelectionInOtherPane:
@@ -325,7 +345,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             fileOperation(action, subject)
         case .addToCopied, .addToCut, .switchClipboardMode, .removeFromClipboard:
             tab.contextMenuClipboardAction(action, subject)
-        case .openWith, .viewAs, .sortBy, .otherPane, .newFile, .folderView:
+        case .openWith, .viewAs, .sortBy, .otherPane, .newFile, .folderView, .groupBy:
             break
         }
     }

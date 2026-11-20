@@ -11,6 +11,8 @@ public enum ToolbarItemID: String, Codable, CaseIterable, Sendable, Hashable {
     case view
     case viewMenu
     case sort
+    /// View ▸ Group By's items in a menu, as Finder's Group button; on no toolbar until added.
+    case groupBy
     case title
     case clipboard
     case undoHistory
@@ -71,6 +73,7 @@ extension ToolbarItems {
         // The view switch's four views as one button and its menu, which takes the room of one item.
         ToolbarItemDefinition(id: .viewMenu, label: "View Mode Menu", icon: .viewAs),
         ToolbarItemDefinition(id: .sort, label: "Sort", icon: .sortBy),
+        ToolbarItemDefinition(id: .groupBy, label: "Group", icon: .groupBy),
         ToolbarItemDefinition(id: .title, label: "Title", icon: nil, topRequired: true),
         ToolbarItemDefinition(id: .clipboard, label: "Clipboard", icon: .copy, highPriority: true),
         ToolbarItemDefinition(id: .undoHistory, label: "Undo History", icon: .undoHistory, highPriority: true),
@@ -203,7 +206,7 @@ extension ToolbarItems {
     static let paletteOrder: [ToolbarItemID] = [
         .back, .forward, .up, .goToFolder, .refresh, .newTab,
         .title,
-        .view, .viewMenu, .sort, .foldersFirst, .hidden, .viewOptions, .folderView,
+        .view, .viewMenu, .sort, .groupBy, .foldersFirst, .hidden, .viewOptions, .folderView,
         .search, .compactSearch,
         .folderTree, .twoPanes, .duplicatePane, .infoPanel, .infoRow,
         .openSelection, .quickLook, .editSelection, .share,

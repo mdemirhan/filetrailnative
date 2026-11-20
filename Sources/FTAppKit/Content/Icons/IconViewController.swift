@@ -100,25 +100,75 @@ class IconViewController: ItemGridPane {
     var columns: Int { layout.columns(containerWidth: Double(viewport.width)) }
 
     override func contentSize(viewport: NSSize) -> NSSize {
+        if let lines = lines(width: viewport.width) {
+            return NSSize(width: viewport.width, height: lines.end + layout.paddingBottom)
+        }
         let columns = layout.columns(containerWidth: Double(viewport.width))
         return NSSize(width: viewport.width, height: layout.contentHeight(itemCount: entries.count, columns: columns))
     }
 
     override func itemFrame(at index: Int, viewport: NSSize) -> NSRect {
         let width = Double(viewport.width)
+        // Grouped, an item is placed as the first line's item in its slot, on its own line.
+        let place = lines(width: viewport.width)?.place(ofItem: index)
         let frame = layout.itemFrame(
-            index: index, columns: layout.columns(containerWidth: width), containerWidth: width, style: style)
-        return NSRect(x: frame.x, y: frame.y, width: frame.width, height: frame.height)
+            index: place?.slot ?? index, columns: layout.columns(containerWidth: width), containerWidth: width,
+            style: style)
+        return NSRect(x: frame.x, y: place?.lineStart ?? frame.y, width: frame.width, height: frame.height)
     }
 
     override func items(in rect: NSRect, viewport: NSSize) -> Range<Int> {
-        layout.items(
+        if let lines = lines(width: viewport.width) {
+            return lines.items(from: Double(rect.minY), to: Double(rect.maxY))
+        }
+        return layout.items(
             top: Double(rect.minY), bottom: Double(rect.maxY), itemCount: entries.count,
             columns: layout.columns(containerWidth: Double(viewport.width)))
     }
 
     /// Only the width moves items.
     override func placesChange(from old: NSSize, to new: NSSize) -> Bool { old.width != new.width }
+
+    // MARK: Groups
+
+    /// The room a group's header takes above its items: none in Previews, which shows no headers.
+    var groupHeaderExtent: Double { Double(GroupHeaderView.gridHeight) }
+
+    private struct LinesKey: Equatable {
+        var listing: ObjectIdentifier
+        var counts: [Int]
+        var columns: Int
+        var rowHeight: Double
+        var headerExtent: Double
+        var top: Double
+    }
+    private var linesCache: (key: LinesKey, lines: GroupedLines)?
+
+    /// The groups' lines at a pane this wide, while the items are grouped: each group's header, then its rows.
+    func lines(width: CGFloat) -> GroupedLines? {
+        guard !groups.isEmpty else { return nil }
+        let key = LinesKey(
+            listing: ObjectIdentifier(listing), counts: groups.map(\.range.count),
+            columns: layout.columns(containerWidth: Double(width)), rowHeight: layout.rowHeight,
+            headerExtent: groupHeaderExtent, top: layout.paddingTop)
+        if let cached = linesCache, cached.key == key { return cached.lines }
+        let made = GroupedLines(
+            counts: key.counts, perLine: key.columns, lineExtent: key.rowHeight, headerExtent: key.headerExtent,
+            start: key.top)
+        linesCache = (key, made)
+        return made
+    }
+
+    override var groupedLines: GroupedLines? { lines(width: viewport.width) }
+
+    override func headerFrames(viewport: NSSize) -> [NSRect] {
+        guard groupHeaderExtent > 0, let lines = lines(width: viewport.width) else { return [] }
+        return lines.groups.map {
+            NSRect(x: 0, y: $0.headerStart, width: viewport.width, height: groupHeaderExtent)
+        }
+    }
+
+    override var groupsEnd: Double { lines(width: viewport.width)?.end ?? super.groupsEnd }
 
     // MARK: Drag-to-select
 
@@ -128,13 +178,24 @@ class IconViewController: ItemGridPane {
         let top = layout.paddingTop
         let inItems = DragSelectionBox(
             left: box.left - left, top: box.top - top, right: box.right - left, bottom: box.bottom - top)
-        return gridHits(box: inItems, sizes: sizes).map { hit in
-            var moved = hit
-            moved.rect = DragSelectionBox(
-                left: hit.rect.left + left, top: hit.rect.top + top, right: hit.rect.right + left,
-                bottom: hit.rect.bottom + top)
-            return moved
+        guard let lines = lines(width: viewport.width) else {
+            return gridHits(box: inItems, sizes: sizes).map { $0.moved(left: left, top: top) }
         }
+        // Grouped, each group's items as a grid of their own, from its first line.
+        var hits: [DragSelectionHit] = []
+        let paths = entryPaths
+        for number in lines.groups(from: box.top, to: box.bottom) {
+            let group = lines.groups[number]
+            guard group.count > 0 else { continue }
+            let groupTop = group.linesStart
+            let inGroup = DragSelectionBox(
+                left: box.left - left, top: box.top - groupTop, right: box.right - left, bottom: box.bottom - groupTop)
+            hits += DragSelection.iconGridItems(
+                box: inGroup, entryPaths: Array(paths[group.items]), columns: columns,
+                gridWidth: layout.gridWidth(containerWidth: Double(viewport.width)), layout: layout, sizes: sizes
+            ).map { $0.moved(left: left, top: groupTop) }
+        }
+        return hits
     }
 
     /// The items a box touches, both inside the pane's padding. Sizes are of the names; the hit test places them
@@ -150,6 +211,14 @@ class IconViewController: ItemGridPane {
     override func revealOffset(for index: Int) -> NSPoint? {
         let clip = scroll.contentView.bounds
         guard clip.height > 0 else { return nil }
+        if let place = lines(width: viewport.width)?.place(ofItem: index) {
+            // Grouped: the item's row whole below the header held at the top, moving as little as possible.
+            let top = place.lineStart - groupHeaderExtent
+            let bottom = place.lineStart + layout.rowHeight
+            var y = Double(clip.origin.y)
+            if top < y { y = top } else if bottom > y + Double(clip.height) { y = bottom - Double(clip.height) }
+            return NSPoint(x: clip.origin.x, y: max(0, y))
+        }
         let top = layout.revealScrollTop(
             currentScrollTop: Double(clip.origin.y), viewportHeight: Double(clip.height), itemIndex: index,
             itemCount: entries.count, columns: columns)

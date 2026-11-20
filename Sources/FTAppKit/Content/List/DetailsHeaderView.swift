@@ -206,6 +206,12 @@ final class DetailsHeaderCell: NSView, TextStyleSource {
         needsLayout = true
     }
 
+    /// The column's title, or another in its place (a group's name in the Name column); nil for the column's own.
+    func showTitle(_ text: String?) {
+        title.stringValue = text ?? DetailsColumns.title(column)
+        needsLayout = true
+    }
+
     /// The cell lays out its pieces in its own box: the title's height is the box's, and the separator's hit area
     /// reaches 6 beyond it above, below and to the right (`separatorHitOverhang`).
     func layoutPieces(layout: DetailsLayout) {
@@ -314,6 +320,14 @@ final class DetailsHeaderView: NSView {
     /// The cell showing a column, as it is on screen.
     func cell(for column: DetailColumn) -> DetailsHeaderCell? { cells.first { $0.column == column } }
 
+    /// While the list is grouped, the name of the group at its top, in place of Name, as Finder's header has it.
+    var nameTitle: String? {
+        didSet {
+            guard nameTitle != oldValue else { return }
+            cell(for: .name)?.showTitle(nameTitle)
+        }
+    }
+
     /// `sortKey` is the key the list is ordered by: a folder's (`SortByPreference`) or search results'
     /// (`SearchResultsSortByPreference`).
     func configure(
@@ -345,6 +359,7 @@ final class DetailsHeaderView: NSView {
             cell.configure(
                 column: column, sortable: key != nil, active: key != nil && key == sortKey,
                 ascending: sortDirection == .asc, theme: theme, layout: layout)
+            if column == .name, nameTitle != nil { cell.showTitle(nameTitle) }
         }
         needsLayout = true
         needsDisplay = true

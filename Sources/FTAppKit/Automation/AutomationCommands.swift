@@ -22,6 +22,8 @@
             "calculateSize", "revealInFolder", "toggleFavorite", "showInFinder", "showLastSearchResults",
             "viewAsIcons", "viewAsList", "viewAsDetails", "viewAsPreviews", "showPreviews9", "showPreviews4",
             "showPreviews2", "showPreviews1", "increaseSize", "decreaseSize", "resetSize",
+            "groupByNone", "groupByName", "groupByModified", "groupByCreated", "groupByLastOpened", "groupByAdded",
+            "groupBySize", "groupByKind", "groupByTags", "groupByFolder",
             "sortByName",
             "sortByModified", "sortByCreated", "sortByAdded", "sortByLastOpened", "sortBySize", "sortByKind",
             "toggleFoldersFirst", "toggleHiddenFiles", "togglePinFilter", "goBack", "goForward", "goEnclosingFolder",

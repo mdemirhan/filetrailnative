@@ -257,6 +257,15 @@ extension MainWindowController {
             menu.addItem(left)
             menu.addItem(right)
         }
+        // The column clicked groups the list, as View ▸ Group By does; checked while it does, when choosing it again
+        // groups by None.
+        if let column, let field = GroupByPreference.of(column) {
+            let grouped = pane.shownGroupBy == field
+            menu.addItem(
+                ActionMenuItem("Group by “\(DetailsColumns.title(column))”", checked: grouped) { [weak self] in
+                    self?.perform(grouped ? .groupByNone : field.command)
+                })
+        }
         menu.addItem(ActionMenuItem("Size All Columns to Fit") { [weak pane] in pane?.content.fitAllColumns() })
         menu.addItem(
             ActionMenuItem("Reset Columns") { [weak self, weak pane] in

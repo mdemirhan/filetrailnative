@@ -25,8 +25,8 @@ extension ListViewController {
             return
         }
         let row = table.row(at: point)
-        if entries.indices.contains(row) {
-            pressItem(at: row, event: event)
+        if let index = entryIndex(atRow: row) {
+            pressItem(at: row, index: index, event: event)
         } else {
             pressEmptySpace(event: event, at: point)
         }
@@ -34,9 +34,9 @@ extension ListViewController {
 
     /// Pointer down on an item selects it when it is not selected or ⌘ or ⇧ is held, and the click that follows narrows
     /// a selection of several to it, so pressing a selected item can still start a drag of the whole selection.
-    private func pressItem(at row: Int, event: NSEvent) {
+    private func pressItem(at row: Int, index: Int, event: NSEvent) {
         guard let host else { return }
-        let entry = entries[row]
+        let entry = entries[index]
         let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
         let held = ContentSelection.Modifiers(
             meta: flags.contains(.command), shift: flags.contains(.shift), control: flags.contains(.control))
@@ -109,6 +109,8 @@ extension ListViewController {
         // A replaced selection has no lead until the drag ends, so the list does not scroll to reveal one meanwhile.
         let startLead = mode == .replace ? nil : host.selection.leadPath
         let paths = host.entryPaths
+        // By row, a group's header as "" (it is never selected): every row is as high, a header too.
+        let rowPaths = self.rowPaths
         let rowHeight = Double(table.rowHeight)
         let startWindow = event.locationInWindow
         var pointer = startWindow
@@ -133,7 +135,8 @@ extension ListViewController {
             marquee.show(NSRect(x: box.left, y: box.top, width: box.right - box.left, height: box.bottom - box.top))
             table.addSubview(marquee, positioned: .above, relativeTo: nil)
             end = (Double(inArea.x), Double(inArea.y))
-            hits = DragSelection.detailsItems(box: box, entryPaths: paths, rowHeight: rowHeight)
+            hits = DragSelection.detailsItems(box: box, entryPaths: rowPaths, rowHeight: rowHeight)
+                .filter { !$0.path.isEmpty }
             let key = hits.map(\.path).joined(separator: "\0")
             if key == shownKey { return }
             shownKey = key
@@ -204,8 +207,8 @@ extension ListViewController: LayoutNavigation {
     }
 
     func isWhollyInView(index: Int) -> Bool {
-        guard index >= 0, index < table.numberOfRows else { return false }
-        let row = table.rect(ofRow: index)
+        guard index >= 0, index < entries.count else { return false }
+        let row = table.rect(ofRow: tableRow(ofEntry: index))
         let visible = scroll.contentView.bounds
         return row.minY >= visible.minY && row.maxY <= visible.maxY
     }
@@ -255,12 +258,12 @@ extension ListViewController {
     /// keyboard.
     func syncRename() {
         guard let host else { return }
-        guard let state = host.inlineRename, let row = rowByPath[state.path] else {
+        guard let state = host.inlineRename, let row = rowByPath[state.path], let index = entryIndex(atRow: row) else {
             endRenameField()
             keepInView(.ask)
             return
         }
-        let entry = entries[row]
+        let entry = entries[index]
         if renamingPath != state.path || renameField == nil {
             endRenameField()
             let font = ListFonts.row(layoutMetrics)

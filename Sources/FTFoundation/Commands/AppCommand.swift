@@ -97,6 +97,16 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case increaseSize
     case decreaseSize
     case resetSize
+    case groupByNone
+    case groupByName
+    case groupByModified
+    case groupByCreated
+    case groupByLastOpened
+    case groupByAdded
+    case groupBySize
+    case groupByKind
+    case groupByTags
+    case groupByFolder
     case sortByName
     case sortByModified
     case sortByCreated

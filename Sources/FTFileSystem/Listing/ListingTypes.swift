@@ -26,6 +26,18 @@ public enum DirectorySortKey: String, Sendable, Hashable, Codable, CaseIterable 
     case created
 }
 
+/// What a listing reads besides what its order needs, for the groups the items are shown in: a date of each item, its
+/// size, or its first tag. Groups by name or kind need nothing more.
+public enum DirectoryGroupRead: String, Sendable, Hashable, Codable, CaseIterable {
+    case none
+    case modified
+    case created
+    case added
+    case lastOpened
+    case size
+    case tags
+}
+
 public enum SortDirection: String, Sendable, Hashable, Codable, CaseIterable {
     case ascending = "asc"
     case descending = "desc"
@@ -60,7 +72,7 @@ public struct DirectoryEntry: Sendable, Hashable, Codable {
     /// Only for a file without an extension: whether it can be run. macOS draws such files with one of
     /// two icons, and this says which.
     public var isExecutable: Bool?
-    /// Only when listed sorted by size, and only for files (nil for the rest).
+    /// Only when listed sorted or grouped by size, and only for files (nil for the rest).
     public var sizeBytes: Int64?
     /// Only for a folder Finder has given its own icon (Customize Folder, or a pasted picture).
     public var hasCustomIcon: Bool?
@@ -75,6 +87,11 @@ public struct DirectoryEntry: Sendable, Hashable, Codable {
     /// date a listing sorted by Date Added is ordered by. Nil on a disk that doesn't keep it, and for an entry no
     /// folder read gave (a search result).
     public var addedMs: Int64?
+    /// Only when listed for groups of a date: that date of the item, in milliseconds since 1970; nil for an item
+    /// without it (never opened, a disk that doesn't keep when items were added).
+    public var groupTimeMs: Int64?
+    /// Only when listed for groups of tags: the name of the item's first tag; nil for one without tags.
+    public var firstTag: String?
 }
 
 public struct DirectorySnapshot: Sendable, Hashable, Codable {

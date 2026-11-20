@@ -117,7 +117,13 @@ extension ExplorerWindowlessTests {
             #expect(
                 titles(background) == [
                     "New Folder", "New File", "-", "Show Info", "Calculate Size", "-", "Paste", "Copy Path", "-",
-                    "View As", "Sort By", "Folder View", "-", "Open in Terminal", "Show in Finder",
+                    "View As", "Group By", "Sort By", "Folder View", "-", "Open in Terminal", "Show in Finder",
+                ])
+            // Group By's submenu: View ▸ Group By's items, the folder's fields.
+            #expect(
+                titles(try #require(item(background, "Group By")).submenu) == [
+                    "None", "-", "Name", "Date Modified", "Date Created", "Date Last Opened", "Date Added", "Size",
+                    "Kind", "Tags",
                 ])
             // Folder View's submenu: View ▸ Folder View's items, Remember first.
             #expect(

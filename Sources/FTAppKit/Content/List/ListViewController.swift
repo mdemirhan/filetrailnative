@@ -84,6 +84,20 @@ final class ListTableView: NSTableView {
     override func cancelOperation(_ sender: Any?) {}
 }
 
+/// A row of the table while the list is grouped: the empty row before a group, its title, or an entry by its place in
+/// `entries`.
+enum ListRow: Equatable {
+    case gap
+    case header(Int)
+    case entry(Int)
+}
+
+/// The row a group's title, or the empty row before it, sits in: it draws no selection, as neither is selected.
+final class GroupHeaderRowView: NSTableRowView {
+    override func drawSelection(in dirtyRect: NSRect) {}
+    override func drawBackground(in dirtyRect: NSRect) {}
+}
+
 /// The List view's root: the column header above the rows.
 final class ListRootView: NSView, RowsBelowCard {
     weak var pane: ListViewController?
@@ -153,11 +167,19 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
     private let column = NSTableColumn(identifier: DetailsCellView.identifier)
 
     var entries: [DirectoryEntry] = []
+    /// The table's rows while the list is grouped, as Finder has them: the first group's items, its name in the Name
+    /// column's title, then for each other group an empty row, its title and its items; empty while it isn't grouped,
+    /// when a row is the entry at the same place. Every row is as high, so a row's place says where it is.
+    private(set) var rows: [ListRow] = []
+    /// The table row of each entry, while grouped.
+    private var entryRows: [Int] = []
+    private(set) var groups: [ShownGroup] = []
     /// Rows by path, made when a selection or a lookup needs it.
     private var rowsCache: [String: Int]?
     var rowByPath: [String: Int] {
         if let rowsCache { return rowsCache }
-        let made = Dictionary(entries.enumerated().map { ($1.path, $0) }, uniquingKeysWith: { first, _ in first })
+        let made = Dictionary(
+            entries.enumerated().map { ($1.path, tableRow(ofEntry: $0)) }, uniquingKeysWith: { first, _ in first })
         rowsCache = made
         return made
     }
@@ -255,6 +277,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
 
     private func reload(scrollToTop: Bool, change: RevealKeeper.Change) {
         entries = host?.entries ?? []
+        makeRows()
         rowsCache = nil
         layoutMetrics = metrics
         table.rowHeight = CGFloat(layoutMetrics.rowHeight)
@@ -262,6 +285,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         configureHeader()
         isSyncing = true
         table.reloadData()
+        showTopGroup()
         mirrorSort()
         isSyncing = false
         applySelection()
@@ -278,6 +302,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
 
     func reloadRows(paths: Set<String>) {
         entries = host?.entries ?? []
+        makeRows()
         rowsCache = nil
         let rows = IndexSet(paths.compactMap { rowByPath[$0] })
         isSyncing = true
@@ -468,6 +493,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         // Scrolled back, the list gives up the empty room it no longer shows.
         if holdsRoom { sizeColumns() }
         positionHeader()
+        showTopGroup()
         requestMetadata()
         // Scrolling moves the row away from the reason a name was refused, so it is dropped until the next try.
         renameField?.hideError()
@@ -495,16 +521,104 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         let selected = table.selectedRowIndexes
         let rows = table.rows(in: table.visibleRect)
         guard rows.length > 0 else { return }
-        for row in rows.location..<(rows.location + rows.length) where entries.indices.contains(row) {
+        for row in rows.location..<(rows.location + rows.length) {
+            guard let index = entryIndex(atRow: row) else { continue }
             bar(atRow: row)?.configure(
-                entry: entries[row], row: row, selected: selected.contains(row), host: host, columnSet: columnSet,
+                entry: entries[index], row: row, selected: selected.contains(row), host: host, columnSet: columnSet,
                 layout: layoutMetrics)
         }
     }
 
-    func numberOfRows(in tableView: NSTableView) -> Int { entries.count }
+    // MARK: Groups
+
+    /// The rows of the groups the host shows: each header, then its items.
+    private func makeRows() {
+        groups = host?.groups ?? []
+        guard !groups.isEmpty else {
+            rows = []
+            entryRows = []
+            return
+        }
+        var made: [ListRow] = []
+        made.reserveCapacity(entries.count + groups.count)
+        var rowOf = [Int](repeating: 0, count: entries.count)
+        for (number, group) in groups.enumerated() {
+            if number > 0 {
+                made.append(.gap)
+                made.append(.header(number))
+            }
+            for index in group.range where index < entries.count {
+                rowOf[index] = made.count
+                made.append(.entry(index))
+            }
+        }
+        rows = made
+        entryRows = rowOf
+    }
+
+    var rowCount: Int { rows.isEmpty ? entries.count : rows.count }
+
+    /// The entry a row shows; nil for a header, or a row past the end.
+    func entryIndex(atRow row: Int) -> Int? {
+        if rows.isEmpty { return entries.indices.contains(row) ? row : nil }
+        guard rows.indices.contains(row), case .entry(let index) = rows[row] else { return nil }
+        return index
+    }
+
+    /// The group whose header a row is; nil for an entry's row.
+    func groupIndex(atRow row: Int) -> Int? {
+        guard rows.indices.contains(row), case .header(let number) = rows[row] else { return nil }
+        return number
+    }
+
+    func tableRow(ofEntry index: Int) -> Int {
+        rows.isEmpty || !entryRows.indices.contains(index) ? index : entryRows[index]
+    }
+
+    /// The path of each row, "" for a group's title or the row before it: what the marquee finds rows by.
+    var rowPaths: [String] {
+        guard !rows.isEmpty else { return entries.map(\.path) }
+        return rows.map {
+            switch $0 {
+            case .gap, .header: ""
+            case .entry(let index): entries[index].path
+            }
+        }
+    }
+
+    /// The group of the row at the top of the list: its name stands in the Name column's title, as Finder's does.
+    private func showTopGroup() {
+        guard !groups.isEmpty, !rows.isEmpty else {
+            header.nameTitle = nil
+            return
+        }
+        let top = max(0, table.row(at: NSPoint(x: 1, y: scroll.contentView.bounds.minY + 1)))
+        var number = 0
+        for row in stride(from: min(top, rows.count - 1), through: 0, by: -1) {
+            switch rows[row] {
+            case .header(let found): number = found
+            case .gap: continue
+            case .entry: continue
+            }
+            break
+        }
+        // The empty row before a group still belongs to the one above it.
+        if rows.indices.contains(top), case .gap = rows[top], number > 0 { number -= 1 }
+        header.nameTitle = groups.indices.contains(number) ? groups[number].group.title : nil
+    }
+
+    func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool { entryIndex(atRow: row) != nil }
+
+    func numberOfRows(in tableView: NSTableView) -> Int { rowCount }
 
     func tableView(_ tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? {
+        if !rows.isEmpty, entryIndex(atRow: row) == nil {
+            let id = NSUserInterfaceItemIdentifier("details.groupRow")
+            if let reused = tableView.makeView(withIdentifier: id, owner: nil) as? GroupHeaderRowView { return reused }
+            let made = GroupHeaderRowView()
+            made.identifier = id
+            return made
+        }
         let id = NSUserInterfaceItemIdentifier("details.row")
         if let reused = tableView.makeView(withIdentifier: id, owner: nil) as? DetailsRowView { return reused }
         let made = DetailsRowView()
@@ -513,12 +627,24 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
     }
 
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        guard let host, entries.indices.contains(row) else { return nil }
+        guard let host else { return nil }
+        if let number = groupIndex(atRow: row), groups.indices.contains(number) {
+            let id = NSUserInterfaceItemIdentifier("details.groupHeader")
+            let header = tableView.makeView(withIdentifier: id, owner: nil) as? GroupHeaderView ?? GroupHeaderView()
+            header.identifier = id
+            // Lined up with the names.
+            header.leadingInset = CGFloat(
+                layoutMetrics.rowInset + layoutMetrics.rowPaddingInline + layoutMetrics.iconSize
+                    + layoutMetrics.nameIconGap)
+            header.configure(groups[number], style: .list, theme: host.theme)
+            return header
+        }
+        guard let index = entryIndex(atRow: row) else { return nil }
         let cell =
             tableView.makeView(withIdentifier: DetailsCellView.identifier, owner: nil) as? DetailsCellView
             ?? DetailsCellView()
         cell.bar.configure(
-            entry: entries[row], row: row, selected: tableView.isRowSelected(row), host: host, columnSet: columnSet,
+            entry: entries[index], row: row, selected: tableView.isRowSelected(row), host: host, columnSet: columnSet,
             layout: layoutMetrics)
         return cell
     }
@@ -541,7 +667,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
     /// Rows selected from outside the pane: the model takes them, in list order, the first the anchor and the last the
     /// lead.
     func selectFromOutside(_ rows: IndexSet) {
-        let paths = rows.compactMap { entries.indices.contains($0) ? entries[$0].path : nil }
+        let paths = rows.compactMap { entryIndex(atRow: $0).map { entries[$0].path } }
         host?.selectionChanged(ContentSelection.of(paths))
         // The model may not have changed (the same rows again): the table still shows it.
         applySelection()
@@ -553,8 +679,8 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         guard let host else { return nil }
         giveKeyboard()
         let row = table.row(at: point)
-        if row >= 0, entries.indices.contains(row) {
-            let path = entries[row].path
+        if let index = entryIndex(atRow: row) {
+            let path = entries[index].path
             if !host.selection.paths.contains(path) { host.selectionChanged(.single(path)) }
             return host.contextMenu(for: selectedEntries)
         }
@@ -564,12 +690,11 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
 
     /// The entry under a point of the table, for drops.
     func entry(at point: NSPoint) -> DirectoryEntry? {
-        let row = table.row(at: point)
-        return entries.indices.contains(row) ? entries[row] : nil
+        return entryIndex(atRow: table.row(at: point)).map { entries[$0] }
     }
 
     var selectedEntries: [DirectoryEntry] {
-        table.selectedRowIndexes.compactMap { entries.indices.contains($0) ? entries[$0] : nil }
+        table.selectedRowIndexes.compactMap { entryIndex(atRow: $0).map { entries[$0] } }
     }
 
     // MARK: Sorting

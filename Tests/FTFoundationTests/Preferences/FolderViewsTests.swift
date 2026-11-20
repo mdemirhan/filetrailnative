@@ -191,6 +191,31 @@ struct FolderViewsTests {
         #expect(!views.serialize().contains("volume") && !views.serialize().contains("fileID"))
     }
 
+    // A view keeps its grouping as a sixth setting; one saved before groups keeps none, and one naming a grouping this
+    // build doesn't know, or search results' own Folder, keeps none either while the rest of it loads.
+    @Test func aViewKeepsItsGroupingAndOneSavedBeforeKeepsNone() throws {
+        let saved = """
+            {"version":1,"views":[
+            {"path":"/a","subfolders":false,"keeps":{"view":"list","groupBy":"modified"}},
+            {"path":"/b","subfolders":false,"keeps":{"view":"icons"}},
+            {"path":"/c","subfolders":false,"keeps":{"view":"icons","groupBy":"color"}},
+            {"path":"/d","subfolders":false,"keeps":{"view":"icons","groupBy":"folder"}}]}
+            """
+        let views = try FolderViews.read(Data(saved.utf8))
+        #expect(views.own("/a")?.keeps == FolderViewKeeps(view: .list, groupBy: .modified))
+        #expect(views.own("/a")?.keeps.kept == [.view, .groupBy])
+        for path in ["/b", "/c", "/d"] { #expect(views.own(path)?.keeps == FolderViewKeeps(view: .icons), "\(path)") }
+        #expect(FolderViewKeeps(groupBy: .folder).isEmpty)
+        // Taken, forgotten and told apart as the other settings are.
+        var keeps = FolderViewKeeps(view: .list)
+        keeps.take(.groupBy, from: FolderViewKeeps(groupBy: .size))
+        #expect(keeps.groupBy == .size && keeps.keeps(.groupBy))
+        #expect(keeps.differences(from: FolderViewKeeps(view: .list)) == [.groupBy])
+        keeps.forget(.groupBy)
+        #expect(keeps == FolderViewKeeps(view: .list))
+        #expect(FolderViewSetting.allCases.prefix(3) == [.view, .groupBy, .sort])
+    }
+
     // A column added to the app later is missing from every view saved before it: such a view keeps its columns, the
     // new ones as they first are, and the views beside it are kept too.
     @Test func aViewWhoseColumnsLackTheNewerOnesLoadsWithTheOthersKept() throws {
@@ -335,6 +360,8 @@ struct FolderViewsTests {
                 }
             }
         }
+        // Every grouping a folder can keep.
+        for field in [GroupByPreference.none] + GroupByPreference.menuOrder { add(FolderViewKeeps(groupBy: field)) }
         // A view that keeps nothing and covers the folders inside is kept too.
         add(FolderViewKeeps(), subfolders: true)
 

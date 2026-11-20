@@ -974,6 +974,12 @@
           "hasSubmenu": true
         },
         {
+          "id": "groupBy",
+          "label": "Group By",
+          "icon": "groupBy",
+          "hasSubmenu": true
+        },
+        {
           "id": "sortBy",
           "label": "Sort By",
           "icon": "sortBy",

@@ -70,6 +70,9 @@ public struct TabSnapshot: Equatable, Sendable {
     public var viewSizes: PaneViewSizes?
     /// How typing filters its first pane's folders; the second pane's is with it.
     public var filterMode: NameMatchMode?
+    /// What its first pane groups folders by, and search results by; the second pane's are with it.
+    public var groupBy = GroupByPreference.none
+    public var searchGroupBy = GroupByPreference.none
 
     public init(
         currentPath: String, historyPaths: [String], historyIndex: Int, viewMode: ExplorerViewMode = .icons,
@@ -288,6 +291,8 @@ public enum ExplorerTabs {
             new.includeHidden = second.includeHidden
             new.foldersFirst = second.foldersFirst
             new.viewSizes = second.viewSizes
+            new.groupBy = second.groupBy ?? .none
+            new.searchGroupBy = second.searchGroupBy ?? .none
             // What the first pane had on screen isn't this folder's.
             new.view?.directoryError = nil
         }

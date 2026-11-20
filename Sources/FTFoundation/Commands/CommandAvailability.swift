@@ -483,6 +483,11 @@ public enum CommandAvailability {
             return !showInFinderPaths(target).isEmpty
         case .showLastSearchResults:
             return context.hasCachedSearch != false && !context.isSearchMode
+        // Search results group by what each result carries; a folder by any of its fields but the folder.
+        case .groupByNone, .groupByName, .groupByModified, .groupByCreated, .groupByLastOpened, .groupByAdded,
+            .groupBySize, .groupByKind, .groupByTags, .groupByFolder:
+            guard let field = GroupByPreference(command: command) else { return false }
+            return context.isSearchMode ? field.isForSearch : field.isForFolders
         case .sortByName, .sortByModified, .sortByCreated, .sortByAdded, .sortByLastOpened, .sortBySize, .sortByKind,
             .toggleFoldersFirst:
             // Search results have an order of their own, chosen in the List view's headers.

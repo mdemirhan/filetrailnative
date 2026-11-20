@@ -49,7 +49,7 @@ public final class DirectoryService: Sendable {
     @concurrent
     public func snapshot(
         path: String, includeHidden: Bool = false, sortBy: DirectorySortKey = .name,
-        sortDirection: SortDirection = .ascending, foldersFirst: Bool = true
+        sortDirection: SortDirection = .ascending, foldersFirst: Bool = true, groupRead: DirectoryGroupRead = .none
     ) async throws -> DirectorySnapshot {
         let listed = trash.listedFolder(for: path)
         func read(_ path: String, alsoListing: [String]) async throws -> DirectorySnapshot {
@@ -59,13 +59,13 @@ public final class DirectoryService: Sendable {
             let order = order
             let key = ListingKey(
                 path: path, includeHidden: includeHidden, sortBy: sortBy, sortDirection: sortDirection,
-                foldersFirst: foldersFirst)
+                foldersFirst: foldersFirst, groupRead: groupRead)
             return try await cache.directorySnapshot(key) {
                 try await BlockingWork.run {
                     try ExplorerListing.snapshot(
                         path: path, includeHidden: includeHidden, sortBy: sortBy, sortDirection: sortDirection,
-                        foldersFirst: foldersFirst, alsoListing: alsoListing, trash: trash, fileSystem, kinds: kinds,
-                        order: order)
+                        foldersFirst: foldersFirst, groupRead: groupRead, alsoListing: alsoListing, trash: trash,
+                        fileSystem, kinds: kinds, order: order)
                 }
             }
         }

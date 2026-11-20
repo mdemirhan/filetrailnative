@@ -95,6 +95,13 @@ enum FolderReadFailure {
     }
 }
 
+/// A group as the views of the folder show it: its header, and where its items are in the entries shown.
+struct ShownGroup: Equatable {
+    var group: EntryGroup
+    /// The positions of its items in `entries`.
+    var range: Range<Int>
+}
+
 /// What the content pane shows in place of items.
 enum ContentLoadState: Equatable {
     /// Nothing read yet (no folder).

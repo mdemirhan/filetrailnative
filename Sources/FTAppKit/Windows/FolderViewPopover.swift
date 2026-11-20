@@ -357,10 +357,11 @@ final class FolderViewPopover {
         add(footer([reset, manage], [revert, save]), to: stack)
     }
 
-    /// The settings a view has rows for: always four, so the popover keeps its height as the view changes. The
-    /// fourth is the List's columns in the List, and the size in the others (the Previews count in Previews).
+    /// The settings a view has rows for: always five, so the popover keeps its height as the view changes. Group By
+    /// comes before Sort By, as in Finder's View Options. The fifth is the List's columns in the List, and the size in
+    /// the others (the Previews count in Previews).
     static func settings(for mode: ExplorerViewMode) -> [FolderViewSetting] {
-        [.view, .sort, .foldersFirst, mode == .details ? .columns : .size]
+        [.view, .groupBy, .sort, .foldersFirst, mode == .details ? .columns : .size]
     }
 
     /// A setting's row: a checkbox titled with its name (a click on the name checks it, as anywhere on the Mac), a
@@ -391,6 +392,7 @@ final class FolderViewPopover {
     private func title(of setting: FolderViewSetting, _ mode: ExplorerViewMode) -> String {
         switch setting {
         case .view: "View"
+        case .groupBy: "Group By"
         case .sort: "Sort By"
         case .foldersFirst: "Folders First"
         case .columns: "Column Visibility and Order"
@@ -471,6 +473,17 @@ final class FolderViewPopover {
             }
             popup.setAccessibilityIdentifier("folderViewPopover.view")
             return popup
+        case .groupBy:
+            // None, then every field a folder groups by, as View ▸ Group By has them.
+            let fields = [GroupByPreference.none] + GroupByPreference.menuOrder
+            let control = popUp(
+                fields.map(\.title), selected: fields.firstIndex(of: current.groupBy ?? .none) ?? 0,
+                width: Self.popUpWidth
+            ) { [weak pane] index in
+                pane?.setFolderViewValue(.groupBy) { $0.groupBy = fields[index] }
+            }
+            control.setAccessibilityIdentifier("folderViewPopover.groupBy")
+            return control
         case .sort:
             let sort = current.sort ?? FolderViewSort(by: .name, direction: .asc)
             // Every field, as View ▸ Sort By has them: a folder may be ordered by a column it doesn't show.

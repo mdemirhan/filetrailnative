@@ -149,9 +149,16 @@ protocol ContentPaneHost: AnyObject {
     var search: ContentSearchContext? { get }
     /// The letters to mark in a name: the filter's while one is typed, else the search's; empty for none.
     func nameMarks(_ name: String) -> [HighlightRange]
+
+    // MARK: Groups
+
+    /// The groups shown (View ▸ Group By), each with where its items are in `entries`; none while the list isn't
+    /// grouped.
+    var groups: [ShownGroup] { get }
 }
 
 extension ContentPaneHost {
+    var groups: [ShownGroup] { [] }
     var clipboardMarks: ClipboardMarks? { nil }
     func dropState(for path: String) -> DropTargetState? { nil }
     var search: ContentSearchContext? { nil }

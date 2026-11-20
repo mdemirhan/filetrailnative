@@ -8,16 +8,18 @@ public struct ListingKey: Sendable, Hashable {
     public var sortBy: DirectorySortKey
     public var sortDirection: SortDirection
     public var foldersFirst: Bool
+    public var groupRead: DirectoryGroupRead
 
     public init(
         path: String, includeHidden: Bool = false, sortBy: DirectorySortKey = .name,
-        sortDirection: SortDirection = .ascending, foldersFirst: Bool = true
+        sortDirection: SortDirection = .ascending, foldersFirst: Bool = true, groupRead: DirectoryGroupRead = .none
     ) {
         self.path = path
         self.includeHidden = includeHidden
         self.sortBy = sortBy
         self.sortDirection = sortDirection
         self.foldersFirst = foldersFirst
+        self.groupRead = groupRead
     }
 }
 

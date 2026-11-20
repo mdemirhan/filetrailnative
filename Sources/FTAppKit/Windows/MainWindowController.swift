@@ -475,7 +475,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             sortDirection: snapshot.sortDirection, includeHidden: snapshot.includeHidden,
             foldersFirst: snapshot.foldersFirst, favoritesExpanded: snapshot.favoritesExpanded,
             locationsExpanded: snapshot.locationsExpanded, viewSizes: snapshot.viewSizes,
-            filterMode: snapshot.filterMode)
+            filterMode: snapshot.filterMode, groupBy: snapshot.groupBy, searchGroupBy: snapshot.searchGroupBy)
         self.init(tab: startup, history: (snapshot.historyPaths, snapshot.historyIndex), frame: frame)
         startingPane = snapshot.focusedPane
         if let view = snapshot.view { carry(view, of: snapshot) }
@@ -540,7 +540,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             searchViewMode: pane.searchViewMode, sortBy: pane.sortBy, sortDirection: pane.sortDirection,
             includeHidden: pane.includeHidden, foldersFirst: pane.foldersFirst, favoritesExpanded: favoritesExpanded,
             locationsExpanded: locationsExpanded, viewSizes: savedViewSizes(pane),
-            filterMode: pane.content.folderFilterMode)
+            filterMode: pane.content.folderFilterMode, groupBy: pane.groupBy, searchGroupBy: pane.searchGroupBy)
     }
 
     /// The sizes a pane is saved with: its own, or for one not shown yet the app's as they are now, so a workspace
@@ -556,7 +556,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             path: path.isEmpty ? nil : path, viewMode: pane.viewMode, searchViewMode: pane.searchViewMode,
             sortBy: pane.sortBy, sortDirection: pane.sortDirection, includeHidden: pane.includeHidden,
             foldersFirst: pane.foldersFirst, viewSizes: savedViewSizes(pane),
-            filterMode: pane.content.folderFilterMode)
+            filterMode: pane.content.folderFilterMode, groupBy: pane.groupBy, searchGroupBy: pane.searchGroupBy)
     }
 
     /// The tab as a new tab or a reopened one starts from it.
@@ -565,7 +565,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             path: shownFolderPath, rootPath: treeRootPath, favoritePath: favoritePath, viewMode: viewMode,
             searchViewMode: searchViewMode, sortBy: sortBy, sortDirection: sortDirection,
             includeHidden: includeHidden, foldersFirst: foldersFirst, favoritesExpanded: favoritesExpanded,
-            locationsExpanded: locationsExpanded, viewSizes: activePane.viewSizes)
+            locationsExpanded: locationsExpanded, viewSizes: activePane.viewSizes, groupBy: activePane.groupBy,
+            searchGroupBy: activePane.searchGroupBy)
     }
 
     /// The view on screen: search results have one of their own (`shownViewMode`).
@@ -615,6 +616,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             locationsExpanded: locationsExpanded, view: liveView)
         snapshot.viewSizes = first.viewSizes
         snapshot.filterMode = first.content.folderFilterMode
+        snapshot.groupBy = first.groupBy
+        snapshot.searchGroupBy = first.searchGroupBy
         if panes.count > 1 {
             let second = panes[1]
             snapshot.secondPane = PaneSnapshot(
@@ -1611,7 +1614,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         let panels = group?.session.panels
         return ApplicationMenuState.build(
             viewMode: shownViewMode, previewCount: content.previewCount, sortBy: activePane.shownSortBy,
-            foldersFirst: activePane.shownFoldersFirst,
+            groupBy: activePane.activeGroupBy, foldersFirst: activePane.shownFoldersFirst,
             hiddenFilesShown: includeHidden,
             folderTreeOpen: panels?.folderTreeOpen ?? true, infoPanelOpen: panels?.propertiesOpen ?? false,
             infoRowOpen: panels?.detailRowOpen ?? false, twoPanesShown: showsTwoPanes,
@@ -1929,6 +1932,10 @@ extension MainWindowController: ExplorerWindowHandle {
             content.flashViewSize()
         case .increaseSize, .decreaseSize, .resetSize:
             if let change = ViewSize.Change(command) { content.stepViewSize(change) }
+        // Search results have groups of their own (`searchGroupBy`); the pane sees to which.
+        case .groupByNone, .groupByName, .groupByModified, .groupByCreated, .groupByLastOpened, .groupByAdded,
+            .groupBySize, .groupByKind, .groupByTags, .groupByFolder:
+            if let field = GroupByPreference(command: command) { activePane.setGroupBy(field) }
         // Search results have an order of their own, chosen in the List view's headers.
         case .sortByName, .sortByKind, .sortByModified, .sortByCreated, .sortByAdded, .sortByLastOpened, .sortBySize,
             .toggleFoldersFirst:
@@ -2190,7 +2197,7 @@ extension MainWindowController: ExplorerWindowContext {
         let home = FileManager.default.homeDirectoryForCurrentUser.path
         let entries = commandEntries
         let lead = content.selection.leadPath
-        return CommandAvailabilityContext(
+        let context = CommandAvailabilityContext(
             shortcutContext: shortcutContext,
             currentPath: shownFolderPath, selectedPathsInViewOrder: selectedPaths, activeContentEntries: entries,
             listShowsItems: !content.entryPaths.isEmpty,
@@ -2214,6 +2221,7 @@ extension MainWindowController: ExplorerWindowContext {
             folderView: FolderViewCommandState(
                 own: activePane.shownFolderView?.isOwnSaved == true,
                 unsaved: activePane.shownFolderView?.hasUnsavedChanges == true))
+        return context
     }
 
     /// The folders File > Calculate Size measures now.

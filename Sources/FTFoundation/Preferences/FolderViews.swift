@@ -1,13 +1,14 @@
 import Foundation
 
-/// The five settings a folder's view can keep (View ▸ Folder View).
+/// The six settings a folder's view can keep (View ▸ Folder View), in the order Folder Customization lists them.
 public enum FolderViewSetting: String, CaseIterable, Sendable, Hashable {
-    case view, sort, foldersFirst, columns, size
+    case view, groupBy, sort, foldersFirst, columns, size
 
     /// What Folder View Options calls it, and the unsaved changes popover.
     public var label: String {
         switch self {
         case .view: "View"
+        case .groupBy: "Group By"
         case .sort: "Sort"
         case .foldersFirst: "Folders First"
         case .columns: "Columns"
@@ -119,16 +120,19 @@ public struct FolderViewSizes: Codable, Equatable, Sendable {
 /// What a folder's view keeps: a setting that is nil is not kept, and follows the pane.
 public struct FolderViewKeeps: Codable, Equatable, Sendable {
     public var view: ExplorerViewMode?
+    public var groupBy: GroupByPreference?
     public var sort: FolderViewSort?
     public var foldersFirst: Bool?
     public var columns: FolderViewColumns?
     public var size: FolderViewSizes?
 
     public init(
-        view: ExplorerViewMode? = nil, sort: FolderViewSort? = nil, foldersFirst: Bool? = nil,
-        columns: FolderViewColumns? = nil, size: FolderViewSizes? = nil
+        view: ExplorerViewMode? = nil, groupBy: GroupByPreference? = nil, sort: FolderViewSort? = nil,
+        foldersFirst: Bool? = nil, columns: FolderViewColumns? = nil, size: FolderViewSizes? = nil
     ) {
         self.view = view
+        // Folder is search results' own: a folder's view can't keep it.
+        self.groupBy = groupBy?.isForFolders == false ? nil : groupBy
         self.sort = sort
         self.foldersFirst = foldersFirst
         self.columns = columns
@@ -141,6 +145,7 @@ public struct FolderViewKeeps: Codable, Equatable, Sendable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.init(
             view: try? container.decode(ExplorerViewMode.self, forKey: .view),
+            groupBy: try? container.decode(GroupByPreference.self, forKey: .groupBy),
             sort: try? container.decode(FolderViewSort.self, forKey: .sort),
             foldersFirst: try? container.decode(Bool.self, forKey: .foldersFirst),
             columns: try? container.decode(FolderViewColumns.self, forKey: .columns),
@@ -155,6 +160,7 @@ public struct FolderViewKeeps: Codable, Equatable, Sendable {
     public func keeps(_ setting: FolderViewSetting) -> Bool {
         switch setting {
         case .view: view != nil
+        case .groupBy: groupBy != nil
         case .sort: sort != nil
         case .foldersFirst: foldersFirst != nil
         case .columns: columns != nil
@@ -166,6 +172,7 @@ public struct FolderViewKeeps: Codable, Equatable, Sendable {
     public mutating func take(_ setting: FolderViewSetting, from other: FolderViewKeeps) {
         switch setting {
         case .view: view = other.view
+        case .groupBy: groupBy = other.groupBy
         case .sort: sort = other.sort
         case .foldersFirst: foldersFirst = other.foldersFirst
         case .columns: columns = other.columns

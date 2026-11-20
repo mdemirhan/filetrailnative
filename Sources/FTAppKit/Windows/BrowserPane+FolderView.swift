@@ -9,6 +9,7 @@ struct PaneSettingsOnArrival {
     var sortBy: SortByPreference
     var sortDirection: SortDirectionPreference
     var foldersFirst: Bool
+    var groupBy: GroupByPreference
     var viewSizes: PaneViewSizes?
     var shared = SharedSettingChanges()
     /// The pane is changing the app's columns or sizes itself, now: the change it hears of meanwhile is its own.
@@ -20,6 +21,7 @@ struct PaneSettingsOnArrival {
         sortBy = pane.sortBy
         sortDirection = pane.sortDirection
         foldersFirst = pane.foldersFirst
+        groupBy = pane.groupBy
         viewSizes = pane.viewSizes
     }
 }
@@ -142,7 +144,7 @@ extension BrowserPane {
     func showFolderView() {
         content.setView(
             sortBy: shownSortBy, direction: shownSortDirection, foldersFirst: shownFoldersFirst,
-            includeHidden: includeHidden)
+            includeHidden: includeHidden, groupBy: shownGroupBy)
         refreshColumns()
         if searchStore?.showsResults != true { content.setMode(shownMode) }
         folderViewChanged()
@@ -180,11 +182,11 @@ extension BrowserPane {
         if use == nil, let draft = folderView, draft.isDraft, draft.hasUnsavedChanges { return }
         let next = use.map { folderView?.taking($0) ?? FolderViewOnScreen($0) }
         guard next != folderView else { return }
-        let before = (shownSortBy, shownSortDirection, shownFoldersFirst)
+        let before = shownOrder
         folderView = next
         showFolderView()
         // Another order is a new read of the folder.
-        if before != (shownSortBy, shownSortDirection, shownFoldersFirst) { viewChanged() }
+        if before != shownOrder { viewChanged() }
     }
 
     // MARK: What is on screen
@@ -205,11 +207,12 @@ extension BrowserPane {
         return shown
     }
 
-    /// The five settings as on screen now.
+    /// The six settings as on screen now.
     var shownKeeps: FolderViewKeeps {
         let preferences = shownPreferences(tab.preferences)
         return FolderViewKeeps(
-            view: shownMode, sort: FolderViewSort(by: shownSortBy, direction: shownSortDirection),
+            view: shownMode, groupBy: shownGroupBy,
+            sort: FolderViewSort(by: shownSortBy, direction: shownSortDirection),
             foldersFirst: shownFoldersFirst,
             columns: FolderViewColumns(
                 visibility: preferences.detailColumns, order: preferences.detailColumnOrder,
@@ -238,14 +241,14 @@ extension BrowserPane {
     private func changeOnScreen(_ change: (inout FolderViewOnScreen) -> Void) {
         let path = folder.path
         var view = folderView ?? .draft(FolderView(path: path, keeps: FolderViewKeeps()))
-        let before = (shownSortBy, shownSortDirection, shownFoldersFirst)
+        let before = shownOrder
         change(&view)
         // Covering the folders inside with nothing kept, where they would look no different, is no change: it goes
         // off with the last setting unchecked.
         if view.shown.isEmpty, viewStoppedForSubfolders == nil { view.shownSubfolders = false }
         folderView = view.isDraft && !view.hasUnsavedChanges ? nil : view
         showFolderView()
-        if before != (shownSortBy, shownSortDirection, shownFoldersFirst) { viewChanged() }
+        if before != shownOrder { viewChanged() }
     }
 
     /// The view from a folder above that the folders inside this one would stop using if this folder covered them
@@ -321,6 +324,8 @@ extension BrowserPane {
                 sortDirection = arrival.sortDirection
             case .foldersFirst:
                 foldersFirst = arrival.foldersFirst
+            case .groupBy:
+                groupBy = arrival.groupBy
             case .size:
                 if let sizes = arrival.viewSizes {
                     setViewSize {
@@ -405,11 +410,11 @@ extension BrowserPane {
     /// Reset Folder View: the folder's own view is removed; it uses the one above it, if one covers it, or the pane's.
     func resetFolderView() {
         guard !folderLetGo, folderViews.views.own(folder.path) != nil else { return }
-        let before = (shownSortBy, shownSortDirection, shownFoldersFirst)
+        let before = shownOrder
         folderViews.update(from: tab.windowID) { $0.remove(folder.path) }
         folderView = folderViewUse(for: folder.path).map(FolderViewOnScreen.init)
         showFolderView()
-        if before != (shownSortBy, shownSortDirection, shownFoldersFirst) { viewChanged() }
+        if before != shownOrder { viewChanged() }
     }
 
     /// Reset in Folder Customization: nothing kept and Apply to Subfolders off, on screen until Save, which removes the
@@ -497,6 +502,8 @@ enum FolderViewText {
         switch setting {
         case .view:
             return keeps.view?.menuName ?? ""
+        case .groupBy:
+            return keeps.groupBy?.title ?? ""
         case .sort:
             guard let sort = keeps.sort else { return "" }
             return "\(sort.by.title), \(sort.direction == .asc ? "ascending" : "descending")"
