@@ -147,6 +147,34 @@ struct EntryGroupsTests {
         #expect(Self.titles(spans) == ["0–9", "A", "B", "Z", "#"])
     }
 
+    // A run of grouping makes each first character's group once, and gives every name the group it has on its own.
+    @Test func aRunOfGroupingGivesEachNameItsOwnGroup() {
+        let english = Locale(identifier: "en_US")
+        var cache = NameGroupCache(locale: english)
+        let names = [
+            "eagle", "Élan.txt", "E\u{301}cole", "e", "", "2026 taxes", "9", "_build", ".hidden", "ßeta", "éa", "Zed",
+            "1\u{20E3} keycap", "日本", "日記", "\r\nx", "eagle", "Öl",
+        ]
+        for name in names {
+            #expect(cache.key(name: name) == NameGroups.key(name: name, locale: english), "\(name)")
+        }
+        #expect(cache.key(name: "E\u{301}cole").group.title == "E")
+    }
+
+    // Grouping by name at each poll of a search and each letter of the filter: a name's group is looked up by its
+    // first character, not folded through the user's language again.
+    @Test func groupsFiftyThousandNamesByTheirFirstLetterQuickly() {
+        let starts = ["a", "B", "c", "é", "Ö", "7", "_", "日", "z", "M"]
+        let names = (0..<50_000).map { "\(starts[$0 % starts.count])-name-\($0).txt" }
+        let (keys, seconds) = CPUTime.measureThread {
+            var cache = NameGroupCache(locale: Locale(identifier: "en_US"))
+            return names.map { cache.key(name: $0) }
+        }
+        // About 5 ms in a debug build; folding every name took 42 ms.
+        #expect(keys.count == 50_000 && keys[3].group.title == "E" && keys[7].group.title == "日")
+        #expect(seconds < 0.02)
+    }
+
     @Test func kindsComeFromTheExtensionsType() {
         func kind(_ ext: String, folder: Bool = false) -> KindGroup {
             KindGroup.of(fileExtension: ext, isFolder: folder)

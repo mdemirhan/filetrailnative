@@ -954,7 +954,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         case .none:
             return []
         case .name:
-            return shown.map { NameGroups.key(name: $0.name) }
+            var names = NameGroupCache()
+            return shown.map { names.key(name: $0.name) }
         case .kind:
             var kinds = KindGroupCache()
             return shown.map { kinds.group(fileExtension: $0.fileExtension, isFolder: $0.isDirectoryLike).key }

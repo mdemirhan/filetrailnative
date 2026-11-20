@@ -259,6 +259,45 @@ public enum NameGroups {
         group: EntryGroup(id: "name-other", title: "#"), rank: .text(""), isLast: true)
 }
 
+/// Each first character's group, made once for a run of grouping: a folder's names start with a few dozen characters,
+/// and folding one through the user's language is what making a name's group costs.
+public struct NameGroupCache {
+    private let locale: Locale
+    /// The groups of names starting with a plain ASCII character, by its code.
+    private var ascii = [EntryGroupKey?](repeating: nil, count: 128)
+    /// The groups of names starting with a character of one code point that an ASCII character follows, by the code
+    /// point: whether such a character ends there is the same for every name ("é" does, a mark that joins what
+    /// follows it doesn't, and is not kept here).
+    private var single: [UInt32: EntryGroupKey] = [:]
+    private var known: [Character: EntryGroupKey] = [:]
+
+    public init(locale: Locale = .current) {
+        self.locale = locale
+    }
+
+    public mutating func key(name: String) -> EntryGroupKey {
+        var scalars = name.unicodeScalars.makeIterator()
+        guard let lead = scalars.next() else { return NameGroups.key(name: name, locale: locale) }
+        // No accent joins an ASCII character when another ASCII character follows it, so there is no need to find
+        // where the first character ends.
+        let nextIsASCII = scalars.next()?.isASCII ?? true
+        if lead.isASCII, nextIsASCII {
+            let code = Int(lead.value)
+            if let key = ascii[code] { return key }
+            let key = NameGroups.key(name: String(Character(lead)), locale: locale)
+            ascii[code] = key
+            return key
+        }
+        if nextIsASCII, let key = single[lead.value] { return key }
+        guard let first = name.first else { return NameGroups.key(name: name, locale: locale) }
+        if let key = known[first] { return key }
+        let key = NameGroups.key(name: String(first), locale: locale)
+        known[first] = key
+        if nextIsASCII, first.unicodeScalars.count == 1 { single[lead.value] = key }
+        return key
+    }
+}
+
 // MARK: - Kinds
 
 /// The broad kinds items are grouped by: an item's type, from its extension, put in one of a few groups.
