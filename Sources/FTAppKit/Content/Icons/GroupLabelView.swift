@@ -28,7 +28,7 @@ final class GroupLabelView: NSView {
     func show(title: String, place: String?, theme: Theme) {
         let font = ChromeColors.font(size: DesignTokens.typeScale.small, weight: 600)
         let line = NSMutableAttributedString(
-            string: title, attributes: [.font: font, .foregroundColor: GroupHeaderView.titleColor])
+            string: title, attributes: [.font: font, .foregroundColor: NSColor(theme.palette.textPrimary)])
         if let place {
             line.append(
                 NSAttributedString(

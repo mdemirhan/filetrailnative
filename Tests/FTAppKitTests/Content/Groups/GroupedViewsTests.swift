@@ -344,14 +344,15 @@ extension ExplorerWindowlessTests {
                 probe.layout()
                 #expect(titleColors().count == 3 && titleColors().allSatisfy { $0 == .secondaryLabelColor })
             }
-            // Previews' label: the group's name in that color too.
+            // Previews' label keeps the label's own color: it is on glass over the pictures, where the fainter color
+            // could not be shown to read over a dark one.
             tab.perform(.viewAsPreviews)
             let probe = GridProbe(tab: tab)
             probe.layout()
             let previews = try #require(probe.pane as? PreviewsViewController)
             let label = try #require(descendants(of: previews.root, GroupLabelView.self).first)
             let text = try #require(descendants(of: label, NSTextField.self).first).attributedStringValue
-            #expect(text.attribute(.foregroundColor, at: 0, effectiveRange: nil) as? NSColor == .secondaryLabelColor)
+            #expect(text.attribute(.foregroundColor, at: 0, effectiveRange: nil) as? NSColor != .secondaryLabelColor)
 
             // Drawn on white in the light appearance, the title's darkest point is a medium gray, not a name's black.
             let drawn = GroupHeaderView(frame: NSRect(x: 0, y: 0, width: 200, height: GroupHeaderView.gridHeight))
