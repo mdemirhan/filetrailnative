@@ -65,7 +65,7 @@ A group's title is its name alone, in the style of the sidebar's section heading
 
 - **List**: as Finder's. The first group's items come first, its name standing in the Name column's title ("Today" in place of "Name"); then each other group has an empty row, a row with its title lined up with the names, and its items. As the list scrolls, the Name column's title names the group at the top. Every row is as high, a title's too. Size bars, sorted by Size, are still measured against the folder's largest item.
 - **Icons**: each group starts a new row, under its title over a hairline across the pane, which stays at the top while its group scrolls under it.
-- **Compact List**: the groups side by side, each starting a new column under its title; the title stays at the left edge while its columns scroll sideways.
+- **Compact List**: the groups side by side, each starting a new column under its title; the title stays at the left edge while its columns scroll sideways. Changed on 2026-11-20: the groups follow one another down the columns, a column going on with a group starting with its title again (`docs/decisions/views.md`).
 - **Previews**: no title rows. Each group starts a new row, so a row still fills the pane exactly and every rule about the file on screen at 1 at a time holds as it is; at 2, 4 and 9 a group's last row can have empty places. A label on glass at the pane's top left names the group of the row on screen ("Yesterday"; at 1 at a time "Yesterday 2 of 3").
 - The first build had a header row with a chevron, the name larger, the days and a count, floating in the List; the owner found the titles cut short, the fonts out of place and the view unlike Finder's.
 

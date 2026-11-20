@@ -181,37 +181,54 @@ extension ExplorerWindowlessTests {
             #expect(icons.itemIndex(at: below) == 0)
         }
 
-        // The Compact List: the groups side by side, each starting a column of its own under its title.
-        @Test func theCompactListStartsEachGroupInAColumnOfItsOwn() async throws {
+        // The Compact List: the groups one after another down a column, each under its title, going on in the next
+        // column only when there is no room left; a column that goes on with a group starts with its title again.
+        @Test func theCompactListGroupsFollowOneAnotherDownTheColumns() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness, view: .viewAsList)
             let probe = GridProbe(tab: tab)
             probe.layout()
             let compact = try #require(probe.compact)
             let viewport = compact.viewport
-            let lines = try #require(compact.groupedLines)
-            #expect(lines.groups.map(\.count) == [3, 1, 2])
+            let columns = try #require(compact.columns(height: viewport.height))
+            #expect(columns.columnCount == 1 && columns.headers.count == 3)
             let first = compact.itemFrame(at: 0, viewport: viewport)
+            let todayLast = compact.itemFrame(at: 2, viewport: viewport)
             let second = compact.itemFrame(at: 3, viewport: viewport)
-            #expect(second.minX > compact.itemFrame(at: 2, viewport: viewport).minX)
-            #expect(second.minY == first.minY)
-            // A group's first column is a column's step from the one before, as any column: no more room between them.
-            #expect(second.minX - first.minX == CGFloat(compact.layout.columnStep))
+            // Yesterday starts in the same column, under its title, under Today's last item.
+            #expect(second.minX == first.minX)
+            #expect(second.minY >= todayLast.maxY + CGFloat(GroupHeaderView.gridHeight))
             #expect(first.minY >= CGFloat(GroupHeaderView.gridHeight))
-            let frames = compact.headerFrames(viewport: viewport)
-            #expect(frames.count == 3 && frames[1].minX == CGFloat(lines.groups[1].linesStart))
-            // → from the first group's first item goes to the next group's column.
-            tab.content.select(paths: [tab.content.entries[0].path])
-            probe.key("ArrowRight")
-            #expect(tab.content.selection.paths == [tab.content.entries[3].path])
+            let places = compact.headerPlaces(viewport: viewport)
+            #expect(places.map(\.group) == [0, 1, 2] && !places.contains(where: \.continued))
+            #expect(places[1].frame.minY >= todayLast.maxY && places[1].frame.maxY <= second.minY)
+            // ↓ crosses from Today into Yesterday.
+            tab.content.select(paths: [tab.content.entries[2].path])
             probe.key("ArrowDown")
-            #expect(tab.content.selection.paths == [tab.content.entries[4].path])
+            #expect(tab.content.selection.paths == [tab.content.entries[3].path])
             #expect(compact.revealOffset(for: 5) != nil)
-            // A drag-to-select over the second group's column finds its item.
+            // A drag-to-select over Yesterday's item finds it.
             let box = DragSelectionBox(
                 left: Double(second.minX) + 1, top: Double(second.minY) + 1, right: Double(second.minX) + 4,
                 bottom: Double(second.maxY) - 1)
             #expect(compact.marqueeHits(box: box, sizes: [:]).map(\.path) == [tab.content.entries[3].path])
+            // A press on Yesterday's title is on no item.
+            #expect(compact.itemIndex(at: NSPoint(x: places[1].frame.midX, y: places[1].frame.midY)) == nil)
+
+            // In a pane too short for them all, a group goes on in the next column under its title again, and → goes
+            // to the item beside it there.
+            tab.window?.setContentSize(NSSize(width: 900, height: 230))
+            probe.layout()
+            let short = try #require(compact.columns(height: compact.viewport.height))
+            #expect(short.columnCount > 1)
+            let secondColumn = try #require(short.runs.first { $0.column == 1 })
+            #expect(short.headers.contains { $0.column == 1 && $0.top == 0 })
+            compact.placeGroupHeaders()
+            let shown = descendants(of: probe.grid, GroupHeaderView.self)
+            #expect(shown.contains { $0.frame.minX == CGFloat(short.columnStart(1)) })
+            tab.content.select(paths: [tab.content.entries[0].path])
+            probe.key("ArrowRight")
+            #expect(tab.content.selection.paths == [tab.content.entries[secondColumn.firstItem].path])
         }
 
         // Previews: no title rows, each group on a row of its own, and the label names the group on screen.

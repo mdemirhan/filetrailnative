@@ -18,13 +18,13 @@ protocol LayoutNavigation: AnyObject {
     /// Scrolls along the view's axis by `delta` points, stopping at either end; whether it scrolled.
     @discardableResult
     func scroll(by delta: Double) -> Bool
-    /// The lines of the groups, while a grid's items are grouped: a step by a line crosses from one group into the
+    /// The layout of the groups, while a grid's items are grouped: a step by a line crosses from one group into the
     /// next. Nil while they aren't, and in the List, where groups change nothing of the keys.
-    var groupedLines: GroupedLines? { get }
+    var groupNavigation: (any GroupNavigation)? { get }
 }
 
 extension LayoutNavigation {
-    var groupedLines: GroupedLines? { nil }
+    var groupNavigation: (any GroupNavigation)? { nil }
 }
 
 /// The keys of a view of the folder, shared by all three.
@@ -143,7 +143,7 @@ final class ContentKeyboard {
         guard !paths.isEmpty else { return false }
         let current = host.position(of: host.selection.leadPath) ?? -1
         // Grouped, a step by a line goes to the same place in the next line, which may be the next group's.
-        if let lines = navigation.groupedLines, current >= 0, key != .home, key != .end {
+        if let lines = navigation.groupNavigation, current >= 0, key != .home, key != .end {
             let byLine =
                 navigation.navigationViewMode == .list ? key == .left || key == .right : key == .up || key == .down
             let forward = key == .down || key == .right

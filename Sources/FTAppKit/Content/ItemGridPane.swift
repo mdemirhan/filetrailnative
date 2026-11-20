@@ -4,6 +4,14 @@ import AppKit
 import FTFileSystem
 import FTFoundation
 
+/// A group's header in a grid's scrolling content: which group, where, and whether it goes on with the group from the
+/// column before (the Compact List's).
+struct GroupHeaderPlace: Equatable {
+    var group: Int
+    var frame: NSRect
+    var continued: Bool
+}
+
 /// An item view of the Icons or Compact List view.
 @MainActor
 protocol GridItemView: AnyObject {
@@ -105,8 +113,18 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
     /// Where each group's header goes in the scrolling content, before it stays at the edge as its group scrolls;
     /// none for a view that draws no headers (Previews).
     func headerFrames(viewport: NSSize) -> [NSRect] { [] }
+    /// The headers in the scrolling content, in order: by default one for each group, at `headerFrames`. The Compact
+    /// List has one for each column a group is in.
+    func headerPlaces(viewport: NSSize) -> [GroupHeaderPlace] {
+        headerFrames(viewport: viewport).enumerated().map { GroupHeaderPlace(group: $0, frame: $1, continued: false) }
+    }
+    /// Whether a header placed at `frame`, its group's items going on until `end`, shows in the view scrolled to
+    /// `clip`: it meets the view, or is held at its top.
+    func headerShows(_ frame: NSRect, until end: Double, in clip: NSRect) -> Bool {
+        frame.minY < clip.maxY && CGFloat(end) > clip.minY
+    }
     /// A header's place as the view is scrolled: at its own place, or held at the top while its group scrolls under it,
-    /// until the next group's header pushes it away. The Compact List holds the name at the left instead.
+    /// until the next group's header pushes it away.
     func pinned(_ frame: NSRect, until end: Double, in clip: NSRect, header: GroupHeaderView) -> NSRect {
         header.leadingInset = 16
         var pinned = frame
@@ -115,8 +133,10 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
     }
     /// Where the scrolling content ends along its axis: what the last group's header is held until.
     var groupsEnd: Double { Double(collection.frame.height) }
-    /// The lines of the groups, while the items are grouped, for the arrow keys.
+    /// The lines of the groups, while the items are grouped (the Icons view's and Previews' rows).
     var groupedLines: GroupedLines? { nil }
+    /// The layout of the groups, while the items are grouped, for the arrow keys.
+    var groupNavigation: (any GroupNavigation)? { groupedLines }
     var itemsPerLine: Int { 1 }
     var pageGeometry: (viewportSize: Double, lineExtent: Double) { (0, 1) }
     func isWhollyInView(index: Int) -> Bool { true }
@@ -188,25 +208,20 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
         reportVisiblePaths()
     }
 
-    /// The headers of the groups whose header shows, each at its place or held at the edge.
+    /// The headers that show, each at its place or held at the edge.
     func placeGroupHeaders() {
-        let frames = groups.isEmpty ? [] : headerFrames(viewport: viewport)
+        let places = groups.isEmpty ? [] : headerPlaces(viewport: viewport)
         let clip = scroll.contentView.bounds
-        guard let host, !frames.isEmpty else {
+        guard let host, !places.isEmpty else {
             for header in headerViews { header.removeFromSuperview() }
             headerViews = []
             return
         }
         // Those that meet the view, and the one held at its edge.
-        var shown: [Int] = []
-        for (number, frame) in frames.enumerated() {
-            let end = number + 1 < frames.count ? frames[number + 1] : nil
-            let groupEnd = end.map { navigationViewMode == .list ? $0.minX : $0.minY } ?? CGFloat(groupsEnd)
-            let reaches =
-                navigationViewMode == .list
-                ? frame.minX < clip.maxX && groupEnd > clip.minX
-                : frame.minY < clip.maxY && groupEnd > clip.minY
-            if reaches { shown.append(number) }
+        var shown: [(place: GroupHeaderPlace, end: Double)] = []
+        for (number, place) in places.enumerated() {
+            let end = number + 1 < places.count ? Double(places[number + 1].frame.minY) : groupsEnd
+            if headerShows(place.frame, until: end, in: clip) { shown.append((place, end)) }
         }
         while headerViews.count < shown.count {
             let header = GroupHeaderView()
@@ -214,13 +229,9 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
             headerViews.append(header)
         }
         while headerViews.count > shown.count { headerViews.removeLast().removeFromSuperview() }
-        for (header, number) in zip(headerViews, shown) {
-            let group = groups[number]
-            header.configure(group, style: .grid, theme: host.theme)
-            let end =
-                number + 1 < frames.count
-                ? Double(navigationViewMode == .list ? frames[number + 1].minX : frames[number + 1].minY) : groupsEnd
-            header.frame = pinned(frames[number], until: end, in: clip, header: header)
+        for (header, (place, end)) in zip(headerViews, shown) where groups.indices.contains(place.group) {
+            header.configure(groups[place.group], style: .grid, theme: host.theme, continued: place.continued)
+            header.frame = pinned(place.frame, until: end, in: clip, header: header)
             // Over the items that scroll under it.
             collection.addSubview(header, positioned: .above, relativeTo: nil)
         }

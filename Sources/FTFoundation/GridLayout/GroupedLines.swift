@@ -1,8 +1,8 @@
 // Where the items of a grouped grid go: each group's header, then its items on lines of their own
 import Foundation
 
-/// The lines of a view whose items are grouped (View ▸ Group By): the Icons view's and Previews' rows, the Compact
-/// List's columns. Each group starts on a line of its own after its header, so a line never holds two groups' items;
+/// The lines of a view whose items are grouped (View ▸ Group By): the Icons view's and Previews' rows (the Compact
+/// List's columns are `GroupedColumns`). Each group starts on a line of its own after its header, so a line never holds two groups' items;
 /// along the scrolling axis a group takes its header's extent, its lines, and the gap after it. A collapsed group has
 /// no items, and keeps its header. Lines are numbered across the groups, and an item's place in its line is its slot.
 public struct GroupedLines: Equatable, Sendable {
@@ -123,10 +123,9 @@ public struct GroupedLines: Equatable, Sendable {
         }
     }
 
-    /// The item an arrow key moves to. Along the lines (a step by a line: the Icons view's Up and Down, the Compact
-    /// List's Left and Right), the item in the same slot of the next or the previous line, which may be another
-    /// group's, or that line's last item when it is shorter; across them, the next or the previous item. Nil where there
-    /// is none, so the key does nothing.
+    /// The item an arrow key moves to. Along the lines (a step by a line: Up and Down), the item in the same slot of the
+    /// next or the previous line, which may be another group's, or that line's last item when it is shorter; across
+    /// them, the next or the previous item. Nil where there is none, so the key does nothing.
     public func neighbor(of index: Int, byLine: Bool, forward: Bool) -> Int? {
         guard let place = place(ofItem: index) else { return nil }
         if !byLine {

@@ -53,58 +53,60 @@ final class CompactListViewController: ItemGridPane {
 
     // MARK: Placement
 
-    /// The rows per column at the pane's height; the arrow keys move by it sideways.
+    /// The rows per column at the pane's height; the arrow keys move by it sideways, and the page keys by it.
     var rowsPerColumn: Int {
         layout.rowsPerColumn(containerHeight: Double(viewport.height) - (groups.isEmpty ? 0 : headerHeight))
     }
 
     // MARK: Groups
 
-    /// A group's title over its columns: the rows start under it.
+    /// A group's title at the top of a column, over its hairline, and the room before the column's first item.
     private var headerHeight: Double { Double(GroupHeaderView.gridHeight) }
 
-    private struct LinesKey: Equatable {
+    private struct ColumnsKey: Equatable {
         var listing: ObjectIdentifier
         var counts: [Int]
-        var rows: Int
+        var height: Double
+        var rowHeight: Double
         var columnStep: Double
-        var start: Double
+        var left: Double
     }
-    private var linesCache: (key: LinesKey, lines: GroupedLines)?
+    private var columnsCache: (key: ColumnsKey, columns: GroupedColumns)?
 
-    /// The groups side by side, each starting a column of its own under its title, a column's gap apart as columns
-    /// are: the title and its hairline mark where a group starts.
-    func lines(height: CGFloat) -> GroupedLines? {
+    /// The groups one after another down the columns, each under its title, going on in the next column only when
+    /// there is no room left. A title takes its height and the list's top padding, so a column's first item is as far
+    /// under its title as an ungrouped column's is under the top.
+    func columns(height: CGFloat) -> GroupedColumns? {
         guard !groups.isEmpty else { return nil }
-        let key = LinesKey(
+        let key = ColumnsKey(
             listing: ObjectIdentifier(listing), counts: groups.map(\.range.count),
-            rows: layout.rowsPerColumn(containerHeight: Double(height) - headerHeight), columnStep: layout.columnStep,
-            start: layout.paddingInline)
-        if let cached = linesCache, cached.key == key { return cached.lines }
-        let made = GroupedLines(
-            counts: key.counts, perLine: key.rows, lineExtent: key.columnStep, headerExtent: 0, start: key.start)
-        linesCache = (key, made)
+            height: Double(height) - layout.paddingBottom + layout.rowGap, rowHeight: layout.rowHeight,
+            columnStep: layout.columnStep, left: layout.paddingInline)
+        if let cached = columnsCache, cached.key == key { return cached.columns }
+        let made = GroupedColumns(
+            counts: key.counts, height: key.height, rowHeight: key.rowHeight,
+            headerHeight: headerHeight + layout.paddingTop, columnStep: key.columnStep, left: key.left)
+        columnsCache = (key, made)
         return made
     }
 
-    override var groupedLines: GroupedLines? { lines(height: viewport.height) }
+    override var groupNavigation: (any GroupNavigation)? { columns(height: viewport.height) }
 
-    override func headerFrames(viewport: NSSize) -> [NSRect] {
-        guard let lines = lines(height: viewport.height) else { return [] }
-        return lines.groups.map { group in
-            // As wide as its columns, and at least a column for a group with few items.
-            let width = max(layout.itemWidth, Double(group.lineCount) * layout.columnStep - layout.columnGap)
-            return NSRect(x: group.headerStart, y: 0, width: width, height: headerHeight)
+    /// A title for each column a group is in, as wide as the column.
+    override func headerPlaces(viewport: NSSize) -> [GroupHeaderPlace] {
+        guard let columns = columns(height: viewport.height) else { return [] }
+        return columns.headers.map { header in
+            GroupHeaderPlace(
+                group: header.group,
+                frame: NSRect(
+                    x: columns.columnStart(header.column), y: header.top, width: layout.itemWidth, height: headerHeight
+                ), continued: header.continued)
         }
     }
 
-    override var groupsEnd: Double { lines(height: viewport.height)?.end ?? super.groupsEnd }
-
-    /// The title stays at the left edge while its group's columns scroll under it sideways.
-    override func pinned(_ frame: NSRect, until end: Double, in clip: NSRect, header: GroupHeaderView) -> NSRect {
-        let held = max(0, min(clip.minX - frame.minX, frame.width - 120))
-        header.leadingInset = 16 + held
-        return frame
+    /// The titles of the columns in view; none is held at an edge.
+    override func headerShows(_ frame: NSRect, until end: Double, in clip: NSRect) -> Bool {
+        frame.minX < clip.maxX && frame.maxX > clip.minX
     }
 
     /// The width the name takes as its label draws it (`SplitName`): an item only as wide as the name measured whole
@@ -123,10 +125,9 @@ final class CompactListViewController: ItemGridPane {
     }
 
     override func contentSize(viewport: NSSize) -> NSSize {
-        if let lines = lines(height: viewport.height) {
+        if let columns = columns(height: viewport.height) {
             // As wide as its columns, the last one's gap given back for the padding, as without groups.
-            return NSSize(
-                width: lines.end - layout.columnGap + layout.paddingInline, height: viewport.height)
+            return NSSize(width: columns.end - layout.columnGap + layout.paddingInline, height: viewport.height)
         }
         let rows = layout.rowsPerColumn(containerHeight: Double(viewport.height))
         return NSSize(
@@ -135,11 +136,10 @@ final class CompactListViewController: ItemGridPane {
 
     override func itemFrame(at index: Int, viewport: NSSize) -> NSRect {
         var cell: GridRect
-        if let lines = lines(height: viewport.height), let place = lines.place(ofItem: index) {
-            // Grouped: in its group's column, under the group's title.
-            cell = layout.cellFrame(index: place.slot, rowsPerColumn: lines.perLine)
-            cell.x = place.lineStart
-            cell.y += headerHeight
+        if let columns = columns(height: viewport.height), let place = columns.place(ofItem: index) {
+            // Grouped: in its column, under its group's title.
+            cell = GridRect(
+                x: columns.columnStart(place.column), y: place.top, width: layout.itemWidth, height: layout.rowHeight)
         } else {
             cell = layout.cellFrame(
                 index: index, rowsPerColumn: layout.rowsPerColumn(containerHeight: Double(viewport.height)))
@@ -178,8 +178,8 @@ final class CompactListViewController: ItemGridPane {
     }
 
     override func items(in rect: NSRect, viewport: NSSize) -> Range<Int> {
-        if let lines = lines(height: viewport.height) {
-            return lines.items(from: Double(rect.minX), to: Double(rect.maxX))
+        if let columns = columns(height: viewport.height) {
+            return columns.items(from: Double(rect.minX), to: Double(rect.maxX))
         }
         return layout.items(
             left: Double(rect.minX), right: Double(rect.maxX), itemCount: entries.count,
@@ -195,24 +195,19 @@ final class CompactListViewController: ItemGridPane {
     override func marqueeHits(box: DragSelectionBox, sizes: [String: DragSelectionSize]) -> [DragSelectionHit] {
         let left = layout.paddingInline
         let top = layout.paddingTop
-        if let lines = lines(height: viewport.height) {
-            // Grouped, each group's columns as a list of their own, from its first column and under its title.
-            var hits: [DragSelectionHit] = []
+        if let columns = columns(height: viewport.height) {
+            // Grouped, each group's items in a column as a list of their own, from where the first one starts.
             let paths = entryPaths
-            let groupTop = top + headerHeight
-            for number in lines.groups(from: box.left, to: box.right) {
-                let group = lines.groups[number]
-                guard group.count > 0 else { continue }
-                let inGroup = DragSelectionBox(
-                    left: box.left - group.linesStart, top: box.top - groupTop, right: box.right - group.linesStart,
-                    bottom: box.bottom - groupTop)
-                hits += DragSelection.flowListItems(
-                    box: inGroup, entryPaths: Array(paths[group.items]), rowsPerColumn: lines.perLine,
-                    rowHeight: layout.rowHeight, itemWidth: layout.itemWidth, columnGap: layout.columnGap,
-                    sizes: sizes
-                ).map { $0.moved(left: group.linesStart, top: groupTop) }
+            return columns.runs(from: box.left, to: box.right).flatMap { run in
+                let runLeft = columns.columnStart(run.column)
+                let inRun = DragSelectionBox(
+                    left: box.left - runLeft, top: box.top - run.top, right: box.right - runLeft,
+                    bottom: box.bottom - run.top)
+                return DragSelection.flowListItems(
+                    box: inRun, entryPaths: Array(paths[run.items]), rowsPerColumn: run.count,
+                    rowHeight: layout.rowHeight, itemWidth: layout.itemWidth, columnGap: layout.columnGap, sizes: sizes
+                ).map { $0.moved(left: runLeft, top: run.top) }
             }
-            return hits
         }
         let inItems = DragSelectionBox(
             left: box.left - left, top: box.top - top, right: box.right - left, bottom: box.bottom - top)
@@ -267,12 +262,13 @@ final class CompactListViewController: ItemGridPane {
         let clip = scroll.contentView.bounds
         guard clip.width > 0, clip.height > 0 else { return nil }
         let maxLeft = max(0, Double(collection.frame.width - clip.width))
-        if let place = lines(height: viewport.height)?.place(ofItem: index) {
+        if let columns = columns(height: viewport.height), let place = columns.place(ofItem: index) {
             // Grouped: the item's column whole in view, moving as little as possible.
             var left = Double(clip.origin.x)
-            let right = place.lineStart + layout.itemWidth
-            if place.lineStart < left {
-                left = place.lineStart - layout.paddingInline
+            let start = columns.columnStart(place.column)
+            let right = start + layout.itemWidth
+            if start < left {
+                left = start - layout.paddingInline
             } else if right > left + Double(clip.width) {
                 left = right + layout.paddingInline - Double(clip.width)
             }

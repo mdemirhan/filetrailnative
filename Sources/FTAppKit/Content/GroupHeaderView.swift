@@ -3,8 +3,9 @@ import AppKit
 import FTFoundation
 
 /// A group's title: the name alone, in the style of the sidebar's section headings (the small size, semibold, the
-/// secondary color). In the List it is a row's height, lined up with the names; in the Icons view and the Compact List
-/// it is over a hairline across the pane. It takes no clicks: a press on it is a press on the empty space it is in.
+/// secondary color). In the List it is a row's height, lined up with the names; in the Icons view it is over a
+/// hairline across the pane, and in the Compact List over one across its column. It takes no clicks: a press on it is
+/// a press on the empty space it is in.
 final class GroupHeaderView: NSView {
     enum Style {
         case list
@@ -47,13 +48,16 @@ final class GroupHeaderView: NSView {
         needsLayout = true
     }
 
-    /// `background` is what a grid's header, held at the top over the items scrolling under it, is filled with.
-    func configure(_ shown: ShownGroup, style: Style, theme: Theme, background: NSColor? = nil) {
+    /// `background` is what a grid's header, held at the top over the items scrolling under it, is filled with. A
+    /// header that goes on with its group from the column before (`continued`, the Compact List's) is fainter.
+    func configure(
+        _ shown: ShownGroup, style: Style, theme: Theme, background: NSColor? = nil, continued: Bool = false
+    ) {
         self.style = style
         let palette = theme.palette
         title.stringValue = shown.group.title
-        title.font = ChromeColors.font(size: DesignTokens.typeScale.small, weight: 600)
-        title.textColor = NSColor(palette.textSecondary)
+        title.font = ChromeColors.font(size: DesignTokens.typeScale.small, weight: continued ? 400 : 600)
+        title.textColor = NSColor(continued ? palette.textTertiary : palette.textSecondary)
         lineColor = NSColor(palette.borderLight)
         backgroundColor = style == .grid ? background ?? NSColor(palette.bgBase) : .clear
         // The days of Previous 7 Days and Previous 30 Days, which the name alone doesn't say.
