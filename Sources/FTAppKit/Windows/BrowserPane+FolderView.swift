@@ -467,9 +467,13 @@ extension BrowserPane {
     }
 
     /// A value changed in Folder Customization: kept, with that value, on screen until Save.
+    /// The value already on screen, chosen again, is no change: it doesn't start keeping the setting, and Save stays
+    /// dimmed, as a setting changed back by hand is no change (a Keep box checked does keep it).
     func setFolderViewValue(_ setting: FolderViewSetting, _ change: (inout FolderViewKeeps) -> Void) {
-        var keeps = shownKeeps
+        let current = shownKeeps
+        var keeps = current
         change(&keeps)
+        guard keeps != current else { return }
         changeOnScreen { $0.shown.take(setting, from: keeps) }
     }
 

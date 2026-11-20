@@ -1027,6 +1027,30 @@ extension ExplorerWindowlessTests {
             #expect(pane.shownFolderView == nil && pane.shownMode == .icons)
         }
 
+        // Choosing in Folder Customization the value already on screen is no change: it neither starts keeping the
+        // setting nor lights Save, in a folder with a view or without; a value really changed, or a Keep box checked, is.
+        @Test func choosingTheValueOnScreenAgainIsNoChange() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let pane = tab.activePane
+            await go(tab, harness, "Alpha")
+            #expect(pane.folderView == nil && pane.shownGroupBy == GroupByPreference.none)
+            pane.setFolderViewValue(.groupBy) { $0.groupBy = GroupByPreference.none }
+            pane.setFolderViewValue(.view) { $0.view = pane.shownMode }
+            pane.setFolderViewValue(.foldersFirst) { $0.foldersFirst = pane.shownFoldersFirst }
+            #expect(pane.folderView == nil)
+            // Kept already, the same value again changes nothing either.
+            pane.setFolderViewKeeps(.groupBy, true)
+            #expect(pane.folderView?.hasUnsavedChanges == true)
+            tab.perform(.updateFolderView)
+            #expect(pane.folderView?.hasUnsavedChanges == false)
+            pane.setFolderViewValue(.groupBy) { $0.groupBy = GroupByPreference.none }
+            #expect(pane.folderView?.hasUnsavedChanges == false)
+            // Another value is a change.
+            pane.setFolderViewValue(.groupBy) { $0.groupBy = .kind }
+            #expect(pane.folderView?.hasUnsavedChanges == true)
+        }
+
         @Test func folderCustomizationKeepsItsHeightWhateverTheView() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
