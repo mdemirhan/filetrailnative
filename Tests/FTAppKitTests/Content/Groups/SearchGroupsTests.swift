@@ -44,6 +44,29 @@ extension ExplorerWindowlessTests {
             return (tab, reads)
         }
 
+        // Another query: its results that were read before keep their values and are in their
+        // groups at once, and only a result not seen before is read.
+        @Test func anotherQueryInTheSameFolderReadsOnlyTheResultsWithoutAValue() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, reads) = try await searched(harness)
+            tab.perform(.groupBySize)
+            #expect(await waitUntil { tab.groupTitles == ["Zero bytes", "100 KB to 1 MB", "1 to 10 MB"] })
+            #expect(reads.paths.count == 3)
+            let engine = try #require(tab.search.session.engine as? FakeSearchEngine)
+            let timers = try #require(tab.search.session.timers as? ManualTimers)
+            engine.finds = { _ in (["a-today.pdf", "b-today.txt", "d-old.txt"], false, false) }
+            let field = try #require(tab.searchField)
+            field.stringValue = "yy"
+            tab.search.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification, object: field))
+            timers.advance(0.4)
+            #expect(await waitUntil { tab.content.entries.map(\.name).contains("b-today.txt") })
+            // The two read before are in their groups as the results come; the new one until it is read is last.
+            #expect(await waitUntil { tab.groupTitles == ["Zero bytes", "Under 100 KB", "100 KB to 1 MB"] })
+            #expect(reads.paths.count == 4 && reads.paths.last?.hasSuffix("b-today.txt") == true)
+            #expect(reads.fields.allSatisfy { $0 == .size })
+            await harness.close()
+        }
+
         @Test func searchResultsGroupByEveryFieldApartFromTheFolder() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, reads) = try await searched(harness)

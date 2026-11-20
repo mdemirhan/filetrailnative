@@ -911,7 +911,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         searchValues.need(searchFieldsNeeded, paths: listed.map(\.path))
     }
 
-    /// A batch of values came in: the results are ordered and grouped again with them, where the list is scrolled.
+    /// Values came in (their read ended, or has gone on a while): the results are ordered and grouped again with
+    /// them, where the list is scrolled.
     private func searchValuesArrived() {
         guard searchDisplay != nil else { return }
         let before = entryPaths
@@ -1273,8 +1274,11 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
                 hiddenItemCount: hiddenItemCount, details: details,
                 scroll: pane?.scrollPosition ?? (0, 0))
         }
-        // Run again, the search finds the files as they are now: the dates, sizes and tags read for the last run go.
-        if newList || searchDisplay?.run != display.run { searchValues.reset() }
+        // What was read for the results' order and groups stays while the same folder is searched: another query,
+        // narrowed or changed, reads only the results that have no value yet. The same search run again finds the
+        // files as they are now: the dates, sizes and tags read for the last run go.
+        let runAgain = !newList && searchDisplay?.run != display.run
+        if searchDisplay?.rootPath != display.rootPath || runAgain { searchValues.reset() }
         if newList {
             if !filter.isEmpty {
                 listFilter.clear()

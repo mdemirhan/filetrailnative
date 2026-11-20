@@ -6,85 +6,105 @@ import Foundation
 /// The values search results are ordered or grouped by when they don't carry them (a date, the size, the tags): read
 /// for every result in the background, in batches, only for the fields the order and the groups on screen need, and
 /// only while they need them ("Nothing is read before it is needed"). A field no longer needed stops being read and its
-/// values go; results that come later are read as they come.
+/// values go; results that come later are read as they come, and a value read stays while its field is needed, so
+/// a query narrowed or changed reads only the results that have none yet.
 @MainActor
 final class SearchValues {
     /// Reads the values of a field for paths, in their order.
     typealias Reader = @MainActor (_ paths: [String], _ field: ItemValueField) async -> [ItemValue]
 
-    /// How many results a read takes at a time: the order and groups are made again after each.
+    /// How many results a read takes at a time.
     static let batchSize = 2_000
+    /// How long a read that is still going lets the list stand before it is ordered again with what came in: a long
+    /// read shows it is getting on, and the rows don't move under the pointer at every batch.
+    static let changeInterval: TimeInterval = 1
 
     private var read: Reader
-    /// Told after each batch that came in.
+    /// Told that values came in, for the order and the groups to be made again: once when a read ends, and while it
+    /// goes on at most once every `changeInterval`.
     var changed: () -> Void = {}
+    /// The time, in seconds; tests move it.
+    var now: () -> TimeInterval = { ProcessInfo.processInfo.systemUptime }
     private var known: [ItemValueField: [String: ItemValue]] = [:]
-    /// The results each field has asked about, read or waiting.
-    private var asked: [ItemValueField: Set<String>] = [:]
     private var reading: [ItemValueField: Task<Void, Never>] = [:]
-    /// What each field still has to read, in order.
+    /// What each field still has to read of the results there are now, in order.
     private var waiting: [ItemValueField: [String]] = [:]
+    /// The batch each field's read is out for.
+    private var inFlight: [ItemValueField: Set<String>] = [:]
+    /// When each field's read started, or last told of its values.
+    private var lastChange: [ItemValueField: TimeInterval] = [:]
 
     init(read: @escaping Reader) {
         self.read = read
     }
 
     /// The fields read now.
-    var fields: Set<ItemValueField> { Set(asked.keys) }
+    var fields: Set<ItemValueField> { Set(known.keys) }
 
     /// A result's value of a field; nil while it isn't read (or the field isn't needed).
     func value(_ field: ItemValueField, of path: String) -> ItemValue? { known[field]?[path] }
 
     /// The fields the results' order and groups need, for the results there are now: what isn't read yet of them is
-    /// read; a field not needed any more stops, and its values go.
+    /// read, and what waited for results no longer there is not; a field not needed any more stops, and its values go.
     func need(_ fields: Set<ItemValueField>, paths: [String]) {
-        for field in Set(asked.keys).subtracting(fields) { stop(field) }
+        for field in Set(known.keys).subtracting(fields) { stop(field) }
         for field in fields {
-            var seen = asked[field] ?? []
-            // What is being read is asked for once.
-            let missing = paths.filter { seen.insert($0).inserted }
-            asked[field] = seen
+            let have = known[field] ?? [:]
             if known[field] == nil { known[field] = [:] }
-            guard !missing.isEmpty else { continue }
-            waiting[field, default: []] += missing
-            if reading[field] == nil { startReading(field) }
+            let out = inFlight[field] ?? []
+            // What is read, or being read, is asked for once.
+            let missing = paths.filter { have[$0] == nil && !out.contains($0) }
+            waiting[field] = missing.isEmpty ? nil : missing
+            if !missing.isEmpty, reading[field] == nil { startReading(field) }
         }
     }
 
-    /// Other results (another search, the results put away): everything goes.
+    /// Other results (a search of another folder, the results put away): everything goes.
     func reset() {
-        for field in Array(asked.keys) { stop(field) }
+        for field in Array(known.keys) { stop(field) }
     }
 
     private func stop(_ field: ItemValueField) {
         reading[field]?.cancel()
         reading[field] = nil
         waiting[field] = nil
+        inFlight[field] = nil
+        lastChange[field] = nil
         known[field] = nil
-        asked[field] = nil
     }
 
     private func startReading(_ field: ItemValueField) {
+        lastChange[field] = now()
         reading[field] = Task { [weak self] in
             while let self, !Task.isCancelled, let batch = self.nextBatch(field) {
+                self.inFlight[field] = Set(batch)
                 let values = await self.read(batch, field)
                 guard !Task.isCancelled, self.known[field] != nil else { return }
+                self.inFlight[field] = nil
                 for (path, value) in zip(batch, values) { self.known[field]?[path] = value }
-                self.changed()
+                self.batchArrived(field)
             }
             // A stopped read leaves the field to whatever started since.
             if !Task.isCancelled { self?.reading[field] = nil }
         }
     }
 
+    /// A batch came in: the list hears of it when it was the last, or when it last heard long enough ago.
+    private func batchArrived(_ field: ItemValueField) {
+        let time = now()
+        let ended = waiting[field] == nil
+        guard ended || time - (lastChange[field] ?? time) >= Self.changeInterval else { return }
+        lastChange[field] = time
+        changed()
+    }
+
     private func nextBatch(_ field: ItemValueField) -> [String]? {
-        guard var left = waiting[field], !left.isEmpty else {
+        guard let left = waiting[field], !left.isEmpty else {
             waiting[field] = nil
             return nil
         }
         let batch = Array(left.prefix(Self.batchSize))
-        left.removeFirst(batch.count)
-        waiting[field] = left
+        waiting[field] = left.count > batch.count ? Array(left.dropFirst(batch.count)) : nil
         return batch
     }
 }
