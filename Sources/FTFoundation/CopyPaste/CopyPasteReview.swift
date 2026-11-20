@@ -273,7 +273,7 @@ public enum CopyPasteReview {
     public static func policy(for choice: AllConflictsChoice, toleranceMs: Double? = nil) -> CopyPastePolicy {
         switch choice {
         case .skip: CopyPastePolicy(file: .skip, directory: .skip, mismatch: .skip)
-        case .addMissing: CopyPastePolicy(file: .skip, directory: .merge, mismatch: .skip)
+        case .addMissing: CopyPastePolicy(file: .skip, directory: .merge, mismatch: .skip, addMissing: true)
         case .keepAll: CopyPastePolicy(file: .keepBoth, directory: .merge, mismatch: .keepBoth)
         case .replaceOlder:
             CopyPastePolicy(

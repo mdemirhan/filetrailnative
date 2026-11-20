@@ -57,6 +57,26 @@ struct CopyPasteChoicesTests {
     // A clash of kinds (a file where a folder of that name is) is left by Replace Older and told as its doing; a Skip
     // chosen on the row is the person's own, and the other answers for all conflicts give no reason of Replace
     // Older's: Skip and Add Missing skip the clash as they skip a file, Keep All and Replace don't skip it at all.
+    // Add Missing leaves a file or a clash of kinds already there, and the result says Add Missing left it; a row
+    // with a choice of its own, a folder (merged), and the same choices made another way (Skip for all, Retry's) are
+    // not its doing.
+    @Test func whatAddMissingLeavesIsToldAsItsDoing() {
+        func leaves(_ kind: ConflictClass, _ policy: CopyPastePolicy, override: CopyPasteChoice? = nil) -> Bool {
+            CopyPasteChoices.addMissingLeaves(conflictClass: kind, policy: policy, override: override)
+        }
+        let addMissing = CopyPasteReview.policy(for: .addMissing)
+        #expect(leaves(.fileConflict, addMissing))
+        #expect(leaves(.typeMismatch, addMissing))
+        #expect(!leaves(.directoryConflict, addMissing))
+        #expect(!leaves(.fileConflict, addMissing, override: .skip))
+        #expect(!leaves(.fileConflict, addMissing, override: .overwrite))
+        // Merge isn't a choice for a file, so it isn't the row's own.
+        #expect(leaves(.fileConflict, addMissing, override: .merge))
+        #expect(!leaves(.fileConflict, CopyPasteReview.policy(for: .skip)))
+        #expect(!leaves(.fileConflict, CopyPasteReview.retryPolicy))
+        #expect(!leaves(.fileConflict, CopyPasteReview.policy(for: .replaceOlder, toleranceMs: 1000)))
+    }
+
     @Test func aClashOfKindsLeftByReplaceOlderIsToldAsItsDoing() {
         func reason(_ policy: CopyPastePolicy, override: CopyPasteChoice? = nil) -> ReplaceOlderSkip? {
             CopyPasteChoices.replaceOlderSkip(

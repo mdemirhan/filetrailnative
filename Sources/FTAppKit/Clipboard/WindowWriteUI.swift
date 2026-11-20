@@ -133,6 +133,7 @@ extension WriteSkipReason {
         case .notNewer: self = .notNewer
         case .packageNotCompared: self = .packageNotCompared
         case .differentKind: self = .differentKind
+        case .addMissing: self = .addMissing
         }
     }
 }

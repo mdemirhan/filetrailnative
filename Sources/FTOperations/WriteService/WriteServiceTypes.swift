@@ -231,6 +231,8 @@ public struct CopyPasteItemResult: Codable, Equatable, Sendable {
         case packageNotCompared = "package_not_compared"
         /// Replace Older left the item there: a clash of kinds, which it doesn't replace.
         case differentKind = "different_kind"
+        /// Add Missing left the item there: it was already there.
+        case addMissing = "add_missing"
     }
 
     public var sourcePath: String

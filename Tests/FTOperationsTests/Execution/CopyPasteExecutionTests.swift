@@ -171,6 +171,31 @@ struct CopyPasteExecutionTests {
         #expect(events.last?.result?.items.map(\.skipReason) == [.plannedConflictPolicy])
     }
 
+    // Add Missing leaves a file already there and says it was Add Missing; a row the person set to Skip is theirs.
+    @Test func whatAddMissingLeavesSaysSoAndARowsOwnSkipDoesNot() async throws {
+        let fileSystem = MockWriteServiceFileSystem([
+            ("/source", .directory()), ("/source/kept.txt", .file(size: 5)), ("/source/own.txt", .file(size: 5)),
+            ("/source/new.txt", .file(size: 5)), ("/target", .directory()), ("/target/kept.txt", .file(size: 2)),
+            ("/target/own.txt", .file(size: 2)),
+        ])
+        let sources = ["/source/kept.txt", "/source/own.txt", "/source/new.txt"]
+        let analysed = try createResolvedOperation(fileSystem, sources: sources, into: "/target")
+        let own = try #require(analysed.report.nodes.first { $0.sourcePath == "/source/own.txt" })
+        let operation = try createResolvedOperation(
+            fileSystem, sources: sources, into: "/target", policy: CopyPasteReview.policy(for: .addMissing),
+            overrides: [CopyPasteNodeOverride(nodeId: own.id, action: .skip)])
+
+        let events = await execute(fileSystem, operation)
+
+        let reasons = Dictionary(
+            uniqueKeysWithValues: (events.last?.result?.items ?? []).map { ($0.sourcePath, $0.skipReason) })
+        #expect(
+            reasons == [
+                "/source/kept.txt": .addMissing, "/source/own.txt": .plannedConflictPolicy, "/source/new.txt": nil,
+            ])
+        #expect(fileSystem.exists("/target/new.txt"))
+    }
+
     @Test func cancelsImmediatelyWhenTheSignalIsAlreadyAborted() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),

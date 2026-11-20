@@ -288,7 +288,7 @@ extension HelpContent {
                         HelpRow(
                             label: "New File",
                             description:
-                                "File ▸ New File makes an empty text file, or a copy of one of your templates, in the folder you are in, and opens its name for typing. A template is any file you keep in the Templates folder, a letter or a note with your headings, say: right-click a file and choose Save as Template to add it, or choose Open Templates Folder at the end of New File’s menu to add, rename or remove them. Each one is listed by its name, and its copy is dated now. New File is also on the folder’s right-click menu."
+                                "File ▸ New File makes an empty text file, or a copy of one of your templates, in the folder you are in, and opens its name for typing. A template is any file you keep in the Templates folder, a letter or a note with your headings, say: right-click a file and choose Save as Template to add it (it is dimmed for a file whose name starts with a dot, which New File doesn’t list), or choose Open Templates Folder at the end of New File’s menu to add, rename or remove them. Each one is listed by its name, and its copy is dated now. New File is also on the folder’s right-click menu."
                         ),
                         HelpRow(
                             label: "Rename",

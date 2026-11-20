@@ -138,6 +138,72 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // The slider and Make Bigger keep the pane's place. Arriving at 1 at a time with the selected file scrolled
+        // away from, the file now on screen is selected, as a scroll that came to rest on it would select it: Space,
+        // the Info panel and Move to Trash act on the file shown. A selected file that was on screen stays on screen
+        // and selected, several selected files are kept, and a step between 9, 4 and 2 leaves the selection alone.
+        @Test func aStepToOneAtATimeSelectsTheFileItShows() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(.viewAsPreviews, files: 40)
+            let previews = try #require(probe.pane as? PreviewsViewController)
+            let entries = tab.content.entries
+            func shown() -> Int {
+                Int((Double(previews.scroll.contentView.bounds.origin.y) / previews.layout.rowHeight).rounded())
+            }
+            func atFour(selecting paths: [String], row: Double) {
+                tab.perform(.showPreviews4)
+                probe.layout()
+                tab.content.select(paths: paths)
+                probe.layout()
+                previews.scrollClamped(to: NSPoint(x: 0, y: row * previews.layout.rowHeight))
+                probe.layout()
+            }
+            func stepToOne(_ command: AppCommand = .increaseSize) {
+                tab.perform(command)
+                probe.layout()
+                tab.perform(command)
+                probe.layout()
+            }
+
+            // The selected file six rows up: 4 to 2 leaves it selected, 2 to 1 selects the file that fills the pane.
+            atFour(selecting: [entries[0].path], row: 6)
+            #expect(!previews.isWhollyInView(index: 0))
+            tab.perform(.increaseSize)
+            probe.layout()
+            #expect(previews.count == 2 && tab.content.selection.paths == [entries[0].path])
+            tab.perform(.increaseSize)
+            probe.layout()
+            #expect(previews.count == 1)
+            let landed = shown()
+            #expect(landed > 0 && tab.content.selection.paths == [entries[landed].path])
+            #expect(previews.isWhollyInView(index: landed))
+
+            // The slider's last stop, the same.
+            atFour(selecting: [entries[0].path], row: 6)
+            tab.content.previewStopChanged(3, save: true)
+            probe.layout()
+            #expect(previews.count == 1 && shown() > 0)
+            #expect(tab.content.selection.paths == [entries[shown()].path])
+
+            // The selected file on screen, not the first of its row: it is the one shown, and stays selected.
+            atFour(selecting: [entries[13].path], row: 6)
+            #expect(previews.isWhollyInView(index: 13))
+            stepToOne()
+            #expect(previews.isWhollyInView(index: 13) && tab.content.selection.paths == [entries[13].path])
+
+            // Nothing selected: the file shown is.
+            atFour(selecting: [], row: 6)
+            stepToOne()
+            #expect(tab.content.selection.paths == [entries[shown()].path])
+
+            // Several selected: they stay.
+            let several = [entries[0].path, entries[1].path]
+            atFour(selecting: several, row: 6)
+            stepToOne()
+            #expect(previews.count == 1 && tab.content.selection.paths == several)
+            await harness.close()
+        }
+
         // At 1 at a time a scroll goes from file to file, and the file it rests on is selected, as ↓ would select it;
         // a selection of several files is kept. With more than one on screen, scrolling leaves the selection alone.
         @Test func aScrollAtOneAtATimeSelectsTheFileItRestsOn() async throws {

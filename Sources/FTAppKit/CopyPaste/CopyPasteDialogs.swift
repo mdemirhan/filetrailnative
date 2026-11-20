@@ -133,6 +133,7 @@ extension ResultItem {
             skippedAsNotNewer: item.skipReason == .notNewer,
             skippedAsPackageNotCompared: item.skipReason == .packageNotCompared,
             skippedAsDifferentKind: item.skipReason == .differentKind,
+            leftByAddMissing: item.skipReason == .addMissing,
             childFailureCount: item.childFailureCount, note: item.note)
     }
 }

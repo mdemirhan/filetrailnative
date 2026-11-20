@@ -31,15 +31,19 @@ public struct CopyPastePolicy: Codable, Equatable, Sendable {
     /// milliseconds (`CopyPasteChoices.newerToleranceMs`, how far the disks blur a date); the others are skipped. It
     /// doesn't touch a choice made for one item.
     public var replaceOlderToleranceMs: Double?
+    /// Set for Add Missing, and nil for any other answer: the result says Add Missing left what it left, where the
+    /// same choices made another way (Retry's, which merges folders and skips files too) are a Skip.
+    public var addMissing: Bool?
 
     public init(
         file: CopyPasteChoice, directory: CopyPasteChoice, mismatch: CopyPasteChoice,
-        replaceOlderToleranceMs: Double? = nil
+        replaceOlderToleranceMs: Double? = nil, addMissing: Bool? = nil
     ) {
         self.file = file
         self.directory = directory
         self.mismatch = mismatch
         self.replaceOlderToleranceMs = replaceOlderToleranceMs
+        self.addMissing = addMissing
     }
 }
 
@@ -123,6 +127,20 @@ public enum CopyPasteChoices {
         case .fileConflict: return replaceOlderLeaves(policy, dates, isPackage: isPackage)
         case .typeMismatch: return isReplaceOlder(policy) && policy.mismatch == .skip ? .differentKind : nil
         case .directoryConflict: return nil
+        }
+    }
+
+    /// Add Missing leaves the item: a file, or a clash of kinds, already there, with no choice of its own. The person
+    /// chose Add Missing and not Skip, and the result says so.
+    public static func addMissingLeaves(
+        conflictClass: ConflictClass, policy: CopyPastePolicy, override: CopyPasteChoice?
+    ) -> Bool {
+        let hasOwnChoice = override.map { isChoiceAllowed(for: conflictClass, $0) } ?? false
+        guard policy.addMissing == true, !hasOwnChoice else { return false }
+        switch conflictClass {
+        case .fileConflict: return policy.file == .skip
+        case .typeMismatch: return policy.mismatch == .skip
+        case .directoryConflict: return false
         }
     }
 

@@ -677,8 +677,11 @@ extension ExplorerWindowlessTests {
             let folderColumns = pane.columns(from: tab.preferences).columns
             #expect(folderColumns.contains(.permissions) && !folderColumns.contains(.folder))
             tab.setSearchViewMode(.list)
+            // Folder Customization, open as the results come up, closes: its folder is no longer on screen.
+            tab.folderViewPopover = FolderViewPopover(pane: pane, tab: tab, dismiss: {})
 
             try await search(tab, for: "note")
+            #expect(tab.folderViewPopover == nil)
             #expect(pane.content.mode == .list && tab.menuState.viewMode == .list)
             #expect(pane.columns(from: tab.preferences).columns == [.name, .folder, .modified, .size])
             #expect(pane.shownFolderView == nil)
@@ -1364,8 +1367,11 @@ extension ExplorerWindowlessTests {
             let alpha = real(harness, "Alpha")
             let bar = pane.content.contentShell.pathBarRow
             #expect(bar.folderViewMark?.changed == true)
+            // Folder Customization, open as the folder is let go of, closes with the symbol.
+            tab.folderViewPopover = FolderViewPopover(pane: pane, tab: tab, dismiss: {})
 
             pane.showNoFolder()
+            #expect(tab.folderViewPopover == nil)
             #expect(bar.folderViewMark == nil)
             #expect(bar.folderViewButton.isHidden)
             bar.onFolderViewClick(bar.folderViewButton)

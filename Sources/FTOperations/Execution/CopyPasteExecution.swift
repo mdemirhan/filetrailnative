@@ -284,9 +284,11 @@ func emitProgress(
 
 // MARK: One item, with what changed since the review
 
-/// Why the plan skips an item: the choice made for it or for all conflicts, or Replace Older's own reason.
+/// Why the plan skips an item: the choice made for it or for all conflicts, or Replace Older's or Add Missing's own
+/// reason.
 private func plannedSkipReason(_ node: ResolvedCopyPasteNode) -> CopyPasteItemResult.SkipReason {
-    switch node.replaceOlderSkip {
+    if node.leftByAddMissing { return .addMissing }
+    return switch node.replaceOlderSkip {
     case nil: .plannedConflictPolicy
     case .notNewer: .notNewer
     case .packageNotCompared: .packageNotCompared

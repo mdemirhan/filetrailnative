@@ -17,7 +17,8 @@ import Testing
         #expect(CopyPasteResultText.retrySourcePaths(items) == ["/src/photos", "/src/c.txt", "/src/d.txt"])
     }
 
-    // What the result's Skipped section says of each kind of skip: Replace Older's three, beside the person's own.
+    // What the result's Skipped section says of each kind of skip: Replace Older's three and Add Missing's, beside
+    // the person's own.
     // A clash of kinds Replace Older left says so, and not that the person chose Skip.
     @Test func saysWhyEachSkippedItemWasLeft() {
         let items = [
@@ -32,19 +33,22 @@ import Testing
                 skippedAsDifferentKind: true),
             ResultItem(sourcePath: "/src/c.txt", destinationPath: "/dest/c.txt", status: .skipped),
             ResultItem(
+                sourcePath: "/src/e.txt", destinationPath: "/dest/e.txt", status: .skipped, leftByAddMissing: true),
+            ResultItem(
                 sourcePath: "/src/d.txt", destinationPath: "/dest/d.txt", status: .skipped, skippedAfterChange: true),
         ]
         let text = CopyPasteResultText(action: .paste, targetPath: "/dest", error: nil, items: items, canRetry: true)
-        #expect(text.message == "5 items were skipped.")
+        #expect(text.message == "6 items were skipped.")
         #expect(text.sections.map(\.label) == ["Skipped"])
         #expect(
-            text.sections.first?.rows.map(\.path) == ["b.txt", "Work.sparsebundle", "Notes", "c.txt", "d.txt"])
+            text.sections.first?.rows.map(\.path) == ["b.txt", "Work.sparsebundle", "Notes", "c.txt", "e.txt", "d.txt"])
         #expect(
             text.sections.first?.rows.map(\.detail) == [
                 "Already there, as new or newer \u{B7} Replace Older left it",
                 "Already there, a package, not compared \u{B7} Replace Older left it",
                 "Already there, a different kind of item \u{B7} Replace Older left it",
                 "Already existed \u{B7} you chose Skip",
+                "Already there \u{B7} Add Missing left it",
                 "Skipped after it changed during the operation",
             ])
         #expect(text.retryLabel == nil)

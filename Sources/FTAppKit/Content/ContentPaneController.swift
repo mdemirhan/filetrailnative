@@ -1303,7 +1303,13 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         let density = columnState.density
         if count != columnState.previewCounts[density] {
             columnState.previewCounts[density] = count
-            if mode == .previews { pane?.columnsChanged() }
+            if mode == .previews {
+                if let previews = pane as? PreviewsViewController {
+                    previews.countChanged(showsSelected: true)
+                } else {
+                    pane?.columnsChanged()
+                }
+            }
         }
         if mode == .previews { (pane as? ItemGridPane)?.revealLead() }
         syncSizeSlider()

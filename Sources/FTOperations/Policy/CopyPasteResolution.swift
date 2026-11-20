@@ -25,11 +25,14 @@ public struct ResolvedCopyPasteNode: Equatable, Sendable {
     /// Skipped by Replace Older, and why: the item there is as new or newer, or the two are packages, which it
     /// doesn't compare.
     public var replaceOlderSkip: ReplaceOlderSkip?
+    /// Skipped by Add Missing: it was already there.
+    public var leftByAddMissing: Bool
 
     public init(
         node: CopyPasteAnalysisNode, action: ResolvedCopyPasteAction, destinationPath: String,
-        children: [ResolvedCopyPasteNode], replaceOlderSkip: ReplaceOlderSkip? = nil
+        children: [ResolvedCopyPasteNode], replaceOlderSkip: ReplaceOlderSkip? = nil, leftByAddMissing: Bool = false
     ) {
+        self.leftByAddMissing = leftByAddMissing
         self.node = node
         self.action = action
         self.destinationPath = destinationPath
@@ -137,6 +140,7 @@ private struct PolicyResolver<FileSystem: AnalysisFileSystem> {
         let baseDestinationPath = destinationPathOverride ?? node.destinationPath
         let action: ResolvedCopyPasteAction
         var replaceOlderSkip: ReplaceOlderSkip?
+        var leftByAddMissing = false
         if let explicitAction {
             action = explicitAction
         } else if let conflictClass = node.conflictClass {
@@ -157,6 +161,8 @@ private struct PolicyResolver<FileSystem: AnalysisFileSystem> {
             replaceOlderSkip = CopyPasteChoices.replaceOlderSkip(
                 conflictClass: conflictClass, policy: policy ?? .defaultCopyPaste, override: override, dates: dates,
                 isPackage: isPackage)
+            leftByAddMissing = CopyPasteChoices.addMissingLeaves(
+                conflictClass: conflictClass, policy: policy ?? .defaultCopyPaste, override: override)
         } else {
             action = .create
         }
@@ -198,7 +204,7 @@ private struct PolicyResolver<FileSystem: AnalysisFileSystem> {
 
         return ResolvedCopyPasteNode(
             node: normalizedNode, action: action, destinationPath: destinationPath, children: children,
-            replaceOlderSkip: replaceOlderSkip)
+            replaceOlderSkip: replaceOlderSkip, leftByAddMissing: leftByAddMissing)
     }
 
     private static func kindName(_ conflictClass: ConflictClass) -> String {

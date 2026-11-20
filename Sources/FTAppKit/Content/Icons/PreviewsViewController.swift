@@ -100,6 +100,7 @@ final class PreviewsViewController: IconViewController {
         scrollStart = nil
         scrolledByDrag = false
         gridColumns = PreviewGrid.shape(count).columns
+        gridCount = count
         setGrid(density: next, layout: fitted)
         collection.collectionViewLayout?.invalidateLayout()
         return true
@@ -192,15 +193,28 @@ final class PreviewsViewController: IconViewController {
 
     /// The columns of the grid as it was last fitted (`PreviewGrid.shape`).
     private var gridColumns = PreviewGrid.shape(PreviewGrid.defaultCount).columns
+    /// The count the grid was last fitted for.
+    private var gridCount = PreviewGrid.defaultCount
 
     override func layoutPane() {
         placing { super.layoutPane() }
     }
 
-    override func columnsChanged() {
+    override func columnsChanged() { countChanged(showsSelected: false) }
+
+    /// Another count, or another density. Arriving at 1 at a time from more (the slider, Make Bigger, a folder's
+    /// view), the file now on screen is selected, as a scroll that came to rest on it would select it: the selected
+    /// file stays on screen when it was (`keepInViewAfterStep`), and one scrolled away from would leave Space, the
+    /// Info panel and Move to Trash acting on a file not shown. `showsSelected` is View ▸ Show Previews ▸ 1 at a
+    /// Time, which brings the selected file on screen itself and so leaves the selection as it is.
+    func countChanged(showsSelected: Bool) {
+        let before = gridCount
         // Another count is asked for at its size at once.
         pixelSizeInUse = nil
         placing { super.columnsChanged() }
+        if !showsSelected, before != 1, count == 1 {
+            selectFileOnScreen(unlessDragged: false)
+        }
         // The previews come at another size now: those asked for ahead at the old one are asked for again.
         dropPrefetches()
         prefetchSoon()

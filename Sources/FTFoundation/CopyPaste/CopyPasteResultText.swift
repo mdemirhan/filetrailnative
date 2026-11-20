@@ -18,6 +18,8 @@ public struct ResultItem: Equatable, Sendable {
     public var skippedAsPackageNotCompared: Bool
     /// Skipped by Replace Older: a clash of kinds, a file where a folder of that name is or the other way round.
     public var skippedAsDifferentKind: Bool
+    /// Skipped by Add Missing: it was already there.
+    public var leftByAddMissing: Bool
     public var childFailureCount: Int?
     public var note: Bool
 
@@ -25,8 +27,9 @@ public struct ResultItem: Equatable, Sendable {
         sourcePath: String?, destinationPath: String?, status: Status, error: String? = nil,
         skippedAfterChange: Bool = false, skippedAsNotNewer: Bool = false,
         skippedAsPackageNotCompared: Bool = false, skippedAsDifferentKind: Bool = false,
-        childFailureCount: Int? = nil, note: Bool = false
+        leftByAddMissing: Bool = false, childFailureCount: Int? = nil, note: Bool = false
     ) {
+        self.leftByAddMissing = leftByAddMissing
         self.skippedAsNotNewer = skippedAsNotNewer
         self.skippedAsPackageNotCompared = skippedAsPackageNotCompared
         self.skippedAsDifferentKind = skippedAsDifferentKind
@@ -204,6 +207,8 @@ public struct CopyPasteResultText: Equatable, Sendable {
                 if item.skippedAsDifferentKind {
                     return "Already there, a different kind of item \u{B7} Replace Older left it"
                 }
+                // The person chose Add Missing, not Skip.
+                if item.leftByAddMissing { return "Already there \u{B7} Add Missing left it" }
                 return item.skippedAfterChange
                     ? "Skipped after it changed during the operation" : "Already existed \u{B7} you chose Skip"
             },

@@ -153,6 +153,9 @@ extension BrowserPane {
         let bar = content.contentShell.pathBarRow
         if searchStore?.showsResults == true || folderLetGo {
             bar.folderViewMark = nil
+            // No folder is on screen to customize: Folder Customization, open on this pane, closes with its symbol,
+            // as its Keep boxes would go on changing a view that isn't shown.
+            if let tab, tab.folderViewPopover?.pane === self { tab.closeFolderViewPopover() }
         } else if let view = folderView {
             bar.folderViewMark = PathBarRowView.FolderViewMark(
                 whose: view.isDraft ? .noView : view.use.own ? .own : .above, changed: view.hasUnsavedChanges,
