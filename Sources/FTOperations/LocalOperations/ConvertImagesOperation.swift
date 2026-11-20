@@ -145,8 +145,10 @@ extension WriteCoordinator {
             return .failed(LocalOperations.describeWriteError(error, missing: NodePath.basename(folder)))
         }
         do {
-            // The first free name; when something takes it between the look and the rename, the next one.
-            return .made(try place(partial, in: folder, named: name, isFolder: false, fileSystem))
+            // The first free name; when something takes it between the look and the rename, the next one. The
+            // picture's own name is numbered whole: "Scan 3.png" gives "Scan 3 2.png", never "Scan 4.png".
+            return .made(
+                try place(partial, in: folder, named: name, isFolder: false, numbering: .wholeName, fileSystem))
         } catch {
             try? fileSystem.rm(partial, recursive: false, force: true)
             return .failed(

@@ -2,6 +2,16 @@ import FTFileSystem
 import FTFoundation
 import Foundation
 
+/// How a file whose name is taken gets its number.
+enum TakenNameNumbering: Sendable {
+    /// A name the app gave counts on from a number it ends in: "Pasted Image 3.png" taken gives
+    /// "Pasted Image 4.png".
+    case countingOn
+    /// A person's own name is numbered whole, whatever it ends in, as `PasteAsFile.freeName` numbers one:
+    /// "Scan 3.png" taken gives "Scan 3 2.png". "Scan 4.png" would read as the next scan.
+    case wholeName
+}
+
 extension WriteCoordinator {
     /// Makes one file holding `contents` in `parentDirectoryPath`: Paste as File, or New File (`action`). With
     /// `nextFreeName`, the name is only a suggestion ("Pasted Image.png"): when it is taken (by something the window
@@ -36,8 +46,16 @@ extension WriteCoordinator {
     nonisolated static func nextFreeFilePath(
         _ parentDirectoryPath: String, _ name: String, _ fileSystem: any LocalWriteFileSystem
     ) throws -> String {
+        try nextFreeFilePath(parentDirectoryPath, name, numbering: .countingOn, fileSystem)
+    }
+
+    /// The first free name for a file whose name is taken, numbered as `numbering` says.
+    nonisolated static func nextFreeFilePath(
+        _ parentDirectoryPath: String, _ name: String, numbering: TakenNameNumbering,
+        _ fileSystem: any LocalWriteFileSystem
+    ) throws -> String {
         let split = NumberedNames.splitItemName(name, isFolder: false)
-        let (stem, first) = numberedBase(split.stem)
+        let (stem, first) = numbering == .countingOn ? numberedBase(split.stem) : (split.stem, 2)
         let unnumbered = stem + (split.extension.map { ".\($0)" } ?? "")
         var number = first
         while number < first + 10_000 {

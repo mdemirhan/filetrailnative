@@ -233,9 +233,10 @@ extension WriteCoordinator {
     }
 
     /// Puts `source` in `folder` as `name`, or the next free name when it is taken, never replacing anything.
+    /// `numbering` is how a file's taken name gets its number.
     nonisolated static func place(
         _ source: String, in folder: String, named name: String, isFolder: Bool,
-        _ fileSystem: any LocalWriteFileSystem
+        numbering: TakenNameNumbering = .countingOn, _ fileSystem: any LocalWriteFileSystem
     ) throws -> String {
         var destination = NodePath.join(folder, name)
         // Something may take the free name between the look and the rename: the next one is tried then.
@@ -243,7 +244,8 @@ extension WriteCoordinator {
             if LocalOperations.lstatOrNull(fileSystem, destination) != nil {
                 destination =
                     isFolder
-                    ? try nextFreeFolderPath(folder, name, fileSystem) : try nextFreeFilePath(folder, name, fileSystem)
+                    ? try nextFreeFolderPath(folder, name, fileSystem)
+                    : try nextFreeFilePath(folder, name, numbering: numbering, fileSystem)
             }
             do {
                 try fileSystem.renameExclusive(source, destination)

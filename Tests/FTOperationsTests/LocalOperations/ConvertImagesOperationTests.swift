@@ -92,6 +92,36 @@ private final class Encoded: @unchecked Sendable {
         }
     }
 
+    // A picture's own name is numbered whole, whatever it ends in: "Scan 4.png" would read as the next scan.
+    @Test func aTakenNameEndingInANumberIsNumberedWholeAndNotCountedOnFrom() async throws {
+        try await withUndoFolder { root, trashDir in
+            let scans = ["Scan 1.png", "Scan 2.png", "Scan 3.png"]
+            for scan in scans { try Self.picture("\(root)/\(scan)") }
+            let originals = try scans.map { try Data(contentsOf: URL(fileURLWithPath: "\(root)/\($0)")) }
+            let t = UndoTest(root: root, trashDir: trashDir)
+            let half = ImageConversionOptions(format: .png, size: .scale(50))
+            let together = try await Self.convert(t, scans, half)
+            #expect(
+                together.result?.items.map(\.destinationPath)
+                    == ["\(root)/Scan 1 2.png", "\(root)/Scan 2 2.png", "\(root)/Scan 3 2.png"])
+            let again = try await Self.convert(t, ["Scan 3.png"], half)
+            #expect(again.result?.items.first?.destinationPath == "\(root)/Scan 3 3.png")
+            // In another format whose name is taken, the same.
+            try UndoDisk.write("\(root)/Scan 3.jpg", "mine")
+            let other = try await Self.convert(t, ["Scan 3.png"], ImageConversionOptions(format: .jpeg))
+            #expect(other.result?.items.first?.destinationPath == "\(root)/Scan 3 2.jpg")
+            #expect(
+                try Self.names(root) == [
+                    "Scan 1 2.png", "Scan 1.png", "Scan 2 2.png", "Scan 2.png", "Scan 3 2.jpg", "Scan 3 2.png",
+                    "Scan 3 3.png", "Scan 3.jpg", "Scan 3.png",
+                ])
+            // Nothing was replaced.
+            #expect(try scans.map { try Data(contentsOf: URL(fileURLWithPath: "\(root)/\($0)")) } == originals)
+            #expect(try String(contentsOfFile: "\(root)/Scan 3.jpg", encoding: .utf8) == "mine")
+            await t.shutDown()
+        }
+    }
+
     @Test func onePictureThatCantBeConvertedDoesntKeepTheOthersFromIt() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/broken.png", "not a picture")
