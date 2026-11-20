@@ -199,15 +199,15 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
                 rootPath: rootPath, viewKey: "search:\(rootPath):\(session.committedQuery)", run: session.runNumber,
                 results: session.shownResults, sortBy: session.sortBy, sortDirection: session.sortDirection,
                 highlight: session.highlightPattern, isRunning: session.isRunning, error: session.error,
-                errorIsQuiet: session.errorIsQuiet, startupDiskName: disk))
+                errorIsQuiet: session.errorIsQuiet, unreadableFolders: session.unreadableFolders,
+                startupDiskName: disk))
         // Results opened start in the mode new views start with; results brought back are given theirs after.
         if opening { content.setViewFilterMode(tab.preferences.listFilterMatch) }
         header.show(
             scopes: SearchBarText.scopeOptions(
                 currentPath: pane.shownFolderPath, homePath: Self.homePath, startupDiskName: disk),
             rootPath: rootPath, isRunning: session.isRunning, truncated: session.truncated,
-            unreadableFolders: session.unreadableFolders, mayBeMissingItems: session.mayBeMissingItems,
-            filterText: content.filter)
+            mayBeMissingItems: session.mayBeMissingItems, filterText: content.filter)
         header.showFilterMode(content.filterMode)
         layoutHeader()
     }

@@ -130,6 +130,40 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // Folders the search couldn't read are said in the status bar beside the count, while it runs and after, and
+        // not in a banner over the results; a new search that read every folder says it no more.
+        @Test func foldersThatCouldntBeReadAreSaidInTheStatusBar() async throws {
+            let (harness, tab, engine, timers) = try await open()
+            let status = tab.content.contentShell.pathBarRow.status
+            let header = tab.search.header
+            engine.finds = { _ in (["note.txt", "Alpha/notes.md"], true, false) }
+            engine.unreadableFolders = true
+            try type("no", in: tab)
+            timers.advance(0.4)
+            #expect(tab.search.session.unreadableFolders && tab.search.session.isRunning)
+            #expect(status.stringValue == "Searching… 2 results · Some folders couldn’t be read")
+            #expect(header.banner.isHidden)
+            let jobID = try #require(engine.jobs.keys.first)
+            engine.progress(jobID, add: ["Beta/nothing.txt"], finish: true)
+            timers.advance(SearchTiming.pollInterval)
+            #expect(await waitUntil { !tab.search.session.isRunning })
+            #expect(status.stringValue == "3 results · Some folders couldn’t be read")
+            #expect(header.banner.isHidden)
+            // Selected, an item is counted before the note.
+            tab.content.select(paths: [tab.content.entries[0].path])
+            #expect(status.stringValue.hasPrefix("3 results · 1 selected"))
+            #expect(status.stringValue.hasSuffix(" · Some folders couldn’t be read"))
+            // The search cut short keeps its banner, which doesn't say it.
+            #expect(SearchBarText.banner(truncated: true, mayBeMissingItems: false) == SearchBarText.truncatedBanner)
+            // Another search, which read every folder.
+            engine.unreadableFolders = false
+            engine.finds = { _ in (["other.txt"], false, false) }
+            try type("ot", in: tab)
+            timers.advance(0.4)
+            #expect(await waitUntil { status.stringValue == "1 result" })
+            await harness.close()
+        }
+
         // With the search field focused, the edit commands are the field's.
         @Test func editCommandsGoToTheSearchFieldWhileItHasTheKeyboard() async throws {
             let (harness, tab, _, _) = try await open()

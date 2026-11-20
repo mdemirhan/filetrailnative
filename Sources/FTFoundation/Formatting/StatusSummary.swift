@@ -55,9 +55,14 @@ public enum StatusSummary {
         return parts.joined(separator: " · ")
     }
 
-    /// One line of search status: the result count, and the selection with its size when known.
+    /// The search met folders it has no permission to read, or that failed to read: what is in them isn't listed.
+    public static let unreadableFoldersNote = "Some folders couldn\u{2019}t be read"
+
+    /// One line of search status: the result count, the selection with its size when known, and that folders
+    /// couldn't be read.
     public static func search(
-        isSearching: Bool, shown: Int, totalCount: Int, selectedCount: Int, selectionSize: StatusSize? = nil
+        isSearching: Bool, shown: Int, totalCount: Int, selectedCount: Int, selectionSize: StatusSize? = nil,
+        unreadableFolders: Bool = false
     ) -> String {
         let noun = totalCount == 1 ? "result" : "results"
         let count = shown == totalCount ? "\(totalCount) \(noun)" : "\(shown) of \(totalCount) \(noun)"
@@ -68,6 +73,7 @@ public enum StatusSummary {
                 parts.append(text)
             }
         }
+        if unreadableFolders { parts.append(unreadableFoldersNote) }
         return parts.joined(separator: " · ")
     }
 }

@@ -20,6 +20,8 @@ struct ContentSearchDisplay {
     var isRunning: Bool
     var error: String?
     var errorIsQuiet: Bool
+    /// The search met folders it couldn't read: the status bar says so beside the count.
+    var unreadableFolders = false
     /// What a result right in `/` shows in its Folder column.
     var startupDiskName = VolumePaths.defaultStartupDiskName
 }

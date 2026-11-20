@@ -18,6 +18,8 @@ final class FakeSearchEngine: SearchEngine {
     }
 
     var finds: (SearchRequest) -> (names: [String], running: Bool, truncated: Bool) = { _ in ([], false, false) }
+    /// What every update says of folders the search couldn't read.
+    var unreadableFolders = false
     private(set) var starts: [SearchRequest] = []
     private(set) var cancels: [String] = []
     private(set) var updates: [(jobID: String, cursor: Int)] = []
@@ -56,7 +58,7 @@ final class FakeSearchEngine: SearchEngine {
         let status: SearchJobStatus = job.running ? .running : (job.truncated ? .truncated : .complete)
         return SearchUpdate(
             jobId: jobID, status: status, items: Array(job.items[start...]), nextCursor: job.items.count,
-            done: !job.running, truncated: job.truncated, error: nil)
+            done: !job.running, truncated: job.truncated, error: nil, unreadableFolders: unreadableFolders)
     }
 
     func cancel(jobID: String) {

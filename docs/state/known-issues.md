@@ -83,7 +83,7 @@ Found by reading the code and confirmed there; not fixed yet.
 - **A state file that can't be written as JSON** logs the failure again at every later save (`AppStateStore`).
 - **The sign in a toast's icon is drawn in the menu's background color**, as the opaque card had it; on glass it should be cut out of the disc.
 - **Each key press in the sidebar builds the tree's rows again** (`SidebarModel.keyContext`).
-- **A search of Home without Full Disk Access always says "Some folders couldn't be read."**, as macOS refuses the folders it protects (Mail, Safari, other apps' data).
+- **A search of Home without Full Disk Access always says "Some folders couldn't be read" in the status bar**, as macOS refuses the folders it protects (Mail, Safari, other apps' data).
 - **One menu test may depend on the tests before it** (`TemplatesInWindowTests.saveAsTemplateRunsWhereverItsItemIsOn` behaves the same way): `CommandRoutesTests`' check that the menu reads the window it is asked about was seen to fail when all of FTAppKitTests ran in one process (the menu falls back to the window in front). `scripts/ci.sh` runs it in its own group, where it passes; it hasn't been tried in one process since the tests were regrouped.
 - **In the code**: `Metrics` has members only its tests read; `WriteOperationOutcome`/`WriteOperationProgress` might give way to `WriteOperationEvent`; `SidebarIcons.symbol` and `drawFavorite` repeat `SymbolGlyph`, but draw a translucent color differently.
 

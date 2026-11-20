@@ -45,7 +45,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
 - **Search as you type**, of everything under the folder you are in, by name or full path, in plain text, glob or regex. One click widens it to Home or the whole disk.
 - **Plain text** ignores case, and a plain letter finds its accented forms: `resume` finds Résumé.
 - **Options**: hidden files, and inside a Git repository, leaving out `.git` and whatever `.gitignore` excludes.
-- **Results in any view**, with columns of their own that you choose and sort, and a filter field that trims them by name or by folder without searching again. A search stops at 50,000 results, and says so when some folders couldn't be read.
+- **Results in any view**, with columns of their own that you choose and sort, and a filter field that trims them by name or by folder without searching again. A search stops at 50,000 results, and the status bar says so when some folders couldn't be read.
 - **Each tab keeps its own search**, a search keeps running while you look at another tab, and ⇧⌘F shows the last results again.
 - **Results stay put while you work in them**: what you move away or delete leaves the list, what you rename keeps its place, and when you add something to the folder searched a note offers Search Again rather than searching on its own.
 - **Type in the file list** to narrow the folder on screen. Fuzzy keeps the names with your letters in order, and marks them; Contains keeps the names with the letters side by side. Backspace edits what you typed, Esc brings the rest back, and ⌘F turns the same text into a search of the subfolders.

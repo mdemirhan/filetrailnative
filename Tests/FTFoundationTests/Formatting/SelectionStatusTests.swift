@@ -130,6 +130,16 @@ struct SelectionStatusTests {
             StatusSummary.search(
                 isSearching: false, shown: 3, totalCount: 40, selectedCount: 1, selectionSize: .calculating)
                 == "3 of 40 results · 1 selected · Calculating…")
+        // Folders the search couldn't read: said last, with no full stop, while it runs and after.
+        #expect(
+            StatusSummary.search(
+                isSearching: false, shown: 3, totalCount: 3, selectedCount: 0, unreadableFolders: true)
+                == "3 results · Some folders couldn’t be read")
+        #expect(
+            StatusSummary.search(
+                isSearching: true, shown: 3, totalCount: 3, selectedCount: 1,
+                selectionSize: .ready(sizeBytes: 1_200_000), unreadableFolders: true)
+                == "Searching… 3 results · 1 selected · 1.2 MB · Some folders couldn’t be read")
     }
 
     private func selection(
