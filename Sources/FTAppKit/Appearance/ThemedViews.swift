@@ -111,9 +111,10 @@ final class ThemedTextCell: TextBoxCell {
     override func titleRect(forBounds rect: NSRect) -> NSRect { drawingRect(forBounds: rect) }
 
     override func cellSize(forBounds rect: NSRect) -> NSSize {
-        // The text itself, wrapped to the width: no border or inset around it.
+        // The text itself, wrapped to the width: no border or inset around it. Wrapped text is drawn in a box wider
+        // than the frame by the slack, and is measured as wide, so it takes the lines it is drawn on.
         let size = attributedStringValue.boundingRect(
-            with: NSSize(width: rect.width, height: .greatestFiniteMagnitude),
+            with: NSSize(width: rect.width + (isMultiline ? Self.slack : 0), height: .greatestFiniteMagnitude),
             options: [.usesLineFragmentOrigin])
         return NSSize(width: ceil(size.width), height: size.height)
     }
@@ -165,8 +166,11 @@ public final class ThemedText: NSTextField, ThemeApplying {
 
     /// The height the text takes at this width, not rounded (a line of 19.5 stays 19.5).
     public func height(forWidth width: CGFloat) -> CGFloat {
+        // As wide as the box the cell draws wrapped text in (the frame and the slack): a line a fraction of a point
+        // wider than the frame is drawn whole, and measured at the frame's width it counted as one line more.
+        let slack = (cell as? TextBoxCell)?.isMultiline == true ? TextBoxCell.slack : 0
         let size = attributedStringValue.boundingRect(
-            with: NSSize(width: max(1, width), height: CGFloat.greatestFiniteMagnitude),
+            with: NSSize(width: max(1, width) + slack, height: CGFloat.greatestFiniteMagnitude),
             options: [.usesLineFragmentOrigin])
         return size.height
     }
