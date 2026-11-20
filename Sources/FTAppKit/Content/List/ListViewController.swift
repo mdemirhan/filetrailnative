@@ -34,7 +34,7 @@ final class ListTableView: NSTableView {
     /// time the pane grew (its first layout, the Info Row shutting, a window resize) its growth was added below the rows
     /// and the list scrolled past its end.
     override func setFrameSize(_ newSize: NSSize) {
-        let rows = CGFloat(numberOfRows) * (rowHeight + intercellSpacing.height)
+        let rows = pane?.groupedRowsHeight ?? CGFloat(numberOfRows) * (rowHeight + intercellSpacing.height)
         let height = max(rows, enclosingScrollView?.contentView.bounds.height ?? newSize.height)
         super.setFrameSize(NSSize(width: newSize.width, height: height))
     }
@@ -84,15 +84,13 @@ final class ListTableView: NSTableView {
     override func cancelOperation(_ sender: Any?) {}
 }
 
-/// A row of the table while the list is grouped: the empty row before a group but the first, a group's title, or an
-/// entry by its place in `entries`.
+/// A row of the table while the list is grouped: a group's title, or an entry by its place in `entries`.
 enum ListRow: Equatable {
-    case gap
     case header(Int)
     case entry(Int)
 }
 
-/// The row a group's title, or the empty row before it, sits in: it draws no selection, as neither is selected.
+/// The row a group's title sits in: it draws no selection, as a title is never selected.
 final class GroupHeaderRowView: NSTableRowView {
     override func drawSelection(in dirtyRect: NSRect) {}
     override func drawBackground(in dirtyRect: NSRect) {}
@@ -167,13 +165,19 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
     private let column = NSTableColumn(identifier: DetailsCellView.identifier)
 
     var entries: [DirectoryEntry] = []
-    /// The table's rows while the list is grouped: for each group its title and its items, with an empty row before
-    /// every group but the first; empty while it isn't grouped, when a row is the entry at the same place. Every row
-    /// is as high, so a row's place says where it is. The Name column's title stays Name: a group's name in its place
-    /// read as a column called "Today", or "work" for a folder of search results.
+    /// The table's rows while the list is grouped: for each group its title and its items; empty while it isn't
+    /// grouped, when a row is the entry at the same place. A title's row is as high as an item's, and every title but
+    /// the first has half a row of space above it, in its own row (`height(ofRow:)`), so the groups are told apart
+    /// without an empty row between them. The Name column's title stays Name: a group's name in its place read as a
+    /// column called "Today", or "work" for a folder of search results.
     private(set) var rows: [ListRow] = []
     /// The table row of each entry, while grouped.
     private var entryRows: [Int] = []
+    /// Each entry's place in its group, while grouped: the stripes start again under each title.
+    private var placesInGroup: [Int] = []
+    /// Whether the table asks for each row's height: only while grouped, as a table that asks measures every row at
+    /// each reload and finds a row by search, where rows all as high need neither.
+    private var asksRowHeights = false
     private(set) var groups: [ShownGroup] = []
     /// Rows by path, made when a selection or a lookup needs it.
     private var rowsCache: [String: Int]?
@@ -302,11 +306,17 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
 
     func reloadRows(paths: Set<String>) {
         entries = host?.entries ?? []
+        let asked = asksRowHeights
         makeRows()
         rowsCache = nil
         let rows = IndexSet(paths.compactMap { rowByPath[$0] })
         isSyncing = true
-        table.reloadData(forRowIndexes: rows, columnIndexes: IndexSet(integersIn: 0..<table.numberOfColumns))
+        if asked != asksRowHeights {
+            // Grouped or not any more: every row's place is another.
+            table.reloadData()
+        } else {
+            table.reloadData(forRowIndexes: rows, columnIndexes: IndexSet(integersIn: 0..<table.numberOfColumns))
+        }
         isSyncing = false
         applySelection()
         keepInView(.list)
@@ -367,13 +377,20 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
     var scrollOrigin: NSPoint { scroll.contentView.bounds.origin }
 
     func isInView(index: Int) -> Bool {
-        let top = CGFloat(index) * table.rowHeight
         let clip = scroll.contentView.bounds
+        // Grouped, the rows are not all as high.
+        if !rows.isEmpty {
+            let row = table.rect(ofRow: index)
+            return row.minY >= clip.minY && row.maxY <= clip.maxY
+        }
+        let top = CGFloat(index) * table.rowHeight
         return top >= clip.minY && top + table.rowHeight <= clip.maxY
     }
 
     func bringIntoView(index: Int) {
         guard scroll.contentView.bounds.width > 0, scroll.contentView.bounds.height > 0 else { return }
+        // A group's first item comes with its title, where both fit: the item is what must show.
+        if groupIndex(atRow: index - 1) != nil { table.scrollRowToVisible(index - 1) }
         table.scrollRowToVisible(index)
     }
 
@@ -523,37 +540,82 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         for row in rows.location..<(rows.location + rows.length) {
             guard let index = entryIndex(atRow: row) else { continue }
             bar(atRow: row)?.configure(
-                entry: entries[index], row: row, selected: selected.contains(row), host: host, columnSet: columnSet,
-                layout: layoutMetrics)
+                entry: entries[index], row: stripeRow(ofEntry: index), selected: selected.contains(row), host: host,
+                columnSet: columnSet, layout: layoutMetrics)
         }
     }
 
     // MARK: Groups
 
-    /// The rows of the groups the host shows: each header, then its items.
+    /// The rows of the groups the host shows: each title, then its items.
     private func makeRows() {
         groups = host?.groups ?? []
+        defer { askRowHeights(!rows.isEmpty) }
         guard !groups.isEmpty else {
             rows = []
             entryRows = []
+            placesInGroup = []
             return
         }
         var made: [ListRow] = []
         made.reserveCapacity(entries.count + groups.count)
         var rowOf = [Int](repeating: 0, count: entries.count)
+        var placeOf = [Int](repeating: 0, count: entries.count)
         for (number, group) in groups.enumerated() {
-            if number > 0 { made.append(.gap) }
             made.append(.header(number))
             for index in group.range where index < entries.count {
                 rowOf[index] = made.count
+                placeOf[index] = index - group.range.lowerBound
                 made.append(.entry(index))
             }
         }
         rows = made
         entryRows = rowOf
+        placesInGroup = placeOf
     }
 
     var rowCount: Int { rows.isEmpty ? entries.count : rows.count }
+
+    /// The space above a group's title, but the first's: half a row.
+    var groupSpace: CGFloat { (CGFloat(layoutMetrics.rowHeight) / 2).rounded() }
+
+    /// A row's height while grouped: an item's and the first title's are a row's, another title's has the space above
+    /// it too.
+    func height(ofRow row: Int) -> CGFloat {
+        let height = CGFloat(layoutMetrics.rowHeight)
+        guard rows.indices.contains(row), case .header(let number) = rows[row], number > 0 else { return height }
+        return height + groupSpace
+    }
+
+    /// How high the rows are together while grouped; nil while they are all as high.
+    var groupedRowsHeight: CGFloat? {
+        guard !rows.isEmpty else { return nil }
+        return CGFloat(rows.count) * CGFloat(layoutMetrics.rowHeight) + CGFloat(max(0, groups.count - 1)) * groupSpace
+    }
+
+    /// The row an entry's stripe goes by: its place under its group's title while grouped, so every group starts
+    /// without a stripe as the list does; else its row.
+    private func stripeRow(ofEntry index: Int) -> Int {
+        placesInGroup.indices.contains(index) ? placesInGroup[index] : index
+    }
+
+    func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat { height(ofRow: row) }
+
+    /// The table learns which of its delegate's methods there are when it is given the delegate, so it is given it
+    /// again when the rows start or stop having heights of their own.
+    private func askRowHeights(_ asks: Bool) {
+        guard asks != asksRowHeights else { return }
+        asksRowHeights = asks
+        table.delegate = nil
+        table.delegate = self
+    }
+
+    nonisolated override func responds(to aSelector: Selector!) -> Bool {
+        if aSelector == #selector(NSTableViewDelegate.tableView(_:heightOfRow:)) {
+            return MainActor.assumeIsolated { asksRowHeights }
+        }
+        return super.responds(to: aSelector)
+    }
 
     /// The entry a row shows; nil for a header, or a row past the end.
     func entryIndex(atRow row: Int) -> Int? {
@@ -572,12 +634,12 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         rows.isEmpty || !entryRows.indices.contains(index) ? index : entryRows[index]
     }
 
-    /// The path of each row, "" for a group's title or the row before it: what the marquee finds rows by.
+    /// The path of each row, "" for a group's title: what the marquee finds rows by.
     var rowPaths: [String] {
         guard !rows.isEmpty else { return entries.map(\.path) }
         return rows.map {
             switch $0 {
-            case .gap, .header: ""
+            case .header: ""
             case .entry(let index): entries[index].path
             }
         }
@@ -608,10 +670,11 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
             let id = NSUserInterfaceItemIdentifier("details.groupHeader")
             let header = tableView.makeView(withIdentifier: id, owner: nil) as? GroupHeaderView ?? GroupHeaderView()
             header.identifier = id
-            // Lined up with the names.
+            // Lined up with the names, under the space that sets its group apart.
             header.leadingInset = CGFloat(
                 layoutMetrics.rowInset + layoutMetrics.rowPaddingInline + layoutMetrics.iconSize
                     + layoutMetrics.nameIconGap)
+            header.spaceAbove = number > 0 ? groupSpace : 0
             header.configure(groups[number], style: .list, theme: host.theme)
             return header
         }
@@ -620,8 +683,8 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
             tableView.makeView(withIdentifier: DetailsCellView.identifier, owner: nil) as? DetailsCellView
             ?? DetailsCellView()
         cell.bar.configure(
-            entry: entries[index], row: row, selected: tableView.isRowSelected(row), host: host, columnSet: columnSet,
-            layout: layoutMetrics)
+            entry: entries[index], row: stripeRow(ofEntry: index), selected: tableView.isRowSelected(row), host: host,
+            columnSet: columnSet, layout: layoutMetrics)
         return cell
     }
 

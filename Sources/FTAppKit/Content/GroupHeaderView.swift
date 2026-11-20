@@ -3,9 +3,9 @@ import AppKit
 import FTFoundation
 
 /// A group's title: the name alone, in the style of the sidebar's section headings (the small size, semibold, the
-/// secondary color). In the List it is a row's height, lined up with the names; in the Icons view it is over a
-/// hairline across the pane, and in the Compact List over one across its column. It takes no clicks: a press on it is
-/// a press on the empty space it is in.
+/// secondary color). In the List it is a row's height, lined up with the names, under the space that sets its group
+/// apart from the one above; in the Icons view it is over a hairline across the pane, and in the Compact List over one
+/// across its column. It takes no clicks: a press on it is a press on the empty space it is in.
 final class GroupHeaderView: NSView {
     enum Style {
         case list
@@ -18,6 +18,11 @@ final class GroupHeaderView: NSView {
     /// Where the title starts.
     var leadingInset: CGFloat = 12 {
         didSet { needsLayout = true }
+    }
+
+    /// The List's space above the title, in the title's own row: the title is in the middle of what is left.
+    var spaceAbove: CGFloat = 0 {
+        didSet { if spaceAbove != oldValue { needsLayout = true } }
     }
 
     private let title = NSTextField(labelWithString: "")
@@ -73,7 +78,7 @@ final class GroupHeaderView: NSView {
         let width = max(0, bounds.width - leadingInset - 8)
         let height = ceil(title.intrinsicContentSize.height)
         // A grid's title sits above its hairline; a row's in its middle.
-        let y = style == .grid ? bounds.height - height - 6 : (bounds.height - height) / 2
+        let y = style == .grid ? bounds.height - height - 6 : spaceAbove + (bounds.height - spaceAbove - height) / 2
         title.frame = NSRect(x: leadingInset, y: y, width: width, height: height)
     }
 

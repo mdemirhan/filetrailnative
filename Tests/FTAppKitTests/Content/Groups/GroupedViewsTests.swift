@@ -24,18 +24,18 @@ extension ExplorerWindowlessTests {
             try #require(descendants(of: tab.window?.contentView, ListTableView.self).first?.pane)
         }
 
-        // The List: every group has its title in a row of its own, the first as the others, with an empty row before
-        // each group but the first. Neither kind of extra row is an item.
-        @Test func theListPutsATitleBeforeEachGroupAndAnEmptyRowBeforeAllButTheFirst() async throws {
+        // The List: every group has its title in a row of its own, the first as the others. A title's row is not an
+        // item.
+        @Test func theListPutsATitleBeforeEachGroup() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness, view: .viewAsDetails)
             let pane = try list(tab)
-            #expect(pane.rows.count == 6 + 3 + 2)
-            #expect(pane.rows.prefix(6) == [.header(0), .entry(0), .entry(1), .entry(2), .gap, .header(1)])
+            #expect(pane.rows.count == 6 + 3)
+            #expect(pane.rows.prefix(6) == [.header(0), .entry(0), .entry(1), .entry(2), .header(1), .entry(3)])
             #expect(pane.groupIndex(atRow: 0) == 0 && pane.entryIndex(atRow: 0) == nil)
-            #expect(pane.groupIndex(atRow: 5) == 1 && pane.entryIndex(atRow: 5) == nil)
-            #expect(pane.entryIndex(atRow: 6) == 3 && pane.tableRow(ofEntry: 3) == 6)
-            #expect(pane.rowPaths.filter(\.isEmpty).count == 5)
+            #expect(pane.groupIndex(atRow: 4) == 1 && pane.entryIndex(atRow: 4) == nil)
+            #expect(pane.entryIndex(atRow: 5) == 3 && pane.tableRow(ofEntry: 3) == 5)
+            #expect(pane.rowPaths.filter(\.isEmpty).count == 3)
             // The titles on screen, the first group's among them.
             let titles = descendants(of: pane.table, GroupHeaderView.self).compactMap { $0.accessibilityLabel() }
             #expect(Set(titles) == ["Today", "Yesterday", "2020"])
@@ -43,24 +43,78 @@ extension ExplorerWindowlessTests {
             let table = pane.table
             // As a person presses: the release is queued, so the press ends.
             let probe = ListProbe(tab: tab)
-            probe.press(at: probe.center(ofRow: 5))
+            probe.press(at: probe.center(ofRow: 4))
             #expect(tab.content.selection.paths.isEmpty)
             probe.press(at: probe.center(ofRow: 0))
             #expect(tab.content.selection.paths.isEmpty)
             #expect(!pane.tableView(table, shouldSelectRow: 0) && !pane.tableView(table, shouldSelectRow: 4))
-            #expect(pane.tableView(table, shouldSelectRow: 6))
+            #expect(pane.tableView(table, shouldSelectRow: 5))
             tab.content.select(paths: [tab.content.entries[3].path])
-            #expect(table.selectedRowIndexes == [6])
+            #expect(table.selectedRowIndexes == [5])
             // Selected from outside (a scenario, accessibility), a title's row is passed over.
-            pane.selectFromOutside([5, 6])
+            pane.selectFromOutside([4, 5])
             #expect(tab.content.selection.paths == [tab.content.entries[3].path])
             // A drag-to-select from a title down over the next group's item selects the item, never the title.
-            probe.press(at: probe.center(ofRow: 5), moves: [probe.center(ofRow: 6)])
+            probe.press(at: probe.center(ofRow: 4), moves: [probe.center(ofRow: 5)])
             #expect(tab.content.selection.paths == [tab.content.entries[3].path])
             #expect(pane.isWhollyInView(index: 3))
             // Not grouped, a row is an entry again.
             await tab.group(by: .groupByNone, expecting: [])
             #expect(pane.rows.isEmpty && pane.rowCount == 6 && pane.tableRow(ofEntry: 3) == 3)
+        }
+
+        // The groups are half a row apart: a title's row is as high as an item's, every title but the first has half
+        // a row above it in its own row, and there is no empty row between two groups. The rows are where their
+        // heights put them, for a press, a drag-to-select across groups, the arrows and the stripes; not grouped,
+        // every row is as high again.
+        @Test func theListsGroupsAreHalfARowApart() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await opened(harness, view: .viewAsDetails)
+            let pane = try list(tab)
+            let table = pane.table
+            let row = table.rowHeight
+            let space = pane.groupSpace
+            #expect(space == (row / 2).rounded() && space > 0)
+            // Today's title and three items, Yesterday's title under its space, its item, 2020's title, two items.
+            #expect(table.rect(ofRow: 0) == NSRect(x: 0, y: 0, width: table.bounds.width, height: row))
+            #expect(table.rect(ofRow: 3).maxY == 4 * row)
+            #expect(table.rect(ofRow: 4).height == row + space && table.rect(ofRow: 4).minY == 4 * row)
+            #expect(table.rect(ofRow: 5).minY == 5 * row + space && table.rect(ofRow: 5).height == row)
+            #expect(table.rect(ofRow: 8).maxY == 9 * row + 2 * space)
+            #expect(pane.groupedRowsHeight == 9 * row + 2 * space)
+            #expect(table.frame.height >= 9 * row + 2 * space)
+            // A title sits in the row's height at the bottom of its row, the space above it.
+            let titles = descendants(of: table, GroupHeaderView.self)
+            let yesterday = try #require(titles.first { $0.accessibilityLabel() == "Yesterday" })
+            let today = try #require(titles.first { $0.accessibilityLabel() == "Today" })
+            #expect(yesterday.spaceAbove == space && today.spaceAbove == 0)
+            #expect(yesterday.frame.height == row + space && today.frame.height == row)
+            // A press at a row's place selects that row's item.
+            let probe = ListProbe(tab: tab)
+            probe.press(at: probe.center(ofRow: 7))
+            #expect(tab.content.selection.paths == [tab.content.entries[4].path])
+            // A drag-to-select from Yesterday's title down to 2020's first item takes the items on the way, across
+            // 2020's title, and no more.
+            probe.press(at: probe.center(ofRow: 4), moves: [probe.center(ofRow: 7)])
+            #expect(Set(tab.content.selection.paths) == Set(tab.content.entries[3...4].map(\.path)))
+            // ↓ from a group's last item goes to the next group's first, over the title.
+            tab.content.select(paths: [tab.content.entries[2].path])
+            probe.key("ArrowDown")
+            #expect(tab.content.selection.paths == [tab.content.entries[3].path])
+            #expect(table.selectedRowIndexes == [5])
+            // The stripes start again under each title: a group's first item has none, its second has one.
+            let odd = Set(listViews("list.row.odd", in: table).compactMap { table.row(for: $0) })
+            #expect(odd == [2, 8])
+            // Not grouped, every row is as high.
+            await tab.group(by: .groupByNone, expecting: [])
+            harness.layout(tab)
+            #expect(pane.groupedRowsHeight == nil && table.rect(ofRow: 5).minY == 5 * row)
+            #expect(table.rect(ofRow: 5).height == row)
+            #expect(!pane.responds(to: #selector(NSTableViewDelegate.tableView(_:heightOfRow:))))
+            // Grouped again, they are apart again.
+            await tab.group(by: .groupByModified, expecting: ["Today", "Yesterday", "2020"])
+            harness.layout(tab)
+            #expect(table.rect(ofRow: 5).minY == 5 * row + space)
         }
 
         // Grouped, the first column's title is still Name, with its sort arrow, wherever the list is scrolled: a
@@ -74,12 +128,12 @@ extension ExplorerWindowlessTests {
             let pane = try list(tab)
             let name = try #require(header(tab)?.cell(for: .name))
             #expect(name.title.stringValue == "Name" && name.active && !name.chevron.isHidden)
-            pane.scrollPosition = (Double(pane.table.rect(ofRow: 6).minY), 0)
+            pane.scrollPosition = (Double(pane.table.rect(ofRow: 5).minY), 0)
             harness.layout(tab)
             #expect(name.title.stringValue == "Name")
         }
 
-        // Grouped, the list has two more rows for each group after the first, so the rows on screen at its end are
+        // Grouped, the list has one more row for each group, so the rows on screen at its end are
         // numbered past its last item: the details asked for are those of the items on those rows, where the rows'
         // numbers taken for items' made a range that ends before it starts, and the app stopped.
         @Test func aGroupedListScrolledToItsEndAsksForTheDetailsOfItsLastItems() async throws {
@@ -98,7 +152,7 @@ extension ExplorerWindowlessTests {
             tab.window?.setContentSize(NSSize(width: 900, height: 260))
             harness.layout(tab)
             let pane = try list(tab)
-            #expect(pane.rowCount == 26 + 26 + 25)
+            #expect(pane.rowCount == 26 + 26)
             pane.scrollPosition = (Double(pane.table.rect(ofRow: pane.rowCount - 1).maxY), 0)
             let rows = pane.table.rows(in: pane.table.visibleRect)
             // The case: the first row on screen, less the ten before it, is past the last item.

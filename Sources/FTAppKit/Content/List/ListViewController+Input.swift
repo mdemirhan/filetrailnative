@@ -109,7 +109,7 @@ extension ListViewController {
         // A replaced selection has no lead until the drag ends, so the list does not scroll to reveal one meanwhile.
         let startLead = mode == .replace ? nil : host.selection.leadPath
         let paths = host.entryPaths
-        // By row, a group's header as "" (it is never selected): every row is as high, a header too.
+        // By row, a group's title as "" (it is never selected).
         let rowPaths = self.rowPaths
         let rowHeight = Double(table.rowHeight)
         let startWindow = event.locationInWindow
@@ -135,8 +135,7 @@ extension ListViewController {
             marquee.show(NSRect(x: box.left, y: box.top, width: box.right - box.left, height: box.bottom - box.top))
             table.addSubview(marquee, positioned: .above, relativeTo: nil)
             end = (Double(inArea.x), Double(inArea.y))
-            hits = DragSelection.detailsItems(box: box, entryPaths: rowPaths, rowHeight: rowHeight)
-                .filter { !$0.path.isEmpty }
+            hits = marqueeHits(box: box, rowPaths: rowPaths, rowHeight: rowHeight)
             let key = hits.map(\.path).joined(separator: "\0")
             if key == shownKey { return }
             shownKey = key
@@ -195,6 +194,27 @@ extension ListViewController {
 
     func handleKeyDown(_ event: NSEvent) -> Bool {
         keyboard?.keyDown(event) ?? false
+    }
+}
+
+extension ListViewController {
+    /// The items a drag-to-select box meets. Grouped, the rows are not all as high, and the table says where each is.
+    fileprivate func marqueeHits(box: DragSelectionBox, rowPaths: [String], rowHeight: Double) -> [DragSelectionHit] {
+        guard !rows.isEmpty else {
+            return DragSelection.detailsItems(box: box, entryPaths: rowPaths, rowHeight: rowHeight)
+        }
+        guard box.bottom > box.top else { return [] }
+        let met = table.rows(
+            in: NSRect(x: 0, y: box.top, width: Double(table.bounds.width), height: box.bottom - box.top))
+        guard met.length > 0 else { return [] }
+        return (met.location..<met.location + met.length).compactMap { row in
+            guard rowPaths.indices.contains(row), !rowPaths[row].isEmpty else { return nil }
+            let rect = table.rect(ofRow: row)
+            return DragSelectionHit(
+                path: rowPaths[row],
+                rect: DragSelectionBox(
+                    left: box.left, top: Double(rect.minY), right: box.right, bottom: Double(rect.maxY)))
+        }
     }
 }
 
