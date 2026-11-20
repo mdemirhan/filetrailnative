@@ -36,7 +36,7 @@ extension ExplorerWindowlessTests {
             let harness = try ExplorerHarness.windowless()
             let watches = FolderWatches(
                 FolderWatches.Dependencies(
-                    watchFolder: { _, _, _ in {} }, readModifiedTime: { _ in nil }, onFolderChanged: { _, _ in },
+                    watchFolder: { _, _, _, _ in {} }, readModifiedTime: { _ in nil }, onFolderChanged: { _, _ in },
                     forgetCachedListings: { _, _ in }))
             harness.windows.folderWatches = watches
             let tab = try await harness.open()

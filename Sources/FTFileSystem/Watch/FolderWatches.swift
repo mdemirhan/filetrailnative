@@ -43,13 +43,13 @@ public final class FolderWatches {
 
     @MainActor
     public struct Dependencies {
-        /// Calls `onChange` with the name of the item that changed, or nil when that isn't known, and
-        /// `onFail` when the watch stops by itself. Returns a function that stops watching, or nil when the
-        /// watch can't start.
+        /// Calls `onChange` with the name of the item that changed, or nil when that isn't known,
+        /// `onFail` when the watch stops by itself, and `onStart` once changes are told of from then on. Returns a
+        /// function that stops watching, or nil when the watch can't start.
         public var watchFolder:
             @MainActor (
                 _ path: String, _ onChange: @escaping @MainActor (String?) -> Void,
-                _ onFail: @escaping @MainActor () -> Void
+                _ onFail: @escaping @MainActor () -> Void, _ onStart: @escaping @MainActor () -> Void
             ) -> (@Sendable () -> Void)?
         /// The folder's modification time (milliseconds), or nil when it can't be read.
         public var readModifiedTime: @Sendable (String) async -> Double?
@@ -62,8 +62,10 @@ public final class FolderWatches {
 
         public init(
             watchFolder:
-                @escaping @MainActor (String, @escaping @MainActor (String?) -> Void, @escaping @MainActor () -> Void)
-                -> (@Sendable () -> Void)?,
+                @escaping @MainActor (
+                    String, @escaping @MainActor (String?) -> Void, @escaping @MainActor () -> Void,
+                    @escaping @MainActor () -> Void
+                ) -> (@Sendable () -> Void)?,
             readModifiedTime: @escaping @Sendable (String) async -> Double?,
             onFolderChanged: @escaping @MainActor (Int, FolderChange) -> Void,
             forgetCachedListings: @escaping @MainActor (String, [String]?) -> Void,
@@ -90,6 +92,11 @@ public final class FolderWatches {
         // The modification time being read after the window was told of a change.
         var modifiedTimeRead: Task<Void, Never>?
         var readCount = 0
+        // The folder's time when the listing on screen was read, until it is compared with the time once the watch
+        // runs.
+        var listedModifiedTime: Double?
+        // The folder's time isn't read yet: it is once the watch runs.
+        var awaitsFirstRead = true
 
         init(path: String) { self.path = path }
 
@@ -104,7 +111,13 @@ public final class FolderWatches {
     }
 
     /// Watches `path` for the window, in place of what it watched before; nil stops.
-    public func watch(windowID: Int, path: String?) {
+    ///
+    /// `listedModifiedTime` is the folder's time when the listing the window shows was read
+    /// (`DirectorySnapshot.modifiedTime`). The watch tells only of what changes once it runs, and the listing was read
+    /// before that, seconds before when it came from the cache: once the watch runs the folder's time is read, as it
+    /// is anyway, and when it is another the window is told that anything may have changed, and reads the folder
+    /// again. One `stat` for each folder opened, and nothing after.
+    public func watch(windowID: Int, path: String?, listedModifiedTime: Double? = nil) {
         if let path, let current = watches[windowID], current.path == path {
             if current.stop == nil {
                 start(windowID, current)
@@ -114,9 +127,11 @@ public final class FolderWatches {
         stop(windowID)
         guard let path else { return }
         let watch = Watch(path: path)
+        watch.listedModifiedTime = listedModifiedTime
         watches[windowID] = watch
         start(windowID, watch)
-        recordModifiedTime(windowID, watch)
+        // A watch that couldn't start never runs: the time is read now, for when the window comes back to the front.
+        if watch.stop == nil { firstRead(windowID, watch) }
     }
 
     /// The window came back to the front: a change the watch could not see (on a network share, say) is
@@ -149,6 +164,26 @@ public final class FolderWatches {
     public var watchedPaths: [Int: String] { watches.mapValues(\.path) }
 
     // MARK: Inside
+
+    /// The watch runs (or never will): the folder's time is read for the first time, and compared with the time its
+    /// listing was read at.
+    private func firstRead(_ windowID: Int, _ watch: Watch) {
+        guard watches[windowID] === watch, watch.awaitsFirstRead else { return }
+        watch.awaitsFirstRead = false
+        let listed = watch.listedModifiedTime
+        watch.listedModifiedTime = nil
+        recordModifiedTime(windowID, watch)
+        guard let listed, let read = watch.modifiedTimeRead else { return }
+        Task { @MainActor [weak self, weak watch] in
+            await read.value
+            guard let self, let watch, self.watches[windowID] === watch else { return }
+            // A change already on its way is told of anyway, and one told of since had the folder read again.
+            guard !watch.hasTimer, watch.readCount == 1, let now = watch.modifiedTime, now != listed else { return }
+            watch.changedNames = nil
+            watch.changedNameSet = []
+            self.tell(windowID, watch)
+        }
+    }
 
     private func recordModifiedTime(_ windowID: Int, _ watch: Watch) {
         watch.readCount += 1
@@ -225,6 +260,10 @@ public final class FolderWatches {
                 watch.stop?()
                 watch.stop = nil
                 self.noteChange(windowID, watch, name: nil)
+            },
+            { [weak self, weak watch] in
+                guard let self, let watch else { return }
+                self.firstRead(windowID, watch)
             })
     }
 

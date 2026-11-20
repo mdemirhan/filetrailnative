@@ -13,17 +13,21 @@ public enum FSEventsFolderWatcher {
     /// main actor (either can stall on a network volume), and the callbacks run on the main actor. Returns at
     /// once a function that stops, also when the stream is not started yet. `onFail` is called as well when
     /// the stream can't be started (the folder isn't there, say). With `disk`, the stream is on that disk and keeps to
-    /// `path` on it, which need not be there yet.
+    /// `path` on it, which need not be there yet. `onStart` is called once the stream runs: what changes from then
+    /// on is told of.
     @MainActor
     public static func watchFolder(
         path: String, onDisk disk: String? = nil, onChange: @escaping @MainActor (String?) -> Void,
-        onFail: @escaping @MainActor () -> Void
+        onFail: @escaping @MainActor () -> Void, onStart: (@MainActor () -> Void)? = nil
     ) -> @Sendable () -> Void {
         let start = DeferredStart()
         // Finding the folder's real path reads the disk, which may not answer.
         DispatchQueue.global(qos: .utility).async {
             if let stop = openStream(path: path, onDisk: disk, onChange: onChange, onFail: onFail) {
                 start.attach(stop)
+                if let onStart {
+                    DispatchQueue.main.async { MainActor.assumeIsolated { if !start.isCancelled { onStart() } } }
+                }
             } else if !start.isCancelled {
                 DispatchQueue.main.async { MainActor.assumeIsolated { if !start.isCancelled { onFail() } } }
             }

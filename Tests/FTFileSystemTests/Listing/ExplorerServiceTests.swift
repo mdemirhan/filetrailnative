@@ -785,4 +785,26 @@ struct ExplorerServiceFixtureTests {
             #expect(nested.suggestions.map(\.path) == [root + "/lotus123/screenshots", root + "/lotus123/specs"])
         }
     }
+
+    /// A listing keeps the folder's modification time from before its entries were read, and a listing handed out
+    /// again from the cache keeps the one it was read with: a change since shows as another time.
+    @Test func aListingKeepsTheFoldersTimeFromBeforeItsRead() async throws {
+        try await withTemporaryDirectory { directory in
+            let path = try #require(realpath(directory.path, nil).map { String(cString: $0) })
+            try Data("a".utf8).write(to: URL(fileURLWithPath: path + "/a.txt"))
+            let then = timeval(tv_sec: 1_600_000_000, tv_usec: 0)
+            #expect(utimes(path, [then, then]) == 0)
+            let native = NativeFileSystem()
+            let service = DirectoryService(fileSystem: native, cache: ResponseCache())
+            let first = try await service.snapshot(path: path)
+            #expect(first.modifiedTime == 1_600_000_000_000)
+            #expect(first.modifiedTime == FolderModifiedTime.read(path, native))
+
+            try Data("b".utf8).write(to: URL(fileURLWithPath: path + "/b.txt"))
+            let kept = try await service.snapshot(path: path)
+            #expect(kept.entries.map(\.name) == ["a.txt"])
+            #expect(kept.modifiedTime == 1_600_000_000_000)
+            #expect(FolderModifiedTime.read(path, native) != kept.modifiedTime)
+        }
+    }
 }

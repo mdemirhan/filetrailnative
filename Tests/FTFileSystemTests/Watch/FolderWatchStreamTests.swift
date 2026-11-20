@@ -57,6 +57,42 @@ struct FolderWatchStreamTests {
         }
     }
 
+    /// A folder changed after its listing was read and before its watch runs: no event says so, and the folder's
+    /// time, kept with the listing, does.
+    @Test func tellsOfAChangeMadeBetweenTheListingAndTheWatch() async throws {
+        try await withTemporaryDirectory { directory in
+            let root = directory.path
+            let cache = ResponseCache()
+            let service = DirectoryService(cache: cache)
+            let listing = try await service.snapshot(path: root)
+            #expect(listing.entries.isEmpty)
+            // Folder times on APFS are fine enough to tell two writes apart; the pause is for a disk whose aren't.
+            try await Task.sleep(for: .milliseconds(20))
+            try "late".write(toFile: root + "/late.txt", atomically: false, encoding: .utf8)
+
+            let told = Told()
+            let watches = FolderWatches(.app(cache: cache) { _, change in told.changes.append(change) })
+            watches.watch(windowID: 1, path: root, listedModifiedTime: listing.modifiedTime)
+            defer { watches.stopAll() }
+            #expect(await wait { told.changes.contains { $0.changedPaths == nil } })
+            // The listing kept is let go of: the folder read again has the file.
+            #expect(try await service.snapshot(path: root).entries.map(\.name) == ["late.txt"])
+        }
+    }
+
+    @Test func aFolderNotChangedSinceItsListingIsNotToldOf() async throws {
+        try await withTemporaryDirectory { directory in
+            let root = directory.path
+            let listing = try await DirectoryService().snapshot(path: root)
+            let told = Told()
+            let watches = FolderWatches(.app(cache: ResponseCache()) { _, change in told.changes.append(change) })
+            watches.watch(windowID: 1, path: root, listedModifiedTime: listing.modifiedTime)
+            defer { watches.stopAll() }
+            // Long enough for the stream to run and the folder's time to be read.
+            #expect(await wait(seconds: 1) { !told.changes.isEmpty } == false)
+        }
+    }
+
     @Test func tellsOfItemsMadeRenamedAndRemovedInsideTheFolder() async throws {
         try await withTemporaryDirectory { directory in
             // Paths are named as the window gave the folder, whatever FSEvents calls it.

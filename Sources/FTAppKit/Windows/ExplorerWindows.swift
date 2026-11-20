@@ -422,7 +422,9 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
                 for pane in other.panes {
                     // A pane that let go of its folder shows nothing that could change.
                     let path = other === front && pane.loaded ? pane.shownFolderPath : ""
-                    watches.watch(windowID: pane.watchID, path: path.isEmpty ? nil : path)
+                    watches.watch(
+                        windowID: pane.watchID, path: path.isEmpty ? nil : path,
+                        listedModifiedTime: pane.listedModifiedTime)
                 }
                 // A second pane closed since stops being watched.
                 if let closed = other.closedPaneWatchID {

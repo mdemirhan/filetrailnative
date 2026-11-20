@@ -349,7 +349,7 @@ extension ExplorerWindowlessTests {
         private func watches(_ harness: ExplorerHarness) -> FolderWatches {
             let watches = FolderWatches(
                 FolderWatches.Dependencies(
-                    watchFolder: { _, _, _ in {} }, readModifiedTime: { _ in nil }, onFolderChanged: { _, _ in },
+                    watchFolder: { _, _, _, _ in {} }, readModifiedTime: { _ in nil }, onFolderChanged: { _, _ in },
                     forgetCachedListings: { _, _ in }))
             harness.windows.folderWatches = watches
             return watches

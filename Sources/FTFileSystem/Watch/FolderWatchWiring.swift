@@ -13,8 +13,9 @@ extension FolderWatches.Dependencies {
         onFolderChanged: @escaping @MainActor (_ windowID: Int, _ change: FolderChange) -> Void
     ) -> FolderWatches.Dependencies {
         FolderWatches.Dependencies(
-            watchFolder: { path, onChange, onFail in
-                let stopFolder = FSEventsFolderWatcher.watchFolder(path: path, onChange: onChange, onFail: onFail)
+            watchFolder: { path, onChange, onFail, onStart in
+                let stopFolder = FSEventsFolderWatcher.watchFolder(
+                    path: path, onChange: onChange, onFail: onFail, onStart: onStart)
                 let stopOthers = trash.listedWith(path).map { other in
                     FSEventsFolderWatcher.watchFolder(
                         path: other, onDisk: TrashFolders.disk(of: other), onChange: { _ in onChange(nil) },
@@ -28,11 +29,8 @@ extension FolderWatches.Dependencies {
             readModifiedTime: { path in
                 // A disk read, which may wait on its disk.
                 await BlockingWork.run(qos: .utility) {
-                    guard let time = (try? fileSystem.stat(path))?.mtimeMs else { return nil }
-                    // Added up with the Trash's other folders: a change to any of them changes the total.
-                    return trash.listedWith(path).reduce(Double(time)) { total, other in
-                        total + Double((try? fileSystem.stat(other))?.mtimeMs ?? 0)
-                    }
+                    // Added up with the Trash's other folders, as a listing's own time is.
+                    FolderModifiedTime.read(path, alsoListing: trash.listedWith(path), fileSystem)
                 }
             },
             onFolderChanged: onFolderChanged,

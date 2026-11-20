@@ -56,6 +56,9 @@ private final class Harness {
     // Folders a watch can't be started on.
     var unwatchable: Set<String> = []
     var started = 0
+    // With this set, a watch runs only once the test says so (`run`), as a stream started off the main actor does.
+    var holdsStarts = false
+    var starts: [String: @MainActor () -> Void] = [:]
     var modifiedTimes: [String: Double] = [:]
     // Reads of the modification time held back until the test lets them go.
     var heldReads: [CheckedContinuation<Void, Never>]?
@@ -66,11 +69,12 @@ private final class Harness {
     init() {
         watches = FolderWatches(
             FolderWatches.Dependencies(
-                watchFolder: { [self] path, onChange, onFail in
+                watchFolder: { [self] path, onChange, onFail, onStart in
                     if unwatchable.contains(path) { return nil }
                     started += 1
                     listeners[path] = onChange
                     failures[path] = onFail
+                    if holdsStarts { starts[path] = onStart } else { onStart() }
                     return { [self] in
                         MainActor.assumeIsolated {
                             listeners[path] = nil
@@ -92,6 +96,9 @@ private final class Harness {
     }
 
     var watched: [String] { listeners.keys.sorted() }
+
+    /// The watch of `path`, held back, now runs.
+    func run(_ path: String) { starts.removeValue(forKey: path)?() }
 
     func change(_ path: String, _ name: String?) { listeners[path]?(name) }
 
@@ -231,6 +238,93 @@ struct FolderWatchesTests {
         harness.watches.checkForMissedChanges(windowID: 1)
         await drain()
         #expect(harness.changes.count == 1)
+    }
+
+    // A listing can be seconds old when it is shown (kept from an earlier read), and the watch tells only of what
+    // changes once it runs: the folder's time at the listing's read is compared with its time once the watch runs.
+    @Test func aChangeBetweenTheListingsReadAndTheWatchRunningIsTold() async {
+        let harness = Harness()
+        harness.holdsStarts = true
+        harness.modifiedTimes["/a"] = 100
+        harness.watches.watch(windowID: 1, path: "/a", listedModifiedTime: 100)
+        await drain()
+        // Something is made in the folder before the watch runs: no event will say so.
+        harness.modifiedTimes["/a"] = 200
+        harness.run("/a")
+        await drain()
+        #expect(harness.changes.map(\.windowID) == [1])
+        #expect(harness.changes.last?.change == FolderChange(path: "/a", changedPaths: nil))
+        #expect(harness.forgotten.map(\.path) == ["/a"])
+
+        // Told once: the time read after telling is the one compared to when the window comes back.
+        harness.watches.checkForMissedChanges(windowID: 1)
+        await drain()
+        #expect(harness.changes.count == 1)
+    }
+
+    @Test func aFolderUnchangedSinceItsListingIsNotReadAgain() async {
+        let harness = Harness()
+        harness.modifiedTimes["/a"] = 100
+        harness.watches.watch(windowID: 1, path: "/a", listedModifiedTime: 100)
+        await drain()
+        #expect(harness.changes.isEmpty)
+
+        // The same folder asked for again keeps its watch, and compares nothing.
+        harness.modifiedTimes["/a"] = 200
+        harness.watches.watch(windowID: 1, path: "/a", listedModifiedTime: 100)
+        await drain()
+        #expect(harness.changes.isEmpty)
+
+        // A listing with no time (the folder couldn't be read), or a folder whose time can't be read now.
+        harness.watches.watch(windowID: 2, path: "/b", listedModifiedTime: nil)
+        harness.modifiedTimes["/c"] = nil
+        harness.watches.watch(windowID: 3, path: "/c", listedModifiedTime: 100)
+        await drain()
+        #expect(harness.changes.isEmpty)
+    }
+
+    @Test func theFoldersTimeIsReadOnlyOnceTheWatchRuns() async {
+        let harness = Harness()
+        harness.holdsStarts = true
+        harness.modifiedTimes["/a"] = 100
+        harness.watches.watch(windowID: 1, path: "/a", listedModifiedTime: 100)
+        await drain()
+        harness.modifiedTimes["/a"] = 200
+        // The window comes to the front before the watch runs: nothing is known to compare with yet.
+        harness.watches.checkForMissedChanges(windowID: 1)
+        await drain()
+        #expect(harness.changes.isEmpty)
+        // Once it runs the time is read, and is another than the listing's: told once.
+        harness.run("/a")
+        await drain()
+        #expect(harness.changes.count == 1)
+        harness.watches.checkForMissedChanges(windowID: 1)
+        await drain()
+        #expect(harness.changes.count == 1)
+    }
+
+    @Test func aChangeToldByTheWatchMeanwhileIsNotToldTwice() async {
+        let harness = Harness()
+        harness.modifiedTimes["/a"] = 200
+        harness.holdReads()
+        harness.watches.watch(windowID: 1, path: "/a", listedModifiedTime: 100)
+        await drain()
+        harness.change("/a", "new.txt")
+        harness.releaseReads()
+        await drain()
+        harness.scheduler.advance(by: FolderWatches.settleMilliseconds)
+        await drain()
+        #expect(harness.changes.count == 1)
+        #expect(harness.changes.last?.change == FolderChange(path: "/a", changedPaths: ["/a/new.txt"]))
+    }
+
+    @Test func aWatchThatCantStartStillComparesTheListingsTime() async {
+        let harness = Harness()
+        harness.unwatchable = ["/share"]
+        harness.modifiedTimes["/share"] = 200
+        harness.watches.watch(windowID: 1, path: "/share", listedModifiedTime: 100)
+        await drain()
+        #expect(harness.changes.last?.change == FolderChange(path: "/share", changedPaths: nil))
     }
 
     @Test func tellsOfAFolderGoneWhenTheWindowComesBack() async {

@@ -211,6 +211,10 @@ final class BrowserPane {
 
     var shownFolderPath: String { folderLetGo ? "" : folder.path }
 
+    /// The folder's modification time when the listing on screen was read, for its watch to compare once it runs
+    /// (`FolderWatches.watch`). Nil when the folder couldn't be read.
+    private(set) var listedModifiedTime: Double?
+
     /// The view on screen: search results have one of their own.
     var shownViewMode: ExplorerViewMode { searchStore?.showsResults == true ? searchViewMode : shownMode }
 
@@ -567,6 +571,7 @@ final class BrowserPane {
         }
         switch result {
         case .success(let snapshot):
+            listedModifiedTime = snapshot.modifiedTime
             isTakingInOutsideChange = true
             defer { isTakingInOutsideChange = false }
             content.show(
@@ -864,6 +869,7 @@ final class BrowserPane {
         case .success(let snapshot):
             entries = snapshot.entries
             shown = URL(fileURLWithPath: snapshot.path)
+            listedModifiedTime = snapshot.modifiedTime
         case .failure(let error):
             let readError = FolderReadFailure.readError(error)
             if let goToFailure {
@@ -878,6 +884,7 @@ final class BrowserPane {
             case .opensUnlessGone: opensWithError = !FolderReadFailure.isGone(error)
             case .leavesFolderOnScreen: opensWithError = false
             }
+            if opensWithError { listedModifiedTime = nil }
             guard opensWithError else {
                 // A quiet read shows nothing: the search for a folder that can be read goes on from it.
                 if !quiet { content.showReadError(readError) }

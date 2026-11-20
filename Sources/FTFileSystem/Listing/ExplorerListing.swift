@@ -211,6 +211,8 @@ enum ExplorerListing {
         _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler, order: NameOrder
     ) throws -> DirectorySnapshot {
         let directoryPath = try resolveDirectoryPath(path, fileSystem)
+        // Before the entries: a change made while they are read, or after, gives the folder another time.
+        let modifiedTime = FolderModifiedTime.read(directoryPath, alsoListing: alsoListing, fileSystem)
         var folders = [(path: directoryPath, records: try fileSystem.readDirectory(directoryPath))]
         for other in alsoListing {
             if let records = try? fileSystem.readDirectory(other) { folders.append((other, records)) }
@@ -308,7 +310,8 @@ enum ExplorerListing {
             sorted.append(entry)
         }
         return DirectorySnapshot(
-            path: directoryPath, parentPath: directoryPath == parent ? nil : parent, entries: sorted)
+            path: directoryPath, parentPath: directoryPath == parent ? nil : parent, entries: sorted,
+            modifiedTime: modifiedTime)
     }
 
     /// The size a listing gives an item: a file's, a link to a folder's own (see readEntrySize); nil for a folder,

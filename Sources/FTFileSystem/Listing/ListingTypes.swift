@@ -98,6 +98,22 @@ public struct DirectorySnapshot: Sendable, Hashable, Codable {
     public var path: String
     public var parentPath: String?
     public var entries: [DirectoryEntry]
+    /// The folder's modification time, taken before its entries were read (`FolderModifiedTime`): a change made since
+    /// shows as another time, however long the listing was kept. Nil when it couldn't be read.
+    public var modifiedTime: Double? = nil
+}
+
+/// A folder's modification time as its watch compares it: milliseconds, with those of the folders listed along with
+/// it added (the Trash of each disk), as a change to any of them changes the total.
+public enum FolderModifiedTime {
+    public static func read(
+        _ path: String, alsoListing: [String] = [], _ fileSystem: any ExplorerFileSystem
+    ) -> Double? {
+        guard let time = (try? fileSystem.stat(path))?.mtimeMs else { return nil }
+        return alsoListing.reduce(Double(time)) { total, other in
+            total + Double((try? fileSystem.stat(other))?.mtimeMs ?? 0)
+        }
+    }
 }
 
 public struct EntryMetadata: Sendable, Hashable, Codable {
