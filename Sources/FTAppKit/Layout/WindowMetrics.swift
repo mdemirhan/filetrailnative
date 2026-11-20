@@ -48,15 +48,11 @@ enum ChromeColors {
         return result
     }
 
-    /// How much of the system's label color Finder's toolbar title shows in a key window: 0.70 black on its white band
-    /// against the label's 0.847, measured from Finder's screenshots.
-    private static let toolbarTitleStrength = 0.7 / 0.847
-
-    /// The toolbar's title, Finder's: the system's label color, dimmed as Finder's in a key window.
+    /// The toolbar's title: the system's label color, as it is the window's title, and dimmed while the window isn't
+    /// key. It was Finder's grey (0.70 black, where the label is 0.847), which read as disabled beside the toolbar's
+    /// black symbols.
     static func toolbarTitle(for view: NSView?, isKey: Bool) -> NSColor {
-        guard isKey else { return resolved(.tertiaryLabelColor, for: view) }
-        let label = resolved(.labelColor, for: view)
-        return label.withAlphaComponent(label.alphaComponent * toolbarTitleStrength)
+        resolved(isKey ? .labelColor : .tertiaryLabelColor, for: view)
     }
 
     /// The system font at a size and a numbered weight: 400 regular, 500 medium, 600 semibold, 700 bold.

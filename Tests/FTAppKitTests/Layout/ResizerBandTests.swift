@@ -216,8 +216,9 @@ extension ExplorerWindowlessTests {
             #expect(onDark.redComponent == 1 && onDark.alphaComponent < 0.15)
         }
 
-        // Finder's title is stored as 76-77 on its white band in a key window, with the band's line and without.
-        @Test func theTitleIsFindersGray() throws {
+        // The title is the system's label in a key window: 38-39 on a white band. It was Finder's 76-77, which read as
+        // disabled beside the toolbar's symbols.
+        @Test func theTitleIsTheLabelsColor() throws {
             let title = ToolbarTitleView(frame: NSRect(x: 0, y: 0, width: 260, height: ToolbarTitleView.height))
             let window = KeyStateWindow()
             window.appearance = NSAppearance(named: .aqua)
@@ -229,7 +230,7 @@ extension ExplorerWindowlessTests {
             let key = try color()
             #expect(key.redComponent == 0)
             let onWhite = (1 - key.alphaComponent) * 255
-            #expect(onWhite >= 76 && onWhite <= 77, "\(onWhite)")
+            #expect(onWhite >= 38 && onWhite <= 40, "\(onWhite)")
 
             // Not key: the system's dimmest label, and back again.
             window.key = false
