@@ -116,6 +116,32 @@ import Testing
         #expect(try FileManager.default.contentsOfDirectory(atPath: folders.out).isEmpty)
     }
 
+    /// A tar with an item's header damaged (one byte of its name changed, so the header's checksum no longer matches)
+    /// fails, and nothing of it is left: the reader says to try again at the next block, and the tar came out as if
+    /// it were whole, without that item.
+    @Test func aTarWhoseHeaderIsDamagedFails() throws {
+        let folders = try Folders()
+        defer { folders.directory.remove() }
+        var tar = TarBuilder()
+        for name in ["a.txt", "b.txt", "c.txt"] {
+            tar.add(name, contents: String(repeating: name, count: 300))
+        }
+        let archive = "\(folders.root)/three.tar"
+        try tar.write(to: archive)
+        // Whole, it comes out as it went in.
+        let whole = try Self.extract(archive, into: folders.out)
+        #expect(try FileManager.default.contentsOfDirectory(atPath: whole).sorted() == ["a.txt", "b.txt", "c.txt"])
+        try FileManager.default.removeItem(atPath: whole)
+
+        var bytes = try Data(contentsOf: URL(fileURLWithPath: archive))
+        // Each item is a header of 512 bytes and its 1,500 bytes filled up to 1,536: the second header starts here.
+        bytes[2048] ^= 0x01
+        try bytes.write(to: URL(fileURLWithPath: archive))
+        let error = #expect(throws: ArchiveError.self) { try Self.extract(archive, into: folders.out) }
+        #expect(error?.reason == .unreadable)
+        #expect(try FileManager.default.contentsOfDirectory(atPath: folders.out).isEmpty)
+    }
+
     /// A hole longer than the disk has room for (a disk image, a virtual machine's disk) comes out on a disk that keeps
     /// holes, at its length and taking almost nothing: it is refused only where the disk would have to write it all.
     @Test func aHoleLongerThanTheDisksFreeSpaceComesOutWhereTheDiskKeepsHoles() throws {

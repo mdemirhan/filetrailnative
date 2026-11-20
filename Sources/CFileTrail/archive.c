@@ -248,6 +248,11 @@ static struct archive *new_reader(int raw) {
     return reader;
 }
 
+/// Whether reading an archive's next header gave one, with or without a warning. Anything else is no item: the
+/// archive's end, a failure, or the tar reader's word to try again further on (ARCHIVE_RETRY) at a header whose
+/// checksum doesn't match, which names nothing and whose item would be missing from what came out.
+static int gave_header(int status) { return status == ARCHIVE_OK || status == ARCHIVE_WARN; }
+
 /// How many bytes of names are gathered at most to tell their encoding by: thousands of names, and enough.
 enum { NAMES_ROOM = 1 << 16 };
 
@@ -260,7 +265,7 @@ static int names_charset(int fd, ft_archive_control *control, char *charset, siz
     size_t length = 0;
     if (reader != NULL && lseek(fd, 0, SEEK_SET) == 0 && archive_read_open_fd(reader, fd, 1 << 16) == ARCHIVE_OK) {
         struct archive_entry *entry;
-        while (!is_stopped(control) && archive_read_next_header(reader, &entry) >= ARCHIVE_WARN) {
+        while (!is_stopped(control) && gave_header(archive_read_next_header(reader, &entry))) {
             const char *name = archive_entry_pathname(entry);
             if (name == NULL || is_utf8(name)) continue;
             size_t count = strlen(name);
@@ -294,7 +299,7 @@ static struct archive *reopened(int fd, const char *charset, int64_t skip) {
     int opened = lseek(fd, 0, SEEK_SET) == 0 && archive_read_open_fd(reader, fd, 1 << 16) == ARCHIVE_OK;
     struct archive_entry *entry;
     while (opened && skip > 0) {
-        opened = archive_read_next_header(reader, &entry) >= ARCHIVE_WARN;
+        opened = gave_header(archive_read_next_header(reader, &entry));
         skip--;
     }
     if (!opened) {
@@ -1018,7 +1023,7 @@ int ft_archive_extract(
         struct archive_entry *entry;
         int status = archive_read_next_header(reader, &entry);
         if (status == ARCHIVE_EOF) break;
-        if (status < ARCHIVE_WARN) {
+        if (!gave_header(status)) {
             result = reader_error(reader);
             break;
         }
@@ -1026,7 +1031,7 @@ int ft_archive_extract(
         const char *plain_name = NULL;
         if (plain != NULL) {
             struct archive_entry *plain_entry;
-            if (archive_read_next_header(plain, &plain_entry) >= ARCHIVE_WARN) {
+            if (gave_header(archive_read_next_header(plain, &plain_entry))) {
                 plain_name = archive_entry_pathname(plain_entry);
             } else {
                 archive_read_free(plain);
