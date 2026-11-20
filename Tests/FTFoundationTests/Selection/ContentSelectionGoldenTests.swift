@@ -98,8 +98,11 @@ struct ContentSelectionGoldenTests {
         return DragSelectionBox(left: box.left, top: box.top, right: box.right, bottom: box.bottom)
     }
 
-    private static func sizes(_ sizes: [String: Size]?) -> [String: DragSelectionSize] {
-        (sizes ?? [:]).mapValues { DragSelectionSize(width: $0.width, height: $0.height) }
+    private static func sizes(_ sizes: [String: Size]?) -> [DiskPath: DragSelectionSize] {
+        Dictionary(
+            uniqueKeysWithValues: (sizes ?? [:]).map {
+                (DiskPath($0.key), DragSelectionSize(width: $0.value.width, height: $0.value.height))
+            })
     }
 
     /// The icon layout the golden recorded: ours, compared token by token, or its compact grid, which File Trail no

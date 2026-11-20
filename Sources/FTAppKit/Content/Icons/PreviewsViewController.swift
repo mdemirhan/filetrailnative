@@ -169,7 +169,7 @@ final class PreviewsViewController: IconViewController {
     }
 
     /// A name being edited stays under its picture when the picture comes or changes.
-    override func pictureShapeChanged(of path: String) {
+    override func pictureShapeChanged(of path: DiskPath) {
         if renamingPath == path { positionRenameField() }
     }
 
@@ -319,7 +319,7 @@ final class PreviewsViewController: IconViewController {
     /// saved place is the one to go to.
     private var selectedFileTop: Double? {
         guard count == 1, layout.rowHeight > 0, let paths = host?.selection.paths, paths.count == 1,
-            let index = indexByPath[paths[0]]
+            let index = indexByPath[DiskPath(paths[0])]
         else { return nil }
         return min(maxScrollTop, Double(row(ofItem: index)) * layout.rowHeight)
     }
@@ -373,9 +373,9 @@ final class PreviewsViewController: IconViewController {
         // At 1 at a time a row is a file; grouped, rows are numbered across the groups as well.
         let row = layout.row(atScrollTop: top + layout.rowHeight / 2)
         let index = min(groupedLines == nil ? row : firstItem(onRow: row), entries.count - 1)
-        let path = entries[index].path
-        guard host.selection.paths != [path] else { return }
-        host.selectionChanged(.single(path))
+        let selected = host.selection.paths
+        guard !(selected.count == 1 && DiskPath(selected[0]) == keys[index]) else { return }
+        host.selectionChanged(.single(entries[index].path))
     }
 
     /// At 1 at a time, a listing that took the selected file away (Move to Trash, a move, a delete in Finder) leaves
@@ -387,7 +387,7 @@ final class PreviewsViewController: IconViewController {
     /// counts as a drag's.
     private func selectFileInPlaceOfOneRemoved(listedBefore: [String]) {
         guard count == 1, let host, host.selection.isEmpty, let gap = host.selection.gapIndex,
-            listedBefore.indices.contains(gap), indexByPath[listedBefore[gap]] == nil
+            listedBefore.indices.contains(gap), indexByPath[DiskPath(listedBefore[gap])] == nil
         else { return }
         selectFileOnScreen(unlessDragged: NSEvent.pressedMouseButtons & 1 != 0)
     }
@@ -462,13 +462,13 @@ final class PreviewsViewController: IconViewController {
     // MARK: The next page
 
     /// The previews asked for ahead of need, by path.
-    private var prefetched: [String: LoadHandle] = [:]
+    private var prefetched: [DiskPath: LoadHandle] = [:]
     private var prefetchWaits = false
     /// Whether the pane last scrolled up: the page above is then asked for first.
     private var wentUp = false
 
     /// The paths whose previews are asked for ahead of need, for a test.
-    var prefetchedPaths: Set<String> { Set(prefetched.keys) }
+    var prefetchedPaths: Set<String> { Set(prefetched.keys.lazy.map(\.string)) }
 
     /// Asks for the page past the one on screen once the items on screen have asked for theirs, so that it shows its
     /// previews as soon as it comes into view.
@@ -497,13 +497,13 @@ final class PreviewsViewController: IconViewController {
             let above = Array(max(0, shown.lowerBound - page)..<shown.lowerBound).reversed()
             wanted = wentUp ? Array(above) + below : below + Array(above)
         }
-        let paths = Set(wanted.map { entries[$0].path })
+        let paths = Set(wanted.lazy.map { self.keys[$0] })
         for (path, handle) in prefetched where !paths.contains(path) { handle.cancel() }
         prefetched = prefetched.filter { paths.contains($0.key) }
         let size = thumbnailPixelSize
-        for index in wanted where prefetched[entries[index].path] == nil {
+        for index in wanted where prefetched[keys[index]] == nil {
             let entry = entries[index]
-            prefetched[entry.path] = thumbnailStore.prefetch(
+            prefetched[keys[index]] = thumbnailStore.prefetch(
                 path: entry.path, kind: entry.iconEntry.kind, size: size, listing: listing)
         }
         for handle in outdated.values { handle.cancel() }
@@ -511,7 +511,7 @@ final class PreviewsViewController: IconViewController {
     }
 
     /// The next pages' previews are checked again too.
-    override func filesChanged(paths: Set<String>?) {
+    override func filesChanged(paths: Set<DiskPath>?) {
         super.filesChanged(paths: paths)
         askAgainForPrefetches()
     }
@@ -535,7 +535,7 @@ final class PreviewsViewController: IconViewController {
     }
 
     /// The requests made before the folder was last read, until the next page is asked for again.
-    private var outdated: [String: LoadHandle] = [:]
+    private var outdated: [DiskPath: LoadHandle] = [:]
 
     /// Takes back every preview asked for ahead of need: the pane shows other items, or other sizes of them.
     private func dropPrefetches() {
@@ -593,8 +593,8 @@ final class PreviewsViewController: IconViewController {
     /// as they are, and the others are asked for as they come into view.
     func screenChanged() {
         pixelSizeInUse = nil
-        forEachVisibleItem { item, entry in
-            (item as? IconItem)?.loadThumbnail(entry, pane: self)
+        forEachVisibleIndex { item, index in
+            (item as? IconItem)?.loadThumbnail(entries[index], key: keys[index], pane: self)
         }
         dropPrefetches()
         prefetchSoon()
@@ -602,14 +602,14 @@ final class PreviewsViewController: IconViewController {
 
     /// The shapes of the pictures seen, by path: a drag-to-select goes by where each picture really is, for those
     /// scrolled out of view since too.
-    private var pictureShapes: [String: DragSelectionSize] = [:]
+    private var pictureShapes: [DiskPath: DragSelectionSize] = [:]
 
     /// A drag-to-select touches a preview on its picture, whatever its shape, or on its name.
     override func gridHits(
-        box: DragSelectionBox, paths: [String], sizes: [String: DragSelectionSize]
+        box: DragSelectionBox, paths: [String], sizes: [DiskPath: DragSelectionSize]
     ) -> [DragSelectionHit] {
-        forEachVisibleItem { item, entry in
-            pictureShapes[entry.path] = (item as? IconItem)?.pictureShape
+        forEachVisibleIndex { item, index in
+            pictureShapes[keys[index]] = (item as? IconItem)?.pictureShape
         }
         return DragSelection.previewGridItems(
             box: box, entryPaths: paths, columns: columns,

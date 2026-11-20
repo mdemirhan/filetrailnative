@@ -422,7 +422,7 @@ extension ExplorerWindowlessTests {
             try writePicture(URL(fileURLWithPath: entry.path), width: 150, height: 600)
             PreviewThumbnails.store.markChanged([DiskPath(entry.path)])
             let shape = item.pictureShape
-            item.loadThumbnail(entry, pane: previews)
+            item.loadThumbnail(entry, key: DiskPath(entry.path), pane: previews)
             #expect(await waitUntil { item.pictureShape != shape })
             #expect(field.frame == previews.renameFrame(at: 0))
             #expect(field.frame != wide)

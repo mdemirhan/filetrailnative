@@ -23,17 +23,14 @@ extension ContentPaneController {
     func setDropTarget(_ path: String?, _ state: DropTargetState?, background: DropTargetState?) {
         let next = path.flatMap { path in state.map { (path, $0) } }
         let previous = dropTarget
-        // By the path's bytes: a drag gone from a folder to one whose path differs only in how an accent is stored is
-        // over another row.
-        let sameRow = previous.map { PathBox($0.path) } == next.map { PathBox($0.0) }
-        if !sameRow || previous?.state != next?.1 {
+        let previousRow = previous.map { DiskPath($0.path) }
+        let nextRow = next.map { DiskPath($0.0) }
+        if previousRow != nextRow || previous?.state != next?.1 {
             dropTarget = next.map { (path: $0.0, state: $0.1) }
-            var changed: [String] = []
-            if let previous { changed.append(previous.path) }
-            if let next, !sameRow { changed.append(next.0) }
-            // Two such rows are one path to a set of strings: every row in view is drawn again then.
-            let paths = Set(changed)
-            pane?.refresh(paths: paths.count == changed.count ? paths : nil)
+            var changed = Set<DiskPath>()
+            if let previousRow { changed.insert(previousRow) }
+            if let nextRow { changed.insert(nextRow) }
+            pane?.refresh(paths: changed)
         }
         let ring = background == .valid
         if container.dropRing.isHidden == ring {

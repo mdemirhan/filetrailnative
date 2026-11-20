@@ -3,7 +3,9 @@ import FTFoundation
 
 /// The rename going on in a list, as the panes are told of it.
 struct InlineRenameState: Equatable {
-    var path: String
+    /// The item being renamed, by its path as its row spells it: the row whose bytes these are has the field.
+    var key: DiskPath
+    var path: String { key.string }
     /// Why the last attempt was refused; the field stays open so the name can be fixed.
     var error: String?
     /// Goes up with every refusal: two names can be refused for the same reason in a row, and the field must hear of

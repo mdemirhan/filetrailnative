@@ -154,7 +154,8 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
     let marquee = MarqueeBoxView()
     /// The field of the rename going on, in the table's content (so it stays alive when its row scrolls away).
     var renameField: InlineRenameField?
-    var renamingPath: String?
+    /// The item being renamed, by its path as its row spells it.
+    var renamingPath: DiskPath?
     var lastRefusalCount = 0
 
     private let root = ListRootView()
@@ -165,6 +166,9 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
     private let column = NSTableColumn(identifier: DetailsCellView.identifier)
 
     var entries: [DirectoryEntry] = []
+    /// Each entry's path as the disk spells it, as the host made them with the order: a row is found by its own, and
+    /// told from another byte for byte, so two names that differ only in how an accent is encoded are two rows.
+    private(set) var keys: [DiskPath] = []
     /// The table's rows while the list is grouped: for each group its title and its items; empty while it isn't
     /// grouped, when a row is the entry at the same place. A title's row is as high as an item's, and every title but
     /// the first has half a row of space above it, in its own row (`height(ofRow:)`), so the groups are told apart
@@ -180,11 +184,11 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
     private var asksRowHeights = false
     private(set) var groups: [ShownGroup] = []
     /// Rows by path, made when a selection or a lookup needs it.
-    private var rowsCache: [String: Int]?
-    var rowByPath: [String: Int] {
+    private var rowsCache: [DiskPath: Int]?
+    var rowByPath: [DiskPath: Int] {
         if let rowsCache { return rowsCache }
         let made = Dictionary(
-            entries.enumerated().map { ($1.path, tableRow(ofEntry: $0)) }, uniquingKeysWith: { first, _ in first })
+            keys.enumerated().map { ($1, tableRow(ofEntry: $0)) }, uniquingKeysWith: { first, _ in first })
         rowsCache = made
         return made
     }
@@ -280,8 +284,16 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         reload(scrollToTop: scrollToTop, change: .list)
     }
 
-    private func reload(scrollToTop: Bool, change: RevealKeeper.Change) {
+    /// Takes the host's entries, and the keys it made for them.
+    private func readEntries() {
         entries = host?.entries ?? []
+        keys = host?.entryKeys ?? []
+        // One for each entry, whatever the host is.
+        if keys.count != entries.count { keys = entries.map { DiskPath($0.path) } }
+    }
+
+    private func reload(scrollToTop: Bool, change: RevealKeeper.Change) {
+        readEntries()
         makeRows()
         rowsCache = nil
         layoutMetrics = metrics
@@ -304,8 +316,8 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         syncRename()
     }
 
-    func reloadRows(paths: Set<String>) {
-        entries = host?.entries ?? []
+    func reloadRows(paths: Set<DiskPath>) {
+        readEntries()
         let asked = asksRowHeights
         makeRows()
         rowsCache = nil
@@ -324,7 +336,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         requestMetadata()
     }
 
-    func refresh(paths: Set<String>?) {
+    func refresh(paths: Set<DiskPath>?) {
         guard let paths else {
             forEachVisibleBar { $0.refreshCells() }
             updateMinuteHold()
@@ -540,8 +552,8 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         for row in rows.location..<(rows.location + rows.length) {
             guard let index = entryIndex(atRow: row) else { continue }
             bar(atRow: row)?.configure(
-                entry: entries[index], row: stripeRow(ofEntry: index), selected: selected.contains(row), host: host,
-                columnSet: columnSet, layout: layoutMetrics)
+                entry: entries[index], key: keys[index], row: stripeRow(ofEntry: index),
+                selected: selected.contains(row), host: host, columnSet: columnSet, layout: layoutMetrics)
         }
     }
 
@@ -683,8 +695,8 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
             tableView.makeView(withIdentifier: DetailsCellView.identifier, owner: nil) as? DetailsCellView
             ?? DetailsCellView()
         cell.bar.configure(
-            entry: entries[index], row: stripeRow(ofEntry: index), selected: tableView.isRowSelected(row), host: host,
-            columnSet: columnSet, layout: layoutMetrics)
+            entry: entries[index], key: keys[index], row: stripeRow(ofEntry: index),
+            selected: tableView.isRowSelected(row), host: host, columnSet: columnSet, layout: layoutMetrics)
         return cell
     }
 
@@ -695,7 +707,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         var rows = IndexSet()
         if host.selection.paths.isEmpty, table.selectedRowIndexes.isEmpty { return }
         for path in host.selection.paths {
-            if let row = rowByPath[path] { rows.insert(row) }
+            if let row = rowByPath[DiskPath(path)] { rows.insert(row) }
         }
         guard rows != table.selectedRowIndexes else { return }
         isSyncing = true
@@ -719,8 +731,10 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         giveKeyboard()
         let row = table.row(at: point)
         if let index = entryIndex(atRow: row) {
-            let path = entries[index].path
-            if !host.selection.paths.contains(path) { host.selectionChanged(.single(path)) }
+            let key = keys[index]
+            if !host.selection.paths.contains(where: { DiskPath($0) == key }) {
+                host.selectionChanged(.single(entries[index].path))
+            }
             return host.contextMenu(for: selectedEntries)
         }
         host.selectionChanged(.empty)
@@ -843,11 +857,11 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         }
         let font = column == .permissions ? ListFonts.permissions(layout) : ListFonts.row(layout)
         let now = RelativeClock.shared.relativeNow
-        let widths = entries.map { entry -> Double in
+        let widths = zip(entries, keys).map { entry, key -> Double in
             let content = ListCellText.content(
                 column: column, entry: entry, metadata: host.metadata(for: entry.path),
                 folderSize: host.folderSizeEntry(entry.path), now: now)
-            let text = column == .folder ? host.search?.folderLabel(entry.path) ?? "" : content.text
+            let text = column == .folder ? host.search?.folderLabel(key) ?? "" : content.text
             return Double((text as NSString).size(withAttributes: [.font: font]).width)
         }
         let extra = column == .name ? layout.iconSize + layout.nameIconGap : 0

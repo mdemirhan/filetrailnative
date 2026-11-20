@@ -473,7 +473,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
                 in: tab.window)
             return
         }
-        if paths.count == 1, let entry = tab.content.entries.first(where: { $0.path == paths[0] }) {
+        if paths.count == 1, let entry = tab.content.entries.first(where: { DiskPath($0.path) == DiskPath(paths[0]) }) {
             await openEntry(entry)
             return
         }

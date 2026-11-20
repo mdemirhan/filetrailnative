@@ -214,7 +214,10 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// one tab must not lend what was typed to another tab's.
     private static var renameSessions = 0
     private(set) var entryPaths: [String] = []
-    private var positionsCache: [String: Int]?
+    /// Each shown entry's path as the disk spells it, in order: what a row and the selection are found by, byte for
+    /// byte. Made once with the order, so no row is given one again as it is drawn.
+    private(set) var entryKeys: [DiskPath] = []
+    private var positionsCache: [DiskPath: Int]?
     /// The details of the rows asked for. They start over with another folder or other search results.
     private var details = PathReadCache<EntryMetadata>()
     /// Items that changed on disk: they keep what is shown until their details are read again.
@@ -223,16 +226,17 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private var metadataQueue: [String] = []
     /// The Date Added of the folder's rows asked for by their entries, as their listing gave it, until they are read:
     /// so the rows on screen are not looked up among all of the folder's.
-    private var queuedAdded: [String: Int64?] = [:]
+    private var queuedAdded: [DiskPath: Int64?] = [:]
     private var metadataFlushQueued = false
     /// The Finder tags of the rows on screen. They start over with another folder.
     private var tags = PathReadCache<[FinderTagColor]>()
     private var windowActive = true
-    /// The listed entries by path, made when a selection or a lookup needs it (not for every folder opened).
-    private var rowsCache: [String: DirectoryEntry]?
-    private var rowsByPath: [String: DirectoryEntry] {
+    /// The listed entries by path, each path byte for byte: two names that differ only in how an accent is encoded
+    /// are two rows. Made when a selection or a lookup needs it (not for every folder opened).
+    private var rowsCache: [DiskPath: DirectoryEntry]?
+    private var rowsByPath: [DiskPath: DirectoryEntry] {
         if let rowsCache { return rowsCache }
-        let made = Dictionary(listed.map { ($0.path, $0) }, uniquingKeysWith: { first, _ in first })
+        let made = Dictionary(listed.map { (DiskPath($0.path), $0) }, uniquingKeysWith: { first, _ in first })
         rowsCache = made
         return made
     }
@@ -455,13 +459,14 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         changedPaths: [String]? = nil, restoring memory: FolderViewMemory? = nil
     ) {
         readError = nil
-        if path != folderPath {
+        let sameFolder = DiskPath(path) == DiskPath(folderPath)
+        if !sameFolder {
             tags.startOver()
         } else {
             tags.markChanged(changedPaths)
         }
         // The folder read again under search results (hidden files, a change on disk) waits for them to close.
-        if searchDisplay != nil, var kept = keptFolder, path == folderPath {
+        if searchDisplay != nil, var kept = keptFolder, sameFolder {
             kept.listed = newEntries
             kept.loadState = .loaded
             // What changed meanwhile is read again once the results close (nil: everything).
@@ -470,7 +475,6 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             return
         }
         endLoading()
-        let sameFolder = path == folderPath
         if !sameFolder {
             listFilter.clear()
             startDetailsOver()
@@ -487,13 +491,14 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             ? DirectoryListingDiff.keepUnchanged(shown: listed, next: newEntries, path: \.path) : nil
         let unchanged = kept?.isUnchanged == true
         // A folder's own icon can change with nothing else about it: it is drawn again, as the others' can't.
-        let changedSet = changedPaths.map(Set.init)
+        let changedSet = changedPaths.map { Set($0.lazy.map(DiskPath.init)) }
         let customIconsChanged =
             sameFolder
-            ? newEntries.filter { $0.hasCustomIcon == true && changedSet?.contains($0.path) != false } : []
+            ? newEntries.filter { $0.hasCustomIcon == true && changedSet?.contains(DiskPath($0.path)) != false } : []
         for entry in customIconsChanged { iconStore?.forget(IconRequest(entry: entry.iconEntry)) }
-        let customIconPaths = Set(customIconsChanged.map(\.path))
+        let customIconPaths = Set(customIconsChanged.lazy.map { DiskPath($0.path) })
         let previousPaths = entryPaths
+        let previousKeys = entryKeys
         let groupsBefore = groups
         let orderBefore = takeOrderBeforeRemoval()
         listed = newEntries
@@ -509,16 +514,16 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             setSelection(restored, notify: true)
         } else if let paths {
             let lookup = paths.isEmpty ? [:] : rowsByPath
-            setSelection(ContentSelection.of(paths.filter { lookup[$0] != nil }), notify: true)
+            setSelection(ContentSelection.of(paths.filter { lookup[DiskPath($0)] != nil }), notify: true)
         } else {
             resanitizeSelection(previousPaths: sameFolder ? orderBefore ?? previousPaths : previousPaths)
         }
         closeRenameIfItemLeft()
         // Other groups are another order, whose rows are all drawn again.
         let regrouped = groups != groupsBefore
-        if let kept, !unchanged, keepingScroll, inlineRename == nil, previousPaths == entryPaths, !regrouped {
+        if let kept, !unchanged, keepingScroll, inlineRename == nil, previousKeys == entryKeys, !regrouped {
             // The same rows in the same order: only the rows of the items that changed are drawn again.
-            let reloaded = Set(kept.changedPaths).union(customIconPaths)
+            let reloaded = Set(kept.changedPaths.lazy.map(DiskPath.init)).union(customIconPaths)
             pane?.reloadRows(paths: reloaded)
             filesChanged(changedPaths, besides: reloaded)
         } else if !unchanged || !keepingScroll || regrouped {
@@ -529,7 +534,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             pane?.reload(scrollToTop: !keepingScroll)
             if let keptLeft, let top = pane?.scrollPosition.top { pane?.scrollPosition = (top, keptLeft) }
         } else {
-            pane?.refresh(paths: changedPaths.map(Set.init))
+            pane?.refresh(paths: changedSet)
             if !customIconPaths.isEmpty { pane?.reloadRows(paths: customIconPaths) }
             filesChanged(changedPaths, besides: customIconPaths)
         }
@@ -542,18 +547,19 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     /// The items a change on disk named (nil: any) may have new content though their entries are as they were: their
     /// previews are checked again, but for the rows of `reloaded`, drawn again already.
-    private func filesChanged(_ changedPaths: [String]?, besides reloaded: Set<String>) {
+    private func filesChanged(_ changedPaths: [String]?, besides reloaded: Set<DiskPath>) {
         guard let changedPaths else {
             pane?.filesChanged(paths: nil)
             return
         }
-        let files = Set(changedPaths).subtracting(reloaded)
+        let files = Set(changedPaths.lazy.map(DiskPath.init)).subtracting(reloaded)
         if !files.isEmpty { pane?.filesChanged(paths: files) }
     }
 
     /// A folder that could not be read: its error shows, and nothing is selected.
     func showError(folder path: String, error: FolderReadError) {
-        if searchDisplay != nil, var kept = keptFolder, path == folderPath {
+        let sameFolder = DiskPath(path) == DiskPath(folderPath)
+        if searchDisplay != nil, var kept = keptFolder, sameFolder {
             kept.listed = []
             kept.loadState = .failed(error)
             keptFolder = kept
@@ -561,11 +567,12 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         }
         endLoading()
         readError = nil
-        if path != folderPath { listFilter.clear() }
+        if !sameFolder { listFilter.clear() }
         folderPath = path
         listed = []
         entries = []
         entryPaths = []
+        entryKeys = []
         positionsCache = nil
         rowsCache = nil
         startDetailsOver()
@@ -590,6 +597,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         rowsCache = nil
         entries = []
         entryPaths = []
+        entryKeys = []
         positionsCache = nil
         settle(.idle)
         setSelection(.empty, notify: true)
@@ -602,8 +610,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private func loadHiddenCount() {
         let path = folderPath
         Task { @MainActor [weak self] in
-            guard let self, let count = Optional(await self.loaders.hiddenCount(path)), path == self.folderPath,
-                self.listed.isEmpty
+            guard let self, let count = Optional(await self.loaders.hiddenCount(path)),
+                DiskPath(path) == DiskPath(self.folderPath), self.listed.isEmpty
             else { return }
             self.hiddenItemCount = count
             self.refreshState()
@@ -713,7 +721,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// that. The pin goes when the pin is what hides the item, and a toast says so; the typed filter (the results'
     /// own, over search results) is cleared when it hides the item.
     private func showHidden(_ path: String) {
-        guard position(of: path) == nil, let entry = rowsByPath[path], !filter.isEmpty || pinnedFilter != nil
+        guard position(of: path) == nil, let entry = rowsByPath[DiskPath(path)],
+            !filter.isEmpty || pinnedFilter != nil
         else { return }
         var dropped: PinnedListFilter?
         if let pin = pinnedFilter,
@@ -859,8 +868,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             applyPin()
             orderByValues(searchDisplay)
             applyGroups()
-            entryPaths = entries.map(\.path)
-            positionsCache = nil
+            keyEntries()
             barScaleCache = nil
             updateFilterBar()
             return
@@ -875,10 +883,17 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         ) { sizes.readySize($0) }
         applyPin()
         applyGroups()
-        entryPaths = entries.map(\.path)
-        positionsCache = nil
+        keyEntries()
         barScaleCache = nil
         updateFilterBar()
+    }
+
+    /// The entries were put in order: each one's path is kept as its bytes, once, for the rows and the selection to
+    /// be found by.
+    private func keyEntries() {
+        entryKeys = entries.map { DiskPath($0.path) }
+        entryPaths = entryKeys.map(\.string)
+        positionsCache = nil
     }
 
     /// Search results ordered by a date or the size: by the values read for them, in the order's direction, those not
@@ -916,9 +931,10 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private func searchValuesArrived() {
         guard searchDisplay != nil else { return }
         let before = entryPaths
+        let keysBefore = entryKeys
         let groupsBefore = groups
         reorder()
-        guard entryPaths != before || groups != groupsBefore else { return }
+        guard entryKeys != keysBefore || groups != groupsBefore else { return }
         resanitizeSelection(previousPaths: before)
         pane?.reload(scrollToTop: false)
         pane?.syncSelection()
@@ -987,10 +1003,11 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             guard let search, let root = searchDisplay?.rootPath else {
                 return shown.map { _ in FolderGroups.key(label: "", parent: "", isSearchedFolder: true) }
             }
+            let rootKey = DiskPath(root)
             return shown.map {
-                let parent = NodePath.dirname($0.path)
+                let key = DiskPath($0.path)
                 return FolderGroups.key(
-                    label: search.folderLabel($0.path), parent: parent, isSearchedFolder: parent == root)
+                    label: search.folderLabel(key), parent: key.parent.string, isSearchedFolder: key.parent == rootKey)
             }
         }
     }
@@ -1096,19 +1113,22 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     // MARK: Selection
 
-    var selectedEntries: [DirectoryEntry] { selection.paths.compactMap { rowsByPath[$0] } }
+    /// The selected items' own entries: each found by its path's bytes, so of two names that differ only in how an
+    /// accent is encoded, the one selected is the one a command acts on.
+    var selectedEntries: [DirectoryEntry] { selection.paths.compactMap { rowsByPath[DiskPath($0)] } }
 
     /// The listed entry at `path`, shown or left out by the filter.
-    func listedEntry(at path: String) -> DirectoryEntry? { rowsByPath[path] }
+    func listedEntry(at path: String) -> DirectoryEntry? { rowsByPath[DiskPath(path)] }
 
     func position(of path: String?) -> Int? {
         guard let path else { return nil }
-        if let positionsCache { return positionsCache[path] }
-        var made: [String: Int] = [:]
-        made.reserveCapacity(entryPaths.count)
-        for (index, entryPath) in entryPaths.enumerated() where made[entryPath] == nil { made[entryPath] = index }
+        let asked = DiskPath(path)
+        if let positionsCache { return positionsCache[asked] }
+        var made: [DiskPath: Int] = [:]
+        made.reserveCapacity(entryKeys.count)
+        for (index, key) in entryKeys.enumerated() where made[key] == nil { made[key] = index }
         positionsCache = made
-        return made[path]
+        return made[asked]
     }
 
     private func setSelection(_ next: ContentSelection, notify: Bool) {
@@ -1126,18 +1146,20 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// to hide, by another mode or by being unpinned, is not.
     private func resanitizeSelection(previousPaths: [String], keepingHidden: Bool = true) {
         guard !selection.isEmpty || selection.gapIndex != nil else { return }
-        if keepingHidden, let lead = selection.leadPath, position(of: lead) == nil, rowsByPath[lead] != nil { return }
+        if keepingHidden, let lead = selection.leadPath, position(of: lead) == nil, rowsByPath[DiskPath(lead)] != nil {
+            return
+        }
         setSelection(selection.sanitized(entryPaths: entryPaths, previousPaths: previousPaths), notify: true)
     }
 
     /// Items a write took away leave the selection before the read that follows it comes in, keeping their place for the
     /// arrow keys. Selected items the filter hides stay.
     func dropFromSelection(_ paths: [String]) {
-        let left = Set(paths)
-        guard selection.paths.contains(where: left.contains) else { return }
+        let left = Set(paths.lazy.map(DiskPath.init))
+        guard selection.paths.contains(where: { left.contains(DiskPath($0)) }) else { return }
         let order = takeOrderBeforeRemoval() ?? entryPaths
         let listed = order + selection.paths.filter { position(of: $0) == nil }
-        let staying = listed.filter { !left.contains($0) }
+        let staying = listed.filter { !left.contains(DiskPath($0)) }
         setSelection(selection.sanitized(entryPaths: staying, previousPaths: order), notify: true)
     }
 
@@ -1151,14 +1173,14 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private func takeOrderBeforeRemoval() -> [String]? {
         guard let order = orderBeforeRemoval else { return nil }
         orderBeforeRemoval = nil
-        guard order.count == entryPaths.count, Set(order) == Set(entryPaths) else { return nil }
+        guard order.count == entryKeys.count, Set(order.lazy.map(DiskPath.init)) == Set(entryKeys) else { return nil }
         return order
     }
 
     /// Selects the paths that are listed; the view keeps their lead in view (`RevealKeeper`). A lead a filter hides is
     /// shown: the filter that hides it goes (`showHidden`).
     func select(paths: [String]) {
-        let existing = paths.filter { rowsByPath[$0] != nil }
+        let existing = paths.filter { rowsByPath[DiskPath($0)] != nil }
         let selecting = ContentSelection.of(existing)
         // Every one a filter hides is shown, not only the lead: one left hidden would stay selected unseen, and be
         // deleted or moved with the others.
@@ -1212,10 +1234,11 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// Whether the item is listed.
     @discardableResult
     func beginRename(path: String) -> Bool {
-        guard rowsByPath[path] != nil else { return false }
+        let key = DiskPath(path)
+        guard rowsByPath[key] != nil else { return false }
         showHidden(path)
         Self.renameSessions += 1
-        inlineRename = InlineRenameState(path: path, error: nil, refusalCount: 0, sessionID: Self.renameSessions)
+        inlineRename = InlineRenameState(key: key, error: nil, refusalCount: 0, sessionID: Self.renameSessions)
         pane?.syncRename()
         onRenameStateChanged?()
         return true
@@ -1253,7 +1276,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// A rename field whose item has left the list (another folder opened, the item removed) closes; a refusal it was
     /// showing is said in a dialog so it is not lost.
     private func closeRenameIfItemLeft() {
-        guard let rename = inlineRename, rowsByPath[rename.path] == nil else { return }
+        guard let rename = inlineRename, rowsByPath[rename.key] == nil else { return }
         let refusal = rename.error
         endRename()
         onRenameLost?(rename.path, refusal)
@@ -1266,7 +1289,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// filter and the details read so far; the selection is the search session's to apply.
     func showSearch(_ display: ContentSearchDisplay) {
         let entering = searchDisplay == nil
-        let newList = entering || searchDisplay?.viewKey != display.viewKey
+        let newList = entering || searchDisplay.map { NameKeys.Exact($0.viewKey) } != NameKeys.Exact(display.viewKey)
         if newList { restoredScroll = nil }
         if entering {
             endLoading()
@@ -1279,7 +1302,9 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         // narrowed or changed, reads only the results that have no value yet. The same search run again finds the
         // files as they are now: the dates, sizes and tags read for the last run go.
         let runAgain = !newList && searchDisplay?.run != display.run
-        if searchDisplay?.rootPath != display.rootPath || runAgain { searchValues.reset() }
+        if searchDisplay.map({ DiskPath($0.rootPath) }) != DiskPath(display.rootPath) || runAgain {
+            searchValues.reset()
+        }
         if newList {
             if !filter.isEmpty {
                 listFilter.clear()
@@ -1292,14 +1317,14 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             display: display, requestSort: { [weak self] key in self?.onSearchSort?(key) },
             setSort: { [weak self] key, direction in self?.onSearchSortSet?(key, direction) })
         settle(.loaded)
-        let previousPaths = entryPaths
+        let previousKeys = entryKeys
         let groupsBefore = groups
         listed = display.results.map(SearchResults.entry)
         rowsCache = nil
         reorder()
         readSearchValues()
         // The views see the results' columns and order.
-        if newList || previousPaths != entryPaths || groups != groupsBefore {
+        if newList || previousKeys != entryKeys || groups != groupsBefore {
             selection = selection.sanitized(entryPaths: entryPaths)
             pane?.reload(scrollToTop: newList)
         } else {
@@ -1638,7 +1663,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     func requestMetadata(for entries: [DirectoryEntry]) {
         // Search results came from no folder read, and are asked for their own date.
         if searchDisplay == nil {
-            for entry in entries { queuedAdded.updateValue(entry.addedMs, forKey: entry.path) }
+            for entry in entries { queuedAdded.updateValue(entry.addedMs, forKey: DiskPath(entry.path)) }
         }
         requestMetadata(for: entries.map(\.path))
     }
@@ -1657,14 +1682,14 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         guard !batch.isEmpty else { return }
         // Search results are spread over many folders, and the Trash over the disks: one batch per folder, each shown
         // as it comes, so a slow folder keeps only its own rows waiting.
-        var byFolder: [String: [String]] = [:]
-        var order: [String] = []
+        var byFolder: [DiskPath: [String]] = [:]
+        var order: [DiskPath] = []
         for path in batch {
-            let parent = NodePath.dirname(path)
+            let parent = DiskPath(path).parent
             if byFolder[parent] == nil { order.append(parent) }
             byFolder[parent, default: []].append(path)
         }
-        for parent in order { readMetadata(in: parent, byFolder[parent] ?? []) }
+        for parent in order { readMetadata(in: parent.string, byFolder[parent] ?? []) }
     }
 
     private func readMetadata(in folder: String, _ paths: [String]) {
@@ -1675,20 +1700,21 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         var listedAdded: [DiskPath: Int64?] = [:]
         if searchDisplay == nil {
             // A row asked for by its path alone (read again after it changed) is found among the folder's rows.
-            var rows: [String: DirectoryEntry]?
+            var rows: [DiskPath: DirectoryEntry]?
             for path in paths {
-                if let added = queuedAdded.removeValue(forKey: path) {
-                    listedAdded.updateValue(added, forKey: DiskPath(path))
+                let key = DiskPath(path)
+                if let added = queuedAdded.removeValue(forKey: key) {
+                    listedAdded.updateValue(added, forKey: key)
                 } else {
                     if rows == nil { rows = rowsByPath }
-                    if let row = rows?[path] { listedAdded.updateValue(row.addedMs, forKey: DiskPath(path)) }
+                    if let row = rows?[key] { listedAdded.updateValue(row.addedMs, forKey: key) }
                 }
             }
         }
         Task { @MainActor [weak self] in
             guard let self else { return }
             let items = await self.loaders.metadata(folder, paths, listedAdded)
-            let belongs = listKey == self.listKey
+            let belongs = NameKeys.Exact(listKey) == NameKeys.Exact(self.listKey)
             let answers = Dictionary(items.map { (DiskPath($0.path), $0) }) { $1 }
             let known = paths.filter { self.details[$0] != nil }
             guard let readAgain = self.details.finish(paths, from: generation, answers: belongs ? answers : nil),
@@ -1696,7 +1722,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             else { return }
             // The rows that changed: those read, and those found gone that showed details from before. Nothing found
             // for a row that showed none (the folder is gone) changes no row.
-            let changed = Set(answers.keys.map(\.string)).union(known.filter { self.details[$0] == nil })
+            var changed = Set(answers.keys)
+            for path in known where self.details[path] == nil { changed.insert(DiskPath(path)) }
             if !changed.isEmpty { self.pane?.refresh(paths: changed) }
             self.updateStatus()
             if !readAgain.isEmpty { self.requestMetadata(for: readAgain) }
@@ -1725,10 +1752,10 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         Task { @MainActor [weak self] in
             guard let self else { return }
             let colors = await self.loaders.tagColors(wanted)
-            let belongs = listKey == self.listKey
+            let belongs = NameKeys.Exact(listKey) == NameKeys.Exact(self.listKey)
             guard let readAgain = self.tags.finish(wanted, from: generation, answers: belongs ? colors : nil), belongs
             else { return }
-            self.pane?.refresh(paths: Set(wanted))
+            self.pane?.refresh(paths: Set(wanted.lazy.map(DiskPath.init)))
             if !readAgain.isEmpty { self.requestTags(for: readAgain) }
         }
     }
@@ -1745,10 +1772,10 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         barScaleCache = nil
         if sortBy == .size || (groupBy == .size && searchDisplay == nil), !listed.isEmpty {
             // The list is ordered, and grouped, again as each folder size arrives.
-            let before = entries.map(\.path)
+            let before = entryKeys
             let groupsBefore = groups
             reorder()
-            if entries.map(\.path) != before || groups != groupsBefore {
+            if entryKeys != before || groups != groupsBefore {
                 pane?.reload(scrollToTop: false)
                 pane?.syncSelection()
                 updateStatus()
@@ -1768,9 +1795,10 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             size = nil
         } else if selection.isEmpty {
             // A folder's size says nothing of a Trash that also lists what is on other disks.
+            let folder = DiskPath(folderPath)
             let listsOtherFolders =
                 Paths.isTrashFolder(folderPath, homePath: loaders.homePath)
-                && listed.contains { NodePath.dirname($0.path) != folderPath }
+                && listed.contains { DiskPath($0.path).parent != folder }
             size =
                 folderPath.isEmpty || listsOtherFolders ? nil : StatusSummary.folderSize(folderSizes.entry(folderPath))
         } else {
@@ -1781,7 +1809,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
                 items,
                 fileSize: { [weak self] path in
                     guard let self else { return nil }
-                    return self.details[path]?.sizeBytes ?? self.rowsByPath[path]?.sizeBytes
+                    return self.details[path]?.sizeBytes ?? self.rowsByPath[DiskPath(path)]?.sizeBytes
                 },
                 folderSize: { [folderSizes] in folderSizes.entry($0) })
             size = StatusSummary.selectionSize(summary)

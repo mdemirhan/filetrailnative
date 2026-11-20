@@ -911,7 +911,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             case .otherPane: self.openSecondPane(at: path)
             }
         }
-        guard content.entries.first(where: { $0.path == folder })?.kind == .symlinkDirectory else {
+        let asked = DiskPath(folder)
+        guard content.entries.first(where: { DiskPath($0.path) == asked })?.kind == .symlinkDirectory else {
             open(folder)
             return
         }
@@ -1254,7 +1255,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                     // A tab has the file operations once the app has started them.
                     .unchanged
                 }
-            guard content.inlineRename?.path == path else {
+            guard content.inlineRename?.key == DiskPath(path) else {
                 // The folder was left while the name was checked (a click on another folder ends the field and opens
                 // that folder): with no field to show it under, the refusal gets a dialog of its own.
                 if case .refused(let message) = outcome, !content.listed.contains(where: { $0.path == path }) {
@@ -2215,12 +2216,12 @@ extension MainWindowController: ExplorerWindowContext {
     private var commandContext: CommandAvailabilityContext {
         let home = DiskPath.home.string
         let entries = commandEntries
-        let lead = content.selection.leadPath
+        let lead = content.selection.leadPath.map(DiskPath.init)
         var context = CommandAvailabilityContext(
             shortcutContext: shortcutContext,
             currentPath: shownFolderPath, selectedPathsInViewOrder: selectedPaths, activeContentEntries: entries,
             listShowsItems: !content.entryPaths.isEmpty,
-            selectedEntry: entries.first { $0.path == lead } ?? entries.first,
+            selectedEntry: entries.first { DiskPath($0.path) == lead } ?? entries.first,
             selectedTreeTargetPath: sidebar.selectedTreeTargetPath,
             clipboardHasItems: services.clipboard.contents.hasItems,
             selectionOnClipboard: services.clipboard.contents.holdsAny(of: clipboardSourcePaths),

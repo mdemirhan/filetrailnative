@@ -48,7 +48,7 @@ struct DragSelectionTests {
         let step = layout.itemWidth + layout.columnGap
         func hit(
             _ left: Double, _ right: Double, _ top: Double, _ bottom: Double,
-            sizes: [String: DragSelectionSize] = [:]
+            sizes: [DiskPath: DragSelectionSize] = [:]
         ) -> [String] {
             names(
                 DragSelection.flowListItems(
@@ -71,7 +71,7 @@ struct DragSelectionTests {
         let gridWidth = 4.0 * 150
         func hit(
             _ left: Double, _ right: Double, _ top: Double, _ bottom: Double,
-            sizes: [String: DragSelectionSize] = [:]
+            sizes: [DiskPath: DragSelectionSize] = [:]
         ) -> [String] {
             names(
                 DragSelection.iconGridItems(
@@ -85,7 +85,7 @@ struct DragSelectionTests {
         #expect(hit(0, 35, 0, 78) == [])
         #expect(hit(100, 200, 10, 20) == ["item-0", "item-1"])
         // A short name, measured on screen, leaves the space beside and below it empty.
-        let shortName = ["/demo/item-0": DragSelectionSize(width: 40, height: 18)]
+        let shortName: [DiskPath: DragSelectionSize] = ["/demo/item-0": DragSelectionSize(width: 40, height: 18)]
         #expect(hit(26, 38, 82, 98) == ["item-0"])
         #expect(hit(26, 38, 82, 98, sizes: shortName) == [])
         #expect(hit(60, 90, 100, 110, sizes: shortName) == [])
@@ -103,18 +103,18 @@ struct DragSelectionTests {
         let name = DragSelectionSize(width: 60, height: 20)
         func hit(
             _ layout: IconGridLayout, gridWidth: Double, _ left: Double, _ right: Double, _ top: Double,
-            _ bottom: Double, pictures: [String: DragSelectionSize]
+            _ bottom: Double, pictures: [DiskPath: DragSelectionSize]
         ) -> [String] {
             names(
                 DragSelection.previewGridItems(
                     box: DragSelectionBox(left: left, top: top, right: right, bottom: bottom), entryPaths: entries,
                     columns: 2, gridWidth: gridWidth, layout: layout, heightInset: style.heightInset,
-                    pictures: pictures, sizes: Dictionary(uniqueKeysWithValues: entries.map { ($0, name) })))
+                    pictures: pictures, sizes: Dictionary(uniqueKeysWithValues: entries.map { (DiskPath($0), name) })))
         }
         let landscape = Dictionary(
-            uniqueKeysWithValues: entries.map { ($0, DragSelectionSize(width: 3000, height: 2000)) })
+            uniqueKeysWithValues: entries.map { (DiskPath($0), DragSelectionSize(width: 3000, height: 2000)) })
         let portrait = Dictionary(
-            uniqueKeysWithValues: entries.map { ($0, DragSelectionSize(width: 2000, height: 3000)) })
+            uniqueKeysWithValues: entries.map { (DiskPath($0), DragSelectionSize(width: 2000, height: 3000)) })
 
         // A wide, short pane: two columns of 600 by 300. A landscape photo is as high as its place allows and half
         // as wide again, far wider than the square an icon would take.

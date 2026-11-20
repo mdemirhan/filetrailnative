@@ -40,7 +40,8 @@ public struct DragSelectionHit: Equatable, Sendable, Codable {
 }
 
 /// The size of the part of an item that takes clicks and depends on its name (the name under an icon; a list item, as
-/// wide as its icon and name), measured on screen. An item that has not been shown is taken at the largest size.
+/// wide as its icon and name), measured on screen. An item that has not been shown is taken at the largest size. The
+/// sizes measured are kept by the item's path as its row spells it (`DiskPath`).
 public struct DragSelectionSize: Equatable, Sendable, Codable {
     public var width: Double
     public var height: Double
@@ -106,7 +107,7 @@ public enum DragSelection {
     /// its icon and name, at most its column's width.
     public static func flowListItems(
         box: DragSelectionBox, entryPaths: [String], rowsPerColumn: Int, rowHeight: Double, itemWidth: Double,
-        columnGap: Double, sizes: [String: DragSelectionSize] = [:]
+        columnGap: Double, sizes: [DiskPath: DragSelectionSize] = [:]
     ) -> [DragSelectionHit] {
         let rows = max(1, rowsPerColumn)
         let columnStep = itemWidth + columnGap
@@ -123,7 +124,7 @@ public enum DragSelection {
                 guard index < entryPaths.count else { continue }
                 let path = entryPaths[index]
                 let left = Double(column) * columnStep
-                let width = min(itemWidth, sizes[path]?.width ?? itemWidth)
+                let width = min(itemWidth, sizes[DiskPath(path)]?.width ?? itemWidth)
                 let top = Double(row) * rowHeight
                 let rect = DragSelectionBox(left: left, top: top, right: left + width, bottom: top + rowHeight)
                 if box.intersects(rect) { hits.append(DragSelectionHit(path: path, rect: rect)) }
@@ -136,7 +137,7 @@ public enum DragSelection {
     /// of its column. An item is touched on its icon's tile or on its name, not on the space around them.
     public static func iconGridItems(
         box: DragSelectionBox, entryPaths: [String], columns: Int, gridWidth: Double, layout: IconGridLayout,
-        sizes: [String: DragSelectionSize] = [:]
+        sizes: [DiskPath: DragSelectionSize] = [:]
     ) -> [DragSelectionHit] {
         let columnCount = max(1, columns)
         let columnWidth = gridWidth / Double(columnCount)
@@ -159,7 +160,7 @@ public enum DragSelection {
                 let tile = DragSelectionBox(
                     left: center - layout.iconBoxSize / 2, top: top + tileTop, right: center + layout.iconBoxSize / 2,
                     bottom: top + tileTop + layout.iconBoxSize)
-                let size = sizes[path]
+                let size = sizes[DiskPath(path)]
                 let labelWidth = min(layout.labelWidth, size?.width ?? layout.labelWidth)
                 let label = DragSelectionBox(
                     left: center - labelWidth / 2, top: top + labelTop, right: center + labelWidth / 2,
@@ -184,7 +185,7 @@ public enum DragSelection {
     /// may be.
     public static func previewGridItems(
         box: DragSelectionBox, entryPaths: [String], columns: Int, gridWidth: Double, layout: IconGridLayout,
-        heightInset: Double, pictures: [String: DragSelectionSize] = [:], sizes: [String: DragSelectionSize] = [:]
+        heightInset: Double, pictures: [DiskPath: DragSelectionSize] = [:], sizes: [DiskPath: DragSelectionSize] = [:]
     ) -> [DragSelectionHit] {
         let columnCount = max(1, columns)
         let columnWidth = gridWidth / Double(columnCount)
@@ -199,8 +200,9 @@ public enum DragSelection {
                 let index = row * columnCount + column
                 guard index < entryPaths.count else { continue }
                 let path = entryPaths[index]
-                let picture = PreviewGrid.pictureSize(layout, shape: pictures[path].map { ($0.width, $0.height) })
-                let name = sizes[path].map { (min(largestName.width, $0.width), min(largestName.height, $0.height)) }
+                let key = DiskPath(path)
+                let picture = PreviewGrid.pictureSize(layout, shape: pictures[key].map { ($0.width, $0.height) })
+                let name = sizes[key].map { (min(largestName.width, $0.width), min(largestName.height, $0.height)) }
                 let parts = PreviewGrid.parts(
                     layout, picture: picture, name: name ?? largestName, heightInset: heightInset)
                 // The place's top left corner: the place is in the middle of its column.
@@ -229,10 +231,10 @@ public enum DragSelection {
     /// drag started with.
     public static func combine(startPaths: [String], hitPaths: [String], mode: Mode) -> [String] {
         if mode == .replace { return hitPaths }
-        let hit = Set(hitPaths)
-        if mode == .add { return startPaths.filter { !hit.contains($0) } + hitPaths }
-        let start = Set(startPaths)
-        return startPaths.filter { !hit.contains($0) } + hitPaths.filter { !start.contains($0) }
+        let hit = Set(hitPaths.lazy.map(DiskPath.init))
+        if mode == .add { return startPaths.filter { !hit.contains(DiskPath($0)) } + hitPaths }
+        let start = Set(startPaths.lazy.map(DiskPath.init))
+        return startPaths.filter { !hit.contains(DiskPath($0)) } + hitPaths.filter { !start.contains(DiskPath($0)) }
     }
 
     /// How far to scroll this frame while the pointer is `overshoot` points past an

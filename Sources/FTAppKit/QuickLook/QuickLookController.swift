@@ -144,7 +144,10 @@ enum QuickLookItemFrame {
     /// icon in the Icons and Previews views. Quick Look zooms out of it and back into it, so the picture keeps its
     /// shape and the panel shrinks into what the item shows rather than an icon stretched over the whole cell.
     static func picture(of path: String, entries: [DirectoryEntry], in root: NSView) -> QuickLookPicture? {
-        guard let index = entries.firstIndex(where: { $0.path == path }), let window = root.window else { return nil }
+        let shown = DiskPath(path)
+        guard let index = entries.firstIndex(where: { DiskPath($0.path) == shown }), let window = root.window else {
+            return nil
+        }
         if firstView(NSTableView.self, in: root) == nil, let collection = firstView(NSCollectionView.self, in: root),
             let item = collection.item(at: IndexPath(item: index, section: 0)) as? QuickLookPictureItem
         {
@@ -156,7 +159,10 @@ enum QuickLookItemFrame {
     }
 
     static func screenFrame(of path: String, entries: [DirectoryEntry], in root: NSView) -> NSRect? {
-        guard let index = entries.firstIndex(where: { $0.path == path }), let window = root.window else { return nil }
+        let shown = DiskPath(path)
+        guard let index = entries.firstIndex(where: { DiskPath($0.path) == shown }), let window = root.window else {
+            return nil
+        }
         let rect: NSRect
         if let table = firstView(NSTableView.self, in: root), index < table.numberOfRows {
             let row = table.rect(ofRow: index)

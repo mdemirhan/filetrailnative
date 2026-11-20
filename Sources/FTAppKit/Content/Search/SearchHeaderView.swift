@@ -60,7 +60,7 @@ final class SearchHeaderView: NSView {
         }
         scopeMenu.isHidden = true
         scopeMenu.onChoose = { [weak self] path in
-            guard let self, path != self.rootPath else { return }
+            guard let self, DiskPath(path) != DiskPath(self.rootPath) else { return }
             self.onScopeChange(path)
         }
         scopeMenu.onMouseDown = { [weak self] in self?.onFocusResults() }
@@ -201,12 +201,14 @@ final class SearchHeaderView: NSView {
         mayBeMissingItems: Bool = false, filterText: String
     ) {
         self.rootPath = rootPath
-        if options.map(\.path) != scopes.map(\.path) || options.map(\.label) != scopes.map(\.title) {
+        if options.map({ DiskPath($0.path) }) != scopes.map({ DiskPath($0.path) })
+            || options.map(\.label) != scopes.map(\.title)
+        {
             for scope in scopes { scope.removeFromSuperview() }
             scopes = options.map { option in
                 let button = SearchScopeButton(option: option)
                 button.onPress = { [weak self, weak button] in
-                    guard let self, let button, button.path != self.rootPath else { return }
+                    guard let self, let button, DiskPath(button.path) != DiskPath(self.rootPath) else { return }
                     self.onScopeChange(button.path)
                 }
                 track.addSubview(button)
@@ -215,7 +217,8 @@ final class SearchHeaderView: NSView {
             track.show(scopes)
             scopeMenu.show(options)
         }
-        for scope in scopes { scope.setSelected(scope.path == rootPath, theme: theme) }
+        let root = DiskPath(rootPath)
+        for scope in scopes { scope.setSelected(DiskPath(scope.path) == root, theme: theme) }
         track.showSelection(scopes)
         scopeMenu.showSelection(rootPath)
         // Most searches finish at once: Stop and its spinner come only for one that runs on.
@@ -234,7 +237,8 @@ final class SearchHeaderView: NSView {
     func applyTheme(_ theme: Theme) {
         self.theme = theme
         track.applyTheme(theme)
-        for scope in scopes { scope.setSelected(scope.path == rootPath, theme: theme) }
+        let root = DiskPath(rootPath)
+        for scope in scopes { scope.setSelected(DiskPath(scope.path) == root, theme: theme) }
         filter.applyTheme(theme)
         stopButton.applyTheme(theme)
         doneButton.applyTheme(theme)
@@ -589,7 +593,8 @@ final class SearchScopePopUp: NSPopUpButton {
 
     /// Checks the place searched, which the button names.
     func showSelection(_ rootPath: String) {
-        guard let index = paths.firstIndex(of: rootPath) else { return }
+        let root = DiskPath(rootPath)
+        guard let index = paths.firstIndex(where: { DiskPath($0) == root }) else { return }
         if indexOfSelectedItem != index { selectItem(at: index) }
         toolTip = rootPath
     }

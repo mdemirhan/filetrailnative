@@ -190,6 +190,9 @@ final class DetailsBarView: NSView {
         odd: false, paneFocused: false, windowActive: true)
     private weak var host: (any ContentPaneHost)?
     private(set) var entry: DirectoryEntry?
+    /// The entry's path as its row spells it: what tells the row from that of a name that differs only in how an
+    /// accent is encoded.
+    private var key: DiskPath?
     private var row = 0
     private var selected = false
     private var iconRequest: LoadHandle?
@@ -230,11 +233,12 @@ final class DetailsBarView: NSView {
     // MARK: Content
 
     func configure(
-        entry: DirectoryEntry, row: Int, selected: Bool, host: any ContentPaneHost, columnSet: DetailsColumnSet,
-        layout: DetailsLayout
+        entry: DirectoryEntry, key: DiskPath, row: Int, selected: Bool, host: any ContentPaneHost,
+        columnSet: DetailsColumnSet, layout: DetailsLayout
     ) {
         self.host = host
         self.entry = entry
+        self.key = key
         self.row = row
         self.selected = selected
         self.columnSet = columnSet
@@ -243,7 +247,7 @@ final class DetailsBarView: NSView {
         nameLabel.fileExtension = entry.fileExtension
         nameLabel.marks = host.nameMarks(entry.name)
         toolTip = entry.path
-        showIcon(for: entry, host: host)
+        showIcon(for: entry, key: key, host: host)
         refreshCells()
         needsLayout = true
         needsDisplay = true
@@ -251,7 +255,7 @@ final class DetailsBarView: NSView {
 
     /// Reads the row's details again (they arrived, a folder size came in, the clock moved on).
     func refreshCells() {
-        guard let entry, let host else { return }
+        guard let entry, let key, let host else { return }
         let layout = layoutMetrics
         let metadata = host.metadata(for: entry.path)
         let now = RelativeClock.shared.relativeNow
@@ -263,7 +267,7 @@ final class DetailsBarView: NSView {
         nameLabel.textColor = NSColor(colors.name)
         nameLabel.marksUnderlined = selected && host.paneHasKeyboard && host.windowIsActive
         // The rename field stands in for the name it edits.
-        nameLabel.isHidden = host.inlineRename?.path == entry.path
+        nameLabel.isHidden = host.inlineRename?.key == key
         // An item on the clipboard: its glyph after the name, and a cut one dimmed.
         let mark = host.clipboardMarks?.mark(for: entry.path)
         nameCell.markGlyph.mark = mark
@@ -294,7 +298,7 @@ final class DetailsBarView: NSView {
                 // Right to left, so a long folder loses its start ("…src › lib").
                 let label = label(for: column)
                 label.font = font
-                label.stringValue = host.search?.folderLabel(entry.path) ?? ""
+                label.stringValue = host.search?.folderLabel(key) ?? ""
                 label.textColor = NSColor(colors.cell)
                 label.toolTip = NodePath.dirname(entry.path)
             default:
@@ -320,7 +324,7 @@ final class DetailsBarView: NSView {
         return label
     }
 
-    private func showIcon(for entry: DirectoryEntry, host: any ContentPaneHost) {
+    private func showIcon(for entry: DirectoryEntry, key: DiskPath, host: any ContentPaneHost) {
         iconRequest?.cancel()
         iconRequest = nil
         nameCell.iconView.image = nil
@@ -330,9 +334,8 @@ final class DetailsBarView: NSView {
         case .image(let image): nameCell.iconView.image = image
         case .none: break
         case .missing:
-            let path = entry.path
             iconRequest = store.load(request) { [weak self] image in
-                guard let self, self.entry?.path == path else { return }
+                guard let self, self.key == key else { return }
                 self.nameCell.iconView.image = image
             }
         }

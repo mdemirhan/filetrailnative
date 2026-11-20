@@ -25,12 +25,13 @@ final class SearchValues {
     var changed: () -> Void = {}
     /// The time, in seconds; tests move it.
     var now: () -> TimeInterval = { ProcessInfo.processInfo.systemUptime }
-    private var known: [ItemValueField: [String: ItemValue]] = [:]
+    /// The values read, by the result's path as its row spells it.
+    private var known: [ItemValueField: [DiskPath: ItemValue]] = [:]
     private var reading: [ItemValueField: Task<Void, Never>] = [:]
     /// What each field still has to read of the results there are now, in order.
     private var waiting: [ItemValueField: [String]] = [:]
     /// The batch each field's read is out for.
-    private var inFlight: [ItemValueField: Set<String>] = [:]
+    private var inFlight: [ItemValueField: Set<DiskPath>] = [:]
     /// When each field's read started, or last told of its values.
     private var lastChange: [ItemValueField: TimeInterval] = [:]
 
@@ -42,7 +43,7 @@ final class SearchValues {
     var fields: Set<ItemValueField> { Set(known.keys) }
 
     /// A result's value of a field; nil while it isn't read (or the field isn't needed).
-    func value(_ field: ItemValueField, of path: String) -> ItemValue? { known[field]?[path] }
+    func value(_ field: ItemValueField, of path: String) -> ItemValue? { known[field]?[DiskPath(path)] }
 
     /// The fields the results' order and groups need, for the results there are now: what isn't read yet of them is
     /// read, and what waited for results no longer there is not; a field not needed any more stops, and its values go.
@@ -53,7 +54,10 @@ final class SearchValues {
             if known[field] == nil { known[field] = [:] }
             let out = inFlight[field] ?? []
             // What is read, or being read, is asked for once.
-            let missing = paths.filter { have[$0] == nil && !out.contains($0) }
+            let missing = paths.filter {
+                let path = DiskPath($0)
+                return have[path] == nil && !out.contains(path)
+            }
             waiting[field] = missing.isEmpty ? nil : missing
             if !missing.isEmpty, reading[field] == nil { startReading(field) }
         }
@@ -77,11 +81,11 @@ final class SearchValues {
         lastChange[field] = now()
         reading[field] = Task { [weak self] in
             while let self, !Task.isCancelled, let batch = self.nextBatch(field) {
-                self.inFlight[field] = Set(batch)
+                self.inFlight[field] = Set(batch.lazy.map(DiskPath.init))
                 let values = await self.read(batch, field)
                 guard !Task.isCancelled, self.known[field] != nil else { return }
                 self.inFlight[field] = nil
-                for (path, value) in zip(batch, values) { self.known[field]?[path] = value }
+                for (path, value) in zip(batch, values) { self.known[field]?[DiskPath(path)] = value }
                 self.batchArrived(field)
             }
             // A stopped read leaves the field to whatever started since.

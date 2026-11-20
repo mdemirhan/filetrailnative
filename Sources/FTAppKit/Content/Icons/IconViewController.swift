@@ -11,7 +11,7 @@ class IconViewController: ItemGridPane {
     private(set) var layout = DesignTokens.iconGrid(density: .standard)
     private(set) var style = IconItemStyle.make(density: .standard)
     /// Where the items on screen were, while the Info panel opens or closes the pane's width changes in one step.
-    private var placesBefore: [String: NSPoint]?
+    private var placesBefore: [DiskPath: NSPoint]?
 
     override var navigationViewMode: ExplorerViewMode { .icons }
     override var itemIdentifier: NSUserInterfaceItemIdentifier { IconItem.identifier }
@@ -78,19 +78,21 @@ class IconViewController: ItemGridPane {
     }
 
     override func configure(_ item: NSCollectionViewItem, entry: DirectoryEntry, index: Int) {
-        (item as? IconItem)?.configure(entry: entry, pane: self)
+        (item as? IconItem)?.configure(entry: entry, key: keys[index], pane: self)
     }
 
-    override func refreshLook(of item: NSCollectionViewItem, entry: DirectoryEntry) {
-        (item as? IconItem)?.applyLook(pane: self, entry: entry)
+    override func refreshLook(of item: NSCollectionViewItem, at index: Int) {
+        (item as? IconItem)?.applyLook(pane: self, entry: entries[index], key: keys[index])
     }
 
     /// The previews of the files are checked again: at once for the items on screen, which keep their picture until a
     /// new one comes, and when the others come into view.
-    override func filesChanged(paths: Set<String>?) {
-        thumbnailStore.markChanged(paths.map { Set($0.map(DiskPath.init)) })
-        forEachVisibleItem { item, entry in
-            if paths?.contains(entry.path) != false { (item as? IconItem)?.loadThumbnail(entry, pane: self) }
+    override func filesChanged(paths: Set<DiskPath>?) {
+        thumbnailStore.markChanged(paths)
+        forEachVisibleIndex { item, index in
+            if paths?.contains(keys[index]) != false {
+                (item as? IconItem)?.loadThumbnail(entries[index], key: keys[index], pane: self)
+            }
         }
     }
 
@@ -173,7 +175,7 @@ class IconViewController: ItemGridPane {
     // MARK: Drag-to-select
 
     /// In the coordinates of the grid's items (inside the pane's padding).
-    override func marqueeHits(box: DragSelectionBox, sizes: [String: DragSelectionSize]) -> [DragSelectionHit] {
+    override func marqueeHits(box: DragSelectionBox, sizes: [DiskPath: DragSelectionSize]) -> [DragSelectionHit] {
         let left = layout.paddingInline
         let top = layout.paddingTop
         let inItems = DragSelectionBox(
@@ -198,7 +200,7 @@ class IconViewController: ItemGridPane {
 
     /// The items of `paths`, laid out as a grid from the box's origin, that a box touches: all the pane's items, or
     /// one group's. Sizes are of the names; the hit test places them itself.
-    func gridHits(box: DragSelectionBox, paths: [String], sizes: [String: DragSelectionSize]) -> [DragSelectionHit] {
+    func gridHits(box: DragSelectionBox, paths: [String], sizes: [DiskPath: DragSelectionSize]) -> [DragSelectionHit] {
         DragSelection.iconGridItems(
             box: box, entryPaths: paths, columns: columns,
             gridWidth: layout.gridWidth(containerWidth: Double(viewport.width)), layout: layout, sizes: sizes)
@@ -264,22 +266,24 @@ class IconViewController: ItemGridPane {
             placesBefore = nil
             return
         }
-        var places: [String: NSPoint] = [:]
-        forEachVisibleItem { item, entry in places[entry.path] = item.view.frame.origin }
+        var places: [DiskPath: NSPoint] = [:]
+        forEachVisibleIndex { item, index in places[keys[index]] = item.view.frame.origin }
         placesBefore = places
     }
 
     /// An item's picture came, or gave way to its icon, and its place has another shape (the Previews view, where
     /// the name follows the picture).
-    func pictureShapeChanged(of path: String) {}
+    func pictureShapeChanged(of path: DiskPath) {}
 
     override func didPlaceItems() {
         guard let before = placesBefore else { return }
         placesBefore = nil
         let duration = WorkspaceView.slideDuration
         let easing = DesignTokens.motion.easing
-        forEachVisibleItem { item, entry in
-            guard let old = before[entry.path], let layer = item.view.layer ?? Self.layer(of: item.view) else { return }
+        forEachVisibleIndex { item, index in
+            guard let old = before[keys[index]], let layer = item.view.layer ?? Self.layer(of: item.view) else {
+                return
+            }
             let place = item.view.frame.origin
             let dx = old.x - place.x
             let dy = old.y - place.y

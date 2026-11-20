@@ -37,10 +37,11 @@ extension ListViewController {
     private func pressItem(at row: Int, index: Int, event: NSEvent) {
         guard let host else { return }
         let entry = entries[index]
+        let key = keys[index]
         let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
         let held = ContentSelection.Modifiers(
             meta: flags.contains(.command), shift: flags.contains(.shift), control: flags.contains(.control))
-        let selected = host.selection.paths.contains(entry.path)
+        let selected = host.selection.paths.contains { DiskPath($0) == key }
         if let next = host.selection.afterPress(
             entryPaths: host.entryPaths, path: entry.path, selected: selected, modifiers: held)
         {
@@ -56,7 +57,8 @@ extension ListViewController {
                 let here = next.locationInWindow
                 if !dragged, hypot(here.x - start.x, here.y - start.y) >= DragSelection.threshold {
                     dragged = true
-                    let carried = host.selection.paths.contains(entry.path) ? selectedEntries : [entry]
+                    let carried =
+                        host.selection.paths.contains { DiskPath($0) == key } ? selectedEntries : [entry]
                     if host.dragHooks.beginDrag?(carried, next, table) == true { return }
                 }
                 continue
@@ -64,13 +66,15 @@ extension ListViewController {
             if dragged { return }
             let upPoint = table.convert(next.locationInWindow, from: nil)
             guard table.row(at: upPoint) == row else { return }
-            clicked(entry: entry, clickCount: event.clickCount, modifiers: held)
+            clicked(entry: entry, key: key, clickCount: event.clickCount, modifiers: held)
             return
         }
     }
 
     /// The click that completes a press on an item.
-    private func clicked(entry: DirectoryEntry, clickCount: Int, modifiers held: ContentSelection.Modifiers) {
+    private func clicked(
+        entry: DirectoryEntry, key: DiskPath, clickCount: Int, modifiers held: ContentSelection.Modifiers
+    ) {
         guard let host else { return }
         // Only the second click: a double-click acts once, and a third click is just a click.
         if clickCount == 2 {
@@ -78,7 +82,7 @@ extension ListViewController {
             host.activate([entry], newTab: held.meta)
             return
         }
-        let selected = host.selection.paths.contains(entry.path)
+        let selected = host.selection.paths.contains { DiskPath($0) == key }
         if ContentSelection.isNarrowingClick(
             button: 0, detail: clickCount, modifiers: held, selectedCount: host.selection.paths.count,
             isSelected: selected)
@@ -115,13 +119,16 @@ extension ListViewController {
         let startWindow = event.locationInWindow
         var pointer = startWindow
         var dragging = false
-        var shownKey = ""
+        // The rows the box touched last, each by its path's bytes.
+        var shownHits: [DiskPath] = []
         var shownPaths = startPaths
         var hits: [DragSelectionHit] = []
         var end = (x: 0.0, y: 0.0)
 
         func leadFor(_ picked: [String]) -> String? {
-            startLead.flatMap { picked.contains($0) ? $0 : nil }
+            guard let startLead else { return nil }
+            let lead = DiskPath(startLead)
+            return picked.contains { DiskPath($0) == lead } ? startLead : nil
         }
 
         func update() {
@@ -136,9 +143,9 @@ extension ListViewController {
             table.addSubview(marquee, positioned: .above, relativeTo: nil)
             end = (Double(inArea.x), Double(inArea.y))
             hits = marqueeHits(box: box, rowPaths: rowPaths, rowHeight: rowHeight)
-            let key = hits.map(\.path).joined(separator: "\0")
-            if key == shownKey { return }
-            shownKey = key
+            let touched = hits.map { DiskPath($0.path) }
+            if touched == shownHits { return }
+            shownHits = touched
             shownPaths = DragSelection.combine(startPaths: startPaths, hitPaths: hits.map(\.path), mode: mode)
             host.selectionChanged(.marquee(entryPaths: paths, picked: shownPaths, lead: leadFor(shownPaths)))
         }
@@ -278,13 +285,13 @@ extension ListViewController {
     /// keyboard.
     func syncRename() {
         guard let host else { return }
-        guard let state = host.inlineRename, let row = rowByPath[state.path], let index = entryIndex(atRow: row) else {
+        guard let state = host.inlineRename, let row = rowByPath[state.key], let index = entryIndex(atRow: row) else {
             endRenameField()
             keepInView(.ask)
             return
         }
         let entry = entries[index]
-        if renamingPath != state.path || renameField == nil {
+        if renamingPath != state.key || renameField == nil {
             endRenameField()
             let font = ListFonts.row(layoutMetrics)
             let field = InlineRenameField(
@@ -294,7 +301,7 @@ extension ListViewController {
             field.onCancel = { [weak self] in self?.host?.renameCancelled() }
             field.ringClippedToHeight = true
             renameField = field
-            renamingPath = state.path
+            renamingPath = state.key
             table.addSubview(field)
             field.frame = renameFrame(row: row)
             // Name scrolled out of view to the left: the list goes back to it, so the field opens where it is seen.

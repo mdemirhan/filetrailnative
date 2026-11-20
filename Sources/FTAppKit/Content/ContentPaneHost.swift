@@ -59,6 +59,9 @@ protocol ContentPaneHost: AnyObject {
     var selection: ContentSelection { get }
     /// The paths of the entries shown, in order, and where one stands (the selection model works on these).
     var entryPaths: [String] { get }
+    /// The same paths as the disk spells them, one for each of `entries`: a view finds its rows by these and tells
+    /// one item from another by them, byte for byte, without making one as it draws.
+    var entryKeys: [DiskPath] { get }
     func position(of path: String?) -> Int?
     var sortBy: SortByPreference { get }
     var sortDirection: SortDirectionPreference { get }
@@ -183,13 +186,13 @@ protocol FolderPane: NSViewController {
     var contentTopInset: Double { get }
     /// The entries changed: shown again, from the top when asked.
     func reload(scrollToTop: Bool)
-    /// The details of these paths changed (nil: of all).
-    func refresh(paths: Set<String>?)
+    /// The details of these paths changed (nil: of all). A path names the row spelled the same, byte for byte.
+    func refresh(paths: Set<DiskPath>?)
     /// The entries at these paths changed, and no row moved: only their rows are drawn again.
-    func reloadRows(paths: Set<String>)
+    func reloadRows(paths: Set<DiskPath>)
     /// The files at these paths (nil: any in the folder) may have changed on disk though their entries did not, as
     /// an edit changes nothing an entry shows: the previews drawn of them are checked against the files again.
-    func filesChanged(paths: Set<String>?)
+    func filesChanged(paths: Set<DiskPath>?)
     /// The selection model changed.
     func syncSelection()
     /// The look changed: the theme, the accent, which pane or window has the focus.
@@ -216,9 +219,9 @@ protocol FolderPane: NSViewController {
 extension FolderPane {
     var contentTopInset: Double { 0 }
     var hasKeyboard: Bool { focusView.window?.firstResponder === focusView }
-    func refresh(paths: Set<String>?) { reload(scrollToTop: false) }
-    func reloadRows(paths: Set<String>) { reload(scrollToTop: false) }
-    func filesChanged(paths: Set<String>?) {}
+    func refresh(paths: Set<DiskPath>?) { reload(scrollToTop: false) }
+    func reloadRows(paths: Set<DiskPath>) { reload(scrollToTop: false) }
+    func filesChanged(paths: Set<DiskPath>?) {}
     func syncSelection() {}
     func refreshLook() {}
     func columnsChanged() {}

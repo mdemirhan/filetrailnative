@@ -1,7 +1,9 @@
 import Foundation
 
 /// What is selected in the file list: the paths in the order the list shows them, the anchor a ⇧-range extends from, the
-/// lead the keyboard moves from, and, when everything selected left the list, where it stood.
+/// lead the keyboard moves from, and, when everything selected left the list, where it stood. A path is told from
+/// another by its bytes (`DiskPath`): a folder can hold a name spelled with a composed accent beside the same name
+/// spelled with a decomposed one, and they are two items, each selected on its own.
 public struct ContentSelection: Equatable, Sendable, Codable {
     public var paths: [String]
     /// The fixed origin for ⇧-range extension.
@@ -23,6 +25,14 @@ public struct ContentSelection: Equatable, Sendable, Codable {
 
     public var isEmpty: Bool { paths.isEmpty }
 
+    /// The same paths in the same order, the same anchor and lead, each spelled the same byte for byte.
+    public static func == (left: ContentSelection, right: ContentSelection) -> Bool {
+        left.gapIndex == right.gapIndex && left.paths.count == right.paths.count
+            && left.anchorPath.map(DiskPath.init) == right.anchorPath.map(DiskPath.init)
+            && left.leadPath.map(DiskPath.init) == right.leadPath.map(DiskPath.init)
+            && zip(left.paths, right.paths).allSatisfy { DiskPath($0) == DiskPath($1) }
+    }
+
     /// `paths` selected: the first is the anchor and the last the lead (what a paste, a duplicate or a new folder
     /// selects).
     public static func of(_ paths: [String]) -> ContentSelection {
@@ -40,25 +50,25 @@ public struct ContentSelection: Equatable, Sendable, Codable {
     /// visible entries change (navigation, sorting, filtering, search). `previousPaths`, the list the selection was
     /// made in, lets a selection whose items have all gone keep their place (`gapIndex`).
     public func sanitized(entryPaths: [String], previousPaths: [String] = []) -> ContentSelection {
-        let available = Set(entryPaths)
-        let nextPaths = paths.filter { available.contains($0) }
+        let available = Set(entryPaths.lazy.map(DiskPath.init))
+        let nextPaths = paths.filter { available.contains(DiskPath($0)) }
         if nextPaths.isEmpty {
             let gap = paths.isEmpty ? gapIndex : Self.gapIndex(of: self, available: available, previous: previousPaths)
             guard let gap else { return .empty }
             return ContentSelection(gapIndex: min(gap, entryPaths.count))
         }
-        let lead = leadPath.flatMap { available.contains($0) ? $0 : nil } ?? nextPaths.last
-        let anchor = anchorPath.flatMap { available.contains($0) ? $0 : nil } ?? lead
+        let lead = leadPath.flatMap { available.contains(DiskPath($0)) ? $0 : nil } ?? nextPaths.last
+        let anchor = anchorPath.flatMap { available.contains(DiskPath($0)) ? $0 : nil } ?? lead
         return ContentSelection(paths: nextPaths, anchorPath: anchor, leadPath: lead)
     }
 
     /// Where the lead item stood among the items that are still there.
-    private static func gapIndex(of selection: ContentSelection, available: Set<String>, previous: [String]) -> Int? {
-        guard let lead = selection.leadPath ?? selection.paths.first,
-            let leadIndex = previous.firstIndex(of: lead)
+    private static func gapIndex(of selection: ContentSelection, available: Set<DiskPath>, previous: [String]) -> Int? {
+        guard let lead = (selection.leadPath ?? selection.paths.first).map(DiskPath.init),
+            let leadIndex = previous.firstIndex(where: { DiskPath($0) == lead })
         else { return nil }
         var count = 0
-        for index in 0..<leadIndex where available.contains(previous[index]) { count += 1 }
+        for index in 0..<leadIndex where available.contains(DiskPath(previous[index])) { count += 1 }
         return count
     }
 
@@ -66,7 +76,9 @@ public struct ContentSelection: Equatable, Sendable, Codable {
 
     /// A range is in visual order, not path order.
     public static func rangePaths(entryPaths: [String], anchor: String, target: String) -> [String] {
-        guard let anchorIndex = entryPaths.firstIndex(of: anchor), let targetIndex = entryPaths.firstIndex(of: target)
+        let (from, to) = (DiskPath(anchor), DiskPath(target))
+        guard let anchorIndex = entryPaths.firstIndex(where: { DiskPath($0) == from }),
+            let targetIndex = entryPaths.firstIndex(where: { DiskPath($0) == to })
         else { return target.isEmpty ? [] : [target] }
         let (start, end) = anchorIndex <= targetIndex ? (anchorIndex, targetIndex) : (targetIndex, anchorIndex)
         return Array(entryPaths[start...end])
@@ -75,19 +87,22 @@ public struct ContentSelection: Equatable, Sendable, Codable {
     /// A merge is put back in the order of the entries, so keyboard navigation,
     /// clipboard actions and context menus all see a stable ordering.
     public static func merged(entryPaths: [String], current: [String], next: [String]) -> [String] {
-        let wanted = Set(current).union(next)
-        return entryPaths.filter { wanted.contains($0) }
+        let wanted = Set(current.lazy.map(DiskPath.init)).union(next.lazy.map(DiskPath.init))
+        return entryPaths.filter { wanted.contains(DiskPath($0)) }
     }
 
     /// ⌘-click. Keeps the existing anchor when it can, so a following ⇧-range still behaves
     /// like a desktop file manager.
     public func toggled(entryPaths: [String], path: String) -> ContentSelection {
-        if paths.contains(path) {
-            let next = paths.filter { $0 != path }
+        let toggled = DiskPath(path)
+        if paths.contains(where: { DiskPath($0) == toggled }) {
+            let next = paths.filter { DiskPath($0) != toggled }
             if next.isEmpty { return .empty }
-            let nextLead = leadPath == path ? next.last : leadPath
+            let nextLead = leadPath.map(DiskPath.init) == toggled ? next.last : leadPath
             return ContentSelection(
-                paths: next, anchorPath: anchorPath == path ? nextLead : (anchorPath ?? nextLead), leadPath: nextLead)
+                paths: next,
+                anchorPath: anchorPath.map(DiskPath.init) == toggled ? nextLead : (anchorPath ?? nextLead),
+                leadPath: nextLead)
         }
         return ContentSelection(
             paths: Self.merged(entryPaths: entryPaths, current: paths, next: [path]), anchorPath: path, leadPath: path)
@@ -110,14 +125,14 @@ public struct ContentSelection: Equatable, Sendable, Codable {
     /// Invert Selection: the entries not selected, in list order, with the first the anchor and the last the lead.
     /// What is selected but not in `entryPaths` (hidden by a filter) is left out too.
     public func inverted(entryPaths: [String]) -> ContentSelection {
-        let selected = Set(paths)
-        return .of(entryPaths.filter { !selected.contains($0) })
+        let selected = Set(paths.lazy.map(DiskPath.init))
+        return .of(entryPaths.filter { !selected.contains(DiskPath($0)) })
     }
 
     /// The marquee's selection: the touched paths in list order, the lead the anchor.
     public static func marquee(entryPaths: [String], picked: [String], lead: String?) -> ContentSelection {
-        let wanted = Set(picked)
-        let ordered = entryPaths.filter { wanted.contains($0) }
+        let wanted = Set(picked.lazy.map(DiskPath.init))
+        let ordered = entryPaths.filter { wanted.contains(DiskPath($0)) }
         return ordered.isEmpty ? .empty : ContentSelection(paths: ordered, anchorPath: lead, leadPath: lead)
     }
 

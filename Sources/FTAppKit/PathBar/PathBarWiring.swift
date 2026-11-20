@@ -58,7 +58,8 @@ extension MainWindowController {
     private var selectedSearchResult: DirectoryEntry? {
         guard searchRootPath != nil else { return nil }
         let selected = content.selectedEntries
-        return selected.first { $0.path == content.selection.leadPath } ?? selected.first
+        let lead = content.selection.leadPath.map(DiskPath.init)
+        return selected.first { DiskPath($0.path) == lead } ?? selected.first
     }
 
     /// The active pane's path bar (`BrowserPane.updatePathBar`).

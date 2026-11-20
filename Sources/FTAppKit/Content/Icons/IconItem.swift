@@ -249,7 +249,10 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
     /// The whole name, for what reads the item's text field (a scenario's `select` step).
     private let nameField = NSTextField(labelWithString: "")
 
-    private(set) var path: String?
+    /// The entry it shows, by its path as its row spells it: what tells it from the item of a name that differs only
+    /// in how an accent is encoded.
+    private(set) var key: DiskPath?
+    var path: String? { key?.string }
     private var density = Density.standard
     /// The pane's grid and look, at its icon size.
     private var layout = DesignTokens.iconGrid(density: .standard)
@@ -299,15 +302,15 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
         thumbnailRequest = nil
         // The wait for a preview stays: shown again for the same file at once, the item goes on waiting rather than
         // blanking its place anew; for another file `loadThumbnail` ends it.
-        path = nil
+        key = nil
     }
 
     // MARK: Showing an entry
 
-    func configure(entry: DirectoryEntry, pane: IconViewController) {
+    func configure(entry: DirectoryEntry, key: DiskPath, pane: IconViewController) {
         guard let host = pane.host else { return }
-        let changed = path != entry.path
-        path = entry.path
+        let changed = self.key != key
+        self.key = key
         density = pane.density
         layout = pane.layout
         style = pane.style
@@ -323,11 +326,11 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
         if changed || iconView.image == nil {
             iconRequest?.cancel()
             iconRequest = GridIcons.show(entry, in: iconView, host: host) { [weak self] in
-                self?.path == entry.path
+                self?.key == key
             }
         }
-        loadThumbnail(entry, pane: pane)
-        applyLook(pane: pane, entry: entry)
+        loadThumbnail(entry, key: key, pane: pane)
+        applyLook(pane: pane, entry: entry, key: key)
         layoutParts()
     }
 
@@ -350,7 +353,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
     /// Asks for the file's preview. The answer the store has at once is shown at once; when it has none yet, the
     /// picture this item drew of the same file stays until the new one comes, and the pane's `iconWait` passes with
     /// nothing drawn before the icon shows, so a preview that comes quickly isn't drawn over the icon a moment after it.
-    func loadThumbnail(_ entry: DirectoryEntry, pane: IconViewController) {
+    func loadThumbnail(_ entry: DirectoryEntry, key: DiskPath, pane: IconViewController) {
         // The request before is taken back only once the new one is made: for the same file, the load under way
         // answers both, and is not stopped and begun again each time the folder is read again.
         let before = thumbnailRequest
@@ -358,8 +361,8 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
         thumbnailRequest = nil
         // The same file still waited for, or still showing its icon, goes on as it is: a folder read again doesn't
         // blank its place again.
-        let sameWait = iconWait != nil && waitingPath == entry.path
-        let keepsIcon = iconPath == entry.path
+        let sameWait = iconWait != nil && waitingPath == key
+        let keepsIcon = iconPath == key
         if !sameWait {
             iconWait?.cancel()
             iconWait = nil
@@ -370,19 +373,19 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
         let kind = entry.iconEntry.kind
         // Not known yet: the store is asking for it, and answers again once it has it.
         let unknown = ThumbnailStore.canHaveThumbnail(kind) && !store.isKept(path: entry.path)
-        let keepsPicture = unknown && hasThumbnail && thumbnailPath == entry.path
+        let keepsPicture = unknown && hasThumbnail && thumbnailPath == key
         let wait = unknown ? pane.iconWait : 0
         let atOnce = Flag(true)
         thumbnailRequest = store.load(
             path: entry.path, kind: kind, size: pane.thumbnailPixelSize, listing: pane.listing
         ) { [weak self] picture in
-            guard let self, self.path == entry.path else { return }
+            guard let self, self.key == key else { return }
             if let picture {
-                self.showPicture(picture, of: entry.path, theme: theme, style: style)
+                self.showPicture(picture, of: key, theme: theme, style: style)
             } else if atOnce.value, keepsPicture || (unknown && (keepsIcon || sameWait)) {
                 return
             } else if atOnce.value, wait > 0 {
-                self.waitForPicture(of: entry.path, for: wait)
+                self.waitForPicture(of: key, for: wait)
             } else {
                 self.showIcon()
             }
@@ -391,14 +394,14 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
     }
 
     /// The path of the picture drawn.
-    private var thumbnailPath: String?
+    private var thumbnailPath: DiskPath?
     /// The path of the file whose icon shows in the picture's place, and of the one waited for with nothing drawn.
-    private var iconPath: String?
-    private var waitingPath: String?
+    private var iconPath: DiskPath?
+    private var waitingPath: DiskPath?
     /// Shows the icon once the preview has been waited for long enough.
     private var iconWait: DispatchWorkItem?
 
-    private func showPicture(_ picture: ThumbnailPicture, of path: String, theme: Theme, style: IconItemStyle) {
+    private func showPicture(_ picture: ThumbnailPicture, of path: DiskPath, theme: Theme, style: IconItemStyle) {
         iconWait?.cancel()
         iconWait = nil
         hasThumbnail = true
@@ -417,7 +420,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
         iconWait = nil
         hasThumbnail = false
         thumbnailPath = nil
-        iconPath = path
+        iconPath = key
         waitingPath = nil
         thumbnail.setAccessibilityIdentifier("")
         thumbnail.isHidden = true
@@ -426,7 +429,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
     }
 
     /// Draws nothing in the picture's place for `delay`, then the icon unless the preview came.
-    private func waitForPicture(of path: String, for delay: TimeInterval) {
+    private func waitForPicture(of path: DiskPath, for delay: TimeInterval) {
         hasThumbnail = false
         thumbnailPath = nil
         iconPath = nil
@@ -441,7 +444,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
                 // Over, whatever the item shows by now: one reused for the same file starts a wait of its own.
                 self.iconWait = nil
                 self.waitingPath = nil
-                guard self.path == path, !self.hasThumbnail else { return }
+                guard self.key == path, !self.hasThumbnail else { return }
                 self.showIcon()
             }
         }
@@ -455,11 +458,11 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
     private var thumbnailSize = NSSize.zero
 
     /// Draws the selection, the focus and the clipboard badge.
-    func applyLook(pane: IconViewController, entry: DirectoryEntry) {
+    func applyLook(pane: IconViewController, entry: DirectoryEntry, key: DiskPath) {
         guard let host = pane.host else { return }
         let theme = host.theme
-        let renaming = pane.renamingPath == entry.path
-        let selected = pane.isSelected(entry.path) || renaming
+        let renaming = pane.renamingPath == key
+        let selected = pane.isSelected(key) || renaming
         // A name being edited is drawn as selected in a pane without the keyboard (`active inactive renaming`).
         let colors = GridSelectionColors.make(
             theme: theme, selected: selected, paneFocused: pane.paneFocused && !renaming,
@@ -510,7 +513,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
         if fillsPlace {
             layoutFillingThePlace()
             // The name sits under the picture, whatever its shape: a name being edited follows it.
-            if let path { pane?.pictureShapeChanged(of: path) }
+            if let key { pane?.pictureShapeChanged(of: key) }
             return
         }
         let tileFrame = layout.tileFrame(style: style)

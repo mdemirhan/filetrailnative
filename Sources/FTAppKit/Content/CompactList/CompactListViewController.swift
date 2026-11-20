@@ -44,11 +44,11 @@ final class CompactListViewController: ItemGridPane {
     }
 
     override func configure(_ item: NSCollectionViewItem, entry: DirectoryEntry, index: Int) {
-        (item as? CompactListItem)?.configure(entry: entry, pane: self)
+        (item as? CompactListItem)?.configure(entry: entry, key: keys[index], pane: self)
     }
 
-    override func refreshLook(of item: NSCollectionViewItem, entry: DirectoryEntry) {
-        (item as? CompactListItem)?.applyLook(pane: self, entry: entry)
+    override func refreshLook(of item: NSCollectionViewItem, at index: Int) {
+        (item as? CompactListItem)?.applyLook(pane: self, entry: entries[index], key: keys[index])
     }
 
     // MARK: Placement
@@ -145,7 +145,7 @@ final class CompactListViewController: ItemGridPane {
                 index: index, rowsPerColumn: layout.rowsPerColumn(containerHeight: Double(viewport.height)))
         }
         // An item hugs its icon and name; one being renamed keeps its column, for the field.
-        let renaming = entries.indices.contains(index) && entries[index].path == renamingPath
+        let renaming = keys.indices.contains(index) && keys[index] == renamingPath
         let width =
             renaming || !entries.indices.contains(index)
             ? cell.width : layout.itemWidth(nameWidth: markedNameWidth(entries[index]), style: style)
@@ -165,7 +165,7 @@ final class CompactListViewController: ItemGridPane {
     }
 
     /// Tags or clipboard marks may have changed: an item is wider by its dots and its glyph.
-    override func refresh(paths: Set<String>?) {
+    override func refresh(paths: Set<DiskPath>?) {
         let resized = collection.indexPathsForVisibleItems().contains { path in
             guard let item = collection.item(at: path) else { return false }
             return abs(item.view.frame.width - itemFrame(at: path.item, viewport: viewport).width) >= 1
@@ -192,7 +192,7 @@ final class CompactListViewController: ItemGridPane {
     // MARK: Drag-to-select
 
     /// In the coordinates of the list's rows (inside its padding).
-    override func marqueeHits(box: DragSelectionBox, sizes: [String: DragSelectionSize]) -> [DragSelectionHit] {
+    override func marqueeHits(box: DragSelectionBox, sizes: [DiskPath: DragSelectionSize]) -> [DragSelectionHit] {
         let left = layout.paddingInline
         let top = layout.paddingTop
         if let columns = columns(height: viewport.height) {

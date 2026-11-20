@@ -44,18 +44,22 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
     /// The marquee box, in the collection's content so it scrolls with the items.
     let marquee = MarqueeBoxView()
     var renameField: InlineRenameField?
-    var renamingPath: String?
+    /// The item being renamed, by its path as its row spells it.
+    var renamingPath: DiskPath?
     var lastRefusalCount = 0
 
     var entries: [DirectoryEntry] = []
+    /// Each entry's path as the disk spells it, as the host made them with the order: an item is found by its own,
+    /// and told from another byte for byte, so two names that differ only in how an accent is encoded are two items.
+    private(set) var keys: [DiskPath] = []
     /// The groups shown, while the items are grouped (View ▸ Group By).
     private(set) var groups: [ShownGroup] = []
     /// The headers on screen, one for each group whose header shows, made again as the view scrolls.
     private var headerViews: [GroupHeaderView] = []
-    private var indexCache: [String: Int]?
-    var indexByPath: [String: Int] {
+    private var indexCache: [DiskPath: Int]?
+    var indexByPath: [DiskPath: Int] {
         if let indexCache { return indexCache }
-        let made = Dictionary(entries.enumerated().map { ($1.path, $0) }, uniquingKeysWith: { first, _ in first })
+        let made = Dictionary(keys.enumerated().map { ($1, $0) }, uniquingKeysWith: { first, _ in first })
         indexCache = made
         return made
     }
@@ -68,7 +72,7 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
         return made
     }
     /// The paths selected, for drawing.
-    private(set) var selectedPaths = Set<String>()
+    private(set) var selectedPaths = Set<DiskPath>()
     /// Stands for this reading of the folder: previews are checked against their files once for each
     /// (`listing` of IconGridView).
     private(set) var listing = NSObject()
@@ -86,8 +90,8 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
     func makeScrollView() -> ItemGridScrollView { ItemGridScrollView() }
     /// Shows `entry` in `item`.
     func configure(_ item: NSCollectionViewItem, entry: DirectoryEntry, index: Int) {}
-    /// Draws the selection and focus of an item again.
-    func refreshLook(of item: NSCollectionViewItem, entry: DirectoryEntry) {}
+    /// Draws the selection and focus of the item at a place in `entries` again.
+    func refreshLook(of item: NSCollectionViewItem, at index: Int) {}
     /// The density or another metric changed: the items are placed again.
     func metricsChanged() -> Bool { false }
     var placedCount: Int { entries.count }
@@ -99,7 +103,7 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
     /// is fitted to it.
     func fitGrid(to size: NSSize) {}
     /// The items the box touches; the box is in the collection's coordinates.
-    func marqueeHits(box: DragSelectionBox, sizes: [String: DragSelectionSize]) -> [DragSelectionHit] { [] }
+    func marqueeHits(box: DragSelectionBox, sizes: [DiskPath: DragSelectionSize]) -> [DragSelectionHit] { [] }
     /// The scroll offset that brings the item into view, or nil to leave it.
     func revealOffset(for index: Int) -> NSPoint? { nil }
     /// The rename field over an item, in the collection's coordinates, and its font and alignment.
@@ -239,12 +243,20 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
 
     // MARK: Pane
 
-    func reload(scrollToTop: Bool) {
+    /// Takes the host's entries, and the keys it made for them.
+    private func readEntries() {
         entries = host?.entries ?? []
+        keys = host?.entryKeys ?? []
+        // One for each entry, whatever the host is.
+        if keys.count != entries.count { keys = entries.map { DiskPath($0.path) } }
         groups = host?.groups ?? []
         indexCache = nil
         pathsCache = nil
         listing = NSObject()
+    }
+
+    func reload(scrollToTop: Bool) {
+        readEntries()
         _ = metricsChanged()
         readSelection()
         collection.reloadData()
@@ -258,12 +270,8 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
         syncRename()
     }
 
-    func reloadRows(paths: Set<String>) {
-        entries = host?.entries ?? []
-        groups = host?.groups ?? []
-        indexCache = nil
-        pathsCache = nil
-        listing = NSObject()
+    func reloadRows(paths: Set<DiskPath>) {
+        readEntries()
         let indexPaths = Set(paths.compactMap { indexByPath[$0] }.map { IndexPath(item: $0, section: 0) })
         collection.reloadItems(at: indexPaths)
         syncSelection()
@@ -271,11 +279,11 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
     }
 
     /// Only the Icons and the Previews views draw previews.
-    func filesChanged(paths: Set<String>?) {}
+    func filesChanged(paths: Set<DiskPath>?) {}
 
-    func refresh(paths: Set<String>?) {
-        forEachVisibleItem { item, entry in
-            if paths == nil || paths?.contains(entry.path) == true { self.refreshLook(of: item, entry: entry) }
+    func refresh(paths: Set<DiskPath>?) {
+        forEachVisibleIndex { item, index in
+            if paths == nil || paths?.contains(self.keys[index]) == true { self.refreshLook(of: item, at: index) }
         }
         reportVisiblePaths()
     }
@@ -286,19 +294,19 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
         readSelection()
         guard before != selectedPaths else { return }
         let changed = before.symmetricDifference(selectedPaths)
-        forEachVisibleItem { item, entry in
-            if changed.contains(entry.path) { self.refreshLook(of: item, entry: entry) }
+        forEachVisibleIndex { item, index in
+            if changed.contains(self.keys[index]) { self.refreshLook(of: item, at: index) }
         }
     }
 
     private func readSelection() {
-        selectedPaths = Set(host?.selection.paths ?? [])
+        selectedPaths = Set((host?.selection.paths ?? []).lazy.map(DiskPath.init))
     }
 
     func refreshLook() {
         marquee.apply(theme: host?.theme ?? AppearanceModel.shared.theme)
         renameField?.applyTheme(host?.theme ?? AppearanceModel.shared.theme)
-        forEachVisibleItem { item, entry in self.refreshLook(of: item, entry: entry) }
+        forEachVisibleIndex { item, index in self.refreshLook(of: item, at: index) }
     }
 
     /// The clipboard's marks changed: the items are drawn again.
@@ -402,7 +410,7 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
 
     func keyboardChanged(_ has: Bool) {
         hasKeyboard = has
-        forEachVisibleItem { item, entry in self.refreshLook(of: item, entry: entry) }
+        forEachVisibleIndex { item, index in self.refreshLook(of: item, at: index) }
     }
 
     // MARK: Items
@@ -410,12 +418,18 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
     var paneFocused: Bool { hasKeyboard }
     var windowActive: Bool { host?.windowIsActive ?? true }
 
-    func isSelected(_ path: String) -> Bool { selectedPaths.contains(path) }
+    /// Whether the item with this key (one of `keys`) is selected.
+    func isSelected(_ path: DiskPath) -> Bool { selectedPaths.contains(path) }
 
     func forEachVisibleItem(_ body: (NSCollectionViewItem, DirectoryEntry) -> Void) {
+        forEachVisibleIndex { item, index in body(item, entries[index]) }
+    }
+
+    /// The items on screen, each with its place in `entries` and `keys`.
+    func forEachVisibleIndex(_ body: (NSCollectionViewItem, Int) -> Void) {
         for indexPath in collection.indexPathsForVisibleItems() {
             guard entries.indices.contains(indexPath.item), let item = collection.item(at: indexPath) else { continue }
-            body(item, entries[indexPath.item])
+            body(item, indexPath.item)
         }
     }
 
@@ -456,7 +470,7 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
     }
 
     var selectedEntries: [DirectoryEntry] {
-        (host?.selection.paths ?? []).compactMap { indexByPath[$0].map { entries[$0] } }
+        (host?.selection.paths ?? []).compactMap { indexByPath[DiskPath($0)].map { entries[$0] } }
     }
 
     /// A scenario's `select` step: these items, in the list's order.

@@ -433,7 +433,8 @@ final class InfoController {
 
     private func rowDisplay(_ selection: SelectionDetails?) -> InfoRowDisplay? {
         if let selection {
-            let lead = selection.entries.first { $0.path == content.selection.leadPath } ?? selection.entries[0]
+            let leadPath = content.selection.leadPath.map(DiskPath.init)
+            let lead = selection.entries.first { DiskPath($0.path) == leadPath } ?? selection.entries[0]
             var facts: [InfoRowDisplay.Fact] = []
             if let entry = selection.size.folderSizeEntry {
                 var tooltip: String?

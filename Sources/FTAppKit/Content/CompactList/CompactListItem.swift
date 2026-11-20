@@ -127,7 +127,9 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
     /// Marks the item a drag would drop into, for automation.
     let dropMarker = GridMarkerView(id: "compactList.item.dropTarget")
 
-    private(set) var path: String?
+    /// The entry it shows, by its path as its row spells it.
+    private(set) var key: DiskPath?
+    var path: String? { key?.string }
     private var layout = DesignTokens.flowList(density: .standard)
     private var iconRequest: LoadHandle?
 
@@ -155,13 +157,13 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
         super.prepareForReuse()
         iconRequest?.cancel()
         iconRequest = nil
-        path = nil
+        key = nil
     }
 
-    func configure(entry: DirectoryEntry, pane: CompactListViewController) {
+    func configure(entry: DirectoryEntry, key: DiskPath, pane: CompactListViewController) {
         guard let host = pane.host else { return }
-        let changed = path != entry.path
-        path = entry.path
+        let changed = self.key != key
+        self.key = key
         layout = pane.layout
         root.setAccessibilityLabel(entry.name)
         // `title={entry.name}`: the whole name, for one shortened in the middle.
@@ -174,17 +176,17 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
         if changed || iconView.image == nil {
             iconRequest?.cancel()
             iconRequest = GridIcons.show(entry, in: iconView, host: host) { [weak self] in
-                self?.path == entry.path
+                self?.key == key
             }
         }
-        applyLook(pane: pane, entry: entry)
+        applyLook(pane: pane, entry: entry, key: key)
         layoutParts()
     }
 
-    func applyLook(pane: CompactListViewController, entry: DirectoryEntry) {
+    func applyLook(pane: CompactListViewController, entry: DirectoryEntry, key: DiskPath) {
         guard let host = pane.host else { return }
-        let renaming = pane.renamingPath == entry.path
-        let selected = pane.isSelected(entry.path) || renaming
+        let renaming = pane.renamingPath == key
+        let selected = pane.isSelected(key) || renaming
         // A name being edited is drawn as selected in a pane without the keyboard (`active inactive renaming`).
         let colors = GridSelectionColors.make(
             theme: host.theme, selected: selected, paneFocused: pane.paneFocused && !renaming,
@@ -219,8 +221,8 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
 
     /// The item was just copied or cut: its mark flashes.
     func flashClipboardMark(in pane: ItemGridPane) {
-        guard let path, let host = pane.host, host.clipboardMarks?.flashes(path) == true else { return }
-        let selected = pane.isSelected(path)
+        guard let key, let host = pane.host, host.clipboardMarks?.flashes(key.string) == true else { return }
+        let selected = pane.isSelected(key)
         ClipboardFlash.flash(
             root, color: ClipboardMarkGlyph.color(theme: host.theme, onSelection: marksOnSelection(pane, selected)),
             radius: root.radius)

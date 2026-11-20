@@ -1,5 +1,6 @@
 import AppKit
 import FTFileSystem
+import FTFoundation
 
 /// How a view scrolls, for `RevealKeeper`.
 @MainActor
@@ -19,9 +20,9 @@ protocol RevealScroller: AnyObject {
 /// shown again.
 @MainActor
 final class RevealKeeper {
-    /// What asks for the item to be shown.
+    /// What asks for the item to be shown: the item by its path as its row spells it.
     struct Ask: Equatable {
-        var path: String?
+        var path: DiskPath?
         var sortKey: String
         var askedAgain: Int
     }
@@ -86,12 +87,12 @@ extension ContentPaneHost {
     /// What asks a view to show its item. The Compact List follows only the lead: not the item being renamed, nor a
     /// refused name.
     func revealAsk(followingRename: Bool) -> RevealKeeper.Ask {
-        let lead = selection.leadPath
+        let lead = selection.leadPath.map(DiskPath.init)
         let sortKey =
             search.map { "\($0.headerSortKey):\($0.sortDirection.rawValue)" }
             ?? "\(sortBy.rawValue):\(sortDirection.rawValue)"
         guard followingRename else { return RevealKeeper.Ask(path: lead, sortKey: sortKey, askedAgain: 0) }
         return RevealKeeper.Ask(
-            path: inlineRename?.path ?? lead, sortKey: sortKey, askedAgain: inlineRename?.refusalCount ?? 0)
+            path: inlineRename?.key ?? lead, sortKey: sortKey, askedAgain: inlineRename?.refusalCount ?? 0)
     }
 }

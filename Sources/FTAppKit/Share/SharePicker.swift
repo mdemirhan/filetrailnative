@@ -110,7 +110,10 @@ extension MainWindowController {
             }
         }
         let content = content
-        let lead = content.selection.leadPath.flatMap { paths.contains($0) ? $0 : nil } ?? paths[0]
+        let lead =
+            content.selection.leadPath.flatMap { lead in
+                paths.contains { DiskPath($0) == DiskPath(lead) } ? lead : nil
+            } ?? paths[0]
         let itemFrame = QuickLookItemFrame.screenFrame(of: lead, entries: content.entries, in: content.view)
         if let button, button.window != nil {
             show(button.bounds, of: button, sourceFrame: itemFrame)

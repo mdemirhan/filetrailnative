@@ -741,8 +741,9 @@ final class BrowserPane {
         content.setPinnedFilter(carried.pinnedListFilter)
         content.setFilter(carried.listFilterQuery, mode: carried.listFilterMode)
         // Something selected outside the filter shows the whole list again.
-        if let lead = content.selection.leadPath, !content.filter.isEmpty,
-            !content.entries.contains(where: { $0.path == lead }), content.listed.contains(where: { $0.path == lead })
+        if let lead = content.selection.leadPath.map(DiskPath.init), !content.filter.isEmpty,
+            !content.entries.contains(where: { DiskPath($0.path) == lead }),
+            content.listed.contains(where: { DiskPath($0.path) == lead })
         {
             content.clearFilter()
         }
@@ -970,7 +971,9 @@ final class BrowserPane {
             carried.map {
                 FolderViewMemory(
                     selection: $0.contentSelection, scrollTop: $0.contentScroll.y, scrollLeft: $0.contentScroll.x)
-            } ?? ((move.restoresView && !bringsResultsBack) || restoringView ? folderMemories[shownPath] : nil)
+            }
+            ?? ((move.restoresView && !bringsResultsBack) || restoringView
+                ? folderMemories[DiskPath(shownPath)] : nil)
         tab.updateTitle()
         if !keepsSearch, let search = searchStore, !search.session.isSearchMode { search.session.setDraft("") }
         // A folder opened from the sidebar leaves the keyboard there. The pane's first folder wasn't: AppKit gives a

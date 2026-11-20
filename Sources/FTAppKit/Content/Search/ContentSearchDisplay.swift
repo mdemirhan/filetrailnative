@@ -39,7 +39,7 @@ final class ContentSearchContext {
     /// The order was set from outside (a scenario's sort step).
     let setSort: (SearchResultsSortByPreference, SortDirectionPreference) -> Void
     private let startupDiskName: String
-    private var folderLabels: [String: String] = [:]
+    private var folderLabels: [DiskPath: String] = [:]
     private var matches: [StoredName: HighlightRange?] = [:]
 
     init(
@@ -55,10 +55,10 @@ final class ContentSearchContext {
         self.requestSort = requestSort
     }
 
-    /// "src › views", or the root's name for a result right in it.
-    func folderLabel(_ path: String) -> String {
+    /// "src › views", or the root's name for a result right in it. `path` is the result's, as its row spells it.
+    func folderLabel(_ path: DiskPath) -> String {
         if let known = folderLabels[path] { return known }
-        let made = SearchResults.folderText(path: path, rootPath: rootPath, startupDiskName: startupDiskName)
+        let made = SearchResults.folderText(path: path.string, rootPath: rootPath, startupDiskName: startupDiskName)
         folderLabels[path] = made
         return made
     }
