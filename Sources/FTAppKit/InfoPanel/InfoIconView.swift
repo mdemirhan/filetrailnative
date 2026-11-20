@@ -43,12 +43,55 @@ final class InfoIconView: NSView {
     var stack: (back: GenericIconKind, front: GenericIconKind)?
     private var stackImages: [GenericIconKind: NSImage] = [:]
 
+    /// The Quick Look preview of the file's content, drawn in the icon's place once there is one (a photo, a PDF's
+    /// first page): the icon shows until then, and stays for a file with no preview.
+    private(set) var picture: ThumbnailPicture?
+    private var pictureHandle: LoadHandle?
+    /// The file the preview is of, as it was when asked for: its path, and its path with its date and size.
+    private var picturePath: String?
+    private var pictureKey: String?
+    /// Stands for the file as it was read for the panel: the store checks a preview it has against the file once for
+    /// each, so a file changed since gets a new one.
+    private var pictureReading = NSObject()
+
     override var isFlipped: Bool { true }
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
+
+    /// Asks for the preview of the file the icon is of. `version` changes when the file does (its date and size). The
+    /// same file changed keeps the preview drawn until the new one comes; another file starts from its icon.
+    func showPreview(path: String, kind: IconEntryKind, version: String, store: ThumbnailStore?) {
+        let key = path + "\u{0}" + version
+        guard key != pictureKey else { return }
+        pictureHandle?.cancel()
+        pictureHandle = nil
+        pictureKey = key
+        if path != picturePath, picture != nil {
+            picture = nil
+            needsDisplay = true
+        }
+        picturePath = path
+        pictureReading = NSObject()
+        guard let store else { return }
+        pictureHandle = store.load(path: path, kind: kind, size: ThumbnailStore.largePixelSize, listing: pictureReading)
+        { [weak self] loaded in
+            guard let self, self.pictureKey == key, let loaded else { return }
+            self.picture = loaded
+            self.needsDisplay = true
+        }
+    }
+
+    private func clearPreview() {
+        pictureHandle?.cancel()
+        pictureHandle = nil
+        pictureKey = nil
+        picturePath = nil
+        picture = nil
+    }
 
     func show(_ entry: IconEntry?, store: FileIconStore?, deferLoad: Bool) {
         stack = nil
         guard let entry else {
+            clearPreview()
             shown = nil
             image = nil
             handle?.cancel()
@@ -73,6 +116,7 @@ final class InfoIconView: NSView {
 
     /// The stacked icon of several items.
     func showStack(back: GenericIconKind, front: GenericIconKind, store: FileIconStore?) {
+        clearPreview()
         shown = "stack:\(back):\(front)"
         image = nil
         handle?.cancel()
@@ -102,12 +146,40 @@ final class InfoIconView: NSView {
             return
         }
         let box = bounds.insetBy(dx: inset, dy: inset)
-        if let image {
+        if let picture, picture.image.size.width > 0, picture.image.size.height > 0 {
+            drawPreview(picture, in: box)
+        } else if let image {
             let rect = nativeIconSide.map { NSRect(x: 0, y: 0, width: $0, height: $0) } ?? box
             NSGraphicsContext.current?.imageInterpolation = .high
             image.draw(in: rect, from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)
         } else if isFolder {
             SidebarIconView.drawFolderStandIn(in: box)
         }
+    }
+
+    /// The preview in its own proportions, as large as the box holds; a photo or a video frame (every pixel opaque)
+    /// gets the Icons view's corners and hairline, a page or a cut-out picture is drawn as it is.
+    private func drawPreview(_ picture: ThumbnailPicture, in box: NSRect) {
+        let size = picture.image.size
+        let scale = min(box.width / size.width, box.height / size.height)
+        let rect = NSRect(
+            x: (box.midX - size.width * scale / 2).rounded(), y: (box.midY - size.height * scale / 2).rounded(),
+            width: (size.width * scale).rounded(), height: (size.height * scale).rounded())
+        NSGraphicsContext.current?.imageInterpolation = .high
+        guard picture.isOpaque else {
+            picture.image.draw(
+                in: rect, from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)
+            return
+        }
+        let style = IconItemStyle.make(density: .standard)
+        let shape = NSBezierPath(
+            roundedRect: rect, xRadius: CGFloat(style.thumbnailRadius), yRadius: CGFloat(style.thumbnailRadius))
+        NSGraphicsContext.saveGraphicsState()
+        shape.addClip()
+        picture.image.draw(in: rect, from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)
+        NSGraphicsContext.restoreGraphicsState()
+        NSColor.labelColor.withAlphaComponent(CGFloat(style.thumbnailHairlineAlpha)).setStroke()
+        shape.lineWidth = CGFloat(style.thumbnailHairlineWidth)
+        shape.stroke()
     }
 }

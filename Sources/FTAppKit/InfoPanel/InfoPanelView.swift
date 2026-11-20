@@ -486,6 +486,8 @@ final class InfoPanelContentView: NSView {
     var iconStore: FileIconStore? {
         didSet { opensWith.iconStore = iconStore }
     }
+    /// Where the hero's preview comes from: the Icons view's, so a picture it already has is drawn at once.
+    var thumbnailStore: ThumbnailStore? = IconThumbnails.store
     private var body = InfoPanelDisplay.Body.blank
     private let heroIcon = InfoIconView()
     private let name = TextBoxField(wrappingLabelWithString: "")
@@ -629,6 +631,9 @@ final class InfoPanelContentView: NSView {
         heroIcon.show(
             IconEntry(path: item.path, name: item.name, extension: item.fileExtension, kind: kind), store: iconStore,
             deferLoad: true)
+        // The file's own picture where Quick Look has one, as the Icons view shows it: read for the one item shown.
+        let version = "\(item.modifiedAt?.timeIntervalSince1970 ?? 0)/\(item.sizeBytes ?? -1)"
+        heroIcon.showPreview(path: item.path, kind: kind, version: version, store: thumbnailStore)
     }
 
     private func loadOpenIcon(_ app: InfoOpenApp?) {
