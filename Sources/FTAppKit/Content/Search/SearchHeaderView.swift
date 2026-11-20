@@ -886,7 +886,7 @@ final class SearchBannerView: NSView, TextStyleSource {
 
 // MARK: The filter field
 
-/// The results' filter: the mode chip, the field ("Name or folder"), and the clear button once something is typed. Esc clears it first, then gives the keyboard back to the results; Return and ↓ do so too.
+/// The results' filter: the mode chip, the field ("Filter results"), and the clear button once something is typed. Esc clears it first, then gives the keyboard back to the results; Return and ↓ do so too.
 final class SearchFilterField: NSView, NSTextFieldDelegate {
     let input = NSTextField()
     let clearButton = ClearButton()
