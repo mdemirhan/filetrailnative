@@ -1,16 +1,34 @@
 import FTFoundation
 import Foundation
 
-/// Every path resolved, repeats dropped, and any path inside another picked left out.
+/// Every path resolved, repeats dropped, and any path inside another picked left out. The items moved and those
+/// renamed when their name is shared are kept only among the items left; a paste whose every item is moved is a
+/// move, and one with none a copy.
 public func normalizeCopyPasteAnalysisRequest(_ request: CopyPasteAnalysisRequest) -> CopyPasteAnalysisRequest {
     var seen = Set<NameKeys.Exact>()
     var unique: [String] = []
     for path in request.sourcePaths.map(NodePath.resolve) where seen.insert(NameKeys.Exact(path)).inserted {
         unique.append(path)
     }
+    let sources = Paths.withoutNestedPaths(unique)
+    func amongSources(_ paths: [String]?) -> [String] {
+        let named = Set((paths ?? []).map { NameKeys.Exact(NodePath.resolve($0)) })
+        return sources.filter { named.contains(NameKeys.Exact($0)) }
+    }
+    var mode = request.mode
+    var cut: [String]?
+    if mode == .copy {
+        let moved = amongSources(request.cutSourcePaths)
+        if !sources.isEmpty && moved.count == sources.count {
+            mode = .cut
+        } else if !moved.isEmpty {
+            cut = moved
+        }
+    }
+    let renamed = amongSources(request.renamedIfSharedSourcePaths)
     return CopyPasteAnalysisRequest(
-        mode: request.mode, sourcePaths: Paths.withoutNestedPaths(unique),
-        destinationDirectoryPath: NodePath.resolve(request.destinationDirectoryPath))
+        mode: mode, sourcePaths: sources, destinationDirectoryPath: NodePath.resolve(request.destinationDirectoryPath),
+        cutSourcePaths: cut, renamedIfSharedSourcePaths: renamed.isEmpty ? nil : renamed)
 }
 
 /// The review of a paste: each item and what is in its way, and the issues that refuse it. Reads the disk on the
@@ -143,22 +161,32 @@ private struct ReportBuilder<FileSystem: AnalysisFileSystem> {
             return ids.contains("\(dev):\(ino)")
         }
 
+        let modes = CopyPasteItemModes(request)
+
         // Items that keep their own name claim it first, so a " copy" name picked for an item copied into its
-        // own folder never takes it, whatever order the items come in.
-        if request.mode == .copy {
-            for sourcePath in request.sourcePaths where !isDestinationDirectory(NodePath.dirname(sourcePath)) {
-                plannedDestinationKeys.insert(
-                    pathKey(NodePath.join(destinationDirectory, NodePath.basename(sourcePath))))
-            }
+        // own folder, or for an item renamed because another item of the paste has its name, never takes it,
+        // whatever order the items come in.
+        var keptNameOwners: [NameKeys.Exact: [String]] = [:]
+        for sourcePath in request.sourcePaths where !modes.isRenamedIfShared(sourcePath) {
+            let pastingIntoSourceFolder = isDestinationDirectory(NodePath.dirname(sourcePath))
+            if modes.mode(of: sourcePath) == .copy && pastingIntoSourceFolder { continue }
+            let destinationPath = NodePath.join(destinationDirectory, NodePath.basename(sourcePath))
+            plannedDestinationKeys.insert(pathKey(destinationPath))
+            keptNameOwners[pathKey(NodePath.basename(destinationPath)), default: []].append(sourcePath)
+        }
+        /// Whether an item other than `sourcePath` keeps the name `nameKey` in this paste.
+        func nameKeptByAnother(_ nameKey: NameKeys.Exact, _ sourcePath: String) -> Bool {
+            (keptNameOwners[nameKey] ?? []).contains { !sameText($0, sourcePath) }
         }
 
         for (index, sourcePath) in request.sourcePaths.enumerated() {
             try signal?.throwIfStopped()
             let sourceFingerprint = captureFingerprint(fileSystem, sourcePath)
+            let itemMode = modes.mode(of: sourcePath)
             var destinationPath = NodePath.join(destinationDirectory, NodePath.basename(sourcePath))
             let pastingIntoSourceFolder = isDestinationDirectory(NodePath.dirname(sourcePath))
 
-            if request.mode == .copy && pastingIntoSourceFolder {
+            if itemMode == .copy && pastingIntoSourceFolder {
                 // Duplicating "a.txt" and "a copy.txt" together gives "a copy 2.txt" and "a copy 3.txt": a name
                 // an earlier item took is skipped, like Finder.
                 let isDirectory = sourceFingerprint.kind == .directory
@@ -178,7 +206,7 @@ private struct ReportBuilder<FileSystem: AnalysisFileSystem> {
                 continue
             }
 
-            if sameText(sourcePath, destinationPath) || (request.mode == .cut && pastingIntoSourceFolder)
+            if sameText(sourcePath, destinationPath) || (itemMode == .cut && pastingIntoSourceFolder)
                 || isSameExistingItem(sourceFingerprint, captureFingerprint(fileSystem, destinationPath))
             {
                 issues.append(
@@ -215,7 +243,22 @@ private struct ReportBuilder<FileSystem: AnalysisFileSystem> {
                 }
             }
 
-            let destinationNameKey = pathKey(NodePath.basename(destinationPath))
+            var destinationNameKey = pathKey(NodePath.basename(destinationPath))
+            // Two items of one name the person chose to keep both of: the one marked takes a name of its own, as
+            // Keep Both names one, free here and among what this paste puts here.
+            if modes.isRenamedIfShared(sourcePath) && !(itemMode == .copy && pastingIntoSourceFolder)
+                && (claimedDestinationNames[destinationNameKey] != nil
+                    || nameKeptByAnother(destinationNameKey, sourcePath))
+            {
+                let isDirectory = sourceFingerprint.kind == .directory
+                destinationPath = try resolveDuplicateName(
+                    NodePath.basename(sourcePath), in: destinationDirectory, fileSystem,
+                    reserved: plannedDestinationKeys,
+                    options: .init(
+                        isDirectory: isDirectory, isPackage: isDirectory && isPackageFolder(fileSystem, sourcePath),
+                        caseSensitive: caseSensitive))
+                destinationNameKey = pathKey(NodePath.basename(destinationPath))
+            }
             if let claimingSourcePath = claimedDestinationNames[destinationNameKey] {
                 issues.append(
                     CopyPasteAnalysisIssue(
@@ -232,17 +275,20 @@ private struct ReportBuilder<FileSystem: AnalysisFileSystem> {
             // it (a project with its node_modules) would only take time. Not a lone app in quarantine: a rename
             // leaves it translocated, so it is copied and its original removed (see movesAppByCopy).
             let renameIfFree =
-                request.mode == .cut && sourceFingerprint.dev != nil
+                itemMode == .cut && sourceFingerprint.dev != nil
                 && sourceFingerprint.dev == destinationFingerprint.dev
                 && !(request.sourcePaths.count == 1 && hasAppExtension(sourcePath)
                     && fileSystem.isQuarantined(sourcePath))
-            let node = try walker.analyzeNode(
+            var node = try walker.analyzeNode(
                 id: "item-\(index + 1)", sourcePath: sourcePath, destinationPath: destinationPath,
                 renameIfFree: renameIfFree)
+            if modes.isMixed {
+                node.mode = itemMode
+            }
             // A disk mounted inside a folder being moved: a move that copies the folder would copy that disk's
             // items too, then remove them from it. Refused before anything is written.
             let mountPoint =
-                request.mode == .cut
+                itemMode == .cut
                 ? findMountPointMovedByCopy(
                     node, toAnotherDisk: node.sourceFingerprint.dev != destinationFingerprint.dev) : nil
             if let mountPoint {
@@ -289,7 +335,8 @@ private struct ReportBuilder<FileSystem: AnalysisFileSystem> {
             analysisId: analysisId, mode: request.mode, sourcePaths: request.sourcePaths,
             destinationDirectoryPath: destinationDirectory, nodes: nodes, issues: issues,
             summary: summarizeAnalysis(nodes), destinationCaseSensitive: caseSensitive,
-            newerToleranceMs: CopyPasteChoices.newerToleranceMs(fileSystems: fileSystems))
+            newerToleranceMs: CopyPasteChoices.newerToleranceMs(fileSystems: fileSystems),
+            cutSourcePaths: modes.isMixed ? request.cutSourcePaths : nil)
     }
 }
 

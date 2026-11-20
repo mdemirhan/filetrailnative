@@ -82,6 +82,11 @@ final class MenuItemIndex {
             get { MainActor.assumeIsolated { item.title } }
             set { MainActor.assumeIsolated { item.title = newValue } }
         }
+
+        var subtitle: String {
+            get { MainActor.assumeIsolated { item.subtitle ?? "" } }
+            set { MainActor.assumeIsolated { item.subtitle = newValue.isEmpty ? nil : newValue } }
+        }
     }
 }
 

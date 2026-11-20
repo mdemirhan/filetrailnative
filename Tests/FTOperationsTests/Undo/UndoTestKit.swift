@@ -211,11 +211,11 @@ final class UndoTest {
     func paste(
         _ mode: CopyPasteMode, _ sources: [String], into destination: String,
         policy: CopyPastePolicy = NativePaste.keepExisting, fileSystem: (any WriteServiceFileSystem)? = nil,
-        action: WriteOperationAction = .paste
+        action: WriteOperationAction = .paste, cut: [String]? = nil
     ) async throws -> CopyPasteOperationResult {
         let run = try await runPaste(
             mode: mode, sources: sources, into: destination, policy: policy,
-            fileSystem: fileSystem ?? NativeWriteFileSystem())
+            fileSystem: fileSystem ?? NativeWriteFileSystem(), cut: cut)
         guard let result = run.result, let undoLog = result.undoLog else {
             throw OperationError("The paste recorded nothing.")
         }

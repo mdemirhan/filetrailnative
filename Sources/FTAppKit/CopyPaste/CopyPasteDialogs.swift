@@ -85,7 +85,8 @@ extension ReviewNode {
             keepBothDestinationPath: node.keepBothDestinationPath,
             destinationOnly: node.destinationOnly.map {
                 ReviewDestinationOnly(count: $0.count, samplePaths: $0.samplePaths)
-            }, replaceBlockedReason: node.replaceBlockedReason, renameOnly: node.renameOnly)
+            }, replaceBlockedReason: node.replaceBlockedReason, renameOnly: node.renameOnly,
+            mode: node.mode.map { $0 == .cut ? .cut : .copy })
     }
 }
 

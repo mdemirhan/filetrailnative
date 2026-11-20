@@ -35,13 +35,18 @@ func executeCopyPasteFromAnalysisHere(_ run: CopyPasteRun) {
 
     func recordNotStarted(_ nodes: ArraySlice<ResolvedCopyPasteNode>, _ message: String = notStartedMessage) {
         for node in nodes {
-            itemResults.append(
+            var result =
                 node.action == .skip
-                    ? itemResult(node, .skipped, nil, plannedSkipReason(node))
-                    : itemResult(node, .cancelled, message))
+                ? itemResult(node, .skipped, nil, plannedSkipReason(node))
+                : itemResult(node, .cancelled, message)
+            if run.report.isMixed {
+                result.mode = run.report.mode(of: node.node)
+            }
+            itemResults.append(result)
         }
     }
 
+    let mixed = run.report.isMixed
     for (nodeIndex, node) in run.resolvedNodes.enumerated() {
         if run.signal.isStopped {
             cancelled = true
@@ -52,10 +57,19 @@ func executeCopyPasteFromAnalysisHere(_ run: CopyPasteRun) {
             recordNotStarted(run.resolvedNodes[nodeIndex...], diskFullNotStartedMessage)
             break
         }
+        // Each picked item is copied or moved as it was put on the clipboard; everything done for it, inside it
+        // too, reads its mode from here.
+        context.mode = run.report.mode(of: node.node)
+        let firstResult = itemResults.count
         shared.undo.unit = []
         defer {
             // What was done for this item counts, even when it then failed or was stopped.
             closeUndoUnit(context)
+            if mixed {
+                for index in firstResult..<itemResults.count where itemResults[index].mode == nil {
+                    itemResults[index].mode = context.mode
+                }
+            }
         }
         do {
             let outcome = try executeResolvedNode(context, node)
@@ -499,6 +513,7 @@ private func readChangedSourceAgain(
     context.totalItemCount += max(0, fresh.totalNodeCount - planned.totalNodeCount)
     withPlannedDestinations.keepBothDestinationPath = planned.keepBothDestinationPath
     withPlannedDestinations.replaceBlockedReason = planned.replaceBlockedReason
+    withPlannedDestinations.mode = planned.mode
     return withPlannedDestinations
 }
 

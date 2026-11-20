@@ -184,7 +184,8 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
             group.disksUnmounted(mountPaths, homePath: home, volumeRoot: volumeRoot)
         }
         let followed = ClipboardRules.followThroughRemoval(clipboard.contents, Array(mountPaths))
-        if followed != clipboard.contents { clipboard.set(followed, from: nil) }
+        clipboard.followKept { ClipboardRules.followThroughRemoval($0, Array(mountPaths)) }
+        if followed != clipboard.contents { clipboard.set(followed, follows: clipboard.contents.capturedAt, from: nil) }
     }
 
     /// A file operation's progress, from whichever window ran it, reaches every window: once one that renamed or moved

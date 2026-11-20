@@ -39,8 +39,9 @@ import Testing
             ])
         #expect(
             titles(submenu(main, "Edit")) == [
-                "Undo", "Redo", "-", "Cut", "Copy", "Paste", "Select All", "Deselect All", "Invert Selection", "-",
-                "Copy Path", "Copy Contents", "Paste as File", "-", "Copy to Other Pane", "Move to Other Pane", "-",
+                "Undo", "Redo", "-", "Cut", "Copy", "Paste", "Move Items Here", "Select All", "Deselect All",
+                "Invert Selection", "-", "Copy Path", "Copy Contents", "Paste as File", "-", "Copy to Other Pane",
+                "Move to Other Pane", "-", "Add to Copied Items", "Add to Cut Items", "Remove from Clipboard",
                 "Show Clipboard", "Clear Clipboard", "-", "Find Files…", "Show Last Search Results",
             ])
         #expect(

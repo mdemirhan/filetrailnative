@@ -43,6 +43,7 @@ extension CommandIcon {
         case .cut: "scissors"
         case .copy: "document.on.document"
         case .paste: "document.on.clipboard"
+        case .removeFromClipboard: "minus.circle"
         case .pasteAsFile: "document.badge.plus"
         case .compress: "archivebox"
         case .extract: "arrow.up.bin"

@@ -362,8 +362,7 @@ extension ExplorerWindowlessTests {
             return engine
         }
 
-        // A copied item renamed is followed by the clipboard, which it still is; a cut of one
-        // renamed is cancelled.
+        // An item renamed is followed by the clipboard, copied or cut, and stays as it was put on.
         @Test func theClipboardFollowsARenameThroughTheRealOperation() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -381,7 +380,9 @@ extension ExplorerWindowlessTests {
             tab.services.clipboard.set(
                 ClipboardRules.set(.cut, [path(window, "renamed.txt")], capturedAt: "t"), from: nil)
             _ = await actions.rename(path(window, "renamed.txt"), to: "again.txt")
-            #expect(await waitUntil { !tab.services.clipboard.contents.hasItems })
+            #expect(await waitUntil { tab.services.clipboard.contents.sourcePaths == [path(window, "again.txt")] })
+            #expect(tab.services.clipboard.contents.mode == .cut)
+            #expect(tab.services.clipboard.contents.capturedAt == "t")
             await window.close()
         }
 

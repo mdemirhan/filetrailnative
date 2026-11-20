@@ -29,6 +29,8 @@
       },
       "output": {
         "disabled": [
+          "addToCopied",
+          "addToCut",
           "clearClipboard",
           "compressSelection",
           "convertImages",
@@ -49,6 +51,7 @@
           "goLibrary",
           "goTrash",
           "invertSelection",
+          "moveItemsHere",
           "moveSelection",
           "moveToOtherPane",
           "newFolderWithSelection",
@@ -59,6 +62,7 @@
           "pasteAsFile",
           "pasteSelection",
           "quickLookSelection",
+          "removeFromClipboard",
           "renameSelection",
           "revealInFolder",
           "saveAsTemplate",
@@ -155,6 +159,8 @@
       },
       "output": {
         "disabled": [
+          "addToCopied",
+          "addToCut",
           "calculateSize",
           "clearClipboard",
           "compressSelection",
@@ -193,6 +199,7 @@
           "invertSelection",
           "manageFolderViews",
           "mergeAllWindows",
+          "moveItemsHere",
           "moveSelection",
           "moveTabToNewWindow",
           "moveToOtherPane",
@@ -214,6 +221,7 @@
           "redo",
           "refreshOrApplySearchSort",
           "rememberFolderView",
+          "removeFromClipboard",
           "renameSelection",
           "reopenClosedTab",
           "resetFolderView",
@@ -318,6 +326,8 @@
       },
       "output": {
         "disabled": [
+          "addToCopied",
+          "addToCut",
           "calculateSize",
           "clearClipboard",
           "compressSelection",
@@ -343,6 +353,7 @@
           "goLibrary",
           "goTrash",
           "invertSelection",
+          "moveItemsHere",
           "moveSelection",
           "moveToOtherPane",
           "newFolder",
@@ -358,6 +369,7 @@
           "quickLookSelection",
           "redo",
           "rememberFolderView",
+          "removeFromClipboard",
           "renameSelection",
           "resetFolderView",
           "revealInFolder",
@@ -445,6 +457,8 @@
       },
       "output": {
         "disabled": [
+          "addToCopied",
+          "addToCut",
           "calculateSize",
           "clearClipboard",
           "closePane",
@@ -485,6 +499,7 @@
           "invertSelection",
           "manageFolderViews",
           "mergeAllWindows",
+          "moveItemsHere",
           "moveSelection",
           "moveTabToNewWindow",
           "moveToOtherPane",
@@ -509,6 +524,7 @@
           "redo",
           "refreshOrApplySearchSort",
           "rememberFolderView",
+          "removeFromClipboard",
           "renameSelection",
           "reopenClosedTab",
           "resetFolderView",
@@ -615,6 +631,8 @@
       },
       "output": {
         "disabled": [
+          "addToCopied",
+          "addToCut",
           "compressSelection",
           "convertImages",
           "copyContents",
@@ -630,6 +648,7 @@
           "extractSelection",
           "extractSelectionTo",
           "invertSelection",
+          "moveItemsHere",
           "moveSelection",
           "moveTabToNewWindow",
           "moveToOtherPane",
@@ -643,6 +662,7 @@
           "pasteAsFile",
           "pasteSelection",
           "quickLookSelection",
+          "removeFromClipboard",
           "renameSelection",
           "revealInFolder",
           "saveAsTemplate",
@@ -720,6 +740,7 @@
           "goLibrary",
           "goTrash",
           "invertSelection",
+          "moveItemsHere",
           "moveTabToNewWindow",
           "newFolderWithSelection",
           "openSelectionInNewTab",
@@ -728,6 +749,7 @@
           "pasteAsFile",
           "pasteSelection",
           "quickLookSelection",
+          "removeFromClipboard",
           "revealInFolder",
           "saveAsTemplate",
           "selectNextTab",
@@ -797,11 +819,13 @@
           "ejectVolume",
           "extractSelection",
           "extractSelectionTo",
+          "moveItemsHere",
           "openSelectionInNewTab",
           "openSelectionInNewWindow",
           "openSelectionInOtherPane",
           "pasteAsFile",
           "pasteSelection",
+          "removeFromClipboard",
           "revealInFolder",
           "showClipboard",
           "toggleFavorite"
@@ -848,6 +872,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "copyPath",
             "copySelection",
             "cutSelection",
@@ -920,12 +946,14 @@
           "ejectVolume",
           "extractSelection",
           "extractSelectionTo",
+          "moveItemsHere",
           "newFolder",
           "newFolderWithSelection",
           "newTextFile",
           "pasteAsFile",
           "pasteSelection",
           "quickLookSelection",
+          "removeFromClipboard",
           "revealInFolder",
           "saveAsTemplate",
           "shareSelection",
@@ -1301,6 +1329,7 @@
             "goLibrary",
             "goTrash",
             "invertSelection",
+            "moveItemsHere",
             "pasteSelection",
             "showClipboard"
           ],
@@ -1453,6 +1482,7 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "moveItemsHere",
             "moveTabToNewWindow",
             "pasteSelection",
             "selectNextTab",
@@ -1725,6 +1755,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "copyPath",
             "copySelection",
             "cutSelection",
@@ -2011,6 +2043,7 @@
           "$remove": [
             "clearClipboard",
             "ejectVolume",
+            "moveItemsHere",
             "pasteSelection",
             "showClipboard"
           ],
@@ -2894,6 +2927,7 @@
             "goDownloads",
             "goLibrary",
             "goTrash",
+            "moveItemsHere",
             "pasteSelection",
             "redo",
             "showClipboard",
@@ -3121,7 +3155,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "calculateSize"
             ],
             [
@@ -3535,6 +3569,7 @@
             "goDownloads",
             "goLibrary",
             "goTrash",
+            "moveItemsHere",
             "pasteSelection",
             "showClipboard"
           ],
@@ -3947,6 +3982,7 @@
             "goForward",
             "goLibrary",
             "goTrash",
+            "moveItemsHere",
             "pasteSelection",
             "redo",
             "showClipboard",
@@ -4117,6 +4153,7 @@
           "openSelectionInNewWindow",
           "openSelectionInOtherPane",
           "pasteAsFile",
+          "removeFromClipboard",
           "revealInFolder",
           "saveAsTemplate",
           "showLastSearchResults",
@@ -4889,7 +4926,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "clearClipboard"
             ],
             [
@@ -5121,6 +5158,7 @@
             "goForward",
             "goLibrary",
             "goTrash",
+            "moveItemsHere",
             "pasteSelection",
             "redo",
             "showClipboard",
@@ -5291,6 +5329,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "clearClipboard",
             "copyPath",
             "copySelection",
@@ -5300,6 +5340,7 @@
             "editSelection",
             "emptyTrash",
             "invertSelection",
+            "moveItemsHere",
             "moveSelection",
             "moveToOtherPane",
             "openInTerminal",
@@ -5741,7 +5782,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "clearClipboard"
             ],
             [
@@ -6215,10 +6256,13 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "copyPath",
             "copySelection",
             "cutSelection",
             "emptyTrash",
+            "moveItemsHere",
             "moveTabToNewWindow",
             "openInTerminal",
             "openSelection",
@@ -6720,6 +6764,7 @@
         "disabled": {
           "$remove": [
             "emptyTrash",
+            "moveItemsHere",
             "pasteSelection",
             "toggleFavorite"
           ],
@@ -6876,7 +6921,7 @@
         "disabled": {
           "$insert": [
             [
-              null,
+              "addToCut",
               "calculateSize"
             ],
             [
@@ -7137,7 +7182,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "calculateSize"
             ],
             [
@@ -7224,6 +7269,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "copyPath",
             "copySelection",
             "cutSelection",
@@ -7317,6 +7364,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "calculateSize",
             "copyPath",
             "copySelection",
@@ -7544,6 +7593,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "copyPath",
             "copySelection",
             "cutSelection",
@@ -7799,6 +7850,7 @@
         "disabled": {
           "$remove": [
             "emptyTrash",
+            "moveItemsHere",
             "moveTabToNewWindow",
             "pasteSelection",
             "selectNextTab",
@@ -7806,7 +7858,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "calculateSize"
             ]
           ]
@@ -7880,6 +7932,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "calculateSize",
             "copyPath",
             "copySelection",
@@ -8013,7 +8067,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "calculateSize"
             ],
             [
@@ -8101,7 +8155,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "clearClipboard"
             ],
             [
@@ -8235,6 +8289,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "copyPath",
             "copySelection",
             "copyToOtherPane",
@@ -8317,6 +8373,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "copyPath",
             "copySelection",
             "copyToOtherPane",
@@ -8582,7 +8640,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "calculateSize"
             ],
             [
@@ -8744,7 +8802,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "calculateSize"
             ],
             [
@@ -8899,6 +8957,7 @@
         "disabled": {
           "$remove": [
             "emptyTrash",
+            "moveItemsHere",
             "moveTabToNewWindow",
             "pasteSelection",
             "selectNextTab",
@@ -9699,6 +9758,7 @@
             "goForward",
             "goLibrary",
             "goTrash",
+            "moveItemsHere",
             "openInTerminal",
             "openSelection",
             "openSelectionInNewTab",
@@ -10096,6 +10156,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "compressSelection",
             "copyPath",
             "copySelection",
@@ -10248,7 +10310,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "clearClipboard"
             ],
             [
@@ -10674,6 +10736,7 @@
             "emptyTrash",
             "goBack",
             "goForward",
+            "moveItemsHere",
             "pasteSelection",
             "redo",
             "showClipboard",
@@ -10882,7 +10945,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "clearClipboard"
             ],
             [
@@ -11211,7 +11274,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "clearClipboard"
             ],
             [
@@ -11451,6 +11514,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "clearClipboard",
             "copyPath",
             "copySelection",
@@ -11575,7 +11640,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "clearClipboard"
             ],
             [
@@ -11881,7 +11946,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "calculateSize"
             ],
             [
@@ -12145,7 +12210,7 @@
         "disabled": {
           "$insert": [
             [
-              null,
+              "addToCut",
               "calculateSize"
             ],
             [
@@ -12222,6 +12287,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "clearClipboard",
             "copyPath",
             "copySelection",
@@ -12251,7 +12318,7 @@
           ],
           "$insert": [
             [
-              "folderViewOptions",
+              "moveItemsHere",
               "moveTabToNewWindow"
             ],
             [
@@ -12456,6 +12523,7 @@
         "disabled": {
           "$remove": [
             "clearClipboard",
+            "moveItemsHere",
             "pasteSelection",
             "showClipboard"
           ],
@@ -12528,7 +12596,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "clearClipboard"
             ],
             [
@@ -12928,6 +12996,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "calculateSize",
             "compressSelection",
             "copyPath",
@@ -13296,6 +13366,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "calculateSize",
             "copyPath",
             "copySelection",
@@ -13958,7 +14030,7 @@
               "duplicateSelection"
             ],
             [
-              "goBack",
+              "moveItemsHere",
               "newFolder"
             ],
             [
@@ -14223,11 +14295,13 @@
           "emptyTrash",
           "extractSelection",
           "extractSelectionTo",
+          "moveItemsHere",
           "moveTabToNewWindow",
           "newFolderWithSelection",
           "pasteAsFile",
           "pasteSelection",
           "quickLookSelection",
+          "removeFromClipboard",
           "revealInFolder",
           "saveAsTemplate",
           "selectNextTab",
@@ -14832,7 +14906,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "clearClipboard"
             ],
             [
@@ -15032,6 +15106,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "copyPath",
             "copySelection",
             "copyToOtherPane",
@@ -15055,7 +15131,7 @@
           ],
           "$insert": [
             [
-              "invertSelection",
+              "moveItemsHere",
               "moveTabToNewWindow"
             ],
             [
@@ -15141,7 +15217,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "clearClipboard"
             ],
             [
@@ -15206,6 +15282,7 @@
             "emptyTrash",
             "goBack",
             "goForward",
+            "moveItemsHere",
             "pasteSelection",
             "redo",
             "showClipboard",
@@ -15450,6 +15527,7 @@
           "$remove": [
             "clearClipboard",
             "invertSelection",
+            "moveItemsHere",
             "pasteSelection",
             "quickLookSelection",
             "showClipboard"
@@ -15530,7 +15608,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "calculateSize"
             ],
             [
@@ -15671,6 +15749,7 @@
             "goLibrary",
             "goTrash",
             "invertSelection",
+            "moveItemsHere",
             "openInTerminal",
             "pasteSelection",
             "quickLookSelection",
@@ -16178,6 +16257,7 @@
             "goLibrary",
             "goTrash",
             "invertSelection",
+            "moveItemsHere",
             "openInTerminal",
             "pasteSelection",
             "quickLookSelection",
@@ -16383,7 +16463,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "clearClipboard"
             ],
             [
@@ -16542,6 +16622,7 @@
             "clearClipboard",
             "ejectVolume",
             "invertSelection",
+            "moveItemsHere",
             "pasteSelection",
             "quickLookSelection",
             "showClipboard"
@@ -16614,6 +16695,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "calculateSize",
             "copyPath",
             "copySelection",
@@ -17040,7 +17123,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "calculateSize"
             ],
             [
@@ -17449,6 +17532,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "clearClipboard",
             "copyPath",
             "copySelection",
@@ -17633,6 +17718,7 @@
           "$remove": [
             "clearClipboard",
             "goBack",
+            "moveItemsHere",
             "pasteSelection",
             "showClipboard"
           ],
@@ -17919,7 +18005,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "calculateSize"
             ],
             [
@@ -18161,6 +18247,7 @@
           "moveTabToNewWindow",
           "newFolderWithSelection",
           "pasteAsFile",
+          "removeFromClipboard",
           "revealInFolder",
           "saveAsTemplate",
           "selectNextTab",
@@ -18244,7 +18331,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "calculateSize"
             ],
             [
@@ -18438,6 +18525,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "copyPath",
             "copySelection",
             "cutSelection",
@@ -18592,9 +18681,11 @@
           "extractSelectionTo",
           "goEnclosingFolder",
           "goForward",
+          "moveItemsHere",
           "pasteAsFile",
           "pasteSelection",
           "quickLookSelection",
+          "removeFromClipboard",
           "revealInFolder",
           "saveAsTemplate",
           "showClipboard",
@@ -18734,7 +18825,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "clearClipboard"
             ],
             [
@@ -19125,6 +19216,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "copyPath",
             "copySelection",
             "copyToOtherPane",
@@ -19488,6 +19581,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "copyPath",
             "copySelection",
             "cutSelection",
@@ -19742,6 +19837,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "copyPath",
             "copySelection",
             "cutSelection",
@@ -20049,6 +20146,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "copyPath",
             "copySelection",
             "cutSelection",
@@ -21633,6 +21732,8 @@
       "changes": {
         "disabled": {
           "$remove": [
+            "addToCopied",
+            "addToCut",
             "copyPath",
             "copySelection",
             "copyToOtherPane",
@@ -22051,7 +22152,7 @@
           ],
           "$insert": [
             [
-              null,
+              "addToCut",
               "clearClipboard"
             ],
             [
@@ -22206,11 +22307,13 @@
           "ejectVolume",
           "extractSelection",
           "extractSelectionTo",
+          "moveItemsHere",
           "openSelectionInNewTab",
           "openSelectionInNewWindow",
           "openSelectionInOtherPane",
           "pasteAsFile",
           "pasteSelection",
+          "removeFromClipboard",
           "revealInFolder",
           "saveAsTemplate",
           "showClipboard",

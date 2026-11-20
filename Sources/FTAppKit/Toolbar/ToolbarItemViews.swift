@@ -235,11 +235,19 @@ final class ToolbarViewSwitch: NSSegmentedControl, NSMenuDelegate {
 }
 
 /// The clipboard button: the copy or cut icon and how many items wait to be pasted, in the
-/// accent color. To the system it is an icon-only button, made wider for the count: one with a title gets a glass
+/// accent color; with both cut and copied items, the scissors and how many move, then the copy icon and how many are
+/// copied. To the system it is an icon-only button, made wider for the count: one with a title gets a glass
 /// capsule of its own, so it would never share one with the buttons beside it. The icon keeps to the leading side
 /// (`LeadingIconCell`), and the count is a label of its own after it, as the scenarios read it.
 final class ToolbarClipboardButton: ToolbarButton, TextStyleSource {
     let count = FlushTextField(labelWithString: "")
+    /// The copied items' icon and count, after the cut ones', on a clipboard holding both.
+    private let copiedIcon = SymbolIconView(CommandIcon.copy.symbolName)
+    let copiedCount = FlushTextField(labelWithString: "")
+    /// Between the cut items' count and the copied items' icon.
+    static let pairGap = 8.0
+    /// The copied items' icon beside the scissors: as tall as the toolbar's other symbols.
+    static let copiedIconSize = 20.0
     private static let countFont = NSFont.monospacedDigitSystemFont(
         ofSize: DesignTokens.typeScale.small, weight: .semibold)
     /// The count with its digits grouped as in US English ("1,234"), made once: every refresh of the toolbar sets it.
@@ -270,6 +278,12 @@ final class ToolbarClipboardButton: ToolbarButton, TextStyleSource {
         count.font = Self.countFont
         count.setAccessibilityIdentifier("toolbar.clipboard.count")
         addSubview(count)
+        copiedCount.font = Self.countFont
+        copiedCount.setAccessibilityIdentifier("toolbar.clipboard.copiedCount")
+        copiedCount.isHidden = true
+        copiedIcon.isHidden = true
+        addSubview(copiedIcon)
+        addSubview(copiedCount)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
@@ -277,16 +291,29 @@ final class ToolbarClipboardButton: ToolbarButton, TextStyleSource {
     /// Whether the count shows: the icon then keeps to the leading side.
     var showsCount: Bool { !count.isHidden }
 
-    func set(count value: Int, cut: Bool) {
-        iconName = cut ? .cut : .copy
+    /// `copied`: on a clipboard holding both, how many are copied; `value` is then how many are cut.
+    func set(count value: Int, cut: Bool, copied: Int? = nil) {
+        iconName = cut || copied != nil ? .cut : .copy
+        // The scissors are wider than the copy icon and read as larger at the toolbar's size: they are drawn a scale
+        // down, so the two weigh the same on their own and side by side.
+        symbolConfiguration = iconName == .cut ? NSImage.SymbolConfiguration(scale: .medium) : nil
         let text = Self.countFormatter.string(from: NSNumber(value: value)) ?? String(value)
-        let changed = count.stringValue != text || count.isHidden != (value == 0)
+        let copiedText = copied.map { Self.countFormatter.string(from: NSNumber(value: $0)) ?? String($0) } ?? ""
+        let changed =
+            count.stringValue != text || count.isHidden != (value == 0) || copiedCount.stringValue != copiedText
+            || copiedCount.isHidden != (copied == nil)
         count.stringValue = text
         count.isHidden = value == 0
+        copiedCount.stringValue = copiedText
+        copiedCount.isHidden = copied == nil
+        copiedIcon.isHidden = copied == nil
         if changed { invalidateIntrinsicContentSize() }
         needsLayout = true
         needsDisplay = true
     }
+
+    /// Whether the copied items' count shows beside the cut ones'.
+    private var showsBoth: Bool { !copiedCount.isHidden }
 
     /// The icon's width, as an icon-only button lays it out.
     private var iconWidth: Double {
@@ -297,8 +324,11 @@ final class ToolbarClipboardButton: ToolbarButton, TextStyleSource {
     override var intrinsicContentSize: NSSize {
         let size = super.intrinsicContentSize
         guard showsCount else { return size }
-        let width =
+        var width =
             Self.countPadding + iconWidth + Self.countGap + count.intrinsicContentSize.width + Self.countPadding
+        if showsBoth {
+            width += Self.pairGap + Self.copiedIconSize + Self.countGap + copiedCount.intrinsicContentSize.width
+        }
         return NSSize(width: max(Self.iconOnlyWidth, width), height: size.height)
     }
 
@@ -309,12 +339,22 @@ final class ToolbarClipboardButton: ToolbarButton, TextStyleSource {
         let size = count.intrinsicContentSize
         count.frame = NSRect(
             x: icon.maxX + Self.countGap, y: (bounds.height - size.height) / 2, width: size.width, height: size.height)
+        guard showsBoth else { return }
+        let side = Self.copiedIconSize
+        copiedIcon.frame = NSRect(
+            x: count.frame.maxX + Self.pairGap, y: (bounds.height - side) / 2, width: side, height: side)
+        let copiedSize = copiedCount.intrinsicContentSize
+        copiedCount.frame = NSRect(
+            x: copiedIcon.frame.maxX + Self.countGap, y: (bounds.height - copiedSize.height) / 2,
+            width: copiedSize.width, height: copiedSize.height)
     }
 
     override func draw(_ dirtyRect: NSRect) {
         super.draw(dirtyRect)
         let accent = ChromeColors.accent(for: self)
         count.textColor = ChromeColors.color(accent.solidButton)
+        copiedCount.textColor = count.textColor
+        copiedIcon.color = isEnabled ? .controlTextColor : .disabledControlTextColor
         guard showsKeyboardRing else { return }
         let width = DesignTokens.focusRingWidth
         let radius = bounds.height / 2 + width / 2

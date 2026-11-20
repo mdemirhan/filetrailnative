@@ -63,9 +63,17 @@ final class WindowWriteActions {
     /// (each path once, empty ones dropped).
     func putOnClipboard(_ mode: ClipboardMode, paths: [String], entries: [String: ClipboardSourceEntry] = [:]) {
         guard !paths.isEmpty, let clipboard = session.clipboard else { return }
-        let capturedAt = ISO8601DateFormatter.withFractionalSeconds.string(from: Date())
-        clipboard.set(ClipboardRules.set(mode, paths, capturedAt: capturedAt, entries: entries), from: tab?.windowID)
+        let kept = clipboard.replace(
+            with: ClipboardRules.set(mode, paths, capturedAt: Self.clipboardStamp(), entries: entries),
+            from: tab?.windowID)
         tab?.clipboardChanged()
+        // A clipboard built with Add can be put back.
+        if let kept { tab?.clipboardReplaced(keeping: kept) }
+    }
+
+    /// When something is put on the clipboard, in the form `capturedAt` and `markedAt` keep.
+    static func clipboardStamp() -> String {
+        ISO8601DateFormatter.withFractionalSeconds.string(from: Date())
     }
 
     /// Copy To (a drag that copies).
@@ -95,8 +103,11 @@ final class WindowWriteActions {
     /// `defaultPolicy` (the safe policy, or a retry's). Items a cut would leave where they already are (a drag, Move
     /// To or Paste) and, for a paste, clipboard items gone since they were copied are left out and the rest go;
     /// `onSourcesMissing` hears of the gone ones. With `reportsRefusals` off the caller says what went wrong.
+    /// `cutSources`: with `mode` `.copy`, the items moved all the same (a paste of a clipboard holding both);
+    /// `renamedIfShared`: those pasted under a name of their own when another item has theirs.
     func copyLike(
         mode: FTOperations.CopyPasteMode, sources: [String], destination: String, action: WriteOperationAction,
+        cutSources: [String]? = nil, renamedIfShared: [String]? = nil,
         clearsCutClipboard: String? = nil, initiator: CopyLikeInitiator? = nil,
         onSourcesMissing: (([String]) -> Void)? = nil, reportsRefusals: Bool = true, checksBusy: Bool = true,
         defaultPolicy: CopyPastePolicy = WindowWriteActions.safePolicy
@@ -114,7 +125,9 @@ final class WindowWriteActions {
         do {
             outcome = .success(
                 try await coordinator.analyze(
-                    CopyPasteAnalysisRequest(mode: mode, sourcePaths: sources, destinationDirectoryPath: destination),
+                    CopyPasteAnalysisRequest(
+                        mode: mode, sourcePaths: sources, destinationDirectoryPath: destination,
+                        cutSourcePaths: cutSources, renamedIfSharedSourcePaths: renamedIfShared),
                     window: session, signal: signal
                 ) {
                     // "Preparing to Paste…" if this takes a while.
@@ -158,7 +171,8 @@ final class WindowWriteActions {
         if !report.issues.isEmpty {
             return await leaveOut(
                 report, mode: mode, sources: sources, destination: destination, action: action,
-                clearsCutClipboard: clearsCutClipboard, initiator: initiator, onSourcesMissing: onSourcesMissing,
+                cutSources: cutSources, renamedIfShared: renamedIfShared, clearsCutClipboard: clearsCutClipboard,
+                initiator: initiator, onSourcesMissing: onSourcesMissing,
                 reportsRefusals: reportsRefusals, defaultPolicy: defaultPolicy)
         }
         if Self.hasConflicts(report) {
@@ -180,8 +194,8 @@ final class WindowWriteActions {
                 action: action, stage: .starting, targetPath: report.destinationDirectoryPath,
                 totalItemCount: report.summary.totalNodeCount, totalBytes: report.summary.totalBytes,
                 currentSourcePath: report.sourcePaths.first))
-        // Only the cut the paste was made from is cleared: one made since (while the review was open) stays.
-        let clears = report.mode == .cut ? clearsCutClipboard : nil
+        // What the paste moves leaves the clipboard it was made from, not one made since (while the review was open).
+        let clears = report.mode == .cut || report.isMixed ? clearsCutClipboard : nil
         do {
             let handle = try await session.early.whileStarting {
                 try coordinator.startCopyPaste(
@@ -660,21 +674,16 @@ final class WindowWriteActions {
         (false, "Nothing here can empty the Trash.")
     }
 
-    /// The clipboard lets go of items now in a Trash; a cut, or a copy with none left, is emptied.
+    /// The clipboard lets go of items now in a Trash, each on its own.
     private func dropTrashedFromClipboard() {
-        guard let clipboard = session.clipboard,
-            case .ready(let mode, let sources, let entries, let capturedAt) = clipboard.contents
-        else { return }
+        guard let clipboard = session.clipboard, let capturedAt = clipboard.contents.capturedAt else { return }
         let homePath = coordinator.homePath
-        let kept = sources.filter { !Paths.isInsideTrash($0, homePath: homePath) }
-        guard kept.count != sources.count else { return }
-        let next: CopyPasteClipboard =
-            mode == .cut || kept.isEmpty
-            ? .empty
-            : .ready(
-                mode: mode, sourcePaths: kept, sourceEntries: entries.filter { kept.contains($0.key) },
-                capturedAt: capturedAt)
-        clipboard.set(next, follows: capturedAt, from: tab?.windowID)
+        let trashed = clipboard.contents.sourcePaths.filter { Paths.isInsideTrash($0, homePath: homePath) }
+        guard !trashed.isEmpty else { return }
+        clipboard.set(ClipboardRules.removeItems(clipboard.contents, trashed), follows: capturedAt, from: tab?.windowID)
+        clipboard.followKept { kept in
+            ClipboardRules.removeItems(kept, kept.sourcePaths.filter { Paths.isInsideTrash($0, homePath: homePath) })
+        }
         tab?.clipboardChanged()
     }
 

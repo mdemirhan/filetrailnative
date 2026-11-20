@@ -16,6 +16,8 @@ public struct ToastEntry: Equatable, Sendable, Identifiable {
     public var durationMs: Double
     /// When it goes, in milliseconds since the reference date.
     public var expiresAt: Double
+    /// The title of a button that undoes or follows up what it says ("Put Back"), if it has one.
+    public var actionTitle: String?
 }
 
 public enum Toasts {
@@ -26,11 +28,11 @@ public enum Toasts {
 
     /// An empty message is none.
     public static func entry(
-        id: String, kind: ToastKind, title: String, message: String? = nil, now: Double
+        id: String, kind: ToastKind, title: String, message: String? = nil, now: Double, actionTitle: String? = nil
     ) -> ToastEntry {
         ToastEntry(
             id: id, kind: kind, title: title, message: (message?.isEmpty ?? true) ? nil : message,
-            durationMs: durationMs, expiresAt: now + durationMs)
+            durationMs: durationMs, expiresAt: now + durationMs, actionTitle: actionTitle)
     }
 
     /// The newest `maxVisible` stay.

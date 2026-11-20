@@ -60,6 +60,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
 - **New File** makes an empty text file, or a copy of a file you keep in the Templates folder (right-click a file and choose Save as Template, or File ▸ New File ▸ Open Templates Folder): a letter, a Markdown note, a spreadsheet to start from. It opens for naming, as New Folder does.
 - **Paste as File (⇧⌘V)** saves a screenshot or text you copied in another app as a new file in the folder you are in, and **Copy Contents (⇧⌘C)** copies a file's image or text to paste in another app.
 - **File Trail's clipboard for files is its own**: files cut or copied here are pasted here, not in Finder or other apps. Between apps, drag them.
+- **Gather from several folders**: Add to Copied Items (⌃⌘C) and Add to Cut Items (⌃⌘X) add to what is on the clipboard instead of replacing it. ⌘V copies the copied items and moves the cut ones in one paste and one Undo; Move Items Here (⌥⌘V) moves them all, as in Finder after Copy. The clipboard's list (⌃⌘V) shows what moves apart from what is copied, and switches an item with a click. Two items of one name are asked about as the second is added: keep both (the one added is pasted under a name of its own), use the new one, or leave it off. A clipboard built this way that a Copy or Cut replaces can be put back.
 
 ## Renaming
 

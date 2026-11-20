@@ -5,17 +5,29 @@ public protocol WrittenItem {
     var sourcePath: String? { get }
     var destinationPath: String? { get }
     var status: WriteItemEndStatus { get }
+    /// In a paste that copied some items and moved others: whether this one was copied or moved. Nil when the whole
+    /// write did one thing, as its action and mode say.
+    var mode: ClipboardMode? { get }
+}
+
+extension WrittenItem {
+    public var mode: ClipboardMode? { nil }
 }
 
 public struct WriteEffectItem: WrittenItem, Equatable, Sendable {
     public var sourcePath: String?
     public var destinationPath: String?
     public var status: WriteItemEndStatus
+    public var mode: ClipboardMode?
 
-    public init(sourcePath: String?, destinationPath: String?, status: WriteItemEndStatus = .completed) {
+    public init(
+        sourcePath: String?, destinationPath: String?, status: WriteItemEndStatus = .completed,
+        mode: ClipboardMode? = nil
+    ) {
         self.sourcePath = sourcePath
         self.destinationPath = destinationPath
         self.status = status
+        self.mode = mode
     }
 }
 
@@ -90,8 +102,9 @@ public enum WriteEffects {
 
     /// Where a rename or move took an item, for a window to follow it there: only what really moved, and
     /// for a rename of several also an item put back under another name ("b 2").
+    /// An item a paste copied, beside others it moved, stayed where it was.
     public static func isFollowedMove(_ item: some WrittenItem, action: WriteOperationAction) -> Bool {
-        guard let source = item.sourcePath, !source.isEmpty, let destination = item.destinationPath,
+        guard item.mode != .copy, let source = item.sourcePath, !source.isEmpty, let destination = item.destinationPath,
             !destination.isEmpty
         else { return false }
         return !source.utf8.elementsEqual(destination.utf8)
@@ -109,6 +122,12 @@ public enum WriteEffects {
             cut
         case .convertImages: false
         }
+    }
+
+    /// `movedItems`, for a write whose items say each what it did: a paste that copied some items and moved others
+    /// moved some.
+    public static func movedItems(_ action: WriteOperationAction, cut: Bool, items: [some WrittenItem]) -> Bool {
+        movedItems(action, cut: cut) || items.contains { $0.mode == .cut }
     }
 
     /// Where a write took each item that really moved (`isFollowedMove`).

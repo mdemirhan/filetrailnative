@@ -92,11 +92,16 @@ struct WriteEndMatrixTests {
         #expect(followed.capturedAt == "t")
     }
 
-    // A cut any of whose items an Undo touched is cancelled; one it left alone stays.
-    @Test func anUndoThatTouchedACutCancelsIt() {
+    // An Undo touches the cut items one by one: one it put in the Trash comes off, one it moved is followed and stays
+    // cut, and the others stay as they were.
+    @Test func anUndoFollowsEachCutItemItTouched() {
         let cut = ClipboardRules.set(.cut, ["/d/a.txt", "/d/b.txt"], capturedAt: "t")
-        #expect(ClipboardRules.followThroughWrite(cut, undo([("/d/a.txt", nil)])) == .empty)
-        #expect(ClipboardRules.followThroughWrite(cut, undo([("/d/b.txt", "/e/b.txt")])) == .empty)
+        let trashed = ClipboardRules.followThroughWrite(cut, undo([("/d/a.txt", nil)]))
+        #expect(trashed.sourcePaths == ["/d/b.txt"])
+        #expect(trashed.mode == .cut)
+        let moved = ClipboardRules.followThroughWrite(cut, undo([("/d/b.txt", "/e/b.txt")]))
+        #expect(moved.sourcePaths == ["/d/a.txt", "/e/b.txt"])
+        #expect(moved.mode == .cut)
         #expect(ClipboardRules.followThroughWrite(cut, undo([("/d/other.txt", "/e/other.txt")])) == cut)
     }
 }

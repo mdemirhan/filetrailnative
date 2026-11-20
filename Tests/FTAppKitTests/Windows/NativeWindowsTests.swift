@@ -217,13 +217,14 @@ extension ExplorerWindowlessTests {
             #expect(clipboard.contents.sourcePaths == [home])
             #expect(clipboard.contents.capturedAt == "t")
 
-            // Nothing left of it empties the clipboard; a cut of anything on the disk is cancelled.
+            // Nothing left of it empties the clipboard; of a cut, only what was on the disk goes, and the rest stays cut.
             clipboard.set(ClipboardRules.set(.copy, [disk + "/a.txt"], capturedAt: "u"), from: nil)
             app.windows.disksUnmounted([disk])
             #expect(clipboard.contents == .empty)
             clipboard.set(ClipboardRules.set(.cut, [disk + "/a.txt", home], capturedAt: "v"), from: nil)
             app.windows.disksUnmounted([disk])
-            #expect(clipboard.contents == .empty)
+            #expect(clipboard.contents.sourcePaths == [home])
+            #expect(clipboard.contents.mode == .cut)
         }
 
         @Test func tabsOnAnUnmountedDiskGoHomeWhileASheetIsOpen() async throws {

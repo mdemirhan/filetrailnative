@@ -153,16 +153,11 @@ struct ClipboardMenuAndMarksTests {
     @Test func flashesOnceForEachCopyOrCutAndNotForAnItemTakenOff() {
         var tracker = ClipboardFlashTracker()
         let first = ClipboardRules.set(.copy, ["/a/x", "/a/y"], capturedAt: "t1")
-        let result9 = tracker.changed(to: first)
-        #expect(result9)
-        let result26 = tracker.changed(to: ClipboardRules.removeItem(first, "/a/y"))
-        #expect(!result26)
-        let result10 = tracker.changed(to: ClipboardRules.set(.cut, ["/a/x"], capturedAt: "t2"))
-        #expect(result10)
-        let result27 = tracker.changed(to: .empty)
-        #expect(!result27)
-        let result11 = tracker.changed(to: ClipboardRules.set(.cut, ["/a/x"], capturedAt: "t2"))
-        #expect(result11)
+        #expect(tracker.changed(to: first) == .all)
+        #expect(tracker.changed(to: ClipboardRules.removeItem(first, "/a/y")) == .none)
+        #expect(tracker.changed(to: ClipboardRules.set(.cut, ["/a/x"], capturedAt: "t2")) == .all)
+        #expect(tracker.changed(to: .empty) == .none)
+        #expect(tracker.changed(to: ClipboardRules.set(.cut, ["/a/x"], capturedAt: "t2")) == .all)
     }
 
     // MARK: Springing

@@ -76,9 +76,10 @@ final class WindowWriteUI {
         // The clipboard follows what the write did before anything is said about it.
         if let result = event.result, let clipboard = session?.clipboard {
             let write = ClipboardWrite(
-                action: result.action, mode: result.mode.flatMap { ClipboardMode(rawValue: $0.rawValue) },
+                action: result.action, mode: result.mode,
                 items: result.items.map(\.effect), replacedPaths: result.replacedPaths ?? [])
             let followed = ClipboardRules.followThroughWrite(clipboard.contents, write)
+            clipboard.followKept { ClipboardRules.followThroughWrite($0, write) }
             if followed != clipboard.contents {
                 clipboard.set(followed, follows: clipboard.contents.capturedAt, from: tab.windowID)
                 tab.clipboardChanged()
@@ -107,7 +108,9 @@ final class WindowWriteUI {
                     status: $0.status,
                     skipReason: $0.skipReason.map(WriteSkipReason.init), note: $0.note)
             }, totalItemCount: event.totalItemCount, currentSourcePath: event.currentSourcePath,
-            currentDestinationPath: event.currentDestinationPath)
+            currentDestinationPath: event.currentDestinationPath,
+            movedItemCount: result.items.contains { $0.mode != nil }
+                ? result.items.filter { $0.mode == .cut && $0.status == .completed }.count : nil)
         if WriteEndNotices.needsResultSheet(summary) {
             Self.resultPresenter.present(event, in: tab)
             // A drop from another app is still in flight until its result is read: the sheet brings the window

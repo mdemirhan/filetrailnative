@@ -75,10 +75,14 @@ public final class WindowPreferenceChannel {
 
 }
 
-/// What Copy or Cut put on the clipboard, in whichever window: every window pastes it.
+/// What Copy, Cut and the Adds put on the clipboard, in whichever window: every window pastes it. A clipboard built
+/// up with Add that a Copy or Cut replaced is kept too, once, to be put back.
 @MainActor
 public final class SharedClipboard {
     public private(set) var contents: CopyPasteClipboard = .empty
+    /// The clipboard built with Add that the last Copy or Cut replaced: Put Back brings it back. Gone at the next
+    /// Copy or Cut, a Clear Clipboard, or a quit.
+    public private(set) var previous: CopyPasteClipboard?
     /// Tells every window but the one that changed it.
     public var sendToOtherWindows: (_ senderID: Int?, CopyPasteClipboard) -> Void
 
@@ -88,15 +92,45 @@ public final class SharedClipboard {
 
     /// Puts `clipboard` on it. With `follows`, only while it still holds what was captured then: the window that moved
     /// an item follows it on the clipboard, but not after another window copied something else. False when it
-    /// didn't take it.
+    /// didn't take it. An emptied clipboard has nothing to put back.
     @discardableResult
     public func set(_ clipboard: CopyPasteClipboard, follows: String? = nil, from senderID: Int?) -> Bool {
         if let follows {
             guard let current = contents.capturedAt, current.utf16.elementsEqual(follows.utf16) else { return false }
         }
+        if !clipboard.hasItems && follows == nil { previous = nil }
         contents = clipboard
         sendToOtherWindows(senderID, clipboard)
         return true
+    }
+
+    /// A Copy or Cut: `clipboard` takes the place of what is there, which is kept to be put back when it was built
+    /// with Add. Answers what was kept, if anything.
+    @discardableResult
+    public func replace(with clipboard: CopyPasteClipboard, from senderID: Int?) -> CopyPasteClipboard? {
+        previous = contents.isGrown ? contents : nil
+        contents = clipboard
+        sendToOtherWindows(senderID, clipboard)
+        return previous
+    }
+
+    /// Put Back: the clipboard kept takes the place of the one there now, which is kept in turn, so a second Put
+    /// Back swaps them again. False with nothing kept.
+    @discardableResult
+    public func putBack(from senderID: Int?) -> Bool {
+        guard let kept = previous else { return false }
+        previous = contents.hasItems ? contents : nil
+        contents = kept
+        sendToOtherWindows(senderID, kept)
+        return true
+    }
+
+    /// What a write or another app did to the items follows on the clipboard kept as well (`ClipboardRules`), so it
+    /// is put back where its items are now.
+    public func followKept(_ follow: (CopyPasteClipboard) -> CopyPasteClipboard) {
+        guard let kept = previous else { return }
+        let followed = follow(kept)
+        previous = followed.hasItems ? followed : nil
     }
 }
 

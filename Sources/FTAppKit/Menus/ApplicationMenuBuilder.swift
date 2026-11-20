@@ -135,6 +135,9 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.editCut, "Cut", fixed: .cut))
             menu.addItem(context.command(.editCopy, "Copy", fixed: .copy))
             menu.addItem(context.command(.editPaste, "Paste", fixed: .paste))
+            // Finder's ⌥⌘V, where Finder shows it with ⌥: every item moves, whatever it was put on for. An item of
+            // its own, as one only ⌥ shows is hard to find.
+            menu.addItem(context.command(.moveItemsHere, "Move Items Here"))
             menu.addItem(context.command(.editSelectAll, "Select All", fixed: .selectAll))
             menu.addItem(context.command(.deselectAll, "Deselect All"))
             menu.addItem(context.command(.invertSelection, "Invert Selection"))
@@ -151,6 +154,10 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.copyToOtherPane, "Copy to Other Pane"))
             menu.addItem(context.command(.moveToOtherPane, "Move to Other Pane"))
             menu.addItem(.separator())
+            // Gathering on the clipboard from several folders, each item to be copied or moved.
+            menu.addItem(context.command(.addToCopied, "Add to Copied Items"))
+            menu.addItem(context.command(.addToCut, "Add to Cut Items"))
+            menu.addItem(context.command(.removeFromClipboard, "Remove from Clipboard"))
             menu.addItem(context.command(.showClipboard, "Show Clipboard"))
             menu.addItem(context.command(.clearClipboard, "Clear Clipboard"))
             menu.addItem(.separator())

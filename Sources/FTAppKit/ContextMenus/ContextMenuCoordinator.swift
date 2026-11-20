@@ -98,6 +98,8 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         world.hasPasteDestination = destination != nil
         world.canPaste = clipboardHasItems && destination != nil
         world.pasteAsFileKind = tab.systemClipboard.kind
+        world.clipboardCutPaths = tab.services.clipboard.contents.cutPaths
+        world.clipboardCopiedPaths = tab.services.clipboard.contents.copiedPaths
         // Whether the Trash has anything to empty matters only where Empty Trash could show. The menu goes by what the
         // tab last read, as reading the Trashes here would hold the menu up behind a slow disk; it is read again behind
         // the menu, for the Trash's bar and the next menu.
@@ -321,6 +323,8 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         case .cut, .copy, .paste, .pasteAsFile, .move, .rename, .duplicate, .newFolder, .newFolderWithSelection, .trash,
             .deleteImmediately, .emptyTrash, .compress, .extract, .extractTo, .saveAsTemplate:
             fileOperation(action, subject)
+        case .addToCopied, .addToCut, .switchClipboardMode, .removeFromClipboard:
+            tab.contextMenuClipboardAction(action, subject)
         case .openWith, .viewAs, .sortBy, .otherPane, .newFile, .folderView:
             break
         }
@@ -330,7 +334,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
     private func busyAction(_ action: ContextMenuActionID, _ actions: WindowWriteActions) -> WriteStartAction {
         switch action {
         case .paste:
-            if case .ready(.cut, _, _, _) = actions.session.clipboard?.contents { return .operation(.moveTo) }
+            if actions.session.clipboard?.contents.mode == .cut { return .operation(.moveTo) }
             return .operation(.paste)
         case .move: return .operation(.moveTo)
         case .rename: return .operation(.rename)

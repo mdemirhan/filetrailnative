@@ -1,9 +1,8 @@
 import FTFoundation
 import Foundation
 
-public enum CopyPasteMode: String, Codable, Sendable {
-    case copy, cut
-}
+/// Whether a paste copies an item or moves it: the clipboard's own Copy or Cut, one type for both.
+public typealias CopyPasteMode = ClipboardMode
 
 public enum CopyPasteOperationStatus: String, Codable, Sendable {
     case queued, running
@@ -23,14 +22,67 @@ public enum CopyPastePlanIssueCode: String, Codable, Sendable {
 }
 
 public struct CopyPasteAnalysisRequest: Codable, Equatable, Sendable {
+    /// What every item does, but those in `cutSourcePaths`.
     public var mode: CopyPasteMode
     public var sourcePaths: [String]
     public var destinationDirectoryPath: String
+    /// In a paste of items put on the clipboard some to copy and some to move (`mode` is `.copy`): the ones moved.
+    /// Nil when every item goes as `mode` says.
+    public var cutSourcePaths: [String]?
+    /// Items that take a name of their own ("a copy.txt", as Keep Both names one) when another item of this paste
+    /// has their name: two items of one name on the clipboard that the person chose to keep both of. Nil for none.
+    public var renamedIfSharedSourcePaths: [String]?
 
-    public init(mode: CopyPasteMode, sourcePaths: [String], destinationDirectoryPath: String) {
+    public init(
+        mode: CopyPasteMode, sourcePaths: [String], destinationDirectoryPath: String, cutSourcePaths: [String]? = nil,
+        renamedIfSharedSourcePaths: [String]? = nil
+    ) {
         self.mode = mode
         self.sourcePaths = sourcePaths
         self.destinationDirectoryPath = destinationDirectoryPath
+        self.cutSourcePaths = cutSourcePaths
+        self.renamedIfSharedSourcePaths = renamedIfSharedSourcePaths
+    }
+
+    /// Whether some items are copied and others moved.
+    public var isMixed: Bool { mode == .copy && !(cutSourcePaths ?? []).isEmpty }
+
+    /// The items moved: all of them after Cut, those in `cutSourcePaths` in a mixed paste, none after Copy.
+    public var movedSourcePaths: [String] {
+        if mode == .cut { return sourcePaths }
+        guard let cutSourcePaths, !cutSourcePaths.isEmpty else { return [] }
+        let cut = Set(cutSourcePaths.map(NameKeys.Exact.init))
+        return sourcePaths.filter { cut.contains(NameKeys.Exact($0)) }
+    }
+}
+
+/// What each item of a paste does, looked up by its path as the disk spells it (`NameKeys.Exact`): two paths that
+/// differ only in how an accented letter is stored are two items.
+struct CopyPasteItemModes: Sendable {
+    let mode: CopyPasteMode
+    private let cut: Set<NameKeys.Exact>
+    private let renamedIfShared: Set<NameKeys.Exact>
+
+    init(mode: CopyPasteMode, cutSourcePaths: [String]?, renamedIfSharedSourcePaths: [String]?) {
+        self.mode = mode
+        cut = Set((cutSourcePaths ?? []).map(NameKeys.Exact.init))
+        renamedIfShared = Set((renamedIfSharedSourcePaths ?? []).map(NameKeys.Exact.init))
+    }
+
+    init(_ request: CopyPasteAnalysisRequest) {
+        self.init(
+            mode: request.mode, cutSourcePaths: request.cutSourcePaths,
+            renamedIfSharedSourcePaths: request.renamedIfSharedSourcePaths)
+    }
+
+    var isMixed: Bool { mode == .copy && !cut.isEmpty }
+
+    func mode(of sourcePath: String) -> CopyPasteMode {
+        mode == .copy && cut.contains(NameKeys.Exact(sourcePath)) ? .cut : mode
+    }
+
+    func isRenamedIfShared(_ sourcePath: String) -> Bool {
+        renamedIfShared.contains(NameKeys.Exact(sourcePath))
     }
 }
 
@@ -96,6 +148,9 @@ public struct CopyPasteAnalysisNode: Codable, Equatable, Sendable {
     /// A folder moved on its own disk to a name nothing has: renamed whole, so what is in it wasn't read
     /// (`children` is empty whatever it holds). It is never copied or merged.
     public var renameOnly: Bool
+    /// A picked item of a paste that copies some items and moves others: what this one does, and everything in
+    /// it. Nil when the whole paste goes as its report's `mode` says (`CopyPasteAnalysisReport.mode(of:)`).
+    public var mode: CopyPasteMode?
 
     public init(
         id: String, sourcePath: String, destinationPath: String, sourceKind: CopyPasteNodeKind,
@@ -104,8 +159,9 @@ public struct CopyPasteAnalysisNode: Codable, Equatable, Sendable {
         issueCode: CopyPastePlanIssueCode? = nil, issueMessage: String? = nil, totalNodeCount: Int,
         conflictNodeCount: Int, destinationTotalNodeCount: Int? = nil, keepBothDestinationPath: String? = nil,
         destinationOnly: CopyPasteDestinationOnlySummary? = nil, replaceBlockedReason: String? = nil,
-        renameOnly: Bool = false
+        renameOnly: Bool = false, mode: CopyPasteMode? = nil
     ) {
+        self.mode = mode
         self.id = id
         self.sourcePath = sourcePath
         self.destinationPath = destinationPath
@@ -162,13 +218,17 @@ public struct CopyPasteAnalysisReport: Codable, Equatable, Sendable {
     /// How far apart two dates of one file can be on the disks of the items and the destination, for Replace Older
     /// (`CopyPasteChoices.newerToleranceMs`); nil when they can't be compared.
     public var newerToleranceMs: Double?
+    /// In a paste that copies some items and moves others (`mode` is `.copy`): the ones moved, as the request
+    /// named them. Nil when every item goes as `mode` says.
+    public var cutSourcePaths: [String]?
 
     public init(
         analysisId: String, mode: CopyPasteMode, sourcePaths: [String], destinationDirectoryPath: String,
         nodes: [CopyPasteAnalysisNode], issues: [CopyPasteAnalysisIssue], summary: CopyPasteAnalysisSummary,
-        destinationCaseSensitive: Bool = false, newerToleranceMs: Double? = nil
+        destinationCaseSensitive: Bool = false, newerToleranceMs: Double? = nil, cutSourcePaths: [String]? = nil
     ) {
         self.newerToleranceMs = newerToleranceMs
+        self.cutSourcePaths = cutSourcePaths
         self.analysisId = analysisId
         self.mode = mode
         self.sourcePaths = sourcePaths
@@ -177,6 +237,20 @@ public struct CopyPasteAnalysisReport: Codable, Equatable, Sendable {
         self.issues = issues
         self.summary = summary
         self.destinationCaseSensitive = destinationCaseSensitive
+    }
+
+    /// Whether some items are copied and others moved.
+    public var isMixed: Bool { mode == .copy && !(cutSourcePaths ?? []).isEmpty }
+
+    /// What a picked item does (its own mode in a mixed paste), and everything inside it.
+    public func mode(of node: CopyPasteAnalysisNode) -> CopyPasteMode {
+        node.mode ?? mode
+    }
+
+    /// What the item picked at `sourcePath` does: for an issue, which has no node.
+    public func mode(ofSourcePath sourcePath: String) -> CopyPasteMode {
+        CopyPasteItemModes(mode: mode, cutSourcePaths: cutSourcePaths, renamedIfSharedSourcePaths: nil)
+            .mode(of: sourcePath)
     }
 }
 
@@ -245,11 +319,15 @@ public struct CopyPasteItemResult: Codable, Equatable, Sendable {
     /// For a folder: how many items inside it failed. A folder whose only problem is failures inside it has
     /// status "failed" and a nil error.
     public var childFailureCount: Int?
+    /// In a paste that copies some items and moves others: what this item did (or was to do). Nil when the whole
+    /// paste goes as its result's `mode` says.
+    public var mode: CopyPasteMode?
 
     public init(
         sourcePath: String, destinationPath: String, sourceKind: CopyPasteNodeKind, status: Status,
-        error: String?, skipReason: SkipReason? = nil, childFailureCount: Int? = nil
+        error: String?, skipReason: SkipReason? = nil, childFailureCount: Int? = nil, mode: CopyPasteMode? = nil
     ) {
+        self.mode = mode
         self.sourcePath = sourcePath
         self.destinationPath = destinationPath
         self.sourceKind = sourceKind

@@ -58,13 +58,17 @@ public struct WriteEndSummary: Equatable, Sendable {
     public var totalItemCount: Int
     public var currentSourcePath: String?
     public var currentDestinationPath: String?
+    /// A paste that copied some items and moved others: how many of the items it completed it moved. Nil for a write
+    /// that did one thing.
+    public var movedItemCount: Int?
 
     public init(
         action: WriteOperationAction, status: WriteEndStatus, targetPath: String?, topLevelItemCount: Int,
         completedItemCount: Int,
         failedItemCount: Int, skippedItemCount: Int, cancelledItemCount: Int, items: [Item], totalItemCount: Int = 0,
-        currentSourcePath: String? = nil, currentDestinationPath: String? = nil
+        currentSourcePath: String? = nil, currentDestinationPath: String? = nil, movedItemCount: Int? = nil
     ) {
+        self.movedItemCount = movedItemCount
         self.action = action
         self.status = status
         self.targetPath = targetPath
@@ -235,8 +239,12 @@ public enum WriteEndNotices {
 
     static func plannedSkipMessage(_ write: WriteEndSummary) -> String? {
         var sentences: [String] = []
-        if write.completedItemCount > 0 {
-            let verb = write.action == .moveTo ? "Moved" : "Copied"
+        if let moved = write.movedItemCount, moved > 0, moved < write.completedItemCount {
+            // A paste of both says what it did of each.
+            let copied = write.completedItemCount - moved
+            sentences.append("Moved \(ReviewCount.format(moved)), copied \(ReviewCount.format(copied)).")
+        } else if write.completedItemCount > 0 {
+            let verb = write.action == .moveTo || write.movedItemCount == write.completedItemCount ? "Moved" : "Copied"
             sentences.append("\(verb) \(ReviewCount.pluralize(write.completedItemCount, "item")).")
         }
         if write.skippedItemCount > 0 {

@@ -222,6 +222,7 @@ struct ApplicationMenuTests {
         var isEnabled = true
         var isChecked = false
         var title = ""
+        var subtitle = ""
 
         init(checked: Bool = false) {
             isChecked = checked

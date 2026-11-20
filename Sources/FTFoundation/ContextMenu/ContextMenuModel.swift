@@ -27,6 +27,11 @@ public enum ContextMenuActionID: String, Sendable, CaseIterable, Hashable, Codab
     case openInOtherPane
     /// View ▸ Folder View's submenu, on the folder's background.
     case folderView
+    /// What is right-clicked joins what is on the clipboard, to be copied or moved.
+    case addToCopied, addToCut
+    /// What is right-clicked, all on the clipboard with one intent, is pasted with the other from now on.
+    case switchClipboardMode
+    case removeFromClipboard
 
     /// The items that open a submenu rather than act.
     public var isSubmenu: Bool {
@@ -70,12 +75,17 @@ public struct ContextMenuOptions: Equatable, Sendable {
     public var compressLabel: String?
     /// Convert Images' label, counting what it would convert: "Convert 3 Images…".
     public var convertImagesLabel: String?
+    /// The intent the right-clicked items on the clipboard have now: Copy Instead of Moving for cut ones, Move Instead
+    /// of Copying for copied ones.
+    public var clipboardModeOfItems: ClipboardMode?
 
     public init(
         favoriteToggleLabel: String? = nil, textEditorName: String? = nil, targetsFolder: Bool = false,
         renameLabel: String? = nil, ejectLabel: String? = nil, pasteAsFileLabel: String? = nil,
-        copyContentsLabel: String? = nil, compressLabel: String? = nil, convertImagesLabel: String? = nil
+        copyContentsLabel: String? = nil, compressLabel: String? = nil, convertImagesLabel: String? = nil,
+        clipboardModeOfItems: ClipboardMode? = nil
     ) {
+        self.clipboardModeOfItems = clipboardModeOfItems
         self.favoriteToggleLabel = favoriteToggleLabel
         self.textEditorName = textEditorName
         self.targetsFolder = targetsFolder
@@ -121,6 +131,7 @@ public enum ContextMenuItems {
                 item(.showInfo, "Show Info", .showInfo), item(.calculateSize, "Calculate Size", .calculateSize),
                 line("separator-tree-info"),
                 item(.cut, "Cut", .cut), item(.copy, "Copy", .copy),
+            ] + clipboardItems(options) + [
                 item(.paste, "Paste into Folder", .paste), item(.copyPath, "Copy Path", .copyPath),
                 line("separator-tree-clipboard"),
                 item(.rename, "Rename", .rename), item(.duplicate, "Duplicate", .duplicate),
@@ -186,8 +197,9 @@ public enum ContextMenuItems {
                 item(.showInfo, "Show Info", .showInfo),
                 // For folders, or a selection with folders among it: hidden by the caller otherwise.
                 item(.calculateSize, "Calculate Size", .calculateSize), line("separator-info"),
-                item(.cut, "Cut", .cut), item(.copy, "Copy", .copy), item(.paste, "Paste into Folder", .paste),
-                item(.copyPath, "Copy Path", .copyPath),
+                item(.cut, "Cut", .cut), item(.copy, "Copy", .copy),
+            ] + clipboardItems(options) + [
+                item(.paste, "Paste into Folder", .paste), item(.copyPath, "Copy Path", .copyPath),
                 // For one image or text file (hidden by the caller otherwise).
                 item(.copyContents, options.copyContentsLabel ?? CopyContents.commandLabel, .copyContents),
                 // Right after the copies, as Finder has Share… after Copy. Not for what is in the Trash.
@@ -211,6 +223,18 @@ public enum ContextMenuItems {
                 item(.trash, "Move to Trash", .trash, destructive: true),
             ]
         }
+    }
+
+    /// After Cut and Copy: the Adds for items not on the clipboard, and for those on it the other intent and Remove
+    /// (the rules leave out the ones that don't apply).
+    private static func clipboardItems(_ options: ContextMenuOptions) -> [ContextMenuItem] {
+        [
+            item(.addToCut, "Add to Cut Items", .cut), item(.addToCopied, "Add to Copied Items", .copy),
+            item(
+                .switchClipboardMode, ClipboardTexts.switchModeTitle(from: options.clipboardModeOfItems ?? .cut),
+                options.clipboardModeOfItems == .copy ? .cut : .copy),
+            item(.removeFromClipboard, ClipboardTexts.removeFromClipboardTitle, .removeFromClipboard),
+        ]
     }
 
     /// The items a menu shows: the hidden ones left out, and the separators that would stand first, last or twice in

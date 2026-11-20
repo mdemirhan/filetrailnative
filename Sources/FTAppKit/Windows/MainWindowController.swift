@@ -1627,7 +1627,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                 firstName: context.selectedPathsInViewOrder.first.map(NodePath.basename)),
             convertImagesCount: context.selectedPathsInViewOrder.count,
             folderViewRemembered: activePane.shownFolderView?.isOwnSaved == true,
-            shownColumns: shownColumns
+            shownColumns: shownColumns,
+            clipboardCutCount: services.clipboard.contents.cutPaths.count,
+            clipboardCopiedCount: services.clipboard.contents.copiedPaths.count
         ) { CommandAvailability.canRun($0, context) }
     }
 
@@ -2101,7 +2103,7 @@ extension MainWindowController: ExplorerWindowHandle {
             .newFolderWithSelection, .newTextFile, .saveAsTemplate, .pasteAsFile, .trashSelection, .emptyTrash,
             .copySelection,
             .cutSelection,
-            .pasteSelection,
+            .pasteSelection, .addToCopied, .addToCut, .moveItemsHere, .removeFromClipboard,
             .compressSelection, .extractSelection, .extractSelectionTo:
             // The write commands: `performWriteCommand` took them, unless the toolbar is being customized.
             if let selector = MenuCommandRouter.nativeEditSelector(command) {
@@ -2194,7 +2196,9 @@ extension MainWindowController: ExplorerWindowContext {
             listShowsItems: !content.entryPaths.isEmpty,
             selectedEntry: entries.first { $0.path == lead } ?? entries.first,
             selectedTreeTargetPath: sidebar.selectedTreeTargetPath,
-            clipboardHasItems: services.clipboard.contents.hasItems, pasteDestinationPath: pasteDestinationPath,
+            clipboardHasItems: services.clipboard.contents.hasItems,
+            selectionOnClipboard: clipboardSourcePaths.contains { services.clipboard.contents.pick(at: $0) != nil },
+            pasteDestinationPath: pasteDestinationPath,
             isSearchMode: searchRootPath != nil, openItemLimit: preferences.openItemLimit,
             writeOperationLocked: isWriteLocked, canGoBack: canGoBack,
             canGoForward: canGoForward, hasCachedSearch: searchStore?.session.hasCachedSearch ?? false,

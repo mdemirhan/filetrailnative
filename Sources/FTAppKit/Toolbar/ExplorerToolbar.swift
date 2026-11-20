@@ -379,7 +379,11 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
                 button.tooltip = "Theme: \(label)"
             case .clipboard:
                 if let clipboard = button as? ToolbarClipboardButton {
-                    clipboard.set(count: clipboardCount, cut: clipboardCut)
+                    if let summary = clipboardSummary, summary.mode == nil {
+                        clipboard.set(count: summary.cutCount, cut: true, copied: summary.copiedCount)
+                    } else {
+                        clipboard.set(count: clipboardCount, cut: clipboardCut)
+                    }
                     // The title is the label ("notes.md copied", "3 items copied"); the name says how many.
                     button.tooltip = clipboardSummary?.label ?? ""
                     if let summary = clipboardSummary { button.setAccessibilityLabel(summary.accessibilityLabel) }

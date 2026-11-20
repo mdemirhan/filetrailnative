@@ -206,3 +206,173 @@ public enum PasteDestination {
         return nil
     }
 }
+
+// MARK: The clipboard of copied and cut items
+
+extension ClipboardTexts {
+    /// The title of a part of the clipboard's list: "Cut · 4", "Copied · 3".
+    public static func sectionTitle(_ mode: ClipboardMode, count: Int) -> String {
+        "\(mode == .cut ? "Cut" : "Copied") \u{B7} \(ContextMenuRules.groupedCount(count))"
+    }
+
+    /// What ⌘V does with the items of a part.
+    public static func sectionDetail(_ mode: ClipboardMode) -> String {
+        mode == .cut ? "Paste moves these" : "Paste copies these"
+    }
+
+    /// After the name of an item another on the clipboard has the name of, pasted under one of its own.
+    public static let renamedOnPasteNote = "renamed on paste"
+
+    public static let showInFolderTitle = "Show in Folder"
+    public static let useThisOneInsteadTitle = "Use This One Instead"
+    public static let removeFromClipboardTitle = "Remove from Clipboard"
+
+    /// What a row's mark, and its menu, offer: the other intent.
+    public static func switchModeTitle(from mode: ClipboardMode) -> String {
+        mode == .cut ? "Copy Instead of Moving" : "Move Instead of Copying"
+    }
+
+    /// Put Back's row: "Put Back the 7 Items Before".
+    public static func putBackTitle(_ count: Int) -> String {
+        count == 1 ? "Put Back the Item Before" : "Put Back the \(ContextMenuRules.groupedCount(count)) Items Before"
+    }
+
+    /// A row as VoiceOver and the tests read it.
+    public static func itemAccessibilityLabel(_ item: ClipboardItem) -> String {
+        var label = "\(item.name), \(item.mode == .cut ? "cut" : "copied")"
+        if item.pastedUnderAnotherName { label += ", \(renamedOnPasteNote)" }
+        return label
+    }
+
+    private static func count(_ count: Int, _ noun: String = "item") -> String {
+        "\(ContextMenuRules.groupedCount(count)) \(noun)\(count == 1 ? "" : "s")"
+    }
+
+    private static func named(_ paths: [String]) -> String {
+        paths.count == 1 ? "\u{201C}\(PathText.leafName(paths[0]))\u{201D}" : count(paths.count)
+    }
+
+    /// The toast of an Add: what it did, then the clipboard as it is now. Nil when the clipboard took nothing and
+    /// nothing needs saying.
+    public static func addMessage(_ report: ClipboardAddReport, clipboard: CopyPasteClipboard) -> String? {
+        let summary = ClipboardRules.describe(clipboard)
+        let state = summary.map { $0.intentLabel ?? $0.countLabel }
+        var parts: [String] = []
+        if report.startedClipboard {
+            // An Add on an empty clipboard is a Copy or a Cut.
+            if !report.added.isEmpty {
+                parts.append("\(named(report.added)) \(report.mode == .cut ? "cut" : "copied")")
+            }
+        } else if !report.added.isEmpty {
+            let verb = report.mode == .cut ? "to move" : "to copy"
+            // One item kept beside another of its name is said once: "Added “a.txt” to move, renamed on paste".
+            let renamed = report.added.count == 1 && report.keptBoth.count == 1 ? ", \(renamedOnPasteNote)" : ""
+            parts.append("Added \(named(report.added)) \(verb)\(renamed)")
+        }
+        if !report.switched.isEmpty {
+            let now = report.mode == .cut ? "now moves instead of being copied" : "now copies instead of moving"
+            let nowPlural = report.mode == .cut ? "now move instead of being copied" : "now copy instead of moving"
+            parts.append("\(named(report.switched)) \(report.switched.count == 1 ? now : nowPlural)")
+        }
+        if !report.keptBoth.isEmpty && !(report.added.count == 1 && report.keptBoth.count == 1) {
+            parts.append("\(named(report.keptBoth)) will be renamed on paste")
+        }
+        if !report.replacedOnClipboard.isEmpty {
+            parts.append("\(named(report.replacedOnClipboard)) came off the clipboard")
+        }
+        if !report.absorbed.isEmpty {
+            parts.append(
+                "\(named(report.absorbed)) \(report.absorbed.count == 1 ? "goes" : "go") with the folder added")
+        }
+        if parts.isEmpty {
+            if let inside = report.insideListed.first {
+                return report.insideListed.count == 1
+                    ? "\u{201C}\(PathText.leafName(inside.path))\u{201D} is inside \u{201C}\(PathText.leafName(inside.folder))\u{201D}, which is on the clipboard"
+                    : "\(count(report.insideListed.count)) are inside folders on the clipboard"
+            }
+            if !report.alreadyThere.isEmpty {
+                return report.alreadyThere.count == 1
+                    ? "\(named(report.alreadyThere)) is already on the clipboard"
+                    : "\(named(report.alreadyThere)) are already on the clipboard"
+            }
+            return nil
+        }
+        if !report.insideListed.isEmpty {
+            parts.append("\(named(report.insideListed.map(\.path))) left off, inside a folder on the clipboard")
+        }
+        if !report.alreadyThere.isEmpty {
+            parts.append("\(named(report.alreadyThere)) already on it")
+        }
+        if let state, !report.startedClipboard || clipboard.isMixed {
+            parts.append(state)
+        }
+        return parts.joined(separator: " \u{B7} ")
+    }
+
+    /// The question an Add asks when an item it brings has the name of one on the clipboard (`ClipboardNameClash`).
+    public static func clashTitle(_ clashes: [ClipboardNameClash]) -> String {
+        guard clashes.count > 1 else {
+            return
+                "Another item named \u{201C}\(PathText.leafName(clashes.first?.path ?? ""))\u{201D} is on the clipboard"
+        }
+        return "\(ContextMenuRules.groupedCount(clashes.count)) items have the same names as items on the clipboard"
+    }
+
+    public static func clashMessage(_ clashes: [ClipboardNameClash]) -> String {
+        guard clashes.count > 1 else {
+            let other = PathText.leafName(ClipboardRules.parentPath(clashes.first?.otherPath ?? ""))
+            return
+                "It\u{2019}s from \u{201C}\(other)\u{201D}. Keep Both pastes this one under another name; Use This One takes the other off the clipboard."
+        }
+        let names = quotedNames(clashes.map(\.path))
+        return
+            "\(names). Keep Both pastes the ones added under other names; Use These takes the others off the clipboard."
+    }
+
+    public static func clashUseTitle(_ clashes: [ClipboardNameClash]) -> String {
+        clashes.count > 1 ? "Use These" : "Use This One"
+    }
+
+    public static func clashDontAddTitle(_ clashes: [ClipboardNameClash]) -> String {
+        clashes.count > 1 ? "Don\u{2019}t Add Them" : "Don\u{2019}t Add"
+    }
+
+    public static let clashKeepBothTitle = "Keep Both"
+
+    /// The toast when a Copy or Cut replaced a clipboard built with Add, which Put Back brings back.
+    public static func replacedMessage(_ summary: ClipboardSummary, replaced: Int) -> String {
+        "\(summary.label) \u{B7} replaced \(count(replaced)) on the clipboard"
+    }
+
+    public static let putBackButton = "Put Back"
+
+    /// The toast of a Put Back.
+    public static func putBackMessage(_ clipboard: CopyPasteClipboard) -> String {
+        "Put back \(count(clipboard.picks.count)) on the clipboard"
+    }
+}
+
+// MARK: The Edit menu
+
+extension ClipboardTexts {
+    /// Paste's title while the files have the keyboard: "Paste Item", "Paste 7 Items", as Finder's.
+    public static func pasteTitle(count: Int) -> String {
+        count == 1 ? "Paste Item" : count > 1 ? "Paste \(ContextMenuRules.groupedCount(count)) Items" : "Paste"
+    }
+
+    /// The line under Paste: what it does with what is on the clipboard ("Moves 4, copies 3"); "" with nothing on it.
+    public static func pasteSubtitle(cut: Int, copied: Int) -> String {
+        var parts: [String] = []
+        if cut > 0 { parts.append("moves \(ContextMenuRules.groupedCount(cut))") }
+        if copied > 0 { parts.append("copies \(ContextMenuRules.groupedCount(copied))") }
+        guard let first = parts.first else { return "" }
+        return ([first.prefix(1).uppercased() + first.dropFirst()] + parts.dropFirst()).joined(separator: ", ")
+    }
+
+    /// Move Items Here's title: "Move Item Here", "Move 7 Items Here", as Finder's.
+    public static func moveItemsHereTitle(count: Int) -> String {
+        count == 1
+            ? "Move Item Here"
+            : count > 1 ? "Move \(ContextMenuRules.groupedCount(count)) Items Here" : "Move Items Here"
+    }
+}

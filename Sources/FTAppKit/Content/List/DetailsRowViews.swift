@@ -382,7 +382,7 @@ final class DetailsBarView: NSView {
 
     /// The row's item was just copied or cut: its mark flashes.
     func flashClipboardMark() {
-        guard let entry, let host, host.clipboardMarks?.mark(for: entry.path) != nil else { return }
+        guard let entry, let host, host.clipboardMarks?.flashes(entry.path) == true else { return }
         ClipboardFlash.flash(
             self, color: ClipboardMarkGlyph.color(theme: host.theme, onSelection: marksOnSelection),
             radius: CGFloat(layoutMetrics.rowRadius))

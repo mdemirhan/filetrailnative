@@ -132,7 +132,8 @@ public enum ShortcutPolicy {
         "newFolderWithSelection": .newFolderWithSelection, "saveAsTemplate": .saveAsTemplate,
         "pasteAsFile": .pasteAsFile, "terminal": .openInTerminal, "copyPath": .copyPath,
         "copyContents": .copyContents, "share": .shareSelection, "convertImages": .convertImages,
-        "rootTreeHere": .rootTreeAtSelection, "trash": .trashSelection,
+        "rootTreeHere": .rootTreeAtSelection, "trash": .trashSelection, "addToCopied": .addToCopied,
+        "addToCut": .addToCut, "removeFromClipboard": .removeFromClipboard,
     ]
 
     /// The shortcut shown beside a context-menu item, only where pressing it now would
@@ -200,6 +201,12 @@ public enum ShortcutPolicy {
             return canHandle(.rootTreeAtSelection, context)
         case "trash":
             return canHandleRaw(.trashSelection, context)
+        case "addToCopied":
+            return canHandleRaw(.copySelection, context)
+        case "addToCut":
+            return canHandleRaw(.cutSelection, context)
+        case "removeFromClipboard":
+            return canHandleRaw(.copySelection, context)
         default:
             return false
         }

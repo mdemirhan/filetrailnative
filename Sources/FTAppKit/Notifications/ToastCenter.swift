@@ -24,18 +24,34 @@ final class ToastCenter {
     }
 
     private var timers: [String: (expiresAt: Double, cancel: Cancel)] = [:]
+    /// What the button of each notification that has one does.
+    private var actions: [String: @MainActor () -> Void] = [:]
     private var counter = 0
 
+    /// `action`: a button on the notification, with its title and what it does; pressed, it does it and the
+    /// notification goes.
     @discardableResult
-    func push(_ kind: ToastKind, title: String, message: String? = nil) -> String? {
+    func push(
+        _ kind: ToastKind, title: String, message: String? = nil,
+        action: (title: String, run: @MainActor () -> Void)? = nil
+    ) -> String? {
         guard isEnabled() else { return nil }
         counter += 1
         let id = "toast-\(counter)"
-        let entry = Toasts.entry(id: id, kind: kind, title: title, message: message, now: now())
+        let entry = Toasts.entry(
+            id: id, kind: kind, title: title, message: message, now: now(), actionTitle: action?.title)
         entries = Toasts.enqueue(entries, entry)
+        if let action { actions[id] = action.run }
         syncTimers()
         onChange(id)
         return id
+    }
+
+    /// The button of notification `id` was pressed.
+    func performAction(_ id: String) {
+        guard let run = actions[id] else { return }
+        dismiss(id)
+        run()
     }
 
     func dismiss(_ id: String) {
@@ -56,6 +72,9 @@ final class ToastCenter {
     /// One timer for each notification showing, each set for the time it expires; those that left have none.
     private func syncTimers() {
         let showing = Set(entries.map(\.id))
+        for id in actions.keys where !showing.contains(id) {
+            actions[id] = nil
+        }
         for (id, timer) in timers where !showing.contains(id) {
             timer.cancel.cancel()
             timers[id] = nil

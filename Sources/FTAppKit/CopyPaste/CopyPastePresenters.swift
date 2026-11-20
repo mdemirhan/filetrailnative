@@ -200,8 +200,8 @@ final class CopyPasteResultPresenter: WriteResultPresenting {
 
     /// The failed and never-started top-level items, analyzed again into the same folder
     /// with the retry policy (files that arrived are skipped, half-copied folders are merged), which the review opens
-    /// with and a retry with nothing to review runs with. A retried move clears its cut once it moved them. A rename
-    /// is tried again from its sheet.
+    /// with and a retry with nothing to review runs with. Each item is copied or moved again as it was the first
+    /// time, and what a retry moves leaves the clipboard it was on. A rename is tried again from its sheet.
     func retry(_ event: WriteOperationEvent, in tab: MainWindowController) {
         guard let result = event.result else { return }
         if event.action == .batchRename {
@@ -211,11 +211,14 @@ final class CopyPasteResultPresenter: WriteResultPresenting {
         guard let actions = tab.writeActions, CopyLikeAction(event.action) != nil else { return }
         let paths = CopyPasteResultText.retrySourcePaths(result.items.map(ResultItem.init))
         guard !paths.isEmpty else { return }
-        // Only a cut of these same items is cleared, never an unrelated clipboard.
+        // The items of a paste that copied some and moved others go again as each went.
+        let moved = Set(result.items.filter { $0.mode == .cut }.compactMap(\.sourcePath).map(PathBox.init))
+        let cutSources = event.action == .moveTo ? nil : paths.filter { moved.contains(PathBox($0)) }
+        let moves = event.action == .moveTo || !(cutSources ?? []).isEmpty
+        // Only the clipboard holding these same items lets go of what the retry moves, never an unrelated one.
         var retriedCut: String?
-        if event.action == .moveTo,
-            case .ready(.cut, let sources, _, let capturedAt) = actions.session.clipboard?.contents,
-            paths.contains(where: { path in sources.contains { JSString.equals($0, path) } })
+        if moves, let contents = actions.session.clipboard?.contents, let capturedAt = contents.capturedAt,
+            paths.contains(where: { contents.pick(at: $0) != nil })
         {
             retriedCut = capturedAt
         }
@@ -224,7 +227,7 @@ final class CopyPasteResultPresenter: WriteResultPresenting {
         Task { @MainActor in
             let outcome = await actions.copyLike(
                 mode: action == .moveTo ? .cut : .copy, sources: paths, destination: destination, action: action,
-                clearsCutClipboard: retriedCut, defaultPolicy: CopyPasteReview.retryPolicy)
+                cutSources: cutSources, clearsCutClipboard: retriedCut, defaultPolicy: CopyPasteReview.retryPolicy)
             if case .review(let report) = outcome {
                 PasteReview.presenter.review(
                     report, action: action, policy: CopyPasteReview.retryPolicy, clearsCutClipboard: retriedCut,

@@ -35,9 +35,12 @@ final class NotificationOverlay: NSView {
 
     /// Shows a notification in the window; false when no window can take one.
     @discardableResult
-    static func push(_ kind: ToastKind, title: String, message: String? = nil, in window: NSWindow?) -> Bool {
+    static func push(
+        _ kind: ToastKind, title: String, message: String? = nil, in window: NSWindow?,
+        action: (title: String, run: @MainActor () -> Void)? = nil
+    ) -> Bool {
         guard let overlay = overlay(for: window) else { return false }
-        overlay.toasts.push(kind, title: title, message: message)
+        overlay.toasts.push(kind, title: title, message: message, action: action)
         return true
     }
 
@@ -61,9 +64,13 @@ final class NotificationOverlay: NSView {
 
     override var isFlipped: Bool { true }
     override func hitTest(_ point: NSPoint) -> NSView? {
-        // Only the card's Stop button takes the mouse.
+        // Only the card's Stop button and a notification's own button take the mouse.
+        let local = convert(point, from: superview)
+        for view in cards.values {
+            if let hit = view.hitTest(local) { return hit }
+        }
         guard !card.isHidden else { return nil }
-        let hit = card.hitTest(convert(point, from: superview))
+        let hit = card.hitTest(local)
         return hit === card ? nil : hit
     }
 
@@ -94,6 +101,8 @@ final class NotificationOverlay: NSView {
         var added: ToastCardView?
         for entry in toasts.entries where cards[entry.id] == nil {
             let view = ToastCardView(entry: entry, theme: theme)
+            let id = entry.id
+            view.onAction = { [weak self] in self?.toasts.performAction(id) }
             cards[entry.id] = view
             addSubview(view)
             if entry.id == arrived { added = view }

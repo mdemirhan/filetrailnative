@@ -1,6 +1,6 @@
 import Foundation
 
-/// Copy or Cut (`ClipboardMode`).
+/// Copy or Cut (`ClipboardMode`): whether an item on the clipboard is pasted as a copy or moved.
 public enum ClipboardMode: String, Sendable, Equatable, Codable {
     case copy, cut
 }
@@ -19,34 +19,89 @@ public struct ClipboardSourceEntry: Equatable, Sendable {
     }
 }
 
-/// The app's clipboard of files: empty, or what Copy or Cut put on it.
+/// One item on the clipboard: where it is, what it was put on for, and what was known of it.
+public struct ClipboardPick: Equatable, Sendable {
+    public var path: String
+    public var mode: ClipboardMode
+    public var entry: ClipboardSourceEntry?
+    /// Another item on the clipboard has this one's name, and the person chose to keep both: this one is pasted under
+    /// a name of its own, as Keep Both names one.
+    public var renamedIfShared: Bool
+    /// When it was put on, or last given another intent: its mark flashes then (`ClipboardFlashTracker`). The same
+    /// form as `capturedAt`, so the later of two is the larger.
+    public var markedAt: String
+
+    public init(
+        path: String, mode: ClipboardMode, entry: ClipboardSourceEntry? = nil, renamedIfShared: Bool = false,
+        markedAt: String
+    ) {
+        self.path = path
+        self.mode = mode
+        self.entry = entry
+        self.renamedIfShared = renamedIfShared
+        self.markedAt = markedAt
+    }
+
+    /// Paths are compared by their exact bytes: two that differ only in how an accented letter is stored are two items.
+    public static func == (lhs: ClipboardPick, rhs: ClipboardPick) -> Bool {
+        JSString.equals(lhs.path, rhs.path) && lhs.mode == rhs.mode && lhs.entry == rhs.entry
+            && lhs.renamedIfShared == rhs.renamedIfShared && JSString.equals(lhs.markedAt, rhs.markedAt)
+    }
+}
+
+/// The app's clipboard of files: empty, or the items Copy, Cut and the Adds put on it, each to be copied or moved.
 public enum CopyPasteClipboard: Equatable, Sendable {
     case empty
-    case ready(
-        mode: ClipboardMode, sourcePaths: [String], sourceEntries: [String: ClipboardSourceEntry], capturedAt: String)
+    /// `grown`: an Add put items on it besides those of the Copy or Cut it started with, so a Copy or Cut that
+    /// replaces it keeps it to be put back.
+    case ready(picks: [ClipboardPick], capturedAt: String, grown: Bool)
 
-    /// Identifies this clipboard: it changes with every Copy and Cut and with nothing else.
+    /// The clipboard holding `picks`, or empty without any.
+    public static func holding(_ picks: [ClipboardPick], capturedAt: String, grown: Bool) -> CopyPasteClipboard {
+        picks.isEmpty ? .empty : .ready(picks: picks, capturedAt: capturedAt, grown: grown)
+    }
+
+    /// Identifies this clipboard: it changes with every Copy and Cut (and Put Back) and with nothing else, so a
+    /// follow-up from before another Copy never changes what is on it now.
     public var capturedAt: String? {
-        if case .ready(_, _, _, let capturedAt) = self { return capturedAt }
+        if case .ready(_, let capturedAt, _) = self { return capturedAt }
         return nil
     }
 
-    public var mode: ClipboardMode? {
-        if case .ready(let mode, _, _, _) = self { return mode }
-        return nil
-    }
-
-    public var sourcePaths: [String] {
-        if case .ready(_, let paths, _, _) = self { return paths }
+    public var picks: [ClipboardPick] {
+        if case .ready(let picks, _, _) = self { return picks }
         return []
     }
 
-    public var sourceEntries: [String: ClipboardSourceEntry] {
-        if case .ready(_, _, let entries, _) = self { return entries }
-        return [:]
+    public var isGrown: Bool {
+        if case .ready(_, _, let grown) = self { return grown }
+        return false
     }
 
-    public var hasItems: Bool { !sourcePaths.isEmpty }
+    public var sourcePaths: [String] { picks.map(\.path) }
+
+    public var hasItems: Bool { !picks.isEmpty }
+
+    /// The intent every item shares: nil while empty, or while some are to be copied and others moved.
+    public var mode: ClipboardMode? {
+        guard let first = picks.first?.mode else { return nil }
+        return picks.allSatisfy { $0.mode == first } ? first : nil
+    }
+
+    /// Some items are to be copied and others moved.
+    public var isMixed: Bool { hasItems && mode == nil }
+
+    public var cutPaths: [String] { picks.filter { $0.mode == .cut }.map(\.path) }
+
+    public var copiedPaths: [String] { picks.filter { $0.mode == .copy }.map(\.path) }
+
+    /// The items pasted under a name of their own, as another has theirs.
+    public var renamedIfSharedPaths: [String] { picks.filter(\.renamedIfShared).map(\.path) }
+
+    /// The item at `path`, by its exact bytes.
+    public func pick(at path: String) -> ClipboardPick? {
+        picks.first { JSString.equals($0.path, path) }
+    }
 }
 
 /// A finished write, as the clipboard follows it (`WriteOperationResult`): its action, how a paste's items were put
@@ -67,48 +122,43 @@ public struct ClipboardWrite: Sendable {
     }
 }
 
-/// The clipboard's own rules: what Copy and Cut put on it, and how it follows what happens to its items.
+/// The clipboard's own rules: what Copy, Cut and the Adds put on it, and how it follows what happens to its items.
 public enum ClipboardRules {
-    /// The paths without repeats or empty ones, and what is known of each.
+    /// Copy or Cut: the paths without repeats, empty ones or any inside another, and what is known of each.
     public static func set(
         _ mode: ClipboardMode, _ sourcePaths: [String], capturedAt: String,
         entries: [String: ClipboardSourceEntry] = [:]
     ) -> CopyPasteClipboard {
-        var seen = Set<ExactKey>()
-        let paths = sourcePaths.filter { !$0.isEmpty && seen.insert(ExactKey($0)).inserted }
-        guard !paths.isEmpty else { return .empty }
-        var known: [String: ClipboardSourceEntry] = [:]
-        for path in paths {
-            if let entry = entries[path] { known[path] = entry }
+        let paths = Paths.withoutNestedPaths(sourcePaths.filter { !$0.isEmpty })
+        let picks = paths.map {
+            ClipboardPick(path: $0, mode: mode, entry: entry(entries, $0), markedAt: capturedAt)
         }
-        return .ready(mode: mode, sourcePaths: paths, sourceEntries: known, capturedAt: capturedAt)
+        return settled(.holding(picks, capturedAt: capturedAt, grown: false))
     }
 
     /// One item off the clipboard; `capturedAt` stays.
     public static func removeItem(_ clipboard: CopyPasteClipboard, _ path: String) -> CopyPasteClipboard {
-        guard case .ready(let mode, let paths, var entries, let capturedAt) = clipboard,
-            paths.contains(where: { JSString.equals($0, path) })
-        else { return clipboard }
-        let rest = paths.filter { !JSString.equals($0, path) }
-        guard !rest.isEmpty else { return .empty }
-        entries.removeValue(forKey: path)
-        return .ready(mode: mode, sourcePaths: rest, sourceEntries: entries, capturedAt: capturedAt)
+        removeItems(clipboard, [path])
+    }
+
+    /// Items off the clipboard, by their exact paths; `capturedAt` stays.
+    public static func removeItems(_ clipboard: CopyPasteClipboard, _ paths: [String]) -> CopyPasteClipboard {
+        guard case .ready(let picks, let capturedAt, let grown) = clipboard, !paths.isEmpty else { return clipboard }
+        let removed = Set(paths.map(ExactKey.init))
+        let rest = picks.filter { !removed.contains(ExactKey($0.path)) }
+        if rest.count == picks.count { return clipboard }
+        return settled(.holding(rest, capturedAt: capturedAt, grown: grown))
     }
 
     /// Items off the clipboard, with anything on it from inside them.
     public static func dropPaths(_ clipboard: CopyPasteClipboard, _ removedPaths: [String]) -> CopyPasteClipboard {
-        guard case .ready(let mode, let paths, let entries, let capturedAt) = clipboard, !removedPaths.isEmpty else {
+        guard case .ready(let picks, let capturedAt, let grown) = clipboard, !removedPaths.isEmpty else {
             return clipboard
         }
         let removed = Set(removedPaths.map(ExactKey.init))
-        let rest = paths.filter { deepestHolder($0, { removed.contains(ExactKey($0)) }) == nil }
-        if rest.count == paths.count { return clipboard }
-        guard !rest.isEmpty else { return .empty }
-        var kept: [String: ClipboardSourceEntry] = [:]
-        for path in rest {
-            if let entry = entries[path] { kept[path] = entry }
-        }
-        return .ready(mode: mode, sourcePaths: rest, sourceEntries: kept, capturedAt: capturedAt)
+        let rest = picks.filter { deepestHolder($0.path, { removed.contains(ExactKey($0)) }) == nil }
+        if rest.count == picks.count { return clipboard }
+        return settled(.holding(rest, capturedAt: capturedAt, grown: grown))
     }
 
     /// Follows items the app renamed or moved; `capturedAt` stays. Items the write left where
@@ -116,7 +166,7 @@ public enum ClipboardRules {
     public static func remapPaths(
         _ clipboard: CopyPasteClipboard, _ moves: [(from: String, to: String)], left: LeftInPlace = .nothing
     ) -> CopyPasteClipboard {
-        guard case .ready(let mode, let paths, let entries, let capturedAt) = clipboard, !moves.isEmpty else {
+        guard case .ready(let picks, let capturedAt, let grown) = clipboard, !moves.isEmpty else {
             return clipboard
         }
         var movesByFrom: [ExactKey: String] = [:]
@@ -124,18 +174,16 @@ public enum ClipboardRules {
             movesByFrom[ExactKey(move.from)] = move.to
         }
         var changed = false
-        var next: [String] = []
+        var next: [ClipboardPick] = []
         var kept = Set<ExactKey>()
-        var nextEntries: [String: ClipboardSourceEntry] = [:]
-        for path in paths {
-            let moved = remappedPath(path, movesByFrom, left) ?? path
-            if !JSString.equals(moved, path) { changed = true }
+        for var pick in picks {
+            let moved = remappedPath(pick.path, movesByFrom, left) ?? pick.path
+            if !JSString.equals(moved, pick.path) { changed = true }
             guard kept.insert(ExactKey(moved)).inserted else { continue }
-            next.append(moved)
-            if let entry = entries[path] { nextEntries[moved] = entry }
+            pick.path = moved
+            next.append(pick)
         }
-        return changed
-            ? .ready(mode: mode, sourcePaths: next, sourceEntries: nextEntries, capturedAt: capturedAt) : clipboard
+        return changed ? settled(.holding(next, capturedAt: capturedAt, grown: grown)) : clipboard
     }
 
     /// What a write that moved items left where they were: the items it skipped, or that failed or were stopped,
@@ -163,39 +211,102 @@ public enum ClipboardRules {
         return items.isEmpty ? .nothing : LeftInPlace(items: items, itemsAndHolders: holders)
     }
 
-    /// Copied items renamed or moved are followed, those put in the Trash or deleted
-    /// are taken off; a cut is cancelled once any of its items is renamed, moved, trashed or deleted. Only what
-    /// really happened counts.
+    /// Items renamed or moved are followed there, copied and cut ones alike, and those put in the Trash or deleted
+    /// are taken off, each on its own: the rest stay as they were put on. Only what really happened counts.
     public static func followThroughWrite(_ clipboard: CopyPasteClipboard, _ write: ClipboardWrite)
         -> CopyPasteClipboard
     {
         let moves =
-            WriteEffects.movedItems(write.action, cut: write.mode == .cut)
+            WriteEffects.movedItems(write.action, cut: write.mode == .cut, items: write.items)
             ? WriteEffects.followedMoves(write.action, items: write.items) : []
         let left = moves.isEmpty ? LeftInPlace.nothing : leftInPlace(by: write)
         let removed = WriteEffects.removedPaths(write.action, items: write.items, replacedPaths: write.replacedPaths)
-        return follow(clipboard, moves: moves, removed: removed, left: left)
+        // What was removed first: an item moved onto a removed item's path (a Replace) is followed there.
+        return remapPaths(dropPaths(clipboard, removed), moves, left: left)
     }
 
-    /// Items another app moved away or put in the Trash are taken off, and a cut
-    /// of any is cancelled.
+    /// Items another app moved away or put in the Trash are taken off, each on its own.
     public static func followThroughRemoval(_ clipboard: CopyPasteClipboard, _ removedPaths: [String])
         -> CopyPasteClipboard
     {
-        follow(clipboard, moves: [], removed: removedPaths, left: .nothing)
+        dropPaths(clipboard, removedPaths)
     }
 
-    private static func follow(
-        _ clipboard: CopyPasteClipboard, moves: [(from: String, to: String)], removed: [String], left: LeftInPlace
-    ) -> CopyPasteClipboard {
-        guard case .ready(let mode, let paths, _, _) = clipboard else { return clipboard }
-        if mode == .cut {
-            let changed = Set(moves.map { ExactKey($0.from) } + removed.map(ExactKey.init))
-            let touched = paths.contains { deepestHolder($0, { changed.contains(ExactKey($0)) }) != nil }
-            return touched ? .empty : clipboard
+    /// A paste of this clipboard that moved items has ended: it used the clipboard up. What it pasted, moved or
+    /// copied, leaves; what it didn't get to (skipped, failed, stopped) stays as it was put on, to be tried again. The
+    /// items gathered were one job, and copies left behind would make a later ⌘V paste part of it. A paste that moved
+    /// nothing leaves the clipboard as it is, its copies to be pasted again, as after a Copy.
+    public static func afterItsPaste(_ clipboard: CopyPasteClipboard, _ write: ClipboardWrite) -> CopyPasteClipboard {
+        let wholeMove = WriteEffects.movedItems(write.action, cut: write.mode == .cut)
+        let done = write.items.filter { item in
+            guard item.status == .completed, let source = item.sourcePath else { return false }
+            return !source.isEmpty
         }
-        // What was removed first: an item moved onto a removed item's path (a Replace) is followed there.
-        return remapPaths(dropPaths(clipboard, removed), moves, left: left)
+        guard done.contains(where: { $0.mode.map { $0 == .cut } ?? wholeMove }) else { return clipboard }
+        return removeItems(clipboard, done.compactMap(\.sourcePath))
+    }
+
+    /// The items at `paths` are to be copied or moved as `mode` says from now on; their marks flash (`markedAt`).
+    public static func setMode(
+        _ clipboard: CopyPasteClipboard, _ paths: [String], to mode: ClipboardMode, at markedAt: String
+    ) -> CopyPasteClipboard {
+        guard case .ready(var picks, let capturedAt, let grown) = clipboard else { return clipboard }
+        let changing = Set(paths.map(ExactKey.init))
+        var changed = false
+        for index in picks.indices where changing.contains(ExactKey(picks[index].path)) && picks[index].mode != mode {
+            picks[index].mode = mode
+            picks[index].markedAt = markedAt
+            changed = true
+        }
+        return changed ? .ready(picks: picks, capturedAt: capturedAt, grown: grown) : clipboard
+    }
+
+    /// The item at `path` keeps its own name, and the one of its name that kept it is pasted under a name of its own
+    /// instead (Use This One Instead, from the row of an item kept beside another).
+    public static func keepName(_ clipboard: CopyPasteClipboard, of path: String) -> CopyPasteClipboard {
+        guard case .ready(var picks, let capturedAt, let grown) = clipboard,
+            let index = picks.firstIndex(where: { JSString.equals($0.path, path) }), picks[index].renamedIfShared
+        else { return clipboard }
+        let key = sharedNameKey(path)
+        for other in picks.indices where other != index && sharedNameKey(picks[other].path) == key {
+            picks[other].renamedIfShared = true
+        }
+        picks[index].renamedIfShared = false
+        return .ready(picks: picks, capturedAt: capturedAt, grown: grown)
+    }
+
+    // MARK: Two items of one name
+
+    /// How two names are told apart when pasted into one folder, as most Macs' disks tell them: whatever their
+    /// letter case, and however an accented letter is stored.
+    public static func sharedNameKey(_ path: String) -> NameKeys.Exact {
+        NameKeys.exactDestinationKey(PathText.leafName(path))
+    }
+
+    /// Whether the item at `path` will be pasted under a name of its own, as another item has its name.
+    public static func isPastedUnderAnotherName(_ clipboard: CopyPasteClipboard, _ path: String) -> Bool {
+        guard let pick = clipboard.pick(at: path), pick.renamedIfShared else { return false }
+        let key = sharedNameKey(path)
+        return clipboard.picks.contains { !JSString.equals($0.path, path) && sharedNameKey($0.path) == key }
+    }
+
+    /// The marks of items kept beside another of their name, put right after items came off or changed name: a name
+    /// that no unmarked item keeps any more is kept by the first marked item of it, which then needs no name of its
+    /// own. So a mark always means the item is pasted under another name.
+    static func settled(_ clipboard: CopyPasteClipboard) -> CopyPasteClipboard {
+        guard case .ready(var picks, let capturedAt, let grown) = clipboard, picks.contains(where: \.renamedIfShared)
+        else { return clipboard }
+        var keptBy = Set<NameKeys.Exact>()
+        for pick in picks where !pick.renamedIfShared {
+            keptBy.insert(sharedNameKey(pick.path))
+        }
+        for index in picks.indices where picks[index].renamedIfShared {
+            let key = sharedNameKey(picks[index].path)
+            if keptBy.insert(key).inserted {
+                picks[index].renamedIfShared = false
+            }
+        }
+        return .ready(picks: picks, capturedAt: capturedAt, grown: grown)
     }
 
     // MARK: Paths
@@ -246,5 +357,10 @@ public enum ClipboardRules {
         guard JSString.hasPrefix(path, source + "/") else { return path }
         let units = Array(path.utf16)
         return destination + JSString.string(units[source.utf16.count...])
+    }
+
+    /// What is known of the item at `path`.
+    static func entry(_ entries: [String: ClipboardSourceEntry], _ path: String) -> ClipboardSourceEntry? {
+        entries[path]
     }
 }

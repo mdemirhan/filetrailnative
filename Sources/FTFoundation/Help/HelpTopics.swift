@@ -227,6 +227,16 @@ extension HelpContent {
                                 "Paste and New Folder go into the folder you are browsing, whatever is selected. To paste into another folder, or make a folder inside it, right-click that folder. Files you copy or cut here paste only in File Trail, not in Finder or other apps, and files copied in Finder don't paste here: drag them between apps instead."
                         ),
                         HelpRow(
+                            label: "Gathering from several folders",
+                            description:
+                                "{addToCopied} and {addToCut} add the selected items to what is on the clipboard, where Copy and Cut start over. Go from folder to folder adding what you need, then paste once: each item is copied or moved as you added it, in one paste you can undo in one step. Once pasted, the clipboard is clear but for anything that couldn't be moved. The clipboard's list (the toolbar's button, or {showClipboard}) shows the items to move apart from those to copy; click an item's icon there to switch it, or right-click it. When an item you add has the name of one already on the clipboard, you choose to keep both (the one added is pasted under a name of its own), to use the new one instead, or not to add it. If Copy or Cut replaces a clipboard you built this way, Put Back brings it back."
+                        ),
+                        HelpRow(
+                            label: "Move instead of copy",
+                            description:
+                                "{moveItemsHere} moves everything on the clipboard into the folder you are browsing, copied items too, as Option-Command-V does after Copy in Finder."
+                        ),
+                        HelpRow(
                             label: "Move to a folder",
                             description:
                                 "{moveSelection} asks where to move the selected items. It opens on the folder you are in, its path selected: type a few letters to find another folder instead, or change the path. The other pane's folder comes first, then the folders you move or extract into most and the folders you open. A click puts a folder in the field, and a double-click or Return moves the items there. A folder that doesn't exist yet can be made on the way: the button becomes Create and Move."
@@ -259,7 +269,7 @@ extension HelpContent {
                         HelpRow(
                             label: "What was copied",
                             description:
-                                "Copied and cut items flash, then keep a copy or cut icon after their name, and cut items are dimmed. Cut items lose the mark once they are pasted; copied ones keep it, to be pasted again, until you copy or cut something else. A button with their count appears in the toolbar: click it to list them, show one in its folder, take one off, or choose Clear Clipboard. Turn off Mark copied and cut items in Settings → General to hide the marks."
+                                "Copied and cut items flash, then keep a copy or cut icon after their name, and cut items are dimmed. Cut items lose the mark once they are pasted; copied ones keep it, to be pasted again, until you copy or cut something else. An item renamed or moved in File Trail stays on the clipboard where it went; one moved to the Trash comes off, and the rest stay as they were. A button with their count appears in the toolbar: click it to list them, show one in its folder, take one off, or choose Clear Clipboard. Turn off Mark copied and cut items in Settings → General to hide the marks."
                         ),
                         HelpRow(
                             label: "Drag",
@@ -826,6 +836,16 @@ extension HelpContent {
         HelpShortcutItem(
             group: .files, .command(.shareSelection),
             "Send the selected items by AirDrop, Mail, Messages or another way macOS offers"),
+        HelpShortcutItem(
+            group: .files, .command(.addToCopied), "Add the selected items to the clipboard, to be copied with the rest"
+        ),
+        HelpShortcutItem(
+            group: .files, .command(.addToCut), "Add the selected items to the clipboard, to be moved with the rest"),
+        HelpShortcutItem(
+            group: .files, .command(.moveItemsHere), "Move everything on the clipboard here, copied items too"),
+        HelpShortcutItem(
+            group: .files, .command(.removeFromClipboard), "Take the selected items off the clipboard, keeping the rest"
+        ),
         HelpShortcutItem(group: .files, .command(.showClipboard), "See what is waiting to be pasted"),
         HelpShortcutItem(group: .files, .command(.clearClipboard), "Forget the items waiting to be pasted"),
         HelpShortcutItem(

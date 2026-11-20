@@ -84,7 +84,7 @@ Found by reading the code and confirmed there; not fixed yet.
 - **The sign in a toast's icon is drawn in the menu's background color**, as the opaque card had it; on glass it should be cut out of the disc.
 - **Each key press in the sidebar builds the tree's rows again** (`SidebarModel.keyContext`).
 - **One menu test may depend on the tests before it**: `CommandRoutesTests`' check that the menu reads the window it is asked about was seen to fail when all of FTAppKitTests ran in one process (the menu falls back to the window in front). `scripts/ci.sh` runs it in its own group, where it passes; it hasn't been tried in one process since the tests were regrouped.
-- **In the code**: `Metrics` has members only its tests read; `ClipboardMode` and `CopyPasteMode` are two enums with the same cases, and `WriteOperationOutcome`/`WriteOperationProgress` might give way to `WriteOperationEvent`; `SidebarIcons.symbol` and `drawFavorite` repeat `SymbolGlyph`, but draw a translucent color differently.
+- **In the code**: `Metrics` has members only its tests read; `WriteOperationOutcome`/`WriteOperationProgress` might give way to `WriteOperationEvent`; `SidebarIcons.symbol` and `drawFavorite` repeat `SymbolGlyph`, but draw a translucent color differently.
 
 ## Why there is no Put Back
 

@@ -68,16 +68,27 @@ struct CopyPasteClipboardTests {
                 .copy, ["/tmp/a", "/tmp/a", "/tmp/b"], capturedAt: Self.now,
                 entries: ["/tmp/a": file(.directory), "/tmp/elsewhere": file()])
                 == .ready(
-                    mode: .copy, sourcePaths: ["/tmp/a", "/tmp/b"], sourceEntries: ["/tmp/a": file(.directory)],
-                    capturedAt: Self.now))
+                    picks: [
+                        ClipboardPick(path: "/tmp/a", mode: .copy, entry: file(.directory), markedAt: Self.now),
+                        ClipboardPick(path: "/tmp/b", mode: .copy, markedAt: Self.now),
+                    ], capturedAt: Self.now, grown: false))
         #expect(ClipboardRules.set(.copy, ["", ""], capturedAt: Self.now) == .empty)
+    }
+
+    /// An item inside another put on with it goes with that one: it isn't on the clipboard twice.
+    @Test func leavesOutAnItemInsideAnotherPutOnWithIt() {
+        #expect(ClipboardRules.set(.copy, ["/tmp/a/x", "/tmp/a"], capturedAt: Self.now).sourcePaths == ["/tmp/a"])
     }
 
     @Test func takesOneItemOffTheClipboardAndEmptiesItWithTheLast() {
         let clipboard = ClipboardRules.set(
             .cut, ["/tmp/a", "/tmp/b"], capturedAt: Self.now, entries: ["/tmp/a": file(.directory)])
         let withoutA = ClipboardRules.removeItem(clipboard, "/tmp/a")
-        #expect(withoutA == .ready(mode: .cut, sourcePaths: ["/tmp/b"], sourceEntries: [:], capturedAt: Self.now))
+        #expect(
+            withoutA
+                == .ready(
+                    picks: [ClipboardPick(path: "/tmp/b", mode: .cut, markedAt: Self.now)], capturedAt: Self.now,
+                    grown: false))
         #expect(ClipboardRules.removeItem(withoutA, "/tmp/missing") == withoutA)
         #expect(ClipboardRules.removeItem(withoutA, "/tmp/b") == .empty)
     }
@@ -110,12 +121,9 @@ struct CopyPasteClipboardTests {
             clipboard,
             [("/Users/demo/report.pdf", "/Users/demo/final.pdf"), ("/Users/demo/Folder", "/Users/demo/Archive")])
         #expect(
-            next
-                == .ready(
-                    mode: .copy,
-                    sourcePaths: ["/Users/demo/final.pdf", "/Users/demo/Archive/inner.txt", "/Users/demo/other.txt"],
-                    sourceEntries: ["/Users/demo/final.pdf": file(), "/Users/demo/Archive/inner.txt": file()],
-                    capturedAt: Self.now))
+            next.sourcePaths == ["/Users/demo/final.pdf", "/Users/demo/Archive/inner.txt", "/Users/demo/other.txt"])
+        #expect(next.picks.map(\.entry) == [file(), file(), nil])
+        #expect(next.capturedAt == Self.now)
         // A path that only starts with the same letters is another item.
         #expect(ClipboardRules.remapPaths(clipboard, [("/Users/demo/Fold", "/Users/demo/X")]) == clipboard)
     }
@@ -123,8 +131,9 @@ struct CopyPasteClipboardTests {
     @Test func dropsTrashedItemsAndAnythingInsideThem() {
         #expect(
             ClipboardRules.dropPaths(clipboard, ["/Users/demo/Folder", "/Users/demo/report.pdf"])
-                == .ready(mode: .copy, sourcePaths: ["/Users/demo/other.txt"], sourceEntries: [:], capturedAt: Self.now)
-        )
+                == .ready(
+                    picks: [ClipboardPick(path: "/Users/demo/other.txt", mode: .copy, markedAt: Self.now)],
+                    capturedAt: Self.now, grown: false))
         #expect(ClipboardRules.dropPaths(clipboard, ["/Users/demo"]) == .empty)
         #expect(ClipboardRules.dropPaths(clipboard, ["/Users/demo/Fold"]) == clipboard)
     }
@@ -180,9 +189,12 @@ struct CopyPasteClipboardTests {
     }
 
     @Test func leavesItemsWhereAMergeLeftThemWithTheFoldersHoldingThem() {
-        let copied = ClipboardRules.set(
-            .copy, ["/src/F/a", "/src/F/b", "/src/F/sub", "/src/F/sub/c/d", "/src/F/other/e", "/src/G"],
-            capturedAt: Self.now)
+        // Put on as it was before the clipboard kept folders and the items in them apart: how a moved folder's
+        // items are followed doesn't depend on that.
+        let copied = CopyPasteClipboard.ready(
+            picks: ["/src/F/a", "/src/F/b", "/src/F/sub", "/src/F/sub/c/d", "/src/F/other/e", "/src/G"].map {
+                ClipboardPick(path: $0, mode: .copy, markedAt: Self.now)
+            }, capturedAt: Self.now, grown: false)
         let items: [(String?, String?, WriteItemEndStatus)] = [
             ("/src/F", "/dst/F", .completed), ("/src/F/a", "/dst/F/a", .skipped),
             ("/src/F/b", "/dst/F/b", .completed),
@@ -209,12 +221,14 @@ struct CopyPasteClipboardTests {
             .sourcePaths == ["/dst/F/b"])
     }
 
-    @Test func cancelsACutWhenAReplaceRemovesAnItemInIt() {
-        let cut = ClipboardRules.set(.cut, ["/Users/demo/report.pdf"], capturedAt: Self.now)
+    @Test func takesOffACutItemAReplaceRemovedAndKeepsTheRestCut() {
+        let cut = ClipboardRules.set(.cut, ["/Users/demo/report.pdf", "/Users/demo/other.txt"], capturedAt: Self.now)
         let pasted = write(
             .paste, mode: .copy, replaced: ["/Users/demo/report.pdf"],
             [("/tmp/report.pdf", "/Users/demo/report.pdf", .completed)])
-        #expect(ClipboardRules.followThroughWrite(cut, pasted) == .empty)
+        let followed = ClipboardRules.followThroughWrite(cut, pasted)
+        #expect(followed.sourcePaths == ["/Users/demo/other.txt"])
+        #expect(followed.mode == .cut)
     }
 
     @Test func followsItemsAPasteAfterCutMoved() {
@@ -224,18 +238,39 @@ struct CopyPasteClipboardTests {
                 == ["/Users/demo/report.pdf", "/Volumes/Backup/Folder/inner.txt", "/Users/demo/other.txt"])
     }
 
-    @Test func cancelsAWholeCutOnceAnyItemInItIsRenamedMovedOrDeleted() {
+    /// A cut item renamed or moved in the app is followed and stays cut; one put in the Trash or deleted comes off
+    /// alone; the others stay as they were. (A cut used to be cancelled whole by any of these.)
+    @Test func followsEachCutItemOnItsOwnAndKeepsTheRestCut() {
         let cut = ClipboardRules.set(
             .cut, ["/Users/demo/report.pdf", "/Users/demo/Folder/inner.txt", "/Users/demo/other.txt"],
             capturedAt: Self.now)
-        for result in [
-            write(.rename, [("/Users/demo/report.pdf", "/Users/demo/final.pdf", .completed)]),
-            write(.moveTo, [("/Users/demo/Folder", "/Volumes/Backup/Folder", .completed)]),
-            write(.batchRename, [("/Users/demo/other.txt", "/Users/demo/other 2.txt", .failed)]),
-            write(.trash, [("/Users/demo/other.txt", nil, .completed)]),
-            write(.deleteImmediately, [("/Users/demo/report.pdf", nil, .completed)]),
-        ] {
-            #expect(ClipboardRules.followThroughWrite(cut, result) == .empty)
+        let expected: [(ClipboardWrite, [String])] = [
+            (
+                write(.rename, [("/Users/demo/report.pdf", "/Users/demo/final.pdf", .completed)]),
+                ["/Users/demo/final.pdf", "/Users/demo/Folder/inner.txt", "/Users/demo/other.txt"]
+            ),
+            (
+                write(.moveTo, [("/Users/demo/Folder", "/Volumes/Backup/Folder", .completed)]),
+                ["/Users/demo/report.pdf", "/Volumes/Backup/Folder/inner.txt", "/Users/demo/other.txt"]
+            ),
+            (
+                write(.batchRename, [("/Users/demo/other.txt", "/Users/demo/other 2.txt", .failed)]),
+                ["/Users/demo/report.pdf", "/Users/demo/Folder/inner.txt", "/Users/demo/other 2.txt"]
+            ),
+            (
+                write(.trash, [("/Users/demo/other.txt", nil, .completed)]),
+                ["/Users/demo/report.pdf", "/Users/demo/Folder/inner.txt"]
+            ),
+            (
+                write(.deleteImmediately, [("/Users/demo/report.pdf", nil, .completed)]),
+                ["/Users/demo/Folder/inner.txt", "/Users/demo/other.txt"]
+            ),
+        ]
+        for (result, paths) in expected {
+            let followed = ClipboardRules.followThroughWrite(cut, result)
+            #expect(followed.sourcePaths == paths)
+            #expect(followed.mode == .cut)
+            #expect(followed.capturedAt == Self.now)
         }
         for result in [
             write(
@@ -267,11 +302,11 @@ struct CopyPasteClipboardTests {
         #expect(seconds < 5)
     }
 
-    @Test func dropsItemsAnotherAppTookAwayAndCancelsACutOfAny() {
+    @Test func dropsItemsAnotherAppTookAwayEachOnItsOwn() {
         let removed = ClipboardRules.followThroughRemoval(clipboard, ["/Users/demo/other.txt"])
         #expect(removed.sourcePaths == ["/Users/demo/report.pdf", "/Users/demo/Folder/inner.txt"])
         let cut = ClipboardRules.set(.cut, ["/a/x", "/a/y"], capturedAt: Self.now)
-        #expect(ClipboardRules.followThroughRemoval(cut, ["/a/y"]) == .empty)
+        #expect(ClipboardRules.followThroughRemoval(cut, ["/a/y"]).sourcePaths == ["/a/x"])
         #expect(ClipboardRules.followThroughRemoval(cut, ["/a/z"]) == cut)
     }
 

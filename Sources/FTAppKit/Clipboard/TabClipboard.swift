@@ -27,18 +27,20 @@ final class TabClipboard {
         return ClipboardMarks(tab.services.clipboard.contents, enabled: tab.preferences.markClipboardItems)
     }
 
-    /// The clipboard or the setting changed: the rows mark it again, and flash for a new Copy or Cut.
+    /// The clipboard or the setting changed: the rows mark it again, and flash: every mark for a new Copy, Cut or Put
+    /// Back, the marks an Add put on or switched for an Add.
     func marksChanged() {
         guard let tab else { return }
         let contents = tab.services.clipboard.contents
-        let flashes = flash.changed(to: contents)
-        let marks = marks
-        for pane in tab.panes { pane.content.clipboardMarksChanged(marks, flash: flashes && marks != nil) }
-        tab.sidebarController.clipboardMarksChanged(marks, flash: flashes && marks != nil)
+        let flashing = flash.changed(to: contents)
+        let marks = marks?.flashing(flashing.paths)
+        let flashes = flashing != .none && marks != nil
+        for pane in tab.panes { pane.content.clipboardMarksChanged(marks, flash: flashes) }
+        tab.sidebarController.clipboardMarksChanged(marks, flash: flashes)
         // An emptied clipboard closes its list (and a later Copy doesn't open it again).
         if let menu {
             if let summary = ClipboardRules.describe(contents) {
-                menu.update(summary)
+                menu.update(summary, putBackCount: putBackCount)
                 list?.setSize(menu.fittingSize(viewportWidth: Double(tab.window?.contentView?.bounds.width ?? 0)))
             } else {
                 close()
@@ -77,7 +79,7 @@ final class TabClipboard {
             shortcuts: ShortcutCommands.resolve(tab.preferences.shortcutOverrides),
             returnKeyAction: tab.preferences.returnKeyAction)
         let hint = display.label(.paste).map { "Paste with \($0)" } ?? "Ready to paste"
-        let view = ClipboardMenuView(summary: summary, pasteHint: hint)
+        let view = ClipboardMenuView(summary: summary, pasteHint: hint, putBackCount: putBackCount)
         view.iconStore = tab.services.iconStore
         view.onReveal = { [weak self] path in
             self?.close()
@@ -85,6 +87,9 @@ final class TabClipboard {
         }
         view.onRemove = { [weak self] path in self?.remove(path) }
         view.onClear = { [weak self] in self?.tab?.clearClipboard() }
+        view.onPutBack = { [weak self] in self?.tab?.putBackClipboard() }
+        view.onSetMode = { [weak self] path, mode in self?.tab?.setClipboardMode([path], to: mode) }
+        view.onKeepName = { [weak self] path in self?.tab?.keepClipboardName(of: path) }
         menu = view
         let list = ToolbarListPopover(
             content: view, size: view.fittingSize(viewportWidth: Double(host.bounds.width)),
@@ -138,7 +143,15 @@ final class TabClipboard {
         case .clear:
             tab?.clearClipboard()
             return true
+        case .putBack:
+            tab?.putBackClipboard()
+            return true
         }
+    }
+
+    /// How many items Put Back would bring back, or nil.
+    private var putBackCount: Int? {
+        tab?.services.clipboard.previous.map(\.picks.count)
     }
 
     /// The × of an item: only it goes; the list stays open.
@@ -252,6 +265,44 @@ extension MainWindowController {
             Task { await actions.pasteFromClipboard(into: destination) }
         default: break
         }
+    }
+}
+
+extension MainWindowController {
+    /// What the right-click menu does with the clipboard: the Adds take the menu's items (the folder of a tree row),
+    /// the other intent and Remove act on those of them on the clipboard.
+    func contextMenuClipboardAction(_ action: ContextMenuActionID, _ subject: ContextMenuSubject) {
+        guard !subject.paths.isEmpty else { return }
+        switch action {
+        case .addToCopied, .addToCut:
+            addToClipboard(
+                action == .addToCut ? .cut : .copy, paths: subject.paths, entries: contextMenuClipboardEntries(subject))
+        case .switchClipboardMode:
+            let contents = services.clipboard.contents
+            guard let mode = subject.paths.compactMap({ contents.pick(at: $0)?.mode }).first else { return }
+            setClipboardMode(subject.paths, to: mode == .cut ? .copy : .cut)
+        case .removeFromClipboard:
+            removeFromClipboard(subject.paths)
+        default:
+            break
+        }
+    }
+
+    /// What Copy records of a right-click menu's items, as `contextMenuFileOperation` does.
+    private func contextMenuClipboardEntries(_ subject: ContextMenuSubject) -> [String: ClipboardSourceEntry] {
+        let tree = subject.surface == .treeFolder || subject.surface == .favorite
+        var entries: [String: ClipboardSourceEntry] = [:]
+        for entry in subject.entries {
+            entries[entry.path] = ClipboardSourceEntry(kind: tree ? .directory : entry.kind, isSymlink: false)
+        }
+        if !tree {
+            let listed = Set(subject.paths.map(PathBox.init))
+            for entry in content.entries where listed.contains(PathBox(entry.path)) {
+                entries[entry.path] = ClipboardSourceEntry(
+                    kind: entry.kind.rules, isSymlink: entry.isSymlink, isExecutable: entry.isExecutable)
+            }
+        }
+        return entries
     }
 }
 

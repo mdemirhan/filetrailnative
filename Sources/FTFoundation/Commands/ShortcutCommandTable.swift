@@ -103,6 +103,10 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case copyPath
     case copyContents
     case shareSelection
+    case addToCopied
+    case addToCut
+    case moveItemsHere
+    case removeFromClipboard
     case showClipboard
     case clearClipboard
     case openInTerminal
@@ -380,7 +384,20 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .shareSelection, label: "Share\u{2026}", group: .files, defaults: [], menuPath: "File > Share\u{2026}"),
         ShortcutCommandDefinition(
-            id: .showClipboard, label: "Show Clipboard", group: .files, defaults: [], menuPath: "Edit > Show Clipboard"),
+            id: .addToCopied, label: "Add to Copied Items", group: .files, defaults: ["Ctrl+Cmd+C"],
+            menuPath: "Edit > Add to Copied Items"),
+        ShortcutCommandDefinition(
+            id: .addToCut, label: "Add to Cut Items", group: .files, defaults: ["Ctrl+Cmd+X"],
+            menuPath: "Edit > Add to Cut Items"),
+        ShortcutCommandDefinition(
+            id: .moveItemsHere, label: "Move Items Here", group: .files, defaults: ["Cmd+Option+V"],
+            menuPath: "Edit > Move Items Here"),
+        ShortcutCommandDefinition(
+            id: .removeFromClipboard, label: "Remove from Clipboard", group: .files, defaults: [],
+            menuPath: "Edit > Remove from Clipboard"),
+        ShortcutCommandDefinition(
+            id: .showClipboard, label: "Show Clipboard", group: .files, defaults: ["Ctrl+Cmd+V"],
+            menuPath: "Edit > Show Clipboard"),
         ShortcutCommandDefinition(
             id: .clearClipboard, label: "Clear Clipboard", group: .files, defaults: [],
             menuPath: "Edit > Clear Clipboard"),

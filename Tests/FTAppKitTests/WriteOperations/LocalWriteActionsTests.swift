@@ -580,8 +580,7 @@ private final class Fixture {
         var emptied = 0
         let trashed = fixture.path(".Trash/old.txt")
         fixture.clipboard.set(
-            .ready(
-                mode: .copy, sourcePaths: [trashed, fixture.path("kept.txt")], sourceEntries: [:], capturedAt: "t1"),
+            ClipboardRules.set(.copy, [trashed, fixture.path("kept.txt")], capturedAt: "t1"),
             from: nil)
 
         fixture.answers = [false]
@@ -597,11 +596,7 @@ private final class Fixture {
         fixture.answers = [true]
         _ = await actions.emptyTrash()
         #expect(emptied == 1)
-        guard case .ready(_, let kept, _, _) = fixture.clipboard.contents else {
-            Issue.record("the clipboard was emptied")
-            return
-        }
-        #expect(kept == [fixture.path("kept.txt")])
+        #expect(fixture.clipboard.contents.sourcePaths == [fixture.path("kept.txt")])
         await fixture.close()
     }
 

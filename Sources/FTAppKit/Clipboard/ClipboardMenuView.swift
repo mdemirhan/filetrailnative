@@ -1,12 +1,15 @@
-// The clipboard's list under its button, in a system popover, with the count, the hint, the items under their folders,
-// and Clear Clipboard
+// The clipboard's list under its button, in a system popover, with the count, the hint, the items under their folders
+// (cut ones and copied ones apart when it holds both), Clear Clipboard, and Put Back after a Copy or Cut replaced a
+// clipboard built with Add
 import AppKit
 import FTFileSystem
 import FTFoundation
 
 /// The content of the clipboard menu: the header, the breakdown, the list of ten 24 pt rows (virtualized, the top
-/// folder heading pinned over it, a scrollbar of its own while it scrolls), and Clear Clipboard. The system's popover
-/// draws what is behind it. The keyboard never goes into it: the keys come to it through the window while it is open.
+/// folder heading pinned over it, a scrollbar of its own while it scrolls), Clear Clipboard and, when there is one to
+/// put back, Put Back. On a clipboard holding both, the list is in two parts, Cut then Copied, as ⌘V runs. Each row
+/// has its mark, which switches it between the two, and a menu of its own. The system's popover draws what is behind
+/// it. The keyboard never goes into it: the keys come to it through the window while it is open.
 final class ClipboardMenuView: NSView {
     private(set) var model: ClipboardMenuModel
     private(set) var summary: FTFoundation.ClipboardSummary
@@ -15,6 +18,11 @@ final class ClipboardMenuView: NSView {
     var onReveal: (String) -> Void = { _ in }
     var onRemove: (String) -> Void = { _ in }
     var onClear: () -> Void = {}
+    var onPutBack: () -> Void = {}
+    /// The item is to be copied or moved as the mode says from now on.
+    var onSetMode: (String, ClipboardMode) -> Void = { _, _ in }
+    /// The item keeps its own name, and the other of its name is pasted under another (Use This One Instead).
+    var onKeepName: (String) -> Void = { _ in }
     var iconStore: FileIconStore?
 
     private let title = ClipboardMenuText(identifier: "clipboardPopover.title")
@@ -23,25 +31,28 @@ final class ClipboardMenuView: NSView {
     private let list = ClipboardMenuList()
     private let pinned = ClipboardMenuHeadingRow(pinned: true)
     private let clear = ClipboardMenuClearRow()
+    private let putBack = ClipboardMenuClearRow(identifier: "clipboardPopover.putBack")
     private var rowViews: [Int: NSView] = [:]
 
     private static var padding: Double { DesignTokens.menu.padding }
     private static var border: Double { DesignTokens.menu.borderWidth }
 
-    init(summary: FTFoundation.ClipboardSummary, pasteHint: String) {
+    init(summary: FTFoundation.ClipboardSummary, pasteHint: String, putBackCount: Int? = nil) {
         self.summary = summary
         self.pasteHint = pasteHint
-        model = ClipboardMenuModel(items: summary.items)
+        model = ClipboardMenuModel(items: summary.items, putBackCount: putBackCount)
         super.init(frame: .zero)
         setAccessibilityElement(true)
         setAccessibilityRole(.menu)
         setAccessibilityLabel("Clipboard")
         setAccessibilityIdentifier("clipboardPopover")
-        for view in [title, hint, breakdown, list, pinned, clear] as [NSView] { addSubview(view) }
+        for view in [title, hint, breakdown, list, pinned, clear, putBack] as [NSView] { addSubview(view) }
         list.onScroll = { [weak self] delta in self?.scroll(by: delta) }
         pinned.onScroll = { [weak self] delta in self?.scroll(by: delta) }
         clear.onHover = { [weak self] in self?.setActive(self?.model.clearIndex ?? -1) }
         clear.onClick = { [weak self] in self?.onClear() }
+        putBack.onHover = { [weak self] in self?.setActive(self?.model.putBackIndex ?? -1) }
+        putBack.onClick = { [weak self] in self?.onPutBack() }
         model.opened()
         apply()
     }
@@ -53,9 +64,9 @@ final class ClipboardMenuView: NSView {
     // MARK: Contents
 
     /// The clipboard changed while the menu is open: the active row keeps its place.
-    func update(_ summary: FTFoundation.ClipboardSummary) {
+    func update(_ summary: FTFoundation.ClipboardSummary, putBackCount: Int? = nil) {
         self.summary = summary
-        model.setItems(summary.items)
+        model.setItems(summary.items, putBackCount: putBackCount)
         let height = model.contentHeight - model.listHeight
         model.scrollTop = max(0, min(model.scrollTop, height))
         apply()
@@ -68,11 +79,17 @@ final class ClipboardMenuView: NSView {
         title.textColor = NSColor(palette.contextMenuText)
         hint.set(pasteHint, font: ChromeColors.font(size: DesignTokens.typeScale.small))
         hint.textColor = NSColor(palette.contextMenuShortcut)
-        breakdown.isHidden = summary.breakdown == nil
-        breakdown.set(summary.breakdown ?? "", font: ChromeColors.font(size: DesignTokens.typeScale.small))
+        let details = [summary.intentLabel, summary.breakdown].compactMap { $0 }
+        breakdown.isHidden = details.isEmpty
+        breakdown.set(
+            details.joined(separator: " \u{B7} "), font: ChromeColors.font(size: DesignTokens.typeScale.small))
         breakdown.textColor = NSColor(palette.contextMenuShortcut)
         clear.isActive = model.activeIndex == model.clearIndex
         clear.applyTheme(theme)
+        putBack.isHidden = model.putBackCount == nil
+        putBack.title = ClipboardTexts.putBackTitle(model.putBackCount ?? 0)
+        putBack.isActive = model.activeIndex == model.putBackIndex
+        putBack.applyTheme(theme)
         needsLayout = true
         layoutSubtreeIfNeeded()
         drawRows()
@@ -88,10 +105,12 @@ final class ClipboardMenuView: NSView {
             let name = ceil((item.name as NSString).size(withAttributes: [.font: font]).width)
             content = max(
                 content,
-                layout.itemPaddingLeading + layout.itemIconSize + layout.itemIconGap + name + layout.removeSize
-                    + layout.itemPaddingTrailing + (model.scrolls ? layout.scrollbarWidth : 0))
+                layout.itemPaddingLeading + layout.itemIconSize + layout.itemIconGap + name
+                    + ClipboardMenuItemRow.noteWidth(item) + 2 * layout.removeSize + layout.itemPaddingTrailing
+                    + (model.scrolls ? layout.scrollbarWidth : 0))
         }
         content = max(content, clear.naturalWidth)
+        if !putBack.isHidden { content = max(content, putBack.naturalWidth) }
         let maxWidth = min(layout.maxWidth, viewportWidth - layout.viewportInset)
         let width = max(layout.minWidth, min(maxWidth, content + 2 * Self.padding + 2 * Self.border))
         return NSSize(width: width, height: totalHeight)
@@ -110,7 +129,7 @@ final class ClipboardMenuView: NSView {
 
     private var totalHeight: Double {
         2 * Self.padding + 2 * Self.border + headerHeight + 2 * separatorHeight + model.listHeight
-            + DesignTokens.menu.rowHeight
+            + DesignTokens.menu.rowHeight * (model.putBackCount == nil ? 1 : 2)
     }
 
     // MARK: Layout and drawing
@@ -147,6 +166,8 @@ final class ClipboardMenuView: NSView {
         pinned.frame = NSRect(x: inset, y: y, width: pinnedWidth, height: layout.rowHeight)
         y += model.listHeight + separatorHeight
         clear.frame = NSRect(x: inset, y: y, width: width, height: DesignTokens.menu.rowHeight)
+        y += DesignTokens.menu.rowHeight
+        putBack.frame = NSRect(x: inset, y: y, width: width, height: DesignTokens.menu.rowHeight)
         drawRows()
     }
 
@@ -168,7 +189,7 @@ final class ClipboardMenuView: NSView {
         let drawn = model.drawnRows
         let height = ClipboardLayout.Menu.rowHeight
         // The popover's glass shows through the pinned heading: the rows stop under it rather than passing behind.
-        let hiddenTop = model.pinnedHeading == nil ? 0 : height
+        let hiddenTop = model.pinnedRow == nil ? 0 : height
         list.hiddenTop = hiddenTop
         let width = list.bounds.width - (model.scrolls ? ClipboardLayout.Menu.scrollbarWidth : 0)
         for (index, view) in rowViews where !drawn.contains(index) {
@@ -193,28 +214,33 @@ final class ClipboardMenuView: NSView {
             shown.frame = NSRect(
                 x: 0, y: Double(index) * height - model.scrollTop - hiddenTop, width: width, height: height)
         }
-        if let heading = model.pinnedHeading {
+        switch model.pinnedRow {
+        case .heading(let label, let parentPath)?:
             pinned.isHidden = false
-            pinned.set(heading.label, path: heading.parentPath)
-        } else {
+            pinned.set(label, path: parentPath, mode: model.pinnedMode)
+        case .section(let mode, let count)?:
+            pinned.isHidden = false
+            pinned.setSection(mode, count: count)
+        case .item?, nil:
             pinned.isHidden = true
         }
         list.scrollTop = model.scrollTop
         list.contentHeight = model.contentHeight
         list.needsDisplay = true
         clear.isActive = model.activeIndex == model.clearIndex
+        putBack.isActive = model.activeIndex == model.putBackIndex
     }
 
     private func makeRow(_ row: ClipboardMenuRow) -> NSView {
         switch row {
-        case .heading: ClipboardMenuHeadingRow(pinned: false)
+        case .heading, .section: ClipboardMenuHeadingRow(pinned: false)
         case .item: ClipboardMenuItemRow()
         }
     }
 
     private static func fits(_ view: NSView, _ row: ClipboardMenuRow) -> Bool {
         switch row {
-        case .heading: view is ClipboardMenuHeadingRow
+        case .heading, .section: view is ClipboardMenuHeadingRow
         case .item: view is ClipboardMenuItemRow
         }
     }
@@ -223,14 +249,38 @@ final class ClipboardMenuView: NSView {
     private func bind(_ view: NSView, to row: ClipboardMenuRow) {
         switch row {
         case .heading(let label, let parentPath):
-            (view as? ClipboardMenuHeadingRow)?.set(label, path: parentPath)
+            (view as? ClipboardMenuHeadingRow)?.set(label, path: parentPath, mode: nil)
+        case .section(let mode, let count):
+            (view as? ClipboardMenuHeadingRow)?.setSection(mode, count: count)
         case .item(let item, let itemIndex):
             guard let view = view as? ClipboardMenuItemRow else { return }
             view.onHover = { [weak self] in self?.setActive(itemIndex) }
             view.onReveal = { [weak self] in self?.onReveal(item.path) }
             view.onRemove = { [weak self] in self?.onRemove(item.path) }
+            view.onSwitchMode = { [weak self] in self?.onSetMode(item.path, item.mode == .cut ? .copy : .cut) }
+            view.menuItems = { [weak self] in self?.rowMenu(item) ?? [] }
             view.configure(item, active: itemIndex == model.activeIndex, iconStore: iconStore)
         }
+    }
+
+    /// The menu of an item's row: show it, have it copied or moved instead, keep its own name when another has it,
+    /// take it off.
+    private func rowMenu(_ item: ClipboardItem) -> [NSMenuItem] {
+        let path = item.path
+        var items: [NSMenuItem] = [
+            ActionMenuItem(ClipboardTexts.showInFolderTitle) { [weak self] in self?.onReveal(path) },
+            .separator(),
+            ActionMenuItem(ClipboardTexts.switchModeTitle(from: item.mode)) { [weak self] in
+                self?.onSetMode(path, item.mode == .cut ? .copy : .cut)
+            },
+        ]
+        if item.pastedUnderAnotherName {
+            items.append(
+                ActionMenuItem(ClipboardTexts.useThisOneInsteadTitle) { [weak self] in self?.onKeepName(path) })
+        }
+        items.append(.separator())
+        items.append(ActionMenuItem(ClipboardTexts.removeFromClipboardTitle) { [weak self] in self?.onRemove(path) })
+        return items
     }
 
     // MARK: Pointer and keys
@@ -442,16 +492,22 @@ final class ClipboardMenuList: NSView {
     }
 }
 
-/// A folder heading of the list, or the one pinned over its top.
+/// A folder heading of the list, or the one pinned over its top; on a clipboard holding both, also the title of a
+/// part ("Cut · 4", what ⌘V does with them on the right), and the pinned folder shows the mark of its part.
 final class ClipboardMenuHeadingRow: NSView {
+    private let glyph = SymbolIconView(CommandIcon.cut.symbolName)
     private let label = ClipboardMenuText(identifier: "clipboardPopover.heading.label")
+    private let detail = ClipboardMenuText(identifier: "clipboardPopover.heading.detail")
     private let isPinned: Bool
+    private var showsGlyph = false
     var onScroll: (Double) -> Void = { _ in }
 
     init(pinned: Bool) {
         isPinned = pinned
         super.init(frame: .zero)
+        addSubview(glyph)
         addSubview(label)
+        addSubview(detail)
         setAccessibilityIdentifier(pinned ? "clipboardPopover.pinnedHeading" : "clipboardPopover.heading")
     }
 
@@ -459,19 +515,54 @@ final class ClipboardMenuHeadingRow: NSView {
 
     override var isFlipped: Bool { true }
 
-    func set(_ text: String, path: String) {
+    /// A folder, with the mark of the part it is in when the clipboard holds both (only pinned).
+    func set(_ text: String, path: String, mode: ClipboardMode?) {
         let palette = ChromeColors.palette(for: self)
         label.set(text, font: ChromeColors.font(size: DesignTokens.typeScale.small, weight: 600))
         label.textColor = NSColor(palette.contextMenuShortcut)
+        detail.isHidden = true
+        showGlyph(mode, color: NSColor(palette.contextMenuShortcut))
         toolTip = path
+        setAccessibilityIdentifier(isPinned ? "clipboardPopover.pinnedHeading" : "clipboardPopover.heading")
         needsLayout = true
+    }
+
+    /// The title of a part: what ⌘V does with the items under it.
+    func setSection(_ mode: ClipboardMode, count: Int) {
+        let palette = ChromeColors.palette(for: self)
+        label.set(
+            ClipboardTexts.sectionTitle(mode, count: count),
+            font: ChromeColors.font(size: DesignTokens.typeScale.small, weight: 700))
+        label.textColor = NSColor(palette.contextMenuText)
+        detail.isHidden = false
+        detail.set(ClipboardTexts.sectionDetail(mode), font: ChromeColors.font(size: DesignTokens.typeScale.small))
+        detail.textColor = NSColor(palette.contextMenuShortcut)
+        showGlyph(mode, color: NSColor(palette.contextMenuText))
+        toolTip = nil
+        setAccessibilityIdentifier(isPinned ? "clipboardPopover.pinnedSection" : "clipboardPopover.section")
+        needsLayout = true
+    }
+
+    private func showGlyph(_ mode: ClipboardMode?, color: NSColor) {
+        showsGlyph = mode != nil
+        glyph.isHidden = mode == nil
+        glyph.symbolName = (mode == .cut ? CommandIcon.cut : .copy).symbolName
+        glyph.color = color
     }
 
     override func layout() {
         super.layout()
         let inset = ClipboardLayout.Menu.headingPaddingHorizontal
+        let size = ClipboardLayout.Mark.iconSize
+        glyph.frame = NSRect(x: inset, y: (bounds.height - size) / 2, width: size, height: size)
+        let labelX = showsGlyph ? inset + size + ClipboardLayout.Menu.itemIconGap : inset
+        let detailWidth = detail.isHidden ? 0 : min(detail.textWidth, max(0, bounds.width / 2))
+        detail.frame = NSRect(
+            x: bounds.width - inset - detailWidth, y: (bounds.height - detail.lineHeight) / 2, width: detailWidth,
+            height: detail.lineHeight)
+        let labelEnd = detail.isHidden ? bounds.width - inset : detail.frame.minX - ClipboardLayout.Menu.headerGap
         label.frame = NSRect(
-            x: inset, y: (bounds.height - label.lineHeight) / 2, width: max(0, bounds.width - 2 * inset),
+            x: labelX, y: (bounds.height - label.lineHeight) / 2, width: max(0, labelEnd - labelX),
             height: label.lineHeight)
     }
 
@@ -487,11 +578,15 @@ final class ClipboardMenuHeadingRow: NSView {
     }
 }
 
-/// An item of the list: its icon and name (a click shows it in its folder), and the × that takes it off the clipboard,
-/// shown on the active row.
+/// An item of the list: its icon and name (a click shows it in its folder), "renamed on paste" when another item has
+/// its name, its mark (scissors or copy, which switches it between the two), the × that takes it off the clipboard
+/// (shown on the active row), and a menu of its own on a right-click.
 final class ClipboardMenuItemRow: NSView {
     private let icon = NSImageView()
     private let name = ClipboardMenuText(identifier: "clipboardPopover.item.name")
+    private let note = ClipboardMenuText(identifier: "clipboardPopover.item.note")
+    private let mark = ClipboardMenuRemoveButton(
+        symbol: CommandIcon.cut.symbolName, identifier: "clipboardPopover.item.mark")
     private let remove = ClipboardMenuRemoveButton()
     private var isActive = false
     private var tracking: NSTrackingArea?
@@ -499,14 +594,28 @@ final class ClipboardMenuItemRow: NSView {
     var onHover: () -> Void = {}
     var onReveal: () -> Void = {}
     var onRemove: () -> Void = {}
+    var onSwitchMode: () -> Void = {}
+    /// The items of the row's menu, built when it opens.
+    var menuItems: () -> [NSMenuItem] = { [] }
+
+    /// The width "renamed on paste" takes beside a name, with its gap; none for an item that keeps its name.
+    static func noteWidth(_ item: ClipboardItem) -> Double {
+        guard item.pastedUnderAnotherName else { return 0 }
+        let font = ChromeColors.font(size: DesignTokens.typeScale.small)
+        return ClipboardLayout.Menu.itemIconGap
+            + ceil((ClipboardTexts.renamedOnPasteNote as NSString).size(withAttributes: [.font: font]).width)
+    }
 
     override init(frame: NSRect) {
         super.init(frame: frame)
         icon.imageScaling = .scaleProportionallyUpOrDown
         addSubview(icon)
         addSubview(name)
+        addSubview(note)
+        addSubview(mark)
         addSubview(remove)
         remove.onClick = { [weak self] in self?.onRemove() }
+        mark.onClick = { [weak self] in self?.onSwitchMode() }
         setAccessibilityElement(true)
         setAccessibilityRole(.menuItem)
         setAccessibilityIdentifier("clipboardPopover.item")
@@ -519,13 +628,27 @@ final class ClipboardMenuItemRow: NSView {
     func configure(_ item: ClipboardItem, active: Bool, iconStore: FileIconStore?) {
         let theme = AppearanceModel.shared.theme
         isActive = active
+        let text = active ? theme.accent.onSolid : theme.palette.contextMenuText
+        // A cut item looks taken out already, as its row in the folder does.
+        let cutAlpha = item.mode == .cut && !active ? ClipboardLayout.Mark.cutLabelAlpha : 1
         name.set(item.name, font: ChromeColors.font(size: DesignTokens.typeScale.body))
-        name.textColor = NSColor(active ? theme.accent.onSolid : theme.palette.contextMenuText)
+        name.textColor = NSColor(text.withAlpha(text.alpha * cutAlpha))
         name.toolTip = item.path
+        note.isHidden = !item.pastedUnderAnotherName
+        note.set(ClipboardTexts.renamedOnPasteNote, font: ChromeColors.font(size: DesignTokens.typeScale.small))
+        note.textColor = NSColor(active ? theme.accent.onSolid : theme.palette.contextMenuShortcut)
         toolTip = item.path
-        setAccessibilityLabel(item.name)
+        setAccessibilityLabel(ClipboardTexts.itemAccessibilityLabel(item))
+        mark.symbolName = (item.mode == .cut ? CommandIcon.cut : .copy).symbolName
+        mark.color = NSColor(
+            text.withAlpha(text.alpha * (item.mode == .cut && !active ? ClipboardLayout.Mark.cutIconAlpha : 1)))
+        mark.hoverFill = NSColor(
+            (active ? theme.accent.onSolid : theme.palette.contextMenuText).withAlpha(
+                ClipboardLayout.Menu.removeHoverAlpha))
+        mark.toolTip = ClipboardTexts.switchModeTitle(from: item.mode)
+        mark.setAccessibilityLabel(ClipboardTexts.switchModeTitle(from: item.mode))
         remove.isHidden = !active
-        remove.color = NSColor(active ? theme.accent.onSolid : theme.palette.contextMenuText)
+        remove.color = NSColor(text)
         remove.hoverFill = NSColor(theme.accent.onSolid.withAlpha(ClipboardLayout.Menu.removeHoverAlpha))
         remove.toolTip = "Remove from Clipboard"
         remove.setAccessibilityLabel("Remove \(item.name) from the clipboard")
@@ -564,10 +687,26 @@ final class ClipboardMenuItemRow: NSView {
         let removeX = bounds.width - layout.itemPaddingTrailing - layout.removeSize
         remove.frame = NSRect(
             x: removeX, y: (bounds.height - layout.removeSize) / 2, width: layout.removeSize, height: layout.removeSize)
+        let markX = removeX - layout.removeSize
+        mark.frame = NSRect(
+            x: markX, y: (bounds.height - layout.removeSize) / 2, width: layout.removeSize, height: layout.removeSize)
         let nameX = icon.frame.maxX + layout.itemIconGap
+        let noteWidth = note.isHidden ? 0 : note.textWidth
+        let noteSpace = note.isHidden ? 0 : layout.itemIconGap + noteWidth
+        let nameWidth = max(0, min(name.textWidth, markX - nameX - noteSpace))
         name.frame = NSRect(
-            x: nameX, y: (bounds.height - name.lineHeight) / 2, width: max(0, min(name.textWidth, removeX - nameX)),
-            height: name.lineHeight)
+            x: nameX, y: (bounds.height - name.lineHeight) / 2, width: nameWidth, height: name.lineHeight)
+        note.frame = NSRect(
+            x: name.frame.maxX + layout.itemIconGap, y: (bounds.height - note.lineHeight) / 2,
+            width: max(0, min(noteWidth, markX - name.frame.maxX - layout.itemIconGap)), height: note.lineHeight)
+    }
+
+    override func menu(for event: NSEvent) -> NSMenu? {
+        onHover()
+        let menu = NSMenu()
+        menu.autoenablesItems = false
+        for item in menuItems() { menu.addItem(item) }
+        return menu.items.isEmpty ? nil : menu
     }
 
     override func draw(_ dirtyRect: NSRect) {
@@ -606,10 +745,14 @@ final class ClipboardMenuItemRow: NSView {
     }
 }
 
-/// The × that removes an item.
+/// The × that removes an item, or the mark that switches it between copied and cut.
 final class ClipboardMenuRemoveButton: NSView {
-    private let glyph = SymbolIconView("xmark")
+    private let glyph: SymbolIconView
     var onClick: () -> Void = {}
+    var symbolName: String {
+        get { glyph.symbolName }
+        set { glyph.symbolName = newValue }
+    }
     var color: NSColor = .labelColor {
         didSet { glyph.color = color }
     }
@@ -619,12 +762,13 @@ final class ClipboardMenuRemoveButton: NSView {
     }
     private var tracking: NSTrackingArea?
 
-    override init(frame: NSRect) {
-        super.init(frame: frame)
+    init(symbol: String = "xmark", identifier: String = "clipboardPopover.item.remove") {
+        glyph = SymbolIconView(symbol)
+        super.init(frame: .zero)
         addSubview(glyph)
         setAccessibilityElement(true)
         setAccessibilityRole(.button)
-        setAccessibilityIdentifier("clipboardPopover.item.remove")
+        setAccessibilityIdentifier(identifier)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
@@ -669,9 +813,12 @@ final class ClipboardMenuRemoveButton: NSView {
     }
 }
 
-/// The Clear Clipboard row.
+/// The Clear Clipboard row, and the Put Back row under it.
 final class ClipboardMenuClearRow: NSView {
-    private let label = ClipboardMenuText(identifier: "clipboardPopover.clear.label")
+    private let label: ClipboardMenuText
+    var title = "Clear Clipboard" {
+        didSet { setAccessibilityLabel(title) }
+    }
     var isActive = false {
         didSet {
             needsDisplay = true
@@ -682,13 +829,14 @@ final class ClipboardMenuClearRow: NSView {
     var onClick: () -> Void = {}
     private var tracking: NSTrackingArea?
 
-    override init(frame: NSRect) {
-        super.init(frame: frame)
+    init(identifier: String = "clipboardPopover.clear") {
+        label = ClipboardMenuText(identifier: "\(identifier).label")
+        super.init(frame: .zero)
         addSubview(label)
         setAccessibilityElement(true)
         setAccessibilityRole(.menuItem)
-        setAccessibilityLabel("Clear Clipboard")
-        setAccessibilityIdentifier("clipboardPopover.clear")
+        setAccessibilityLabel(title)
+        setAccessibilityIdentifier(identifier)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
@@ -696,7 +844,7 @@ final class ClipboardMenuClearRow: NSView {
     override var isFlipped: Bool { true }
 
     func applyTheme(_ theme: Theme) {
-        label.set("Clear Clipboard", font: ChromeColors.font(size: DesignTokens.typeScale.body))
+        label.set(title, font: ChromeColors.font(size: DesignTokens.typeScale.body))
         label.textColor = NSColor(isActive ? theme.accent.onSolid : theme.palette.contextMenuText)
     }
 

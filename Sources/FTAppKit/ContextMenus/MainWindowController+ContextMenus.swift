@@ -10,8 +10,7 @@ extension MainWindowController {
     func installMenusAndNotifications() {
         contextMenus.install()
         contextMenus.clipboardSourcePaths = { [weak self] in
-            guard case .ready(_, let paths, _, _) = self?.services.clipboard.contents else { return [] }
-            return paths
+            self?.services.clipboard.contents.sourcePaths ?? []
         }
         _ = NotificationOverlay.install(
             in: workspace,

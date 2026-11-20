@@ -10,7 +10,7 @@ extension MainWindowController {
         .undo, .redo, .renameSelection, .duplicateSelection, .newFolder, .newFolderWithSelection, .newTextFile,
         .saveAsTemplate, .pasteAsFile,
         .trashSelection, .emptyTrash, .cutSelection, .copySelection, .pasteSelection, .moveSelection, .editCut,
-        .editCopy, .editPaste,
+        .editCopy, .editPaste, .addToCopied, .addToCut, .moveItemsHere, .removeFromClipboard,
         .compressSelection, .extractSelection, .extractSelectionTo,
     ]
 
@@ -57,11 +57,17 @@ extension MainWindowController {
             actions.putOnClipboard(.copy, paths: clipboardSourcePaths, entries: clipboardSourceEntries)
         case .cutSelection, .editCut:
             actions.putOnClipboard(.cut, paths: clipboardSourcePaths, entries: clipboardSourceEntries)
-        case .pasteSelection, .editPaste:
+        case .addToCopied, .addToCut:
+            addToClipboard(
+                command == .addToCut ? .cut : .copy, paths: clipboardSourcePaths, entries: clipboardSourceEntries)
+        case .removeFromClipboard:
+            removeFromClipboard(clipboardSourcePaths)
+        case .pasteSelection, .editPaste, .moveItemsHere:
             // Pastes into the folder on screen from the keyboard or menu bar, whatever is selected; never into
-            // search results or the Trash.
+            // search results or the Trash. Move Items Here moves every item, as Finder's does after Copy.
             guard let destination = pasteDestinationPath else { return true }
-            Task { await actions.pasteFromClipboard(into: destination) }
+            let moveAll = command == .moveItemsHere
+            Task { await actions.pasteFromClipboard(into: destination, moveAll: moveAll) }
         case .duplicateSelection:
             let paths = selectedPaths
             guard !paths.isEmpty else { return true }
@@ -335,9 +341,9 @@ extension MainWindowController {
     static func canRunWriteCommand(_ command: AppCommand, _ context: ShortcutContext) -> Bool {
         let asked: AppCommand =
             switch command {
-            case .editCut: .cutSelection
-            case .editCopy: .copySelection
-            case .editPaste: .pasteSelection
+            case .editCut, .addToCut: .cutSelection
+            case .editCopy, .addToCopied, .removeFromClipboard: .copySelection
+            case .editPaste, .moveItemsHere: .pasteSelection
             default: command
             }
         return ShortcutPolicy.canHandle(asked, context)
@@ -364,7 +370,7 @@ extension MainWindowController {
         return [treeTargetPath]
     }
 
-    private var clipboardSourcePaths: [String] {
+    var clipboardSourcePaths: [String] {
         Self.clipboardSource(
             focusedPane: focusedPane, treeTargetKind: sidebarController.selectedTreeTargetKind,
             treeTargetPath: sidebarController.selectedTreeTargetPath, selectedPaths: selectedPaths)

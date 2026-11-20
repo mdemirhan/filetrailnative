@@ -165,7 +165,8 @@ extension WindowWriteActions {
     /// The analysis found issues: the sources it leaves out, and what follows.
     func leaveOut(
         _ report: CopyPasteAnalysisReport, mode: FTOperations.CopyPasteMode, sources: [String], destination: String,
-        action: WriteOperationAction, clearsCutClipboard: String?, initiator: CopyLikeInitiator?,
+        action: WriteOperationAction, cutSources: [String]? = nil, renamedIfShared: [String]? = nil,
+        clearsCutClipboard: String?, initiator: CopyLikeInitiator?,
         onSourcesMissing: (([String]) -> Void)?, reportsRefusals: Bool, defaultPolicy: CopyPastePolicy
     ) async -> CopyLikeOutcome {
         let issues = report.issues.map {
@@ -177,7 +178,8 @@ extension WindowWriteActions {
             issues, destinationDirectoryPath: report.destinationDirectoryPath, cut: report.mode == .cut)
         guard
             let leftOut = ClipboardTexts.leftOutSourcePaths(
-                issues, sourcePaths: sources, alreadyInPlace: initiator != nil && report.mode == .cut,
+                issues, sourcePaths: sources,
+                alreadyInPlace: initiator != nil && (report.mode == .cut || report.isMixed),
                 missing: initiator == .clipboard)
         else {
             session.applyCard(nil)
@@ -189,8 +191,9 @@ extension WindowWriteActions {
         let remaining = sources.filter { !out.contains(PathBox($0)) }
         if !remaining.isEmpty {
             return await copyLike(
-                mode: mode, sources: remaining, destination: destination, action: action,
-                clearsCutClipboard: clearsCutClipboard, initiator: initiator, onSourcesMissing: onSourcesMissing,
+                mode: mode, sources: remaining, destination: destination, action: action, cutSources: cutSources,
+                renamedIfShared: renamedIfShared, clearsCutClipboard: clearsCutClipboard, initiator: initiator,
+                onSourcesMissing: onSourcesMissing,
                 reportsRefusals: reportsRefusals, checksBusy: false, defaultPolicy: defaultPolicy)
         }
         session.applyCard(nil)
@@ -201,23 +204,29 @@ extension WindowWriteActions {
         return .blocked(message: message)
     }
 
-    /// What the clipboard holds into `destination`. Items moved or deleted since they were
-    /// copied are taken off the clipboard and the rest are pasted; which ones were left out is told afterwards. A
-    /// clash goes to the review.
+    /// What the clipboard holds into `destination`: each item copied or moved as it was put on, or every one moved
+    /// (`moveAll`, Move Items Here). Items moved or deleted since they were put on are taken off the clipboard and the
+    /// rest are pasted; which ones were left out is told afterwards. A clash goes to the review.
     @discardableResult
-    func pasteFromClipboard(into destination: String) async -> CopyLikeOutcome {
-        guard let clipboard = session.clipboard,
-            case .ready(let mode, let sources, _, let capturedAt) = clipboard.contents
-        else { return .cancelled }
-        let cut = mode == .cut
+    func pasteFromClipboard(into destination: String, moveAll: Bool = false) async -> CopyLikeOutcome {
+        guard let clipboard = session.clipboard, let capturedAt = clipboard.contents.capturedAt else {
+            return .cancelled
+        }
+        let contents = clipboard.contents
+        let sources = contents.sourcePaths
+        let cut = moveAll || contents.mode == .cut
+        let cutSources = cut ? nil : contents.cutPaths
+        let moves = cut || !(cutSources ?? []).isEmpty
         let action: WriteOperationAction = cut ? .moveTo : .paste
         if refuseWhileBusy(.operation(action)) { return .cancelled }
         var missing: [String] = []
         let windowID = tab?.windowID
+        let renamed = contents.renamedIfSharedPaths
         let outcome = await copyLike(
             mode: cut ? .cut : .copy, sources: sources, destination: destination, action: action,
-            // This cut, and not one made while the review is open, is cleared.
-            clearsCutClipboard: cut ? capturedAt : nil, initiator: .clipboard,
+            cutSources: cutSources, renamedIfShared: renamed.isEmpty ? nil : renamed,
+            // What moves leaves this clipboard, and not one made while the review is open.
+            clearsCutClipboard: moves ? capturedAt : nil, initiator: .clipboard,
             onSourcesMissing: { paths in
                 missing += paths
                 let now = clipboard.contents
@@ -228,7 +237,7 @@ extension WindowWriteActions {
             }, reportsRefusals: false, checksBusy: false)
         if case .review(let report) = outcome {
             PasteReview.presenter.review(
-                report, action: action, clearsCutClipboard: cut ? capturedAt : nil, actions: self)
+                report, action: action, clearsCutClipboard: moves ? capturedAt : nil, actions: self)
         }
         let window = tab?.window
         guard !missing.isEmpty else {

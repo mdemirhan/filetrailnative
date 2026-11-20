@@ -118,7 +118,7 @@ extension ExplorerWindowlessTests {
             // Something on the clipboard: the button shows, with its count.
             setItems(tab, ToolbarItems.defaultTopItems, harness)
             tab.services.clipboard.set(
-                .ready(mode: .copy, sourcePaths: ["/a", "/b"], sourceEntries: [:], capturedAt: "1"), from: nil)
+                ClipboardRules.set(.copy, ["/a", "/b"], capturedAt: "1"), from: nil)
             toolbar.reload()
             harness.layout(tab)
             #expect(toolbar.rowKeys.contains("clipboard"))
@@ -136,7 +136,7 @@ extension ExplorerWindowlessTests {
             let toolbar = tab.explorerToolbar
             setItems(tab, ToolbarItems.defaultTopItems + [.theme, .clipboard], harness)
             tab.services.clipboard.set(
-                .ready(mode: .copy, sourcePaths: ["/a", "/b"], sourceEntries: [:], capturedAt: "1"), from: nil)
+                ClipboardRules.set(.copy, ["/a", "/b"], capturedAt: "1"), from: nil)
             toolbar.reload()
             for id: ToolbarItemID in [.sort, .theme, .clipboard, .viewOptions, .back] {
                 let button = try #require(toolbar.button(id), "no \(id)")
@@ -221,7 +221,7 @@ extension ExplorerWindowlessTests {
             history.record(UndoToolbarTests.rename("/p/a", "/p/b"))
             tab.explorerToolbar.undoHistory = { history }
             tab.services.clipboard.set(
-                .ready(mode: .copy, sourcePaths: ["/a", "/b"], sourceEntries: [:], capturedAt: "1"), from: nil)
+                ClipboardRules.set(.copy, ["/a", "/b"], capturedAt: "1"), from: nil)
             setItems(tab, [.back, .title, .undo, .clipboard, .undoHistory, .redo, .search], harness)
             let toolbar = tab.explorerToolbar
             let frameView = try #require(window.contentView?.superview)

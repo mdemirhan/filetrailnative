@@ -33,6 +33,9 @@ public struct ApplicationMenuState: Equatable, Sendable {
     public var folderViewRemembered: Bool
     /// The List's columns shown in the folder on screen, which View ▸ Columns checks.
     public var shownColumns: Set<OptionalDetailColumnKey>
+    /// How many items on the clipboard ⌘V would move, and how many it would copy, which Paste and Move Items Here say.
+    public var clipboardCutCount: Int
+    public var clipboardCopiedCount: Int
 
     public init(
         disabledCommands: [AppCommand] = [], viewMode: ExplorerViewMode = .list,
@@ -42,8 +45,10 @@ public struct ApplicationMenuState: Equatable, Sendable {
         filterPinned: Bool = false, favoriteIsSet: Bool = false,
         textEditing: Bool = false, pasteAsFileKind: PasteAsFileKind? = nil, copyContentsGuess: CopyContentsGuess? = nil,
         compressTitle: String? = nil, convertImagesCount: Int = 0, folderViewRemembered: Bool = false,
-        shownColumns: Set<OptionalDetailColumnKey> = []
+        shownColumns: Set<OptionalDetailColumnKey> = [], clipboardCutCount: Int = 0, clipboardCopiedCount: Int = 0
     ) {
+        self.clipboardCutCount = clipboardCutCount
+        self.clipboardCopiedCount = clipboardCopiedCount
         self.disabledCommands = disabledCommands
         self.viewMode = viewMode
         self.previewCount = previewCount
@@ -78,6 +83,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         pasteAsFileKind: PasteAsFileKind? = nil,
         copyContentsGuess: CopyContentsGuess? = nil, compressTitle: String? = nil, convertImagesCount: Int = 0,
         folderViewRemembered: Bool = false, shownColumns: Set<OptionalDetailColumnKey> = [],
+        clipboardCutCount: Int = 0, clipboardCopiedCount: Int = 0,
         canRun: (AppCommand) -> Bool
     ) -> ApplicationMenuState {
         // A text field's Undo and Redo are always there, even in a dialog or while a file operation runs: they only
@@ -93,7 +99,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
             favoriteIsSet: favoriteIsSet,
             textEditing: textEditing, pasteAsFileKind: pasteAsFileKind, copyContentsGuess: copyContentsGuess,
             compressTitle: compressTitle, convertImagesCount: convertImagesCount,
-            folderViewRemembered: folderViewRemembered, shownColumns: shownColumns)
+            folderViewRemembered: folderViewRemembered, shownColumns: shownColumns,
+            clipboardCutCount: clipboardCutCount, clipboardCopiedCount: clipboardCopiedCount)
     }
 }
 
@@ -103,12 +110,17 @@ public struct ApplicationMenuItemState: Equatable, Sendable {
     public var enabled: Bool?
     public var checked: Bool?
     public var title: String?
+    /// A second, smaller line under the title ("Moves 4, copies 3"); "" takes one away.
+    public var subtitle: String?
 
-    public init(id: String, enabled: Bool? = nil, checked: Bool? = nil, title: String? = nil) {
+    public init(
+        id: String, enabled: Bool? = nil, checked: Bool? = nil, title: String? = nil, subtitle: String? = nil
+    ) {
         self.id = id
         self.enabled = enabled
         self.checked = checked
         self.title = title
+        self.subtitle = subtitle
     }
 }
 
@@ -186,6 +198,9 @@ public enum ApplicationMenu {
         // While a text field (or another window) has the keyboard, Undo and Redo are its own: plainly named, and on
         // whenever there is a window to send them to.
         let textUndo = state.textEditing || !window.explorerFocused
+        let clipboardCount = state.clipboardCutCount + state.clipboardCopiedCount
+        // Paste names what it would paste only while it pastes files.
+        let pastesFiles = !textUndo && clipboardCount > 0
         func isEnabled(_ type: AppCommand) -> Bool {
             if type == .undo || type == .redo, textUndo {
                 return window.explorerFocused || window.otherWindowFocused != false
@@ -259,6 +274,11 @@ public enum ApplicationMenu {
                 isEnabled(type) ? state.compressTitle ?? "Compress" : "Compress"
             case .convertImages:
                 ConvertImagesText.menuTitle(count: isEnabled(type) ? state.convertImagesCount : 0)
+            // What is on the clipboard, while the files have the keyboard: a text field pastes text.
+            case .editPaste:
+                pastesFiles ? ClipboardTexts.pasteTitle(count: clipboardCount) : "Paste"
+            case .moveItemsHere:
+                ClipboardTexts.moveItemsHereTitle(count: isEnabled(type) ? clipboardCount : 0)
             // With no explorer window to act on, no view is named.
             case .increaseSize, .decreaseSize, .resetSize:
                 ApplicationMenu.sizeTitle(type, viewMode: window.explorerFocused ? state.viewMode : .details)
@@ -266,8 +286,16 @@ public enum ApplicationMenu {
             }
         }
 
+        func subtitle(_ type: AppCommand) -> String? {
+            guard type == .editPaste else { return nil }
+            return pastesFiles
+                ? ClipboardTexts.pasteSubtitle(cut: state.clipboardCutCount, copied: state.clipboardCopiedCount) : ""
+        }
+
         return AppCommand.allCases.map {
-            ApplicationMenuItemState(id: $0.rawValue, enabled: isEnabled($0), checked: checked($0), title: title($0))
+            ApplicationMenuItemState(
+                id: $0.rawValue, enabled: isEnabled($0), checked: checked($0), title: title($0),
+                subtitle: subtitle($0))
         }
     }
 
@@ -336,6 +364,7 @@ public enum ApplicationMenu {
         var isEnabled: Bool { get set }
         var isChecked: Bool { get set }
         var title: String { get set }
+        var subtitle: String { get set }
     }
 
     /// Sets what changed on the items the menu has, and skips the others.
@@ -350,6 +379,9 @@ public enum ApplicationMenu {
             }
             if let title = state.title, control.title != title {
                 control.title = title
+            }
+            if let subtitle = state.subtitle, control.subtitle != subtitle {
+                control.subtitle = subtitle
             }
         }
     }

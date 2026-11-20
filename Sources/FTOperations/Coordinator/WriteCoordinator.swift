@@ -349,10 +349,11 @@ public final class WriteCoordinator {
         started: () -> Void = {}
     ) async throws -> CopyPasteAnalysisReport {
         try WriteGuards.assertNotIntoTrash(request.destinationDirectoryPath, verb: "pasted into", homePath: homePath)
-        if request.mode == .cut {
-            try WriteGuards.assertNotProtectedPath(request.sourcePaths, homePath: homePath)
+        let moved = request.movedSourcePaths
+        if !moved.isEmpty {
+            try WriteGuards.assertNotProtectedPath(moved, homePath: homePath)
             // Moving to another disk copies, then deletes the originals: as final as deleting.
-            try await assertNotSystemLocation(request.sourcePaths, verb: "moved")
+            try await assertNotSystemLocation(moved, verb: "moved")
         }
         try ensureNoWriteOperationInFlight()
         // A stopped review no longer counts, though it may not have returned yet.

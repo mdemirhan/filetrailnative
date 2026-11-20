@@ -78,6 +78,26 @@
           "icon": "copy"
         },
         {
+          "id": "addToCut",
+          "label": "Add to Cut Items",
+          "icon": "cut"
+        },
+        {
+          "id": "addToCopied",
+          "label": "Add to Copied Items",
+          "icon": "copy"
+        },
+        {
+          "id": "switchClipboardMode",
+          "label": "Copy Instead of Moving",
+          "icon": "copy"
+        },
+        {
+          "id": "removeFromClipboard",
+          "label": "Remove from Clipboard",
+          "icon": "removeFromClipboard"
+        },
+        {
           "id": "paste",
           "label": "Paste into Folder",
           "icon": "paste"
@@ -277,6 +297,26 @@
           "icon": "copy"
         },
         {
+          "id": "addToCut",
+          "label": "Add to Cut Items",
+          "icon": "cut"
+        },
+        {
+          "id": "addToCopied",
+          "label": "Add to Copied Items",
+          "icon": "copy"
+        },
+        {
+          "id": "switchClipboardMode",
+          "label": "Copy Instead of Moving",
+          "icon": "copy"
+        },
+        {
+          "id": "removeFromClipboard",
+          "label": "Remove from Clipboard",
+          "icon": "removeFromClipboard"
+        },
+        {
           "id": "paste",
           "label": "Paste into Folder",
           "icon": "paste"
@@ -452,6 +492,26 @@
           "id": "copy",
           "label": "Copy",
           "icon": "copy"
+        },
+        {
+          "id": "addToCut",
+          "label": "Add to Cut Items",
+          "icon": "cut"
+        },
+        {
+          "id": "addToCopied",
+          "label": "Add to Copied Items",
+          "icon": "copy"
+        },
+        {
+          "id": "switchClipboardMode",
+          "label": "Copy Instead of Moving",
+          "icon": "copy"
+        },
+        {
+          "id": "removeFromClipboard",
+          "label": "Remove from Clipboard",
+          "icon": "removeFromClipboard"
         },
         {
           "id": "paste",
@@ -712,6 +772,26 @@
           "id": "copy",
           "label": "Copy",
           "icon": "copy"
+        },
+        {
+          "id": "addToCut",
+          "label": "Add to Cut Items",
+          "icon": "cut"
+        },
+        {
+          "id": "addToCopied",
+          "label": "Add to Copied Items",
+          "icon": "copy"
+        },
+        {
+          "id": "switchClipboardMode",
+          "label": "Copy Instead of Moving",
+          "icon": "copy"
+        },
+        {
+          "id": "removeFromClipboard",
+          "label": "Remove from Clipboard",
+          "icon": "removeFromClipboard"
         },
         {
           "id": "paste",
@@ -16955,6 +17035,54 @@
           "locationSheetOpen": false,
           "mainView": "explorer",
           "selectedTreeTargetKind": "favorite"
+        }
+      },
+      "output": null
+    },
+    {
+      "name": "shortcut addToCopied: content/filesystemFolder",
+      "input": {
+        "kind": "shortcut",
+        "action": "addToCopied",
+        "context": {
+          "actionNoticeOpen": false,
+          "copyPasteModalOpen": false,
+          "focusedPane": "content",
+          "locationSheetOpen": false,
+          "mainView": "explorer",
+          "selectedTreeTargetKind": "filesystemFolder"
+        }
+      },
+      "output": "⌃⌘C"
+    },
+    {
+      "name": "shortcut addToCut: content/filesystemFolder",
+      "input": {
+        "kind": "shortcut",
+        "action": "addToCut",
+        "context": {
+          "actionNoticeOpen": false,
+          "copyPasteModalOpen": false,
+          "focusedPane": "content",
+          "locationSheetOpen": false,
+          "mainView": "explorer",
+          "selectedTreeTargetKind": "filesystemFolder"
+        }
+      },
+      "output": "⌃⌘X"
+    },
+    {
+      "name": "shortcut removeFromClipboard: content/filesystemFolder",
+      "input": {
+        "kind": "shortcut",
+        "action": "removeFromClipboard",
+        "context": {
+          "actionNoticeOpen": false,
+          "copyPasteModalOpen": false,
+          "focusedPane": "content",
+          "locationSheetOpen": false,
+          "mainView": "explorer",
+          "selectedTreeTargetKind": "filesystemFolder"
         }
       },
       "output": null

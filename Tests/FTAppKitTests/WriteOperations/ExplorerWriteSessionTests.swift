@@ -284,17 +284,20 @@ private let arrived = WriteOperationItem(
         await fixture.coordinator.shutDown(maxWaitMs: 0)
     }
 
-    @Test func showsHowItWentAndClearsItsCutWhenItEndedBeforeTheWindowHeard() throws {
+    /// What the paste moved leaves the clipboard; what it didn't get to move stays, still cut.
+    @Test func showsHowItWentAndTakesWhatItMovedOffItsCutWhenItEndedBeforeTheWindowHeard() throws {
         let fixture = Fixture()
         fixture.clipboard.set(
-            .ready(
-                mode: .cut, sourcePaths: ["/Users/demo/elsewhere.txt", "/Users/demo/locked.txt"], sourceEntries: [:],
-                capturedAt: "2026-10-08T10:00:00.000Z"), from: nil)
+            ClipboardRules.set(
+                .cut, ["/Users/demo/elsewhere.txt", "/Users/demo/locked.txt"], capturedAt: "2026-10-08T10:00:00.000Z"),
+            from: nil)
         let failed = WriteOperationItem(
             sourcePath: "/Users/demo/locked.txt", destinationPath: "/Users/demo/Folder/locked.txt", status: .failed,
             error: "The disk is full.")
         var ended = otherWindowsCopy(.partial, items: [arrived, failed])
-        ended.action = .paste
+        ended.action = .moveTo
+        ended.result?.action = .moveTo
+        ended.result?.mode = .cut
 
         fixture.session.receive(
             .adopted(
@@ -302,6 +305,31 @@ private let arrived = WriteOperationItem(
                     operationId: "other-op", event: ended, clearsCutClipboard: "2026-10-08T10:00:00.000Z")))
 
         #expect(fixture.events.contains(.ended(ended, inTabOnScreen: false)))
+        #expect(fixture.clipboard.contents.sourcePaths == ["/Users/demo/locked.txt"])
+        #expect(fixture.clipboard.contents.mode == .cut)
+    }
+
+    /// A paste that copied some items and moved others used the clipboard up: the copied items leave with the moved
+    /// ones.
+    @Test func aPasteOfCopiedAndCutItemsUsesTheClipboardUp() throws {
+        let fixture = Fixture()
+        let capturedAt = "2026-10-08T10:00:00.000Z"
+        let both = ClipboardRules.setMode(
+            ClipboardRules.set(.copy, ["/Users/demo/copied.txt", "/Users/demo/elsewhere.txt"], capturedAt: capturedAt),
+            ["/Users/demo/elsewhere.txt"], to: .cut, at: capturedAt)
+        fixture.clipboard.set(both, from: nil)
+        let copied = WriteOperationItem(
+            sourcePath: "/Users/demo/copied.txt", destinationPath: "/Users/demo/Folder/copied.txt", status: .completed,
+            mode: .copy)
+        var moved = arrived
+        moved.mode = .cut
+        var ended = otherWindowsCopy(.completed, items: [copied, moved])
+        ended.action = .paste
+        ended.result?.mode = .copy
+
+        fixture.session.receive(
+            .adopted(WriteOperationAdoption(operationId: "other-op", event: ended, clearsCutClipboard: capturedAt)))
+
         #expect(fixture.clipboard.contents == .empty)
     }
 

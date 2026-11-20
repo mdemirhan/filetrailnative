@@ -55,6 +55,8 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
     public var selectedTreeTargetPath: String?
     /// The clipboard holds items to paste.
     public var clipboardHasItems: Bool
+    /// Some of the items Copy would take are on the clipboard (Remove from Clipboard).
+    public var selectionOnClipboard: Bool
     /// What Paste as File finds on the system's clipboard; nil while it isn't read (a text field has the keyboard).
     public var systemClipboard: PasteAsFileChoice?
     public var pasteDestinationPath: String?
@@ -95,6 +97,7 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         selectedPathsInViewOrder: [String] = [], activeContentEntries: [CommandEntry] = [],
         listShowsItems: Bool = false,
         selectedEntry: CommandEntry? = nil, selectedTreeTargetPath: String? = nil, clipboardHasItems: Bool = false,
+        selectionOnClipboard: Bool = false,
         pasteDestinationPath: String? = nil, isSearchMode: Bool = false, openItemLimit: Int = 5,
         writeOperationLocked: Bool = false, canGoBack: Bool? = nil, canGoForward: Bool? = nil,
         hasCachedSearch: Bool? = nil, tabCount: Int? = nil, paneCount: Int? = nil, otherPanePath: String? = nil,
@@ -112,6 +115,7 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         self.selectedEntry = selectedEntry
         self.selectedTreeTargetPath = selectedTreeTargetPath
         self.clipboardHasItems = clipboardHasItems
+        self.selectionOnClipboard = selectionOnClipboard
         self.pasteDestinationPath = pasteDestinationPath
         self.isSearchMode = isSearchMode
         self.openItemLimit = openItemLimit
@@ -339,6 +343,14 @@ public enum CommandAvailability {
     // MARK: Rules
 
     public static func canRun(_ command: AppCommand, _ context: CommandAvailabilityContext) -> Bool {
+        // The clipboard's own: each runs where the command it is a kind of runs, as the window takes it for that one.
+        switch command {
+        case .addToCopied: return canRun(.copySelection, context)
+        case .addToCut: return canRun(.cutSelection, context)
+        case .moveItemsHere: return canRun(.pasteSelection, context)
+        case .removeFromClipboard: return context.selectionOnClipboard && canRun(.copySelection, context)
+        default: break
+        }
         if !ShortcutPolicy.canHandle(command, context.shortcutContext) {
             return false
         }
@@ -424,6 +436,8 @@ public enum CommandAvailability {
             return selectedCount > 0
         case .pasteSelection:
             return context.clipboardHasItems && context.pasteDestinationPath != nil
+        case .addToCopied, .addToCut, .moveItemsHere, .removeFromClipboard:
+            return false
         case .pasteAsFile:
             // Files copied in another app leave it on, to say why they aren't written.
             guard let found = context.systemClipboard, found != .nothing else { return false }

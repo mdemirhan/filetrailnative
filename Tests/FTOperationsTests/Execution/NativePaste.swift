@@ -192,10 +192,13 @@ func runPaste(
     writeJournal: (any WriteJournal)? = nil, beforeExecute: (() throws -> Void)? = nil,
     overrides: ((CopyPasteAnalysisReport) -> [CopyPasteNodeOverride])? = nil,
     resolve: (@Sendable (CopyPasteRuntimeConflict) -> CopyPasteChoice?)? = nil,
-    onEvent: (@Sendable (CopyPasteProgressEvent) -> Void)? = nil
+    onEvent: (@Sendable (CopyPasteProgressEvent) -> Void)? = nil, cut: [String]? = nil,
+    renamedIfShared: [String]? = nil
 ) async throws -> PasteRun {
     let request = normalizeCopyPasteAnalysisRequest(
-        CopyPasteAnalysisRequest(mode: mode, sourcePaths: sources, destinationDirectoryPath: destination))
+        CopyPasteAnalysisRequest(
+            mode: mode, sourcePaths: sources, destinationDirectoryPath: destination, cutSourcePaths: cut,
+            renamedIfSharedSourcePaths: renamedIfShared))
     let report = try await WriteService.withRoomForDepth(name: "test review") {
         try buildCopyPasteAnalysisReport(
             analysisId: "analysis-test", request: request, fileSystem: fileSystem)
@@ -211,7 +214,7 @@ func runPaste(
     try beforeExecute?()
     await executeCopyPasteFromAnalysis(
         CopyPasteRun(
-            operationId: "op-test", report: report, mode: mode, policy: policy, fileSystem: fileSystem,
+            operationId: "op-test", report: report, mode: report.mode, policy: policy, fileSystem: fileSystem,
             signal: signal, resolvedNodes: resolvedNodes,
             emit: { event in
                 recorder.record(event)

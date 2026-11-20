@@ -69,7 +69,10 @@ extension SidebarViewController {
             let rows = outline.rows(in: outline.visibleRect)
             guard rows.length > 0 else { continue }
             for row in rows.location..<(rows.location + rows.length) {
-                (outline.view(atColumn: 0, row: row, makeIfNecessary: false) as? SidebarItemCell)?.flashClipboardMark()
+                guard let cell = outline.view(atColumn: 0, row: row, makeIfNecessary: false) as? SidebarItemCell,
+                    marks?.flashes(cell.state?.item.path) == true
+                else { continue }
+                cell.flashClipboardMark()
             }
         }
     }

@@ -11,7 +11,7 @@ extension ShortcutPolicy {
         switch command {
         case .undo, .redo, .editCut, .editCopy, .editPaste, .editSelectAll, .focusFileSearch, .openLocationSheet,
             .openSettings, .emptyTrash, .ejectVolume, .pasteAsFile, .newTextFile, .openTemplatesFolder, .showClipboard,
-            .clearClipboard,
+            .clearClipboard, .addToCopied, .addToCut, .moveItemsHere, .removeFromClipboard,
             .refreshOrApplySearchSort, .toggleFolderTree, .toggleInfoPanel, .toggleInfoRow, .customizeToolbar,
             .goHomeRootTree, .goDocuments,
             .goDesktop, .goDownloads, .goLibrary, .goMacintoshHD, .goApplications, .goTrash, .rootTreeAtSelection,

@@ -81,9 +81,7 @@ private final class Shown {
 
     private func cut() {
         clipboard.set(
-            .ready(
-                mode: .cut, sourcePaths: ["/Users/demo/a.txt"], sourceEntries: [:],
-                capturedAt: "2026-10-08T10:00:00.000Z"), from: nil)
+            ClipboardRules.set(.cut, ["/Users/demo/a.txt"], capturedAt: "2026-10-08T10:00:00.000Z"), from: nil)
     }
 
     // A cut pasted while a write runs is refused as a move ("Couldn't Move"): a cut is pasted as a move.
@@ -115,7 +113,7 @@ private final class Shown {
     // A copy pasted stays a paste.
     @Test func aCopyPastedWhileBusyIsRefusedAsAPaste() async {
         clipboard.set(
-            .ready(mode: .copy, sourcePaths: ["/Users/demo/a.txt"], sourceEntries: [:], capturedAt: "t"), from: nil)
+            ClipboardRules.set(.copy, ["/Users/demo/a.txt"], capturedAt: "t"), from: nil)
         session.applyCard(WriteOperationCardState(action: .copyTo, stage: .running, targetPath: "/x"))
         let shown = Shown()
         _ = await WindowWriteActions(session: session, tab: nil, dialogs: shown.dialogs)

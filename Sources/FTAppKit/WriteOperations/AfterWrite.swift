@@ -13,7 +13,7 @@ enum AfterWrite {
 
     /// `movedItems`: a write that gave items new paths, a rename or move, or a paste that moved what was cut.
     static func movedItems(_ result: WriteOperationResult) -> Bool {
-        WriteEffects.movedItems(result.action, cut: result.mode == .cut)
+        result.movedItems
     }
 
     /// The folder the items a write made are selected in: a rename's,

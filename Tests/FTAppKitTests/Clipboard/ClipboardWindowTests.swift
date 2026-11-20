@@ -89,7 +89,7 @@ extension ExplorerWindowlessTests {
             let contents = tab.services.clipboard.contents
             #expect(contents.mode == .copy)
             #expect(contents.sourcePaths == [path(window, "note.txt")])
-            #expect(contents.sourceEntries[path(window, "note.txt")]?.kind == .file)
+            #expect(contents.pick(at: path(window, "note.txt"))?.entry?.kind == .file)
             window.harness.layout(tab)
             let button = try #require(tab.explorerToolbar.clipboardButton)
             #expect(button.count.stringValue == "1")

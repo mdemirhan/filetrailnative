@@ -581,7 +581,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
 
     /// The item was just copied or cut: the whole item flashes in the accent.
     func flashClipboardMark(in pane: ItemGridPane) {
-        guard let path, let host = pane.host, host.clipboardMarks?.mark(for: path) != nil else { return }
+        guard let path, let host = pane.host, host.clipboardMarks?.flashes(path) == true else { return }
         ClipboardFlash.flash(
             root, color: ClipboardMarkGlyph.color(theme: host.theme, onSelection: false),
             radius: CGFloat(IconItemStyle.make(density: density).tileRadius))

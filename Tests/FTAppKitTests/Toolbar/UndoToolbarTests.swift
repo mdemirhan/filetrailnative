@@ -173,7 +173,7 @@ extension ExplorerWindowlessTests {
             history.record(Self.rename("/p/a", "/p/b"))
             tab.explorerToolbar.refreshStates()
             tab.services.clipboard.set(
-                .ready(mode: .copy, sourcePaths: ["/a"], sourceEntries: [:], capturedAt: "1"), from: nil)
+                ClipboardRules.set(.copy, ["/a"], capturedAt: "1"), from: nil)
             tab.clipboardChanged()
             let historyButton = try #require(tab.explorerToolbar.undoHistoryButton)
             tab.undoHistoryUI.toggle(from: historyButton)

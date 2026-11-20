@@ -313,12 +313,17 @@ final class ExplorerWriteSession: WriteOperationWindow {
         if !startedInTabOnScreen {
             pendingTreeSelectionPath = nil
         }
+        // What a paste of the clipboard moved leaves it; what it copied, or didn't get to move, stays. Before the
+        // windows follow the write, which would otherwise follow the moved items to where they went.
         if let clear = clipboardClearAfterMove, clear.operationId == event.operationId {
             clipboardClearAfterMove = nil
-            if let clipboard, (event.result?.summary.completedItemCount ?? 0) > 0,
-                case .ready = clipboard.contents, clipboard.contents.capturedAt == clear.capturedAt
+            if let clipboard, let result = event.result, let capturedAt = clipboard.contents.capturedAt,
+                JSString.equals(capturedAt, clear.capturedAt)
             {
-                clipboard.set(.empty, follows: clear.capturedAt, from: nil)
+                let write = ClipboardWrite(
+                    action: result.action, mode: result.mode, items: result.items.map(\.effect),
+                    replacedPaths: result.replacedPaths ?? [])
+                clipboard.set(ClipboardRules.afterItsPaste(clipboard.contents, write), follows: capturedAt, from: nil)
             }
         }
         // The folder or file made in its row may have been given the next free name.

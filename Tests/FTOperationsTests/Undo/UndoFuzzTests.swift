@@ -64,7 +64,7 @@ struct FuzzFailures: Sendable {
 @MainActor
 final class UndoFuzzCase {
     enum Operation: String, CaseIterable {
-        case rename, newFolder, folderWithSelection, trash, batch, copy, move, replace
+        case rename, newFolder, folderWithSelection, trash, batch, copy, move, replace, copyAndMove
     }
 
     struct Item {
@@ -315,6 +315,36 @@ final class UndoFuzzCase {
                         FinishedWrite(
                             action: .write(kind == .copy ? .copyTo : kind == .move ? .moveTo : .paste), log: undoLog,
                             items: result.items.map(WriteOperationItem.init)))
+                }
+            }
+        case .copyAndMove:
+            // A paste of items put on the clipboard some to copy and some to move, from folders of their own.
+            let picked = Array(random.shuffle(items).prefix(random.integer(2, 4)))
+            let sources = picked.filter { candidate in
+                !picked.contains { other in other.path != candidate.path && candidate.path.hasPrefix("\(other.path)/") }
+            }
+            let into = folders().filter { folder in
+                !sources.contains { folder == $0.path || folder.hasPrefix("\($0.path)/") }
+            }
+            guard sources.count >= 2, !into.isEmpty else { return kind }
+            let destination = random.pick(into)
+            var cut = sources.filter { _ in random.chance(0.5) }.map(\.path)
+            if cut.isEmpty { cut = [sources[0].path] }
+            if cut.count == sources.count { cut.removeLast() }
+            let renamed = random.chance(0.3) ? [sources[sources.count - 1].path] : []
+            log.append(
+                "copy and move \(sources.map { "\(relative($0.path))\(cut.contains($0.path) ? " (cut)" : "")" }.joined(separator: ", ")) -> \(relative(destination))"
+            )
+            let run = try await runPaste(
+                mode: .copy, sources: sources.map(\.path), into: destination, policy: Self.keepBoth,
+                fileSystem: pasteFileSystem, cut: cut, renamedIfShared: renamed)
+            if let result = run.result, let undoLog = result.undoLog {
+                var changed = true
+                if case .undoable(let units) = undoLog, units.isEmpty { changed = false }
+                if changed {
+                    history.record(
+                        FinishedWrite(
+                            action: .write(.paste), log: undoLog, items: result.items.map(WriteOperationItem.init)))
                 }
             }
         }

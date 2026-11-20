@@ -131,17 +131,16 @@ import Testing
     }
 
     private func copied(_ path: String, _ capturedAt: String) -> CopyPasteClipboard {
-        .ready(mode: .copy, sourcePaths: [path], sourceEntries: [:], capturedAt: capturedAt)
+        ClipboardRules.set(.copy, [path], capturedAt: capturedAt)
     }
 
     @Test func keepsOneClipboardForEveryWindowAndTellsTheOthersOfAChange() {
         var told: [(Int?, CopyPasteClipboard)] = []
         let clipboard = SharedClipboard { told.append(($0, $1)) }
         #expect(clipboard.contents == .empty)
-        let contents = CopyPasteClipboard.ready(
-            mode: .copy, sourcePaths: ["/Users/demo/a.txt"],
-            sourceEntries: ["/Users/demo/a.txt": ClipboardSourceEntry(kind: .file, isSymlink: false)],
-            capturedAt: "2026-10-08T10:00:00.000Z")
+        let contents = ClipboardRules.set(
+            .copy, ["/Users/demo/a.txt"], capturedAt: "2026-10-08T10:00:00.000Z",
+            entries: ["/Users/demo/a.txt": ClipboardSourceEntry(kind: .file, isSymlink: false)])
 
         #expect(clipboard.set(contents, from: 1))
 

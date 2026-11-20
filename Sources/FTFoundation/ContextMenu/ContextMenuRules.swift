@@ -45,12 +45,18 @@ public struct ContextMenuWorld: Equatable, Sendable {
     public var showsTwoPanes: Bool
     /// What Paste as File would write from the system's clipboard; nil for nothing.
     public var pasteAsFileKind: PasteAsFileKind?
+    /// The items on the app's clipboard, cut ones and copied ones, for the Adds and the items about them.
+    public var clipboardCutPaths: [String]
+    public var clipboardCopiedPaths: [String]
 
     public init(
         homePath: String, currentPath: String = "", isSearchMode: Bool = false, favoritePaths: [String] = [],
         trashIsEmpty: Bool? = nil, writeLocked: Bool = false, canPaste: Bool = false, hasPasteDestination: Bool = false,
-        showsTwoPanes: Bool = false, pasteAsFileKind: PasteAsFileKind? = nil
+        showsTwoPanes: Bool = false, pasteAsFileKind: PasteAsFileKind? = nil, clipboardCutPaths: [String] = [],
+        clipboardCopiedPaths: [String] = []
     ) {
+        self.clipboardCutPaths = clipboardCutPaths
+        self.clipboardCopiedPaths = clipboardCopiedPaths
         self.homePath = homePath
         self.currentPath = currentPath
         self.isSearchMode = isSearchMode
@@ -126,7 +132,25 @@ public enum ContextMenuRules {
             copyContentsLabel: CopyContents.menuTitle(copyContentsGuess(subject)),
             compressLabel: ArchiveNames.compressTitle(
                 count: subject.paths.count, firstName: subject.paths.first.map(NodePath.basename)),
-            convertImagesLabel: ConvertImagesText.menuTitle(count: subject.entries.count))
+            convertImagesLabel: ConvertImagesText.menuTitle(count: subject.entries.count),
+            clipboardModeOfItems: clipboardMode(of: subject, world))
+    }
+
+    /// What the right-clicked items are on the clipboard for, when every one is on it with the same intent.
+    public static func clipboardMode(of subject: ContextMenuSubject, _ world: ContextMenuWorld) -> ClipboardMode? {
+        guard subject.scope == .selection, !subject.paths.isEmpty else { return nil }
+        let cut = Set(world.clipboardCutPaths.map(ExactKey.init))
+        let copied = Set(world.clipboardCopiedPaths.map(ExactKey.init))
+        let keys = subject.paths.map(ExactKey.init)
+        if keys.allSatisfy(cut.contains) { return .cut }
+        if keys.allSatisfy(copied.contains) { return .copy }
+        return nil
+    }
+
+    /// Whether any right-clicked item is on the clipboard.
+    static func anyOnClipboard(_ subject: ContextMenuSubject, _ world: ContextMenuWorld) -> Bool {
+        let on = Set((world.clipboardCutPaths + world.clipboardCopiedPaths).map(ExactKey.init))
+        return subject.paths.contains { on.contains(ExactKey($0)) }
     }
 
     /// What Copy Contents would copy of the one file a menu is for; nil when it is for anything else.
@@ -174,6 +198,16 @@ public enum ContextMenuRules {
             for action in writeLockedActions where action != .paste { hidden.insert(action) }
         }
         if favoriteToggleLabel(subject, world) == nil { hidden.insert(.toggleFavorite) }
+        // The Adds join what is on the clipboard, for items not all on it already (with an empty clipboard, Copy and
+        // Cut do the same); the other intent is for items all on it with one, and Remove for any on it.
+        let clipboardEmpty = world.clipboardCutPaths.isEmpty && world.clipboardCopiedPaths.isEmpty
+        let allOnClipboard = clipboardMode(of: subject, world) != nil
+        if clipboardEmpty || allOnClipboard || subject.scope != .selection || subject.paths.isEmpty {
+            hidden.insert(.addToCopied)
+            hidden.insert(.addToCut)
+        }
+        if !allOnClipboard { hidden.insert(.switchClipboardMode) }
+        if subject.scope != .selection || !anyOnClipboard(subject, world) { hidden.insert(.removeFromClipboard) }
         // Paste as File is there only with an image or text to write.
         if world.pasteAsFileKind == nil { hidden.insert(.pasteAsFile) }
         // Eject is for a disk that can be ejected.

@@ -206,13 +206,14 @@ final class TabDragDrop {
         }
     }
 
-    /// Items dragged away to another app: the clipboard lets go of the items (a cut of any is cancelled), every window
+    /// Items dragged away to another app: the clipboard lets go of the items, each on its own, every window
     /// forgets their sizes and reads what they left again, and the search results on screen that listed them let go
     /// of them.
     func draggedAway(_ gone: [String], cleared: [String], intoTrash: Bool) {
         guard let tab else { return }
         let clipboard = tab.services.clipboard
         let followed = ClipboardRules.followThroughRemoval(clipboard.contents, gone)
+        clipboard.followKept { ClipboardRules.followThroughRemoval($0, gone) }
         if followed != clipboard.contents {
             clipboard.set(followed, follows: clipboard.contents.capturedAt, from: tab.windowID)
             tab.clipboardChanged()

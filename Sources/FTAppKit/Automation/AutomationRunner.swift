@@ -312,6 +312,14 @@
             case .snapshot(let name):
                 let focused = await AutomationFocus.ensure(window)
                 var outcome = snapshot(window, to: options.out.appendingPathComponent(name + ".png"))
+                // A popover open over the window (the clipboard's list) is a window of its own: it is drawn beside.
+                let popovers = NSApp.windows.filter {
+                    $0 !== window && $0.isVisible && String(describing: Swift.type(of: $0)).contains("Popover")
+                }
+                for (index, popover) in popovers.enumerated() where outcome.status == .ok {
+                    let suffix = popovers.count == 1 ? "" : "-\(index + 1)"
+                    outcome = snapshot(popover, to: options.out.appendingPathComponent("\(name)-popover\(suffix).png"))
+                }
                 if !focused {
                     outcome.unfocused = true
                     outcome.message = outcome.message ?? AutomationFocus.whyUnfocused(window)

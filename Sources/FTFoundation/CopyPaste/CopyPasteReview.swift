@@ -50,14 +50,19 @@ public struct ReviewNode: Codable, Equatable, Sendable {
     public var destinationOnly: ReviewDestinationOnly?
     public var replaceBlockedReason: String?
     public var renameOnly: Bool
+    /// A picked item of a paste that copies some items and moves others: what this one does, and what is inside it.
+    /// Nil when the whole paste does one thing (`ReviewReport.mode`).
+    public var mode: ReviewMode?
 
     public init(
         id: String, sourcePath: String, destinationPath: String, sourceKind: ReviewNodeKind,
         destinationKind: ReviewNodeKind, conflictClass: ConflictClass?, sourceFingerprint: ReviewFingerprint,
         destinationFingerprint: ReviewFingerprint, children: [ReviewNode] = [], totalNodeCount: Int,
         conflictNodeCount: Int, destinationTotalNodeCount: Int? = nil, keepBothDestinationPath: String? = nil,
-        destinationOnly: ReviewDestinationOnly? = nil, replaceBlockedReason: String? = nil, renameOnly: Bool = false
+        destinationOnly: ReviewDestinationOnly? = nil, replaceBlockedReason: String? = nil, renameOnly: Bool = false,
+        mode: ReviewMode? = nil
     ) {
+        self.mode = mode
         self.id = id
         self.sourcePath = sourcePath
         self.destinationPath = destinationPath
@@ -94,7 +99,8 @@ public struct ReviewNode: Codable, Equatable, Sendable {
             keepBothDestinationPath: try values.decodeIfPresent(String.self, forKey: .keepBothDestinationPath),
             destinationOnly: try values.decodeIfPresent(ReviewDestinationOnly.self, forKey: .destinationOnly),
             replaceBlockedReason: try values.decodeIfPresent(String.self, forKey: .replaceBlockedReason),
-            renameOnly: try values.decodeIfPresent(Bool.self, forKey: .renameOnly) ?? false)
+            renameOnly: try values.decodeIfPresent(Bool.self, forKey: .renameOnly) ?? false,
+            mode: try values.decodeIfPresent(ReviewMode.self, forKey: .mode))
     }
 }
 
@@ -135,6 +141,12 @@ public struct ReviewReport: Codable, Equatable, Sendable {
         self.summary = summary
         self.newerToleranceMs = newerToleranceMs
     }
+
+    /// Some items are copied and others moved: each row says which.
+    public var isMixed: Bool {
+        guard let first = nodes.first.map({ $0.mode ?? mode }) else { return false }
+        return nodes.contains { ($0.mode ?? mode) != first }
+    }
 }
 
 /// The review's choices per item, by node id.
@@ -166,6 +178,8 @@ public struct ReviewRow: Equatable, Sendable {
     public var detail: String
     public var tone: ReviewTone
     public var replaceBlockedReason: String?
+    /// In a paste that copies some items and moves others, what this row's item does; nil when they all do one thing.
+    public var mode: ReviewMode? = nil
 }
 
 /// What the choices will do, counted (`ReviewSummary`).
@@ -287,8 +301,10 @@ public enum CopyPasteReview {
     /// out: it would split the folder between both places. Replace Older is offered only where the disks keep dates
     /// that can be compared (`newerToleranceMs`), for a copy or a move.
     public static func allConflictsChoices(_ report: ReviewReport) -> [AllConflictsChoice] {
+        // A folder moved in a paste of both counts as a move.
+        let movesAFolderThere = report.nodes.contains { $0.mode == .cut && $0.conflictClass == .directoryConflict }
         var choices: [AllConflictsChoice] =
-            report.mode == .cut || report.summary.directoryConflictCount == 0
+            report.mode == .cut || movesAFolderThere || report.summary.directoryConflictCount == 0
             ? [.skip, .keepAll] : [.skip, .addMissing, .keepAll]
         if report.newerToleranceMs != nil { choices.append(.replaceOlder) }
         return choices + [.overwrite]
@@ -352,8 +368,11 @@ public enum CopyPasteReview {
         dates: ReviewDateText = .shared
     ) -> [ReviewRow] {
         var rows: [ReviewRow] = []
-        func visit(_ nodes: [ReviewNode], _ depth: Int, _ basePath: String) {
+        let mixed = report.isMixed
+        // What is inside a picked item goes as it does.
+        func visit(_ nodes: [ReviewNode], _ depth: Int, _ basePath: String, _ inherited: ReviewMode) {
             for node in nodes {
+                let mode = depth == 0 ? node.mode ?? report.mode : inherited
                 let choice = effectiveChoice(node, policy, overrides)
                 if choice == nil, !(showNewItems && depth == 0) { continue }
                 // Nested paths are shown below the folder the top-level item was copied from.
@@ -363,12 +382,13 @@ public enum CopyPasteReview {
                         conflictClass: $0, policy: policy, override: overrides[node.id], dates: modifiedDates(node),
                         isPackage: isPackageConflict(node))
                 }
-                rows.append(
-                    row(node, depth, choice, report.mode, base, now, dates, leftByReplaceOlder: leftByReplaceOlder))
-                if choice == .merge { visit(node.children, depth + 1, base) }
+                var row = row(node, depth, choice, mode, base, now, dates, leftByReplaceOlder: leftByReplaceOlder)
+                if mixed { row.mode = mode }
+                rows.append(row)
+                if choice == .merge { visit(node.children, depth + 1, base, mode) }
             }
         }
-        visit(report.nodes, 0, "")
+        visit(report.nodes, 0, "", report.mode)
         return rows
     }
 

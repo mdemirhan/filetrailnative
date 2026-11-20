@@ -33,13 +33,21 @@ public struct ClipboardItem: Equatable, Sendable {
     public var entry: ClipboardItemEntry
     /// Nil when the item was copied without saying what it is.
     public var isFolder: Bool?
+    /// Whether ⌘V copies it or moves it.
+    public var mode: ClipboardMode
+    /// Another item on the clipboard has its name, and it is pasted under a name of its own.
+    public var pastedUnderAnotherName: Bool
 }
 
 /// What the window says about the clipboard while it holds files (`ClipboardSummary`).
 public struct ClipboardSummary: Equatable, Sendable {
-    public var mode: ClipboardMode
+    /// What every item does; nil when some are copied and others moved.
+    public var mode: ClipboardMode?
     public var count: Int
-    /// "3 items copied", "1 item cut".
+    /// How many ⌘V moves, and how many it copies.
+    public var cutCount: Int
+    public var copiedCount: Int
+    /// "3 items copied", "1 item cut", "7 items on the clipboard".
     public var countLabel: String
     /// One item is called by its name ("notes.md copied"); several are counted.
     public var label: String
@@ -47,8 +55,17 @@ public struct ClipboardSummary: Equatable, Sendable {
     public var breakdown: String?
     public var items: [ClipboardItem]
 
+    /// "4 to move, 3 to copy": what ⌘V does with a clipboard of both.
+    public var intentLabel: String? {
+        guard mode == nil else { return nil }
+        return
+            "\(ContextMenuRules.groupedCount(cutCount)) to move, \(ContextMenuRules.groupedCount(copiedCount)) to copy"
+    }
+
     /// The button's accessible name.
-    public var accessibilityLabel: String { "Clipboard: \(countLabel)" }
+    public var accessibilityLabel: String {
+        "Clipboard: \(countLabel)\(intentLabel.map { ", \($0)" } ?? "")"
+    }
 }
 
 /// The items under the folder each came from (`ClipboardItemGroup`).
@@ -61,10 +78,10 @@ public struct ClipboardItemGroup: Equatable, Sendable {
 
 extension ClipboardRules {
     public static func items(_ clipboard: CopyPasteClipboard) -> [ClipboardItem] {
-        guard case .ready(_, let paths, let entries, _) = clipboard else { return [] }
-        return paths.map { path in
+        clipboard.picks.map { pick in
+            let path = pick.path
             let name = PathText.leafName(path)
-            let known = entries[path]
+            let known = pick.entry
             let isFolder = known.map { $0.kind == .directory || $0.kind == .symlinkDirectory }
             return ClipboardItem(
                 path: path, name: name, parentPath: parentPath(path),
@@ -73,16 +90,24 @@ extension ClipboardRules {
                     // An item of unknown kind is drawn with the icon macOS has for its path.
                     kind: known?.kind ?? .other, isHidden: JSString.hasPrefix(name, "."),
                     isSymlink: known?.isSymlink ?? false, isExecutable: known?.isExecutable),
-                isFolder: isFolder)
+                isFolder: isFolder, mode: pick.mode,
+                pastedUnderAnotherName: isPastedUnderAnotherName(clipboard, path))
         }
     }
 
     /// Nil while the clipboard is empty.
     public static func describe(_ clipboard: CopyPasteClipboard) -> ClipboardSummary? {
         let items = items(clipboard)
-        guard case .ready(let mode, _, _, _) = clipboard, let first = items.first else { return nil }
+        guard let first = items.first else { return nil }
+        let mode = clipboard.mode
         let count = items.count
-        let verb = mode == .cut ? "cut" : "copied"
+        let cutCount = items.filter { $0.mode == .cut }.count
+        let verb =
+            switch mode {
+            case .cut: "cut"
+            case .copy: "copied"
+            case nil: "on the clipboard"
+            }
         let countLabel = "\(pluralize(count, "item")) \(verb)"
         let folders = items.filter { $0.isFolder == true }.count
         let files = items.filter { $0.isFolder == false }.count
@@ -91,8 +116,19 @@ extension ClipboardRules {
         if folders > 0 { parts.append(pluralize(folders, "folder")) }
         if files > 0 { parts.append(pluralize(files, "file")) }
         return ClipboardSummary(
-            mode: mode, count: count, countLabel: countLabel, label: count == 1 ? "\(first.name) \(verb)" : countLabel,
+            mode: mode, count: count, cutCount: cutCount, copiedCount: count - cutCount, countLabel: countLabel,
+            label: count == 1 ? "\(first.name) \(verb)" : countLabel,
             breakdown: count > 1 && kindsKnown ? parts.joined(separator: " and ") : nil, items: items)
+    }
+
+    /// The items split by what ⌘V does with them, cut ones first (they leave where they are), each part's items
+    /// under the folder each came from.
+    public static func groupByIntent(_ items: [ClipboardItem]) -> [(mode: ClipboardMode, groups: [ClipboardItemGroup])]
+    {
+        [ClipboardMode.cut, .copy].compactMap { mode in
+            let part = items.filter { $0.mode == mode }
+            return part.isEmpty ? nil : (mode, groupByFolder(part))
+        }
     }
 
     /// In the order the folders first appear.

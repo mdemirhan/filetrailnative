@@ -64,13 +64,79 @@ final class ToastIconView: NSView, ThemeApplying {
     }
 }
 
-/// One notification: the mark, the title, and the detail after it, in one line.
+/// The button of a notification: its title in the accent, taking the click on the glass.
+final class ToastActionButton: NSView, ThemeApplying {
+    private let label: ThemedText
+    var onPress: () -> Void = {}
+    private var pressed = false {
+        didSet { alphaValue = pressed ? 0.6 : 1 }
+    }
+
+    init(title: String, theme: Theme) {
+        label = ThemedText(
+            title,
+            style: TextStyle(font: ThemeFonts.sans(DesignTokens.typeScale.body, .semibold), color: { $0.accent.solid }))
+        super.init(frame: .zero)
+        addSubview(label)
+        setAccessibilityElement(true)
+        setAccessibilityRole(.button)
+        setAccessibilityLabel(title)
+        setAccessibilityIdentifier("toast.action")
+        label.setAccessibilityElement(false)
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    override var isFlipped: Bool { true }
+
+    var naturalWidth: CGFloat { label.naturalWidth }
+
+    func applyTheme(_ theme: Theme) {
+        label.applyTheme(theme)
+    }
+
+    override func layout() {
+        super.layout()
+        label.frame = bounds
+    }
+
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        frame.contains(point) ? self : nil
+    }
+
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
+    override func resetCursorRects() {
+        addCursorRect(bounds, cursor: .pointingHand)
+    }
+
+    override func mouseDown(with event: NSEvent) { pressed = true }
+
+    override func mouseDragged(with event: NSEvent) {
+        pressed = bounds.contains(convert(event.locationInWindow, from: nil))
+    }
+
+    override func mouseUp(with event: NSEvent) {
+        let inside = bounds.contains(convert(event.locationInWindow, from: nil))
+        pressed = false
+        if inside { onPress() }
+    }
+
+    override func accessibilityPerformPress() -> Bool {
+        onPress()
+        return true
+    }
+}
+
+/// One notification: the mark, the title, and the detail after it, in one line, and its button when it has one.
 @MainActor
 final class ToastCardView: NSView, ThemeApplying {
     let entry: ToastEntry
     private let icon: ToastIconView
     private let title: ThemedText
     private let detail: ThemedText?
+    private let action: ToastActionButton?
+    var onAction: () -> Void = {}
     private var theme: Theme
     private var metrics: ToastLayout { DesignTokens.toast }
 
@@ -94,19 +160,34 @@ final class ToastCardView: NSView, ThemeApplying {
         } else {
             detail = nil
         }
+        action = entry.actionTitle.map { ToastActionButton(title: $0, theme: theme) }
         super.init(frame: .zero)
         wantsLayer = true
         setAccessibilityIdentifier("toast")
         setAccessibilityRole(.staticText)
         setAccessibilityLabel([entry.title, entry.message].compactMap { $0 }.joined(separator: " "))
         for view in [icon, title] + (detail.map { [$0] } ?? []) { addSubview(view) }
+        if let action {
+            addSubview(action)
+            action.onPress = { [weak self] in self?.onAction() }
+        }
         applyTheme(theme)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
     override var isFlipped: Bool { true }
-    override func hitTest(_ point: NSPoint) -> NSView? { nil }
+
+    /// Only its button takes the mouse; the rest lets clicks through to the window.
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        guard let action, !isHidden else { return nil }
+        return action.hitTest(convert(point, from: superview))
+    }
+
+    /// The button's width, with the gap before it; none without one.
+    private var actionSpace: Double {
+        action.map { metrics.bodyGap + Double($0.naturalWidth) } ?? 0
+    }
 
     func applyTheme(_ theme: Theme) {
         self.theme = theme
@@ -127,7 +208,7 @@ final class ToastCardView: NSView, ThemeApplying {
         let titleWidth = Double(title.naturalWidth)
         let detailWidth = detail.map { Double($0.naturalWidth) } ?? 0
         var copy = titleWidth + (detail == nil ? 0 : metrics.bodyGap + detailWidth)
-        copy = min(copy, max(titleWidth, limit - chrome))
+        copy = min(copy, max(titleWidth, limit - chrome - actionSpace)) + actionSpace
         let body = max(metrics.iconSize, Double(lineHeight))
         return NSSize(
             width: chrome + copy,
@@ -146,7 +227,12 @@ final class ToastCardView: NSView, ThemeApplying {
         x += metrics.iconSize + metrics.bodyGap
         let line = lineHeight
         let textY = top + (CGFloat(body) - line) / 2
-        let end = Double(bounds.width) - border - metrics.paddingTrailing
+        var end = Double(bounds.width) - border - metrics.paddingTrailing
+        if let action {
+            let width = Double(action.naturalWidth)
+            action.frame = NSRect(x: end - width, y: textY, width: width, height: line)
+            end -= actionSpace
+        }
         let titleWidth = min(Double(title.naturalWidth), end - x)
         title.frame = NSRect(x: x, y: textY, width: titleWidth, height: line)
         if let detail {

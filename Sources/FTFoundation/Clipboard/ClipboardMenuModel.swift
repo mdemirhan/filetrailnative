@@ -4,6 +4,8 @@ import Foundation
 
 /// A row of the clipboard's list (`ClipboardMenuRow`).
 public enum ClipboardMenuRow: Equatable, Sendable {
+    /// What ⌘V does with the items under it, on a clipboard holding both: "Cut", "Copied", with their count.
+    case section(mode: ClipboardMode, count: Int)
     case heading(label: String, parentPath: String)
     case item(ClipboardItem, itemIndex: Int)
 }
@@ -19,6 +21,7 @@ public enum ClipboardMenuKeyResult: Equatable, Sendable {
     case reveal(String)
     case remove(String)
     case clear
+    case putBack
 }
 
 /// The keys of the menu.
@@ -32,32 +35,55 @@ public struct ClipboardMenuModel: Equatable, Sendable {
     public private(set) var rows: [ClipboardMenuRow] = []
     /// The items in the order the list shows them, which the arrow keys go through.
     public private(set) var orderedItems: [ClipboardItem] = []
-    /// The row the keys are on: an item's index, `clearIndex` for Clear Clipboard, -1 for none.
+    /// The row the keys are on: an item's index, `clearIndex` for Clear Clipboard, `putBackIndex` for Put Back, -1
+    /// for none.
     public var activeIndex = -1
     /// How far the list is scrolled.
     public var scrollTop = 0.0
+    /// A clipboard built with Add that a Copy or Cut replaced can be put back: how many items it held, or nil.
+    public private(set) var putBackCount: Int?
 
-    public init(items: [ClipboardItem] = []) {
-        setItems(items)
+    public init(items: [ClipboardItem] = [], putBackCount: Int? = nil) {
+        setItems(items, putBackCount: putBackCount)
     }
 
     /// Clear Clipboard's index, after the last item.
     public var clearIndex: Int { orderedItems.count }
 
-    /// The items changed: the active row keeps its index, so the next item moves up under the keys (clamped).
-    public mutating func setItems(_ items: [ClipboardItem]) {
+    /// Put Back's index, after Clear Clipboard, while there is one to put back.
+    public var putBackIndex: Int? { putBackCount == nil ? nil : clearIndex + 1 }
+
+    /// The last row the keys can be on.
+    private var lastIndex: Int { putBackIndex ?? clearIndex }
+
+    /// The items changed: the active row keeps its index, so the next item moves up under the keys (clamped). On a
+    /// clipboard holding both, the cut items come first under "Cut", then the copied ones under "Copied", each part's
+    /// items under their folders, as ⌘V will run.
+    public mutating func setItems(_ items: [ClipboardItem], putBackCount: Int? = nil) {
         var rows: [ClipboardMenuRow] = []
         var ordered: [ClipboardItem] = []
-        for group in ClipboardRules.groupByFolder(items) {
-            rows.append(.heading(label: group.label, parentPath: group.parentPath))
-            for item in group.items {
-                rows.append(.item(item, itemIndex: ordered.count))
-                ordered.append(item)
+        func add(_ groups: [ClipboardItemGroup]) {
+            for group in groups {
+                rows.append(.heading(label: group.label, parentPath: group.parentPath))
+                for item in group.items {
+                    rows.append(.item(item, itemIndex: ordered.count))
+                    ordered.append(item)
+                }
             }
+        }
+        let parts = ClipboardRules.groupByIntent(items)
+        if parts.count > 1 {
+            for part in parts {
+                rows.append(.section(mode: part.mode, count: part.groups.reduce(0) { $0 + $1.items.count }))
+                add(part.groups)
+            }
+        } else {
+            add(ClipboardRules.groupByFolder(items))
         }
         self.rows = rows
         orderedItems = ordered
-        if activeIndex > clearIndex { activeIndex = clearIndex }
+        self.putBackCount = putBackCount
+        if activeIndex > lastIndex { activeIndex = lastIndex }
     }
 
     /// The menu opened: no active row, scrolled to the top.
@@ -89,12 +115,31 @@ public struct ClipboardMenuModel: Equatable, Sendable {
         return start..<max(start, end)
     }
 
-    /// The folder of whatever is at the top of the list, kept in view while its items scroll.
-    public var pinnedHeading: (label: String, parentPath: String)? {
+    /// The heading of whatever is at the top of the list, kept in view while its items scroll: its folder, or on a
+    /// clipboard holding both, the title of a part ("Cut", "Copied") while that is at the top.
+    public var pinnedRow: ClipboardMenuRow? {
         guard !rows.isEmpty else { return nil }
         var index = min(firstVisibleRow, rows.count - 1)
         while index >= 0 {
-            if case .heading(let label, let parentPath) = rows[index] { return (label, parentPath) }
+            switch rows[index] {
+            case .heading, .section: return rows[index]
+            case .item: index -= 1
+            }
+        }
+        return nil
+    }
+
+    /// The folder pinned over the top of the list, when a folder is.
+    public var pinnedHeading: (label: String, parentPath: String)? {
+        if case .heading(let label, let parentPath)? = pinnedRow { return (label, parentPath) }
+        return nil
+    }
+
+    /// On a clipboard holding both, what ⌘V does with the items of the folder pinned: the part it is in.
+    public var pinnedMode: ClipboardMode? {
+        var index = min(firstVisibleRow, rows.count - 1)
+        while index >= 0 {
+            if case .section(let mode, _) = rows[index] { return mode }
             index -= 1
         }
         return nil
@@ -131,15 +176,16 @@ public struct ClipboardMenuModel: Equatable, Sendable {
         case .escape, .tab:
             return .close
         case .down, .up:
-            activeIndex = max(0, min(clearIndex, activeIndex + (key == .down ? 1 : -1)))
+            activeIndex = max(0, min(lastIndex, activeIndex + (key == .down ? 1 : -1)))
             revealActiveRow()
             return .handled
         case .home, .end:
-            activeIndex = key == .home ? 0 : clearIndex
+            activeIndex = key == .home ? 0 : lastIndex
             revealActiveRow()
             return .handled
         case .enter, .space:
             if activeIndex == clearIndex { return .clear }
+            if activeIndex == putBackIndex { return .putBack }
             if orderedItems.indices.contains(activeIndex) { return .reveal(orderedItems[activeIndex].path) }
             return .handled
         case .backspace, .delete:

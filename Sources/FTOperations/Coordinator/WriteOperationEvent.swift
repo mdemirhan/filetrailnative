@@ -24,12 +24,15 @@ public struct WriteOperationItem: WrittenItem, Equatable, Sendable {
     public var childFailureCount: Int?
     /// A completed item with something to know about it: `error` says what.
     public var note: Bool
+    /// In a paste that copied some items and moved others: what this one did.
+    public var mode: CopyPasteMode?
 
     public init(
         sourcePath: String?, destinationPath: String?, status: CopyPasteItemResult.Status, error: String? = nil,
         skipReason: CopyPasteItemResult.SkipReason? = nil, noTrash: Bool = false, childFailureCount: Int? = nil,
-        note: Bool = false
+        note: Bool = false, mode: CopyPasteMode? = nil
     ) {
+        self.mode = mode
         self.sourcePath = sourcePath
         self.destinationPath = destinationPath
         self.status = status
@@ -44,12 +47,12 @@ public struct WriteOperationItem: WrittenItem, Equatable, Sendable {
     public init(_ item: CopyPasteItemResult) {
         self.init(
             sourcePath: item.sourcePath, destinationPath: item.destinationPath, status: item.status, error: item.error,
-            skipReason: item.skipReason, childFailureCount: item.childFailureCount)
+            skipReason: item.skipReason, childFailureCount: item.childFailureCount, mode: item.mode)
     }
 
     /// The item as `WriteEffects` looks at it.
     public var effect: WriteEffectItem {
-        WriteEffectItem(sourcePath: sourcePath, destinationPath: destinationPath, status: status)
+        WriteEffectItem(sourcePath: sourcePath, destinationPath: destinationPath, status: status, mode: mode)
     }
 }
 
@@ -90,6 +93,12 @@ public struct WriteOperationResult: Equatable, Sendable {
         self.error = error
     }
 
+    /// Whether the write gave items new paths: a rename or move, a paste that moved what was cut, or one that moved
+    /// some of its items and copied others.
+    public var movedItems: Bool {
+        WriteEffects.movedItems(action, cut: mode == .cut, items: items)
+    }
+
     /// `pathsChangedByWrite`: what the operation changed, outermost paths only.
     public var changedPaths: [String] {
         WriteEffects.pathsChangedByWrite(
@@ -110,6 +119,7 @@ public struct WriteOperationResult: Equatable, Sendable {
         var sourcePath: String? { item.sourcePath }
         var destinationPath: String? { item.destinationPath }
         var status: WriteItemEndStatus { item.status }
+        var mode: ClipboardMode? { item.mode }
     }
 }
 

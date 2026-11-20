@@ -152,6 +152,12 @@ public struct WriteOperationOutcome: Equatable, Sendable {
         self.mode = mode
         self.items = items
     }
+
+    /// Whether it gave items new paths: a rename or move, a paste that moved what was cut, or one that moved some
+    /// items and copied others.
+    public var movedItems: Bool {
+        WriteEffects.movedItems(action, cut: mode == .cut, items: items)
+    }
 }
 
 /// A file operation's progress, as every window hears it.
@@ -372,9 +378,7 @@ public enum ExplorerTabs {
     /// The moves a window's tabs follow on hearing `event`: none until the operation has ended, and only from one that
     /// moved items.
     public static func followedMoves(_ event: WriteOperationProgress) -> [PathMove] {
-        guard event.status.isTerminal, let result = event.result,
-            WriteEffects.movedItems(result.action, cut: result.mode == .cut)
-        else { return [] }
+        guard event.status.isTerminal, let result = event.result, result.movedItems else { return [] }
         return collectFollowedMoves(result.action, items: result.items)
     }
 

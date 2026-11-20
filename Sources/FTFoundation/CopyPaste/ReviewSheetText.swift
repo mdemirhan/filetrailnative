@@ -71,7 +71,8 @@ public struct ReviewSheetText: Equatable, Sendable {
         } else {
             note = CopyPasteReview.formatSummary(summary, verb: verb)
         }
-        addsLabel = verb == "Move" ? "Moves" : "Adds"
+        // In a paste of both, each row says whether it is moved; a new item is added either way.
+        addsLabel = verb == "Move" && !report.isMixed ? "Moves" : "Adds"
         showNewItemsLabel =
             summary.newTopLevelCount > 0 ? "Show \(ReviewCount.pluralize(summary.newTopLevelCount, "new item"))" : nil
     }

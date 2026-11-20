@@ -219,7 +219,7 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
 
     /// The item was just copied or cut: its mark flashes.
     func flashClipboardMark(in pane: ItemGridPane) {
-        guard let path, let host = pane.host, host.clipboardMarks?.mark(for: path) != nil else { return }
+        guard let path, let host = pane.host, host.clipboardMarks?.flashes(path) == true else { return }
         let selected = pane.isSelected(path)
         ClipboardFlash.flash(
             root, color: ClipboardMarkGlyph.color(theme: host.theme, onSelection: marksOnSelection(pane, selected)),

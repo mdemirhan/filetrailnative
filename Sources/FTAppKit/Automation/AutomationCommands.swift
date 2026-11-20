@@ -11,6 +11,7 @@
             "editSelection", "openLocationSheet", "openSettings", "zoomIn", "zoomOut", "resetZoom", "openInTerminal",
             "moveSelection", "renameSelection", "duplicateSelection", "newFolder", "trashSelection", "emptyTrash",
             "ejectVolume", "copySelection", "cutSelection", "pasteSelection", "copyPath", "showClipboard",
+            "addToCopied", "addToCut", "moveItemsHere", "removeFromClipboard",
             "clearClipboard", "refreshOrApplySearchSort", "toggleFolderTree", "toggleInfoPanel", "toggleInfoRow",
             "customizeToolbar", "goHomeRootTree", "goDocuments", "goDesktop", "goDownloads", "goLibrary",
             "goMacintoshHD", "goApplications", "goTrash", "rootTreeAtSelection", "newWindow", "newTab",

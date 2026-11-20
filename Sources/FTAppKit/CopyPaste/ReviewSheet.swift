@@ -352,8 +352,64 @@ final class ReviewBarView: NSView, ThemeApplying {
     @objc private func linkPressed(_ sender: Any?) { onToggleNewItems() }
 }
 
+/// Whether an item of a paste that copies some items and moves others is moved or copied: "Move" or "Copy" on a
+/// tinted capsule of its own, before the row's choice.
+@MainActor
+final class ReviewIntentChip: NSView {
+    private let label = ThemedText { _ in NSAttributedString() }
+    private(set) var mode: ReviewMode = .copy
+    private static let font = ThemeFonts.sans(DesignTokens.typeScale.small, .semibold)
+    private static let paddingX: CGFloat = 6
+    private static let paddingY: CGFloat = 2
+
+    override init(frame: NSRect) {
+        super.init(frame: frame)
+        addSubview(label)
+        setAccessibilityElement(true)
+        setAccessibilityRole(.staticText)
+        setAccessibilityIdentifier("reviewSheet.row.intent")
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    override var isFlipped: Bool { true }
+
+    func set(_ mode: ReviewMode) {
+        self.mode = mode
+        let text = mode == .cut ? "Move" : "Copy"
+        label.content = { theme in
+            singleLineText([(text, Self.font, mode == .cut ? theme.palette.textPrimary : theme.accent.solid)])
+        }
+        setAccessibilityLabel(mode == .cut ? "Moved" : "Copied")
+        needsLayout = true
+        needsDisplay = true
+    }
+
+    var naturalSize: NSSize {
+        NSSize(
+            width: ceil(label.naturalWidth) + 2 * Self.paddingX,
+            height: ceil(label.height(forWidth: 10_000)) + 2 * Self.paddingY)
+    }
+
+    override func layout() {
+        super.layout()
+        label.frame = bounds.insetBy(dx: Self.paddingX, dy: Self.paddingY)
+    }
+
+    override func draw(_ dirtyRect: NSRect) {
+        let theme = AppearanceModel.shared.theme
+        let fill =
+            mode == .cut
+            ? theme.palette.textSecondary.withAlpha(0.14) : theme.accent.solid.withAlpha(0.14)
+        NSColor(fill).setFill()
+        let radius = DesignTokens.radii.xs
+        NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius).fill()
+    }
+}
+
 /// One item of the review: its glyph, name ("→ new name" when kept next to the existing one),
-/// where it is when nested deeper than the indent, what will happen to it, and its choice (or "Adds").
+/// where it is when nested deeper than the indent, what will happen to it, and its choice (or "Adds"); in a paste of
+/// both, whether it is moved or copied before that.
 @MainActor
 final class ReviewRowView: NSView, ThemeApplying {
     let glyph = SheetGlyphView(.file)
@@ -362,6 +418,7 @@ final class ReviewRowView: NSView, ThemeApplying {
     let detailLabel: ThemedText
     let popUp = ReviewChoicePopUp()
     let addsLabel = ThemedText { _ in NSAttributedString() }
+    let intent = ReviewIntentChip()
     private(set) var row: ReviewRow?
     private var onChoice: (CopyPasteChoice) -> Void = { _ in }
     private var theme = AppearanceModel.shared.theme
@@ -380,7 +437,9 @@ final class ReviewRowView: NSView, ThemeApplying {
         detailLabel.setAccessibilityIdentifier("reviewSheet.row.detail")
         pathLabel.setAccessibilityIdentifier("reviewSheet.row.path")
         addsLabel.setAccessibilityIdentifier("reviewSheet.row.adds")
-        for view in [glyph, nameLabel, pathLabel, detailLabel, popUp, addsLabel] as [NSView] { addSubview(view) }
+        for view in [glyph, nameLabel, pathLabel, detailLabel, popUp, addsLabel, intent] as [NSView] {
+            addSubview(view)
+        }
         popUp.target = self
         popUp.action = #selector(choicePicked(_:))
     }
@@ -427,6 +486,8 @@ final class ReviewRowView: NSView, ThemeApplying {
                 singleLineText([(adds, Self.font, theme.palette.textSecondary)])
             }
         }
+        intent.isHidden = row.mode == nil
+        if let mode = row.mode { intent.set(mode) }
         setAccessibilityLabel(row.relativePath)
         needsLayout = true
         needsDisplay = true
@@ -444,12 +505,17 @@ final class ReviewRowView: NSView, ThemeApplying {
         popUp.isHidden ? addsLabel.naturalWidth : popUp.preferredWidth
     }
 
+    /// The chip's width with its gap, when the row has one.
+    private var intentWidth: CGFloat {
+        intent.isHidden ? 0 : intent.naturalSize.width + CGFloat(CopyPasteSheetLayout.rowColumnGap)
+    }
+
     private func textWidth(_ width: CGFloat) -> CGFloat {
         let layout = CopyPasteSheetLayout.self
         return max(
             0,
             width - leftPadding - CGFloat(layout.glyphColumn) - 2 * CGFloat(layout.rowColumnGap) - trailingWidth
-                - CGFloat(layout.rowHorizontal))
+                - intentWidth - CGFloat(layout.rowHorizontal))
     }
 
     /// A line of the row's text: the font's natural line, 15 at 13 pt.
@@ -511,6 +577,12 @@ final class ReviewRowView: NSView, ThemeApplying {
         } else {
             let popHeight = CGFloat(DesignTokens.controlHeights.regular)
             popUp.frame = NSRect(x: right - trailing, y: (height - popHeight) / 2, width: trailing, height: popHeight)
+        }
+        if !intent.isHidden {
+            let size = intent.naturalSize
+            intent.frame = NSRect(
+                x: right - trailing - CGFloat(layout.rowColumnGap) - size.width, y: (height - size.height) / 2,
+                width: size.width, height: size.height)
         }
     }
 
