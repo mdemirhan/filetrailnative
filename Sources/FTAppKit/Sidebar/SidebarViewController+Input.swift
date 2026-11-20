@@ -282,7 +282,9 @@ extension SidebarViewController {
     func sidebarList(
         _ list: SidebarListView, favoriteDragOver target: (path: String, position: Favorites.DropPosition)?
     ) {
-        let changed = dropTarget?.path != target?.path || dropTarget?.position != target?.position
+        let changed =
+            dropTarget.map { DiskPath($0.path) } != target.map { DiskPath($0.path) }
+            || dropTarget?.position != target?.position
         guard changed else { return }
         dropTarget = target
         refresh()

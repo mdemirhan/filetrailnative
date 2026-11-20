@@ -371,7 +371,9 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
 
     /// The first row in view that will still be there, and how far below the top of the view it is. None at the very
     /// top of the list, where what comes first should be seen.
-    private func rowInView(among ids: [String], shownIDs: [String]) -> (id: String, offset: Double)? {
+    private func rowInView(
+        among ids: [NameKeys.Exact], shownIDs: [NameKeys.Exact]
+    ) -> (id: NameKeys.Exact, offset: Double)? {
         guard scrollTop > 0 else { return nil }
         let staying = Set(ids)
         let inView = outline.rows(in: scroll.contentView.bounds)
@@ -388,7 +390,7 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
     private var chevronTurns: [TreeItemID: TimeInterval] = [:]
     private static let chevronTurnWait = 0.25
 
-    private func noteChevronTurns(_ rows: [SidebarListRow], known: [String: SidebarListItem]) {
+    private func noteChevronTurns(_ rows: [SidebarListRow], known: [NameKeys.Exact: SidebarListItem]) {
         for row in rows {
             guard case .item(let next) = row, case .item(let shown)? = known[row.id]?.row,
                 next.item.expanded != shown.item.expanded
@@ -591,7 +593,8 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
             guard reordersFavorites else { return [] }
             let target = favoriteDropTarget(at: point)
             let dragged = info.draggingPasteboard.string(forType: SidebarPasteboard.favoriteType)
-            delegate?.sidebarList(self, favoriteDragOver: target.flatMap { $0.path == dragged ? nil : $0 })
+            let onItself = target.flatMap { target in dragged.map { samePath(target.path, $0) } } == true
+            delegate?.sidebarList(self, favoriteDragOver: onItself ? nil : target)
             return .move
         }
         return fileDropOperation?(self, info, point) ?? []

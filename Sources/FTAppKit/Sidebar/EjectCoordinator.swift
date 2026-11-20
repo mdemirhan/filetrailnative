@@ -1,5 +1,6 @@
 import AppKit
 import FTFileSystem
+import FTFoundation
 
 /// What the person answers when asked which volumes of a disk to eject.
 enum EjectWhichVolumesAnswer: Equatable, Sendable {
@@ -37,7 +38,8 @@ final class EjectCoordinator {
     /// An eject request returned: the volume list is read again.
     var didFinish: () -> Void = {}
 
-    private(set) var ejectingPaths: Set<String> = []
+    /// The disks being ejected, by their paths.
+    private(set) var ejectingPaths: Set<DiskPath> = []
 
     init(
         volumes: @escaping () -> [Volume],
@@ -76,11 +78,10 @@ final class EjectCoordinator {
 
     /// Runs one eject and reports how it went. Awaiting it is for tests.
     func run(path: String, wholeDisk: Bool, force: Bool) async {
-        guard !ejectingPaths.contains(path) else { return }
-        ejectingPaths.insert(path)
+        guard ejectingPaths.insert(DiskPath(path)).inserted else { return }
         onChange()
         let response = await eject(EjectRequest(path: path, wholeDisk: wholeDisk, force: force))
-        ejectingPaths.remove(path)
+        ejectingPaths.remove(DiskPath(path))
         onChange()
         switch response.status {
         case .ejected:

@@ -445,7 +445,7 @@ extension ExplorerWindowlessTests {
             _ = tab.dragDrop.sidebarDragUpdated(drag, row: try row("Alpha", window, in: tree))
             let beta = try row("Beta", window, in: tree)
             _ = tab.dragDrop.sidebarDragUpdated(drag, row: beta)
-            #expect(tab.sidebarController.dropStates == [path(window, "Beta"): .valid])
+            #expect(tab.sidebarController.dropStates == [DiskPath(path(window, "Beta")): .valid])
             for _ in 0..<10 {
                 timers.advance(0.1)
                 _ = tab.dragDrop.sidebarDragUpdated(drag, row: beta)
@@ -479,7 +479,7 @@ extension ExplorerWindowlessTests {
             for row in [favorite, location, link, ofAList] {
                 for _ in 0..<9 {
                     _ = tab.dragDrop.sidebarDragUpdated(drag, row: row)
-                    #expect(tab.sidebarController.dropStates[alpha] != nil)
+                    #expect(tab.sidebarController.dropStates[DiskPath(alpha)] != nil)
                     timers.advance(0.1)
                 }
                 #expect(model.nodes[alpha]?.expanded == false)
@@ -500,11 +500,11 @@ extension ExplorerWindowlessTests {
             let alpha = path(window, "Alpha")
             let real = try row("Alpha", window, in: tree)
             _ = tab.dragDrop.sidebarDragUpdated(drag, row: real)
-            #expect(tab.sidebarController.dropStates == [alpha: .valid])
+            #expect(tab.sidebarController.dropStates == [DiskPath(alpha): .valid])
             var refusing = real
             refusing.item.isSymlink = true
             #expect(tab.dragDrop.sidebarDragUpdated(drag, row: refusing) == [])
-            #expect(tab.sidebarController.dropStates == [alpha: .invalid])
+            #expect(tab.sidebarController.dropStates == [DiskPath(alpha): .invalid])
             tab.dragDrop.clearTargets()
             #expect(tab.sidebarController.dropStates.isEmpty)
 

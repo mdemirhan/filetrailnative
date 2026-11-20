@@ -14,16 +14,21 @@ public enum TreeItemID: Hashable, Sendable {
     static let filesystemPrefix = "fs:"
 
     public init?(rawValue: String) {
+        /// What follows `prefix`, byte for byte: a path keeps every scalar it has, whatever it starts with.
+        func path(after prefix: String) -> String? {
+            guard rawValue.utf8.starts(with: prefix.utf8) else { return nil }
+            return String(decoding: rawValue.utf8.dropFirst(prefix.utf8.count), as: UTF8.self)
+        }
         if rawValue == "favorites-root" {
             self = .favoritesRoot
         } else if rawValue == "locations-root" {
             self = .locationsRoot
-        } else if rawValue.hasPrefix(Self.favoritePrefix) {
-            self = .favorite(String(rawValue.dropFirst(Self.favoritePrefix.count)))
-        } else if rawValue.hasPrefix(Self.locationPrefix) {
-            self = .location(String(rawValue.dropFirst(Self.locationPrefix.count)))
-        } else if rawValue.hasPrefix(Self.filesystemPrefix) {
-            self = .filesystem(String(rawValue.dropFirst(Self.filesystemPrefix.count)))
+        } else if let path = path(after: Self.favoritePrefix) {
+            self = .favorite(path)
+        } else if let path = path(after: Self.locationPrefix) {
+            self = .location(path)
+        } else if let path = path(after: Self.filesystemPrefix) {
+            self = .filesystem(path)
         } else {
             return nil
         }
@@ -69,6 +74,8 @@ public enum TreeItemID: Hashable, Sendable {
         shortcutPath ?? filesystemPath
     }
 
+    /// Two rows are one when their raw forms are, byte for byte: the two spellings of an accent in a path are two
+    /// folders, and two rows.
     public static func == (left: TreeItemID, right: TreeItemID) -> Bool {
         left.rawValue.utf8.elementsEqual(right.rawValue.utf8)
     }

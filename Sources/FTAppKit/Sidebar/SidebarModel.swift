@@ -36,6 +36,12 @@ struct SidebarMenuTarget: Equatable {
     var path: String
     var subview: SidebarSubview
     var kind: Kind
+
+    /// By the path's bytes: a menu opened for a folder whose path differs only in how an accent is stored is open
+    /// for another row.
+    static func == (left: SidebarMenuTarget, right: SidebarMenuTarget) -> Bool {
+        TreePaths.same(left.path, right.path) && left.subview == right.subview && left.kind == right.kind
+    }
 }
 
 /// The state of one tab's sidebar: its tree, selection, open sections and typed prefix, and what to do when a row is
@@ -60,6 +66,9 @@ final class SidebarModel {
     var readChildren: (_ path: String, _ includeHidden: Bool) async throws -> [TreePaths.Child] = { _, _ in
         []
     }
+    /// The folder at a path as its listing spells it, which is how the tree's rows spell theirs; nil when it can't be
+    /// listed.
+    var listedPath: (_ path: String) async -> String? = { _ in nil }
     /// Opens the folder at a row's path in the window.
     var openFolder: (_ path: String, _ open: SidebarOpen) -> Void = { _, _ in }
     /// The state changed: the views draw it again.
@@ -79,6 +88,9 @@ final class SidebarModel {
     // MARK: The tab's sidebar
 
     private(set) var rootPath = ""
+    /// The top is as a tab kept it, and nothing has been opened in it since: an earlier launch may have spelled an
+    /// accent in it otherwise than its listing does (`takeListedSpellingOfKeptRoot`).
+    private var rootIsAsKept = false
     private(set) var nodes = TreeNodes()
     private(set) var selected: TreeItemID?
     /// The row just pressed, shown selected before its folder has opened.
@@ -113,6 +125,7 @@ final class SidebarModel {
         locationsExpanded: Bool
     ) {
         self.rootPath = rootPath
+        rootIsAsKept = !rootPath.isEmpty
         self.selected = selected
         self.subview = subview
         self.favoritesExpanded = favoritesExpanded
@@ -208,6 +221,7 @@ final class SidebarModel {
     func initializeTree(_ path: String) {
         treeRequests = [:]
         rootPath = path
+        rootIsAsKept = false
         nodes = TreeNodes([TreeNodeState(path: path, expanded: true)])
         onChange()
     }
@@ -216,6 +230,7 @@ final class SidebarModel {
     func reinitializeTree(root: String, focus: String) {
         treeRequests = [:]
         rootPath = root
+        rootIsAsKept = false
         var seeded = TreeNodes()
         for (path, child) in TreePaths.seedChain(from: root, to: focus) {
             var node = TreeNodeState(path: path, expanded: child != nil)
@@ -260,8 +275,8 @@ final class SidebarModel {
             rootPath.isEmpty ? nil : TreePaths.forcedVisiblePackageChild(of: path, activePath: activePath)
         if current?.loading == true, !forceReload { return }
         if !forceReload, let current, current.loaded, current.loadedIncludeHidden == includeHidden,
-            current.forcedVisibleHiddenChildPath == forcedHidden,
-            current.forcedVisiblePackageChildPath == forcedPackage
+            current.forcedVisibleHiddenChildPath.map(DiskPath.init) == forcedHidden.map(DiskPath.init),
+            current.forcedVisiblePackageChildPath.map(DiskPath.init) == forcedPackage.map(DiskPath.init)
         {
             if expandOnSuccess, !current.expanded {
                 update(path) { $0.expanded = true }
@@ -358,12 +373,37 @@ final class SidebarModel {
         (error as? ExplorerError)?.description ?? (error as NSError).localizedDescription
     }
 
+    /// A top a tab kept from an earlier launch may spell an accent otherwise than the folder's listing does, and
+    /// `path`, spelled as listings spell it, is then outside it byte for byte. The top is listed, and when its listing
+    /// gives the same path spelled otherwise, the tree starts again from that spelling: it stays rooted where it was,
+    /// and its rows are the ones the folder on screen is found among. A top the listing names as another folder (it
+    /// is a link) is left as it is, and the tree moves as it does for any folder outside it. A top of ASCII alone has
+    /// one spelling, and nothing is asked: the tree doesn't wait on a disk for it.
+    private func takeListedSpellingOfKeptRoot(holding path: String) async {
+        guard rootIsAsKept else { return }
+        let kept = rootPath
+        guard kept.utf8.contains(where: { $0 > 0x7F }), !TreePaths.isWithinTreeRoot(path, kept) else {
+            rootIsAsKept = false
+            return
+        }
+        let listed = await listedPath(kept)
+        // The tree was started somewhere else meanwhile.
+        guard rootIsAsKept, TreePaths.same(rootPath, kept) else { return }
+        rootIsAsKept = false
+        guard let listed, !TreePaths.same(listed, kept), NameKeys.pathsMatchIgnoringEncoding(listed, kept) else {
+            return
+        }
+        initializeTree(listed)
+    }
+
     /// Opens the tree down to `path` (each ancestor read in turn), moving the root when `path` is
     /// outside it. The folder itself is read only if it is already open.
     func syncTree(to path: String, includeHidden: Bool? = nil, forceReload: Bool = false, version: Int? = nil) async {
         let includeHidden = includeHidden ?? self.includeHidden
         let version = version ?? viewVersion
         let isCurrent = { [weak self] in self?.viewVersion == version }
+        await takeListedSpellingOfKeptRoot(holding: path)
+        if !isCurrent() { return }
         let nextRoot =
             rootPath.isEmpty || !TreePaths.isWithinTreeRoot(path, rootPath)
             ? TreePaths.resolveRootPath(for: path, homePath: homePath) : rootPath
@@ -461,7 +501,7 @@ final class SidebarModel {
         var reveal = path
         if isLocation, !inTrash {
             let top = TreePaths.resolveRootPath(for: path, homePath: homePath)
-            if top != rootPath { initializeTree(top) }
+            if !TreePaths.same(top, rootPath) { initializeTree(top) }
             if !includeHidden, TreePaths.hasHiddenSegment(path, withinRoot: top) { reveal = top }
         }
         if syncsTree {
@@ -502,6 +542,10 @@ final class SidebarModel {
         viewVersion += 1
         let version = viewVersion
         let inTrash = !path.isEmpty && Paths.isInsideTrash(path, homePath: homePath)
+        if !inTrash, !path.isEmpty {
+            await takeListedSpellingOfKeptRoot(holding: path)
+            if viewVersion != version { return }
+        }
         if inTrash {
             select(.location(FavoriteLabel.trashPath(homePath: homePath)), subview: separate ? .favorites : nil)
         } else if !path.isEmpty, !rootPath.isEmpty, TreePaths.isWithinTreeRoot(path, rootPath) {
@@ -525,6 +569,8 @@ final class SidebarModel {
     /// Nil with no such row: the tree follows the folder.
     func openKeepingRow(_ path: String) -> SidebarOpen? {
         guard let selected else { return nil }
+        // By `==`, which takes an accent encoded either way for the same: a favorite kept from an earlier launch may
+        // spell the folder on screen the other way.
         if selected.shortcutPath == path { return SidebarOpen(origin: .alias) }
         if let row = selected.filesystemPath, nodes[row]?.isSymlink == true { return SidebarOpen(origin: .alias) }
         return nil
@@ -543,7 +589,7 @@ final class SidebarModel {
             select(id, subview: separate ? .favorites : nil)
             if !Paths.isInsideTrash(path, homePath: homePath) {
                 let top = TreePaths.resolveRootPath(for: path, homePath: homePath)
-                if top != rootPath { initializeTree(top) }
+                if !TreePaths.same(top, rootPath) { initializeTree(top) }
                 await syncTree(to: top, version: version)
                 if viewVersion != version { return }
             }
@@ -776,7 +822,9 @@ final class SidebarModel {
 
     func reorder(moved: String, target: String, position: Favorites.DropPosition) {
         let next = Favorites.reorder(favorites, moved: moved, target: target, position: position)
-        guard next != favorites else { return }
+        // The same favorites in another order: told by their paths' bytes, as two of them may differ only in how an
+        // accent is stored.
+        guard !next.elementsEqual(favorites, by: { TreePaths.same($0.path, $1.path) }) else { return }
         favorites = next
         onFavoritesChanged(next)
         onChange()

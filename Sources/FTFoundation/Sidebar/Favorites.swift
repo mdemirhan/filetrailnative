@@ -43,15 +43,19 @@ public enum Favorites {
         _ favorites: [FavoritePreference], moved movedPath: String, target targetPath: String,
         position: DropPosition
     ) -> [FavoritePreference] {
-        guard let moved = favorites.first(where: { JSString.equals($0.path, movedPath) }),
+        guard let from = favorites.firstIndex(where: { JSString.equals($0.path, movedPath) }),
             !JSString.equals(movedPath, targetPath)
         else { return favorites }
         var rest = favorites.filter { !JSString.equals($0.path, movedPath) }
         guard let targetIndex = rest.firstIndex(where: { JSString.equals($0.path, targetPath) }) else {
             return favorites
         }
-        rest.insert(moved, at: position == .before ? targetIndex : targetIndex + 1)
-        return rest == favorites ? favorites : rest
+        // Back where it was, the order stays. By its place, not by comparing the lists: two favorites whose paths
+        // differ only in how an accent is stored are equal to `==`, and swapping them is a change.
+        let to = position == .before ? targetIndex : targetIndex + 1
+        if to == from { return favorites }
+        rest.insert(favorites[from], at: to)
+        return rest
     }
 
     /// Finder's sidebar places, all ordinary favorites the user can remove or reorder. Home,

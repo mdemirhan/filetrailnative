@@ -64,11 +64,13 @@ enum SidebarListRow: Equatable {
     case header(SidebarHeaderState)
     case item(SidebarRowState)
 
-    var id: String {
+    /// What tells the row from the others of its list, byte for byte: two folders whose paths differ only in how an
+    /// accent is stored are two rows.
+    var id: NameKeys.Exact {
         switch self {
-        case .spacer(let id, _): id
-        case .header(let state): "header:\(state.section == .favorites ? "favorites" : "locations")"
-        case .item(let state): "\(state.subview.rawValue):\(state.item.id.rawValue)"
+        case .spacer(let id, _): NameKeys.Exact(id)
+        case .header(let state): NameKeys.Exact("header:\(state.section == .favorites ? "favorites" : "locations")")
+        case .item(let state): NameKeys.Exact("\(state.subview.rawValue):\(state.item.id.rawValue)")
         }
     }
 

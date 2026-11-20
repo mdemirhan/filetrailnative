@@ -477,7 +477,7 @@ final class TabDragDrop {
         }
         let decision = decide(
             session, target: target, offersMove: offersMove(info, session), modifiers: Self.modifiers())
-        tab.sidebarController.dropStates = [path: decision.refusal == nil ? .valid : .invalid]
+        tab.sidebarController.dropStates = [DiskPath(path): decision.refusal == nil ? .valid : .invalid]
         if let row, decision.refusal == nil, row.subview == .tree, row.item.kind == .filesystem, row.item.canExpand,
             !row.item.expanded, !row.item.loading, !row.item.isSymlink
         {

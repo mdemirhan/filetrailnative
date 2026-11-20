@@ -220,7 +220,7 @@ extension ExplorerWindowlessTests {
             let timers = window.manualDragTimers()
             #expect(tree.draggingEntered(drag) != [])
             #expect(tree.draggingUpdated(drag) != [])
-            #expect(tab.sidebarController.dropStates[alpha] == .valid)
+            #expect(tab.sidebarController.dropStates[DiskPath(alpha)] == .valid)
             return (timers, drag, alpha)
         }
 

@@ -48,7 +48,7 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
     /// Eject a disk (the Eject button, the row's menu).
     var eject: (String) -> Void = { _ in }
     /// Disks being ejected, whose Eject buttons wait.
-    var ejectingPaths: () -> Set<String> = { [] }
+    var ejectingPaths: () -> Set<DiskPath> = { [] }
     /// Files dragged over a row.
     var fileDrops: SidebarFileDrops?
 
@@ -74,7 +74,7 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
 
     private var lastRevealed: TreeItemID?
     private var handToggleTimer: (() -> Void)?
-    private var revealSignature = ""
+    private var revealSignature = NameKeys.Exact("")
     /// A tab that has just come back keeps the scroll it left.
     var holdsScrollPosition = false
     private var loadingTimers: [SidebarModel.ExactKeyBox: () -> Void] = [:]
@@ -84,8 +84,8 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
 
     var draggedFavorite: String?
     var dropTarget: (path: String, position: Favorites.DropPosition)?
-    /// Rows a drag from another app is over.
-    var dropStates: [String: SidebarDropState] = [:] {
+    /// The rows a drag of files is over, by their folders' paths.
+    var dropStates: [DiskPath: SidebarDropState] = [:] {
         didSet {
             if dropStates != oldValue { refresh() }
         }
@@ -140,6 +140,9 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
             return read.children.map {
                 TreePaths.Child(path: $0.path, name: $0.name, isHidden: $0.isHidden, isSymlink: $0.isSymlink)
             }
+        }
+        model.listedPath = { [weak self] path in
+            try? await self?.directoryService().treeChildren(path: path, includeHidden: false).path
         }
         applyPreferences()
         volumesToken = SidebarVolumes.shared.observe { [weak self] volumes in self?.model.setVolumes(volumes) }
@@ -240,10 +243,12 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
         }
         return SidebarRowState(
             item: item, subview: subview, selection: selection, menuTarget: menuTarget,
-            drop: item.path.flatMap { dropStates[$0] },
-            ejecting: item.path.map { ejectingPaths().contains($0) } ?? false,
-            dragging: draggedFavorite != nil && item.path == draggedFavorite && item.kind == .favorite,
-            dropLine: dropTarget.flatMap { item.kind == .favorite && $0.path == item.path ? $0.position : nil },
+            drop: key.flatMap { dropStates[$0] },
+            ejecting: key.map { ejectingPaths().contains($0) } ?? false,
+            dragging: item.kind == .favorite && key != nil && key == draggedFavorite.map(DiskPath.init),
+            dropLine: dropTarget.flatMap { target in
+                item.kind == .favorite && key == DiskPath(target.path) ? target.position : nil
+            },
             showsLoading: key.map { loadingShown.contains($0) } ?? false, density: density,
             hasDisclosure: hasDisclosure,
             // A favorite or location only points at a folder: only the folder's own row is marked.
@@ -384,12 +389,15 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
 
     /// Scrolls the selected row into view, as little as it takes, when the selection changes or the rows do.
     private func revealSelectionIfNeeded(_ presentation: TreePresentation, leavingSelection: Bool) {
-        let signature = [
-            model.placement.rawValue, model.favoritesExpanded ? "f" : "-", model.locationsExpanded ? "l" : "-",
-            model.favoriteRows.map(\.id.rawValue).joined(separator: "\0"),
-            presentation.visibleItemIDs.map(\.rawValue).joined(separator: "\0"),
-            model.selected?.rawValue ?? "",
-        ].joined(separator: "|")
+        // Compared byte for byte: a selection gone from a folder to one whose path differs only in how an accent is
+        // stored is another selection.
+        let signature = NameKeys.Exact(
+            [
+                model.placement.rawValue, model.favoritesExpanded ? "f" : "-", model.locationsExpanded ? "l" : "-",
+                model.favoriteRows.map(\.id.rawValue).joined(separator: "\0"),
+                presentation.visibleItemIDs.map(\.rawValue).joined(separator: "\0"),
+                model.selected?.rawValue ?? "",
+            ].joined(separator: "|"))
         guard signature != revealSignature else { return }
         revealSignature = signature
         guard let selected = model.selected else { return }
