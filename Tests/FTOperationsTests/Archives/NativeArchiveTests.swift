@@ -491,6 +491,53 @@ import Testing
         }
     }
 
+    /// A file named "._a.txt" beside "a.txt" that begins as the attribute files of a USB stick do: on a disk that
+    /// keeps attributes itself (APFS, here) it is someone's file, and goes into the zip with what it holds.
+    @Test func aFileNamedAsAnAttributesFileGoesInOnADiskThatKeepsAttributesItself() throws {
+        let folders = try Folders()
+        defer { folders.directory.remove() }
+        try FileManager.default.createDirectory(atPath: "\(folders.root)/Photos", withIntermediateDirectories: false)
+        try Data("a".utf8).write(to: URL(fileURLWithPath: "\(folders.root)/Photos/a.txt"))
+        let double = Data([0x00, 0x05, 0x16, 0x07, 0x00, 0x02, 0x00, 0x00]) + Data("kept by hand".utf8)
+        try double.write(to: URL(fileURLWithPath: "\(folders.root)/Photos/._a.txt"))
+        try Data("alone".utf8).write(to: URL(fileURLWithPath: "\(folders.root)/Photos/._alone"))
+        let zip = "\(folders.root)/made.zip"
+        try NativeArchive.compressZip(["Photos"], in: folders.root, to: zip, control: NativeArchive.Control())
+        let listed = try ArchiveOperationsTests.run("/usr/bin/zipinfo", ["-1", zip])
+            .split(separator: "\n").map(String.init).filter { !$0.hasPrefix("__MACOSX/") }.sorted()
+        #expect(listed == ["Photos/", "Photos/._a.txt", "Photos/._alone", "Photos/a.txt"])
+        _ = try Self.extract(zip, into: folders.out)
+        #expect(try Data(contentsOf: URL(fileURLWithPath: "\(folders.out)/Photos/._a.txt")) == double)
+    }
+
+    /// On a disk that keeps attributes in "._name" files (exFAT, FAT32) those files are no items: what they hold is
+    /// in __MACOSX with their item. A "._name" with no item beside it, or that doesn't begin as one, is a file.
+    /// Only a release runs it: it mounts an image of each.
+    @Test(
+        .tags(.diskImage), .diskImages, .enabled(if: ReleaseTests.enabled), arguments: [DiskImage.Kind.exfat, .fat32])
+    func anAttributesFileStaysOutOnADiskThatKeepsAttributesInFiles(kind: DiskImage.Kind) async throws {
+        try await DiskImage.withVolume(kind) { volume in
+            let root = volume.path
+            try FileManager.default.createDirectory(atPath: "\(root)/Photos", withIntermediateDirectories: false)
+            try Data("a".utf8).write(to: URL(fileURLWithPath: "\(root)/Photos/a.txt"))
+            ArchiveOperationsTests.setAttribute("\(root)/Photos/a.txt", "com.example.tag", "kept")
+            #expect(FileManager.default.fileExists(atPath: "\(root)/Photos/._a.txt"))
+            try Data("alone".utf8).write(to: URL(fileURLWithPath: "\(root)/Photos/._alone"))
+            try Data("b".utf8).write(to: URL(fileURLWithPath: "\(root)/Photos/b.txt"))
+            try Data("plain".utf8).write(to: URL(fileURLWithPath: "\(root)/Photos/._b.txt"))
+            let folders = try Folders()
+            defer { folders.directory.remove() }
+            let zip = "\(folders.root)/made.zip"
+            try NativeArchive.compressZip(["Photos"], in: root, to: zip, control: NativeArchive.Control())
+            let listed = try ArchiveOperationsTests.run("/usr/bin/zipinfo", ["-1", zip])
+                .split(separator: "\n").map(String.init)
+            #expect(
+                listed.filter { !$0.hasPrefix("__MACOSX/") }.sorted()
+                    == ["Photos/", "Photos/._alone", "Photos/._b.txt", "Photos/a.txt", "Photos/b.txt"])
+            #expect(listed.contains("__MACOSX/Photos/._a.txt"))
+        }
+    }
+
     /// Compressing on one thread while another looks at the process's working directory: it must never be seen
     /// anywhere else, as a relative path used meanwhile would then mean another file.
     @Test func compressingLeavesTheWorkingDirectoryAlone() throws {

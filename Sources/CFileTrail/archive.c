@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/attr.h>
 #include <sys/mount.h>
 #include <sys/stat.h>
 #include <sys/time.h>
@@ -1027,7 +1028,24 @@ static int add_data_bytes(const char *path, ft_archive_control *control, int64_t
     return result;
 }
 
-/// Whether the file at `path` is a "._name" file holding the attributes of the "name" beside it (AppleDouble).
+/// Whether the disk holding `path` keeps extended attributes in "._name" files beside each item (FAT, exFAT, some
+/// shares) and not by itself, as getattrlist's VOL_CAP_INT_EXTENDED_ATTR says. 0 when it keeps them itself, doesn't
+/// say or can't be asked: a "._name" file there is a file of its own.
+static int disk_keeps_attributes_in_files(const char *path) {
+    struct attrlist request = {.bitmapcount = ATTR_BIT_MAP_COUNT, .volattr = ATTR_VOL_INFO | ATTR_VOL_CAPABILITIES};
+    struct {
+        u_int32_t length;
+        vol_capabilities_attr_t capabilities;
+    } __attribute__((aligned(4), packed)) answer;
+    memset(&answer, 0, sizeof(answer));
+    if (getattrlist(path, &request, &answer, sizeof(answer), 0) != 0) return 0;
+    if ((answer.capabilities.valid[VOL_CAPABILITIES_INTERFACES] & VOL_CAP_INT_EXTENDED_ATTR) == 0) return 0;
+    return (answer.capabilities.capabilities[VOL_CAPABILITIES_INTERFACES] & VOL_CAP_INT_EXTENDED_ATTR) == 0;
+}
+
+/// Whether the file at `path` is a "._name" file holding the attributes of the "name" beside it (AppleDouble), by
+/// its name and its first bytes. Only a disk that keeps attributes that way has such files
+/// (disk_keeps_attributes_in_files).
 static int is_attributes_file(const char *path) {
     const char *slash = strrchr(path, '/');
     const char *leaf = slash == NULL ? path : slash + 1;
@@ -1120,6 +1138,10 @@ static int compress_item(
     // The item being written, to say which one when it fails.
     char at[PATH_MAX];
     at[0] = '\0';
+    // The disk last asked whether it keeps attributes in "._name" files, and its answer.
+    dev_t asked = 0;
+    int asked_any = 0;
+    int attributes_in_files = 0;
     while (result == 0) {
         errno = 0;
         FTSENT *node = fts_read(tree);
@@ -1161,8 +1183,21 @@ static int compress_item(
             break;
         }
         // On a disk that keeps attributes in a "._name" file beside each item (a USB stick, an SD card), that file
-        // is no item: what it holds goes into __MACOSX with its item, as Finder's Compress puts it.
-        if (type == AE_IFREG && is_attributes_file(path)) continue;
+        // is no item: what it holds goes into __MACOSX with its item, as Finder's Compress puts it. On any other
+        // disk a "._name" file is someone's file and goes in. The disk is asked once, at the first such name, and
+        // again only where the walk meets another disk.
+        if (type == AE_IFREG && node->fts_statp != NULL) {
+            const char *leaf = strrchr(path, '/');
+            leaf = leaf == NULL ? path : leaf + 1;
+            if (leaf[0] == '.' && leaf[1] == '_' && leaf[2] != '\0') {
+                if (!asked_any || asked != node->fts_statp->st_dev) {
+                    asked = node->fts_statp->st_dev;
+                    asked_any = 1;
+                    attributes_in_files = disk_keeps_attributes_in_files(path);
+                }
+                if (attributes_in_files && is_attributes_file(path)) continue;
+            }
+        }
         archive_entry_clear(entry);
         archive_entry_copy_pathname(entry, path);
         archive_entry_copy_sourcepath(entry, path);
