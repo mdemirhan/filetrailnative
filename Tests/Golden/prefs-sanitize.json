@@ -181,6 +181,15 @@
             "proportional": true,
             "keepMetadata": true,
             "removeLocation": false
+          },
+          "textViewerSettings": {
+            "appearance": "matchApp",
+            "lightTheme": "paper",
+            "darkTheme": "graphite",
+            "fontSize": 13,
+            "wrapLines": true,
+            "lineNumbers": true,
+            "opensForEditing": false
           }
         },
         "windows": [
@@ -419,6 +428,15 @@
             "proportional": true,
             "keepMetadata": true,
             "removeLocation": false
+          },
+          "textViewerSettings": {
+            "appearance": "matchApp",
+            "lightTheme": "paper",
+            "darkTheme": "graphite",
+            "fontSize": 13,
+            "wrapLines": true,
+            "lineNumbers": true,
+            "opensForEditing": false
           }
         },
         "lastClosedWindow": {

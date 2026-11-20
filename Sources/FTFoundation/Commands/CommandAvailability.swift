@@ -93,6 +93,9 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
     public var filterPinnable: Bool?
     /// The folder's view (nil: every Folder View command can act).
     public var folderView: FolderViewCommandState?
+    /// The active pane shows a file in place of its folder (Open in Viewer): what acts on the folder or its items
+    /// waits, as neither is on screen.
+    public var paneShowsFile = false
 
     public init(
         shortcutContext: ShortcutContext = ShortcutContext(), currentPath: String = "",
@@ -350,6 +353,31 @@ public enum CommandAvailability {
 
     // MARK: Rules
 
+    /// What waits while the active pane shows a file: what acts on the items of the list or on the folder on screen,
+    /// and how the folder is shown. Neither is on screen, and acting on the file shown instead would act out of sight.
+    static func waitsWhileAFileShows(_ command: AppCommand) -> Bool {
+        if ShortcutPolicy.treeFocusBucket(of: command) == .contentOnly { return true }
+        switch command {
+        case .viewAsIcons, .viewAsList, .viewAsDetails, .viewAsPreviews, .showPreviews9, .showPreviews4, .showPreviews2,
+            .showPreviews1, .increaseSize, .decreaseSize, .resetSize, .groupByNone, .groupByName, .groupByModified,
+            .groupByCreated, .groupByLastOpened, .groupByAdded, .groupBySize, .groupByKind, .groupByTags,
+            .groupByFolder, .reverseGroupOrder, .sortByName, .sortByModified, .sortByCreated, .sortByAdded,
+            .sortByLastOpened, .sortBySize, .sortByKind, .toggleFoldersFirst, .toggleHiddenFiles,
+            .showModifiedColumn, .showSizeColumn, .showKindColumn, .showCreatedColumn, .showAddedColumn,
+            .showLastOpenedColumn, .showPermissionsColumn, .rememberFolderView, .updateFolderView, .revertFolderView,
+            .folderViewOptions, .resetFolderView, .togglePinFilter, .focusFileSearch, .showLastSearchResults,
+            .refreshOrApplySearchSort, .newFolder, .newTextFile, .pasteSelection, .pasteAsFile, .moveItemsHere,
+            .calculateSize, .showFolderInOtherPane, .copyToOtherPane, .moveToOtherPane,
+            // Going elsewhere would do it under the file, out of sight: Back, Forward and Enclosing Folder go to its
+            // folder first.
+            .goHomeRootTree, .goDocuments, .goDesktop, .goDownloads, .goLibrary, .goMacintoshHD, .goApplications,
+            .goTrash, .openLocationSheet, .rootTreeAtSelection, .goToOtherPaneFolder:
+            return true
+        default:
+            return false
+        }
+    }
+
     public static func canRun(_ command: AppCommand, _ context: CommandAvailabilityContext) -> Bool {
         // The clipboard's own: each runs where the command it is a kind of runs, as the window takes it for that one.
         switch command {
@@ -363,6 +391,9 @@ public enum CommandAvailability {
             return false
         }
         if context.writeOperationLocked, writeLockedCommands.contains(command) {
+            return false
+        }
+        if context.paneShowsFile, waitsWhileAFileShows(command) {
             return false
         }
         let focusedPane = context.shortcutContext.focusedPane
@@ -472,6 +503,11 @@ public enum CommandAvailability {
             return newTabTargetPath(target) != nil
         case .quickLookSelection:
             return context.selectedEntry != nil
+        case .viewFile:
+            // One file of the list.
+            guard focusedPane != .tree, selectedCount == 1 else { return false }
+            return entry(at: context.selectedPathsInViewOrder.first, in: context.activeContentEntries)?.kind
+                .isEditableFile ?? false
         case .deselectAll:
             return selectedCount > 0
         case .invertSelection:
@@ -526,7 +562,11 @@ public enum CommandAvailability {
         case .switchToOtherPane, .swapPanes, .equalizePanes:
             return context.paneCount.map { $0 > 1 } ?? true
         case .openSelectionInOtherPane:
-            return newTabTargetPath(target) != nil
+            // A folder shows there; one file of the list shows there in the viewer.
+            if newTabTargetPath(target) != nil { return true }
+            guard focusedPane != .tree, selectedCount == 1 else { return false }
+            return entry(at: context.selectedPathsInViewOrder.first, in: context.activeContentEntries)?.kind
+                .isEditableFile ?? false
         case .showFolderInOtherPane:
             return !context.currentPath.isEmpty && !context.isSearchMode
         case .goToOtherPaneFolder:

@@ -551,6 +551,17 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
     // for the answer. With other windows open the copy goes on in one of them.
     private func holdClose(_ window: W) -> Bool {
         if shuttingDown || closingWithoutAsking.contains(ObjectIdentifier(window)) { return false }
+        // A file with edits in one of its tabs: asked about first, and the window closes once each is saved or dropped.
+        if let parent = window.sheetParent, quit.hooks.hasUnsavedEdits(parent) {
+            Task { @MainActor [weak self, weak window] in
+                guard let self, let window, await quit.hooks.confirmUnsavedEdits(parent),
+                    !window.isDestroyed
+                else { return }
+                closingWithoutAsking.insert(ObjectIdentifier(window))
+                window.close()
+            }
+            return true
+        }
         // The question is answered first; it comes forward.
         if quit.isAskingToStop || stopQuestionParent != nil {
             if !bringStopQuestionForward() { quit.hooks.bringStopQuestionForward() }

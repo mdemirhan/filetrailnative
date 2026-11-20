@@ -75,6 +75,8 @@ public struct TabSnapshot: Equatable, Sendable {
     public var searchGroupBy = GroupByPreference.none
     public var groupReversed = false
     public var searchGroupReversed = false
+    /// The file its first pane shows in place of its folder; the second pane's is with it.
+    public var viewer: ViewerPreference?
 
     public init(
         currentPath: String, historyPaths: [String], historyIndex: Int, viewMode: ExplorerViewMode = .icons,
@@ -302,6 +304,7 @@ public enum ExplorerTabs {
         }
         // Its pane is a new one: it starts with the filter mode chosen last.
         new.filterMode = nil
+        new.viewer = nil
         new.secondPane = nil
         new.activePane = 0
         new.paneSplit = nil

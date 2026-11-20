@@ -36,7 +36,7 @@ import Testing
         let (_, _, view) = try make()
         #expect(
             view.groups.map { $0.titleText.stringValue } == [
-                "Navigation", "Windows, Tabs and Panes", "Files", "Search", "View", "Standard shortcuts",
+                "Navigation", "Windows, Tabs and Panes", "Files", "Search", "View", "Viewer", "Standard shortcuts",
             ])
         #expect(view.rows.count == ShortcutCommands.all.count)
         #expect(texts("settings.shortcuts.intro", in: view) == [ShortcutSettingsText.intro])

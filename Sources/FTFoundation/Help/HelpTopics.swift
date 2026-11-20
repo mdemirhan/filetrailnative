@@ -32,7 +32,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Disks",
                             description:
-                                "Disks you connect, disk images and servers appear under Locations. Opening a disk image opens its disk in a new window, or a new tab if you choose that in Settings → Files; macOS opens one that asks for a password or a license, as it does from Finder. Click ⏏ beside one, right-click it and choose Eject, or select it and press {ejectVolume}, before you disconnect it. When a program is still using the disk, File Trail asks whether to try again or force it."
+                                "Disks you connect, disk images and servers appear under Locations. Opening a disk image opens its disk in a new window, or a new tab if you choose that in Settings → Files; macOS opens one that asks for a password or a license, as it does from Finder. Click ⏏ beside one, right-click it and choose Eject, or select it and choose File ▸ Eject, before you disconnect it. When a program is still using the disk, File Trail asks whether to try again or force it."
                         ),
                         HelpRow(
                             label: "Tree root",
@@ -212,6 +212,11 @@ extension HelpContent {
                         HelpRow(
                             label: "Quick Look",
                             description: "{quickLookSelection} previews the selected item without opening it."),
+                        HelpRow(
+                            label: "Open in Viewer",
+                            description:
+                                "Open in Viewer shows the selected file's text in its pane, with colors for code, to read or to edit and save, as you last chose; Back goes back to the list. Open in Other Pane shows it in the other pane instead, which then follows the list's selection, and asks to save edits before it moves on. What else it does is in its bar: Read or Edit, Save, Follow, and its ⋯ menu, which names its keys."
+                        ),
                         HelpRow(
                             label: "Open in Terminal",
                             description:
@@ -749,7 +754,8 @@ extension HelpContent {
             "Show a copy of this pane beside it, in place of the other pane if there is one"),
         HelpShortcutItem(group: .navigation, .command(.switchToOtherPane), "Move the keyboard to the other pane"),
         HelpShortcutItem(
-            group: .navigation, .command(.openSelectionInOtherPane), "Open the selected folder in the other pane"),
+            group: .navigation, .command(.openSelectionInOtherPane),
+            "Open the selected folder, or show the selected file, in the other pane"),
         HelpShortcutItem(
             group: .navigation, .command(.copyToOtherPane), "Copy the selected items into the other pane's folder"),
         HelpShortcutItem(
@@ -792,6 +798,14 @@ extension HelpContent {
         HelpShortcutItem(
             group: .files, .command(.editSelection), "Open the selected files in the text editor chosen in Settings"),
         HelpShortcutItem(group: .files, .command(.quickLookSelection), "Preview the selected item without opening it"),
+        HelpShortcutItem(
+            group: .files, .command(.viewFile), "Show the selected file's text in this pane, to read or edit it"),
+        HelpShortcutItem(group: .files, .command(.saveViewerFile), "Save the file the viewer shows, in its pane"),
+        HelpShortcutItem(
+            group: .files, .command(.nextViewerFile), "Show the next file of the folder, in a file shown in place"),
+        HelpShortcutItem(
+            group: .files, .command(.previousViewerFile),
+            "Show the previous file of the folder, in a file shown in place"),
         HelpShortcutItem(
             group: .files, .command(.calculateSize),
             "Calculate the size of the selected folders, or of the folder on screen"),

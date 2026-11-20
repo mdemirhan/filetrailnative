@@ -142,7 +142,8 @@ struct ContextMenuRulesTests {
         let menu = labels(subject(.content, [("/a/b.txt", .file)]), world(), editor: "TextEdit")
         #expect(
             menu == [
-                "Open", "Open With", "Quick Look", "Edit in TextEdit", "Show Info", "Cut", "Copy", "Copy Path",
+                "Open", "Open With", "Open in Viewer", "Quick Look", "Edit in TextEdit", "Show Info", "Cut", "Copy",
+                "Copy Path",
                 "Copy Text", "Share…", "Rename", "Duplicate", "Move to…", "Save as Template",
                 "Compress \u{201C}b.txt\u{201D}",
                 "Open in Terminal", "Show in Finder", "Move to Trash",

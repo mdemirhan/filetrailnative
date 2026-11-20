@@ -173,7 +173,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+Down",
-            "description": "Open the selected folder in the other pane"
+            "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
           },
           {
             "group": "navigation",
@@ -272,13 +272,28 @@
           },
           {
             "group": "files",
-            "shortcut": "Cmd+Shift+E",
-            "description": "Open the selected files in the text editor chosen in Settings"
+            "shortcut": "Cmd+Y",
+            "description": "Preview the selected item without opening it (Space also works)"
           },
           {
             "group": "files",
-            "shortcut": "Cmd+Y",
-            "description": "Preview the selected item without opening it (Space also works)"
+            "shortcut": "Cmd+E",
+            "description": "Show the selected file's text in this pane, to read or edit it"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+S",
+            "description": "Save the file the viewer shows, in its pane"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+]",
+            "description": "Show the next file of the folder, in a file shown in place"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+[",
+            "description": "Show the previous file of the folder, in a file shown in place"
           },
           {
             "group": "files",
@@ -344,11 +359,6 @@
             "group": "files",
             "shortcut": "Cmd+Shift+Backspace",
             "description": "Empty the Trash (asks first)"
-          },
-          {
-            "group": "files",
-            "shortcut": "Cmd+E",
-            "description": "Eject the disk selected in the sidebar"
           },
           {
             "group": "files",
@@ -534,7 +544,7 @@
         "mentions": [
           "⌘[ goes back; ⌘T opens a tab.",
           "*.{jpg,png} and \\d{2} and {nothing}",
-          "⌘K finds a folder; ⌘E ejects; ↩ renames",
+          "⌘K finds a folder; File > Eject ejects; ↩ renames",
           "{",
           "}",
           "{}",
@@ -1317,7 +1327,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -1433,6 +1443,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -1956,10 +1976,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -2427,13 +2443,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -2465,13 +2475,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -2709,7 +2713,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+Down",
-            "description": "Open the selected folder in the other pane"
+            "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
           },
           {
             "group": "navigation",
@@ -2808,13 +2812,28 @@
           },
           {
             "group": "files",
-            "shortcut": "Cmd+Shift+E",
-            "description": "Open the selected files in the text editor chosen in Settings"
+            "shortcut": "Cmd+Y",
+            "description": "Preview the selected item without opening it (Space also works)"
           },
           {
             "group": "files",
-            "shortcut": "Cmd+Y",
-            "description": "Preview the selected item without opening it (Space also works)"
+            "shortcut": "Cmd+E",
+            "description": "Show the selected file's text in this pane, to read or edit it"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+S",
+            "description": "Save the file the viewer shows, in its pane"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+]",
+            "description": "Show the next file of the folder, in a file shown in place"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+[",
+            "description": "Show the previous file of the folder, in a file shown in place"
           },
           {
             "group": "files",
@@ -2880,11 +2899,6 @@
             "group": "files",
             "shortcut": "Cmd+Shift+Backspace",
             "description": "Empty the Trash (asks first)"
-          },
-          {
-            "group": "files",
-            "shortcut": "Cmd+E",
-            "description": "Eject the disk selected in the sidebar"
           },
           {
             "group": "files",
@@ -3070,7 +3084,7 @@
         "mentions": [
           "⌘[ goes back; ⌘T opens a tab.",
           "*.{jpg,png} and \\d{2} and {nothing}",
-          "⇧⌘G finds a folder; ⌘E ejects; F2 renames",
+          "⇧⌘G finds a folder; File > Eject ejects; F2 renames",
           "{",
           "}",
           "{}",
@@ -3858,7 +3872,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -3974,6 +3988,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -4507,10 +4531,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -4978,13 +4998,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -5016,13 +5030,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -5271,7 +5279,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+Down",
-            "description": "Open the selected folder in the other pane"
+            "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
           },
           {
             "group": "navigation",
@@ -5365,13 +5373,28 @@
           },
           {
             "group": "files",
-            "shortcut": "Cmd+Shift+E",
-            "description": "Open the selected files in the text editor chosen in Settings"
+            "shortcut": "Space",
+            "description": "Preview the selected item without opening it"
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Preview the selected item without opening it"
+            "shortcut": "Cmd+E",
+            "description": "Show the selected file's text in this pane, to read or edit it"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+S",
+            "description": "Save the file the viewer shows, in its pane"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+]",
+            "description": "Show the next file of the folder, in a file shown in place"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+[",
+            "description": "Show the previous file of the folder, in a file shown in place"
           },
           {
             "group": "files",
@@ -5437,11 +5460,6 @@
             "group": "files",
             "shortcut": "Cmd+Shift+Backspace",
             "description": "Empty the Trash (asks first)"
-          },
-          {
-            "group": "files",
-            "shortcut": "Cmd+E",
-            "description": "Eject the disk selected in the sidebar"
           },
           {
             "group": "files",
@@ -5622,7 +5640,7 @@
         "mentions": [
           "⌘[ goes back; ⌘T opens a tab.",
           "*.{jpg,png} and \\d{2} and {nothing}",
-          "⌥↩ finds a folder; ⌘E ejects; F2 renames",
+          "⌥↩ finds a folder; File > Eject ejects; F2 renames",
           "{",
           "}",
           "{}",
@@ -6382,7 +6400,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -6493,6 +6511,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -7015,10 +7043,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -7484,13 +7508,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -7522,13 +7540,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -7776,7 +7788,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+Down",
-            "description": "Open the selected folder in the other pane"
+            "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
           },
           {
             "group": "navigation",
@@ -7860,13 +7872,28 @@
           },
           {
             "group": "files",
-            "shortcut": "Cmd+Shift+E",
-            "description": "Open the selected files in the text editor chosen in Settings"
+            "shortcut": "Cmd+Y",
+            "description": "Preview the selected item without opening it (Space also works)"
           },
           {
             "group": "files",
-            "shortcut": "Cmd+Y",
-            "description": "Preview the selected item without opening it (Space also works)"
+            "shortcut": "Cmd+E",
+            "description": "Show the selected file's text in this pane, to read or edit it"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+S",
+            "description": "Save the file the viewer shows, in its pane"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+]",
+            "description": "Show the next file of the folder, in a file shown in place"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+[",
+            "description": "Show the previous file of the folder, in a file shown in place"
           },
           {
             "group": "files",
@@ -7927,11 +7954,6 @@
             "group": "files",
             "shortcut": "Cmd+Shift+Backspace",
             "description": "Empty the Trash (asks first)"
-          },
-          {
-            "group": "files",
-            "shortcut": "Cmd+E",
-            "description": "Eject the disk selected in the sidebar"
           },
           {
             "group": "files",
@@ -8117,7 +8139,7 @@
         "mentions": [
           "⌘[ goes back; ⌘T opens a tab.",
           "*.{jpg,png} and \\d{2} and {nothing}",
-          "⇧⌘G finds a folder; ⌘E ejects; ↩ renames",
+          "⇧⌘G finds a folder; File > Eject ejects; ↩ renames",
           "{",
           "}",
           "{}",
@@ -8895,7 +8917,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -9006,6 +9028,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -9534,10 +9566,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -9991,13 +10019,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -10029,13 +10051,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -10167,8 +10183,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Y",
-                "description": "Preview the selected item without opening it (Space also works)"
+                "shortcut": "Cmd+Option+[",
+                "description": "Show the previous file of the folder, in a file shown in place"
               },
               {
                 "group": "files",
@@ -10180,12 +10196,12 @@
         },
         "mentions": {
           "$remove": [
-            "⌘K finds a folder; ⌘E ejects; ↩ renames"
+            "⌘K finds a folder; File > Eject ejects; ↩ renames"
           ],
           "$insert": [
             [
               "*.{jpg,png} and \\d{2} and {nothing}",
-              "⌘K finds a folder; ⌘E ejects; F2 renames"
+              "⌘K finds a folder; File > Eject ejects; F2 renames"
             ]
           ]
         },
@@ -11478,7 +11494,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -11594,6 +11610,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -12117,10 +12143,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -12584,13 +12606,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -12622,13 +12638,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -12768,8 +12778,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Shift+E",
-                "description": "Open the selected files in the text editor chosen in Settings"
+                "shortcut": "Cmd+O",
+                "description": "Open the selected items: a folder here, a file in its app"
               },
               {
                 "group": "files",
@@ -12780,8 +12790,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Space",
-                "description": "Preview the selected item without opening it"
+                "shortcut": "Cmd+Option+[",
+                "description": "Show the previous file of the folder, in a file shown in place"
               },
               {
                 "group": "files",
@@ -12793,12 +12803,12 @@
         },
         "mentions": {
           "$remove": [
-            "⌘K finds a folder; ⌘E ejects; ↩ renames"
+            "⌘K finds a folder; File > Eject ejects; ↩ renames"
           ],
           "$insert": [
             [
               "*.{jpg,png} and \\d{2} and {nothing}",
-              "⌘K finds a folder; ⌘E ejects; F2 renames"
+              "⌘K finds a folder; File > Eject ejects; F2 renames"
             ]
           ]
         },
@@ -12939,10 +12949,6 @@
                   [
                     "Folders",
                     "Go to Folder"
-                  ],
-                  [
-                    "Folders",
-                    "Disks"
                   ],
                   [
                     "Folders",
@@ -13510,10 +13516,6 @@
                     ],
                     [
                       "Folders",
-                      "Disks"
-                    ],
-                    [
-                      "Folders",
                       "Tree root"
                     ],
                     [
@@ -13980,11 +13982,6 @@
             },
             {
               "group": "files",
-              "shortcut": "Cmd+Shift+E",
-              "description": "Open the selected files in the text editor chosen in Settings"
-            },
-            {
-              "group": "files",
               "shortcut": "Cmd+Y",
               "description": "Preview the selected item without opening it (Space also works)"
             },
@@ -14017,11 +14014,6 @@
               "group": "files",
               "shortcut": "Cmd+Shift+Backspace",
               "description": "Empty the Trash (asks first)"
-            },
-            {
-              "group": "files",
-              "shortcut": "Cmd+E",
-              "description": "Eject the disk selected in the sidebar"
             },
             {
               "group": "files",
@@ -14104,7 +14096,7 @@
               {
                 "group": "navigation",
                 "shortcut": "Cmd+Option+Down",
-                "description": "Open the selected folder in the other pane"
+                "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
               },
               {
                 "group": "navigation",
@@ -14114,9 +14106,9 @@
             ],
             [
               {
-                "group": "navigation",
-                "shortcut": "Shift+PageDown",
-                "description": "Extend the selection by a page (Shift with any of the page keys above)"
+                "group": "files",
+                "shortcut": "Cmd+Option+[",
+                "description": "Show the previous file of the folder, in a file shown in place"
               },
               {
                 "group": "files",
@@ -14129,7 +14121,7 @@
         "mentions": {
           "$remove": [
             "⌘[ goes back; ⌘T opens a tab.",
-            "⇧⌘G finds a folder; ⌘E ejects; ↩ renames",
+            "⇧⌘G finds a folder; File > Eject ejects; ↩ renames",
             "{⌘[}",
             "File > Show in Finder File > Add to Favorites ⇧⌘⌫ ⌘↑"
           ],
@@ -14779,7 +14771,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -14886,6 +14878,16 @@
                 ]
               ],
               "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
+                },
                 {
                   "group": "files",
                   "shortcut": "Cmd+C",
@@ -16706,7 +16708,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -16822,6 +16824,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -17345,10 +17357,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -17806,13 +17814,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -17844,13 +17846,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -18010,8 +18006,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Y",
-                "description": "Preview the selected item without opening it (Space also works)"
+                "shortcut": "Cmd+Option+[",
+                "description": "Show the previous file of the folder, in a file shown in place"
               },
               {
                 "group": "files",
@@ -18035,13 +18031,13 @@
         },
         "mentions": {
           "$remove": [
-            "⌘K finds a folder; ⌘E ejects; ↩ renames",
+            "⌘K finds a folder; File > Eject ejects; ↩ renames",
             "File > Show in Finder File > Add to Favorites ⇧⌘⌫ Window > Merge All Windows"
           ],
           "$insert": [
             [
               "*.{jpg,png} and \\d{2} and {nothing}",
-              "⌘K finds a folder; ⌘E ejects; F2 renames"
+              "⌘K finds a folder; File > Eject ejects; F2 renames"
             ],
             [
               "",
@@ -18809,7 +18805,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -18925,6 +18921,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -19447,10 +19453,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -19924,13 +19926,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -19962,13 +19958,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -20196,8 +20186,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Shift+E",
-                "description": "Open the selected files in the text editor chosen in Settings"
+                "shortcut": "Cmd+O",
+                "description": "Open the selected items: a folder here, a file in its app"
               },
               {
                 "group": "files",
@@ -20208,8 +20198,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Space",
-                "description": "Preview the selected item without opening it"
+                "shortcut": "Cmd+Option+[",
+                "description": "Show the previous file of the folder, in a file shown in place"
               },
               {
                 "group": "files",
@@ -20233,13 +20223,13 @@
         },
         "mentions": {
           "$remove": [
-            "⌘K finds a folder; ⌘E ejects; ↩ renames",
+            "⌘K finds a folder; File > Eject ejects; ↩ renames",
             "File > Show in Finder File > Add to Favorites ⇧⌘⌫ Window > Merge All Windows"
           ],
           "$insert": [
             [
               "*.{jpg,png} and \\d{2} and {nothing}",
-              "⌘K finds a folder; ⌘E ejects; F2 renames"
+              "⌘K finds a folder; File > Eject ejects; F2 renames"
             ],
             [
               "",
@@ -21012,7 +21002,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -21123,6 +21113,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -21634,10 +21634,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -22087,13 +22083,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -22125,13 +22115,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -22283,8 +22267,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Y",
-                "description": "Preview the selected item without opening it (Space also works)"
+                "shortcut": "Cmd+Option+[",
+                "description": "Show the previous file of the folder, in a file shown in place"
               },
               {
                 "group": "files",
@@ -22296,12 +22280,12 @@
         },
         "mentions": {
           "$remove": [
-            "⌘K finds a folder; ⌘E ejects; ↩ renames"
+            "⌘K finds a folder; File > Eject ejects; ↩ renames"
           ],
           "$insert": [
             [
               "*.{jpg,png} and \\d{2} and {nothing}",
-              "⌘K finds a folder; ⌘E ejects; F2 renames"
+              "⌘K finds a folder; File > Eject ejects; F2 renames"
             ]
           ]
         },
@@ -23080,7 +23064,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -23196,6 +23180,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -23718,10 +23712,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -24189,13 +24179,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -24227,13 +24211,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -24378,11 +24356,6 @@
               "description": "Rename the selected item, or several at once in the Rename sheet (F2 also works)"
             },
             {
-              "group": "files",
-              "shortcut": "Cmd+E",
-              "description": "Eject the disk selected in the sidebar"
-            },
-            {
               "group": "views",
               "shortcut": "Ctrl+Cmd+S",
               "description": "Show or hide the folder tree"
@@ -24414,8 +24387,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Y",
-                "description": "Preview the selected item without opening it (Space also works)"
+                "shortcut": "Cmd+Option+[",
+                "description": "Show the previous file of the folder, in a file shown in place"
               },
               {
                 "group": "files",
@@ -24451,7 +24424,7 @@
         },
         "mentions": {
           "$remove": [
-            "⌘K finds a folder; ⌘E ejects; ↩ renames"
+            "⌘K finds a folder; File > Eject ejects; ↩ renames"
           ],
           "$insert": [
             [
@@ -25230,7 +25203,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -25346,6 +25319,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -26610,12 +26593,12 @@
         },
         "mentions": {
           "$remove": [
-            "⌘K finds a folder; ⌘E ejects; ↩ renames"
+            "⌘K finds a folder; File > Eject ejects; ↩ renames"
           ],
           "$insert": [
             [
               "*.{jpg,png} and \\d{2} and {nothing}",
-              "⇧⌘G finds a folder; ⌘E ejects; ↩ renames"
+              "⇧⌘G finds a folder; File > Eject ejects; ↩ renames"
             ]
           ]
         },
@@ -27384,7 +27367,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -27495,6 +27478,16 @@
                   "group": "files",
                   "shortcut": "Cmd+Up",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -28018,10 +28011,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -28495,13 +28484,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -28533,13 +28516,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -28691,8 +28668,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Y",
-                "description": "Preview the selected item without opening it (Space also works)"
+                "shortcut": "Cmd+Option+[",
+                "description": "Show the previous file of the folder, in a file shown in place"
               },
               {
                 "group": "files",
@@ -28704,12 +28681,12 @@
         },
         "mentions": {
           "$remove": [
-            "⌘K finds a folder; ⌘E ejects; ↩ renames"
+            "⌘K finds a folder; File > Eject ejects; ↩ renames"
           ],
           "$insert": [
             [
               "*.{jpg,png} and \\d{2} and {nothing}",
-              "⌘K finds a folder; ⌘E ejects; F2 renames"
+              "⌘K finds a folder; File > Eject ejects; F2 renames"
             ]
           ]
         },
@@ -29495,7 +29472,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -29611,6 +29588,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -30133,10 +30120,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -30604,13 +30587,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -30642,13 +30619,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -30837,8 +30808,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Y",
-                "description": "Preview the selected item without opening it (Space also works)"
+                "shortcut": "Cmd+Option+[",
+                "description": "Show the previous file of the folder, in a file shown in place"
               },
               {
                 "group": "files",
@@ -30874,12 +30845,12 @@
         },
         "mentions": {
           "$remove": [
-            "⌘K finds a folder; ⌘E ejects; ↩ renames"
+            "⌘K finds a folder; File > Eject ejects; ↩ renames"
           ],
           "$insert": [
             [
               "*.{jpg,png} and \\d{2} and {nothing}",
-              "⌘K finds a folder; ⌘E ejects; F2 renames"
+              "⌘K finds a folder; File > Eject ejects; F2 renames"
             ]
           ]
         },
@@ -31637,7 +31608,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -31753,6 +31724,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -32264,10 +32245,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -32741,13 +32718,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -32779,13 +32750,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -32904,17 +32869,7 @@
           "{showInFinder} {toggleFavorite} {emptyTrash} {mergeAllWindows}"
         ]
       },
-      "changes": {
-        "shortcuts": {
-          "$remove": [
-            {
-              "group": "files",
-              "shortcut": "Cmd+Shift+E",
-              "description": "Open the selected files in the text editor chosen in Settings"
-            }
-          ]
-        }
-      }
+      "changes": {}
     },
     {
       "name": "16: random keys 11",
@@ -33087,8 +33042,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Y",
-                "description": "Preview the selected item without opening it (Space also works)"
+                "shortcut": "Cmd+Option+[",
+                "description": "Show the previous file of the folder, in a file shown in place"
               },
               {
                 "group": "files",
@@ -33113,7 +33068,7 @@
         "mentions": {
           "$remove": [
             "⌘[ goes back; ⌘T opens a tab.",
-            "⌘K finds a folder; ⌘E ejects; ↩ renames"
+            "⌘K finds a folder; File > Eject ejects; ↩ renames"
           ],
           "$insert": [
             [
@@ -33122,7 +33077,7 @@
             ],
             [
               "*.{jpg,png} and \\d{2} and {nothing}",
-              "⌘K finds a folder; ⌘E ejects; F2 renames"
+              "⌘K finds a folder; File > Eject ejects; F2 renames"
             ]
           ]
         },
@@ -33920,7 +33875,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -34036,6 +33991,16 @@
                   "group": "files",
                   "shortcut": "Cmd+Plus",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -34558,10 +34523,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -35031,13 +34992,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -35069,13 +35024,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -35227,8 +35176,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Y",
-                "description": "Preview the selected item without opening it (Space also works)"
+                "shortcut": "Cmd+Option+[",
+                "description": "Show the previous file of the folder, in a file shown in place"
               },
               {
                 "group": "files",
@@ -35240,13 +35189,13 @@
         },
         "mentions": {
           "$remove": [
-            "⌘K finds a folder; ⌘E ejects; ↩ renames",
+            "⌘K finds a folder; File > Eject ejects; ↩ renames",
             "File > Show in Finder File > Add to Favorites ⇧⌘⌫ Window > Merge All Windows"
           ],
           "$insert": [
             [
               "*.{jpg,png} and \\d{2} and {nothing}",
-              "⌘K finds a folder; ⌘E ejects; F2 renames"
+              "⌘K finds a folder; File > Eject ejects; F2 renames"
             ],
             [
               "",
@@ -36029,7 +35978,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -36145,6 +36094,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -36656,10 +36615,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -37127,13 +37082,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -37165,13 +37114,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -37384,8 +37327,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Y",
-                "description": "Preview the selected item without opening it (Space also works)"
+                "shortcut": "Cmd+Option+[",
+                "description": "Show the previous file of the folder, in a file shown in place"
               },
               {
                 "group": "files",
@@ -37434,7 +37377,7 @@
         "mentions": {
           "$remove": [
             "⌘[ goes back; ⌘T opens a tab.",
-            "⌘K finds a folder; ⌘E ejects; ↩ renames",
+            "⌘K finds a folder; File > Eject ejects; ↩ renames",
             "{⌘[}",
             "File > Show in Finder File > Add to Favorites ⇧⌘⌫ Window > Merge All Windows"
           ],
@@ -37445,7 +37388,7 @@
             ],
             [
               "*.{jpg,png} and \\d{2} and {nothing}",
-              "⌘K finds a folder; ⌘E ejects; F2 renames"
+              "⌘K finds a folder; File > Eject ejects; F2 renames"
             ],
             [
               "goBack}",
@@ -38200,7 +38143,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -38316,6 +38259,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -38849,10 +38802,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -39320,13 +39269,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -39358,13 +39301,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -39520,8 +39457,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Y",
-                "description": "Preview the selected item without opening it (Space also works)"
+                "shortcut": "Cmd+Option+[",
+                "description": "Show the previous file of the folder, in a file shown in place"
               },
               {
                 "group": "files",
@@ -39533,12 +39470,12 @@
         },
         "mentions": {
           "$remove": [
-            "⌘K finds a folder; ⌘E ejects; ↩ renames"
+            "⌘K finds a folder; File > Eject ejects; ↩ renames"
           ],
           "$insert": [
             [
               "*.{jpg,png} and \\d{2} and {nothing}",
-              "⌘K finds a folder; ⌘E ejects; F2 renames"
+              "⌘K finds a folder; File > Eject ejects; F2 renames"
             ]
           ]
         },
@@ -40307,7 +40244,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -40423,6 +40360,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -40934,10 +40881,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -41405,13 +41348,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -41443,13 +41380,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -41679,8 +41610,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Y",
-                "description": "Preview the selected item without opening it (Space also works)"
+                "shortcut": "Cmd+Option+[",
+                "description": "Show the previous file of the folder, in a file shown in place"
               },
               {
                 "group": "files",
@@ -41716,12 +41647,12 @@
         },
         "mentions": {
           "$remove": [
-            "⌘K finds a folder; ⌘E ejects; ↩ renames"
+            "⌘K finds a folder; File > Eject ejects; ↩ renames"
           ],
           "$insert": [
             [
               "*.{jpg,png} and \\d{2} and {nothing}",
-              "⌘K finds a folder; ⌘E ejects; F2 renames"
+              "⌘K finds a folder; File > Eject ejects; F2 renames"
             ]
           ]
         },
@@ -42495,7 +42426,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -42616,6 +42547,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -43143,10 +43084,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -43600,13 +43537,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -43638,13 +43569,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -43825,8 +43750,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Shift+E",
-                "description": "Open the selected files in the text editor chosen in Settings"
+                "shortcut": "Cmd+O",
+                "description": "Open the selected items: a folder here, a file in its app"
               },
               {
                 "group": "files",
@@ -44644,7 +44569,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -44750,6 +44675,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -45273,10 +45208,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -45738,13 +45669,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -45776,13 +45701,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -45973,12 +45892,12 @@
         },
         "mentions": {
           "$remove": [
-            "⇧⌘G finds a folder; ⌘E ejects; F2 renames"
+            "⇧⌘G finds a folder; File > Eject ejects; F2 renames"
           ],
           "$insert": [
             [
               "*.{jpg,png} and \\d{2} and {nothing}",
-              "⌘K finds a folder; ⌘E ejects; F2 renames"
+              "⌘K finds a folder; File > Eject ejects; F2 renames"
             ]
           ]
         },
@@ -46764,7 +46683,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -46880,6 +46799,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -47397,10 +47326,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -47868,13 +47793,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -47906,13 +47825,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -48081,11 +47994,6 @@
             },
             {
               "group": "files",
-              "shortcut": "Cmd+E",
-              "description": "Eject the disk selected in the sidebar"
-            },
-            {
-              "group": "files",
               "shortcut": "Cmd+Option+C",
               "description": "Copy the selected items' paths as text"
             },
@@ -48173,17 +48081,12 @@
         },
         "mentions": {
           "$remove": [
-            "⌘[ goes back; ⌘T opens a tab.",
-            "⌘K finds a folder; ⌘E ejects; ↩ renames"
+            "⌘[ goes back; ⌘T opens a tab."
           ],
           "$insert": [
             [
               null,
               "⌘[ goes back; File > New Tab opens a tab."
-            ],
-            [
-              "*.{jpg,png} and \\d{2} and {nothing}",
-              "⌘K finds a folder; File > Eject ejects; ↩ renames"
             ]
           ]
         },
@@ -48942,7 +48845,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -49058,6 +48961,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -51481,7 +51394,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -51588,6 +51501,16 @@
                 ]
               ],
               "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
+                },
                 {
                   "group": "files",
                   "shortcut": "Cmd+C",
@@ -52109,10 +52032,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -52576,13 +52495,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -52614,13 +52527,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -52798,8 +52705,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Y",
-                "description": "Preview the selected item without opening it (Space also works)"
+                "shortcut": "Cmd+Option+[",
+                "description": "Show the previous file of the folder, in a file shown in place"
               },
               {
                 "group": "files",
@@ -52823,12 +52730,12 @@
         },
         "mentions": {
           "$remove": [
-            "⌘K finds a folder; ⌘E ejects; ↩ renames"
+            "⌘K finds a folder; File > Eject ejects; ↩ renames"
           ],
           "$insert": [
             [
               "*.{jpg,png} and \\d{2} and {nothing}",
-              "⌘K finds a folder; ⌘E ejects; F2 renames"
+              "⌘K finds a folder; File > Eject ejects; F2 renames"
             ]
           ]
         },
@@ -53602,7 +53509,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -53718,6 +53625,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -54240,10 +54157,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -54711,13 +54624,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -54749,13 +54656,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [
@@ -54936,8 +54837,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Shift+E",
-                "description": "Open the selected files in the text editor chosen in Settings"
+                "shortcut": "Cmd+O",
+                "description": "Open the selected items: a folder here, a file in its app"
               },
               {
                 "group": "files",
@@ -54961,12 +54862,12 @@
         },
         "mentions": {
           "$remove": [
-            "⌘K finds a folder; ⌘E ejects; ↩ renames"
+            "⌘K finds a folder; File > Eject ejects; ↩ renames"
           ],
           "$insert": [
             [
               "*.{jpg,png} and \\d{2} and {nothing}",
-              "⇧⌘G finds a folder; ⌘E ejects; ↩ renames"
+              "⇧⌘G finds a folder; File > Eject ejects; ↩ renames"
             ]
           ]
         },
@@ -55745,7 +55646,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Option+Down",
-                  "description": "Open the selected folder in the other pane"
+                  "description": "Open the selected folder, or show the selected file, in the other pane (Cmd+Option+E also works)"
                 },
                 {
                   "group": "navigation",
@@ -55861,6 +55762,16 @@
                   "group": "files",
                   "shortcut": "Cmd+O",
                   "description": "Open the selected items: a folder here, a file in its app"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+]",
+                  "description": "Show the next file of the folder, in a file shown in place"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Option+[",
+                  "description": "Show the previous file of the folder, in a file shown in place"
                 },
                 {
                   "group": "files",
@@ -56379,10 +56290,6 @@
                 ],
                 [
                   "Folders",
-                  "Disks"
-                ],
-                [
-                  "Folders",
                   "Tree root"
                 ],
                 [
@@ -56846,13 +56753,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -56884,13 +56785,7 @@
                   "A disk was ejected"
                 ]
               ],
-              "shortcuts": [
-                {
-                  "group": "files",
-                  "shortcut": "Cmd+E",
-                  "description": "Eject the disk selected in the sidebar"
-                }
-              ]
+              "shortcuts": []
             }
           ],
           [

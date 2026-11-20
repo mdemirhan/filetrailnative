@@ -28,6 +28,8 @@ public struct StartupTab: Equatable, Sendable {
     public var searchGroupBy: GroupByPreference = .none
     public var groupReversed = false
     public var searchGroupReversed = false
+    /// The file its first pane shows in place of its folder.
+    public var viewer: ViewerPreference? = nil
 
     /// The tab as it is saved between launches.
     public var openTab: OpenTabPreference {
@@ -38,7 +40,7 @@ public struct StartupTab: Equatable, Sendable {
             favoritesExpanded: favoritesExpanded, locationsExpanded: locationsExpanded, secondPane: secondPane,
             activePane: activePane, paneSplit: paneSplit, viewSizes: viewSizes, filterMode: filterMode,
             groupBy: groupBy, searchGroupBy: searchGroupBy, groupReversed: groupReversed,
-            searchGroupReversed: searchGroupReversed)
+            searchGroupReversed: searchGroupReversed, viewer: viewer)
     }
 }
 
@@ -76,6 +78,7 @@ public enum StartupTabs {
         start.searchGroupBy = tab.searchGroupBy ?? .none
         start.groupReversed = tab.groupReversed == true
         start.searchGroupReversed = tab.searchGroupReversed == true
+        start.viewer = tab.viewer
         return start
     }
 

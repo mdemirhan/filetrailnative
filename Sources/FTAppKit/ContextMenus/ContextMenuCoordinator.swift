@@ -207,7 +207,10 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         case .treeFolder, .favorite:
             return []
         case .content, .search, .trash:
-            let oneFolder = subject.entries.count == 1 && subject.entries[0].kind.isDirectoryLike
+            // One folder shows there; one file shows there in the viewer.
+            let oneFolder =
+                subject.entries.count == 1
+                && (subject.entries[0].kind.isDirectoryLike || subject.entries[0].kind.isEditableFile)
             // Into the folder the other pane shows: not when it shows none, search results, the Trash, or this list's
             // folder.
             let destination = other.flatMap(tab.otherPaneDestination) ?? ""
@@ -264,7 +267,12 @@ final class ContextMenuCoordinator: ContextMenuResponder {
     func contextMenu(otherPane command: AppCommand, subject: ContextMenuSubject) {
         switch command {
         case .openSelectionInOtherPane:
-            if let target = subject.targetPath ?? subject.paths.first { tab.openSecondPane(at: target) }
+            guard let target = subject.targetPath ?? subject.paths.first else { return }
+            if subject.entries.first?.kind.isEditableFile == true {
+                tab.openFileInOtherPane(target)
+            } else {
+                tab.openSecondPane(at: target)
+            }
         case .copyToOtherPane, .moveToOtherPane:
             tab.sendToOtherPane(subject.paths, copying: command == .copyToOtherPane)
         default:
@@ -318,6 +326,8 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             holdingTheTab { [self] in await openPaths(subject) }
         case .quickLook:
             if let first = subject.paths.first { tab.quickLook(path: first) }
+        case .openInViewer:
+            if let first = subject.paths.first { tab.openInViewer(first) }
         case .edit:
             holdingTheTab { [self] in await edit(subject) }
         case .showInfo:

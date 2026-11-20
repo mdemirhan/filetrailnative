@@ -244,6 +244,12 @@ public enum ContextMenuRules {
         if subject.scope != .selection || entries.count != subject.paths.count || !ImageConversion.canConvert(entries) {
             hidden.insert(.convertImages)
         }
+        // Open in Viewer is for one file, of the list or of search results.
+        if subject.scope != .selection || entries.count != 1 || subject.paths.count != 1
+            || !entries[0].kind.isEditableFile
+        {
+            hidden.insert(.openInViewer)
+        }
         // Edit is for text files.
         if entries.isEmpty || entries.count != subject.paths.count || !entries.allSatisfy({ $0.kind.isEditableFile }) {
             hidden.insert(.edit)

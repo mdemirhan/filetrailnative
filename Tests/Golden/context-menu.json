@@ -19,6 +19,11 @@
           "hasSubmenu": true
         },
         {
+          "id": "openInViewer",
+          "label": "Open in Viewer",
+          "icon": "openFile"
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -236,6 +241,11 @@
           "label": "Open With",
           "icon": "openWith",
           "hasSubmenu": true
+        },
+        {
+          "id": "openInViewer",
+          "label": "Open in Viewer",
+          "icon": "openFile"
         },
         {
           "id": "openInNewTab",
@@ -713,6 +723,11 @@
           "label": "Open With",
           "icon": "openWith",
           "hasSubmenu": true
+        },
+        {
+          "id": "openInViewer",
+          "label": "Open in Viewer",
+          "icon": "openFile"
         },
         {
           "id": "openInNewTab",
@@ -3209,7 +3224,7 @@
           "selectedTreeTargetKind": "filesystemFolder"
         }
       },
-      "output": "⇧⌘E"
+      "output": null
     },
     {
       "name": "shortcut edit: content/favorite",
@@ -3225,7 +3240,7 @@
           "selectedTreeTargetKind": "favorite"
         }
       },
-      "output": "⇧⌘E"
+      "output": null
     },
     {
       "name": "shortcut edit: content/favoritesRoot",
@@ -3241,7 +3256,7 @@
           "selectedTreeTargetKind": "favoritesRoot"
         }
       },
-      "output": "⇧⌘E"
+      "output": null
     },
     {
       "name": "shortcut edit: content/null",
@@ -3257,7 +3272,7 @@
           "selectedTreeTargetKind": null
         }
       },
-      "output": "⇧⌘E"
+      "output": null
     },
     {
       "name": "shortcut edit: null/filesystemFolder",
@@ -13155,7 +13170,7 @@
           "selectedTreeTargetKind": "filesystemFolder"
         }
       },
-      "output": "⇧⌘E"
+      "output": null
     },
     {
       "name": "shortcut random 357: sortBy",

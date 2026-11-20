@@ -42,7 +42,7 @@ extension ShortcutPolicy {
             .copyContents, .shareSelection,
             .openSelectionInNewTab, .openSelectionInNewWindow, .quickLookSelection, .revealInFolder, .copyToOtherPane,
             .moveToOtherPane, .compressSelection, .extractSelection, .extractSelectionTo, .deselectAll,
-            .invertSelection:
+            .invertSelection, .viewFile:
             .contentOnly
         }
     }

@@ -159,7 +159,8 @@
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
-            "Cmd+Option+Down"
+            "Cmd+Option+Down",
+            "Cmd+Option+E"
           ],
           "copyToOtherPane": [
             "F5"
@@ -179,12 +180,13 @@
           "openSelectedItem": [
             "Cmd+Down"
           ],
-          "editSelection": [
-            "Cmd+Shift+E"
-          ],
+          "editSelection": [],
           "quickLookSelection": [
             "Cmd+Y",
             "Space"
+          ],
+          "viewFile": [
+            "Cmd+E"
           ],
           "calculateSize": [],
           "renameSelection": [
@@ -209,9 +211,7 @@
           "trashSelection": [
             "Cmd+Backspace"
           ],
-          "ejectVolume": [
-            "Cmd+E"
-          ],
+          "ejectVolume": [],
           "emptyTrash": [
             "Cmd+Shift+Backspace"
           ],
@@ -326,6 +326,15 @@
             "?"
           ],
           "openKeyboardShortcuts": [],
+          "saveViewerFile": [
+            "Cmd+S"
+          ],
+          "nextViewerFile": [
+            "Cmd+Option+]"
+          ],
+          "previousViewerFile": [
+            "Cmd+Option+["
+          ],
           "deselectAll": [
             "Cmd+Option+A"
           ],
@@ -486,6 +495,10 @@
             "openSelectionInOtherPane"
           ],
           [
+            "Cmd+Option+E",
+            "openSelectionInOtherPane"
+          ],
+          [
             "F5",
             "copyToOtherPane"
           ],
@@ -506,16 +519,16 @@
             "openSelectedItem"
           ],
           [
-            "Cmd+Shift+E",
-            "editSelection"
-          ],
-          [
             "Cmd+Y",
             "quickLookSelection"
           ],
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+E",
+            "viewFile"
           ],
           [
             "Cmd+Option+A",
@@ -548,10 +561,6 @@
           [
             "Cmd+Backspace",
             "trashSelection"
-          ],
-          [
-            "Cmd+E",
-            "ejectVolume"
           ],
           [
             "Cmd+Shift+Backspace",
@@ -652,6 +661,18 @@
           [
             "?",
             "openHelp"
+          ],
+          [
+            "Cmd+S",
+            "saveViewerFile"
+          ],
+          [
+            "Cmd+Option+]",
+            "nextViewerFile"
+          ],
+          [
+            "Cmd+Option+[",
+            "previousViewerFile"
           ]
         ],
         "sanitized": {},
@@ -3927,10 +3948,6 @@
               "halfPageDown"
             ],
             [
-              "Cmd+E",
-              "ejectVolume"
-            ],
-            [
               "Cmd+0",
               "resetSize"
             ]
@@ -3993,7 +4010,6 @@
             "PageDown",
             "Cmd+0"
           ],
-          "ejectVolume": [],
           "resetSize": [],
           "sortBySize": [
             "Cmd+Shift+G",
@@ -7512,10 +7528,6 @@
               "refreshOrApplySearchSort"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "Cmd+D",
               "duplicateSelection"
             ],
@@ -7580,7 +7592,6 @@
             "Cmd+K"
           ],
           "refreshOrApplySearchSort": [],
-          "editSelection": [],
           "duplicateSelection": [
             "Cmd+Shift+E"
           ],
@@ -7979,10 +7990,6 @@
               "selectPreviousTab"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "Cmd+Y",
               "quickLookSelection"
             ],
@@ -7993,10 +8000,6 @@
             [
               "Cmd+Shift+M",
               "moveSelection"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Cmd+Shift+Backspace",
@@ -8187,12 +8190,10 @@
           "openSelectionInNewTab": [
             "Cmd+Shift+Backspace"
           ],
-          "editSelection": [],
           "quickLookSelection": [],
           "moveSelection": [
             "Ctrl+D"
           ],
-          "ejectVolume": [],
           "emptyTrash": [],
           "copyPath": [
             "Cmd+Plus"
@@ -9728,10 +9729,6 @@
             [
               "Space",
               "quickLookSelection"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Cmd+Shift+F",
@@ -13419,9 +13416,8 @@
             "id": "toggleInfoPanel",
             "shortcut": "Cmd+Shift+E",
             "slot": 1,
-            "status": "conflict",
+            "status": "ok",
             "refusal": null,
-            "command": "editSelection",
             "customized": true,
             "assigned": {
               "goHomeRootTree": [],
@@ -13466,7 +13462,6 @@
               "openSelectedItem": [
                 "Ctrl+Shift+Tab"
               ],
-              "editSelection": [],
               "quickLookSelection": [],
               "duplicateSelection": [],
               "trashSelection": [],
@@ -15796,10 +15791,6 @@
               "openLocationSheet"
             ],
             [
-              "Cmd+E",
-              "ejectVolume"
-            ],
-            [
               "Cmd+Shift+.",
               "toggleHiddenFiles"
             ]
@@ -15862,7 +15853,6 @@
           "mergeAllWindows": [
             "Cmd+Option+K"
           ],
-          "ejectVolume": [],
           "toggleFoldersFirst": [
             "Ctrl+F4"
           ],
@@ -15891,7 +15881,6 @@
                 "Cmd+Option+K"
               ],
               "openSelection": [],
-              "ejectVolume": [],
               "toggleFoldersFirst": [
                 "Ctrl+F4"
               ],
@@ -15907,7 +15896,6 @@
               "mergeAllWindows": [
                 "Cmd+Option+K"
               ],
-              "ejectVolume": [],
               "toggleFoldersFirst": [
                 "Ctrl+F4"
               ],
@@ -15923,7 +15911,6 @@
               "mergeAllWindows": [
                 "Cmd+Option+K"
               ],
-              "ejectVolume": [],
               "toggleFoldersFirst": [
                 "Ctrl+F4"
               ],
@@ -15950,7 +15937,6 @@
               "mergeAllWindows": [
                 "Cmd+Option+K"
               ],
-              "ejectVolume": [],
               "showLastSearchResults": [
                 "Cmd+Shift+F",
                 "Cmd+'"
@@ -15970,7 +15956,6 @@
               "mergeAllWindows": [
                 "Cmd+Option+K"
               ],
-              "ejectVolume": [],
               "toggleFoldersFirst": [
                 "Ctrl+F4"
               ],
@@ -15986,7 +15971,6 @@
               "mergeAllWindows": [
                 "Cmd+Option+K"
               ],
-              "ejectVolume": [],
               "toggleFoldersFirst": [
                 "Ctrl+F4"
               ],
@@ -16018,7 +16002,6 @@
                 "Cmd+Option+K"
               ],
               "toggleTwoPanes": [],
-              "ejectVolume": [],
               "toggleFoldersFirst": [
                 "Ctrl+F4"
               ],
@@ -16034,7 +16017,6 @@
               "mergeAllWindows": [
                 "Cmd+Option+K"
               ],
-              "ejectVolume": [],
               "toggleFoldersFirst": [
                 "Ctrl+F4"
               ],
@@ -16050,7 +16032,6 @@
               "mergeAllWindows": [
                 "Cmd+Option+K"
               ],
-              "ejectVolume": [],
               "toggleFoldersFirst": [
                 "Ctrl+F4"
               ],
@@ -17868,10 +17849,6 @@
             [
               "Cmd+Down",
               "openSelectedItem"
-            ],
-            [
-              "Cmd+Shift+E",
-              "editSelection"
             ]
           ],
           "$insert": [
@@ -17901,8 +17878,7 @@
           "pageDown": [],
           "openSelectedItem": [
             "PageDown"
-          ],
-          "editSelection": []
+          ]
         },
         "probes": [
           {
@@ -17998,7 +17974,6 @@
               "openSelectedItem": [
                 "PageDown"
               ],
-              "editSelection": [],
               "minimize": [
                 "Cmd+Y"
               ],
@@ -18014,7 +17989,6 @@
               "openSelectedItem": [
                 "PageDown"
               ],
-              "editSelection": [],
               "minimize": []
             },
             "reset": {
@@ -18024,8 +17998,7 @@
               "pageDown": [],
               "openSelectedItem": [
                 "PageDown"
-              ],
-              "editSelection": []
+              ]
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+M"
@@ -18046,7 +18019,6 @@
               "openSelectedItem": [
                 "PageDown"
               ],
-              "editSelection": [],
               "toggleInfoPanel": []
             },
             "removed": {
@@ -18056,8 +18028,7 @@
               "pageDown": [],
               "openSelectedItem": [
                 "PageDown"
-              ],
-              "editSelection": []
+              ]
             },
             "reset": {
               "pageUp": [
@@ -18066,8 +18037,7 @@
               "pageDown": [],
               "openSelectedItem": [
                 "PageDown"
-              ],
-              "editSelection": []
+              ]
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -18088,7 +18058,6 @@
               "openSelectedItem": [
                 "PageDown"
               ],
-              "editSelection": [],
               "newFolder": [
                 "Cmd+Shift+Backspace"
               ],
@@ -18102,7 +18071,6 @@
               "openSelectedItem": [
                 "PageDown"
               ],
-              "editSelection": [],
               "newFolder": []
             },
             "reset": {
@@ -18112,8 +18080,7 @@
               "pageDown": [],
               "openSelectedItem": [
                 "PageDown"
-              ],
-              "editSelection": []
+              ]
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Shift+N"
@@ -18227,10 +18194,6 @@
             [
               "Cmd+\\",
               "toggleTwoPanes"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Ctrl+Cmd+V",
@@ -18824,16 +18787,8 @@
               "openSelection"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "Cmd+Shift+N",
               "newFolder"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Cmd+Shift+Backspace",
@@ -19148,7 +19103,6 @@
             "F20"
           ],
           "openSelection": [],
-          "editSelection": [],
           "newFolder": [],
           "ejectVolume": [
             "Cmd+F3",
@@ -19299,7 +19253,6 @@
                 "F20"
               ],
               "openSelection": [],
-              "editSelection": [],
               "renameSelection": [],
               "newFolder": [],
               "ejectVolume": [
@@ -19379,7 +19332,6 @@
                 "F20"
               ],
               "openSelection": [],
-              "editSelection": [],
               "newFolder": [],
               "ejectVolume": [
                 "Cmd+F3",
@@ -19455,7 +19407,6 @@
                 "F20"
               ],
               "openSelection": [],
-              "editSelection": [],
               "newFolder": [],
               "ejectVolume": [
                 "Cmd+F3",
@@ -19545,7 +19496,6 @@
                 "F20"
               ],
               "openSelection": [],
-              "editSelection": [],
               "newFolder": [],
               "ejectVolume": [
                 "Cmd+F3",
@@ -19621,7 +19571,6 @@
                 "F20"
               ],
               "openSelection": [],
-              "editSelection": [],
               "newFolder": [],
               "ejectVolume": [
                 "Cmd+F3",
@@ -19697,7 +19646,6 @@
                 "F20"
               ],
               "openSelection": [],
-              "editSelection": [],
               "newFolder": [],
               "ejectVolume": [
                 "Cmd+F3",
@@ -19787,7 +19735,6 @@
                 "F20"
               ],
               "openSelection": [],
-              "editSelection": [],
               "newFolder": [],
               "ejectVolume": [
                 "Cmd+F3",
@@ -19864,7 +19811,6 @@
                 "F20"
               ],
               "openSelection": [],
-              "editSelection": [],
               "newFolder": [],
               "ejectVolume": [
                 "Cmd+F3",
@@ -19940,7 +19886,6 @@
                 "F20"
               ],
               "openSelection": [],
-              "editSelection": [],
               "newFolder": [],
               "ejectVolume": [
                 "Cmd+F3",
@@ -23242,10 +23187,6 @@
               "goForward"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "Cmd+Option+C",
               "copyPath"
             ],
@@ -23268,7 +23209,6 @@
           "goForward": [
             "Cmd+]"
           ],
-          "editSelection": [],
           "copyPath": [],
           "focusFileSearch": [
             "Cmd+Right"
@@ -24002,7 +23942,8 @@
           "duplicateSelection": [],
           "openInTerminal": [],
           "viewAsIcons": [],
-          "toggleHiddenFiles": []
+          "toggleHiddenFiles": [],
+          "viewFile": []
         },
         "commandByShortcut": {
           "$remove": [
@@ -24095,10 +24036,6 @@
               "openSelectedItem"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "Cmd+Y",
               "quickLookSelection"
             ],
@@ -24125,10 +24062,6 @@
             [
               "Cmd+Backspace",
               "trashSelection"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Cmd+Option+T",
@@ -24177,6 +24110,10 @@
             [
               "Cmd+Shift+I",
               "toggleInfoRow"
+            ],
+            [
+              "Cmd+E",
+              "viewFile"
             ]
           ],
           "$insert": [
@@ -24558,7 +24495,8 @@
           "toggleInfoRow": [
             "F2",
             "F5"
-          ]
+          ],
+          "viewFile": []
         },
         "probes": [
           {
@@ -24717,7 +24655,8 @@
               "toggleInfoRow": [
                 "F2",
                 "F5"
-              ]
+              ],
+              "viewFile": []
             },
             "removed": {
               "goBack": [],
@@ -24808,7 +24747,8 @@
               "toggleInfoRow": [
                 "F2",
                 "F5"
-              ]
+              ],
+              "viewFile": []
             },
             "reset": {
               "goBack": [],
@@ -24899,7 +24839,8 @@
               "toggleInfoRow": [
                 "F2",
                 "F5"
-              ]
+              ],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -26952,7 +26893,8 @@
           "reopenClosedTab": [],
           "trashSelection": [],
           "ejectVolume": [],
-          "toggleHiddenFiles": []
+          "toggleHiddenFiles": [],
+          "viewFile": []
         },
         "commandByShortcut": {
           "$remove": [
@@ -27005,16 +26947,12 @@
               "openSelection"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
+              "Cmd+E",
+              "viewFile"
             ],
             [
               "Cmd+Backspace",
               "trashSelection"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Ctrl+Cmd+V",
@@ -27176,7 +27114,6 @@
             "Cmd+Shift+."
           ],
           "trashSelection": [],
-          "ejectVolume": [],
           "showClipboard": [
             "Cmd+;",
             "Ctrl+F4"
@@ -27191,7 +27128,8 @@
           "showLastSearchResults": [
             "Cmd+R"
           ],
-          "toggleHiddenFiles": []
+          "toggleHiddenFiles": [],
+          "viewFile": []
         },
         "assignments": [
           {
@@ -27235,7 +27173,6 @@
                 "Cmd+Shift+."
               ],
               "trashSelection": [],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+;",
                 "Ctrl+F4"
@@ -27250,7 +27187,8 @@
               "showLastSearchResults": [
                 "Cmd+R"
               ],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
             "removed": {
               "goBack": [
@@ -27280,7 +27218,6 @@
                 "Cmd+Shift+."
               ],
               "trashSelection": [],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+;",
                 "Ctrl+F4"
@@ -27295,7 +27232,8 @@
               "showLastSearchResults": [
                 "Cmd+R"
               ],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
             "reset": {
               "goBack": [
@@ -27324,7 +27262,6 @@
                 "Cmd+Shift+."
               ],
               "trashSelection": [],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+;",
                 "Ctrl+F4"
@@ -27339,7 +27276,8 @@
               "showLastSearchResults": [
                 "Cmd+R"
               ],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+N"
@@ -27382,7 +27320,6 @@
                 "Cmd+Shift+."
               ],
               "trashSelection": [],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+;",
                 "Ctrl+F4"
@@ -27397,7 +27334,8 @@
               "showLastSearchResults": [
                 "Cmd+R"
               ],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
             "removed": {
               "goBack": [
@@ -27426,7 +27364,6 @@
                 "Cmd+Shift+."
               ],
               "trashSelection": [],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+;",
                 "Ctrl+F4"
@@ -27440,7 +27377,8 @@
               "showLastSearchResults": [
                 "Cmd+R"
               ],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
             "reset": {
               "goBack": [
@@ -27469,7 +27407,6 @@
                 "Cmd+Shift+."
               ],
               "trashSelection": [],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+;",
                 "Ctrl+F4"
@@ -27480,7 +27417,8 @@
               "showLastSearchResults": [
                 "Cmd+R"
               ],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+E"
@@ -27520,7 +27458,6 @@
                 "Cmd+Shift+."
               ],
               "trashSelection": [],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+;",
                 "Ctrl+F4"
@@ -27539,7 +27476,8 @@
                 "Cmd+3",
                 "Cmd+Pageup"
               ],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
             "removed": {
               "goBack": [
@@ -27568,7 +27506,6 @@
                 "Cmd+Shift+."
               ],
               "trashSelection": [],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+;",
                 "Ctrl+F4"
@@ -27583,7 +27520,8 @@
               "showLastSearchResults": [
                 "Cmd+R"
               ],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
             "reset": {
               "goBack": [
@@ -27612,7 +27550,6 @@
                 "Cmd+Shift+."
               ],
               "trashSelection": [],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+;",
                 "Ctrl+F4"
@@ -27627,7 +27564,8 @@
               "showLastSearchResults": [
                 "Cmd+R"
               ],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+3"
@@ -27639,7 +27577,7 @@
             "status": "ok",
             "refusal": null,
             "command": null,
-            "customized": true,
+            "customized": false,
             "assigned": {
               "goBack": [
                 "Delete"
@@ -27667,7 +27605,6 @@
                 "Cmd+Shift+."
               ],
               "trashSelection": [],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+;",
                 "Ctrl+F4"
@@ -27682,7 +27619,8 @@
               "showLastSearchResults": [
                 "Cmd+R"
               ],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
             "removed": {
               "goBack": [
@@ -27711,7 +27649,6 @@
                 "Cmd+Shift+."
               ],
               "trashSelection": [],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+;",
                 "Ctrl+F4"
@@ -27726,7 +27663,8 @@
               "showLastSearchResults": [
                 "Cmd+R"
               ],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
             "reset": {
               "goBack": [
@@ -27760,6 +27698,7 @@
                 "Ctrl+F4"
               ],
               "clearClipboard": [
+                "Cmd+E",
                 "F5"
               ],
               "showInFinder": [
@@ -27768,11 +27707,10 @@
               "showLastSearchResults": [
                 "Cmd+R"
               ],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
-            "takenFrom": [
-              "clearClipboard"
-            ],
+            "takenFrom": [],
             "menuShortcut": null
           }
         ],
@@ -29885,10 +29823,6 @@
             [
               "Cmd+Down",
               "openSelectedItem"
-            ],
-            [
-              "Cmd+Shift+E",
-              "editSelection"
             ],
             [
               "Cmd+Shift+M",
@@ -32483,16 +32417,8 @@
               "openSelection"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "Cmd+Shift+N",
               "newFolder"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Cmd+Shift+Backspace",
@@ -32589,9 +32515,7 @@
             "Cmd+K"
           ],
           "openSelection": [],
-          "editSelection": [],
           "newFolder": [],
-          "ejectVolume": [],
           "emptyTrash": [],
           "sortBySize": [
             "Cmd+O"
@@ -32705,9 +32629,7 @@
                 "Cmd+K"
               ],
               "openSelection": [],
-              "editSelection": [],
               "newFolder": [],
-              "ejectVolume": [],
               "emptyTrash": [],
               "openKeyboardShortcuts": [
                 "Delete"
@@ -32733,9 +32655,7 @@
                 "Cmd+K"
               ],
               "openSelection": [],
-              "editSelection": [],
               "newFolder": [],
-              "ejectVolume": [],
               "emptyTrash": [],
               "sortBySize": [
                 "Cmd+O"
@@ -32763,9 +32683,7 @@
                 "Cmd+K"
               ],
               "openSelection": [],
-              "editSelection": [],
               "newFolder": [],
-              "ejectVolume": [],
               "emptyTrash": [],
               "sortBySize": [
                 "Cmd+O"
@@ -32805,9 +32723,7 @@
                 "Cmd+K"
               ],
               "openSelection": [],
-              "editSelection": [],
               "newFolder": [],
-              "ejectVolume": [],
               "emptyTrash": [],
               "sortBySize": [
                 "Cmd+O"
@@ -32840,9 +32756,7 @@
                 "Cmd+K"
               ],
               "openSelection": [],
-              "editSelection": [],
               "newFolder": [],
-              "ejectVolume": [],
               "emptyTrash": [],
               "sortBySize": [
                 "Cmd+O"
@@ -32871,9 +32785,7 @@
                 "Cmd+K"
               ],
               "openSelection": [],
-              "editSelection": [],
               "newFolder": [],
-              "ejectVolume": [],
               "emptyTrash": [],
               "sortBySize": [
                 "Cmd+O"
@@ -32913,9 +32825,7 @@
                 "Cmd+K"
               ],
               "openSelection": [],
-              "editSelection": [],
               "newFolder": [],
-              "ejectVolume": [],
               "emptyTrash": [],
               "viewAsIcons": [
                 "Cmd+Option+K"
@@ -32947,9 +32857,7 @@
                 "Cmd+K"
               ],
               "openSelection": [],
-              "editSelection": [],
               "newFolder": [],
-              "ejectVolume": [],
               "emptyTrash": [],
               "viewAsIcons": [],
               "sortBySize": [
@@ -32979,9 +32887,7 @@
                 "Cmd+K"
               ],
               "openSelection": [],
-              "editSelection": [],
               "newFolder": [],
-              "ejectVolume": [],
               "emptyTrash": [],
               "sortBySize": [
                 "Cmd+O"
@@ -33214,7 +33120,6 @@
             "assigned": {
               "newWindow": [],
               "ejectVolume": [
-                "Cmd+E",
                 "Option+Left"
               ],
               "revealInFolder": [
@@ -33239,8 +33144,7 @@
               ],
               "resetSize": []
             },
-            "takenFrom": [],
-            "menuShortcut": "Cmd+E"
+            "takenFrom": []
           },
           {
             "id": "goMacintoshHD",
@@ -34096,20 +34000,12 @@
               "openSelection"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "Cmd+D",
               "duplicateSelection"
             ],
             [
               "Cmd+Shift+M",
               "moveSelection"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Cmd+Shift+Backspace",
@@ -34347,7 +34243,6 @@
           "openSelection": [
             "Cmd+1"
           ],
-          "editSelection": [],
           "duplicateSelection": [],
           "moveSelection": [
             "Ctrl+Cmd+S",
@@ -34423,7 +34318,6 @@
               "openSelection": [
                 "Cmd+1"
               ],
-              "editSelection": [],
               "duplicateSelection": [],
               "moveSelection": [
                 "Ctrl+Cmd+S",
@@ -34482,7 +34376,6 @@
               "openSelection": [
                 "Cmd+1"
               ],
-              "editSelection": [],
               "duplicateSelection": [],
               "moveSelection": [
                 "Ctrl+Cmd+S",
@@ -34539,7 +34432,6 @@
               "openSelection": [
                 "Cmd+1"
               ],
-              "editSelection": [],
               "duplicateSelection": [],
               "moveSelection": [
                 "Ctrl+Cmd+S",
@@ -35099,10 +34991,6 @@
             [
               "Cmd+Shift+T",
               "reopenClosedTab"
-            ],
-            [
-              "Cmd+Shift+E",
-              "editSelection"
             ]
           ],
           "$insert": [
@@ -35129,8 +35017,7 @@
           "reopenClosedTab": [
             "Cmd+Shift+E",
             "Cmd+Option+K"
-          ],
-          "editSelection": []
+          ]
         },
         "probes": [
           {
@@ -35184,22 +35071,19 @@
               "reopenClosedTab": [
                 "Cmd+Shift+E",
                 "Cmd+Option+K"
-              ],
-              "editSelection": []
+              ]
             },
             "removed": {
               "reopenClosedTab": [
                 "Cmd+Shift+E",
                 "Cmd+Option+K"
-              ],
-              "editSelection": []
+              ]
             },
             "reset": {
               "reopenClosedTab": [
                 "Cmd+Shift+E",
                 "Cmd+Option+K"
-              ],
-              "editSelection": []
+              ]
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Option+W"
@@ -35221,22 +35105,19 @@
                 "Cmd+Shift+E",
                 "Cmd+Option+K"
               ],
-              "editSelection": [],
               "emptyTrash": []
             },
             "removed": {
               "reopenClosedTab": [
                 "Cmd+Shift+E",
                 "Cmd+Option+K"
-              ],
-              "editSelection": []
+              ]
             },
             "reset": {
               "reopenClosedTab": [
                 "Cmd+Shift+E",
                 "Cmd+Option+K"
-              ],
-              "editSelection": []
+              ]
             },
             "takenFrom": [],
             "menuShortcut": "Ctrl+D"
@@ -35996,7 +35877,6 @@
               "newTab": [],
               "toggleTwoPanes": [],
               "openSelection": [],
-              "editSelection": [],
               "moveSelection": [],
               "emptyTrash": [],
               "openInTerminal": [
@@ -36076,8 +35956,7 @@
               "toggleInfoRow": [],
               "openHelp": []
             },
-            "takenFrom": [],
-            "menuShortcut": "Cmd+Shift+E"
+            "takenFrom": []
           },
           {
             "id": "emptyTrash",
@@ -37528,7 +37407,8 @@
           ],
           "openSelectedItem": [],
           "toggleFolderTree": [],
-          "toggleInfoRow": []
+          "toggleInfoRow": [],
+          "viewFile": []
         },
         "commandByShortcut": {
           "$remove": [
@@ -37601,8 +37481,8 @@
               "openSelectedItem"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
+              "Cmd+E",
+              "viewFile"
             ],
             [
               "Cmd+Shift+N",
@@ -37611,10 +37491,6 @@
             [
               "Cmd+Backspace",
               "trashSelection"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Cmd+Shift+Backspace",
@@ -37922,7 +37798,6 @@
             "F13",
             "Cmd+'"
           ],
-          "ejectVolume": [],
           "emptyTrash": [],
           "openInTerminal": [
             "Ctrl+Tab"
@@ -37945,7 +37820,8 @@
           "openKeyboardShortcuts": [
             "Ctrl+U",
             "PageDown"
-          ]
+          ],
+          "viewFile": []
         },
         "probes": [
           {
@@ -38089,7 +37965,6 @@
                 "F13",
                 "Cmd+'"
               ],
-              "ejectVolume": [],
               "emptyTrash": [],
               "openInTerminal": [
                 "Ctrl+Tab"
@@ -38112,7 +37987,8 @@
               "openKeyboardShortcuts": [
                 "Ctrl+U",
                 "PageDown"
-              ]
+              ],
+              "viewFile": []
             },
             "removed": {
               "goBack": [],
@@ -38167,7 +38043,6 @@
                 "F13",
                 "Cmd+'"
               ],
-              "ejectVolume": [],
               "emptyTrash": [],
               "openInTerminal": [
                 "Ctrl+Tab"
@@ -38190,7 +38065,8 @@
               "openKeyboardShortcuts": [
                 "Ctrl+U",
                 "PageDown"
-              ]
+              ],
+              "viewFile": []
             },
             "reset": {
               "goBack": [],
@@ -38242,7 +38118,6 @@
                 "F13",
                 "Cmd+'"
               ],
-              "ejectVolume": [],
               "emptyTrash": [],
               "openInTerminal": [
                 "Ctrl+Tab"
@@ -38265,7 +38140,8 @@
               "openKeyboardShortcuts": [
                 "Ctrl+U",
                 "PageDown"
-              ]
+              ],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+E"
@@ -38566,10 +38442,6 @@
               "openSelectedItem"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "F2",
               "renameSelection"
             ],
@@ -38584,10 +38456,6 @@
             [
               "Cmd+Backspace",
               "trashSelection"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Cmd+Shift+Backspace",
@@ -38888,7 +38756,6 @@
             "Cmd+Esc"
           ],
           "openSelectedItem": [],
-          "editSelection": [],
           "renameSelection": [
             "Cmd+Shift+H"
           ],
@@ -38995,7 +38862,6 @@
                 "Cmd+Esc"
               ],
               "openSelectedItem": [],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+Shift+H"
               ],
@@ -39069,7 +38935,6 @@
                 "Cmd+Esc"
               ],
               "openSelectedItem": [],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+Shift+H"
               ],
@@ -39144,7 +39009,6 @@
                 "Cmd+Esc"
               ],
               "openSelectedItem": [],
-              "editSelection": [],
               "renameSelection": [],
               "duplicateSelection": [],
               "newFolder": [
@@ -39234,7 +39098,6 @@
                 "Cmd+Esc"
               ],
               "openSelectedItem": [],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+Shift+H"
               ],
@@ -39313,7 +39176,6 @@
                 "Cmd+Esc"
               ],
               "openSelectedItem": [],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+Shift+H"
               ],
@@ -39389,7 +39251,6 @@
                 "Cmd+Esc"
               ],
               "openSelectedItem": [],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+Shift+H"
               ],
@@ -39476,7 +39337,6 @@
                 "Cmd+Esc"
               ],
               "openSelectedItem": [],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+Shift+H"
               ],
@@ -39555,7 +39415,6 @@
                 "Cmd+Esc"
               ],
               "openSelectedItem": [],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+Shift+H"
               ],
@@ -39631,7 +39490,6 @@
                 "Cmd+Esc"
               ],
               "openSelectedItem": [],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+Shift+H"
               ],
@@ -39725,7 +39583,6 @@
                 "Cmd+Esc"
               ],
               "openSelectedItem": [],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+Shift+H"
               ],
@@ -39801,7 +39658,6 @@
                 "Cmd+Esc"
               ],
               "openSelectedItem": [],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+Shift+H"
               ],
@@ -39877,7 +39733,6 @@
                 "Cmd+Esc"
               ],
               "openSelectedItem": [],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+Shift+H"
               ],
@@ -42698,7 +42553,8 @@
           ],
           "openKeyboardShortcuts": [
             "F20"
-          ]
+          ],
+          "viewFile": []
         },
         "commandByShortcut": {
           "$remove": [
@@ -42776,7 +42632,7 @@
             ],
             [
               "Cmd+E",
-              "ejectVolume"
+              "viewFile"
             ],
             [
               "Cmd+Shift+Backspace",
@@ -43031,7 +42887,6 @@
             "Cmd+Option+K",
             "Cmd+PageUp"
           ],
-          "ejectVolume": [],
           "emptyTrash": [],
           "copyPath": [],
           "focusFileSearch": [],
@@ -43049,7 +42904,8 @@
           "openKeyboardShortcuts": [
             "F20"
           ],
-          "showClipboard": []
+          "showClipboard": [],
+          "viewFile": []
         },
         "probes": [
           {
@@ -43135,7 +42991,6 @@
                 "Cmd+Option+K",
                 "Cmd+PageUp"
               ],
-              "ejectVolume": [],
               "emptyTrash": [],
               "copyPath": [],
               "showClipboard": [],
@@ -43157,7 +43012,8 @@
               ],
               "openKeyboardShortcuts": [
                 "F20"
-              ]
+              ],
+              "viewFile": []
             },
             "removed": {
               "goBack": [],
@@ -43199,7 +43055,6 @@
                 "Cmd+Option+K",
                 "Cmd+PageUp"
               ],
-              "ejectVolume": [],
               "emptyTrash": [],
               "copyPath": [],
               "showClipboard": [],
@@ -43217,7 +43072,8 @@
               ],
               "openKeyboardShortcuts": [
                 "F20"
-              ]
+              ],
+              "viewFile": []
             },
             "reset": {
               "goBack": [],
@@ -43259,7 +43115,6 @@
                 "Cmd+Option+K",
                 "Cmd+PageUp"
               ],
-              "ejectVolume": [],
               "emptyTrash": [],
               "copyPath": [],
               "showClipboard": [],
@@ -43277,7 +43132,8 @@
               ],
               "openKeyboardShortcuts": [
                 "F20"
-              ]
+              ],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Shift+."
@@ -43415,10 +43271,6 @@
               "goBack"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "Cmd+Shift+I",
               "toggleInfoRow"
             ]
@@ -43426,7 +43278,6 @@
         },
         "sanitized": {
           "goBack": [],
-          "editSelection": [],
           "toggleInfoRow": []
         },
         "probes": [
@@ -43461,18 +43312,15 @@
                 "Cmd+Down",
                 "Cmd+X"
               ],
-              "editSelection": [],
               "toggleInfoRow": [],
               "cut": []
             },
             "removed": {
               "goBack": [],
-              "editSelection": [],
               "toggleInfoRow": []
             },
             "reset": {
               "goBack": [],
-              "editSelection": [],
               "toggleInfoRow": []
             },
             "takenFrom": [],
@@ -44650,10 +44498,6 @@
               "toggleTwoPanes"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "Cmd+F",
               "focusFileSearch"
             ],
@@ -44739,7 +44583,6 @@
             "Cmd+Option+K"
           ],
           "toggleTwoPanes": [],
-          "editSelection": [],
           "focusFileSearch": [],
           "toggleFolderTree": [],
           "toggleInfoRow": [
@@ -44821,7 +44664,6 @@
                 "Cmd+Option+K"
               ],
               "toggleTwoPanes": [],
-              "editSelection": [],
               "focusFileSearch": [],
               "toggleFolderTree": [],
               "toggleInfoRow": [
@@ -44841,7 +44683,6 @@
                 "Cmd+Option+K"
               ],
               "toggleTwoPanes": [],
-              "editSelection": [],
               "focusFileSearch": [],
               "toggleFolderTree": [],
               "toggleInfoRow": [
@@ -44861,7 +44702,6 @@
                 "Cmd+Option+K"
               ],
               "toggleTwoPanes": [],
-              "editSelection": [],
               "focusFileSearch": [],
               "toggleFolderTree": [],
               "toggleInfoRow": [
@@ -46635,10 +46475,6 @@
               "renameSelection"
             ],
             [
-              "Cmd+E",
-              "ejectVolume"
-            ],
-            [
               "Cmd+Shift+Backspace",
               "emptyTrash"
             ],
@@ -46800,7 +46636,6 @@
           "renameSelection": [
             "Cmd+K"
           ],
-          "ejectVolume": [],
           "emptyTrash": [],
           "openInTerminal": [],
           "revealInFolder": [
@@ -46906,7 +46741,6 @@
               "renameSelection": [
                 "Cmd+K"
               ],
-              "ejectVolume": [],
               "emptyTrash": [],
               "openInTerminal": [],
               "revealInFolder": [
@@ -46954,7 +46788,6 @@
               "renameSelection": [
                 "Cmd+K"
               ],
-              "ejectVolume": [],
               "emptyTrash": [],
               "openInTerminal": [],
               "revealInFolder": [
@@ -46998,7 +46831,6 @@
               "renameSelection": [
                 "Cmd+K"
               ],
-              "ejectVolume": [],
               "emptyTrash": [],
               "openInTerminal": [],
               "revealInFolder": [
@@ -47022,9 +46854,8 @@
             "id": "sortByModified",
             "shortcut": "Cmd+Shift+E",
             "slot": 2,
-            "status": "conflict",
+            "status": "ok",
             "refusal": null,
-            "command": "editSelection",
             "customized": false,
             "assigned": {
               "goLibrary": [
@@ -47050,11 +46881,9 @@
                 "Cmd+PageUp"
               ],
               "toggleTwoPanes": [],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+K"
               ],
-              "ejectVolume": [],
               "emptyTrash": [],
               "openInTerminal": [],
               "revealInFolder": [
@@ -47101,7 +46930,6 @@
               "renameSelection": [
                 "Cmd+K"
               ],
-              "ejectVolume": [],
               "emptyTrash": [],
               "openInTerminal": [],
               "revealInFolder": [
@@ -47145,7 +46973,6 @@
               "renameSelection": [
                 "Cmd+K"
               ],
-              "ejectVolume": [],
               "emptyTrash": [],
               "openInTerminal": [],
               "revealInFolder": [
@@ -48541,7 +48368,8 @@
           ],
           "ejectVolume": [],
           "copyPath": [],
-          "viewAsIcons": []
+          "viewAsIcons": [],
+          "viewFile": []
         },
         "commandByShortcut": {
           "$remove": [
@@ -48586,16 +48414,16 @@
               "selectPreviousTab"
             ],
             [
+              "Cmd+E",
+              "viewFile"
+            ],
+            [
               "F2",
               "renameSelection"
             ],
             [
               "Cmd+Shift+N",
               "newFolder"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Cmd+Option+C",
@@ -48802,7 +48630,6 @@
           "newFolder": [
             "Cmd+["
           ],
-          "ejectVolume": [],
           "copyPath": [],
           "showClipboard": [
             "Ctrl+Up"
@@ -48817,7 +48644,8 @@
             "Cmd+Shift+G"
           ],
           "viewAsIcons": [],
-          "toggleHiddenFiles": []
+          "toggleHiddenFiles": [],
+          "viewFile": []
         },
         "probes": [
           {
@@ -48944,7 +48772,6 @@
               "newFolder": [
                 "Cmd+["
               ],
-              "ejectVolume": [],
               "copyPath": [],
               "showClipboard": [
                 "Ctrl+Up"
@@ -48962,7 +48789,8 @@
               "toggleFoldersFirst": [
                 "Cmd+1"
               ],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
             "removed": {
               "goBack": [],
@@ -48998,7 +48826,6 @@
               "newFolder": [
                 "Cmd+["
               ],
-              "ejectVolume": [],
               "copyPath": [],
               "showClipboard": [
                 "Ctrl+Up"
@@ -49013,7 +48840,8 @@
                 "Cmd+Shift+G"
               ],
               "viewAsIcons": [],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
             "reset": {
               "goBack": [],
@@ -49049,7 +48877,6 @@
               "newFolder": [
                 "Cmd+["
               ],
-              "ejectVolume": [],
               "copyPath": [],
               "showClipboard": [
                 "Ctrl+Up"
@@ -49064,7 +48891,8 @@
                 "Cmd+Shift+G"
               ],
               "viewAsIcons": [],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -49111,7 +48939,6 @@
               "newFolder": [
                 "Cmd+["
               ],
-              "ejectVolume": [],
               "copyPath": [],
               "showClipboard": [
                 "Ctrl+Up"
@@ -49127,7 +48954,8 @@
                 "Cmd+Shift+G"
               ],
               "viewAsIcons": [],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
             "removed": {
               "goBack": [],
@@ -49161,7 +48989,6 @@
               "newFolder": [
                 "Cmd+["
               ],
-              "ejectVolume": [],
               "copyPath": [],
               "showClipboard": [
                 "Ctrl+Up"
@@ -49176,7 +49003,8 @@
                 "Cmd+Shift+G"
               ],
               "viewAsIcons": [],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
             "reset": {
               "goBack": [],
@@ -49209,7 +49037,6 @@
               "newFolder": [
                 "Cmd+["
               ],
-              "ejectVolume": [],
               "copyPath": [],
               "showClipboard": [
                 "Ctrl+Up"
@@ -49221,7 +49048,8 @@
                 "Cmd+Shift+G"
               ],
               "viewAsIcons": [],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
             "takenFrom": [
               "clearClipboard"
@@ -49275,7 +49103,6 @@
               "newFolder": [
                 "Cmd+["
               ],
-              "ejectVolume": [],
               "copyPath": [],
               "showClipboard": [
                 "Ctrl+Up"
@@ -49290,7 +49117,8 @@
                 "Cmd+Shift+G"
               ],
               "viewAsIcons": [],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
             "removed": {
               "goBack": [],
@@ -49329,7 +49157,6 @@
               "newFolder": [
                 "Cmd+["
               ],
-              "ejectVolume": [],
               "copyPath": [],
               "showClipboard": [
                 "Ctrl+Up"
@@ -49344,7 +49171,8 @@
                 "Cmd+Shift+G"
               ],
               "viewAsIcons": [],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
             "reset": {
               "goBack": [],
@@ -49380,7 +49208,6 @@
               "newFolder": [
                 "Cmd+["
               ],
-              "ejectVolume": [],
               "copyPath": [],
               "showClipboard": [
                 "Ctrl+Up"
@@ -49395,7 +49222,8 @@
                 "Cmd+Shift+G"
               ],
               "viewAsIcons": [],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": "Ctrl+Tab"
@@ -50045,10 +49873,6 @@
               "openSelectedItem"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "F2",
               "renameSelection"
             ],
@@ -50247,7 +50071,6 @@
           "openSelectedItem": [
             "Ctrl+Cmd+K"
           ],
-          "editSelection": [],
           "renameSelection": [
             "Cmd+'"
           ],
@@ -50371,7 +50194,6 @@
               "openSelectedItem": [
                 "Ctrl+Cmd+K"
               ],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+'"
               ],
@@ -50420,7 +50242,6 @@
               "openSelectedItem": [
                 "Ctrl+Cmd+K"
               ],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+'"
               ],
@@ -50467,7 +50288,6 @@
               "openSelectedItem": [
                 "Ctrl+Cmd+K"
               ],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+'"
               ],
@@ -50527,7 +50347,6 @@
               "openSelectedItem": [
                 "Ctrl+Cmd+K"
               ],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+'"
               ],
@@ -50574,7 +50393,6 @@
               "openSelectedItem": [
                 "Ctrl+Cmd+K"
               ],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+'"
               ],
@@ -50621,7 +50439,6 @@
               "openSelectedItem": [
                 "Ctrl+Cmd+K"
               ],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+'"
               ],
@@ -52236,9 +52053,8 @@
             "id": "showInFinder",
             "shortcut": "Cmd+Shift+E",
             "slot": 2,
-            "status": "conflict",
+            "status": "ok",
             "refusal": null,
-            "command": "editSelection",
             "customized": false,
             "assigned": {
               "closePane": [],
@@ -52247,7 +52063,6 @@
               "openSelectionInNewWindow": [
                 "Cmd+Option+T"
               ],
-              "editSelection": [],
               "openInTerminal": [],
               "showInFinder": [
                 "Cmd+Shift+E"
@@ -52719,10 +52534,6 @@
               "reopenClosedTab"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "Cmd+Shift+Backspace",
               "emptyTrash"
             ],
@@ -52847,7 +52658,6 @@
             "Cmd+N"
           ],
           "reopenClosedTab": [],
-          "editSelection": [],
           "emptyTrash": [
             "Option+Left",
             "Cmd+Shift+I"
@@ -52902,7 +52712,6 @@
                 "Cmd+N"
               ],
               "reopenClosedTab": [],
-              "editSelection": [],
               "emptyTrash": [
                 "Cmd +K",
                 "Cmd+Shift+I"
@@ -52934,7 +52743,6 @@
                 "Cmd+N"
               ],
               "reopenClosedTab": [],
-              "editSelection": [],
               "emptyTrash": [
                 "Cmd+Shift+I"
               ],
@@ -52965,7 +52773,6 @@
                 "Cmd+N"
               ],
               "reopenClosedTab": [],
-              "editSelection": [],
               "showLastSearchResults": [],
               "viewAsDetails": [
                 "Cmd+Up"
@@ -54637,7 +54444,6 @@
                 "Cmd+Shift+F",
                 "Cmd+W"
               ],
-              "ejectVolume": [],
               "showLastSearchResults": [],
               "toggleFolderTree": [],
               "toggleInfoRow": []
@@ -54664,8 +54470,7 @@
               "toggleFolderTree": [],
               "toggleInfoRow": []
             },
-            "takenFrom": [],
-            "menuShortcut": "Cmd+E"
+            "takenFrom": []
           }
         ],
         "events": [
@@ -55711,7 +55516,6 @@
               "renameSelection": [],
               "newFolder": [],
               "ejectVolume": [
-                "Cmd+E",
                 "+A"
               ],
               "sortBySize": [
@@ -55773,8 +55577,7 @@
                 "Cmd+Shift+["
               ]
             },
-            "takenFrom": [],
-            "menuShortcut": "Cmd+E"
+            "takenFrom": []
           }
         ]
       }
@@ -56187,7 +55990,8 @@
           "increaseSize": [
             "Cmd+="
           ],
-          "toggleHiddenFiles": []
+          "toggleHiddenFiles": [],
+          "viewFile": []
         },
         "commandByShortcut": {
           "$remove": [
@@ -56248,6 +56052,10 @@
               "quickLookSelection"
             ],
             [
+              "Cmd+E",
+              "viewFile"
+            ],
+            [
               "Cmd+Shift+M",
               "moveSelection"
             ],
@@ -56258,10 +56066,6 @@
             [
               "Cmd+Backspace",
               "trashSelection"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Cmd+Option+T",
@@ -56463,7 +56267,6 @@
           ],
           "newFolder": [],
           "trashSelection": [],
-          "ejectVolume": [],
           "openInTerminal": [
             "Cmd+Option+J"
           ],
@@ -56481,7 +56284,8 @@
             "Cmd+Option+K"
           ],
           "toggleHiddenFiles": [],
-          "toggleInfoRow": []
+          "toggleInfoRow": [],
+          "viewFile": []
         },
         "probes": [
           {
@@ -57020,10 +56824,6 @@
             [
               "Cmd+Down",
               "openSelectedItem"
-            ],
-            [
-              "Cmd+Shift+E",
-              "editSelection"
             ],
             [
               "F2",
@@ -58391,7 +58191,6 @@
                 "Cmd+Shift+["
               ],
               "editSelection": [
-                "Cmd+Shift+E",
                 "Cmd+Shift+."
               ],
               "toggleHiddenFiles": []
@@ -58412,8 +58211,7 @@
                 "Cmd+Shift+["
               ]
             },
-            "takenFrom": [],
-            "menuShortcut": "Cmd+Shift+E"
+            "takenFrom": []
           },
           {
             "id": "showClipboard",
@@ -60085,10 +59883,6 @@
               "refreshOrApplySearchSort"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "Cmd+Option+C",
               "copyPath"
             ],
@@ -60667,9 +60461,8 @@
             "id": "selectPreviousTab",
             "shortcut": "Cmd+Shift+E",
             "slot": 2,
-            "status": "conflict",
+            "status": "ok",
             "refusal": null,
-            "command": "editSelection",
             "customized": false,
             "assigned": {
               "goHomeRootTree": [
@@ -60682,8 +60475,7 @@
                 "Cmd+Esc",
                 "Ctrl+K"
               ],
-              "closePane": [],
-              "editSelection": []
+              "closePane": []
             },
             "removed": {
               "goHomeRootTree": [
@@ -61881,7 +61673,8 @@
           "openHelp": [],
           "pageDown": [],
           "emptyTrash": [],
-          "resetSize": []
+          "resetSize": [],
+          "viewFile": []
         },
         "commandByShortcut": {
           "$remove": [
@@ -61906,16 +61699,16 @@
               "goEnclosingFolder"
             ],
             [
+              "Cmd+Shift+H",
+              "goHomeRootTree"
+            ],
+            [
               "Cmd+K",
               "openLocationSheet"
             ],
             [
               "Cmd+Shift+G",
               "openLocationSheet"
-            ],
-            [
-              "Cmd+Shift+R",
-              "rootTreeAtSelection"
             ],
             [
               "Cmd+R",
@@ -61942,10 +61735,6 @@
               "renameSelection"
             ],
             [
-              "Cmd+E",
-              "ejectVolume"
-            ],
-            [
               "Cmd+Shift+Backspace",
               "emptyTrash"
             ],
@@ -61964,6 +61753,10 @@
             [
               "?",
               "openHelp"
+            ],
+            [
+              "Cmd+E",
+              "viewFile"
             ]
           ],
           "$insert": [
@@ -62011,16 +61804,6 @@
               ],
               [
                 "Cmd+K",
-                "rootTreeAtSelection"
-              ]
-            ],
-            [
-              [
-                "Cmd+K",
-                "rootTreeAtSelection"
-              ],
-              [
-                "Cmd+Shift+R",
                 "rootTreeAtSelection"
               ]
             ],
@@ -62123,6 +61906,16 @@
                 "Cmd+Option+C",
                 "calculateSize"
               ]
+            ],
+            [
+              [
+                "Cmd+Option+C",
+                "calculateSize"
+              ],
+              [
+                "Cmd+Shift+H",
+                "goHomeRootTree"
+              ]
             ]
           ]
         },
@@ -62168,12 +61961,12 @@
             "Cmd+Option+C"
           ],
           "renameSelection": [],
-          "ejectVolume": [],
           "emptyTrash": [],
           "copyPath": [],
           "showLastSearchResults": [],
           "resetSize": [],
-          "openHelp": []
+          "openHelp": [],
+          "viewFile": []
         },
         "probes": [
           {
@@ -63631,10 +63424,6 @@
               "openSelection"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "F2",
               "renameSelection"
             ],
@@ -63873,7 +63662,6 @@
           "openSelection": [
             "Cmd+Left"
           ],
-          "editSelection": [],
           "renameSelection": [
             "Cmd+;",
             "Cmd+Shift+N"
@@ -63998,7 +63786,6 @@
               "openSelection": [
                 "Cmd+Left"
               ],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+;",
                 "Cmd+Shift+N"
@@ -64064,7 +63851,6 @@
               "openSelection": [
                 "Cmd+Left"
               ],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+;",
                 "Cmd+Shift+N"
@@ -64130,7 +63916,6 @@
               "openSelection": [
                 "Cmd+Left"
               ],
-              "editSelection": [],
               "renameSelection": [
                 "Cmd+;",
                 "Cmd+Shift+N"
@@ -68707,12 +68492,9 @@
                 "Cmd+K"
               ]
             },
-            "removed": {
-              "ejectVolume": []
-            },
+            "removed": {},
             "reset": {},
-            "takenFrom": [],
-            "menuShortcut": "Cmd+E"
+            "takenFrom": []
           },
           {
             "id": "pageUp",
@@ -69061,14 +68843,12 @@
             "customized": false,
             "assigned": {
               "ejectVolume": [
-                "Cmd+E",
                 ""
               ]
             },
             "removed": {},
             "reset": {},
-            "takenFrom": [],
-            "menuShortcut": "Cmd+E"
+            "takenFrom": []
           }
         ],
         "events": [
@@ -70267,10 +70047,6 @@
             [
               "Cmd+Down",
               "openSelectedItem"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Cmd+=",
@@ -72002,10 +71778,6 @@
               "openSelection"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "F2",
               "renameSelection"
             ],
@@ -72129,7 +71901,6 @@
             "Cmd+Shift+E",
             "Cmd+Shift+]"
           ],
-          "editSelection": [],
           "renameSelection": [],
           "copyPath": [
             "Cmd+Option+K",
@@ -72183,7 +71954,6 @@
                 "Cmd+Shift+E",
                 "Cmd+Shift+]"
               ],
-              "editSelection": [],
               "renameSelection": [],
               "copyPath": [
                 "Cmd+Option+K",
@@ -72214,7 +71984,6 @@
                 "Cmd+Shift+E",
                 "Cmd+Shift+]"
               ],
-              "editSelection": [],
               "renameSelection": [],
               "copyPath": [
                 "Cmd+Option+K",
@@ -72245,7 +72014,6 @@
                 "Cmd+Shift+E",
                 "Cmd+Shift+]"
               ],
-              "editSelection": [],
               "renameSelection": [],
               "copyPath": [
                 "Cmd+Option+K",
@@ -72467,7 +72235,8 @@
           "ejectVolume": [],
           "copyPath": [],
           "openInTerminal": [],
-          "toggleHiddenFiles": []
+          "toggleHiddenFiles": [],
+          "viewFile": []
         },
         "commandByShortcut": {
           "$remove": [
@@ -72520,12 +72289,8 @@
               "copyToOtherPane"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "Cmd+E",
-              "ejectVolume"
+              "viewFile"
             ],
             [
               "Cmd+Shift+Backspace",
@@ -72727,8 +72492,6 @@
             "Cmd+Option+T"
           ],
           "copyToOtherPane": [],
-          "editSelection": [],
-          "ejectVolume": [],
           "emptyTrash": [
             "Ctrl+Cmd+Option+Shift+K",
             "Cmd+/"
@@ -72751,7 +72514,8 @@
           "customizeToolbar": [
             "Cmd+Option+C"
           ],
-          "openHelp": []
+          "openHelp": [],
+          "viewFile": []
         },
         "probes": [
           {
@@ -72878,8 +72642,6 @@
                 "Cmd+Option+T"
               ],
               "copyToOtherPane": [],
-              "editSelection": [],
-              "ejectVolume": [],
               "emptyTrash": [
                 "Ctrl+Cmd+Option+Shift+K",
                 "Cmd+/"
@@ -72906,7 +72668,8 @@
               "quit": [
                 "Cmd+Q",
                 "Cmd+Option+Space"
-              ]
+              ],
+              "viewFile": []
             },
             "removed": {
               "goBack": [],
@@ -72935,8 +72698,6 @@
                 "Cmd+Option+T"
               ],
               "copyToOtherPane": [],
-              "editSelection": [],
-              "ejectVolume": [],
               "emptyTrash": [
                 "Ctrl+Cmd+Option+Shift+K",
                 "Cmd+/"
@@ -72959,7 +72720,8 @@
               "customizeToolbar": [
                 "Cmd+Option+C"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "viewFile": []
             },
             "reset": {
               "goBack": [],
@@ -72988,8 +72750,6 @@
                 "Cmd+Option+T"
               ],
               "copyToOtherPane": [],
-              "editSelection": [],
-              "ejectVolume": [],
               "emptyTrash": [
                 "Ctrl+Cmd+Option+Shift+K",
                 "Cmd+/"
@@ -73012,7 +72772,8 @@
               "customizeToolbar": [
                 "Cmd+Option+C"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Q"
@@ -73052,8 +72813,6 @@
                 "Cmd+Option+T"
               ],
               "copyToOtherPane": [],
-              "editSelection": [],
-              "ejectVolume": [],
               "emptyTrash": [
                 "Ctrl+Cmd+Option+Shift+K",
                 "Cmd+/"
@@ -73078,7 +72837,8 @@
               "customizeToolbar": [
                 "Cmd+Option+C"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "viewFile": []
             },
             "removed": {
               "goBack": [],
@@ -73107,8 +72867,6 @@
                 "Cmd+Option+T"
               ],
               "copyToOtherPane": [],
-              "editSelection": [],
-              "ejectVolume": [],
               "emptyTrash": [
                 "Ctrl+Cmd+Option+Shift+K",
                 "Cmd+/"
@@ -73131,7 +72889,8 @@
               "customizeToolbar": [
                 "Cmd+Option+C"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "viewFile": []
             },
             "reset": {
               "goBack": [],
@@ -73158,8 +72917,6 @@
               ],
               "selectPreviousTab": [],
               "copyToOtherPane": [],
-              "editSelection": [],
-              "ejectVolume": [],
               "emptyTrash": [
                 "Ctrl+Cmd+Option+Shift+K",
                 "Cmd+/"
@@ -73181,7 +72938,8 @@
               "customizeToolbar": [
                 "Cmd+Option+C"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "viewFile": []
             },
             "takenFrom": [
               "selectPreviousTab"
@@ -73229,8 +72987,6 @@
                 "Cmd+Space"
               ],
               "copyToOtherPane": [],
-              "editSelection": [],
-              "ejectVolume": [],
               "emptyTrash": [
                 "Ctrl+Cmd+Option+Shift+K",
                 "Cmd+/"
@@ -73253,7 +73009,8 @@
               "customizeToolbar": [
                 "Cmd+Option+C"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "viewFile": []
             },
             "removed": {
               "goBack": [],
@@ -73282,8 +73039,6 @@
                 "Cmd+Option+T"
               ],
               "copyToOtherPane": [],
-              "editSelection": [],
-              "ejectVolume": [],
               "emptyTrash": [
                 "Ctrl+Cmd+Option+Shift+K",
                 "Cmd+/"
@@ -73306,7 +73061,8 @@
               "customizeToolbar": [
                 "Cmd+Option+C"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "viewFile": []
             },
             "reset": {
               "goBack": [],
@@ -73335,8 +73091,6 @@
                 "Cmd+Option+T"
               ],
               "copyToOtherPane": [],
-              "editSelection": [],
-              "ejectVolume": [],
               "emptyTrash": [
                 "Ctrl+Cmd+Option+Shift+K",
                 "Cmd+/"
@@ -73359,7 +73113,8 @@
               "customizeToolbar": [
                 "Cmd+Option+C"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -73402,8 +73157,6 @@
                 "Cmd+Option+T"
               ],
               "copyToOtherPane": [],
-              "editSelection": [],
-              "ejectVolume": [],
               "emptyTrash": [
                 "Ctrl+Cmd+Option+Shift+K",
                 "Cmd+/"
@@ -73429,7 +73182,8 @@
               "customizeToolbar": [
                 "Cmd+Option+C"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "viewFile": []
             },
             "removed": {
               "goBack": [],
@@ -73458,8 +73212,6 @@
                 "Cmd+Option+T"
               ],
               "copyToOtherPane": [],
-              "editSelection": [],
-              "ejectVolume": [],
               "emptyTrash": [
                 "Ctrl+Cmd+Option+Shift+K",
                 "Cmd+/"
@@ -73482,7 +73234,8 @@
               "customizeToolbar": [
                 "Cmd+Option+C"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "viewFile": []
             },
             "reset": {
               "goBack": [],
@@ -73511,8 +73264,6 @@
                 "Cmd+Option+T"
               ],
               "copyToOtherPane": [],
-              "editSelection": [],
-              "ejectVolume": [],
               "emptyTrash": [
                 "Ctrl+Cmd+Option+Shift+K",
                 "Cmd+/"
@@ -73535,7 +73286,8 @@
               "customizeToolbar": [
                 "Cmd+Option+C"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -75390,15 +75142,13 @@
             "customized": false,
             "assigned": {
               "editSelection": [
-                "Cmd+Shift+E",
                 "?"
               ],
               "openHelp": []
             },
             "removed": {},
             "reset": {},
-            "takenFrom": [],
-            "menuShortcut": "Cmd+Shift+E"
+            "takenFrom": []
           },
           {
             "id": "focusFileSearch",
@@ -75552,10 +75302,6 @@
               "moveSelection"
             ],
             [
-              "Cmd+E",
-              "ejectVolume"
-            ],
-            [
               "Cmd+Option+T",
               "openInTerminal"
             ],
@@ -75652,7 +75398,6 @@
             "Cmd+Shift+K"
           ],
           "moveSelection": [],
-          "ejectVolume": [],
           "openInTerminal": [
             "Cmd+Option+K"
           ],
@@ -75708,7 +75453,6 @@
                 "Cmd+Shift+K"
               ],
               "moveSelection": [],
-              "ejectVolume": [],
               "openInTerminal": [
                 "Cmd+Option+K"
               ],
@@ -75735,7 +75479,6 @@
                 "Cmd+Shift+K"
               ],
               "moveSelection": [],
-              "ejectVolume": [],
               "openInTerminal": [
                 "Cmd+Option+K"
               ],
@@ -75762,7 +75505,6 @@
                 "Cmd+Shift+K"
               ],
               "moveSelection": [],
-              "ejectVolume": [],
               "openInTerminal": [
                 "Cmd+Option+K"
               ],
@@ -77275,10 +77017,6 @@
               "moveSelection"
             ],
             [
-              "Cmd+E",
-              "ejectVolume"
-            ],
-            [
               "Cmd+F",
               "focusFileSearch"
             ],
@@ -77418,7 +77156,6 @@
             "Ctrl+Shift+Tab"
           ],
           "moveSelection": [],
-          "ejectVolume": [],
           "focusFileSearch": [],
           "revealInFolder": [
             "Cmd+Return",
@@ -77527,7 +77264,6 @@
                 "Ctrl+Shift+Tab"
               ],
               "moveSelection": [],
-              "ejectVolume": [],
               "focusFileSearch": [],
               "revealInFolder": [
                 "Cmd+Return",
@@ -77565,7 +77301,6 @@
                 "Ctrl+Shift+Tab"
               ],
               "moveSelection": [],
-              "ejectVolume": [],
               "focusFileSearch": [],
               "revealInFolder": [
                 "Cmd+Return",
@@ -77603,7 +77338,6 @@
                 "Ctrl+Shift+Tab"
               ],
               "moveSelection": [],
-              "ejectVolume": [],
               "focusFileSearch": [],
               "revealInFolder": [
                 "Cmd+Return",
@@ -77655,7 +77389,6 @@
                 "Ctrl+Shift+Tab"
               ],
               "moveSelection": [],
-              "ejectVolume": [],
               "focusFileSearch": [],
               "revealInFolder": [
                 "Cmd+Return",
@@ -77696,7 +77429,6 @@
                 "Ctrl+Shift+Tab"
               ],
               "moveSelection": [],
-              "ejectVolume": [],
               "focusFileSearch": [],
               "revealInFolder": [
                 "Cmd+Return",
@@ -77734,7 +77466,6 @@
                 "Ctrl+Shift+Tab"
               ],
               "moveSelection": [],
-              "ejectVolume": [],
               "focusFileSearch": [],
               "revealInFolder": [
                 "Cmd+Return",
@@ -77786,7 +77517,6 @@
                 "Ctrl+Shift+Tab"
               ],
               "moveSelection": [],
-              "ejectVolume": [],
               "focusFileSearch": [],
               "revealInFolder": [
                 "Cmd+Return",
@@ -77824,7 +77554,6 @@
                 "Ctrl+Shift+Tab"
               ],
               "moveSelection": [],
-              "ejectVolume": [],
               "focusFileSearch": [],
               "revealInFolder": [
                 "Cmd+Return",
@@ -77862,7 +77591,6 @@
                 "Ctrl+Shift+Tab"
               ],
               "moveSelection": [],
-              "ejectVolume": [],
               "focusFileSearch": [],
               "revealInFolder": [
                 "Cmd+Return",
@@ -77914,7 +77642,6 @@
                 "Ctrl+Shift+Tab"
               ],
               "moveSelection": [],
-              "ejectVolume": [],
               "focusFileSearch": [],
               "revealInFolder": [
                 "Cmd+Return",
@@ -77953,7 +77680,6 @@
                 "Ctrl+Shift+Tab"
               ],
               "moveSelection": [],
-              "ejectVolume": [],
               "focusFileSearch": [],
               "revealInFolder": [
                 "Cmd+Return",
@@ -77991,7 +77717,6 @@
                 "Ctrl+Shift+Tab"
               ],
               "moveSelection": [],
-              "ejectVolume": [],
               "focusFileSearch": [],
               "revealInFolder": [
                 "Cmd+Return",
@@ -82911,10 +82636,6 @@
               "trashSelection"
             ],
             [
-              "Cmd+E",
-              "ejectVolume"
-            ],
-            [
               "Cmd+Option+C",
               "copyPath"
             ],
@@ -83149,9 +82870,9 @@
             "id": "newTab",
             "shortcut": "Cmd+E",
             "slot": -1,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "viewFile",
             "customized": false,
             "assigned": {
               "goBack": [
@@ -83203,7 +82924,8 @@
               ],
               "openKeyboardShortcuts": [
                 "Ctrl+U"
-              ]
+              ],
+              "viewFile": []
             },
             "removed": {
               "goBack": [
@@ -83978,10 +83700,6 @@
               "openSelectedItem"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "Cmd+Y",
               "quickLookSelection"
             ],
@@ -84589,10 +84307,6 @@
             [
               "F2",
               "renameSelection"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Ctrl+Cmd+V",
@@ -87649,7 +87363,6 @@
             "customized": false,
             "assigned": {
               "editSelection": [
-                "Cmd+Shift+E",
                 "Cmd+pagedown"
               ],
               "showLastSearchResults": [],
@@ -87678,8 +87391,7 @@
                 "Cmd+="
               ]
             },
-            "takenFrom": [],
-            "menuShortcut": "Cmd+Shift+E"
+            "takenFrom": []
           },
           {
             "id": "showClipboard",
@@ -87969,10 +87681,6 @@
               "newWindow"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "Cmd+Shift+N",
               "newFolder"
             ],
@@ -88051,7 +87759,6 @@
           ],
           "refreshOrApplySearchSort": [],
           "newWindow": [],
-          "editSelection": [],
           "newFolder": [
             "Cmd+Shift+E"
           ],
@@ -88161,7 +87868,6 @@
               ],
               "refreshOrApplySearchSort": [],
               "newWindow": [],
-              "editSelection": [],
               "newFolder": [
                 "Cmd+Shift+E"
               ],
@@ -88185,7 +87891,6 @@
               ],
               "refreshOrApplySearchSort": [],
               "newWindow": [],
-              "editSelection": [],
               "newFolder": [
                 "Cmd+Shift+E"
               ],
@@ -88207,7 +87912,6 @@
               ],
               "refreshOrApplySearchSort": [],
               "newWindow": [],
-              "editSelection": [],
               "newFolder": [
                 "Cmd+Shift+E"
               ],
@@ -88240,7 +87944,6 @@
               "refreshOrApplySearchSort": [],
               "newWindow": [],
               "openSelection": [],
-              "editSelection": [],
               "newFolder": [
                 "Cmd+Shift+E"
               ],
@@ -88264,7 +87967,6 @@
               ],
               "refreshOrApplySearchSort": [],
               "newWindow": [],
-              "editSelection": [],
               "newFolder": [
                 "Cmd+Shift+E"
               ],
@@ -88286,7 +87988,6 @@
               ],
               "refreshOrApplySearchSort": [],
               "newWindow": [],
-              "editSelection": [],
               "newFolder": [
                 "Cmd+Shift+E"
               ],
@@ -88321,7 +88022,6 @@
               ],
               "refreshOrApplySearchSort": [],
               "newWindow": [],
-              "editSelection": [],
               "newFolder": [
                 "Cmd+Shift+E"
               ],
@@ -88342,7 +88042,6 @@
               ],
               "refreshOrApplySearchSort": [],
               "newWindow": [],
-              "editSelection": [],
               "newFolder": [
                 "Cmd+Shift+E"
               ],
@@ -88363,7 +88062,6 @@
               ],
               "refreshOrApplySearchSort": [],
               "newWindow": [],
-              "editSelection": [],
               "newFolder": [
                 "Cmd+Shift+E"
               ],
@@ -88398,7 +88096,6 @@
               ],
               "refreshOrApplySearchSort": [],
               "newWindow": [],
-              "editSelection": [],
               "newFolder": [
                 "Cmd+Shift+E"
               ],
@@ -88419,7 +88116,6 @@
               ],
               "refreshOrApplySearchSort": [],
               "newWindow": [],
-              "editSelection": [],
               "newFolder": [
                 "Cmd+Shift+E"
               ],
@@ -88440,7 +88136,6 @@
               ],
               "refreshOrApplySearchSort": [],
               "newWindow": [],
-              "editSelection": [],
               "newFolder": [
                 "Cmd+Shift+E"
               ],
@@ -88670,17 +88365,15 @@
             "id": "newWindow",
             "shortcut": "Cmd+Shift+E",
             "slot": 1,
-            "status": "conflict",
+            "status": "ok",
             "refusal": null,
-            "command": "editSelection",
             "customized": false,
             "assigned": {
               "goBack": [],
               "newWindow": [
                 "Cmd+N",
                 "Cmd+Shift+E"
-              ],
-              "editSelection": []
+              ]
             },
             "removed": {
               "goBack": []
@@ -90829,7 +90522,8 @@
           "sortByKind": [
             "Cmd+Option+J"
           ],
-          "ejectVolume": []
+          "ejectVolume": [],
+          "viewFile": []
         },
         "commandByShortcut": {
           "$remove": [
@@ -90838,16 +90532,16 @@
               "halfPageUp"
             ],
             [
+              "Cmd+E",
+              "viewFile"
+            ],
+            [
               "F2",
               "renameSelection"
             ],
             [
               "Cmd+Shift+M",
               "moveSelection"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ]
           ],
           "$insert": [
@@ -90888,10 +90582,10 @@
           "moveSelection": [
             "Cmd+E"
           ],
-          "ejectVolume": [],
           "sortByKind": [
             "Cmd+Option+J"
-          ]
+          ],
+          "viewFile": []
         },
         "probes": [
           {
@@ -90979,10 +90673,10 @@
                 "Cmd+Backspace",
                 "Cmd+F100"
               ],
-              "ejectVolume": [],
               "sortByKind": [
                 "Cmd+Option+J"
-              ]
+              ],
+              "viewFile": []
             },
             "removed": {
               "halfPageUp": [
@@ -90992,10 +90686,10 @@
               "moveSelection": [
                 "Cmd+E"
               ],
-              "ejectVolume": [],
               "sortByKind": [
                 "Cmd+Option+J"
-              ]
+              ],
+              "viewFile": []
             },
             "reset": {
               "halfPageUp": [
@@ -91005,10 +90699,10 @@
               "moveSelection": [
                 "Cmd+E"
               ],
-              "ejectVolume": [],
               "sortByKind": [
                 "Cmd+Option+J"
-              ]
+              ],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Backspace"
@@ -91029,13 +90723,13 @@
               "moveSelection": [
                 "Cmd+E"
               ],
-              "ejectVolume": [],
               "sortByKind": [
                 "Cmd+Option+J"
               ],
               "closeWindow": [
                 "CommandOrControl+K"
-              ]
+              ],
+              "viewFile": []
             },
             "removed": {
               "halfPageUp": [
@@ -91045,11 +90739,11 @@
               "moveSelection": [
                 "Cmd+E"
               ],
-              "ejectVolume": [],
               "sortByKind": [
                 "Cmd+Option+J"
               ],
-              "closeWindow": []
+              "closeWindow": [],
+              "viewFile": []
             },
             "reset": {
               "halfPageUp": [
@@ -91059,10 +90753,10 @@
               "moveSelection": [
                 "Cmd+E"
               ],
-              "ejectVolume": [],
               "sortByKind": [
                 "Cmd+Option+J"
-              ]
+              ],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Shift+W"
@@ -91086,11 +90780,11 @@
               "moveSelection": [
                 "Cmd+E"
               ],
-              "ejectVolume": [],
               "viewAsDetails": [],
               "sortByKind": [
                 "Cmd+Option+J"
-              ]
+              ],
+              "viewFile": []
             },
             "removed": {
               "halfPageUp": [
@@ -91100,10 +90794,10 @@
               "moveSelection": [
                 "Cmd+E"
               ],
-              "ejectVolume": [],
               "sortByKind": [
                 "Cmd+Option+J"
-              ]
+              ],
+              "viewFile": []
             },
             "reset": {
               "halfPageUp": [
@@ -91113,10 +90807,10 @@
               "moveSelection": [
                 "Cmd+E"
               ],
-              "ejectVolume": [],
               "sortByKind": [
                 "Cmd+Option+J"
-              ]
+              ],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -92768,7 +92462,8 @@
           ],
           "resetSize": [],
           "toggleFolderTree": [],
-          "toggleInfoPanel": []
+          "toggleInfoPanel": [],
+          "viewFile": []
         },
         "commandByShortcut": {
           "$remove": [
@@ -92805,6 +92500,10 @@
               "copyToOtherPane"
             ],
             [
+              "Cmd+E",
+              "viewFile"
+            ],
+            [
               "Cmd+Shift+M",
               "moveSelection"
             ],
@@ -92815,10 +92514,6 @@
             [
               "Cmd+Backspace",
               "trashSelection"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Cmd+Option+C",
@@ -93074,7 +92769,6 @@
           ],
           "newFolder": [],
           "trashSelection": [],
-          "ejectVolume": [],
           "copyPath": [
             "Cmd+K"
           ],
@@ -93104,7 +92798,8 @@
           "openHelp": [
             "F11",
             "Cmd+Shift+N"
-          ]
+          ],
+          "viewFile": []
         },
         "probes": [
           {
@@ -93137,9 +92832,8 @@
             "id": "emptyTrash",
             "shortcut": "Cmd+Shift+E",
             "slot": 1,
-            "status": "conflict",
+            "status": "ok",
             "refusal": null,
-            "command": "editSelection",
             "customized": false,
             "assigned": {
               "goForward": [
@@ -93163,7 +92857,6 @@
               "newTab": [],
               "toggleTwoPanes": [],
               "copyToOtherPane": [],
-              "editSelection": [],
               "calculateSize": [
                 "Ctrl+D"
               ],
@@ -93173,7 +92866,6 @@
               ],
               "newFolder": [],
               "trashSelection": [],
-              "ejectVolume": [],
               "emptyTrash": [
                 "Cmd+Shift+Backspace",
                 "Cmd+Shift+E"
@@ -93207,7 +92899,8 @@
               "openHelp": [
                 "F11",
                 "Cmd+Shift+N"
-              ]
+              ],
+              "viewFile": []
             },
             "removed": {
               "goForward": [
@@ -93240,7 +92933,6 @@
               ],
               "newFolder": [],
               "trashSelection": [],
-              "ejectVolume": [],
               "copyPath": [
                 "Cmd+K"
               ],
@@ -93270,7 +92962,8 @@
               "openHelp": [
                 "F11",
                 "Cmd+Shift+N"
-              ]
+              ],
+              "viewFile": []
             },
             "reset": {
               "goForward": [
@@ -93303,7 +92996,6 @@
               ],
               "newFolder": [],
               "trashSelection": [],
-              "ejectVolume": [],
               "copyPath": [
                 "Cmd+K"
               ],
@@ -93333,7 +93025,8 @@
               "openHelp": [
                 "F11",
                 "Cmd+Shift+N"
-              ]
+              ],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Shift+Backspace"
@@ -93383,7 +93076,6 @@
               ],
               "newFolder": [],
               "trashSelection": [],
-              "ejectVolume": [],
               "copyPath": [
                 "Cmd+K"
               ],
@@ -93413,7 +93105,8 @@
               "openHelp": [
                 "F11",
                 "Cmd+Shift+N"
-              ]
+              ],
+              "viewFile": []
             },
             "removed": {
               "goForward": [
@@ -93446,7 +93139,6 @@
               ],
               "newFolder": [],
               "trashSelection": [],
-              "ejectVolume": [],
               "copyPath": [
                 "Cmd+K"
               ],
@@ -93476,7 +93168,8 @@
               "openHelp": [
                 "F11",
                 "Cmd+Shift+N"
-              ]
+              ],
+              "viewFile": []
             },
             "reset": {
               "goForward": [
@@ -93509,7 +93202,6 @@
               ],
               "newFolder": [],
               "trashSelection": [],
-              "ejectVolume": [],
               "copyPath": [
                 "Cmd+K"
               ],
@@ -93539,7 +93231,8 @@
               "openHelp": [
                 "F11",
                 "Cmd+Shift+N"
-              ]
+              ],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -94407,10 +94100,6 @@
               "newFolder"
             ],
             [
-              "Cmd+E",
-              "ejectVolume"
-            ],
-            [
               "Cmd+Plus",
               "increaseSize"
             ],
@@ -94513,7 +94202,6 @@
             "Cmd+Down",
             "Cmd+PageDown"
           ],
-          "ejectVolume": [],
           "increaseSize": [
             "Cmd+="
           ],
@@ -94576,7 +94264,6 @@
                 "Cmd+Down",
                 "Cmd+PageDown"
               ],
-              "ejectVolume": [],
               "copyPath": [],
               "increaseSize": [
                 "Cmd+="
@@ -94607,7 +94294,6 @@
                 "Cmd+Down",
                 "Cmd+PageDown"
               ],
-              "ejectVolume": [],
               "increaseSize": [
                 "Cmd+="
               ],
@@ -94637,7 +94323,6 @@
                 "Cmd+Down",
                 "Cmd+PageDown"
               ],
-              "ejectVolume": [],
               "increaseSize": [
                 "Cmd+="
               ],
@@ -94678,7 +94363,6 @@
                 "Cmd+Down",
                 "Cmd+PageDown"
               ],
-              "ejectVolume": [],
               "focusFileSearch": [],
               "increaseSize": [
                 "Cmd+="
@@ -94713,7 +94397,6 @@
                 "Cmd+Down",
                 "Cmd+PageDown"
               ],
-              "ejectVolume": [],
               "increaseSize": [
                 "Cmd+="
               ],
@@ -94743,7 +94426,6 @@
                 "Cmd+Down",
                 "Cmd+PageDown"
               ],
-              "ejectVolume": [],
               "increaseSize": [
                 "Cmd+="
               ],
@@ -94787,7 +94469,6 @@
                 "Cmd+Down",
                 "Cmd+PageDown"
               ],
-              "ejectVolume": [],
               "increaseSize": [
                 "Cmd+="
               ],
@@ -94818,7 +94499,6 @@
                 "Cmd+Down",
                 "Cmd+PageDown"
               ],
-              "ejectVolume": [],
               "increaseSize": [
                 "Cmd+="
               ],
@@ -94848,7 +94528,6 @@
                 "Cmd+Down",
                 "Cmd+PageDown"
               ],
-              "ejectVolume": [],
               "increaseSize": [
                 "Cmd+="
               ],
@@ -95848,7 +95527,7 @@
             "slot": 1,
             "status": "conflict",
             "refusal": null,
-            "command": "ejectVolume",
+            "command": "viewFile",
             "customized": false,
             "assigned": {
               "mergeAllWindows": [
@@ -95859,7 +95538,7 @@
                 "Cmd+Backspace",
                 "Cmd+E"
               ],
-              "ejectVolume": []
+              "viewFile": []
             },
             "removed": {
               "mergeAllWindows": [
@@ -96451,20 +96130,12 @@
               "openSelectedItem"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "Cmd+Shift+M",
               "moveSelection"
             ],
             [
               "Cmd+Backspace",
               "trashSelection"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Cmd+Shift+Backspace",
@@ -96717,7 +96388,6 @@
             "Cmd+Shift+Backspace"
           ],
           "openSelectedItem": [],
-          "editSelection": [],
           "moveSelection": [],
           "trashSelection": [],
           "ejectVolume": [
@@ -97110,10 +96780,6 @@
               "openSelection"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "F2",
               "renameSelection"
             ],
@@ -97457,7 +97123,6 @@
           ],
           "toggleTwoPanes": [],
           "openSelection": [],
-          "editSelection": [],
           "renameSelection": [
             "Cmd+Delete",
             "Cmd+Shift+F"
@@ -97769,10 +97434,6 @@
             [
               "Cmd+Down",
               "openSelectedItem"
-            ],
-            [
-              "Cmd+Shift+E",
-              "editSelection"
             ],
             [
               "Cmd+Y",
@@ -98333,12 +97994,6 @@
           ]
         },
         "commandByShortcut": {
-          "$remove": [
-            [
-              "Cmd+Shift+E",
-              "editSelection"
-            ]
-          ],
           "$insert": [
             [
               null,
@@ -99163,10 +98818,6 @@
               "trashSelection"
             ],
             [
-              "Cmd+E",
-              "ejectVolume"
-            ],
-            [
               "Cmd+Shift+Backspace",
               "emptyTrash"
             ],
@@ -99440,10 +99091,6 @@
               "newWindow"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "Cmd+Y",
               "quickLookSelection"
             ],
@@ -99468,7 +99115,6 @@
         },
         "sanitized": {
           "newWindow": [],
-          "editSelection": [],
           "quickLookSelection": [
             "Cmd+Shift+E"
           ],
@@ -100441,10 +100087,6 @@
               "trashSelection"
             ],
             [
-              "Cmd+E",
-              "ejectVolume"
-            ],
-            [
               "Cmd+Shift+Backspace",
               "emptyTrash"
             ],
@@ -101006,9 +100648,8 @@
             "id": "openSelection",
             "shortcut": "Cmd+Shift+E",
             "slot": 1,
-            "status": "conflict",
+            "status": "ok",
             "refusal": null,
-            "command": "editSelection",
             "customized": false,
             "assigned": {
               "goDownloads": [
@@ -101019,7 +100660,6 @@
                 "Cmd+O",
                 "Cmd+Shift+E"
               ],
-              "editSelection": [],
               "quickLookSelection": [],
               "decreaseSize": [],
               "toggleInfoPanel": []
@@ -102189,7 +101829,8 @@
           ],
           "openSelectedItem": [],
           "editSelection": [],
-          "openInTerminal": []
+          "openInTerminal": [],
+          "viewFile": []
         },
         "commandByShortcut": {
           "$remove": [
@@ -102250,10 +101891,6 @@
               "openSelectedItem"
             ],
             [
-              "Cmd+Shift+E",
-              "editSelection"
-            ],
-            [
               "Cmd+Y",
               "quickLookSelection"
             ],
@@ -102264,10 +101901,6 @@
             [
               "F2",
               "renameSelection"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Ctrl+Cmd+V",
@@ -102284,6 +101917,10 @@
             [
               "Cmd+3",
               "viewAsList"
+            ],
+            [
+              "Cmd+E",
+              "viewFile"
             ]
           ],
           "$insert": [
@@ -102513,7 +102150,6 @@
           ],
           "copyToOtherPane": [],
           "openSelectedItem": [],
-          "editSelection": [],
           "quickLookSelection": [],
           "calculateSize": [
             "Cmd+Shift+R"
@@ -102521,7 +102157,6 @@
           "renameSelection": [
             "Ctrl+Cmd+Option+Shift+K"
           ],
-          "ejectVolume": [],
           "showClipboard": [
             "Cmd+E"
           ],
@@ -102537,7 +102172,8 @@
           "viewAsList": [],
           "sortByName": [
             "Ctrl+Left"
-          ]
+          ],
+          "viewFile": []
         },
         "probes": [
           {
@@ -102620,7 +102256,6 @@
               ],
               "copyToOtherPane": [],
               "openSelectedItem": [],
-              "editSelection": [],
               "quickLookSelection": [],
               "calculateSize": [
                 "Cmd+Shift+R"
@@ -102628,7 +102263,6 @@
               "renameSelection": [
                 "Ctrl+Cmd+Option+Shift+K"
               ],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+E"
               ],
@@ -102644,7 +102278,8 @@
               "viewAsList": [],
               "sortByName": [
                 "Ctrl+Left"
-              ]
+              ],
+              "viewFile": []
             },
             "removed": {
               "goEnclosingFolder": [
@@ -102683,7 +102318,6 @@
               ],
               "copyToOtherPane": [],
               "openSelectedItem": [],
-              "editSelection": [],
               "quickLookSelection": [],
               "calculateSize": [
                 "Cmd+Shift+R"
@@ -102691,7 +102325,6 @@
               "renameSelection": [
                 "Ctrl+Cmd+Option+Shift+K"
               ],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+E"
               ],
@@ -102707,7 +102340,8 @@
               "viewAsList": [],
               "sortByName": [
                 "Ctrl+Left"
-              ]
+              ],
+              "viewFile": []
             },
             "reset": {
               "goEnclosingFolder": [
@@ -102746,7 +102380,6 @@
               ],
               "copyToOtherPane": [],
               "openSelectedItem": [],
-              "editSelection": [],
               "quickLookSelection": [],
               "calculateSize": [
                 "Cmd+Shift+R"
@@ -102754,7 +102387,6 @@
               "renameSelection": [
                 "Ctrl+Cmd+Option+Shift+K"
               ],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+E"
               ],
@@ -102770,7 +102402,8 @@
               "viewAsList": [],
               "sortByName": [
                 "Ctrl+Left"
-              ]
+              ],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+]"
@@ -102823,7 +102456,6 @@
               ],
               "copyToOtherPane": [],
               "openSelectedItem": [],
-              "editSelection": [],
               "quickLookSelection": [],
               "calculateSize": [
                 "Cmd+Shift+R"
@@ -102831,7 +102463,6 @@
               "renameSelection": [
                 "Ctrl+Cmd+Option+Shift+K"
               ],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+E"
               ],
@@ -102847,7 +102478,8 @@
               "viewAsList": [],
               "sortByName": [
                 "Ctrl+Left"
-              ]
+              ],
+              "viewFile": []
             },
             "removed": {
               "goEnclosingFolder": [
@@ -102885,7 +102517,6 @@
               ],
               "copyToOtherPane": [],
               "openSelectedItem": [],
-              "editSelection": [],
               "quickLookSelection": [],
               "calculateSize": [
                 "Cmd+Shift+R"
@@ -102893,7 +102524,6 @@
               "renameSelection": [
                 "Ctrl+Cmd+Option+Shift+K"
               ],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+E"
               ],
@@ -102909,7 +102539,8 @@
               "viewAsList": [],
               "sortByName": [
                 "Ctrl+Left"
-              ]
+              ],
+              "viewFile": []
             },
             "reset": {
               "goEnclosingFolder": [
@@ -102944,7 +102575,6 @@
               ],
               "copyToOtherPane": [],
               "openSelectedItem": [],
-              "editSelection": [],
               "quickLookSelection": [],
               "calculateSize": [
                 "Cmd+Shift+R"
@@ -102952,7 +102582,6 @@
               "renameSelection": [
                 "Ctrl+Cmd+Option+Shift+K"
               ],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+E"
               ],
@@ -102968,7 +102597,8 @@
               "viewAsList": [],
               "sortByName": [
                 "Ctrl+Left"
-              ]
+              ],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+K"
@@ -103021,7 +102651,6 @@
               ],
               "copyToOtherPane": [],
               "openSelectedItem": [],
-              "editSelection": [],
               "quickLookSelection": [],
               "calculateSize": [
                 "Cmd+Shift+R"
@@ -103029,7 +102658,6 @@
               "renameSelection": [
                 "Ctrl+Cmd+Option+Shift+K"
               ],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+E",
                 "Cmd+?"
@@ -103046,7 +102674,8 @@
               "viewAsList": [],
               "sortByName": [
                 "Ctrl+Left"
-              ]
+              ],
+              "viewFile": []
             },
             "removed": {
               "goEnclosingFolder": [
@@ -103085,7 +102714,6 @@
               ],
               "copyToOtherPane": [],
               "openSelectedItem": [],
-              "editSelection": [],
               "quickLookSelection": [],
               "calculateSize": [
                 "Cmd+Shift+R"
@@ -103093,7 +102721,6 @@
               "renameSelection": [
                 "Ctrl+Cmd+Option+Shift+K"
               ],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+E"
               ],
@@ -103109,7 +102736,8 @@
               "viewAsList": [],
               "sortByName": [
                 "Ctrl+Left"
-              ]
+              ],
+              "viewFile": []
             },
             "reset": {
               "goEnclosingFolder": [
@@ -103148,7 +102776,6 @@
               ],
               "copyToOtherPane": [],
               "openSelectedItem": [],
-              "editSelection": [],
               "quickLookSelection": [],
               "calculateSize": [
                 "Cmd+Shift+R"
@@ -103156,7 +102783,6 @@
               "renameSelection": [
                 "Ctrl+Cmd+Option+Shift+K"
               ],
-              "ejectVolume": [],
               "openInTerminal": [],
               "showLastSearchResults": [
                 "Cmd+N",
@@ -103169,7 +102795,8 @@
               "viewAsList": [],
               "sortByName": [
                 "Ctrl+Left"
-              ]
+              ],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+E"
@@ -103222,7 +102849,6 @@
               ],
               "copyToOtherPane": [],
               "openSelectedItem": [],
-              "editSelection": [],
               "quickLookSelection": [],
               "calculateSize": [
                 "Cmd+Shift+R"
@@ -103230,7 +102856,6 @@
               "renameSelection": [
                 "Ctrl+Cmd+Option+Shift+K"
               ],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+E"
               ],
@@ -103246,7 +102871,8 @@
               "viewAsList": [],
               "sortByName": [
                 "Ctrl+Left"
-              ]
+              ],
+              "viewFile": []
             },
             "removed": {
               "goEnclosingFolder": [
@@ -103286,7 +102912,6 @@
               ],
               "copyToOtherPane": [],
               "openSelectedItem": [],
-              "editSelection": [],
               "quickLookSelection": [],
               "calculateSize": [
                 "Cmd+Shift+R"
@@ -103294,7 +102919,6 @@
               "renameSelection": [
                 "Ctrl+Cmd+Option+Shift+K"
               ],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+E"
               ],
@@ -103310,7 +102934,8 @@
               "viewAsList": [],
               "sortByName": [
                 "Ctrl+Left"
-              ]
+              ],
+              "viewFile": []
             },
             "reset": {
               "goEnclosingFolder": [
@@ -103349,7 +102974,6 @@
               ],
               "copyToOtherPane": [],
               "openSelectedItem": [],
-              "editSelection": [],
               "quickLookSelection": [],
               "calculateSize": [
                 "Cmd+Shift+R"
@@ -103357,7 +102981,6 @@
               "renameSelection": [
                 "Ctrl+Cmd+Option+Shift+K"
               ],
-              "ejectVolume": [],
               "showClipboard": [
                 "Cmd+E"
               ],
@@ -103373,7 +102996,8 @@
               "viewAsList": [],
               "sortByName": [
                 "Ctrl+Left"
-              ]
+              ],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Shift+T"
@@ -106092,7 +105716,6 @@
               "renameSelection": [
                 "Cmd+/"
               ],
-              "ejectVolume": [],
               "viewAsList": [
                 "F2"
               ],
@@ -106139,8 +105762,7 @@
                 "Cmd+Plus"
               ]
             },
-            "takenFrom": [],
-            "menuShortcut": "Cmd+E"
+            "takenFrom": []
           }
         ],
         "events": [
@@ -106274,10 +105896,6 @@
             [
               "Cmd+K",
               "openLocationSheet"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Cmd+Option+C",
@@ -107121,12 +106739,10 @@
             "id": "viewAsDetails",
             "shortcut": "Cmd+Shift+E",
             "slot": 0,
-            "status": "conflict",
+            "status": "ok",
             "refusal": null,
-            "command": "editSelection",
             "customized": false,
             "assigned": {
-              "editSelection": [],
               "viewAsDetails": [
                 "Cmd+Shift+E"
               ]
@@ -107885,7 +107501,8 @@
           "openLocationSheet": [
             "Cmd+Shift+G"
           ],
-          "ejectVolume": []
+          "ejectVolume": [],
+          "viewFile": []
         },
         "commandByShortcut": {
           "$remove": [
@@ -107918,16 +107535,16 @@
               "reopenClosedTab"
             ],
             [
+              "Cmd+E",
+              "viewFile"
+            ],
+            [
               "Cmd+D",
               "duplicateSelection"
             ],
             [
               "Cmd+Backspace",
               "trashSelection"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Cmd+Shift+Backspace",
@@ -108107,7 +107724,6 @@
           "trashSelection": [
             "Ctrl+Cmd+S"
           ],
-          "ejectVolume": [],
           "emptyTrash": [],
           "copyPath": [
             "Cmd+K",
@@ -108132,7 +107748,8 @@
           "toggleFolderTree": [],
           "toggleInfoRow": [
             "Ctrl+K"
-          ]
+          ],
+          "viewFile": []
         },
         "probes": [
           {
@@ -108250,7 +107867,6 @@
               "trashSelection": [
                 "Ctrl+Cmd+S"
               ],
-              "ejectVolume": [],
               "emptyTrash": [],
               "copyPath": [
                 "Cmd+K",
@@ -108275,7 +107891,8 @@
               "toggleFolderTree": [],
               "toggleInfoRow": [
                 "Ctrl+K"
-              ]
+              ],
+              "viewFile": []
             },
             "removed": {
               "goForward": [
@@ -108294,7 +107911,6 @@
               "trashSelection": [
                 "Ctrl+Cmd+S"
               ],
-              "ejectVolume": [],
               "emptyTrash": [],
               "copyPath": [
                 "Cmd+K",
@@ -108319,7 +107935,8 @@
               "toggleFolderTree": [],
               "toggleInfoRow": [
                 "Ctrl+K"
-              ]
+              ],
+              "viewFile": []
             },
             "reset": {
               "goForward": [
@@ -108338,7 +107955,6 @@
               "trashSelection": [
                 "Ctrl+Cmd+S"
               ],
-              "ejectVolume": [],
               "emptyTrash": [],
               "copyPath": [
                 "Cmd+K",
@@ -108363,7 +107979,8 @@
               "toggleFolderTree": [],
               "toggleInfoRow": [
                 "Ctrl+K"
-              ]
+              ],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Shift+N"
@@ -108399,7 +108016,6 @@
               "trashSelection": [
                 "Ctrl+Cmd+S"
               ],
-              "ejectVolume": [],
               "emptyTrash": [],
               "copyPath": [
                 "Cmd+K",
@@ -108424,7 +108040,8 @@
               "toggleFolderTree": [],
               "toggleInfoRow": [
                 "Ctrl+K"
-              ]
+              ],
+              "viewFile": []
             },
             "removed": {
               "goForward": [
@@ -108443,7 +108060,6 @@
               "trashSelection": [
                 "Ctrl+Cmd+S"
               ],
-              "ejectVolume": [],
               "emptyTrash": [],
               "copyPath": [
                 "Cmd+K",
@@ -108468,7 +108084,8 @@
               "toggleFolderTree": [],
               "toggleInfoRow": [
                 "Ctrl+K"
-              ]
+              ],
+              "viewFile": []
             },
             "reset": {
               "goForward": [
@@ -108487,7 +108104,6 @@
               "trashSelection": [
                 "Ctrl+Cmd+S"
               ],
-              "ejectVolume": [],
               "emptyTrash": [],
               "copyPath": [
                 "Cmd+K",
@@ -108512,7 +108128,8 @@
               "toggleFolderTree": [],
               "toggleInfoRow": [
                 "Ctrl+K"
-              ]
+              ],
+              "viewFile": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -109650,10 +109267,6 @@
             [
               "Cmd+Backspace",
               "trashSelection"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Cmd+1",
@@ -111833,10 +111446,6 @@
             [
               "Space",
               "quickLookSelection"
-            ],
-            [
-              "Cmd+E",
-              "ejectVolume"
             ],
             [
               "Cmd+Shift+Backspace",

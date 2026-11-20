@@ -25,6 +25,10 @@ public final class QuitCoordinator {
         /// The app ends here: AppKit is told it may terminate.
         public var exit: () -> Void = {}
         public var log: (String) -> Void = { _ in }
+        /// Whether a file shown in a window (nil: in any window) has edits not saved.
+        public var hasUnsavedEdits: (NSWindow?) -> Bool = { _ in false }
+        /// Asks about each such file in turn: true once every one is saved or dropped, false on Cancel.
+        public var confirmUnsavedEdits: (NSWindow?) async -> Bool = { _ in true }
 
         public init() {}
     }
@@ -61,6 +65,9 @@ public final class QuitCoordinator {
         if stopQuestionOpen {
             hooks.bringStopQuestionForward()
             return .questionBroughtForward
+        }
+        if hooks.hasUnsavedEdits(nil), !(await hooks.confirmUnsavedEdits(nil)) {
+            return .keptWorking
         }
         if hooks.anyWindowOpen(), !(await askToStopOperation(.quit, parent: hooks.frontWindow())) {
             return .keptWorking

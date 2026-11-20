@@ -65,7 +65,8 @@ extension PreferenceKey {
             .searchSkipGitFolders, .searchSkipGitIgnored, .searchResultsSortBy, .searchResultsSortDirection,
             .treeWidth, .inspectorWidth, .restoreSessionOnStartup, .openTabs, .activeTabIndex, .treeRootPath,
             .lastVisitedPath, .lastVisitedFavoritePath, .favoritesExpanded, .locationsExpanded,
-            .batchRenameSettings, .batchRenamePresets, .listFilterMatch, .workspaces, .convertImagesSettings:
+            .batchRenameSettings, .batchRenamePresets, .listFilterMatch, .workspaces, .convertImagesSettings,
+            .textViewerSettings:
             .commands
         }
     }

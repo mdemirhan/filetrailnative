@@ -1,0 +1,182 @@
+import Foundation
+import Testing
+
+@testable import FTFoundation
+
+/// The lexer, by the runs it colors in short texts of each kind of grammar: each expectation names the text of a run
+/// and its kind, worked out by hand from the language's rules.
+@Suite struct SyntaxLexerTests {
+    /// The runs of `text` as (their text, their kind), in order.
+    private func runs(_ text: String, _ id: String) throws -> [(String, SyntaxKind)] {
+        let language = try #require(TextLanguage.with(id: id))
+        let units = Array(text.utf16)
+        return SyntaxLexer(language: language).tokens(of: text).map { token in
+            let slice = Array(units[token.location..<(token.location + token.length)])
+            return (String(decoding: slice, as: UTF16.self), token.kind)
+        }
+    }
+
+    private func kinds(_ text: String, _ id: String) throws -> [String: SyntaxKind] {
+        Dictionary(try runs(text, id).map { ($0.0, $0.1) }, uniquingKeysWith: { first, _ in first })
+    }
+
+    @Test func swiftHasKeywordsTypesStringsCommentsNumbersAndAttributes() throws {
+        let found = try kinds(
+            """
+            @State private var count: Int = 42 // the count
+            func reload() { print("hi \\" there") }
+            """, "swift")
+        #expect(found["@State"] == .attribute)
+        #expect(found["private var"] == nil)
+        #expect(found["private"] == .keyword)
+        #expect(found["var"] == .keyword)
+        #expect(found["Int"] == .type)
+        #expect(found["42"] == .number)
+        #expect(found["// the count"] == .comment)
+        #expect(found["func"] == .keyword)
+        #expect(found["reload"] == .function)
+        #expect(found["print"] == .function)
+        #expect(found["\"hi \\\" there\""] == .string)
+    }
+
+    @Test func aMemberAfterADotIsNotAKeyword() throws {
+        let found = try kinds("let x = value.default", "swift")
+        #expect(found["let"] == .keyword)
+        #expect(found["default"] == nil)
+    }
+
+    @Test func aRangeIsTwoNumbersAndAnExponentIsOne() throws {
+        #expect(try runs("0..<5", "swift").map(\.0) == ["0", "5"])
+        #expect(try runs("x = 1.5e-3", "python").map(\.0) == ["1.5e-3"])
+        #expect(try runs("0x1F", "c").map(\.1) == [.number])
+    }
+
+    @Test func aBlockCommentAndATripleQuotedStringRunOnToTheLinesAfter() throws {
+        let c = try runs("int a; /* one\ntwo */ int b;", "c")
+        #expect(c.contains { $0 == ("/* one", .comment) })
+        #expect(c.contains { $0 == ("two */", .comment) })
+        #expect(c.contains { $0 == ("int", .type) })
+        let python = try runs("x = \"\"\"first\nsecond\"\"\"\ny = 1", "python")
+        #expect(python.map(\.1) == [.string, .string, .number])
+    }
+
+    @Test func swiftCommentsNest() throws {
+        let found = try runs("/* a /* b */ c */ let", "swift")
+        #expect(found.map(\.0) == ["/* a /* b */ c */", "let"])
+    }
+
+    @Test func aShellHashStartsACommentOnlyAfterASpace() throws {
+        let found = try runs("echo a#b # note\nexport NAME=$HOME", "shell")
+        #expect(found.contains { $0 == ("# note", .comment) })
+        #expect(!found.contains { $0.0.contains("#b") })
+        #expect(found.contains { $0 == ("$HOME", .variable) })
+        #expect(found.contains { $0 == ("export", .keyword) })
+    }
+
+    @Test func aPreprocessorLineHasItsDirectiveAndItsHeader() throws {
+        let found = try kinds("#include <stdio.h>", "c")
+        #expect(found["#include"] == .attribute)
+        #expect(found["<stdio.h>"] == .string)
+    }
+
+    @Test func jsonKeysAreToldFromValues() throws {
+        let found = try kinds("{\"name\": \"lighthouse\", \"ok\": true, \"n\": 12}", "json")
+        #expect(found["\"name\""] == .property)
+        #expect(found["\"lighthouse\""] == .string)
+        #expect(found["true"] == .literal)
+        #expect(found["12"] == .number)
+    }
+
+    @Test func yamlHasKeysCommentsLiteralsAndBlockScalars() throws {
+        let found = try runs("server:\n  port: 8080 # the port\n  on: yes\ntext: |\n  any: thing\nnext: 1", "yaml")
+        #expect(found.contains { $0 == ("server", .property) })
+        #expect(found.contains { $0 == ("8080", .number) })
+        #expect(found.contains { $0 == ("# the port", .comment) })
+        #expect(found.contains { $0 == ("yes", .literal) })
+        // The block scalar's line is text, not a key.
+        #expect(found.contains { $0 == ("any: thing", .string) })
+        #expect(found.contains { $0 == ("next", .property) })
+    }
+
+    @Test func markdownHasHeadingsFencesEmphasisAndLinks() throws {
+        let found = try runs(
+            "# Title\nSome *em* and **strong** and `code`.\n```\nlet x = 1\n```\n- [link](http://a.b)", "markdown")
+        #expect(found.contains { $0 == ("# Title", .heading) })
+        #expect(found.contains { $0 == ("*em*", .emphasis) })
+        #expect(found.contains { $0 == ("**strong**", .strong) })
+        #expect(found.contains { $0 == ("`code`", .code) })
+        #expect(found.contains { $0 == ("let x = 1", .code) })
+        #expect(found.contains { $0 == ("-", .keyword) })
+        #expect(found.contains { $0 == ("[link]", .link) })
+        #expect(found.contains { $0 == ("(http://a.b)", .meta) })
+    }
+
+    @Test func markupHasTagsAttributesValuesCommentsAndEntities() throws {
+        let found = try runs("<a href=\"x\">&amp; <!-- note\nend --></a>", "html")
+        #expect(found.contains { $0 == ("<a", .tag) })
+        #expect(found.contains { $0 == ("href", .property) })
+        #expect(found.contains { $0 == ("\"x\"", .string) })
+        #expect(found.contains { $0 == ("&amp;", .literal) })
+        #expect(found.contains { $0 == ("<!-- note", .comment) })
+        #expect(found.contains { $0 == ("end -->", .comment) })
+        // The closing tag and its bracket touch, so they are one run.
+        #expect(found.contains { $0 == ("</a>", .tag) })
+    }
+
+    @Test func cssHasSelectorsPropertiesColorsAndAtRules() throws {
+        let found = try kinds("@media screen {\n.card a:hover { color: #fff; margin: 4px !important; }\n}", "css")
+        #expect(found["@media"] == .keyword)
+        #expect(found[".card"] == .attribute)
+        #expect(found["color"] == .property)
+        #expect(found["#fff"] == .number)
+        #expect(found["4px"] == .number)
+        #expect(found["!important"] == .keyword)
+    }
+
+    @Test func iniAndTomlHaveSectionsKeysAndValues() throws {
+        let ini = try kinds("; note\n[core]\neditor = vim", "ini")
+        #expect(ini["; note"] == .comment)
+        #expect(ini["[core]"] == .heading)
+        #expect(ini["editor"] == .property)
+        let toml = try kinds("[package]\nname = \"ft\"\nversion = 2\nok = true", "toml")
+        #expect(toml["\"ft\""] == .string)
+        #expect(toml["2"] == .number)
+        #expect(toml["true"] == .literal)
+    }
+
+    @Test func aDiffHasItsAddedAndRemovedLines() throws {
+        let found = try runs("--- a\n+++ b\n@@ -1 +1 @@\n-old\n+new\n same", "diff")
+        #expect(found.map(\.1) == [.meta, .meta, .meta, .deleted, .inserted])
+    }
+
+    @Test func sqlKeywordsIgnoreCase() throws {
+        let found = try kinds("SELECT name FROM people WHERE id = 'it''s'", "sql")
+        #expect(found["SELECT"] == .keyword)
+        #expect(found["FROM"] == .keyword)
+        #expect(found["'it''s'"] == .string)
+    }
+
+    @Test func plainTextHasNoRuns() throws {
+        #expect(try runs("let x = 1 // nothing", "plain").isEmpty)
+    }
+
+    /// Lexing a line at a time from the state the line before ended in gives the runs of the whole text: what lets an
+    /// edit re-lex from its line only.
+    @Test func lineByLineFromCarriedStatesGivesTheSameRuns() throws {
+        let text = "a = '''x\ny''' # c\n/* not a comment */ b = 2"
+        let language = try #require(TextLanguage.with(id: "python"))
+        let lexer = SyntaxLexer(language: language)
+        let whole = lexer.tokens(of: text)
+        var state = LexState.normal
+        var offset = 0
+        var pieces: [SyntaxToken] = []
+        for line in text.split(separator: "\n", omittingEmptySubsequences: false) {
+            let units = Array(line.utf16)
+            var tokens: [SyntaxToken] = []
+            state = units.withUnsafeBufferPointer { lexer.lex($0, from: state, into: &tokens) }
+            pieces += tokens.map { SyntaxToken($0.location + offset, $0.length, $0.kind) }
+            offset += units.count + 1
+        }
+        #expect(pieces == whole)
+    }
+}

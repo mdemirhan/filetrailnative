@@ -17,7 +17,7 @@
             "goMacintoshHD", "goApplications", "goTrash", "rootTreeAtSelection", "newWindow", "newTab",
             "reopenClosedTab", "closePane", "closeTab", "selectNextTab", "selectPreviousTab", "openSelectionInNewTab",
             "openSelectionInNewWindow", "moveTabToNewWindow", "mergeAllWindows", "toggleTwoPanes", "duplicatePane",
-            "switchToOtherPane",
+            "switchToOtherPane", "openSelectionInOtherPane", "viewFile",
             "quickLookSelection",
             "calculateSize", "revealInFolder", "toggleFavorite", "showInFinder", "showLastSearchResults",
             "viewAsIcons", "viewAsList", "viewAsDetails", "viewAsPreviews", "showPreviews9", "showPreviews4",

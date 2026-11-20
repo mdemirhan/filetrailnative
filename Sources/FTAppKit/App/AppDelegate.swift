@@ -239,6 +239,8 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         windows.onExplorerWindowClosed = { [weak writes] group in writes?.explorerWindowClosed(group) }
         windows.onTabFocused = { [weak writes] tab in writes?.tabCameToFront(tab) }
         quit.hooks.activeOperation = { [weak writes] in writes?.busyKind }
+        quit.hooks.hasUnsavedEdits = { window in !MainWindowController.tabsWithUnsavedFiles(in: window).isEmpty }
+        quit.hooks.confirmUnsavedEdits = { window in await MainWindowController.confirmUnsavedFiles(in: window) }
         quit.hooks.anyWindowOpen = { NSApp.windows.contains { $0.isVisible || $0.isMiniaturized } }
         quit.hooks.frontWindow = { [weak self] in self?.host.windows.front?.window }
         quit.hooks.recordAllBounds = { [weak windows] in windows?.controller.recordAllBounds() }

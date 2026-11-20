@@ -61,7 +61,8 @@ public enum PreferencesSanitizer {
                     viewSizes: viewSizes(pane["viewSizes"]), filterMode: filterMode(pane["filterMode"]),
                     groupBy: groupBy(pane["groupBy"]), searchGroupBy: groupBy(pane["searchGroupBy"]),
                     groupReversed: bool(pane, "groupReversed", false),
-                    searchGroupReversed: bool(pane, "searchGroupReversed", false))
+                    searchGroupReversed: bool(pane, "searchGroupReversed", false),
+                    viewer: ViewerPreference.sanitize(pane["viewer"]))
             }
             let activePane = record["activePane"]?.number == 1 ? 1 : nil
             // Hidden Files is the tab's: a tab saved while each pane had its own takes its active pane's.
@@ -81,7 +82,8 @@ public enum PreferencesSanitizer {
                     viewSizes: viewSizes(record["viewSizes"]), filterMode: filterMode(record["filterMode"]),
                     groupBy: groupBy(record["groupBy"]), searchGroupBy: groupBy(record["searchGroupBy"]),
                     groupReversed: bool(record, "groupReversed", false),
-                    searchGroupReversed: bool(record, "searchGroupReversed", false)))
+                    searchGroupReversed: bool(record, "searchGroupReversed", false),
+                    viewer: ViewerPreference.sanitize(record["viewer"]).flatMap { $0.mode == .inPlace ? $0 : nil }))
             if tabs.count == AppPreferenceLimits.openTabsLimit {
                 break
             }
@@ -321,7 +323,8 @@ public enum PreferencesSanitizer {
             // A record that doesn't hold them (a window's session read over the app's) keeps the ones it has.
             workspaces: record["workspaces"] == nil
                 ? defaults.workspaces : Workspaces.sanitize(record["workspaces"], defaults: defaults),
-            convertImagesSettings: ConvertImagesSettings.sanitize(record["convertImagesSettings"]))
+            convertImagesSettings: ConvertImagesSettings.sanitize(record["convertImagesSettings"]),
+            textViewerSettings: TextViewerSettings.sanitize(record["textViewerSettings"]))
     }
 
     /// A whole number, zero or more; anything else is zero. A number past what a count can be stops at the largest.

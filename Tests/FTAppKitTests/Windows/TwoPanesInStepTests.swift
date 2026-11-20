@@ -478,7 +478,8 @@ extension ExplorerWindowlessTests {
                     tab.contextMenus.contentMenu(for: [entry])?.items
                         .first { $0.identifier?.rawValue == "otherPane" }?.submenu)
                 #expect(submenu.items.map(\.title) == ["Open", "Copy", "Move"])
-                #expect(submenu.items.map(\.isEnabled) == [false, false, false])
+                // Open shows the file there; Copy and Move go nowhere while it shows the Trash.
+                #expect(submenu.items.map(\.isEnabled) == [true, false, false])
                 tab.sendToOtherPane([note], copying: true)
                 tab.sendToOtherPane([note], copying: false)
                 await settle()

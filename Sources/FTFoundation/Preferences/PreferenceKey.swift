@@ -12,7 +12,7 @@ public enum PreferenceKey: String, CaseIterable, Sendable, Hashable {
     case searchResultsSortDirection, treeWidth, inspectorWidth, restoreSessionOnStartup, openTabs, activeTabIndex
     case treeRootPath, lastVisitedPath, lastVisitedFavoritePath, favorites, favoritesPlacement, favoritesExpanded
     case locationsExpanded, favoritesInitialized, singleClickExpandTreeItems, batchRenameSettings
-    case batchRenamePresets, listFilterMatch, workspaces, convertImagesSettings
+    case batchRenamePresets, listFilterMatch, workspaces, convertImagesSettings, textViewerSettings
 
     /// The field of `AppPreferences` this key names. Every key has one: the switch is the one place that pairs them.
     fileprivate var makeField: PreferenceField {
@@ -75,6 +75,7 @@ public enum PreferenceKey: String, CaseIterable, Sendable, Hashable {
         case .listFilterMatch: .of(\.listFilterMatch)
         case .workspaces: .of(\.workspaces)
         case .convertImagesSettings: .of(\.convertImagesSettings)
+        case .textViewerSettings: .of(\.textViewerSettings)
         }
     }
 

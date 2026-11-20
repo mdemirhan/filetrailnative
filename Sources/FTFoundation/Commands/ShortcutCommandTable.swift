@@ -7,6 +7,7 @@ public enum ShortcutGroup: String, CaseIterable, Sendable, Hashable {
     case files
     case search
     case view
+    case viewer
     case standard
 
     /// The heading the group's commands are listed under in Settings and Help.
@@ -17,6 +18,7 @@ public enum ShortcutGroup: String, CaseIterable, Sendable, Hashable {
         case .files: "Files"
         case .search: "Search"
         case .view: "View"
+        case .viewer: "Viewer"
         case .standard: "Standard"
         }
     }
@@ -81,6 +83,7 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case openSelectedItem
     case editSelection
     case quickLookSelection
+    case viewFile
     case deselectAll
     case invertSelection
     case calculateSize
@@ -167,6 +170,9 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case showCommandPalette
     case openHelp
     case openKeyboardShortcuts
+    case saveViewerFile
+    case nextViewerFile
+    case previousViewerFile
     case undo
     case redo
     case cut
@@ -305,7 +311,8 @@ extension ShortcutCommands {
             id: .switchToOtherPane, label: "Switch to Other Pane", group: .tabs, defaults: [],
             menuPath: "Window > Switch to Other Pane"),
         ShortcutCommandDefinition(
-            id: .openSelectionInOtherPane, label: "Open in Other Pane", group: .tabs, defaults: ["Cmd+Option+Down"],
+            id: .openSelectionInOtherPane, label: "Open in Other Pane", group: .tabs,
+            defaults: ["Cmd+Option+Down", "Cmd+Option+E"],
             menuPath: "File > Open in Other Pane"),
         ShortcutCommandDefinition(
             id: .copyToOtherPane, label: "Copy to Other Pane", group: .tabs, defaults: ["F5"],
@@ -329,11 +336,14 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .openSelectedItem, label: "Open Selected Item", group: .files, defaults: ["Cmd+Down"]),
         ShortcutCommandDefinition(
-            id: .editSelection, label: "Edit in Text Editor", group: .files, defaults: ["Cmd+Shift+E"],
+            id: .editSelection, label: "Edit in Text Editor", group: .files, defaults: [],
             menuPath: "File > Edit in Text Editor"),
         ShortcutCommandDefinition(
             id: .quickLookSelection, label: "Quick Look", group: .files, defaults: ["Cmd+Y", "Space"],
             menuPath: "File > Quick Look"),
+        ShortcutCommandDefinition(
+            id: .viewFile, label: "Open in Viewer", group: .files, defaults: ["Cmd+E"],
+            menuPath: "File > Open in Viewer"),
         ShortcutCommandDefinition(
             id: .deselectAll, label: "Deselect All", group: .files, defaults: ["Cmd+Option+A"],
             menuPath: "Edit > Deselect All"),
@@ -383,7 +393,7 @@ extension ShortcutCommands {
             id: .trashSelection, label: "Move to Trash", group: .files, defaults: ["Cmd+Backspace"],
             menuPath: "File > Move to Trash"),
         ShortcutCommandDefinition(
-            id: .ejectVolume, label: "Eject", group: .files, defaults: ["Cmd+E"], menuPath: "File > Eject"),
+            id: .ejectVolume, label: "Eject", group: .files, defaults: [], menuPath: "File > Eject"),
         ShortcutCommandDefinition(
             id: .emptyTrash, label: "Empty Trash…", group: .files, defaults: ["Cmd+Shift+Backspace"],
             menuPath: "File Trail > Empty Trash…"),
@@ -577,6 +587,12 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .openKeyboardShortcuts, label: "Keyboard Shortcuts", group: .view, defaults: [],
             menuPath: "Help > Keyboard Shortcuts"),
+        // The viewer's own keys, taken while it has the keyboard; its ⋯ menu shows them.
+        ShortcutCommandDefinition(id: .saveViewerFile, label: "Save File", group: .viewer, defaults: ["Cmd+S"]),
+        ShortcutCommandDefinition(
+            id: .nextViewerFile, label: "Next File", group: .viewer, defaults: ["Cmd+Option+]"]),
+        ShortcutCommandDefinition(
+            id: .previousViewerFile, label: "Previous File", group: .viewer, defaults: ["Cmd+Option+["]),
         ShortcutCommandDefinition(id: .undo, label: "Undo", group: .standard, defaults: ["Cmd+Z"], fixed: true),
         ShortcutCommandDefinition(id: .redo, label: "Redo", group: .standard, defaults: ["Cmd+Shift+Z"], fixed: true),
         ShortcutCommandDefinition(id: .cut, label: "Cut", group: .standard, defaults: ["Cmd+X"], fixed: true),

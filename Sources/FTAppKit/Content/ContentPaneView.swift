@@ -29,6 +29,16 @@ final class ContentPaneView: NSView {
             needsLayout = true
         }
     }
+    /// A file shown in place of the pane's folder (the viewer): it covers the headers and the list, which stay as they
+    /// were under it.
+    var viewer: NSView? {
+        didSet {
+            guard viewer !== oldValue else { return }
+            oldValue?.removeFromSuperview()
+            if let viewer { addSubview(viewer, positioned: .below, relativeTo: infoRow) }
+            needsLayout = true
+        }
+    }
     let infoRow = InfoRowView()
     let pathBarRow = PathBarRowView()
 
@@ -75,5 +85,8 @@ final class ContentPaneView: NSView {
         let listHeight = max(0, bounds.height - y - infoHeight)
         list?.frame = NSRect(x: 0, y: y, width: width, height: listHeight)
         infoRow.frame = NSRect(x: -reach, y: y + listHeight, width: width + reach, height: infoHeight)
+        let covered = viewer != nil
+        for view in [searchHeader, trashHeader, list] { view?.isHidden = covered }
+        viewer?.frame = NSRect(x: 0, y: 0, width: width, height: max(0, bounds.height - infoHeight))
     }
 }

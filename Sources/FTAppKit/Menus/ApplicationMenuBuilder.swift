@@ -80,6 +80,8 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.saveAsTemplate, "Save as Template"))
             menu.addItem(.separator())
             menu.addItem(context.command(.openSelection, "Open"))
+            // The file's text in this pane, to read or edit: the viewer holds the rest of what it does.
+            menu.addItem(context.command(.viewFile, "Open in Viewer"))
             menu.addItem(context.command(.openSelectionInNewTab, "Open in New Tab"))
             menu.addItem(context.command(.openSelectionInNewWindow, "Open in New Window"))
             menu.addItem(context.command(.openSelectionInOtherPane, "Open in Other Pane"))

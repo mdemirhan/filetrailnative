@@ -167,7 +167,9 @@ public enum CommandPalette {
         case .hide: return .system(.hide)
         case .hideOthers: return .system(.hideOthers)
         case .quit: return .system(.quit)
-        case .pageUp, .pageDown, .halfPageUp, .halfPageDown, .openSelectedItem: return .windowKey(id)
+        case .pageUp, .pageDown, .halfPageUp, .halfPageDown, .openSelectedItem, .saveViewerFile, .nextViewerFile,
+            .previousViewerFile:
+            return .windowKey(id)
         default:
             return AppCommand(rawValue: id.rawValue).map { .menuItem($0.rawValue) }
         }

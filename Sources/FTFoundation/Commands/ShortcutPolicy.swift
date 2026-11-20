@@ -126,7 +126,8 @@ public enum ShortcutPolicy {
     /// The command whose shortcut a context-menu item shows, by the item's id.
     public static let contextMenuShortcutCommands: [String: ShortcutCommandID] = [
         "open": .openSelection, "openInNewTab": .openSelectionInNewTab, "openInNewWindow": .openSelectionInNewWindow,
-        "quickLook": .quickLookSelection, "showInfo": .toggleInfoPanel, "calculateSize": .calculateSize,
+        "quickLook": .quickLookSelection, "openInViewer": .viewFile, "showInfo": .toggleInfoPanel,
+        "calculateSize": .calculateSize,
         "revealInFolder": .revealInFolder, "edit": .editSelection, "cut": .cut, "copy": .copy, "paste": .paste,
         "move": .moveSelection, "rename": .renameSelection, "duplicate": .duplicateSelection, "newFolder": .newFolder,
         "newFolderWithSelection": .newFolderWithSelection, "saveAsTemplate": .saveAsTemplate,
@@ -156,6 +157,8 @@ public enum ShortcutPolicy {
             return context.focusedPane != .tree && canHandle(.openSelectionInNewWindow, context)
         case "quickLook":
             return canHandle(.quickLookSelection, context)
+        case "openInViewer":
+            return canHandle(.viewFile, context)
         case "showInfo":
             return canHandle(.toggleInfoPanel, context)
         case "calculateSize":

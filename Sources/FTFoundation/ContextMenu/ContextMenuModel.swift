@@ -12,6 +12,8 @@ public enum ContextMenuScope: String, Sendable, Codable {
 
 public enum ContextMenuActionID: String, Sendable, CaseIterable, Hashable, Codable {
     case revealInFolder, revealInTree, open, openInNewTab, openInNewWindow, openWith, quickLook
+    /// One file's text in its pane (Open in Viewer).
+    case openInViewer
     case showPackageContents, edit, showInfo, calculateSize, cut, copy, paste, pasteAsFile, move, rename, duplicate
     case newFolder, newFolderWithSelection, saveAsTemplate, compress, extract, extractTo
     /// File ▸ New File's submenu, on the folder's background: Text File, the templates, the Templates folder.
@@ -190,6 +192,8 @@ public enum ContextMenuItems {
                 // Open and Open With come first, as in Finder; then the other places the item can open.
                 item(.open, "Open", options.targetsFolder ? .open : .openFile),
                 item(.openWith, "Open With", .openWith, submenu: true),
+                // For one file (hidden by the caller otherwise).
+                item(.openInViewer, "Open in Viewer", .openFile),
                 item(.openInNewTab, "Open in New Tab", .openInNewTab),
                 item(.openInNewWindow, "Open in New Window", .openInNewWindow),
                 item(.otherPane, "Other Pane", .twoPanes, submenu: true),

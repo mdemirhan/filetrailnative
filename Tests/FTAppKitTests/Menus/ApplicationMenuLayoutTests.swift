@@ -27,11 +27,12 @@ import Testing
             titles(submenu(main, "File")) == [
                 "New Window", "New Tab", "Duplicate Tab", "New Folder", "New Folder with Selection", "New File",
                 "Save as Template", "-",
-                "Open",
+                "Open", "Open in Viewer",
                 "Open in New Tab",
                 "Open in New Window", "Open in Other Pane", "Edit in Text Editor", "Reveal in Folder", "-",
                 "Calculate Size", "Rename", "-", "Compress", "Extract", "Extract To…", "-",
-                "Duplicate", "Move to…", "Convert Images…", "Quick Look", "-", "Share…", "-",
+                "Duplicate", "Move to…", "Convert Images…", "Quick Look", "-",
+                "Share…", "-",
                 "Add to Favorites", "Open in Terminal", "Show in Finder", "-", "Move to Trash", "Eject", "-",
                 "Reopen Closed Tab",
                 // Close Pane until synced, then Close Tab, the item ⌥ shows in its place.
@@ -61,7 +62,8 @@ import Testing
             ])
         #expect(
             titles(submenu(main, "Go")) == [
-                "Back", "Forward", "Enclosing Folder", "-", "Documents", "Desktop", "Downloads", "Home", "Library",
+                "Back", "Forward", "Enclosing Folder", "-", "Documents", "Desktop",
+                "Downloads", "Home", "Library",
                 "Macintosh HD", "Applications", "Trash", "-", "Go to Folder…", "-", "Show This Folder in Other Pane",
                 "Go to Other Pane's Folder", "-", "Use as Tree Root",
             ])
@@ -223,9 +225,9 @@ import Testing
             ("File", "New Folder", "Command+Shift+N", .newFolder),
             ("File", "New Folder with Selection", "Control+Command+N", .newFolderWithSelection),
             ("File", "Open", "Command+O", .openSelection),
+            ("File", "Open in Viewer", "Command+E", .viewFile),
             ("File", "Open in New Tab", nil, .openSelectionInNewTab),
             ("File", "Open in New Window", nil, .openSelectionInNewWindow),
-            ("File", "Edit in Text Editor", "Command+Shift+E", .editSelection),
             ("File", "Quick Look", "Command+Y", .quickLookSelection),
             ("File", "Reveal in Folder", nil, .revealInFolder),
             ("File", "Calculate Size", nil, .calculateSize),
@@ -238,7 +240,6 @@ import Testing
             ("File", "Open in Terminal", "Command+Alt+T", .openInTerminal),
             ("File", "Show in Finder", nil, .showInFinder),
             ("File", "Move to Trash", "Command+Backspace", .trashSelection),
-            ("File", "Eject", "Command+E", .ejectVolume),
             ("File", "Reopen Closed Tab", "Command+Shift+T", .reopenClosedTab),
             // Close Pane, named Close Tab until the menu is synced with a tab of two panes.
             ("File", "Close Tab", "Command+W", .closePane),

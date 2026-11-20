@@ -228,6 +228,14 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     /// tab closes the window.
     func closeTab(_ tab: MainWindowController) {
         guard !isBlocked, tabs.contains(where: { $0 === tab }) else { return }
+        // A file with edits is asked about first; the tab closes once it is saved or dropped.
+        if tab.hasUnsavedViewer {
+            Task { [weak self, weak tab] in
+                guard let tab, await tab.confirmLeavingViewers() else { return }
+                self?.closeTab(tab)
+            }
+            return
+        }
         guard tabs.count > 1 else {
             closeAsCloseButton()
             return
@@ -244,6 +252,10 @@ final class ExplorerTabGroup: ExplorerWindowLike {
             return false
         }
         guard !isBlocked else { return false }
+        if tab.hasUnsavedViewer {
+            closeTab(tab)
+            return false
+        }
         prepareToClose(tab, remember: true)
         return true
     }

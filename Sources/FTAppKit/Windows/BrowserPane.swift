@@ -62,7 +62,8 @@ final class BrowserPane {
     /// folder: one made from a path gives an accent decomposed whatever the disk keeps, and paths are compared byte
     /// for byte. What needs a URL makes one from this path (`DiskPath.url(isDirectory:)`).
     private(set) var folderPath: String
-
+    /// A file shown in place of the folder, or following the other pane's selection; nil while the folder shows.
+    var viewer: TextViewerController?
     /// The pane let go of its folder: it shows none until one is opened, and keeps none: its label, snapshot and saved
     /// tab have an empty path (`shownFolderPath`). `folderPath` is then only where a new read would start from.
     private(set) var folderLetGo = false

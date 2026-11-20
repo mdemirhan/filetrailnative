@@ -77,6 +77,8 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     public var workspaces: [Workspace]
     /// The Convert Images sheet as last used.
     public var convertImagesSettings: ConvertImagesSettings
+    /// The text viewer's own look: its appearance, themes, font size, wrapping and line numbers.
+    public var textViewerSettings: TextViewerSettings
 
     /// What a new install starts with, given the theme it starts in.
     public static func defaults(theme: ThemePreference = .auto) -> AppPreferences {
@@ -101,7 +103,7 @@ public struct AppPreferences: Codable, Equatable, Sendable {
             lastVisitedFavoritePath: nil, favorites: [], favoritesPlacement: .integrated, favoritesExpanded: true,
             locationsExpanded: true, favoritesInitialized: false,
             batchRenameSettings: .defaults, batchRenamePresets: [], listFilterMatch: .fuzzy, workspaces: [],
-            convertImagesSettings: .defaults)
+            convertImagesSettings: .defaults, textViewerSettings: .defaults)
     }
 }
 

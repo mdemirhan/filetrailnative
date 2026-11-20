@@ -81,6 +81,7 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case goToOtherPaneFolder
     case equalizePanes
     case quickLookSelection
+    case viewFile
     case calculateSize
     case revealInFolder
     case toggleFavorite

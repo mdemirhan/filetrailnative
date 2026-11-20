@@ -16,6 +16,24 @@ final class PathBarRowView: NSView {
     /// Opaque: the path bar lies over the bottom of the content and the Info panel.
     private let backdrop = ContentBackdrop()
     let status = TextBoxField(labelWithString: "")
+    /// While the pane shows a file (the viewer): the file's line, language and format in place of the folder's path,
+    /// its count and its size. The folder isn't on screen, so neither is a way to go elsewhere in it.
+    var fileStatus: String? {
+        didSet {
+            guard fileStatus != oldValue else { return }
+            if fileStatus != nil, isEditing { endEditing(restoreFocus: false) }
+            let showsFile = fileStatus != nil
+            pathBar.isHidden = showsFile || isEditing
+            status.isHidden = showsFile || isEditing
+            sizeSlider.isHidden = showsFile || !showsSizeSlider || isEditing
+            sizeLabel.isHidden = showsFile || sizeLabel.isHidden
+            folderViewButton.isHidden = showsFile || folderViewMark == nil || isEditing
+            fileStatusLabel.isHidden = !showsFile
+            fileStatusLabel.stringValue = fileStatus ?? ""
+            needsLayout = true
+        }
+    }
+    private let fileStatusLabel = TextBoxField(labelWithString: "")
     /// The view's size at the right of the bar: the Icons view's icon size, the Compact List's column width. The
     /// content pane sets its range and value for the view on screen.
     let sizeSlider = NSSlider(value: 0, minValue: 0, maxValue: 1, target: nil, action: nil)
@@ -177,6 +195,11 @@ final class PathBarRowView: NSView {
         sizeLabel.setAccessibilityIdentifier("statusBar.sizeValue")
         addSubview(pathBar)
         addSubview(status)
+        fileStatusLabel.font = tabularFont(DesignTokens.typeScale.small)
+        fileStatusLabel.lineBreakMode = .byTruncatingTail
+        fileStatusLabel.isHidden = true
+        fileStatusLabel.setAccessibilityIdentifier("pathBarRow.fileStatus")
+        addSubview(fileStatusLabel)
         addSubview(sizeSlider)
         addSubview(sizeLabel)
         folderViewButton.isHidden = true
@@ -241,7 +264,7 @@ final class PathBarRowView: NSView {
     // MARK: Editing
 
     func beginEditing() {
-        guard !isEditing else { return }
+        guard !isEditing, fileStatus == nil else { return }
         isEditing = true
         folderMenu.close()
         pathBar.isHidden = true
@@ -306,6 +329,21 @@ final class PathBarRowView: NSView {
     override func layout() {
         super.layout()
         let left = Self.paddingInline
+        if fileStatus != nil {
+            // Whatever showed them again meanwhile, the folder's path and its controls stay hidden under a file.
+            for view in [pathBar, status, sizeSlider, sizeLabel, folderViewButton, editor] as [NSView] {
+                view.isHidden = true
+            }
+            fileStatusLabel.isHidden = false
+            let height = lineBox(fileStatusLabel.font)
+            fileStatusLabel.frame = NSRect(
+                x: left, y: 1 + ((bounds.height - 1 - height) / 2), width: max(0, bounds.width - left * 2),
+                height: height)
+            fileStatusLabel.textColor = ChromeColors.color(infoTheme.palette.textSecondary)
+            backdrop.frame = NSRect(x: 0, y: 1, width: bounds.width, height: max(0, bounds.height - 1))
+            needsDisplay = true
+            return
+        }
         let contentTop = 1.0
         let contentHeight = bounds.height - contentTop
         // The folder view's symbol takes the right end, where nothing that comes and goes (the slider) moves it, nor

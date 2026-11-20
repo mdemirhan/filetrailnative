@@ -50,7 +50,9 @@ extension MainWindowController {
         var start: StartupTab
         var history: (paths: [String], index: Int)?
         var view: TabViewState?
+        var viewer: ViewerPreference?
         if path == nil, reopening, let closed = closedSecondPane {
+            viewer = closedSecondViewer
             start = closed.start
             history = (closed.history.paths, closed.history.index)
             view = closed.view
@@ -69,6 +71,7 @@ extension MainWindowController {
         let keyboard = paneWithKeyboard
         let pane = addSecondPane(start: start, history: history)
         if let view { pane.carry(view) }
+        if let viewer { restoreViewer(viewer, in: pane) }
         pane.ensureLoaded()
         panesChanged()
         keepKeyboard(in: keyboard)
@@ -110,6 +113,7 @@ extension MainWindowController {
             groupReversed: saved.groupReversed == true, searchGroupReversed: saved.searchGroupReversed == true)
         let pane = addSecondPane(start: start, history: history)
         if let view { pane.carry(view) }
+        if let viewer = saved.viewer { restoreViewer(viewer, in: pane) }
         if let split { workspace.setPaneSplit(split) }
         if loaded { pane.ensureLoaded() }
         if active {
@@ -128,6 +132,7 @@ extension MainWindowController {
         var start = startupTab(of: gone, path: gone.shownFolderPath)
         start.filterMode = gone.content.folderFilterMode
         closedSecondPane = (start, gone.navigationHistory, gone.closedView)
+        closedSecondViewer = savedViewer(of: gone)
         closedPaneWatchID = gone.watchID
         // Folder View Options open on the pane that goes has nothing left to change.
         if folderViewPopover?.pane === gone { closeFolderViewPopover() }
@@ -308,6 +313,13 @@ extension MainWindowController {
     /// that what follows the active pane keeps what it shows: Show Info's item stays, the active item isn't read again,
     /// and the toolbar keeps the active pane's Back and Forward, view and search.
     func paneChanged(_ change: ExplorerWindowChange, in pane: BrowserPane) {
+        switch change {
+        case .selection: followSelection(of: pane)
+        case .folder:
+            viewerPaneMoved(pane)
+            followSelection(of: pane)
+        default: break
+        }
         notify(pane === activePane ? change : .otherPane(change))
     }
 

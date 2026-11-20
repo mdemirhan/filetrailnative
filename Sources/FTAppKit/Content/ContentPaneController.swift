@@ -1211,10 +1211,26 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         selectionChanged(selection.inverted(entryPaths: entryPaths))
     }
 
-    /// Focuses the view of the folder.
+    /// Focuses the view of the folder, or the file shown in place of it (the viewer's text).
     func focusList() {
+        if let focus = viewerFocus?(), shell.viewer != nil {
+            view.window?.makeFirstResponder(focus)
+            return
+        }
         if let focus = pane?.focusView { view.window?.makeFirstResponder(focus) }
     }
+
+    /// Shows a file's view in place of the folder's, or the folder again with nil. The folder, its selection and its
+    /// scroll stay as they were under it.
+    func showViewer(_ viewer: NSView?, focus: (() -> NSView?)? = nil) {
+        shell.viewer = viewer
+        viewerFocus = viewer == nil ? nil : focus
+        if viewer == nil { shell.pathBarRow.fileStatus = nil }
+    }
+
+    var showsViewer: Bool { shell.viewer != nil }
+    /// What takes the keyboard in the file shown: the viewer's text, or the viewer with no text shown.
+    private var viewerFocus: (() -> NSView?)?
 
     var focusView: NSView? { pane?.focusView }
 

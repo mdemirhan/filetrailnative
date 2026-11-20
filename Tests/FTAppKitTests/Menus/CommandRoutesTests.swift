@@ -683,6 +683,8 @@ extension ExplorerWindowlessTests {
             tab.dialogs.last?.dismiss()
             #expect(await waitUntil { tab.frontAlert == nil })
             try select(["note.txt", "second.txt"], tab)
+            // Edit in Text Editor has no key until one is chosen in Settings: the one it had.
+            tab.updatePreferences { $0.shortcutOverrides["editSelection"] = ["Cmd+Shift+E"] }
             menu.report()
             #expect(!menu.isEnabled("editSelection"))
             try press("e", [.command, .shift], in: tab, menu: menu)

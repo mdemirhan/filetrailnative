@@ -69,7 +69,8 @@
           "saveAsTemplate",
           "shareSelection",
           "showClipboard",
-          "trashSelection"
+          "trashSelection",
+          "viewFile"
         ],
         "newTab": null,
         "favorite": "/Users/me/Documents",
@@ -283,7 +284,8 @@
           "viewAsDetails",
           "viewAsIcons",
           "viewAsList",
-          "viewAsPreviews"
+          "viewAsPreviews",
+          "viewFile"
         ],
         "newTab": null,
         "favorite": null,
@@ -409,7 +411,8 @@
           "toggleFoldersFirst",
           "trashSelection",
           "undo",
-          "updateFolderView"
+          "updateFolderView",
+          "viewFile"
         ],
         "newTab": null,
         "favorite": null,
@@ -597,7 +600,8 @@
           "viewAsDetails",
           "viewAsIcons",
           "viewAsList",
-          "viewAsPreviews"
+          "viewAsPreviews",
+          "viewFile"
         ],
         "newTab": null,
         "favorite": null,
@@ -694,7 +698,8 @@
           "selectPreviousTab",
           "shareSelection",
           "toggleFavorite",
-          "trashSelection"
+          "trashSelection",
+          "viewFile"
         ],
         "newTab": null,
         "favorite": null,
@@ -781,7 +786,8 @@
           "selectPreviousTab",
           "showClipboard",
           "showLastSearchResults",
-          "toggleFavorite"
+          "toggleFavorite",
+          "viewFile"
         ],
         "newTab": null,
         "favorite": null,
@@ -848,7 +854,6 @@
           "moveItemsHere",
           "openSelectionInNewTab",
           "openSelectionInNewWindow",
-          "openSelectionInOtherPane",
           "pasteAsFile",
           "pasteSelection",
           "removeFromClipboard",
@@ -985,7 +990,8 @@
           "saveAsTemplate",
           "shareSelection",
           "showClipboard",
-          "trashSelection"
+          "trashSelection",
+          "viewFile"
         ],
         "newTab": "/Users/me/.Trash/old",
         "favorite": "/Users/me/.Trash/old",
@@ -4185,7 +4191,8 @@
           "revealInFolder",
           "saveAsTemplate",
           "showLastSearchResults",
-          "toggleFavorite"
+          "toggleFavorite",
+          "viewFile"
         ],
         "showInFinder": [
           "/é/c0"
@@ -8826,7 +8833,8 @@
       "changes": {
         "disabled": {
           "$remove": [
-            "emptyTrash"
+            "emptyTrash",
+            "openSelectionInOtherPane"
           ],
           "$insert": [
             [
@@ -11459,9 +11467,11 @@
             "goForward",
             "invertSelection",
             "newFolderWithSelection",
+            "openSelectionInOtherPane",
             "quickLookSelection",
             "saveAsTemplate",
-            "showClipboard"
+            "showClipboard",
+            "viewFile"
           ],
           "$insert": [
             [
@@ -14335,7 +14345,8 @@
           "saveAsTemplate",
           "selectNextTab",
           "selectPreviousTab",
-          "showClipboard"
+          "showClipboard",
+          "viewFile"
         ],
         "newTab": "relative/Folder2",
         "favorite": "relative/Folder2",
@@ -18281,7 +18292,8 @@
           "revealInFolder",
           "saveAsTemplate",
           "selectNextTab",
-          "selectPreviousTab"
+          "selectPreviousTab",
+          "viewFile"
         ],
         "newTab": "/Users/me",
         "favorite": "/Users/me",
@@ -18720,7 +18732,8 @@
           "revealInFolder",
           "saveAsTemplate",
           "showClipboard",
-          "showLastSearchResults"
+          "showLastSearchResults",
+          "viewFile"
         ],
         "newTab": "/é",
         "favorite": "/é",
@@ -20632,6 +20645,10 @@
               "goEnclosingFolder"
             ],
             [
+              "goTrash",
+              "groupByFolder"
+            ],
+            [
               "moveSelection",
               "moveTabToNewWindow"
             ],
@@ -20646,10 +20663,6 @@
             [
               "showFolderInOtherPane",
               "showInFinder"
-            ],
-            [
-              "goTrash",
-              "groupByFolder"
             ]
           ]
         },
@@ -22346,7 +22359,6 @@
           "moveItemsHere",
           "openSelectionInNewTab",
           "openSelectionInNewWindow",
-          "openSelectionInOtherPane",
           "pasteAsFile",
           "pasteSelection",
           "removeFromClipboard",

@@ -586,6 +586,8 @@ public struct OpenTabPreference: Codable, Equatable, Sendable {
     /// Whether those groups are in the reverse of their order; nil for not.
     public var groupReversed: Bool?
     public var searchGroupReversed: Bool?
+    /// The file its first pane shows in place of its folder; nil for none, as in a file saved before the viewer.
+    public var viewer: ViewerPreference?
 
     public init(
         path: String?, treeRootPath: String?, favoritePath: String?, viewMode: ExplorerViewMode,
@@ -593,7 +595,8 @@ public struct OpenTabPreference: Codable, Equatable, Sendable {
         includeHidden: Bool, foldersFirst: Bool, favoritesExpanded: Bool, locationsExpanded: Bool,
         secondPane: OpenPanePreference? = nil, activePane: Int? = nil, paneSplit: Double? = nil,
         viewSizes: PaneViewSizes? = nil, filterMode: NameMatchMode? = nil, groupBy: GroupByPreference? = nil,
-        searchGroupBy: GroupByPreference? = nil, groupReversed: Bool = false, searchGroupReversed: Bool = false
+        searchGroupBy: GroupByPreference? = nil, groupReversed: Bool = false, searchGroupReversed: Bool = false,
+        viewer: ViewerPreference? = nil
     ) {
         self.path = path
         self.treeRootPath = treeRootPath
@@ -615,6 +618,7 @@ public struct OpenTabPreference: Codable, Equatable, Sendable {
         self.searchGroupBy = GroupByPreference.saved(searchGroupBy, search: true)
         self.groupReversed = self.groupBy != nil && groupReversed ? true : nil
         self.searchGroupReversed = self.searchGroupBy != nil && searchGroupReversed ? true : nil
+        self.viewer = viewer
     }
 
     /// The tab with its active pane alone, as a new window starts from it: that pane's folder, view, order and sizes.
@@ -635,7 +639,9 @@ public struct OpenTabPreference: Codable, Equatable, Sendable {
             alone.searchGroupBy = second.searchGroupBy
             alone.groupReversed = second.groupReversed
             alone.searchGroupReversed = second.searchGroupReversed
+            alone.viewer = second.viewer?.mode == .inPlace ? second.viewer : nil
         }
+        if alone.viewer?.mode != .inPlace { alone.viewer = nil }
         alone.secondPane = nil
         alone.activePane = nil
         alone.paneSplit = nil
@@ -664,12 +670,15 @@ public struct OpenPanePreference: Codable, Equatable, Sendable {
     /// Whether those groups are in the reverse of their order; nil for not.
     public var groupReversed: Bool?
     public var searchGroupReversed: Bool?
+    /// The file the pane shows in place of its folder, or follows in the other pane; nil for none.
+    public var viewer: ViewerPreference?
 
     public init(
         path: String?, viewMode: ExplorerViewMode, searchViewMode: ExplorerViewMode, sortBy: SortByPreference,
         sortDirection: SortDirectionPreference, includeHidden: Bool, foldersFirst: Bool,
         viewSizes: PaneViewSizes? = nil, filterMode: NameMatchMode? = nil, groupBy: GroupByPreference? = nil,
-        searchGroupBy: GroupByPreference? = nil, groupReversed: Bool = false, searchGroupReversed: Bool = false
+        searchGroupBy: GroupByPreference? = nil, groupReversed: Bool = false, searchGroupReversed: Bool = false,
+        viewer: ViewerPreference? = nil
     ) {
         self.path = path
         self.viewMode = viewMode
@@ -684,6 +693,7 @@ public struct OpenPanePreference: Codable, Equatable, Sendable {
         self.searchGroupBy = GroupByPreference.saved(searchGroupBy, search: true)
         self.groupReversed = self.groupBy != nil && groupReversed ? true : nil
         self.searchGroupReversed = self.searchGroupBy != nil && searchGroupReversed ? true : nil
+        self.viewer = viewer
     }
 }
 

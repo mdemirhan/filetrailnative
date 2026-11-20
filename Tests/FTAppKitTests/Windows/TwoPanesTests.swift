@@ -714,7 +714,8 @@ extension ExplorerWindowlessTests {
             await arrived(right)
             let files = try #require(submenu(tab.contextMenus.contentMenu(for: [note])))
             #expect(files.items.map(\.title) == ["Open", "Copy", "Move"])
-            #expect(files.items.map(\.isEnabled) == [false, true, true])
+            // Open in Other Pane shows a file there in the viewer.
+            #expect(files.items.map(\.isEnabled) == [true, true, true])
             #expect(files.items[1].keyEquivalent == String(Character(UnicodeScalar(UInt32(NSF5FunctionKey))!)))
             let folder = try #require(submenu(tab.contextMenus.contentMenu(for: [alpha])))
             #expect(folder.items.map(\.isEnabled) == [true, true, true])

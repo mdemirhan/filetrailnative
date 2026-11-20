@@ -99,6 +99,8 @@ final class ExplorerTabWindow: NSWindow {
     /// A key that moves the caret or deletes (⌘↑, ⌘⌫) stays with a text field that has the keyboard, even when the menu
     /// listens for it. The window is asked before the menu bar, and a dimmed item would keep the key too.
     override func performKeyEquivalent(with event: NSEvent) -> Bool {
+        // ⌘S saves the file with edits a pane of the tab shows, wherever the keyboard is in the tab.
+        if explorerTab?.saveViewerKey(event) == true { return true }
         if explorerTab?.textFieldKeepsKey(event) == true, let field = firstResponder {
             field.keyDown(with: event)
             return true
@@ -264,6 +266,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     var closedSecondPane: (start: StartupTab, history: NavigationHistory, view: TabViewState?)?
     /// The folder watch of a second pane just closed, for the window's watches to let go of.
     var closedPaneWatchID: Int?
+    /// Counts the viewer pane's following, so only the last selection of a run is read.
+    var viewerFollowNumber = 0
+    /// The file a following viewer showed when the tab was saved, selected again once its pane has read its folder.
+    var viewerSelectsAfterRead: String?
+    /// The viewer beside the list is asking whether to save its edits before it follows.
+    var viewerAsking = false
+    /// The file the second pane showed when ⌘\ closed it, for ⌘\ to bring back with it.
+    var closedSecondViewer: ViewerPreference?
     var activePane: BrowserPane { panes[activePaneIndex] }
     /// The active pane's file list.
     var content: ContentPaneController { activePane.content }
@@ -457,6 +467,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             AutomationClipboardPrefs.registerOnce()
             AutomationSearchPrefs.registerOnce()
         #endif
+        if let viewer = tab.viewer, viewer.mode == .inPlace { restoreViewer(viewer, in: panes[0]) }
         if let second = tab.secondPane {
             restoreSecondPane(second, history: nil, active: tab.activePane == 1, split: tab.paneSplit)
         }
@@ -476,7 +487,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             foldersFirst: snapshot.foldersFirst, favoritesExpanded: snapshot.favoritesExpanded,
             locationsExpanded: snapshot.locationsExpanded, viewSizes: snapshot.viewSizes,
             filterMode: snapshot.filterMode, groupBy: snapshot.groupBy, searchGroupBy: snapshot.searchGroupBy,
-            groupReversed: snapshot.groupReversed, searchGroupReversed: snapshot.searchGroupReversed)
+            groupReversed: snapshot.groupReversed, searchGroupReversed: snapshot.searchGroupReversed,
+            viewer: snapshot.viewer)
         self.init(tab: startup, history: (snapshot.historyPaths, snapshot.historyIndex), frame: frame)
         startingPane = snapshot.focusedPane
         if let view = snapshot.view { carry(view, of: snapshot) }
@@ -543,7 +555,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             includeHidden: pane.includeHidden, foldersFirst: pane.foldersFirst, favoritesExpanded: favoritesExpanded,
             locationsExpanded: locationsExpanded, viewSizes: savedViewSizes(pane),
             filterMode: pane.content.folderFilterMode, groupBy: pane.groupBy, searchGroupBy: pane.searchGroupBy,
-            groupReversed: pane.groupReversed, searchGroupReversed: pane.searchGroupReversed)
+            groupReversed: pane.groupReversed, searchGroupReversed: pane.searchGroupReversed,
+            viewer: savedViewer(of: pane).flatMap { $0.mode == .inPlace ? $0 : nil })
     }
 
     /// The sizes a pane is saved with: its own, or for one not shown yet the app's as they are now, so a workspace
@@ -560,7 +573,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             sortBy: pane.sortBy, sortDirection: pane.sortDirection, includeHidden: pane.includeHidden,
             foldersFirst: pane.foldersFirst, viewSizes: savedViewSizes(pane),
             filterMode: pane.content.folderFilterMode, groupBy: pane.groupBy, searchGroupBy: pane.searchGroupBy,
-            groupReversed: pane.groupReversed, searchGroupReversed: pane.searchGroupReversed)
+            groupReversed: pane.groupReversed, searchGroupReversed: pane.searchGroupReversed,
+            viewer: savedViewer(of: pane))
     }
 
     /// The tab as a new tab or a reopened one starts from it.
@@ -580,7 +594,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// Whether a text field of the tab (the search field, the results' filter, a rename) has the keyboard.
     var isTextFieldEditing: Bool {
         guard let editor = window?.firstResponder as? NSTextView else { return false }
-        return editor.isFieldEditor
+        // The viewer's text is edited as a field is: ⌘C, ⌘V, ⌘A and ⌘Z act on its text, not on files.
+        return editor.isFieldEditor || editor is ViewerTextView
     }
 
     /// Reveal in Folder: the folder a result is in opens, with the result selected and the list focused.
@@ -630,6 +645,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         snapshot.searchGroupBy = first.searchGroupBy
         snapshot.groupReversed = first.groupReversed
         snapshot.searchGroupReversed = first.searchGroupReversed
+        snapshot.viewer = savedViewer(of: first).flatMap { $0.mode == .inPlace ? $0 : nil }
         if panes.count > 1 {
             let second = panes[1]
             snapshot.secondPane = PaneSnapshot(
@@ -698,6 +714,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     /// A pane's first read ended: the tab is ready once its first pane's has.
     func paneFinishedFirstRead(_ pane: BrowserPane) {
+        viewerPaneRead(pane)
         guard pane === panes.first, let ready = onReady else { return }
         onReady = nil
         ready()
@@ -944,7 +961,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         await BlockingWork.run { try? NativeFileSystem().realpath(path) }
     }
 
-    private func perform(_ plan: OpenItems.Plan) {
+    func perform(_ plan: OpenItems.Plan) {
         switch plan {
         case .nothing:
             break
@@ -1138,6 +1155,18 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// the page moves, in the pane that has the keyboard. Whether it did anything.
     @discardableResult
     func runPaletteKeyCommand(_ id: ShortcutCommandID) -> Bool {
+        switch id {
+        case .saveViewerFile:
+            guard let viewer = commandViewer, viewer.isDirty else { return false }
+            viewer.save()
+            return true
+        case .nextViewerFile, .previousViewerFile:
+            guard activePane.viewer?.mode == .inPlace else { return false }
+            stepFile(by: id == .nextViewerFile ? 1 : -1)
+            return true
+        default:
+            break
+        }
         let page: (forward: Bool, half: Bool)? =
             switch id {
             case .pageUp: (false, false)
@@ -1147,6 +1176,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             default: nil
             }
         guard let page else { return runKeyCommand(id, isRepeat: false) }
+        // A file shown in the pane: its text moves, and in Edit its caret with it.
+        if let viewer = panes.first(where: { $0.viewer?.hasKeyboard == true })?.viewer
+            ?? (focusedPane == .content ? activePane.viewer : nil)
+        {
+            guard viewer.isText else { return false }
+            viewer.textView.page((page.forward ? 1 : -1) * (page.half ? 0.5 : 1))
+            return true
+        }
         guard ShortcutPolicy.canHandleExplorerKeyboardShortcuts(shortcutContext) else { return false }
         switch focusedPane {
         case .tree: return sidebar.movePage(forward: page.forward, size: page.half ? .half : .full)
@@ -1722,16 +1759,20 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     // MARK: Actions
 
     @objc func goBack(_ sender: Any?) {
+        if leaveFileInPlace() { return }
         guard let target = navigationHistory.backTarget else { return }
+        if openFileFromHistory(target, move: .back) { return }
         go(to: target, history: .back)
     }
 
     @objc func goForward(_ sender: Any?) {
         guard let target = navigationHistory.forwardTarget else { return }
+        if openFileFromHistory(target, move: .forward) { return }
         go(to: target, history: .forward)
     }
 
     @objc func goToEnclosingFolder(_ sender: Any?) {
+        if leaveFileInPlace() { return }
         guard !folderLetGo, folderPath != "/" else { return }
         go(to: DiskPath(folderPath).parent.string)
     }
@@ -1890,7 +1931,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         if areas.contains(.columns) { refreshColumns() }
         if areas.contains(.notifications) { notificationsSettingChanged() }
         if areas.contains(.clipboardMarks) { clipboardMarksChanged() }
-        if areas.contains(.commands) { notify(.preferences) }
+        if areas.contains(.commands) {
+            viewerSettingsChanged()
+            notify(.preferences)
+        }
     }
 }
 
@@ -2034,7 +2078,7 @@ extension MainWindowController: ExplorerWindowHandle {
         case .ejectVolume:
             if let target = ejectTargetPath { ejectCoordinator.requestEject(path: target) }
         case .newTab: group?.openNewTab(from: self)
-        case .closePane: closePane()
+        case .closePane: closePaneLeavingViewer()
         case .closeTab: group?.closeTab(self)
         case .reopenClosedTab: group?.reopenClosedTab(from: self)
         case .duplicateTab: group?.duplicateTab(self)
@@ -2048,11 +2092,16 @@ extension MainWindowController: ExplorerWindowHandle {
         case .moveTabToNewWindow: group?.moveTabToNewWindow(self)
         case .mergeAllWindows: group?.mergeAllWindows(into: self)
         case .saveWorkspace: group?.saveWorkspace(from: self)
-        case .toggleTwoPanes: toggleTwoPanes()
-        case .duplicatePane: duplicatePane()
+        case .toggleTwoPanes: afterLeavingViewer(of: otherPane) { $0.toggleTwoPanes() }
+        case .duplicatePane: afterLeavingViewer(of: otherPane) { $0.duplicatePane() }
+        case .viewFile: viewFile()
         case .switchToOtherPane: switchToOtherPane()
         case .openSelectionInOtherPane:
-            if let target = selectedFolder { openSelectedFolder(target, place: .otherPane) }
+            if let target = selectedFolder {
+                openSelectedFolder(target, place: .otherPane)
+            } else if let file = selectedViewableFile {
+                openFileInOtherPane(file)
+            }
         case .copyToOtherPane: sendSelectionToOtherPane(copying: true)
         case .moveToOtherPane: sendSelectionToOtherPane(copying: false)
         case .swapPanes: swapPanes()
@@ -2071,7 +2120,7 @@ extension MainWindowController: ExplorerWindowHandle {
             else { return }
             let prefs = preferences
             self.perform(OpenItems.editPlan(content.selection.paths, limit: prefs.openItemLimit))
-        case .focusFileSearch: focusFileSearch()
+        case .focusFileSearch: if !findInViewer() { focusFileSearch() }
         case .quickLookSelection: quickLookSelection()
         case .editSelectAll:
             // Every entry while the file list has the keyboard, sent to the pane and not up a
@@ -2175,12 +2224,13 @@ extension MainWindowController: ExplorerWindowContext {
 
     var historyPaths: [String] { navigationHistory.paths }
     var historyIndex: Int { max(0, navigationHistory.index) }
-    var canGoBack: Bool { navigationHistory.canGoBack }
+    var canGoBack: Bool { navigationHistory.canGoBack || activePane.viewer?.mode == .inPlace }
     var canGoForward: Bool { navigationHistory.canGoForward }
 
     func goToHistoryIndex(_ index: Int) {
         let paths = historyPaths
         guard paths.indices.contains(index), index != historyIndex else { return }
+        if openFileFromHistory(paths[index], move: .jump(index: index)) { return }
         go(to: paths[index], history: .jump(index: index))
     }
 
@@ -2245,6 +2295,7 @@ extension MainWindowController: ExplorerWindowContext {
                 own: activePane.shownFolderView?.isOwnSaved == true,
                 unsaved: activePane.shownFolderView?.hasUnsavedChanges == true))
         context.listIsGrouped = activePane.activeGroupBy != .none
+        context.paneShowsFile = activePane.viewer != nil
         return context
     }
 

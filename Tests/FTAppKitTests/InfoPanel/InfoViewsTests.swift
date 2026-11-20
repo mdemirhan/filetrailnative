@@ -202,7 +202,7 @@ struct InfoPanelViewTests {
         #expect(actions.count == 8)
         #expect(actions.allSatisfy { $0.frame.size == NSSize(width: 32, height: 28) })
         #expect((actions.first as? InfoIconButton)?.tooltip == "Quick Look (⌘Y)")
-        #expect((actions[1] as? InfoIconButton)?.tooltip == "Edit in Zed (⇧⌘E)")
+        #expect((actions[1] as? InfoIconButton)?.tooltip == "Edit in Zed")
         #expect(fieldText(try #require(findViews("infoPanel.row.code", in: view).first)) == "644")
     }
 
