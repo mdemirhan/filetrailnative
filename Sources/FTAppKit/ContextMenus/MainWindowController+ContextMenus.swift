@@ -19,7 +19,7 @@ extension MainWindowController {
                 return [shell.pathBarRow] + (shell.infoRow.isOpen ? [shell.infoRow] : [])
             },
             isEnabled: { [weak self] in self?.preferences.notificationsEnabled ?? true })
-        notifications?.progress.currentPath = { [weak self] in self?.folder.path ?? "" }
+        notifications?.progress.currentPath = { [weak self] in self?.folderPath ?? "" }
         guard let window else { return }
         WindowEventRouting.add(window) { [weak self] event in self?.handleQuickLookKey(event) ?? false }
     }

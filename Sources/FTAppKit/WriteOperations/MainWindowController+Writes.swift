@@ -75,7 +75,7 @@ extension MainWindowController {
             // there is no one folder for their copies.
             let destination: String
             if searchRootPath == nil {
-                destination = folder.path
+                destination = folderPath
             } else if let one = ContextMenuRules.duplicateFolder(of: paths) {
                 destination = one
             } else {
@@ -409,7 +409,7 @@ extension MainWindowController {
         var open = model.openReadingAgain(refresh.path)
         open.selectingRow = refresh.treeSelectionPath
         var treeFollows = false
-        if refresh.path == acting.folder.path {
+        if refresh.path == acting.folderPath {
             acting.content.dropFromSelection(refresh.leftPaths)
             acting.readAgain()
             treeFollows = acting.treeFollowsReadingAgain && (open.forceTreeReload || open.selectingRow != nil)

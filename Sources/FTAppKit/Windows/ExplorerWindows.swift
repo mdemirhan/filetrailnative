@@ -449,7 +449,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         // Only the folder on screen matters: one left behind may still be telling of a change.
         for tab in allTabs {
             guard let pane = tab.panes.first(where: { $0.watchID == windowID }) else { continue }
-            if change.path == pane.folder.path { pane.reload(changedPaths: change.changedPaths) }
+            if change.path == pane.folderPath { pane.reload(changedPaths: change.changedPaths) }
             return
         }
     }

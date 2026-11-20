@@ -369,7 +369,9 @@ final class SidebarModel {
         let nextRoot =
             rootPath.isEmpty || !TreePaths.isWithinTreeRoot(path, rootPath)
             ? TreePaths.resolveRootPath(for: path, homePath: homePath) : rootPath
-        if nextRoot != rootPath {
+        // Byte for byte, as the tree tells its folders apart: a top kept from an earlier launch may spell an accent
+        // otherwise than the folder's listing does, and the tree then starts again from the listing's spelling.
+        if !TreePaths.same(nextRoot, rootPath) {
             initializeTree(nextRoot)
         } else {
             ensureNode(nextRoot, expanded: true)

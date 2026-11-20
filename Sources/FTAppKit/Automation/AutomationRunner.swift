@@ -226,7 +226,7 @@
             let table = Views.folderTable(in: window)
             let collection = Views.first(NSCollectionView.self, in: window.contentView)
             parts += [
-                currentController?.folder.path ?? "", window.title, "\(window.attachedSheet != nil)",
+                currentController?.folderPath ?? "", window.title, "\(window.attachedSheet != nil)",
                 String(describing: window.firstResponder.map(ObjectIdentifier.init)),
                 "\(table?.numberOfRows ?? -1)", "\(table?.selectedRowIndexes.map { $0 } ?? [])",
                 "\(collection?.numberOfItems(inSection: 0) ?? -1)", Views.statusText(in: window) ?? "",

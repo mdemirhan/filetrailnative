@@ -30,9 +30,10 @@ struct WritingWindow {
     /// The folder as the tab names it (/private/var, not /var).
     let folder: URL
 
-    static func open(_ path: String? = nil) async throws -> WritingWindow {
+    /// On `path`, or on the harness's folder; `made` is a harness a test put folders in first.
+    static func open(_ path: String? = nil, in made: ExplorerHarness? = nil) async throws -> WritingWindow {
         PreparingSheet.isEnabled = false
-        let harness = try ExplorerHarness.windowless()
+        let harness = try made ?? ExplorerHarness.windowless()
         let tab = try await harness.open(path)
         let operations = AppWriteOperations(
             userData: harness.folder.url, directoryService: harness.services.directoryService, windows: harness.windows,

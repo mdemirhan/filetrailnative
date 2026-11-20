@@ -113,6 +113,28 @@ public enum VisitedFolders {
         folders.filter { !JSString.equals($0.path, path) }
     }
 
+    /// The folder recorded as `old` is the one at `path`, which is how its listing spells it: `old` is the same path
+    /// with its accents encoded as a `URL` gives them, which is how a folder's visits may have been kept. Its visits
+    /// go to `path`, with those `path` has, in its place in the list, so the folder is listed once. Nil when nothing
+    /// is recorded as `old`. Only the folder's own listing says the two are one folder: paths that differ in
+    /// encoding are two folders to `record`.
+    public static func respelled(_ folders: [VisitedFolder], from old: String, to path: String) -> [VisitedFolder]? {
+        guard !JSString.equals(old, path), let index = folders.firstIndex(where: { JSString.equals($0.path, old) })
+        else { return nil }
+        var rest = folders
+        let moved = rest.remove(at: index)
+        if let kept = rest.firstIndex(where: { JSString.equals($0.path, path) }) {
+            // Newest first, as each keeps them; of two at the same time, the one `path` has comes first.
+            let visits = (rest[kept].visits + moved.visits).enumerated().sorted { left, right in
+                left.element.at != right.element.at ? left.element.at > right.element.at : left.offset < right.offset
+            }
+            rest[kept].visits = visits.prefix(maxVisitsPerFolder).map(\.element)
+        } else {
+            rest.insert(VisitedFolder(path: path, visits: moved.visits), at: index)
+        }
+        return rest
+    }
+
     /// On disk each visit is a pair, [time, kind], and each folder takes one line: a full list is a
     /// few hundred kilobytes at most, and still easy to read.
     public static func serialize(_ folders: [VisitedFolder]) -> String {

@@ -177,6 +177,43 @@ struct VisitedFoldersTests {
         let folders = VisitedFolders.record([], path: "/Caf\u{E9}", kind: .stay, now: Self.now)
         #expect(VisitedFolders.record(folders, path: "/Cafe\u{301}", kind: .stay, now: Self.now).count == 2)
     }
+
+    // A folder whose listing spells its path otherwise than its visits were kept: they are that folder's, where
+    // they were in the list, and added to the visits it has under the listing's spelling.
+    @Test func aFoldersVisitsGoToThePathItsListingSpells() {
+        // As bytes: `String`'s own `==` takes the two spellings for one.
+        func bytes(_ folders: [VisitedFolder]?) -> [[UInt8]]? { folders?.map { Array($0.path.utf8) } }
+        let now = Self.now
+        let composed = "/Users/demo/caf\u{E9}"
+        let decomposed = "/Users/demo/cafe\u{301}"
+        func visit(_ age: Double, _ kind: FolderVisit.Kind = .stay) -> FolderVisit {
+            FolderVisit(at: now - age, kind: kind)
+        }
+        let kept = [
+            VisitedFolder(path: "/a", visits: [visit(1)]),
+            VisitedFolder(path: decomposed, visits: [visit(2, .goTo), visit(6)]),
+            VisitedFolder(path: "/b", visits: []),
+        ]
+        let respelled = VisitedFolders.respelled(kept, from: decomposed, to: composed)
+        #expect(bytes(respelled) == bytes([kept[0], VisitedFolder(path: composed, visits: []), kept[2]]))
+        #expect(respelled?[1].visits == kept[1].visits)
+
+        // Both known: one folder, with the visits of both, newest first, the latest of them kept.
+        let both = [VisitedFolder(path: composed, visits: [visit(0), visit(4)])] + kept
+        let merged = VisitedFolders.respelled(both, from: decomposed, to: composed)
+        #expect(bytes(merged) == bytes([both[0], kept[0], kept[2]]))
+        #expect(merged?[0].visits == [visit(0), visit(2, .goTo), visit(4), visit(6)])
+        let full = (0..<VisitedFolders.maxVisitsPerFolder).map { visit(Double($0) * 10) }
+        let many = VisitedFolders.respelled(
+            [VisitedFolder(path: composed, visits: full), kept[1]], from: decomposed, to: composed)
+        #expect(many?[0].visits.count == VisitedFolders.maxVisitsPerFolder)
+        #expect(many?[0].visits.prefix(4) == [visit(0), visit(2, .goTo), visit(6), visit(10)])
+
+        // Nothing kept under the other spelling, or the one spelling given twice: nothing to do.
+        #expect(VisitedFolders.respelled(kept, from: composed, to: decomposed) == nil)
+        #expect(VisitedFolders.respelled(kept, from: decomposed, to: decomposed) == nil)
+        #expect(VisitedFolders.respelled([], from: decomposed, to: composed) == nil)
+    }
 }
 
 @MainActor

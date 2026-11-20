@@ -153,8 +153,8 @@ extension ExplorerWindowlessTests {
         }
 
         // A folder whose name the disk keeps with a composed "é", as git, unzip and Terminal make them: the folder on
-        // screen is spelled otherwise than the one its rows are in, and New Folder with Selection still makes its
-        // folder there with the items in it, selected and named in its row, and Undo takes it all back.
+        // screen is known by the disk's spelling, as its rows are, and New Folder with Selection makes its folder
+        // there with the items in it, selected and named in its row, and Undo takes it all back.
         @Test func newFolderWithSelectionWorksInAFolderStoredWithAComposedAccent() async throws {
             let harness = try ExplorerHarness.windowless()
             // mkdir(2) keeps the name as given; Foundation would decompose it.
@@ -177,9 +177,9 @@ extension ExplorerWindowlessTests {
             }
             let rows = tab.content.entries.map(\.path)
             let folder = try #require(rows.first.map(NodePath.dirname))
-            // The rows keep the disk's spelling, and the folder on screen has the accent in two scalars.
+            // The rows keep the disk's spelling, the accent in one scalar, and so does the folder on screen.
             #expect(NodePath.basename(folder).unicodeScalars.count == 4)
-            #expect(NodePath.basename(tab.shownFolderPath).unicodeScalars.count == 5)
+            #expect(NodePath.basename(tab.shownFolderPath).unicodeScalars.count == 4)
             tab.content.select(paths: rows)
             #expect(!tab.menuState.disabledCommands.contains(.newFolderWithSelection))
 

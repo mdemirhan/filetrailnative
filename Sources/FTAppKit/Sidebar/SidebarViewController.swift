@@ -92,9 +92,10 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
     }
     /// The items on the clipboard the rows mark.
     var clipboardMarks: ClipboardMarks?
-    /// The folders a tab's two panes show, left first; empty while it shows one. Their rows are marked.
+    /// The folders a tab's two panes show, left first; empty while it shows one. Their rows are marked: the rows whose
+    /// paths are theirs byte for byte, so a folder known by another spelling of an accent is another folder here too.
     var paneFolders: [String] = [] {
-        didSet { if paneFolders != oldValue { refresh() } }
+        didSet { if !paneFolders.elementsEqual(oldValue, by: samePath) { refresh() } }
     }
 
     // MARK: Loading

@@ -55,9 +55,10 @@ extension SidebarViewController {
 
     // MARK: Opening folders
 
-    /// The window opened a folder. `open` says how it was reached.
-    func folderOpened(_ url: URL, _ open: SidebarOpen = .other) {
-        Task { await model.folderOpened(url.path, open) }
+    /// The window opened a folder. `open` says how it was reached. `path` is the folder's as its pane knows it
+    /// (`BrowserPane.folderPath`), which is how the tree's rows spell it: the tree tells its folders apart byte for byte.
+    func folderOpened(_ path: String, _ open: SidebarOpen = .other) {
+        Task { await model.folderOpened(path, open) }
     }
 
     /// Another pane of the tab became the active one (`SidebarModel.activePaneChanged`). Hidden Files is the tab's, so
@@ -67,8 +68,8 @@ extension SidebarViewController {
     }
 
     /// The window opened a folder it can't read, showing why.
-    func folderOpenedWithError(_ url: URL, _ open: SidebarOpen) {
-        Task { await model.folderOpenedWithError(url.path, open) }
+    func folderOpenedWithError(_ path: String, _ open: SidebarOpen) {
+        Task { await model.folderOpenedWithError(path, open) }
     }
 
     /// The folder asked for could not be opened.

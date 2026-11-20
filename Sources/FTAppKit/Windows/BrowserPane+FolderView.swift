@@ -178,7 +178,7 @@ extension BrowserPane {
     /// view it now uses, keeping what is changed of it and not saved yet.
     func refreshFolderView() {
         guard loaded, !folderLetGo else { return }
-        let use = folderViewUse(for: folder.path)
+        let use = folderViewUse(for: folderPath)
         // A folder with no view, given one on screen that waits for Save: while it still has none to use, the change
         // was some other folder's, and what waits here stays.
         if use == nil, let draft = folderView, draft.isDraft, draft.hasUnsavedChanges { return }
@@ -241,7 +241,7 @@ extension BrowserPane {
     /// A change in Folder View Options, on screen until Save, as any change is: in a folder with no view, a view
     /// not saved yet, let go of again once nothing is changed.
     private func changeOnScreen(_ change: (inout FolderViewOnScreen) -> Void) {
-        let path = folder.path
+        let path = folderPath
         var view = folderView ?? .draft(FolderView(path: path, keeps: FolderViewKeeps()))
         let before = shownOrder
         change(&view)
@@ -257,7 +257,7 @@ extension BrowserPane {
     /// while keeping nothing: the nearest covering view above, when it keeps something. Nil where covering them with
     /// nothing kept would change nothing, as they show the pane's settings already.
     var viewStoppedForSubfolders: FolderView? {
-        guard let above = folderViews.views.covering(folder.path), !above.keeps.isEmpty else { return nil }
+        guard let above = folderViews.views.covering(folderPath), !above.keeps.isEmpty else { return nil }
         return above
     }
 
@@ -270,7 +270,7 @@ extension BrowserPane {
 
     /// A new view for this folder, as `change` makes it from the one it has (or an empty one), saved at once.
     private func saveOwnView(refresh: Bool = true, _ change: (inout FolderView) -> Void) {
-        let path = folder.path
+        let path = folderPath
         let before = folderViews.views.own(path)?.keeps ?? FolderViewKeeps()
         var view =
             folderViews.views.own(path)
@@ -380,7 +380,7 @@ extension BrowserPane {
             if let subfolders { $0.subfolders = subfolders }
         }
         // What is on screen is what is saved now.
-        if let use = folderViewUse(for: folder.path) { folderView = FolderViewOnScreen(use) }
+        if let use = folderViewUse(for: folderPath) { folderView = FolderViewOnScreen(use) }
         showFolderView()
     }
 
@@ -396,7 +396,7 @@ extension BrowserPane {
             $0.keeps = keeps
             $0.subfolders = subfolders
         }
-        folderView = folderViewUse(for: folder.path).map(FolderViewOnScreen.init)
+        folderView = folderViewUse(for: folderPath).map(FolderViewOnScreen.init)
         showFolderView()
     }
 
@@ -412,10 +412,10 @@ extension BrowserPane {
 
     /// Reset Folder View: the folder's own view is removed; it uses the one above it, if one covers it, or the pane's.
     func resetFolderView() {
-        guard !folderLetGo, folderViews.views.own(folder.path) != nil else { return }
+        guard !folderLetGo, folderViews.views.own(folderPath) != nil else { return }
         let before = shownOrder
-        folderViews.update(from: tab.windowID) { $0.remove(folder.path) }
-        folderView = folderViewUse(for: folder.path).map(FolderViewOnScreen.init)
+        folderViews.update(from: tab.windowID) { $0.remove(folderPath) }
+        folderView = folderViewUse(for: folderPath).map(FolderViewOnScreen.init)
         showFolderView()
         if before != shownOrder { viewChanged() }
     }

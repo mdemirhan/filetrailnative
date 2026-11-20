@@ -204,7 +204,7 @@ extension MainWindowController {
             guard change == .folder, let self, let token = once.token, token.isValid else { return }
             token.invalidate()
             once.token = nil
-            if samePath(self.folder.path, parent) { selectIt() }
+            if samePath(self.folderPath, parent) { selectIt() }
         }
         go(to: URL(fileURLWithPath: parent, isDirectory: true))
     }

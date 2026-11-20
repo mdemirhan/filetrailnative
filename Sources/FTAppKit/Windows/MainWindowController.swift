@@ -223,6 +223,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     weak var group: ExplorerTabGroup?
     /// The active pane's folder, and how it shows it (`BrowserPane`).
     var folder: URL { activePane.folder }
+    /// The active pane's folder by the path its listing gave (`BrowserPane.folderPath`), not `folder.path`.
+    var folderPath: String { activePane.folderPath }
     private var folderLetGo: Bool { activePane.folderLetGo }
     /// How the tab shows its folder, kept between launches with its folder. The sidebar keeps its tree and sections.
     var treeRootPath: String { sidebar.treeRootPath }
@@ -613,7 +615,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             historyIndex: max(0, first.navigationHistory.index),
             viewMode: first.viewMode, searchViewMode: first.searchViewMode, sortBy: first.sortBy,
             sortDirection: first.sortDirection, treeRootPath: treeRootPath,
-            selectedTreeItemID: sidebar.selectedTreeItemID ?? (active.folderLetGo ? nil : "fs:\(active.folder.path)"),
+            selectedTreeItemID: sidebar.selectedTreeItemID ?? (active.folderLetGo ? nil : "fs:\(active.folderPath)"),
             leftPaneSubview: sidebar.leftPaneSubview == .favorites ? .favorites : .tree,
             focusedPane: pane == .tree ? .tree : .content,
             includeHidden: first.includeHidden, foldersFirst: first.foldersFirst, favoritesExpanded: favoritesExpanded,
@@ -1499,8 +1501,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         // The tree's way to hear of subfolders added or removed outside the app, for the folder watch
         // leaves it alone.
         guard treeFollowsReadingAgain else { return }
-        let open = sidebar.model.openReadingAgain(folder.path)
-        if open.forceTreeReload { sidebar.folderOpened(folder, open) }
+        let open = sidebar.model.openReadingAgain(folderPath)
+        if open.forceTreeReload { sidebar.folderOpened(folderPath, open) }
     }
 
     /// The folder on screen read again brings the tree along; a folder being opened now will do that itself.
@@ -2157,7 +2159,7 @@ extension MainWindowController: ExplorerWindowHandle {
 
 extension MainWindowController: ExplorerWindowContext {
     var currentFolder: URL { folder }
-    var shownFolderPath: String { folderLetGo ? "" : folder.path }
+    var shownFolderPath: String { activePane.shownFolderPath }
 
     func navigate(to url: URL, target: NavigationTarget) {
         switch target {

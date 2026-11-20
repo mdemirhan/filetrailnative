@@ -46,9 +46,10 @@ public enum NameKeys {
         JSText.lowercased(nfd(path))
     }
 
-    /// The folder on screen against the folder its rows are in: NFD, case as it is. True when the paths differ at
-    /// most in how accents are encoded: a `URL` gives its path decomposed whatever the disk keeps, the rows keep the
-    /// disk's spelling, and the Mac's disks take both for one name.
+    /// The folder on screen against the folder its rows, or what a write made, are in: NFD, case as it is. True when
+    /// the paths differ at most in how accents are encoded, which the Mac's disks take for one name. A pane knows its
+    /// folder as its listing spells it, which is the rows' spelling; a path that came through a `URL` is decomposed
+    /// whatever the disk keeps, and a folder not listed yet is known by the spelling it was given.
     public static func pathsMatchIgnoringEncoding(_ left: String, _ right: String) -> Bool {
         left.utf8.elementsEqual(right.utf8) || nfd(left).utf8.elementsEqual(nfd(right).utf8)
     }

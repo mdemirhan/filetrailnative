@@ -125,6 +125,18 @@ public final class AppStateStore: @unchecked Sendable {
         }
     }
 
+    /// A folder's listing spells its path `path`, and its visits may be kept as `old`, the same path with its accents
+    /// encoded as a `URL` gives them: they become `path`'s (`VisitedFolders.respelled`), so Go To lists the folder
+    /// once.
+    public func folderVisitsRespelled(from old: String, to path: String) {
+        locked {
+            guard let respelled = VisitedFolders.respelled(visitedFolders, from: old, to: path) else { return }
+            visitedFolders = respelled
+            markUnsaved(.visits)
+            saveLater()
+        }
+    }
+
     /// Removing a folder from Go To is something the user did on purpose. It leaves the folders chosen in Move To and
     /// Extract To too.
     @discardableResult

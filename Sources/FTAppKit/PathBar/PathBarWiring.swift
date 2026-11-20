@@ -9,7 +9,7 @@ extension MainWindowController {
         let bar = pane.content.contentShell.pathBarRow
         bar.startupDiskName = { [weak self] in self?.services.startupDisk.name ?? VolumePaths.defaultStartupDiskName }
         bar.namesChanged()
-        bar.path = pane.folder.path
+        bar.path = pane.folderPath
         // The bar acts in its own pane, which it makes the active one.
         bar.onNavigate = { [weak self, weak pane] path in
             guard let self, let pane else { return }

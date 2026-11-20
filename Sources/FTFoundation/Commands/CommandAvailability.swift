@@ -212,10 +212,10 @@ public enum CommandAvailability {
     /// Where New Folder with Selection makes its folder: the folder on screen, when every item selected is in it.
     /// None in search results or in the Trash.
     ///
-    /// The folder is given as the items' own paths spell it. The folder on screen may encode an accent otherwise
-    /// than the disk does (`NameKeys.pathsMatchIgnoringEncoding`), and the items go into the new folder as a
-    /// rename beside them, so it is their spelling the folder is made by. Among themselves the items are in one
-    /// folder only when it is spelled the same, byte for byte.
+    /// The folder is given as the items' own paths spell it. The folder on screen is theirs also when it is known
+    /// by another encoding of an accent than the disk's (`NameKeys.pathsMatchIgnoringEncoding`), and the items go
+    /// into the new folder as a rename beside them, so it is their spelling the folder is made by. Among themselves
+    /// the items are in one folder only when it is spelled the same, byte for byte.
     public static func newFolderWithSelectionTarget(
         currentPath: String, selectedPaths: [String], isSearchMode: Bool, homePath: String
     ) -> String? {

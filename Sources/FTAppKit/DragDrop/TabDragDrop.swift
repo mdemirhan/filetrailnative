@@ -381,7 +381,7 @@ final class TabDragDrop {
     /// and never while the tab shows search results, whatever the drag came from.
     func canSpring(_ session: DragSession, into entry: DirectoryEntry, target: Target, refusal: DropRefusal?) -> Bool {
         guard let pane = listPane, pane.searchRootPath == nil else { return false }
-        return refusal == nil && target.supportsMove && !isBlocked && !samePath(entry.path, pane.folder.path)
+        return refusal == nil && target.supportsMove && !isBlocked && !samePath(entry.path, pane.folderPath)
             && session.sourceSurface != .search
     }
 
@@ -410,7 +410,7 @@ final class TabDragDrop {
         springStart = nil
         let pane = start.pane
         guard
-            springsOpening > 0 || !samePath(pane.folder.path, start.place.path)
+            springsOpening > 0 || !samePath(pane.folderPath, start.place.path)
                 || pane.navigationHistory != start.place.history
         else { return }
         Task {
