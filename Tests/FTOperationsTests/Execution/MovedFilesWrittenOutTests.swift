@@ -358,4 +358,35 @@ struct MovedFilesWrittenOutTests {
                 })
         }
     }
+
+    // A file moved from another disk in place of one there is flushed by itself. On a real disk whose drive fails to
+    // write out its cache, though the plain sync then works: the original stays and the move says so. The new file is
+    // in place and the one it replaced in the Trash, as they are by then.
+    @Test func aFileReplacingOneOnARealDiskThatFailsItsFullSyncKeepsItsOriginal() async throws {
+        try await withTemporaryDirectory { root in
+            let (source, destination, trash) = (root.path + "/src", root.path + "/dst", root.path + "/trash")
+            try Disk.makeDirectories(trash)
+            try Disk.write(source + "/a.txt", "new")
+            try Disk.write(destination + "/a.txt", "old")
+            let (calls, asked) = FlushToDiskTests.calls(fullSyncAnswering: EIO, fsyncAnswering: 0)
+            let fileSystem = NativePaste.asOnAnotherDisk(source, NativePaste.withTrash(trash, flushCalls: calls))
+
+            let run = try await runPaste(
+                mode: .cut, sources: [source + "/a.txt"], into: destination, policy: NativePaste.replaceAll,
+                fileSystem: fileSystem)
+
+            // The file alone, never the whole disk, and not flushed the lesser way after it failed.
+            #expect(asked.value == ["full sync"])
+            #expect(Disk.read(source + "/a.txt") == "new")
+            #expect(Disk.read(destination + "/a.txt") == "new")
+            #expect(Disk.list(destination) == ["a.txt"])
+            #expect(Disk.read(trash + "/1-a.txt") == "old")
+            #expect(run.result?.status == .failed)
+            #expect(run.result?.items.map(\.status) == [.failed])
+            #expect(
+                run.result?.items.first?.error
+                    == "It was copied, but the copy couldn't be written out to the disk, so the original was kept. A disk error occurred."
+            )
+        }
+    }
 }

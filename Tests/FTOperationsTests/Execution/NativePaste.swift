@@ -87,20 +87,21 @@ enum NativePaste {
     static let keepExisting = CopyPastePolicy(file: .skip, directory: .merge, mismatch: .skip)
 
     /// The native file system with a Trash, a folder items are moved into as "<n>-<name>", so a test can see what a
-    /// Replace removed.
-    static func withTrash(_ trashDir: String) -> NativeWriteFileSystem {
+    /// Replace removed. `flushCalls`: the system calls it writes a disk out with.
+    static func withTrash(_ trashDir: String, flushCalls: FlushCalls = FlushCalls()) -> NativeWriteFileSystem {
         let count = OSAllocatedUnfairLock(initialState: 0)
-        return NativeWriteFileSystem(trash: { path in
-            let number = count.withLock { value in
-                value += 1
-                return value
-            }
-            let inTrash = trashDir + "/\(number)-\(NodePath.basename(path))"
-            if Darwin.rename(path, inTrash) != 0 {
-                throw NativeError.errno(errno, syscall: "rename", path: path, dest: inTrash)
-            }
-            return inTrash
-        })
+        return NativeWriteFileSystem(
+            trash: { path in
+                let number = count.withLock { value in
+                    value += 1
+                    return value
+                }
+                let inTrash = trashDir + "/\(number)-\(NodePath.basename(path))"
+                if Darwin.rename(path, inTrash) != 0 {
+                    throw NativeError.errno(errno, syscall: "rename", path: path, dest: inTrash)
+                }
+                return inTrash
+            }, flushCalls: flushCalls)
     }
 
     /// `asOnAnotherDisk(sourceFolder, fileSystem)`: what is in `sourceFolder` seems to be on a disk of its own,

@@ -185,13 +185,20 @@ public struct NativeWriteFileSystem: WriteServiceFileSystem {
             // such a disk can be told.
             flushCalls.syncAll()
         }
-        // A link, a pipe or a device has nothing of its own to write out: the folder it is in is flushed, as is a
-        // folder whose disk has no call for the whole of it.
+        // A link has nothing of its own to write out: the folder it is in is flushed, as is a folder whose disk has no
+        // call for the whole of it. (A pipe or a device is opened as it is, and answers for itself.)
         var descriptor = open(path, O_RDONLY | O_NONBLOCK | O_NOFOLLOW | O_CLOEXEC)
         if descriptor < 0 { descriptor = open(NodePath.dirname(path), O_RDONLY | O_CLOEXEC) }
         guard descriptor >= 0 else { throw NativeError.errno(errno, syscall: "open", path: path) }
         defer { close(descriptor) }
-        if flushCalls.fullSync(descriptor) == 0 { return }
+        let fullSync = flushCalls.fullSync(descriptor)
+        if fullSync == 0 { return }
+        // Only where there is no full sync is the item flushed the lesser way, which hands the drive what waits and
+        // doesn't ask it to write out its own cache. Any other failure (the drive failed to write out its cache, the
+        // disk went away) is told, though the lesser flush would then work: the copy may not be on the disk.
+        guard FlushCalls.noFullSync.contains(fullSync) else {
+            throw NativeError.errno(fullSync, syscall: "fcntl", path: path)
+        }
         let errnum = flushCalls.fsync(descriptor)
         // Not something this disk does: it keeps what it was given as it sees fit.
         if errnum == 0 || FlushCalls.noSuchCall.contains(errnum) { return }
@@ -213,6 +220,12 @@ struct FlushCalls: Sendable {
     /// `F_FULLFSYNC`, and code that doesn't know it says ENOTSUP (SMB shares, `/dev`) or ENOTTY; EINVAL is what
     /// `fsync` says of an item that has nothing to flush.
     static let noSuchCall: Set<Int32> = [ENOTSUP, EINVAL, ENOTTY]
+
+    /// What the full sync of one item answers where there is none to make: a disk with no such call, or a device
+    /// (`/dev/null` says ENODEV), which has nothing of its own to write out. APFS, HFS+, exFAT and FAT32 answer 0 for
+    /// a file, an empty file and a folder alike, and for a pipe where they have them, so no other answer is that of a
+    /// disk that did what it was asked.
+    static let noFullSync: Set<Int32> = noSuchCall.union([ENODEV])
 }
 
 /// `rm` and `rmdir` on the disk.
