@@ -41,8 +41,8 @@ public enum BatchRename {
         return ProposedNames(settingsError: nil, names: names)
     }
 
-    /// Said under the pattern when it took too long over a name (`RenamePattern.timePerName`): nothing is renamed by
-    /// it.
+    /// Said under the pattern when it took too long over a name (`RenamePattern.timePerName`) or over all of them
+    /// (`RenamePattern.timeForAllNames`): nothing is renamed by it.
     public static let patternTakesTooLong = "This pattern takes too long on these names. Try a simpler one."
 
     /// Said under the pattern when it can't be read as a regular expression. `NSRegularExpression` says only that

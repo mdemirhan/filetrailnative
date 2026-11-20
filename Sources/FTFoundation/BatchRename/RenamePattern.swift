@@ -24,17 +24,57 @@ public struct RenamePattern: @unchecked Sendable {
     /// end (`(a+)+$`) would otherwise keep the Rename sheet from answering for minutes.
     public static let timePerName: DispatchTimeInterval = .milliseconds(50)
 
-    /// Set once a name took the pattern too long: no more names are matched, as the next would likely take as long.
-    private final class TookTooLong: @unchecked Sendable {
+    /// How long a pattern may work over all the names it is given, in the same CPU time: this, and
+    /// `timePerCharacter` more for each UTF-16 unit of the names so far. The Rename sheet makes the pattern anew at
+    /// each change of its settings and matches every name with it before it answers, so names that each stay under
+    /// `timePerName` would all be matched: 200 names of nineteen "a"s under `(a+)+$`, 36 ms each, kept the sheet
+    /// for 7 s at every key typed.
+    public static let timeForAllNames: DispatchTimeInterval = .milliseconds(250)
+
+    /// What each UTF-16 unit of a name adds to `timeForAllNames`. The time an ordinary pattern takes grows with the
+    /// length of the names, so the limit does: over 50,000 names of 9 to 245 units, patterns that go through a name
+    /// once took up to 0.5 µs a unit, and ones that go through it again from each place in it (`.*foo` where there
+    /// is no "foo", `(.+)\1`) up to 1.8 µs a unit, on an M4 Max. Over five times that leaves slower Macs room.
+    public static let timePerCharacter: DispatchTimeInterval = .microseconds(10)
+
+    /// The time the pattern has used. It is over once a name took it too long, or all the names so far did: no more
+    /// names are matched, as the next would likely take as long.
+    private final class TimeUsed: @unchecked Sendable {
+        private static let forOneName = ThreadTimeBudget.nanoseconds(RenamePattern.timePerName)
+        private static let forAllNames = ThreadTimeBudget.nanoseconds(RenamePattern.timeForAllNames)
+        private static let forEachCharacter = ThreadTimeBudget.nanoseconds(RenamePattern.timePerCharacter)
+
         private let lock = NSLock()
-        private var value = false
-        var isSet: Bool { lock.withLock { value } }
-        func set() { lock.withLock { value = true } }
+        private var over = false
+        /// What the names so far may take together, and what they took, in nanoseconds.
+        private var allowed = TimeUsed.forAllNames
+        private var spent: UInt64 = 0
+
+        var isOver: Bool { lock.withLock { over } }
+        func setOver() { lock.withLock { over = true } }
+
+        /// The nanoseconds a name of `length` UTF-16 units may take: `timePerName`, or what the names before it left
+        /// of the time for all of them, when that is less.
+        func timeForName(length: Int) -> UInt64 {
+            lock.withLock {
+                allowed += UInt64(length) * Self.forEachCharacter
+                return min(Self.forOneName, allowed - min(spent, allowed))
+            }
+        }
+
+        /// A name took `nanoseconds`.
+        func add(_ nanoseconds: UInt64) {
+            lock.withLock {
+                spent += nanoseconds
+                if spent > allowed { over = true }
+            }
+        }
     }
 
-    private let gaveUp = TookTooLong()
-    /// Whether the pattern took longer than `timePerName` over a name: what it matched since is not to be relied on.
-    public var tookTooLong: Bool { gaveUp.isSet }
+    private let timeUsed = TimeUsed()
+    /// Whether the pattern took longer than `timePerName` over a name, or than `timeForAllNames` allows over all of
+    /// them: what it matched since is not to be relied on.
+    public var tookTooLong: Bool { timeUsed.isOver }
 
     private let regex: NSRegularExpression
     /// The names the pattern gives its groups, for `$<name>` in a replacement.
@@ -91,10 +131,11 @@ public struct RenamePattern: @unchecked Sendable {
 
     /// Every match in `text`, from the left, none overlapping; none once the pattern took too long (`tookTooLong`).
     func matches(in text: String) -> [RenameMatch] {
-        guard !gaveUp.isSet else { return [] }
+        guard !timeUsed.isOver else { return [] }
         let string = text as NSString
         var found: [NSTextCheckingResult] = []
-        let budget = ThreadTimeBudget(Self.timePerName)
+        let started = ThreadTimeBudget.now()
+        let budget = ThreadTimeBudget(nanoseconds: timeUsed.timeForName(length: string.length), from: started)
         // The block is called with each match, and now and then while a long one is looked for.
         regex.enumerateMatches(
             in: text, options: [.reportProgress], range: NSRange(location: 0, length: string.length)
@@ -102,11 +143,13 @@ public struct RenamePattern: @unchecked Sendable {
             if let result {
                 found.append(result)
             } else if budget.isSpent {
-                gaveUp.set()
+                timeUsed.setOver()
                 stop.pointee = true
             }
         }
-        guard !gaveUp.isSet else { return [] }
+        // Names too quick for the block to be called between matches still add up.
+        timeUsed.add(ThreadTimeBudget.now() - started)
+        guard !timeUsed.isOver else { return [] }
         func substring(_ range: NSRange) -> String? {
             range.location == NSNotFound ? nil : string.substring(with: range)
         }

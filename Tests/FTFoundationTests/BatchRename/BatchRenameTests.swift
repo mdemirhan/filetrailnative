@@ -213,6 +213,34 @@ struct PatternTimeLimitTests {
         #expect(made.renameCount == 0)
     }
 
+    // Names that each stay inside the limit for one name add up: a thousand of them would keep the sheet for
+    // seconds at every key typed. Together they get a quarter of a second and a little for each character, then
+    // nothing is renamed and the sheet says why.
+    @Test func givesUpOnAPatternThatTakesTooLongOverAllTheNamesTogether() {
+        let settings = BatchRenameSettings(find: "(a+)+$", replaceWith: "x", useRegex: true)
+        let slow = (0..<1_000).map { item(String(repeating: "a", count: 16) + "!\($0).txt") }
+        // One such name alone is well inside its 50 ms.
+        #expect(proposed(settings, [slow[0]]).settingsError == nil)
+        let (result, seconds) = CPUTime.measureThread { proposed(settings, slow) }
+        #expect(result.settingsError == BatchRename.patternTakesTooLong)
+        #expect(result.names.allSatisfy { $0 == .unchanged })
+        #expect(seconds < 1)
+    }
+
+    // Fifty thousand ordinary names under ordinary patterns come nowhere near that limit.
+    @Test func leavesOrdinaryPatternsAloneOverFiftyThousandNames() {
+        let photos = (0..<50_000).map { item("IMG_\(1000 + $0).HEIC") }
+        let numbered = proposed(
+            BatchRenameSettings(find: "^IMG_(\\d+)$", replaceWith: "Lisbon $1", useRegex: true), photos)
+        #expect(numbered.settingsError == nil)
+        #expect(renamedName(numbered.names[49_999]) == "Lisbon 50999.HEIC")
+        let notes = (0..<50_000).map { item("2026-10-04 notes \($0).txt") }
+        let dated = proposed(
+            BatchRenameSettings(find: "(\\d{4})-(\\d{2})-(\\d{2})", replaceWith: "$3.$2.$1", useRegex: true), notes)
+        #expect(dated.settingsError == nil)
+        #expect(renamedName(dated.names[49_999]) == "04.10.2026 notes 49999.txt")
+    }
+
     // The same pattern on names it is quickly through with renames them as ever.
     @Test func leavesAPatternThatIsQuickAlone() {
         let settings = BatchRenameSettings(find: "(a+)+$", replaceWith: "x", useRegex: true)

@@ -10,7 +10,12 @@ struct ThreadTimeBudget {
 
     /// A budget of `interval` from now, on the calling thread; read it on that thread only.
     init(_ interval: DispatchTimeInterval) {
-        let (sum, overflow) = Self.now().addingReportingOverflow(Self.nanoseconds(interval))
+        self.init(nanoseconds: Self.nanoseconds(interval), from: Self.now())
+    }
+
+    /// A budget of `nanoseconds` from `start`, a reading of `now()` on the calling thread.
+    init(nanoseconds: UInt64, from start: UInt64) {
+        let (sum, overflow) = start.addingReportingOverflow(nanoseconds)
         end = overflow ? .max : sum
     }
 
@@ -20,7 +25,7 @@ struct ThreadTimeBudget {
     /// The CPU time the calling thread has used, in nanoseconds.
     static func now() -> UInt64 { clock_gettime_nsec_np(CLOCK_THREAD_CPUTIME_ID) }
 
-    private static func nanoseconds(_ interval: DispatchTimeInterval) -> UInt64 {
+    static func nanoseconds(_ interval: DispatchTimeInterval) -> UInt64 {
         switch interval {
         case .seconds(let value): UInt64(max(value, 0)) * 1_000_000_000
         case .milliseconds(let value): UInt64(max(value, 0)) * 1_000_000
