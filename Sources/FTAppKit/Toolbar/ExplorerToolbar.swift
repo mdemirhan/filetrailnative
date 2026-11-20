@@ -281,13 +281,18 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
             undoLabel: labels?.undo, redoLabel: labels?.redo)
     }
 
-    /// Whether the history has an operation for Undo (or Redo) to take.
+    /// Whether the history has an operation for Undo (or Redo) to take, or one that can't be undone for Undo to say
+    /// so of.
     func hasUndo(_ direction: UndoDirection) -> Bool {
-        undoHistory()?.top(direction) != nil
+        guard let history = undoHistory() else { return false }
+        return history.top(direction) != nil || (direction == .undo && history.cantUndoNext != nil)
     }
 
     /// Whether the Undo History button has anything to list: it shows only then.
-    var hasUndoHistory: Bool { hasUndo(.undo) || hasUndo(.redo) }
+    var hasUndoHistory: Bool {
+        guard let history = undoHistory() else { return false }
+        return !history.undoItems().isEmpty || history.top(.redo) != nil
+    }
 
     /// The toolbar's Undo or Redo: the files', even while a text field has the keyboard.
     func performFileUndo(_ command: AppCommand) {

@@ -136,6 +136,54 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // An operation that can't be undone keeps the ones before it: the list shows it where it happened, dimmed,
+        // with a lock and why, and the Undo button stays on to say so.
+        @Test func theListShowsAnOperationThatCantBeUndoneInPlaceAndUndoStaysOnToSaySo() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let history = UndoHistory()
+            let tab = try await open(harness, history)
+            let toolbar = tab.explorerToolbar
+            history.record(Self.rename("/p/a", "/p/b"))
+            history.record(
+                FinishedWrite(action: .write(.paste), log: .notUndoable(reason: .otherDiskMove), items: []))
+            toolbar.refreshStates()
+            #expect(button(tab, .undo)?.isEnabled == true)
+            #expect(button(tab, .undo)?.tooltip == "Can’t Undo (⌘Z)")
+
+            let button = try #require(toolbar.undoHistoryButton)
+            _ = button.accessibilityPerformPress()
+            let view = try #require(tab.undoHistoryUI.view)
+            #expect(view.content.undo.map(\.title) == ["Move", "Rename"])
+            func rows() -> [UndoHistoryView.TwoLineRow] {
+                view.descendants.compactMap { $0 as? UndoHistoryView.TwoLineRow }
+            }
+            #expect(rows().map(\.first.stringValue) == ["Move can’t be undone", "Rename"])
+            let cant = try #require(rows().first as? UndoHistoryView.UndoHistoryCantUndoView)
+            #expect(cant.second.stringValue.hasPrefix("Items were moved to another disk · "))
+            #expect(cant.accessibilityIdentifier() == "undoHistoryPopover.cantUndoRow")
+            #expect(cant.icon.symbolName == "lock")
+            // Dimmed beside the operation that can be undone.
+            #expect(cant.first.textColor != rows().last?.first.textColor)
+            #expect(cant.first.textColor == cant.second.textColor)
+            #expect(cant.toolTip?.hasPrefix("Done ") == true)
+
+            // Passed, Undo names the rename, and the list keeps the row.
+            history.passCantUndo()
+            toolbar.refreshStates()
+            #expect(self.button(tab, .undo)?.tooltip == "Undo Rename (⌘Z)")
+            #expect(rows().map(\.first.stringValue) == ["Move can’t be undone", "Rename"])
+
+            // The rename undone, the list still has it to show, and Undo is off.
+            let top = try #require(history.top(.undo))
+            try history.finish(.undo, entryId: top.id, done: [], leftover: [])
+            toolbar.refreshStates()
+            #expect(tab.undoHistoryUI.isOpen)
+            #expect(rows().map(\.first.stringValue) == ["Move can’t be undone"])
+            #expect(self.button(tab, .undo)?.isEnabled == false)
+            #expect(toolbar.item(.undoHistory)?.isHidden == false)
+            await harness.close()
+        }
+
         // The buttons follow the history by themselves: what the app posts at each change of it reaches the toolbar.
         @Test func theButtonsFollowTheHistoryWhenItChanges() async throws {
             let harness = try ExplorerHarness.windowless()

@@ -43,10 +43,12 @@ public struct UndoPrepared: Equatable, Sendable {
     /// The names the window asks about; their paths stay in the coordinator.
     public var nameTaken: [String]
     public var changed: [UndoQuestion.ChangedItem]
+    /// With the `cantUndo` refusal: the operation Undo met that can't be undone, for the window to say so.
+    public var cantUndo: CantUndoEntry?
 
     public init(
         ticket: String?, refusal: Refusal?, label: String?, action: WriteOperationAction?, nameTaken: [String],
-        changed: [UndoQuestion.ChangedItem]
+        changed: [UndoQuestion.ChangedItem], cantUndo: CantUndoEntry? = nil
     ) {
         self.ticket = ticket
         self.refusal = refusal
@@ -54,6 +56,7 @@ public struct UndoPrepared: Equatable, Sendable {
         self.action = action
         self.nameTaken = nameTaken
         self.changed = changed
+        self.cantUndo = cantUndo
     }
 
     static func refused(_ refusal: Refusal) -> UndoPrepared {
@@ -68,8 +71,9 @@ extension WriteCoordinator {
     /// waiting; when chosen, ⌘Z mustn't seem to do nothing.
     public nonisolated static let undoCheckWithinMs: Double = 10_000
 
-    /// What undoing (or redoing) the last operation would ask, without changing anything. It doesn't
-    /// take the write slot. `stop` ends the look (Stop on the card that is up while it lasts): nothing is undone then,
+    /// What undoing (or redoing) the last operation would ask, without changing anything on disk. It doesn't
+    /// take the write slot. An Undo that meets an operation that can't be undone is refused with it (`cantUndo`), and
+    /// the history counts it as passed. `stop` ends the look (Stop on the card that is up while it lasts): nothing is undone then,
     /// as when there is nothing to undo.
     public func prepareUndo(_ direction: UndoDirection, stop: StopSignal? = nil) async throws -> UndoPrepared {
         let history = options.undoHistory
@@ -80,7 +84,14 @@ extension WriteCoordinator {
             return .refused(.nothing)
         }
         guard let history, let entry = history.top(direction) else {
-            return .refused(direction == .undo && history?.menu().cantUndo == true ? .cantUndo : .nothing)
+            // Undo met an operation that can't be undone: nothing is undone, the window says so, and it counts as
+            // passed, so the next Undo goes on to the operation before it.
+            if direction == .undo, let met = history?.passCantUndo() {
+                var refused = UndoPrepared.refused(.cantUndo)
+                refused.cantUndo = met
+                return refused
+            }
+            return .refused(.nothing)
         }
         // Each look given up on keeps its threads until its disk answers: no more are started on top of them.
         let stuckLooks = undo.stuckLooks

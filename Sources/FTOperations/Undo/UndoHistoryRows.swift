@@ -16,10 +16,13 @@ public struct UndoHistoryRow: Equatable, Sendable {
     /// One line per item, at most `UndoHistoryRows.maxItemLines`, the last then saying how many more there are.
     public var items: [String]
     public var date: Date
+    /// Set for an operation that can't be undone, listed where it happened: the row says so and why, and Undo
+    /// doesn't take it. Its `title` is the operation's name alone ("Empty Trash"), and it has no place or items.
+    public var cantUndo: CantUndoEntry?
 }
 
 /// What the Undo History list shows, top to bottom: the operations Redo would do again, the next one last, then those
-/// Undo would undo, the next one first, and what the history starts after.
+/// done, the newest first: the ones Undo would undo and, where they happened among them, the ones it can't.
 public struct UndoHistoryContent: Equatable, Sendable {
     public var redo: [UndoHistoryRow]
     /// How many more there are past the top of `redo`, which ends with the next one.
@@ -27,9 +30,8 @@ public struct UndoHistoryContent: Equatable, Sendable {
     public var undo: [UndoHistoryRow]
     /// How many more there are past the bottom of `undo`.
     public var undoMore: Int
-    public var barrier: UndoBarrier?
 
-    /// Nothing to undo or redo: the list isn't offered.
+    /// Nothing done or undone: the list isn't offered.
     public var isEmpty: Bool { redo.isEmpty && undo.isEmpty }
 }
 
@@ -62,7 +64,7 @@ public enum UndoHistoryRows {
         _ history: UndoHistory, homePath: String, limit: Int = maxRows, cache: UndoHistoryRowCache? = nil
     ) -> UndoHistoryContent {
         let redo = history.entries(.redo)
-        let undo = history.entries(.undo)
+        let undo = history.undoItems()
         // Another history numbers its operations from 1 again.
         if let cache, cache.history !== history {
             cache.history = history
@@ -84,10 +86,20 @@ public enum UndoHistoryRows {
         return UndoHistoryContent(
             redo: redo.suffix(limit).map { rowOf($0, .redo) },
             redoMore: max(0, redo.count - limit),
-            undo: undo.reversed().prefix(limit).map { rowOf($0, .undo) },
-            undoMore: max(0, undo.count - limit),
-            // Only while the Undo list goes back to it.
-            barrier: undo.count > limit ? nil : history.barrier)
+            undo: undo.reversed().prefix(limit).map { item in
+                switch item {
+                case .entry(let entry): rowOf(entry, .undo)
+                case .cantUndo(let entry): row(entry)
+                }
+            },
+            undoMore: max(0, undo.count - limit))
+    }
+
+    /// `row`: an operation that can't be undone, as the list shows it where it happened.
+    public static func row(_ entry: CantUndoEntry) -> UndoHistoryRow {
+        UndoHistoryRow(
+            id: entry.id, icon: icon(entry.action), title: cantUndoName(entry), place: nil, placePaths: nil, items: [],
+            date: entry.date, cantUndo: entry)
     }
 
     /// When the list next reads differently for the time alone: an operation under an hour old is told by its age in
@@ -279,7 +291,12 @@ public enum UndoHistoryRows {
 
     /// The icon of the command that did it.
     static func icon(_ entry: UndoEntry) -> CommandIcon {
-        switch entry.action {
+        icon(entry.action, moves: entry.moves)
+    }
+
+    /// The icon of the command an action is; a paste that `moves` anything is a move.
+    static func icon(_ action: WriteOperationAction, moves: Bool) -> CommandIcon {
+        switch action {
         case .rename, .batchRename: .rename
         case .newFolder, .newFolderWithSelection: .newFolder
         case .pasteAsFile: .pasteAsFile
@@ -292,43 +309,56 @@ public enum UndoHistoryRows {
         case .convertImages: .convertImages
         case .moveTo: .move
         case .copyTo: .copy
-        case .paste, .undo, .redo: entry.moves ? .move : .copy
+        case .paste, .undo, .redo: moves ? .move : .copy
+        }
+    }
+
+    /// The icon of the command that did what can't be undone.
+    static func icon(_ action: FinishedWrite.Action) -> CommandIcon {
+        switch action {
+        case .emptyTrash: .emptyTrash
+        case .write(let action): icon(action, moves: false)
         }
     }
 
     // MARK: What can't be undone
 
-    /// `barrierTitle`: "Can’t undo before Delete Immediately".
-    public static func barrierTitle(_ barrier: UndoBarrier) -> String {
-        let name: String
-        switch barrier.action {
-        case .emptyTrash: name = "Empty Trash"
+    /// `cantUndoName`: the operation that can't be undone, by its command's name: "Delete Immediately".
+    public static func cantUndoName(_ entry: CantUndoEntry) -> String {
+        switch entry.action {
+        case .emptyTrash: return "Empty Trash"
         case .write(let action):
             switch action {
-            case .paste: name = barrier.reason == .otherDiskMove ? "Move" : "Paste"
-            case .copyTo: name = "Copy To"
-            case .moveTo: name = "Move To"
-            case .duplicate: name = "Duplicate"
-            case .trash: name = "Move to Trash"
-            case .deleteImmediately: name = "Delete Immediately"
-            case .rename, .batchRename: name = "Rename"
-            case .newFolder: name = "New Folder"
-            case .newFolderWithSelection: name = "New Folder with Selection"
-            case .pasteAsFile: name = "Paste as File"
-            case .newFile: name = "New File"
-            case .compress: name = "Compress"
-            case .extract: name = "Extract"
-            case .convertImages: name = ConvertImagesText.actionName
-            case .undo: name = "Undo"
-            case .redo: name = "Redo"
+            case .paste: return entry.reason == .otherDiskMove ? "Move" : "Paste"
+            // As the Undo list names them: "Move of 3 Items".
+            case .copyTo: return "Copy"
+            case .moveTo: return "Move"
+            case .duplicate: return "Duplicate"
+            case .trash: return "Move to Trash"
+            case .deleteImmediately: return "Delete Immediately"
+            case .rename, .batchRename: return "Rename"
+            case .newFolder: return "New Folder"
+            case .newFolderWithSelection: return "New Folder with Selection"
+            case .pasteAsFile: return "Paste as File"
+            case .newFile: return "New File"
+            case .compress: return "Compress"
+            case .extract: return "Extract"
+            case .convertImages: return ConvertImagesText.actionName
+            case .undo: return "Undo"
+            case .redo: return "Redo"
             }
         }
-        return "Can\u{2019}t undo before \(name)"
     }
 
-    /// `barrierReason`: why it can't be undone, "Items were deleted for good".
-    public static func barrierReason(_ barrier: UndoBarrier) -> String {
-        switch barrier.reason {
+    /// `cantUndoTitle`: what Undo says when it meets it, and the list beside its name: "Delete Immediately can’t be
+    /// undone".
+    public static func cantUndoTitle(_ entry: CantUndoEntry) -> String {
+        "\(cantUndoName(entry)) can\u{2019}t be undone"
+    }
+
+    /// `cantUndoReason`: why it can't be undone, "Items were deleted for good".
+    public static func cantUndoReason(_ entry: CantUndoEntry) -> String {
+        switch entry.reason {
         case .merge: "A folder was merged into one already there"
         case .deletedForGood, nil: "Items were deleted for good"
         case .noTrash: "Its disk has no Trash"

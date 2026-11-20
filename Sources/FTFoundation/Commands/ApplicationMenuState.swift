@@ -148,8 +148,8 @@ public enum ApplicationMenu {
         .goApplications, .goTrash, .openLocationSheet, .openHelp, .openKeyboardShortcuts,
     ]
 
-    /// What the files' Undo and Redo say: the file operation they would undo or redo, or that there is one that can't
-    /// be undone. While a text field (or another window) has the keyboard, `itemStates` says just "Undo" and "Redo".
+    /// What the files' Undo and Redo say: the file operation they would undo or redo, or that the one Undo meets next
+    /// can't be undone (choosing it then says which, and why, and the item names the operation before it). While a text field (or another window) has the keyboard, `itemStates` says just "Undo" and "Redo".
     public static func undoLabels(undo: String?, redo: String?, cantUndo: Bool) -> (undo: String, redo: String) {
         let undoLabel: String
         if cantUndo {

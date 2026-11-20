@@ -6,6 +6,8 @@
 //   was says why, and nothing stays under a hidden name; and the same for Redo after more changes.
 // - With writes that fail (no permission) and Undos stopped part way, trying again gets back to the start and Redo to
 //   the end; with failures that look like changes outside (a name taken, an item gone), nothing is lost or replaced.
+// - With operations that can't be undone among the others (merges, items deleted for good), Undo says so of each and
+//   goes on to the ones before: no item is lost or put where it never was, and every item left says why.
 // The cases come from seeds, so a failure names the seed that makes it again.
 import Darwin
 import FTFileSystem
@@ -226,13 +228,150 @@ final class UndoFuzzCase {
     func operate() async throws -> Operation? {
         let before = history.generation
         let kind = try await operateOnce()
-        // One that can't be undone (a merge) lets go of everything before it, though the next one can be undone again.
+        // One that can't be undone (a merge) stays as it is: the ones before it can still be undone, but not all the
+        // way to the start.
         if history.menu().cantUndo { undoesToTheStart = false }
         return history.generation != before ? kind : nil
     }
 
     /// Whether every operation so far could be undone, so Undo can get back to the start.
     private(set) var undoesToTheStart = true
+    /// How many times Undo met an operation that can't be undone and said so, and how many operations done before
+    /// one it went on to undo.
+    private(set) var cantUndoMet = 0
+    private(set) var undoneBeforeCantUndo = 0
+    /// How many merges went into the history as operations that can't be undone.
+    private(set) var merges = 0
+    /// Folders merge, and a file replaces the one of its name.
+    static let mergeAndReplace = CopyPastePolicy(file: .overwrite, directory: .merge, mismatch: .overwrite)
+
+    /// One operation that can't be undone, on items the operations before it may be about: a folder merged into one
+    /// of its name (moved or copied), or an item deleted from the Trash for good. Returns what it removed for good.
+    func operateCantUndo() async throws -> Set<UInt64> {
+        let items = items()
+        guard !items.isEmpty else { return [] }
+        let item = random.pick(items)
+        if item.isFolder, random.chance(0.7) {
+            let into = folders().filter { folder in
+                folder != item.path && !folder.hasPrefix("\(item.path)/") && folder != NodePath.dirname(item.path)
+            }
+            guard !into.isEmpty else { return [] }
+            let destination = random.pick(into)
+            let there = "\(destination)/\(NodePath.basename(item.path))"
+            if !UndoDisk.exists(there) {
+                // A folder of that name to merge into, as if made in another app.
+                log.append("outside: new folder \(relative(there))")
+                try UndoDisk.mkdir(there)
+                notePlaces()
+            } else if !UndoDisk.isDirectory(there) {
+                return []
+            }
+            let mode: CopyPasteMode = random.chance(0.5) ? .cut : .copy
+            log.append("merge (\(mode.rawValue)) \(relative(item.path)) -> \(relative(destination))")
+            let run = try await runPaste(
+                mode: mode, sources: [item.path], into: destination, policy: Self.mergeAndReplace,
+                fileSystem: pasteFileSystem)
+            if let result = run.result, let undoLog = result.undoLog {
+                var changed = true
+                if case .undoable(let units) = undoLog, units.isEmpty { changed = false }
+                if changed {
+                    history.record(
+                        FinishedWrite(
+                            action: .write(.paste), log: undoLog, items: result.items.map(WriteOperationItem.init)))
+                }
+            }
+            if history.menu().cantUndo {
+                undoesToTheStart = false
+                merges += 1
+            }
+            return []
+        }
+        // An item a Move to Trash put in the Trash, deleted from there for good.
+        let inTrash = UndoDisk.names(trashDir)
+        guard !inTrash.isEmpty else { return [] }
+        let path = "\(trashDir)/\(random.pick(inTrash))"
+        let before = ids()
+        log.append("delete for good \(relative(path))")
+        _ = try await finish { try await coordinator.deleteImmediately(paths: [path], window: window) }
+        if history.menu().cantUndo { undoesToTheStart = false }
+        return before.subtracting(ids())
+    }
+
+    /// Where each item outside the Trash folders is, by its id: the folder it is in, by id, and its name.
+    func places() -> [UInt64: String] {
+        var places: [UInt64: String] = [:]
+        for item in items() {
+            guard let ino = UndoDisk.ino(item.path), let parent = UndoDisk.ino(NodePath.dirname(item.path)) else {
+                continue
+            }
+            places[ino] = "\(parent)/\(NodePath.basename(item.path))"
+        }
+        return places
+    }
+
+    /// Every place each item has been at the moments `notePlaces` was called.
+    private(set) var placesSeen: [UInt64: Set<String>] = [:]
+
+    /// Every place an item of each kind has been at those moments, as "place kind", whichever item it was.
+    private(set) var placesHeld: Set<String> = []
+
+    func notePlaces() {
+        for item in items() {
+            guard let ino = UndoDisk.ino(item.path), let parent = UndoDisk.ino(NodePath.dirname(item.path)) else {
+                continue
+            }
+            let place = "\(parent)/\(NodePath.basename(item.path))"
+            placesSeen[ino, default: []].insert(place)
+            placesHeld.insert("\(place) \(item.isFolder ? "dir" : "file")")
+        }
+    }
+
+    /// The items that are now somewhere they never were: not a place noted for them, nor one of those with a number
+    /// added to the name ("a 2.txt", as Undo puts back an item whose name is taken).
+    ///
+    /// Unless `exactItems`, an item is also let be where another item of its kind was under that name: Undo takes an
+    /// item of the same kind, found under the name and in the folder its own item was left in, for its item when it
+    /// moves or renames it back (`UndoPlan.isExpectedItem`, for a document another app saved by replacing its file).
+    /// An operation that can't be undone can leave such an item there (a merge that copied a folder of that name
+    /// in), and the Undo of an older operation then moves that one. `UNDO_FUZZ_EXACT_ITEMS=1` counts those as
+    /// misplaced.
+    func misplaced(exactItems: Bool = UndoFuzzTests.exactItems) -> [String] {
+        let kinds = Dictionary(
+            items().compactMap { item in UndoDisk.ino(item.path).map { ($0, item.isFolder ? "dir" : "file") } },
+            uniquingKeysWith: { first, _ in first })
+        return places().compactMap { ino, place in
+            let seen = placesSeen[ino] ?? []
+            if seen.contains(place) || seen.contains(Self.withoutNumber(place)) { return nil }
+            if !exactItems, let kind = kinds[ino],
+                placesHeld.contains("\(place) \(kind)") || placesHeld.contains("\(Self.withoutNumber(place)) \(kind)")
+            {
+                return nil
+            }
+            return "id \(ino) at \(place), was at \(seen.sorted().joined(separator: ", "))"
+        }.sorted()
+    }
+
+    /// The folders by id, to read `misplaced` with.
+    func folderIds() -> String {
+        ([root] + items().filter(\.isFolder).map(\.path)).map { "\(UndoDisk.ino($0) ?? 0)=\(relative($0))" }
+            .joined(separator: " ")
+    }
+
+    /// "12/a 2.txt" as "12/a.txt", "12/F 3" as "12/F".
+    static func withoutNumber(_ place: String) -> String {
+        let name = NodePath.basename(place)
+        let stem: Substring
+        let ext: Substring
+        if let dot = name.lastIndex(of: "."), dot != name.startIndex {
+            (stem, ext) = (name[..<dot], name[dot...])
+        } else {
+            (stem, ext) = (name[...], "")
+        }
+        guard let space = stem.lastIndex(of: " "), stem[stem.index(after: space)...].allSatisfy(\.isNumber),
+            stem.index(after: space) != stem.endIndex
+        else { return place }
+        return "\(NodePath.dirname(place))/\(stem[..<space])\(ext)"
+    }
 
     private func operateOnce() async throws -> Operation {
         let items = items()
@@ -398,15 +537,30 @@ final class UndoFuzzCase {
 
     /// `undoAll`: undoes (or redoes) until there is nothing left, as many times as it takes: what failed or was
     /// stopped stays on the list for the next try. With `toEnd` off, only `tries` times, and what is left stays.
+    /// An Undo that meets an operation that can't be undone undoes nothing, once, and the next goes on to the
+    /// operations before it.
     func undoAll(_ direction: UndoDirection, tries: Int = 50, toEnd: Bool = true) async throws
         -> [WriteOperationEvent]
     {
         var results: [WriteOperationEvent] = []
+        var met = false
         for _ in 0..<tries {
+            let before = snapshot()
             let prepared = try await coordinator.prepareUndo(direction)
-            guard let ticket = prepared.ticket else { return results }
+            guard let ticket = prepared.ticket else {
+                guard prepared.refusal == .cantUndo else { return results }
+                if snapshot() != before { throw OperationError("An Undo that said it can't undo changed something.") }
+                log.append("undo: \(prepared.cantUndo.map(UndoHistoryRows.cantUndoTitle) ?? "can't be undone")")
+                cantUndoMet += 1
+                met = true
+                continue
+            }
             if let end = try await finish({ try await coordinator.startUndo(ticket: ticket, window: window) }) {
                 results.append(end)
+                if met, direction == .undo {
+                    undoneBeforeCantUndo += 1
+                    log.append("undo before it: \(end.status) \(describe(end))")
+                }
             }
         }
         if !toEnd { return results }
@@ -441,6 +595,8 @@ final class FuzzLocked<Value: Sendable>: @unchecked Sendable {
 struct UndoFuzzTests {
     static let firstSeed = Int(ProcessInfo.processInfo.environment["UNDO_FUZZ_SEED"] ?? "") ?? 1
     static let cases = Int(ProcessInfo.processInfo.environment["UNDO_FUZZ_CASES"] ?? "") ?? 60
+    /// Whether an item Undo moved must be the very item the operation was about (`UndoFuzzCase.misplaced`).
+    static let exactItems = ProcessInfo.processInfo.environment["UNDO_FUZZ_EXACT_ITEMS"] == "1"
 
     private struct Failure: Error, CustomStringConvertible {
         var description: String
@@ -511,13 +667,15 @@ struct UndoFuzzTests {
                 if let kind = try await testCase.operate() { recorded.insert(kind) }
             }
             let end = testCase.snapshot()
-            // Undo goes back only as far as the last operation that can't be undone.
+            // Undo goes past an operation that can't be undone (a merge) to the ones before it, which may find their
+            // items where the merge put them: it gets back to the start only when every operation could be undone.
             let fullyUndoable = testCase.undoesToTheStart
             let undone = try await testCase.undoAll(.undo)
             undoneOperations += undone.count
-            for result in undone where result.status != .completed {
+            for result in undone where fullyUndoable && result.status != .completed {
                 throw fail(seed, testCase, "An Undo ended \"\(result.status)\": \(result.result?.error ?? "")")
             }
+            try checkSaidWhy(seed, testCase, undone)
             if fullyUndoable { try checkBackTo(start, seed, testCase, "Undo didn't get back to the start.") }
             _ = try await testCase.undoAll(.redo)
             try checkBackTo(end, seed, testCase, "Redo didn't get back to the end.")
@@ -578,8 +736,9 @@ struct UndoFuzzTests {
                 let items = result.result?.items ?? []
                 if items.contains(where: { $0.status == .failed }) { failed += 1 }
                 if result.status == .partial, result.result?.error?.hasPrefix("Stopped") == true { stopped += 1 }
-                // Only what failed is left, never anything skipped: nothing changed outside.
-                if items.contains(where: { $0.status == .skipped }) {
+                // Only what failed is left, never anything skipped: nothing changed outside, and no operation that
+                // can't be undone took an item an earlier one is about.
+                if fullyUndoable, items.contains(where: { $0.status == .skipped }) {
                     throw fail(seed, testCase, "An item was skipped: \(items)")
                 }
             }
@@ -606,8 +765,9 @@ struct UndoFuzzTests {
                 guard let result = try await testCase.undoAll(direction, tries: 1, toEnd: false).first else { continue }
                 turns += 1
                 testCase.log.append("\(direction.rawValue): \(result.status) \(testCase.describe(result))")
-                // Only what failed is left, never anything skipped: nothing changed outside.
-                if (result.result?.items ?? []).contains(where: { $0.status == .skipped }) {
+                // Only what failed is left, never anything skipped: nothing changed outside, and no operation that
+                // can't be undone took an item an earlier one is about.
+                if fullyUndoable, (result.result?.items ?? []).contains(where: { $0.status == .skipped }) {
                     throw fail(seed, testCase, "An item was skipped: \(result.result?.items ?? [])")
                 }
             }
@@ -620,6 +780,75 @@ struct UndoFuzzTests {
         }
         if Self.cases >= 50 {
             #expect(turns > Self.cases)
+        }
+    }
+
+    // Operations that can't be undone (folders merged, items deleted for good) among the others, on the same items:
+    // Undo says each can't be undone, changing nothing, and goes on to the operations before it, which find their
+    // items moved, replaced or gone. No item is lost, none ends up somewhere neither it nor an item of its kind and
+    // name ever was (`UndoFuzzCase.misplaced` says why the second), every item left says why, and Redo of what was
+    // undone keeps to the same.
+    @Test func losesAndMisplacesNothingUndoingOperationsBeforeOnesThatCantBeUndone() async throws {
+        var met = 0
+        var undoneBefore = 0
+        var left = 0
+        var merges = 0
+        try await eachCase(offset: 3 * Self.seedsApart) { seed, testCase in
+            testCase.notePlaces()
+            for _ in 0..<testCase.random.integer(2, 7) {
+                if testCase.random.chance(0.35) {
+                    _ = try await testCase.operateCantUndo()
+                } else {
+                    _ = try await testCase.operate()
+                }
+                testCase.notePlaces()
+            }
+            let before = testCase.ids()
+            let undone = try await testCase.undoAll(.undo)
+            let after = testCase.ids()
+            for id in before where !after.contains(id) {
+                throw fail(seed, testCase, "An item (id \(id)) was lost by Undo.")
+            }
+            let misplaced = testCase.misplaced()
+            if !misplaced.isEmpty {
+                throw fail(
+                    seed, testCase,
+                    "Undo put an item where it never was:\n\(misplaced.joined(separator: "\n"))\nFolders: \(testCase.folderIds())"
+                )
+            }
+            try checkSaidWhy(seed, testCase, undone)
+            try checkNoHiddenLeftovers(seed, testCase)
+            if testCase.history.top(.undo) != nil || testCase.history.cantUndoNext != nil {
+                throw fail(seed, testCase, "Undo left something it never got to.")
+            }
+            left += undone.filter { $0.status != .completed }.count
+            // And Redo of what was undone.
+            testCase.notePlaces()
+            let redone = try await testCase.undoAll(.redo)
+            let afterRedo = testCase.ids()
+            for id in before where !afterRedo.contains(id) {
+                throw fail(seed, testCase, "An item (id \(id)) was lost by Redo.")
+            }
+            let misplacedByRedo = testCase.misplaced()
+            if !misplacedByRedo.isEmpty {
+                throw fail(
+                    seed, testCase,
+                    "Redo put an item where it never was:\n\(misplacedByRedo.joined(separator: "\n"))\nFolders: \(testCase.folderIds())"
+                )
+            }
+            try checkSaidWhy(seed, testCase, redone)
+            try checkNoHiddenLeftovers(seed, testCase)
+            met += testCase.cantUndoMet
+            undoneBefore += testCase.undoneBeforeCantUndo
+            merges += testCase.merges
+        }
+        // In a run long enough, Undo met operations that can't be undone, undid operations before them, and some of
+        // those found items they had to leave.
+        if Self.cases >= 50 {
+            #expect(met > Self.cases / 5)
+            #expect(merges > Self.cases / 10)
+            #expect(undoneBefore > Self.cases / 5)
+            #expect(left > 0)
         }
     }
 

@@ -210,7 +210,8 @@ final class ApplicationMenuSync {
         ApplicationMenu.WindowFacts(
             explorerFocused: explorerFocused, explorerWindowCount: dependencies.windows.count,
             otherWindowFocused: otherWindowFocused,
-            undoAvailable: (undo: undoHistory.undo != nil, redo: undoHistory.redo != nil),
+            // "Can't Undo" stays on: choosing it says which operation can't be undone, and why.
+            undoAvailable: (undo: undoHistory.undo != nil || undoHistory.cantUndo, redo: undoHistory.redo != nil),
             undoLabels: ApplicationMenu.undoLabels(
                 undo: undoHistory.undo, redo: undoHistory.redo, cantUndo: undoHistory.cantUndo))
     }

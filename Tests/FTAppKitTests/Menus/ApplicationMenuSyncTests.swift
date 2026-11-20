@@ -194,6 +194,17 @@ import Testing
         #expect(undo.title == "Can’t Undo")
         #expect(redo.title == "Redo")
         #expect(f.item("undo") === undo)
+        // It stays on: choosing it says which operation can't be undone, and the item then names the one before.
+        #expect(undo.isEnabled)
+        #expect(!redo.isEnabled)
+        f.sync.setUndoHistory(UndoHistoryMenu(undo: "Rename"))
+        f.afterTask()
+        #expect(undo.title == "Undo Rename")
+        #expect(undo.isEnabled)
+        f.sync.setUndoHistory(UndoHistoryMenu())
+        f.afterTask()
+        #expect(undo.title == "Undo")
+        #expect(!undo.isEnabled)
     }
 
     @Test func namesUndoAfterTheTaskThatChangedTheHistoryOnceForAllItsChanges() {

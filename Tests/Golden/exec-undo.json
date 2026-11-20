@@ -3713,7 +3713,7 @@
                 "undo": null
               },
               "menuAfter": {
-                "cantUndo": true,
+                "cantUndo": false,
                 "redo": null,
                 "undo": null
               },
@@ -3789,12 +3789,12 @@
               "changes": [],
               "direction": "redo",
               "menu": {
-                "cantUndo": true,
+                "cantUndo": false,
                 "redo": null,
                 "undo": null
               },
               "menuAfter": {
-                "cantUndo": true,
+                "cantUndo": false,
                 "redo": null,
                 "undo": null
               },
@@ -6395,7 +6395,7 @@
                 "undo": null
               },
               "menuAfter": {
-                "cantUndo": true,
+                "cantUndo": false,
                 "redo": null,
                 "undo": null
               },
@@ -6448,12 +6448,12 @@
               "changes": [],
               "direction": "redo",
               "menu": {
-                "cantUndo": true,
+                "cantUndo": false,
                 "redo": null,
                 "undo": null
               },
               "menuAfter": {
-                "cantUndo": true,
+                "cantUndo": false,
                 "redo": null,
                 "undo": null
               },
@@ -8572,7 +8572,7 @@
                 "undo": null
               },
               "menuAfter": {
-                "cantUndo": true,
+                "cantUndo": false,
                 "redo": null,
                 "undo": null
               },
@@ -8642,12 +8642,12 @@
               "changes": [],
               "direction": "redo",
               "menu": {
-                "cantUndo": true,
+                "cantUndo": false,
                 "redo": null,
                 "undo": null
               },
               "menuAfter": {
-                "cantUndo": true,
+                "cantUndo": false,
                 "redo": null,
                 "undo": null
               },

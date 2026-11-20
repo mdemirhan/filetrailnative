@@ -1,4 +1,5 @@
 import FTFoundation
+import Foundation
 import Testing
 
 @testable import FTOperations
@@ -131,13 +132,101 @@ struct UndoHistoryTests {
         #expect(history.generation == generation)
     }
 
-    @Test func leavesNothingToUndoAfterAnOperationThatCantBeUndoneUntilTheNextOne() {
+    private static let emptiedTrash = FinishedWrite(
+        action: .emptyTrash, log: .notUndoable(reason: .deletedForGood), items: [])
+
+    @Test func keepsTheOperationsBeforeOneThatCantBeUndoneWhichUndoMeetsFirst() throws {
+        let history = UndoHistory(clock: { Date(timeIntervalSince1970: 5) })
+        history.record(undoable(.rename, [moved("/a", "/b")]))
+        history.record(Self.emptiedTrash)
+        // The rename stays, behind the one that can't be undone: Undo takes nothing yet.
+        #expect(history.menu() == UndoMenuLabels(undo: nil, redo: nil, cantUndo: true))
+        #expect(history.top(.undo) == nil)
+        #expect(history.entries(.undo).map(\.action) == [.rename])
+        let met = CantUndoEntry(
+            id: 2, action: .emptyTrash, reason: .deletedForGood, date: Date(timeIntervalSince1970: 5))
+        #expect(history.cantUndoNext == met)
+        // Said once, it is passed: Undo names the rename again, and it stays in the list where it happened.
+        let generation = history.generation
+        var passed = met
+        passed.passed = true
+        #expect(history.passCantUndo() == passed)
+        #expect(history.generation == generation + 1)
+        #expect(history.cantUndoNext == nil)
+        #expect(history.passCantUndo() == nil)
+        #expect(history.menu() == UndoMenuLabels(undo: "Rename", redo: nil, cantUndo: false))
+        #expect(history.undoItems().map(\.id) == [1, 2])
+        // The rename undone, the one that can't be is all the list holds, and Undo has nothing to take or say.
+        try finish(history, done: units([moved("/b", "/a")]))
+        #expect(history.menu() == UndoMenuLabels(undo: nil, redo: "Rename", cantUndo: false))
+        #expect(history.undoItems() == [.cantUndo(passed)])
+        // Redone, the rename is the newest.
+        try finish(history, .redo, done: units([moved("/a", "/b")]))
+        #expect(history.undoItems().map(\.id) == [2, 4])
+        #expect(history.menu() == UndoMenuLabels(undo: "Rename", redo: nil, cantUndo: false))
+    }
+
+    @Test func undoesAnOperationAfterOneThatCantBeUndoneThenMeetsIt() throws {
         let history = UndoHistory()
         history.record(undoable(.rename, [moved("/a", "/b")]))
-        history.record(FinishedWrite(action: .emptyTrash, log: .notUndoable(reason: .deletedForGood), items: []))
-        #expect(history.menu() == UndoMenuLabels(undo: nil, redo: nil, cantUndo: true))
+        history.record(Self.emptiedTrash)
         history.record(undoable(.newFolder, [created("/F")]))
         #expect(history.menu() == UndoMenuLabels(undo: "New Folder", redo: nil, cantUndo: false))
+        try finish(history, done: units([trashed("/F")]))
+        #expect(history.menu() == UndoMenuLabels(undo: nil, redo: "New Folder", cantUndo: true))
+        history.passCantUndo()
+        #expect(history.menu() == UndoMenuLabels(undo: "Rename", redo: "New Folder", cantUndo: false))
+    }
+
+    @Test func meetsEachOperationThatCantBeUndoneInTurnAndANewOneAgain() {
+        let history = UndoHistory()
+        history.record(undoable(.rename, [moved("/a", "/b")]))
+        history.record(Self.emptiedTrash)
+        history.record(
+            FinishedWrite(action: .write(.paste), log: .notUndoable(reason: .otherDiskMove), items: []))
+        #expect(history.cantUndoNext?.reason == .otherDiskMove)
+        history.passCantUndo()
+        #expect(history.cantUndoNext?.action == .emptyTrash)
+        #expect(history.menu().cantUndo)
+        history.passCantUndo()
+        #expect(history.menu() == UndoMenuLabels(undo: "Rename", redo: nil, cantUndo: false))
+        // One done since is met again, though the earlier ones were passed.
+        history.record(Self.emptiedTrash)
+        #expect(history.menu() == UndoMenuLabels(undo: nil, redo: nil, cantUndo: true))
+        #expect(history.cantUndoNext?.id == 4)
+    }
+
+    @Test func keepsWhatAStopLeftUnderTheOneThatCantBeUndoneAndWasPassed() throws {
+        let history = UndoHistory()
+        history.record(undoable(.trash, [trashed("/a")], [trashed("/b")]))
+        history.record(Self.emptiedTrash)
+        history.passCantUndo()
+        try finish(history, done: units([moved("/x/b", "/b")]), leftover: units([trashed("/a")]))
+        #expect(history.undoItems().map(\.id) == [1, 2])
+        #expect(history.top(.undo)?.units == units([trashed("/a")]))
+        #expect(history.menu().cantUndo == false)
+    }
+
+    @Test func leavesNothingToRedoAfterAnOperationThatCantBeUndone() throws {
+        let history = UndoHistory()
+        history.record(undoable(.rename, [moved("/a", "/b")]))
+        try finish(history, done: units([moved("/b", "/a")]))
+        history.record(Self.emptiedTrash)
+        #expect(history.menu() == UndoMenuLabels(undo: nil, redo: nil, cantUndo: true))
+    }
+
+    @Test func letsGoOfTheOldestThatCantBeUndoneWithTheOldestOperations() {
+        let history = UndoHistory(maxItemSteps: 2)
+        history.record(Self.emptiedTrash)
+        history.record(undoable(.rename, [moved("/a", "/b")]))
+        #expect(history.undoItems().map(\.id) == [1, 2])
+        // It counts as one step: past the history's size it goes first, as the oldest.
+        history.record(undoable(.rename, [moved("/b", "/c")]))
+        #expect(history.undoItems().map(\.id) == [2, 3])
+        // Never the one just done.
+        let small = UndoHistory(maxItemSteps: 0)
+        small.record(Self.emptiedTrash)
+        #expect(small.cantUndoNext?.id == 1)
     }
 
     @Test func countsChangesAndTellsAboutThem() throws {

@@ -738,8 +738,8 @@ final class WindowWriteActions {
     }
 
     /// `startUndo`: undoes (or redoes) the last file operation: asks first about what the coordinator found it can't
-    /// simply do, then runs all of it as any operation runs, or none of it. Nothing to undo (or Can't Undo) does
-    /// nothing.
+    /// simply do, then runs all of it as any operation runs, or none of it. Nothing to undo does nothing; an Undo
+    /// that meets an operation that can't be undone undoes nothing and says so in a toast.
     func startUndo(_ direction: UndoDirection) async -> CopyLikeOutcome {
         let action: WriteOperationAction = direction == .undo ? .undo : .redo
         if refuseWhileBusy(.operation(action)) { return .cancelled }
@@ -773,6 +773,11 @@ final class WindowWriteActions {
             if prepared.refusal == .busy {
                 dialogs.showBusy(.operation(action), in: window)
                 return .blocked(message: WriteDialogs.busyMessage)
+            }
+            // Undo met an operation that can't be undone: nothing is undone, and it is said, once. The next Undo
+            // goes on to the operation before it.
+            if let met = prepared.cantUndo {
+                dialogs.toast(UndoHistoryRows.cantUndoTitle(met), UndoHistoryRows.cantUndoReason(met), window)
             }
             return .cancelled
         }

@@ -155,26 +155,58 @@ struct UndoHistoryRowsTests {
         #expect(UndoHistoryRows.content(UndoHistory(), homePath: Self.home).isEmpty)
     }
 
-    @Test func saysWhatTheHistoryStartsAfterUntilItLetsGoOfTheOldest() {
-        let history = UndoHistory(maxItemSteps: 2, clock: { Date(timeIntervalSince1970: 5) })
-        history.record(
-            FinishedWrite(
-                action: .write(.deleteImmediately), log: .notUndoable(reason: .deletedForGood), items: []))
-        let barrier = UndoBarrier(
-            action: .write(.deleteImmediately), reason: .deletedForGood, date: Date(timeIntervalSince1970: 5))
-        #expect(history.barrier == barrier)
-        #expect(UndoHistoryRows.barrierTitle(barrier) == "Can\u{2019}t undo before Delete Immediately")
-        #expect(UndoHistoryRows.barrierReason(barrier) == "Items were deleted for good")
-        // An operation after it keeps it, below the operation.
+    @Test func listsAnOperationThatCantBeUndoneWhereItHappenedUntilItIsTheOldestLetGo() throws {
+        let history = UndoHistory(maxItemSteps: 3, clock: { Date(timeIntervalSince1970: 5) })
         let rename = FinishedWrite(
             action: .write(.rename), log: .undoable(units: [UndoUnit(steps: [moved("/p/a", "/p/b")])]), items: [])
         history.record(rename)
+        history.record(
+            FinishedWrite(
+                action: .write(.deleteImmediately), log: .notUndoable(reason: .deletedForGood), items: []))
+        let entry = CantUndoEntry(
+            id: 2, action: .write(.deleteImmediately), reason: .deletedForGood, date: Date(timeIntervalSince1970: 5))
+        #expect(UndoHistoryRows.cantUndoTitle(entry) == "Delete Immediately can\u{2019}t be undone")
+        #expect(UndoHistoryRows.cantUndoReason(entry) == "Items were deleted for good")
+        // Newest, it is the first row, as not yet passed.
+        #expect(UndoHistoryRows.content(history, homePath: Self.home).undo.map(\.cantUndo) == [entry, nil])
+        // Between the operation before it and the one after, newest first; the rows of the others as they were.
         history.record(rename)
-        #expect(UndoHistoryRows.content(history, homePath: Self.home).barrier == barrier)
-        // Past the history's size the oldest goes, and the history no longer starts right after it.
+        let content = UndoHistoryRows.content(history, homePath: Self.home)
+        #expect(content.undo.map(\.id) == [3, 2, 1])
+        #expect(content.undo.map(\.cantUndo) == [nil, entry, nil])
+        #expect(
+            content.undo[1]
+                == UndoHistoryRow(
+                    id: 2, icon: .deleteImmediately, title: "Delete Immediately", place: nil, placePaths: nil,
+                    items: [], date: Date(timeIntervalSince1970: 5), cantUndo: entry))
+        #expect(content.undo[0].items == ["a → b"])
+        // Passed, once the operation after it is undone, it is listed as passed, in the same place.
+        let top = try #require(history.top(.undo))
+        try history.finish(.undo, entryId: top.id, done: [UndoUnit(steps: [moved("/p/b", "/p/a")])], leftover: [])
+        history.passCantUndo()
+        var passed = entry
+        passed.passed = true
+        let after = UndoHistoryRows.content(history, homePath: Self.home)
+        #expect(after.undo.map(\.cantUndo) == [passed, nil])
+        #expect(after.redo.map(\.id) == [4])
+        try history.finish(.redo, entryId: 4, done: [UndoUnit(steps: [moved("/p/a", "/p/b")])], leftover: [])
+        #expect(UndoHistoryRows.content(history, homePath: Self.home).undo.map(\.id) == [5, 2, 1])
+        // It counts among the rows shown, and among those past them.
+        let limited = UndoHistoryRows.content(history, homePath: Self.home, limit: 1)
+        #expect(limited.undo.map(\.id) == [5])
+        #expect(limited.undoMore == 2)
+        // Past the history's size the oldest go, it among them in its turn.
         history.record(rename)
-        #expect(history.barrier == nil)
-        #expect(history.entries(.undo).count == 2)
+        #expect(UndoHistoryRows.content(history, homePath: Self.home).undo.map(\.id) == [6, 5, 2])
+        history.record(rename)
+        #expect(UndoHistoryRows.content(history, homePath: Self.home).undo.map(\.id) == [7, 6, 5])
+        // Alone, it is still listed.
+        let alone = UndoHistory()
+        alone.record(FinishedWrite(action: .emptyTrash, log: .notUndoable(reason: .deletedForGood), items: []))
+        let only = UndoHistoryRows.content(alone, homePath: Self.home)
+        #expect(!only.isEmpty)
+        #expect(only.undo.map(\.title) == ["Empty Trash"])
+        #expect(only.undo.map(\.icon) == [.emptyTrash])
     }
 
     // An operation on 100,000 items is told at once: where it happened is read from its first 1,000 items, and the
@@ -338,13 +370,14 @@ struct UndoHistoryRowsTests {
 
     @Test func namesEachThingThatCantBeUndone() {
         func title(_ action: FinishedWrite.Action, _ reason: CantUndoReason?) -> String {
-            UndoHistoryRows.barrierTitle(UndoBarrier(action: action, reason: reason, date: .distantPast))
+            UndoHistoryRows.cantUndoTitle(CantUndoEntry(id: 1, action: action, reason: reason, date: .distantPast))
         }
-        #expect(title(.emptyTrash, nil) == "Can\u{2019}t undo before Empty Trash")
-        #expect(title(.write(.paste), .otherDiskMove) == "Can\u{2019}t undo before Move")
-        #expect(title(.write(.paste), .merge) == "Can\u{2019}t undo before Paste")
+        #expect(title(.emptyTrash, nil) == "Empty Trash can\u{2019}t be undone")
+        #expect(title(.write(.paste), .otherDiskMove) == "Move can\u{2019}t be undone")
+        #expect(title(.write(.paste), .merge) == "Paste can\u{2019}t be undone")
         let reason = { (why: CantUndoReason) in
-            UndoHistoryRows.barrierReason(UndoBarrier(action: .emptyTrash, reason: why, date: .distantPast))
+            UndoHistoryRows.cantUndoReason(
+                CantUndoEntry(id: 1, action: .emptyTrash, reason: why, date: .distantPast))
         }
         #expect(reason(.otherDiskMove) == "Items were moved to another disk")
         #expect(reason(.noTrash) == "Its disk has no Trash")

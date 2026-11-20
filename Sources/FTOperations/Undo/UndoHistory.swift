@@ -15,16 +15,49 @@ public struct UndoEntry: Equatable, Sendable {
     public var date: Date
 }
 
-/// The operation that couldn't be undone: the history starts after it.
-public struct UndoBarrier: Equatable, Sendable {
+/// An operation that couldn't be undone, kept in the history where it happened: what it was, when, and why it can't
+/// be undone. Undo stops at it once, to say so (`passed`), and then goes on to the operations before it.
+public struct CantUndoEntry: Equatable, Sendable {
+    public var id: Int
     public var action: FinishedWrite.Action
     /// Why it can't be undone; nil for emptying the Trash.
     public var reason: CantUndoReason?
     public var date: Date
+    /// Whether Undo has said that it can't be undone: the next Undo goes on to the operation before it.
+    public var passed = false
+
+    public init(id: Int, action: FinishedWrite.Action, reason: CantUndoReason?, date: Date, passed: Bool = false) {
+        self.id = id
+        self.action = action
+        self.reason = reason
+        self.date = date
+        self.passed = passed
+    }
+}
+
+/// One thing in the Undo list: an operation Undo can undo, or one it can't.
+public enum UndoHistoryItem: Equatable, Sendable {
+    case entry(UndoEntry)
+    case cantUndo(CantUndoEntry)
+
+    var id: Int {
+        switch self {
+        case .entry(let entry): entry.id
+        case .cantUndo(let entry): entry.id
+        }
+    }
+
+    /// What it counts for in the history's size: its item steps, or one.
+    var size: Int {
+        switch self {
+        case .entry(let entry): entry.size
+        case .cantUndo: 1
+        }
+    }
 }
 
 /// What the Edit menu shows after "Undo " and "Redo " ("Move of “a.txt”"), or nil when there is nothing; `cantUndo`
-/// when the last operation can't be undone.
+/// when the next thing Undo meets is an operation that can't be undone, which it then says, undoing nothing.
 public struct UndoMenuLabels: Equatable, Sendable {
     public var undo: String?
     public var redo: String?
@@ -58,13 +91,9 @@ public final class UndoHistory {
 
     private let maxItemSteps: Int
     private let clock: () -> Date
-    private var undoList: [UndoEntry] = []
+    /// The operations done, oldest first: those Undo can undo and, where they happened among them, those it can't.
+    private var undoList: [UndoHistoryItem] = []
     private var redoList: [UndoEntry] = []
-    // Set by an operation that can't be undone, until the next one that can.
-    private var cantUndo = false
-    /// The last operation that couldn't be undone, while the Undo list goes back to it: let go of once the oldest
-    /// operations after it are.
-    public private(set) var barrier: UndoBarrier?
     private var nextId = 1
     /// Goes up with every change, so an Undo prepared before one is refused.
     public private(set) var generation = 0
@@ -95,15 +124,14 @@ public final class UndoHistory {
         var size = undoList.reduce(0) { $0 + $1.size } + redoList.reduce(0) { $0 + $1.size }
         while size > maxItemSteps, let first = undoList.first, !keep.contains(first.id) {
             size -= undoList.removeFirst().size
-            barrier = nil
         }
         while size > maxItemSteps, let first = redoList.first, !keep.contains(first.id) {
             size -= redoList.removeFirst().size
         }
     }
 
-    /// `record`: a finished operation. One that can be undone goes on top and leaves nothing to redo; one that can't
-    /// leaves nothing to undo either.
+    /// `record`: a finished operation, on top, leaving nothing to redo. One that can't be undone is kept as what it
+    /// was and why, and the operations before it stay: Undo says it can't be undone, once, and then goes on to them.
     public func record(_ finished: FinishedWrite) {
         // One that changed nothing leaves the history as it was (callers leave it out too).
         if case .undoable(let units) = finished.log, units.isEmpty {
@@ -112,58 +140,100 @@ public final class UndoHistory {
         redoList.removeAll()
         // (Emptying the Trash is never undoable.)
         guard case .write(let action) = finished.action, case .undoable(let units) = finished.log else {
-            undoList.removeAll()
-            cantUndo = true
             var reason: CantUndoReason?
             if case .notUndoable(let why) = finished.log { reason = why }
-            barrier = UndoBarrier(action: finished.action, reason: reason, date: clock())
+            let entry = CantUndoEntry(id: nextId, action: finished.action, reason: reason, date: clock())
+            nextId += 1
+            undoList.append(.cantUndo(entry))
+            keepWithinSize([entry.id])
             changed()
             return
         }
         let entry = entryOf(units, action, Self.movesAnything(units))
-        undoList.append(entry)
+        undoList.append(.entry(entry))
         keepWithinSize([entry.id])
-        cantUndo = false
         changed()
     }
 
-    public func top(_ direction: UndoDirection) -> UndoEntry? {
-        direction == .undo ? undoList.last : redoList.last
+    /// Where in the Undo list the next thing Undo meets is: the newest operation, past those that can't be undone
+    /// and were said so.
+    private var nextUndoIndex: Int? {
+        undoList.lastIndex { item in
+            if case .cantUndo(let entry) = item { return !entry.passed }
+            return true
+        }
     }
 
-    /// `entries`: the operations of one list, oldest first, the one Undo or Redo takes next last.
-    public func entries(_ direction: UndoDirection) -> [UndoEntry] {
-        direction == .undo ? undoList : redoList
+    /// The operation Undo (or Redo) takes next; nil for Undo while the next thing it meets can't be undone
+    /// (`cantUndoNext`).
+    public func top(_ direction: UndoDirection) -> UndoEntry? {
+        guard direction == .undo else { return redoList.last }
+        guard let index = nextUndoIndex, case .entry(let entry) = undoList[index] else { return nil }
+        return entry
     }
+
+    /// The operation that can't be undone which Undo meets next: Undo says so and undoes nothing (`passCantUndo`).
+    public var cantUndoNext: CantUndoEntry? {
+        guard let index = nextUndoIndex, case .cantUndo(let entry) = undoList[index] else { return nil }
+        return entry
+    }
+
+    /// `passCantUndo`: Undo met the operation that can't be undone and said so: the next Undo goes on to the
+    /// operation before it. It stays in the list. Returns it, or nil when Undo doesn't meet one next.
+    @discardableResult
+    public func passCantUndo() -> CantUndoEntry? {
+        guard let index = nextUndoIndex, case .cantUndo(var entry) = undoList[index] else { return nil }
+        entry.passed = true
+        undoList[index] = .cantUndo(entry)
+        changed()
+        return entry
+    }
+
+    /// `entries`: the operations of one list that can be undone or redone, oldest first.
+    public func entries(_ direction: UndoDirection) -> [UndoEntry] {
+        guard direction == .undo else { return redoList }
+        return undoList.compactMap { item in
+            if case .entry(let entry) = item { return entry }
+            return nil
+        }
+    }
+
+    /// `undoItems`: the Undo list as it happened, oldest first: its operations, and those that can't be undone among
+    /// them.
+    public func undoItems() -> [UndoHistoryItem] { undoList }
 
     /// `finish`: an Undo or Redo of `entryId` ended. `done` is what it did, in the order it did it, which is what the
     /// other direction reverses; `leftover` is what a stop left to do and what failed to be written, kept on top so
     /// the next Undo goes on from there. What the disk check refused (changed outside the app) is dropped.
     public func finish(_ direction: UndoDirection, entryId: Int, done: [UndoUnit], leftover: [UndoUnit]) throws {
-        let list = direction == .undo ? undoList : redoList
         // Nothing else can change the history while an Undo holds the write slot.
-        guard let entry = list.last, entry.id == entryId else {
+        guard let entry = top(direction), entry.id == entryId else {
             let verb = direction == .undo ? "undone" : "redone"
             throw UndoHistoryError(
                 message:
                     "The \(direction.command) list changed while one of its operations was being \(verb).")
         }
         var kept: Set<Int> = []
-        var own = list
-        own.removeLast()
+        var left: UndoEntry?
         if !leftover.isEmpty {
-            var left = entry
-            left.units = leftover
-            left.size = Self.itemStepCount(leftover)
-            own.append(left)
-            kept.insert(left.id)
+            var rest = entry
+            rest.units = leftover
+            rest.size = Self.itemStepCount(leftover)
+            left = rest
+            kept.insert(rest.id)
         }
-        if direction == .undo { undoList = own } else { redoList = own }
+        // What is left stays where the operation was: under any that can't be undone and were passed.
+        if direction == .redo {
+            redoList.removeLast()
+            if let left { redoList.append(left) }
+        } else if let index = nextUndoIndex {
+            if let left { undoList[index] = .entry(left) } else { undoList.remove(at: index) }
+        }
         // Each try is its own entry on the other list: what it did, exactly, so the other command puts back where
         // each item was before it, whatever was tried after it.
         if !done.isEmpty {
             let doneEntry = entryOf(done, entry.action, entry.moves)
-            if direction == .undo { redoList.append(doneEntry) } else { undoList.append(doneEntry) }
+            if direction == .undo { redoList.append(doneEntry) } else { undoList.append(.entry(doneEntry)) }
             kept.insert(doneEntry.id)
         }
         keepWithinSize(kept)
@@ -174,9 +244,9 @@ public final class UndoHistory {
     /// name whole, for a notice or a tooltip; a menu's item shortens it.
     public func menu(whole: Bool = false) -> UndoMenuLabels {
         UndoMenuLabels(
-            undo: undoList.last.map { Self.labelOf($0.action, $0.units, moves: $0.moves, inMenu: !whole) },
+            undo: top(.undo).map { Self.labelOf($0.action, $0.units, moves: $0.moves, inMenu: !whole) },
             redo: redoList.last.map { Self.labelOf($0.action, $0.units, moves: $0.moves, inMenu: !whole) },
-            cantUndo: cantUndo && undoList.isEmpty)
+            cantUndo: cantUndoNext != nil)
     }
 
     /// `onChange`: returns what stops listening.

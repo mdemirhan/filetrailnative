@@ -57,6 +57,7 @@ private final class UndoFixture {
     let session: ExplorerWriteSession
     private let host: UndoHost
     var shown: [(title: String, message: String)] = []
+    var toasts: [(title: String, message: String?)] = []
     var asked: [WriteQuestion] = []
     var answers: [Bool] = []
     /// What happens while a question is up.
@@ -88,6 +89,7 @@ private final class UndoFixture {
     var actions: WindowWriteActions {
         var dialogs = WriteDialogs()
         dialogs.show = { [weak self] title, message, _ in self?.shown.append((title, message)) }
+        dialogs.toast = { [weak self] title, message, _ in self?.toasts.append((title, message)) }
         dialogs.confirm = { [weak self] question, _ in
             self?.asked.append(question)
             try? self?.whileAsked()
@@ -386,12 +388,52 @@ private final class UndoFixture {
         #expect(await fixture.actions.redo() == .cancelled)
         #expect(fixture.shown.isEmpty)
         #expect(fixture.asked.isEmpty)
-        // After an operation that can't be undone: Can't Undo, and nothing either.
+        #expect(fixture.toasts.isEmpty)
+        await fixture.close()
+    }
+
+    @Test func saysInAToastThatAnOperationCantBeUndoneThenUndoesTheOneBeforeIt() async throws {
+        let fixture = try UndoFixture()
+        try fixture.write("a.txt", "a")
+        try await fixture.rename("a.txt", to: "b.txt")
+        fixture.history.record(
+            FinishedWrite(action: .write(.paste), log: .notUndoable(reason: .otherDiskMove), items: []))
+        #expect(fixture.history.menu() == UndoMenuLabels(undo: nil, redo: nil, cantUndo: true))
+
+        // The first Undo undoes nothing and says so, with why.
+        #expect(await fixture.actions.undo() == .cancelled)
+        #expect(fixture.toasts.map(\.title) == ["Move can’t be undone"])
+        #expect(fixture.toasts.map(\.message) == ["Items were moved to another disk"])
+        #expect(fixture.shown.isEmpty)
+        #expect(fixture.asked.isEmpty)
+        #expect(fixture.exists("b.txt"))
+        #expect(!fixture.session.isWriteLocked)
+        // It is passed: Undo names the rename, and the next one undoes it without another word.
+        #expect(fixture.history.menu() == UndoMenuLabels(undo: "Rename", redo: nil, cantUndo: false))
+        let before = fixture.ends.count
+        _ = await fixture.actions.undo()
+        try await fixture.waitForEnds(before + 1)
+        #expect(fixture.exists("a.txt"))
+        #expect(!fixture.exists("b.txt"))
+        #expect(fixture.toasts.count == 1)
+        // It stays in the list, for information; Undo has nothing more to do or to say.
+        #expect(fixture.history.undoItems().count == 1)
+        #expect(await fixture.actions.undo() == .cancelled)
+        #expect(fixture.toasts.count == 1)
+        await fixture.close()
+    }
+
+    @Test func saysEmptyTrashCantBeUndoneWithNothingBeforeIt() async throws {
+        let fixture = try UndoFixture()
         fixture.history.record(
             FinishedWrite(action: .emptyTrash, log: .notUndoable(reason: .deletedForGood), items: []))
         #expect(fixture.history.menu().cantUndo)
         #expect(await fixture.actions.undo() == .cancelled)
-        #expect(fixture.shown.isEmpty)
+        #expect(fixture.toasts.map(\.title) == ["Empty Trash can’t be undone"])
+        #expect(fixture.toasts.map(\.message) == ["Items were deleted for good"])
+        #expect(fixture.history.menu() == UndoMenuLabels(undo: nil, redo: nil, cantUndo: false))
+        #expect(await fixture.actions.redo() == .cancelled)
+        #expect(fixture.toasts.count == 1)
         await fixture.close()
     }
 

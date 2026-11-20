@@ -557,15 +557,60 @@ struct UndoExecutionTests {
         }
     }
 
-    @Test func saysItCantUndoAfterAnOperationThatCantBeUndone() async throws {
+    @Test func saysOnceThatAnOperationCantBeUndoneThenUndoesTheOneBeforeIt() async throws {
         try await withUndoFolder { root, trashDir in
-            try UndoDisk.write("\(trashDir)/a.txt", "a")
+            try UndoDisk.write("\(root)/a.txt", "a")
+            try UndoDisk.write("\(trashDir)/gone.txt", "gone")
             let t = UndoTest(root: root, trashDir: trashDir)
-            _ = try await t.finish(t.coordinator.deleteImmediately(paths: ["\(trashDir)/a.txt"], window: t.window))
+            try await t.rename("\(root)/a.txt", "b.txt")
+            _ = try await t.finish(
+                t.coordinator.deleteImmediately(paths: ["\(trashDir)/gone.txt"], window: t.window))
+            // The rename is kept, behind the delete: Undo doesn't reach past it without a word.
+            #expect(t.history.menu() == UndoMenuLabels(undo: nil, redo: nil, cantUndo: true))
             let prepared = try await t.prepare()
             #expect(prepared.ticket == nil)
             #expect(prepared.refusal == .cantUndo)
+            #expect(prepared.cantUndo?.action == .write(.deleteImmediately))
+            #expect(prepared.cantUndo?.reason == .deletedForGood)
+            #expect(UndoDisk.exists("\(root)/b.txt"))
             #expect(try await t.prepare(.redo).refusal == .nothing)
+            // Said, it is passed: the next Undo is the rename's.
+            #expect(t.history.menu() == UndoMenuLabels(undo: "Rename", redo: nil, cantUndo: false))
+            #expect(try await t.undo().status == .completed)
+            #expect(UndoDisk.exists("\(root)/a.txt"))
+            #expect(!UndoDisk.exists("\(root)/b.txt"))
+            // With nothing left before it, Undo has nothing to do, and says nothing more.
+            let nothing = try await t.prepare()
+            #expect(nothing.refusal == .nothing)
+            #expect(nothing.cantUndo == nil)
+            #expect(t.history.undoItems().count == 1)
+            await t.shutDown()
+        }
+    }
+
+    @Test func leavesAnItemTheOperationThatCantBeUndoneTookAwayAndSaysWhy() async throws {
+        try await withUndoFolder { root, trashDir in
+            try UndoDisk.write("\(root)/a.txt", "a")
+            try UndoDisk.write("\(root)/keep.txt", "keep")
+            let t = UndoTest(root: root, trashDir: trashDir)
+            try await t.rename("\(root)/keep.txt", "kept.txt")
+            try await t.trash("\(root)/a.txt")
+            // The file is deleted from the Trash for good: the Move to Trash before it has nothing left to put back.
+            let inTrash = try #require(t.inTrash().first)
+            _ = try await t.finish(
+                t.coordinator.deleteImmediately(paths: ["\(trashDir)/\(inTrash)"], window: t.window))
+            #expect(t.inTrash().isEmpty)
+            #expect(try await t.prepare().refusal == .cantUndo)
+            #expect(t.history.menu().undo == "Move to Trash of “a.txt”")
+            let undone = try await t.undo()
+            let items = undone.result?.items ?? []
+            #expect(items.map(\.status) == [.skipped])
+            #expect(items.first?.error == "“a.txt” isn't in the Trash any more.")
+            #expect(!UndoDisk.exists("\(root)/a.txt"))
+            // The operation before that one is untouched by it, and undone as ever.
+            #expect(t.history.menu().undo == "Rename")
+            #expect(try await t.undo().status == .completed)
+            #expect(UndoDisk.exists("\(root)/keep.txt"))
             await t.shutDown()
         }
     }

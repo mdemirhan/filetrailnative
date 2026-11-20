@@ -1,11 +1,11 @@
 // The Undo History list under its toolbar button, in a system popover: what Redo and Undo would do, newest nearest the
-// middle, and what the history starts after. It only shows: nothing in it can be clicked.
+// middle, with the operations that can't be undone where they happened. It only shows: nothing in it can be clicked.
 import AppKit
 import FTFoundation
 import FTOperations
 
 /// The content of the Undo History popover: a header, then a list that scrolls past `maxListHeight`, holding the Redo
-/// operations, the Undo operations and, under the oldest, what can't be undone. Each row's tooltip lists its items.
+/// operations and the Undo operations, those that can't be undone among them. Each row's tooltip lists its items.
 final class UndoHistoryView: NSView {
     static let width = 360.0
     static let rowHeight = 38.0
@@ -83,7 +83,7 @@ final class UndoHistoryView: NSView {
 
     /// When each thing listed happened.
     private var dates: [Date] {
-        (content.redo + content.undo).map(\.date) + (content.barrier.map { [$0.date] } ?? [])
+        (content.redo + content.undo).map(\.date)
     }
 
     override func viewDidMoveToWindow() {
@@ -132,13 +132,16 @@ final class UndoHistoryView: NSView {
         }
         if !content.undo.isEmpty {
             add(UndoHistoryHeading("Undo", key: undoKey), height: Self.headingHeight)
-            for row in content.undo { add(UndoHistoryRowView(row, undone: false, now: date), height: Self.rowHeight) }
+            for row in content.undo {
+                if let entry = row.cantUndo {
+                    add(UndoHistoryCantUndoView(entry, now: date), height: Self.rowHeight)
+                } else {
+                    add(UndoHistoryRowView(row, undone: false, now: date), height: Self.rowHeight)
+                }
+            }
             if content.undoMore > 0 {
                 add(UndoHistoryNote("and \(content.undoMore) earlier"), height: Self.noteHeight)
             }
-        }
-        if let barrier = content.barrier {
-            add(UndoHistoryBarrierView(barrier, now: date), height: Self.rowHeight)
         }
         list.frame = NSRect(x: 0, y: 0, width: width, height: y)
     }
@@ -341,24 +344,24 @@ final class UndoHistoryView: NSView {
         required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
     }
 
-    /// What can't be undone, under the oldest operation.
-    final class UndoHistoryBarrierView: TwoLineRow {
-        private let barrier: UndoBarrier
+    /// An operation that can't be undone, where it happened among the others: a lock, dimmed, saying so and why.
+    final class UndoHistoryCantUndoView: TwoLineRow {
+        let entry: CantUndoEntry
 
-        init(_ barrier: UndoBarrier, now: Date) {
-            self.barrier = barrier
+        init(_ entry: CantUndoEntry, now: Date) {
+            self.entry = entry
             super.init(
-                symbol: "lock", first: UndoHistoryRows.barrierTitle(barrier),
-                second: Self.detail(barrier, now: now), dimmed: true)
-            toolTip = DateText.shared.exactDateTime(barrier.date)
-            setAccessibilityIdentifier("undoHistoryPopover.barrier")
+                symbol: "lock", first: UndoHistoryRows.cantUndoTitle(entry), second: Self.detail(entry, now: now),
+                dimmed: true)
+            toolTip = "Done \(DateText.shared.exactDateTime(entry.date))"
+            setAccessibilityIdentifier("undoHistoryPopover.cantUndoRow")
         }
 
-        private static func detail(_ barrier: UndoBarrier, now: Date) -> String {
-            "\(UndoHistoryRows.barrierReason(barrier)) · \(DateText.shared.relative(barrier.date, now: now))"
+        private static func detail(_ entry: CantUndoEntry, now: Date) -> String {
+            "\(UndoHistoryRows.cantUndoReason(entry)) · \(DateText.shared.relative(entry.date, now: now))"
         }
 
-        override func detail(now: Date) -> String { Self.detail(barrier, now: now) }
+        override func detail(now: Date) -> String { Self.detail(entry, now: now) }
 
         required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
     }
