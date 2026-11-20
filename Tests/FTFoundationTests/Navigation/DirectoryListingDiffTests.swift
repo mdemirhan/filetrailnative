@@ -37,4 +37,34 @@ struct DirectoryListingDiffTests {
         #expect(reordered.entries == [two, one])
         #expect(reordered.keptPaths == ["/a/one.txt", "/a/two.txt"] && reordered.changedPaths.isEmpty)
     }
+
+    // Two items whose names differ only in how an accent is spelled, which a disk can keep side by side, are two
+    // items: one is not kept as the other, and each is compared with itself.
+    @Test func twoSpellingsOfANameAreToldApart() {
+        let composed = Item(path: "/a/caf\u{E9}", name: "caf\u{E9}")
+        let decomposed = Item(path: "/a/cafe\u{301}", name: "cafe\u{301}")
+        #expect(composed == decomposed)
+        func bytes(_ paths: [String]) -> [DiskPath] { paths.map(DiskPath.init) }
+
+        // The item was renamed to its other spelling: the listing changed, and the row is drawn again.
+        let renamed = DirectoryListingDiff.keepUnchanged(shown: [composed], next: [decomposed], path: \.path)
+        #expect(!renamed.isUnchanged)
+        #expect(renamed.keptPaths.isEmpty)
+        #expect(bytes(renamed.changedPaths) == bytes([decomposed.path]))
+
+        // Both are there, and one changed: that one is drawn again, the other kept.
+        var larger = decomposed
+        larger.sizeBytes = 7
+        let one = DirectoryListingDiff.keepUnchanged(
+            shown: [composed, decomposed], next: [composed, larger], path: \.path)
+        #expect(!one.isUnchanged)
+        #expect(one.keptPaths == [DiskPath(composed.path)])
+        #expect(bytes(one.changedPaths) == bytes([decomposed.path]))
+
+        // Both as they were, in the same order: nothing changed, and both are kept.
+        let same = DirectoryListingDiff.keepUnchanged(
+            shown: [composed, decomposed], next: [composed, decomposed], path: \.path)
+        #expect(same.isUnchanged)
+        #expect(same.keptPaths == [DiskPath(composed.path), DiskPath(decomposed.path)])
+    }
 }

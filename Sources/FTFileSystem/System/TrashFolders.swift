@@ -48,8 +48,7 @@ public struct TrashFolders: Sendable {
     func isAlwaysHidden(_ name: String, in folder: String) -> Bool {
         switch name {
         case ".Trash":
-            let path = NodePath.join(folder, name)
-            return path == home || path == homeAsSpelled
+            return isHome(NodePath.join(folder, name))
         case ".Trashes":
             return isTrashesOfDisk(NodePath.join(folder, name))
         default:
@@ -65,12 +64,18 @@ public struct TrashFolders: Sendable {
     /// The folder that is listed for `path`: a disk's own Trash is shown as part of the one Trash, as is its ".Trashes"
     /// when its path is typed.
     func listedFolder(for path: String) -> String {
-        path == homeAsSpelled || isOnOtherDisk(path) || isTrashesOfDisk(path) ? home : path
+        DiskPath(path) == DiskPath(homeAsSpelled) || isOnOtherDisk(path) || isTrashesOfDisk(path) ? home : path
     }
 
     /// The folders listed along with `path`.
     public func listedWith(_ path: String) -> [String] {
-        listedFolder(for: path) == home && !isOnOtherDisk(path) && !isTrashesOfDisk(path) ? onOtherDisks : []
+        isHome(path) && !isOnOtherDisk(path) && !isTrashesOfDisk(path) ? onOtherDisks : []
+    }
+
+    /// Whether `path` is the home folder's Trash, by either of its two paths, byte for byte.
+    private func isHome(_ path: String) -> Bool {
+        let path = DiskPath(path)
+        return path == DiskPath(home) || path == DiskPath(homeAsSpelled)
     }
 
     /// The disk a Trash from `onOtherDisks` is on.

@@ -13,7 +13,7 @@ struct ContentLoaders {
     /// The details of items in the folder. `listedAdded` has the Date Added the folder read gave each of them that came
     /// from a listing; the others are asked for theirs.
     var metadata:
-        @MainActor (_ folder: String, _ paths: [String], _ listedAdded: [String: Int64?]) async -> [EntryMetadata]
+        @MainActor (_ folder: String, _ paths: [String], _ listedAdded: [DiskPath: Int64?]) async -> [EntryMetadata]
     /// How many items a folder has with hidden files shown.
     var hiddenCount: @MainActor (_ folder: String) async -> Int
     var iconStore: @MainActor () -> FileIconStore?
@@ -25,9 +25,9 @@ struct ContentLoaders {
         paths.map { _ in .number(nil) }
     }
     /// The colors of items' Finder tags.
-    var tagColors: @MainActor (_ paths: [String]) async -> [String: [FinderTagColor]] = { paths in
+    var tagColors: @MainActor (_ paths: [String]) async -> [DiskPath: [FinderTagColor]] = { paths in
         await BlockingWork.run(qos: .utility) {
-            Dictionary(uniqueKeysWithValues: paths.map { ($0, FinderTags.colors($0)) })
+            Dictionary(uniqueKeysWithValues: paths.map { (DiskPath($0), FinderTags.colors($0)) })
         }
     }
 }
@@ -218,7 +218,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// The details of the rows asked for. They start over with another folder or other search results.
     private var details = PathReadCache<EntryMetadata>()
     /// Items that changed on disk: they keep what is shown until their details are read again.
-    var staleMetadata: Set<String> { details.stale }
+    var staleMetadata: Set<String> { Set(details.stale.map(\.string)) }
     /// Details asked for and not sent yet: they go together, a batch per folder, once the rows have all asked.
     private var metadataQueue: [String] = []
     /// The Date Added of the folder's rows asked for by their entries, as their listing gave it, until they are read:
@@ -1672,16 +1672,16 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         let generation = details.generation
         // A folder's rows have their Date Added from the folder read, the one the folder is sorted by; search
         // results came from no folder read.
-        var listedAdded: [String: Int64?] = [:]
+        var listedAdded: [DiskPath: Int64?] = [:]
         if searchDisplay == nil {
             // A row asked for by its path alone (read again after it changed) is found among the folder's rows.
             var rows: [String: DirectoryEntry]?
             for path in paths {
                 if let added = queuedAdded.removeValue(forKey: path) {
-                    listedAdded.updateValue(added, forKey: path)
+                    listedAdded.updateValue(added, forKey: DiskPath(path))
                 } else {
                     if rows == nil { rows = rowsByPath }
-                    if let row = rows?[path] { listedAdded.updateValue(row.addedMs, forKey: path) }
+                    if let row = rows?[path] { listedAdded.updateValue(row.addedMs, forKey: DiskPath(path)) }
                 }
             }
         }
@@ -1689,14 +1689,14 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             guard let self else { return }
             let items = await self.loaders.metadata(folder, paths, listedAdded)
             let belongs = listKey == self.listKey
-            let answers = Dictionary(items.map { ($0.path, $0) }) { $1 }
+            let answers = Dictionary(items.map { (DiskPath($0.path), $0) }) { $1 }
             let known = paths.filter { self.details[$0] != nil }
             guard let readAgain = self.details.finish(paths, from: generation, answers: belongs ? answers : nil),
                 belongs
             else { return }
             // The rows that changed: those read, and those found gone that showed details from before. Nothing found
             // for a row that showed none (the folder is gone) changes no row.
-            let changed = Set(answers.keys).union(known.filter { self.details[$0] == nil })
+            let changed = Set(answers.keys.map(\.string)).union(known.filter { self.details[$0] == nil })
             if !changed.isEmpty { self.pane?.refresh(paths: changed) }
             self.updateStatus()
             if !readAgain.isEmpty { self.requestMetadata(for: readAgain) }
@@ -1711,7 +1711,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// What was read for the item on screen, unless it changed since and its listing read it again; then what the
     /// listing read, which an item with a colored tag has from its first frame.
     func tagColors(for entry: DirectoryEntry) -> [FinderTagColor] {
-        if let read = tags[entry.path], !tags.stale.contains(entry.path) { return read }
+        if let read = tags.current(entry.path) { return read }
         return entry.tagColors ?? tags[entry.path] ?? []
     }
 

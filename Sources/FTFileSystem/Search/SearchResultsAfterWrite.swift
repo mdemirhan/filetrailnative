@@ -14,7 +14,7 @@ public struct SearchResultRename: Equatable, Sendable {
 
 /// Renames to look a path up in: where a path is after them costs as much as the path is deep, however many they are.
 public struct SearchResultRenames: Sendable {
-    private var destinations: [FTFoundation.NameKeys.Exact: String] = [:]
+    private var destinations: [DiskPath: String] = [:]
 
     public init(_ renamed: [SearchResultRename] = []) {
         for rename in renamed { add(rename) }
@@ -24,7 +24,7 @@ public struct SearchResultRenames: Sendable {
 
     /// Of two renames of one path the first is kept.
     public mutating func add(_ rename: SearchResultRename) {
-        let key = FTFoundation.NameKeys.Exact(rename.from)
+        let key = DiskPath(rename.from)
         if destinations[key] == nil { destinations[key] = rename.to }
     }
 
@@ -41,7 +41,7 @@ public struct SearchResultRenames: Sendable {
         var end = units.count
         while end > 0 {
             let from = String(decoding: units[..<end], as: UTF8.self)
-            if let to = destinations[FTFoundation.NameKeys.Exact(from)],
+            if let to = destinations[DiskPath(from)],
                 let next = SearchResults.replacingPrefix(current, from, to)
             {
                 current = next
@@ -63,7 +63,7 @@ extension SearchResults {
         _ results: [SearchResultItem], rootPath: String, removed: [String], renamed: [SearchResultRename]
     ) -> [SearchResultItem]? {
         guard !removed.isEmpty || !renamed.isEmpty else { return nil }
-        let gone = Set(removed.map(FTFoundation.NameKeys.Exact.init))
+        let gone = Set(removed.map(DiskPath.init))
         let renames = SearchResultRenames(renamed)
         var changed = false
         var kept: [SearchResultItem] = []
@@ -90,16 +90,16 @@ extension SearchResults {
 
     /// Whether `path` is one of `paths` or inside one: each folder above it is looked up, so the cost grows with the
     /// path's depth, not with how many paths there are.
-    public static func isAtOrInsideAny(_ path: String, _ paths: Set<FTFoundation.NameKeys.Exact>) -> Bool {
+    public static func isAtOrInsideAny(_ path: String, _ paths: Set<DiskPath>) -> Bool {
         guard !paths.isEmpty else { return false }
-        if paths.contains(FTFoundation.NameKeys.Exact(path)) { return true }
+        if paths.contains(DiskPath(path)) { return true }
         let units = Array(path.utf16)
         let slash = UInt16(UInt8(ascii: "/"))
         var index = 1
         while index < units.count {
             if units[index] == slash {
                 let folder = String(decoding: units[..<index], as: UTF16.self)
-                if paths.contains(FTFoundation.NameKeys.Exact(folder)) { return true }
+                if paths.contains(DiskPath(folder)) { return true }
             }
             index += 1
         }

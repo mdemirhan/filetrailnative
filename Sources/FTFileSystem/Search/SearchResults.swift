@@ -43,7 +43,7 @@ public enum SearchResults {
 
     /// `to` as seen from `from`, both absolute and normalized: ".." for each folder to go up, then the rest of `to`.
     static func relative(from: String, to: String) -> String {
-        if from == to { return "" }
+        if DiskPath(from) == DiskPath(to) { return "" }
         let fromParts = from.split(separator: "/", omittingEmptySubsequences: true)
         let toParts = to.split(separator: "/", omittingEmptySubsequences: true)
         var common = 0

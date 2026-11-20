@@ -71,7 +71,7 @@ public final class DirectoryService: Sendable {
         }
         do {
             return try await read(listed, alsoListing: trash.listedWith(listed))
-        } catch  where listed != path {
+        } catch  where DiskPath(listed) != DiskPath(path) {
             return try await read(trash.ownFolder(for: path), alsoListing: [])
         }
     }
@@ -90,7 +90,7 @@ public final class DirectoryService: Sendable {
     /// item not in it is asked for its own.
     @concurrent
     public func metadata(
-        directoryPath: String, paths: [String], listedAdded: [String: Int64?] = [:]
+        directoryPath: String, paths: [String], listedAdded: [DiskPath: Int64?] = [:]
     ) async throws -> MetadataBatch {
         let fileSystem = fileSystem
         let kinds = kinds
@@ -107,7 +107,7 @@ public final class DirectoryService: Sendable {
             listedAdded.isEmpty
             ? kept
             : kept.map { item in
-                guard let listed = listedAdded[item.path] else { return item }
+                guard let listed = listedAdded[DiskPath(item.path)] else { return item }
                 var item = item
                 item.addedAt = listed.flatMap(FileTime.date(milliseconds:))
                 return item

@@ -86,9 +86,12 @@ public final class FileIconStore {
     private let source: any IconSource
     private let samples: IconSamples
     private let sleep: @Sendable (Duration) async throws -> Void
-    private var cache = LRUCache<String, NSImage?>(capacity: FileIconStore.maxEntries)
+    /// An icon's cache key (`IconRequest.cacheKey`) compared byte for byte: the key of an item with an icon of its
+    /// own holds its path, and two items whose names differ only in how an accent is spelled each have their icon.
+    private typealias Key = FTFoundation.NameKeys.Exact
+    private var cache = LRUCache<Key, NSImage?>(capacity: FileIconStore.maxEntries)
     /// The drawings under way, each with its number: only the latest for an icon fills the cache.
-    private var pending: [String: (id: Int, task: Task<NSImage?, Never>)] = [:]
+    private var pending: [Key: (id: Int, task: Task<NSImage?, Never>)] = [:]
     private var fetchCount = 0
 
     public init(
@@ -103,10 +106,11 @@ public final class FileIconStore {
     public var cachedCount: Int { cache.count }
 
     public func lookup(_ request: IconRequest) -> IconLookup {
-        if let slot = cache.read(request.cacheKey) {
+        let key = Key(request.cacheKey)
+        if let slot = cache.read(key) {
             return slot.map(IconLookup.image) ?? .none
         }
-        return drawnAtOnce(request).map(IconLookup.image) ?? .missing
+        return drawnAtOnce(request, key).map(IconLookup.image) ?? .missing
     }
 
     /// Calls `completion` with the icon (nil when macOS has none): at once when it is cached, otherwise when
@@ -116,23 +120,25 @@ public final class FileIconStore {
     public func load(
         _ request: IconRequest, deferLoad: Bool = false, completion: @escaping @MainActor (NSImage?) -> Void
     ) -> LoadHandle {
-        if let slot = cache.read(request.cacheKey) {
+        // The icon's key, made once for the request.
+        let key = Key(request.cacheKey)
+        if let slot = cache.read(key) {
             completion(slot)
             return LoadHandle()
         }
-        if let image = drawnAtOnce(request) {
+        if let image = drawnAtOnce(request, key) {
             completion(image)
             return LoadHandle()
         }
         let sleep = self.sleep
         // Without the delay the icon is asked for now, and taking the request back only stops the answer.
-        let started = deferLoad ? nil : fetch(request)
+        let started = deferLoad ? nil : fetch(request, key)
         let task = Task { [weak self] in
             if deferLoad {
                 try? await sleep(Self.deferredLoadDelay)
             }
             guard !Task.isCancelled, let self else { return }
-            let image = await (started ?? self.fetch(request)).value
+            let image = await (started ?? self.fetch(request, key)).value
             guard !Task.isCancelled else { return }
             completion(image)
         }
@@ -141,8 +147,9 @@ public final class FileIconStore {
 
     /// The icon may have changed: the next request draws it again, rather than waiting for a drawing from before.
     public func forget(_ request: IconRequest) {
-        cache.remove(request.cacheKey)
-        pending[request.cacheKey] = nil
+        let key = Key(request.cacheKey)
+        cache.remove(key)
+        pending[key] = nil
     }
 
     /// Asks for the plain folder icons, those of each tag color and the document icon, so the first folder already
@@ -151,23 +158,24 @@ public final class FileIconStore {
         let tinted = FinderTagColor.allCases.flatMap { color in
             [false, true].map { IconRequest.tintedFolder(color, isEmpty: $0) }
         }
-        for request in Self.preloadedKinds.map(IconRequest.generic) + tinted where !cache.contains(request.cacheKey) {
-            _ = fetch(request)
+        for request in Self.preloadedKinds.map(IconRequest.generic) + tinted {
+            let key = Key(request.cacheKey)
+            if !cache.contains(key) { _ = fetch(request, key) }
         }
     }
 
     /// The icon files share by their extension depends on their type alone, which macOS draws at once: it is drawn
     /// now and kept, so the first item of a kind shows it in its first frame, not an empty space.
-    private func drawnAtOnce(_ request: IconRequest) -> NSImage? {
+    private func drawnAtOnce(_ request: IconRequest, _ key: Key) -> NSImage? {
         guard let fileExtension = IconCacheKey.fileExtension(ofKey: request.cacheKey),
             let image = source.typeIcon(forExtension: fileExtension)
         else { return nil }
-        cache.write(image, for: request.cacheKey)
+        cache.write(image, for: key)
         return image
     }
 
-    private func fetch(_ request: IconRequest) -> Task<NSImage?, Never> {
-        if let running = pending[request.cacheKey] {
+    private func fetch(_ request: IconRequest, _ key: Key) -> Task<NSImage?, Never> {
+        if let running = pending[key] {
             return running.task
         }
         let source = self.source
@@ -176,15 +184,15 @@ public final class FileIconStore {
         let id = fetchCount
         let task = Task { [weak self] () -> NSImage? in
             let image = await Self.draw(request, source: source, samples: samples)
-            self?.finish(request.cacheKey, image, id: id)
+            self?.finish(key, image, id: id)
             return image
         }
-        pending[request.cacheKey] = (id, task)
+        pending[key] = (id, task)
         return task
     }
 
     /// A drawing forgotten since it began answers its own requests but leaves the cache to the next one.
-    private func finish(_ cacheKey: String, _ image: NSImage?, id: Int) {
+    private func finish(_ cacheKey: Key, _ image: NSImage?, id: Int) {
         guard pending[cacheKey]?.id == id else { return }
         pending[cacheKey] = nil
         cache.write(image, for: cacheKey)

@@ -88,7 +88,7 @@ class IconViewController: ItemGridPane {
     /// The previews of the files are checked again: at once for the items on screen, which keep their picture until a
     /// new one comes, and when the others come into view.
     override func filesChanged(paths: Set<String>?) {
-        thumbnailStore.markChanged(paths)
+        thumbnailStore.markChanged(paths.map { Set($0.map(DiskPath.init)) })
         forEachVisibleItem { item, entry in
             if paths?.contains(entry.path) != false { (item as? IconItem)?.loadThumbnail(entry, pane: self) }
         }

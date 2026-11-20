@@ -205,7 +205,7 @@ private func paths(_ items: [SearchResultItem]?) -> [String]? {
         #expect(SearchResults.isAtOrInside("/r/a", "/"))
         #expect(!SearchResults.isAtOrInside("/rr/a", "/r"))
         #expect(!SearchResults.isAtOrInside("/r", "/r/a"))
-        let folders = Set(["/r/Docs", "/x"].map(FTFoundation.NameKeys.Exact.init))
+        let folders = Set(["/r/Docs", "/x"].map(DiskPath.init))
         #expect(SearchResults.isAtOrInsideAny("/r/Docs", folders))
         #expect(SearchResults.isAtOrInsideAny("/r/Docs/a/b", folders))
         #expect(!SearchResults.isAtOrInsideAny("/r/Docsa", folders))

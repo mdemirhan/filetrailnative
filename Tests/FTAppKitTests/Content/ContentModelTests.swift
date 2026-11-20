@@ -178,8 +178,8 @@ struct ContentModelTests {
             let service = DirectoryService()
             let listing = try await service.snapshot(path: folder.path)
             #expect(listing.entries.map(\.name) == ["fresh.txt", "opened.txt"])
-            var listedAdded: [String: Int64?] = [:]
-            for entry in listing.entries { listedAdded.updateValue(entry.addedMs, forKey: entry.path) }
+            var listedAdded: [DiskPath: Int64?] = [:]
+            for entry in listing.entries { listedAdded.updateValue(entry.addedMs, forKey: DiskPath(entry.path)) }
             let items = try await service.metadata(
                 directoryPath: folder.path, paths: listing.entries.map(\.path), listedAdded: listedAdded
             ).items

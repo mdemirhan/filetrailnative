@@ -63,7 +63,7 @@ extension ExplorerWindowlessTests {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             let read = tab.content.loaders.metadata
-            var asked: [String: Int64?] = [:]
+            var asked: [DiskPath: Int64?] = [:]
             var paths: Set<String> = []
             tab.content.loaders.metadata = { folder, batch, listedAdded in
                 paths.formUnion(batch)
@@ -75,9 +75,9 @@ extension ExplorerWindowlessTests {
             harness.layout(tab)
             let entries = tab.content.entries
             #expect(await waitUntil { entries.allSatisfy { tab.content.metadata(for: $0.path) != nil } })
-            #expect(!paths.isEmpty && paths == Set(asked.keys))
+            #expect(!paths.isEmpty && paths == Set(asked.keys.map(\.string)))
             for entry in entries where paths.contains(entry.path) {
-                #expect(asked[entry.path] == .some(entry.addedMs))
+                #expect(asked[DiskPath(entry.path)] == .some(entry.addedMs))
             }
             await harness.close()
         }

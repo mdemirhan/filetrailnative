@@ -34,11 +34,11 @@ public enum DragPasteboard {
         let changeCount = pasteboard.changeCount
         let urls =
             pasteboard.readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL] ?? []
-        var seen = Set<FTFoundation.NameKeys.Exact>()
+        var seen = Set<DiskPath>()
         var paths: [String] = []
         for url in urls {
             let path = (url as NSURL).filePathURL.flatMap { DiskPath(urlSpelling: $0)?.string } ?? ""
-            if !path.isEmpty, seen.insert(FTFoundation.NameKeys.Exact(path)).inserted { paths.append(path) }
+            if !path.isEmpty, seen.insert(DiskPath(path)).inserted { paths.append(path) }
         }
         return DragPasteboardContents(changeCount: changeCount, paths: paths)
     }

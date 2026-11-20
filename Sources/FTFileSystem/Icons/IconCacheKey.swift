@@ -117,13 +117,13 @@ public struct IconRequest: Sendable, Equatable {
 public enum IconCacheKey {
     /// The folders macOS draws with their own icon, by path: the startup disk's and the home folder's. A folder of one
     /// of these names anywhere else is an ordinary folder, drawn with its tag color.
-    static func specialFolderPaths(homePath: String) -> Set<String> {
+    static func specialFolderPaths(homePath: String) -> Set<DiskPath> {
         let home = homePath.hasSuffix("/") ? String(homePath.dropLast()) : homePath
         let system = ["/Applications", "/Developer", "/Library", "/System", "/Users"]
         let own = [
             "Applications", "Desktop", "Documents", "Downloads", "Library", "Movies", "Music", "Pictures", "Public",
         ]
-        return Set(system + own.map { home + "/" + $0 })
+        return Set((system + own.map { home + "/" + $0 }).map(DiskPath.init))
     }
 
     private static let specialFolders = specialFolderPaths(homePath: DiskPath.home.string)
@@ -131,7 +131,7 @@ public enum IconCacheKey {
     /// A special folder or a disk's top folder, which is drawn as the disk: a drive, a disk image, a network share.
     static func isDrawnBySystem(_ entry: IconEntry) -> Bool {
         let path = entry.path.count > 1 && entry.path.hasSuffix("/") ? String(entry.path.dropLast()) : entry.path
-        return VolumePaths.isVolumeRootPath(entry.path) || specialFolders.contains(path)
+        return VolumePaths.isVolumeRootPath(entry.path) || specialFolders.contains(DiskPath(path))
     }
 
     public static func key(for entry: IconEntry) -> String {

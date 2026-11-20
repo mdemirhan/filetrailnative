@@ -126,7 +126,9 @@ public enum FSEventsFolderWatcher {
     }
 
     private final class Context: @unchecked Sendable {
-        let root: String
+        /// The folder watched, as `realpath` spells it, which is how the events spell it: both are the names the
+        /// system holds for the items.
+        let root: DiskPath
         let queue = DispatchQueue(label: "filetrail.folder-watch")
         private let onChange: @MainActor (String?) -> Void
         private let onFail: @MainActor () -> Void
@@ -134,7 +136,7 @@ public enum FSEventsFolderWatcher {
         private var stopped = false
 
         init(root: String, onChange: @escaping @MainActor (String?) -> Void, onFail: @escaping @MainActor () -> Void) {
-            self.root = root
+            self.root = DiskPath(root)
             self.onChange = onChange
             self.onFail = onFail
         }
@@ -192,11 +194,13 @@ public enum FSEventsFolderWatcher {
                 names.append(nil)
                 continue
             }
-            guard let path = paths[index] as? String else { continue }
+            // Told from the folder's own path byte for byte: a change in a folder beside it whose name differs only in
+            // how an accent is spelled is not this folder's.
+            guard let path = (paths[index] as? String).map(DiskPath.init) else { continue }
             if path == context.root {
-                names.append(NodePath.basename(context.root))
-            } else if NodePath.dirname(path) == context.root {
-                names.append(NodePath.basename(path))
+                names.append(context.root.name)
+            } else if path.parent == context.root {
+                names.append(path.name)
             }
         }
         if !names.isEmpty || failed {

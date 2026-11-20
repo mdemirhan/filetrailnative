@@ -310,7 +310,8 @@ enum ExplorerListing {
             sorted.append(entry)
         }
         return DirectorySnapshot(
-            path: directoryPath, parentPath: directoryPath == parent ? nil : parent, entries: sorted,
+            path: directoryPath, parentPath: DiskPath(directoryPath) == DiskPath(parent) ? nil : parent,
+            entries: sorted,
             modifiedTime: modifiedTime)
     }
 
@@ -411,21 +412,22 @@ enum ExplorerListing {
     /// sorted by, which for a mount point is not the one the item itself gives, and no row is asked for it again.
     /// An item not in it (a search result) is asked.
     static func metadataBatch(
-        directoryPath: String, paths: [String], listedAdded: [String: Int64?] = [:],
+        directoryPath: String, paths: [String], listedAdded: [DiskPath: Int64?] = [:],
         _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler
     ) throws -> MetadataBatch {
         let resolvedDirectoryPath = try resolveDirectoryPath(directoryPath, fileSystem)
+        let directory = DiskPath(resolvedDirectoryPath)
         var items: [EntryMetadata] = []
         items.reserveCapacity(paths.count)
         for path in paths {
             let resolvedPath = resolve(path)
-            if NodePath.dirname(resolvedPath) != resolvedDirectoryPath {
+            if DiskPath(resolvedPath).parent != directory {
                 throw ExplorerError.outsideDirectory(path: resolvedPath, directory: resolvedDirectoryPath)
             }
             items.append(
                 entryMetadata(
-                    path: resolvedPath, added: listedAdded[path].map(DateAdded.listed) ?? .unread, fileSystem,
-                    kinds: kinds))
+                    path: resolvedPath, added: listedAdded[DiskPath(path)].map(DateAdded.listed) ?? .unread,
+                    fileSystem, kinds: kinds))
         }
         return MetadataBatch(directoryPath: resolvedDirectoryPath, items: items)
     }

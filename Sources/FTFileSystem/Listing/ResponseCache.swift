@@ -1,9 +1,10 @@
 import FTFoundation
 import Foundation
 
-/// What a cached directory snapshot answers: the request, which names the folder.
+/// What a cached directory snapshot answers: the request, which names the folder. The folder's path is told from
+/// another byte for byte, so two folders whose names differ only in how an accent is spelled each have their listing.
 public struct ListingKey: Sendable, Hashable {
-    public var path: String
+    public var path: DiskPath
     public var includeHidden: Bool
     public var sortBy: DirectorySortKey
     public var sortDirection: SortDirection
@@ -14,7 +15,7 @@ public struct ListingKey: Sendable, Hashable {
         path: String, includeHidden: Bool = false, sortBy: DirectorySortKey = .name,
         sortDirection: SortDirection = .ascending, foldersFirst: Bool = true, groupRead: DirectoryGroupRead = .none
     ) {
-        self.path = path
+        self.path = DiskPath(path)
         self.includeHidden = includeHidden
         self.sortBy = sortBy
         self.sortDirection = sortDirection
@@ -24,11 +25,11 @@ public struct ListingKey: Sendable, Hashable {
 }
 
 public struct TreeKey: Sendable, Hashable {
-    public var path: String
+    public var path: DiskPath
     public var includeHidden: Bool
 
     public init(path: String, includeHidden: Bool = false) {
-        self.path = path
+        self.path = DiskPath(path)
         self.includeHidden = includeHidden
     }
 }
@@ -117,7 +118,7 @@ public final class ResponseCache: @unchecked Sendable {
         var generation = 0
         var directory: TTLCache<ListingKey, DirectorySnapshot>
         var tree: TTLCache<TreeKey, TreeChildren>
-        var metadata: TTLCache<String, EntryMetadata>
+        var metadata: TTLCache<DiskPath, EntryMetadata>
     }
 
     private let lock = NSLock()
@@ -175,31 +176,32 @@ public final class ResponseCache: @unchecked Sendable {
         for paths: [String], load: ([String]) async throws -> [EntryMetadata]
     ) async rethrows -> [EntryMetadata] {
         let now = clock()
-        var found: [String: EntryMetadata] = [:]
+        let keys = paths.map(DiskPath.init)
+        var found: [DiskPath: EntryMetadata] = [:]
         var missing: [String] = []
         let generation = withState { state in
-            for path in paths {
-                if let cached = state.metadata.value(for: path, now: now) {
-                    found[path] = cached
+            for key in keys {
+                if let cached = state.metadata.value(for: key, now: now) {
+                    found[key] = cached
                 } else {
-                    missing.append(path)
+                    missing.append(key.string)
                 }
             }
             return state.generation
         }
         if !missing.isEmpty {
-            let items = try await load(missing)
-            for item in items {
-                found[item.path] = item
+            let items = try await load(missing).map { (DiskPath($0.path), $0) }
+            for (key, item) in items {
+                found[key] = item
             }
             // Swept once for the whole batch: scrolling a large folder asks for one after another.
             withState { state in
                 if state.generation == generation {
-                    state.metadata.store(items.map { ($0.path, $0) }, readAt: now, now: clock())
+                    state.metadata.store(items, readAt: now, now: clock())
                 }
             }
         }
-        return paths.compactMap { found[$0] }
+        return keys.compactMap { found[$0] }
     }
 
     /// After a write: listings are read again.
@@ -216,23 +218,26 @@ public final class ResponseCache: @unchecked Sendable {
     /// the details of `changedPaths` in it. Nil says anything in it may have changed, or the folder itself
     /// (renamed or removed): the details of all in it are read again, and the listing of the folder holding
     /// it too. The listings of other folders, which other windows may be showing, are kept: a file growing
-    /// in one folder doesn't slow every window.
+    /// in one folder doesn't slow every window. A folder is told from another byte for byte: one whose name differs
+    /// only in how an accent is spelled is another folder, and keeps its listings.
     public func forgetFolderListings(_ folderPath: String, changedPaths: [String]?) {
+        let folder = DiskPath(folderPath)
+        let parent = folder.parent
+        var listed: Set<DiskPath> = [folder]
+        if changedPaths == nil && parent != folder {
+            listed.insert(parent)
+        }
+        let changed = changedPaths?.map(DiskPath.init)
         withState { state in
             state.generation += 1
-            let parentPath = NodePath.dirname(folderPath)
-            var listed: Set<String> = [folderPath]
-            if changedPaths == nil && parentPath != folderPath {
-                listed.insert(parentPath)
-            }
             state.directory.removeAll { listed.contains($0.path) }
             state.tree.removeAll { listed.contains($0.path) }
-            if let changedPaths {
-                for path in changedPaths {
+            if let changed {
+                for path in changed {
                     state.metadata.remove(path)
                 }
             } else {
-                state.metadata.removeAll { $0 == folderPath || NodePath.dirname($0) == folderPath }
+                state.metadata.removeAll { $0 == folder || $0.parent == folder }
             }
         }
     }

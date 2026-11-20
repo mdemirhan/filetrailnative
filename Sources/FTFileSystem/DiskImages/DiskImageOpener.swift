@@ -1,3 +1,4 @@
+import FTFoundation
 import Foundation
 
 public struct HdiutilResult: Sendable, Equatable {
@@ -46,7 +47,7 @@ public actor DiskImageOpener {
     private let logError: @Sendable (String) -> Void
     /// Images being mounted now: opening one again meanwhile (a second double-click) does nothing, rather than
     /// opening its disk twice.
-    private var opening: Set<String> = []
+    private var opening: Set<DiskPath> = []
 
     /// - Parameter onMounted: a disk was mounted: the list of disks is read again, so it shows at once.
     public init(
@@ -62,11 +63,11 @@ public actor DiskImageOpener {
     }
 
     public func open(_ imagePath: String) async -> DiskImageOpenResponse {
-        if opening.contains(imagePath) {
+        let image = DiskPath(imagePath)
+        guard opening.insert(image).inserted else {
             return DiskImageOpenResponse(status: .busy)
         }
-        opening.insert(imagePath)
-        defer { opening.remove(imagePath) }
+        defer { opening.remove(image) }
         return await mount(imagePath)
     }
 

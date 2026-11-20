@@ -148,4 +148,43 @@ struct PathReadCacheTests {
         #expect(!folder.isReading)
         #expect(folder.generation > kept.generation)
     }
+
+    // Two items whose names differ only in how an accent is spelled, which a disk can keep side by side: each is
+    // read, kept, marked changed and found gone as itself.
+    @Test func twoSpellingsOfANameAreTwoItems() {
+        let composed = "/x/caf\u{E9}"
+        let decomposed = "/x/cafe\u{301}"
+        func bytes(_ paths: [String]) -> [DiskPath] { paths.map(DiskPath.init) }
+        var cache = Cache()
+        // Both are asked for; with one being read, the other is still asked for.
+        #expect(bytes(cache.begin([composed])) == bytes([composed]))
+        #expect(bytes(cache.begin([composed, decomposed])) == bytes([decomposed]))
+        #expect(cache.reading == [DiskPath(composed), DiskPath(decomposed)])
+        // An answer for one ends its read, and the other is still being read.
+        #expect(cache.finish([composed], from: cache.generation, answers: [DiskPath(composed): 1]) == [])
+        #expect(cache[composed] == 1 && cache[decomposed] == nil)
+        #expect(cache.reading == [DiskPath(decomposed)])
+        #expect(cache.finish([decomposed], from: cache.generation, answers: [DiskPath(decomposed): 2]) == [])
+        #expect(cache[composed] == 1 && cache[decomposed] == 2)
+        #expect(cache.values.count == 2)
+
+        // One changed: it alone is read again, and what the other has is still current.
+        cache.markChanged([composed])
+        #expect(cache.stale == [DiskPath(composed)])
+        #expect(cache.current(composed) == nil && cache.current(decomposed) == 2)
+        #expect(bytes(cache.begin([composed, decomposed])) == bytes([composed]))
+        // It changes again while it is read: it is the one read once more.
+        cache.markChanged([composed])
+        #expect(
+            bytes(cache.finish([composed], from: cache.generation, answers: [DiskPath(composed): 3]) ?? [])
+                == bytes([composed]))
+
+        // One found gone lets go of what it had, and the other keeps what it has and is not held back with it.
+        _ = cache.begin([composed])
+        #expect(cache.finish([composed], from: cache.generation, answers: [:]) == [])
+        #expect(cache[composed] == nil && cache[decomposed] == 2)
+        #expect(cache.unanswered == [DiskPath(composed)])
+        cache.markChanged([decomposed])
+        #expect(bytes(cache.begin([composed, decomposed])) == bytes([decomposed]))
+    }
 }

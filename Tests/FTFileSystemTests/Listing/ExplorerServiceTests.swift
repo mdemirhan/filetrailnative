@@ -394,8 +394,8 @@ struct ExplorerServiceTests {
         #expect(listing.entries.map(\.name) == ["Disk", "notes.txt", "bare.txt"])
         #expect(listing.entries.map(\.addedMs) == [jan2 + 5_000, jan2 + 9_000, nil])
 
-        var listedAdded: [String: Int64?] = [:]
-        for entry in listing.entries { listedAdded.updateValue(entry.addedMs, forKey: entry.path) }
+        var listedAdded: [DiskPath: Int64?] = [:]
+        for entry in listing.entries { listedAdded.updateValue(entry.addedMs, forKey: DiskPath(entry.path)) }
         let listed = try await service.metadata(
             directoryPath: "/workspace", paths: listing.entries.map(\.path), listedAdded: listedAdded)
         #expect(
@@ -423,13 +423,14 @@ struct ExplorerServiceTests {
         let service = service(fake)
         let path = "/workspace/notes.txt"
         let first = try await service.metadata(
-            directoryPath: "/workspace", paths: [path], listedAdded: [path: jan2 + 5_000])
+            directoryPath: "/workspace", paths: [path], listedAdded: [DiskPath(path): jan2 + 5_000])
         #expect(first.items.map(\.addedAt) == [FileTime.date(milliseconds: jan2 + 5_000)])
         let again = try await service.metadata(
-            directoryPath: "/workspace", paths: [path], listedAdded: [path: jan2 + 9_000])
+            directoryPath: "/workspace", paths: [path], listedAdded: [DiskPath(path): jan2 + 9_000])
         #expect(again.items.map(\.addedAt) == [FileTime.date(milliseconds: jan2 + 9_000)])
         // A disk that gives none now shows none.
-        let none = try await service.metadata(directoryPath: "/workspace", paths: [path], listedAdded: [path: nil])
+        let none = try await service.metadata(
+            directoryPath: "/workspace", paths: [path], listedAdded: [DiskPath(path): nil])
         #expect(none.items.map(\.addedAt) == [nil])
         #expect(fake.addedRead.isEmpty)
     }

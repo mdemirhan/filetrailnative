@@ -5,21 +5,29 @@ import Foundation
 /// being read is read once more after, since the answer may be from before. An item a read found nothing for (its
 /// folder is gone or can't be read) isn't asked for again until it changes: drawing its row again would otherwise ask
 /// at once, and again after that. Starting over (another folder, other search results) drops what was asked before:
-/// an answer to it changes nothing, and leaves the reads since as they are.
+/// an answer to it changes nothing, and leaves the reads since as they are. A path is kept byte for byte
+/// (`DiskPath`): two items whose names differ only in how an accent is spelled each have their own read.
 public struct PathReadCache<Value> {
-    public private(set) var values: [String: Value] = [:]
+    public private(set) var values: [DiskPath: Value] = [:]
     /// Items that changed: they keep what they have until they are read again.
-    public private(set) var stale: Set<String> = []
-    public private(set) var reading: Set<String> = []
+    public private(set) var stale: Set<DiskPath> = []
+    public private(set) var reading: Set<DiskPath> = []
     /// Items a read found nothing for: not asked for again until they change or it starts over.
-    public private(set) var unanswered: Set<String> = []
-    private var changedDuringRead: Set<String> = []
+    public private(set) var unanswered: Set<DiskPath> = []
+    private var changedDuringRead: Set<DiskPath> = []
     /// Goes up each time it starts over; a read is answered with the one it began at.
     public private(set) var generation = 0
 
     public init() {}
 
-    public subscript(path: String) -> Value? { values[path] }
+    public subscript(path: String) -> Value? { values[DiskPath(path)] }
+
+    /// What the item has that didn't change since it was read: nil for one not read, or changed since.
+    public func current(_ path: String) -> Value? {
+        let key = DiskPath(path)
+        guard let value = values[key], !stale.contains(key) else { return nil }
+        return value
+    }
 
     public var isReading: Bool { !reading.isEmpty }
 
@@ -27,9 +35,11 @@ public struct PathReadCache<Value> {
     /// already or found nothing for.
     public mutating func begin(_ paths: [String]) -> [String] {
         var wanted: [String] = []
-        for path in paths
-        where (values[path] == nil || stale.contains(path)) && !reading.contains(path) && !unanswered.contains(path) {
-            reading.insert(path)
+        for path in paths {
+            let key = DiskPath(path)
+            guard values[key] == nil || stale.contains(key), !reading.contains(key), !unanswered.contains(key)
+            else { continue }
+            reading.insert(key)
             wanted.append(path)
         }
         return wanted
@@ -38,9 +48,12 @@ public struct PathReadCache<Value> {
     /// These items changed (nil: any may have): what they have is read again, and those being read once more after.
     public mutating func markChanged(_ paths: [String]?) {
         if let paths {
-            stale.formUnion(paths.filter { values[$0] != nil })
-            changedDuringRead.formUnion(paths.filter { reading.contains($0) })
-            unanswered.subtract(paths)
+            for path in paths {
+                let key = DiskPath(path)
+                if values[key] != nil { stale.insert(key) }
+                if reading.contains(key) { changedDuringRead.insert(key) }
+                unanswered.remove(key)
+            }
         } else {
             stale = Set(values.keys)
             changedDuringRead = reading
@@ -53,21 +66,22 @@ public struct PathReadCache<Value> {
     /// items to read once more, which changed while it ran. An item of `paths` it found nothing for, and that didn't
     /// change meanwhile, is not asked for again, and what it had from an earlier read goes: the item is gone, so
     /// what was known of it is no longer true.
-    public mutating func finish(_ paths: [String], from generation: Int, answers: [String: Value]?) -> [String]? {
+    public mutating func finish(_ paths: [String], from generation: Int, answers: [DiskPath: Value]?) -> [String]? {
         guard generation == self.generation else { return nil }
-        reading.subtract(paths)
-        let again = changedDuringRead.intersection(paths)
-        changedDuringRead.subtract(paths)
+        let keys = paths.map(DiskPath.init)
+        reading.subtract(keys)
+        let again = changedDuringRead.intersection(keys)
+        changedDuringRead.subtract(keys)
         guard let answers else { return [] }
         values.merge(answers) { $1 }
         stale.subtract(answers.keys)
-        for path in paths where answers[path] == nil && !again.contains(path) {
-            unanswered.insert(path)
-            values[path] = nil
-            stale.remove(path)
+        for key in keys where answers[key] == nil && !again.contains(key) {
+            unanswered.insert(key)
+            values[key] = nil
+            stale.remove(key)
         }
         stale.formUnion(again.filter { values[$0] != nil })
-        return Array(again)
+        return again.map(\.string)
     }
 
     /// Starts over with nothing known, or with what `kept` knew (a folder back from under search results).

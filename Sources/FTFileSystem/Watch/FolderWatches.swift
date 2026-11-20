@@ -80,14 +80,17 @@ public final class FolderWatches {
     }
 
     private final class Watch {
-        let path: String
+        // The folder watched, told from another byte for byte: a window that goes to a folder whose name differs only
+        // in how an accent is spelled watches that one.
+        let path: DiskPath
         // Nil while not watching: the watch failed, or could not start.
         var stop: (@Sendable () -> Void)?
         var cancelTimer: (() -> Void)?
         var burstStartedAt: Double?
         // Nil once more changed than is worth naming.
         var changedNames: [String]? = []
-        var changedNameSet = Set<String>()
+        // The names in `changedNames`, byte for byte: two items named alike but for an accent's spelling both changed.
+        var changedNameSet = Set<FTFoundation.NameKeys.Exact>()
         var modifiedTime: Double?
         // The modification time being read after the window was told of a change.
         var modifiedTimeRead: Task<Void, Never>?
@@ -98,7 +101,7 @@ public final class FolderWatches {
         // The folder's time isn't read yet: it is once the watch runs.
         var awaitsFirstRead = true
 
-        init(path: String) { self.path = path }
+        init(path: DiskPath) { self.path = path }
 
         var hasTimer: Bool { cancelTimer != nil }
     }
@@ -118,6 +121,7 @@ public final class FolderWatches {
     /// is anyway, and when it is another the window is told that anything may have changed, and reads the folder
     /// again. One `stat` for each folder opened, and nothing after.
     public func watch(windowID: Int, path: String?, listedModifiedTime: Double? = nil) {
+        let path = path.map(DiskPath.init)
         if let path, let current = watches[windowID], current.path == path {
             if current.stop == nil {
                 start(windowID, current)
@@ -147,6 +151,7 @@ public final class FolderWatches {
     /// What watching `path` covers changed (a disk came or went, with its part of the Trash): the watches of it start
     /// again, and the windows read it again.
     public func restartWatches(of path: String) {
+        let path = DiskPath(path)
         for (windowID, watch) in watches where watch.path == path {
             watch.stop?()
             start(windowID, watch)
@@ -161,7 +166,7 @@ public final class FolderWatches {
     }
 
     /// The paths being watched, for tests and logs.
-    public var watchedPaths: [Int: String] { watches.mapValues(\.path) }
+    public var watchedPaths: [Int: String] { watches.mapValues(\.path.string) }
 
     // MARK: Inside
 
@@ -189,7 +194,7 @@ public final class FolderWatches {
         watch.readCount += 1
         let number = watch.readCount
         let read = dependencies.readModifiedTime
-        let path = watch.path
+        let path = watch.path.string
         // `read` is awaited off the main actor; the answer is applied here.
         watch.modifiedTimeRead = Task { @MainActor [weak self, weak watch] in
             let modifiedTime = await read(path)
@@ -211,9 +216,10 @@ public final class FolderWatches {
         watch.changedNames = []
         watch.changedNameSet = []
         recordModifiedTime(windowID, watch)
-        let changedPaths = names.map { $0.map { NodePath.join(watch.path, $0) } }
-        dependencies.forgetCachedListings(watch.path, changedPaths)
-        dependencies.onFolderChanged(windowID, FolderChange(path: watch.path, changedPaths: changedPaths))
+        let path = watch.path.string
+        let changedPaths = names.map { $0.map { NodePath.join(path, $0) } }
+        dependencies.forgetCachedListings(path, changedPaths)
+        dependencies.onFolderChanged(windowID, FolderChange(path: path, changedPaths: changedPaths))
     }
 
     private func noteChange(_ windowID: Int, _ watch: Watch, name: String?) {
@@ -221,11 +227,13 @@ public final class FolderWatches {
         if watch.changedNames != nil {
             if let name, !name.isEmpty,
                 // The folder itself renamed or removed is told of by its own name. An item inside it with
-                // the same name can't be told apart, and is read again with everything else.
-                name != NodePath.basename(watch.path),
+                // the same name can't be told apart, and is read again with everything else. The names are compared
+                // as text, which takes the two spellings of an accent as one: a name that may be the folder's own
+                // has everything read again, which is never wrong.
+                name != watch.path.name,
                 watch.changedNames?.count ?? 0 < Self.maxChangedPaths
             {
-                if watch.changedNameSet.insert(name).inserted {
+                if watch.changedNameSet.insert(FTFoundation.NameKeys.Exact(name)).inserted {
                     watch.changedNames?.append(name)
                 }
             } else {
@@ -247,7 +255,7 @@ public final class FolderWatches {
 
     private func start(_ windowID: Int, _ watch: Watch) {
         watch.stop = dependencies.watchFolder(
-            watch.path,
+            watch.path.string,
             { [weak self, weak watch] name in
                 guard let self, let watch else { return }
                 self.noteChange(windowID, watch, name: name)
@@ -272,7 +280,7 @@ public final class FolderWatches {
         // before, that change would be told of twice.
         await watch.modifiedTimeRead?.value
         let known = watch.modifiedTime
-        let modifiedTime = await dependencies.readModifiedTime(watch.path)
+        let modifiedTime = await dependencies.readModifiedTime(watch.path.string)
         // A change already on its way is told of anyway.
         guard watches[windowID] === watch, !watch.hasTimer else { return }
         // Not read yet when the watch started (or unreadable then): nothing to compare to.

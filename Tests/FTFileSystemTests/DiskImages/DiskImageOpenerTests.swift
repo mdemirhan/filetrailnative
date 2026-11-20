@@ -189,4 +189,22 @@ private func setUp(_ answers: Answers) -> (opener: DiskImageOpener, recorder: Re
         // Once mounted it can be opened again: its disk opens once more.
         #expect(await opener.open("/Users/demo/Install.dmg").status == .opened)
     }
+
+    // Two images whose names differ only in how an accent is spelled, which a disk can keep side by side, are two
+    // images: one being mounted doesn't hold the other back.
+    @Test func anImageNamedLikeTheOneBeingMountedButSpelledOtherwiseIsMounted() async throws {
+        let gate = Gate()
+        let (opener, recorder) = setUp(
+            Answers { attempt in
+                if attempt == 1 { await gate.wait() }
+                return ok(attachOutput("/Volumes/Install"))
+            })
+
+        let first = Task { await opener.open("/Users/demo/caf\u{E9}.dmg") }
+        while !(await gate.isWaiting) { try await Task.sleep(for: .milliseconds(5)) }
+        #expect(await opener.open("/Users/demo/cafe\u{301}.dmg").status == .opened)
+        #expect(recorder.firstWords.filter { $0 == "attach" }.count == 2)
+        await gate.open()
+        #expect(await first.value.status == .opened)
+    }
 }

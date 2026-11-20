@@ -42,11 +42,12 @@ public final class FdSearchRuntime: @unchecked Sendable {
     /// has it, is told here. A folder's answer is kept for the search, so a folder of many results is looked at once,
     /// and they are dropped without each being looked at. The folder the search starts in, and what is above it, don't
     /// count: looking inside a hidden folder is what was asked. fd says where a result really is (/private/tmp for
-    /// /tmp), which may not be how the folder was spelled.
+    /// /tmp), which may not be how the folder was spelled. Folders are told apart byte for byte: one whose name differs
+    /// from a hidden folder's only in how an accent is spelled is another folder, with its own answer.
     struct HiddenFilter {
         private let tops: [String]
         let hasHiddenFlag: @Sendable (String) -> Bool
-        var folders: [String: Bool] = [:]
+        var folders: [DiskPath: Bool] = [:]
 
         init(rootPath: String, realRootPath: String?, hasHiddenFlag: @escaping @Sendable (String) -> Bool) {
             tops = [rootPath, realRootPath ?? rootPath].map { $0.hasSuffix("/") ? $0 : $0 + "/" }
@@ -55,10 +56,11 @@ public final class FdSearchRuntime: @unchecked Sendable {
 
         mutating func isInHiddenFolder(_ path: String) -> Bool {
             let parent = NodePath.dirname(path)
-            guard parent != "/", tops.contains(where: { parent.hasPrefix($0) }) else { return false }
-            if let known = folders[parent] { return known }
+            guard parent != "/", tops.contains(where: { parent.utf8.starts(with: $0.utf8) }) else { return false }
+            let key = DiskPath(parent)
+            if let known = folders[key] { return known }
             let hidden = isInHiddenFolder(parent) || hasHiddenFlag(parent)
-            folders[parent] = hidden
+            folders[key] = hidden
             return hidden
         }
     }
