@@ -51,7 +51,7 @@ func performNode(_ context: ExecutionContext, _ resolvedNode: ResolvedCopyPasteN
             throw OperationError(unreadableFolderMessage(context.mode, currentNode.node.issueMessage))
         }
         if context.stagingFor == nil && (currentNode.action == .create || currentNode.action == .keepBoth) {
-            return try executeStagedDirectory(context, currentNode)
+            return try executeStagedDirectory(context, currentNode, source)
         }
         return try executeDirectoryNode(context, currentNode)
     }
@@ -59,148 +59,42 @@ func performNode(_ context: ExecutionContext, _ resolvedNode: ResolvedCopyPasteN
 }
 
 /// A folder copied, or moved to another disk, is built whole under a hidden name next to where it goes (written
-/// down, for a crash), then given its name: stopped, or a move that couldn't copy everything, leaves nothing half
-/// done in either place (a move copies nothing more once an item failed: its hidden copy goes whatever follows),
-/// and a move removes the originals only once the folder is in place. A copy of an ordinary
-/// folder that couldn't copy everything is put in place with what it has, its failures named, unless the disk filled
-/// up (that ends the paste, as a Stop does); a package (a Keynote document, an app) is put in place whole or not at
-/// all.
-private func executeStagedDirectory(_ context: ExecutionContext, _ currentNode: ResolvedCopyPasteNode) throws
-    -> ExecuteNodeResult
-{
+/// down, for a crash), then given its name (`stageThenPlace`): stopped, or a move that couldn't copy everything,
+/// leaves nothing half done in either place (a move copies nothing more once an item failed: its hidden copy goes
+/// whatever follows), and a move removes the originals only once the folder is in place. A copy of an ordinary
+/// folder that couldn't copy everything is put in place with what it has, its failures named, unless the disk
+/// filled up (that ends the paste, as a Stop does); a package (a Keynote document, an app) is put in place whole
+/// or not at all.
+private func executeStagedDirectory(
+    _ context: ExecutionContext, _ currentNode: ResolvedCopyPasteNode, _ source: NodeFingerprint
+) throws -> ExecuteNodeResult {
     let fileSystem = context.fileSystem
     let finalPath = currentNode.destinationPath
-    let name = basenameOf(finalPath)
-    let appMovedByCopy = movesAppByCopy(context, currentNode)
+    let mode = context.mode
     // Everything it will remove is checked before anything is copied: a move that couldn't remove its originals
     // would leave them in both places.
-    if context.mode == .cut {
+    if mode == .cut {
         try assertRemovableAfterCopy(context, currentNode, deep: true)
     }
-    // Made now, under a hidden name nothing else had: what is there is this paste's own.
-    try assertItemsCanLeave(context, dirnameOf(finalPath))
-    let temporaryPath = try reserveStagingFolder(fileSystem, finalPath)
-    let journal = context.writeJournal
-    let journalEntry = ReplaceJournalEntry(
-        id: randomHex(bytes: 8), stagingPath: temporaryPath, finalPath: finalPath,
-        sourcePath: currentNode.node.sourcePath, moved: false, staged: false, movingCopy: context.mode == .cut)
-    do {
-        try journal?.add(.replace(journalEntry))
-    } catch {
-        try? removeOwnStaging(fileSystem, temporaryPath)
-        throw error
-    }
-    // Whether the record says the hidden copy is complete, which the next start puts in place.
-    var recordedComplete = false
-    // What the progress counted as done before this folder: what its hidden copy adds goes when the copy does, or a
-    // folder asked again would be counted twice.
-    let countedItems = context.shared.completedItemCount
-    let countedBytes = context.shared.completedByteCount
-    // Its record goes only once it is gone: one that can't be removed now (its disk went away) is removed at the
-    // next start.
-    func discard() {
-        context.shared.completedItemCount = countedItems
-        context.shared.completedByteCount = countedBytes
-        guard recordIncomplete(journal, journalEntry, recordedComplete) else { return }
-        recordedComplete = false
-        do {
-            try removeOwnStaging(fileSystem, temporaryPath)
-        } catch {
-            return
-        }
-        try? journal?.remove(journalEntry.id)
-    }
-
-    let outerMode = context.mode
-    let outerDisplay = context.displayPath
-    let outcome: ExecuteNodeResult
-    do {
-        let staging = context.with { staging in
-            staging.mode = .copy
-            staging.recordsUndo = false
-            staging.stagingFor = outerMode
-            staging.metadataLaterFor = temporaryPath
-            staging.folderMadeAt = temporaryPath
+    return try stageThenPlace(
+        context, currentNode, source,
+        StagedPlacement(
+            replacing: nil, stopOnceBuilt: .clearsAway,
             // A move that couldn't copy everything moves nothing: nothing more is copied once an item failed.
-            staging.endsAtFirstFailure = outerMode == .cut
-            staging.displayPath = { path in
-                let shown = rebasePath(path, temporaryPath, finalPath)
-                return outerDisplay?(shown) ?? shown
-            }
-        }
-        outcome = try executeDirectoryNode(staging, rebaseResolvedNode(currentNode, finalPath, temporaryPath))
-    } catch {
-        discard()
-        if isAbortError(error) || context.signal.isStopped {
-            // What was copied went away with the hidden copy; the originals are where they were.
-            throw CancelledWithItemsError(childItems: [])
-        }
-        if let taken = rootError(error) as? DestinationTakenError {
-            throw taken.original
-        }
-        throw error
-    }
-    // Stopped as the last of it was written: it goes, like any stopped part way.
-    if context.signal.isStopped {
-        discard()
-        throw CancelledWithItemsError(childItems: [])
-    }
-    let childItems = rebaseItemResults(flattenItems(outcome.childItems), temporaryPath, finalPath)
-    let failedItems = childItems.filter { $0.status == .failed }
-    let incompleteItems = childItems.filter { $0.status != .completed }
-    let isPackage = !incompleteItems.isEmpty && isPackageFolder(fileSystem, currentNode.node.sourcePath)
-    if (context.mode == .cut && !failedItems.isEmpty) || isPackage {
-        discard()
-        return ExecuteNodeResult(
-            itemStatus: .failed, skipReason: nil,
-            error: isPackage
-                ? incompletePackageMessage(currentNode, context.mode)
-                : "\u{201C}\(name)\u{201D} wasn't moved because some items in it couldn't be copied. Nothing in it was moved.",
-            destinationPath: finalPath,
-            // Only what wasn't done: everything else went away with the hidden copy.
-            childItems: incompleteItems.map { .item($0) })
-    }
-
-    do {
-        // Complete now: a crash from here on puts it in place at the next start. Counted as written before it
-        // is: a write that failed may still have reached the disk.
-        recordedComplete = true
-        var complete = journalEntry
-        complete.staged = true
-        try journal?.add(.replace(complete))
-        // A copy of a locked or read-only folder is locked or read-only too, and can't always be renamed: it is
-        // opened for the move and closed again after.
-        let flags = try unlockForMove(fileSystem, temporaryPath)
-        let mode = try openForMove(fileSystem, temporaryPath)
-        try moveExclusive(fileSystem, temporaryPath, finalPath)
-        restoreAfterMove(fileSystem, finalPath, mode, flags)
-    } catch {
-        discard()
-        throw errorCode(error) == .errno(EEXIST) ? DestinationTakenError(original: error) : error
-    }
-    // Its own metadata now that it has its name (see metadataLaterFor).
-    try? applyDirectoryMetadata(context.with { $0.stagingFor = outerMode }, currentNode)
-    noteChanged(context)
-    if context.mode == .copy {
-        recordCreated(context, currentNode, finalPath)
-    }
-
-    var error = outcome.error
-    var items = childItems
-    if context.mode == .cut {
-        let cleanup = removeMovedSources(context, currentNode, childItems, temporaryPath, finalPath)
-        error = cleanup.error
-        items = cleanup.childItems
-    }
-    // Its record goes only once a move's originals are gone: a crash before that leaves the folder in both places,
-    // and the next start says so.
-    try? journal?.remove(journalEntry.id)
-    if appMovedByCopy {
-        recordAppMovedByCopy(context, currentNode, finalPath)
-    }
-    return ExecuteNodeResult(
-        itemStatus: error != nil || items.contains { $0.status == .failed } ? .failed : .completed, skipReason: nil,
-        error: error, destinationPath: finalPath, childItems: items.map { .item($0) })
+            endsAtFirstFailure: mode == .cut,
+            givenUp: { _, items in
+                let incompleteItems = items.filter { $0.status != .completed }
+                let isPackage = !incompleteItems.isEmpty && isPackageFolder(fileSystem, currentNode.node.sourcePath)
+                guard (mode == .cut && items.contains { $0.status == .failed }) || isPackage else { return nil }
+                return ExecuteNodeResult(
+                    itemStatus: .failed, skipReason: nil,
+                    error: isPackage
+                        ? incompletePackageMessage(currentNode, mode)
+                        : "\u{201C}\(basenameOf(finalPath))\u{201D} wasn't moved because some items in it couldn't be copied. Nothing in it was moved.",
+                    destinationPath: finalPath,
+                    // Only what wasn't done: everything else went away with the hidden copy.
+                    childItems: incompleteItems.map { .item($0) })
+            }))
 }
 
 /// What a move to another disk will have to remove after copying: the item, and for a folder what is inside it.

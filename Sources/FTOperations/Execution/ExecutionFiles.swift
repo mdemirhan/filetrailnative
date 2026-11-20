@@ -27,6 +27,13 @@ func copyFileContents(
         try writeIntoHiddenFolder(context, sourcePath, targetPath, onProgress)
         return
     }
+    // A file being built under a hidden name itself (a Replace's new file, see stageThenPlace) is written straight
+    // there: that name is hidden, written down, and takes the real one only once the file is whole, so a second
+    // hidden name under it would guard nothing more.
+    if sameText(targetPath, context.metadataLaterFor) {
+        try writeFileContents(context, sourcePath, targetPath, onProgress)
+        return
+    }
     if captureFingerprint(fileSystem, targetPath).exists {
         throw DestinationTakenError(
             original: NativeError(message: "EEXIST: \(targetPath)", code: .errno(EEXIST), path: targetPath))

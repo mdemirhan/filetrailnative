@@ -207,8 +207,9 @@ final class ExecutionContext: @unchecked Sendable {
     /// disk, see executeStagedDirectory): what the paste is (`.cut` for a move). What is inside is then written
     /// straight in, never built aside again.
     var stagingFor: CopyPasteMode?
-    /// The folder being built under a hidden name, whose own metadata waits until it has its real name: a copied
-    /// rule against deleting it (a copy of ~/Documents has one) would keep it from being renamed into place.
+    /// The hidden name an item is being built under. A folder's own metadata waits until it has its real name: a
+    /// copied rule against deleting it (a copy of ~/Documents has one) would keep it from being renamed into place.
+    /// A file is written straight under it (see copyFileContents).
     var metadataLaterFor: String?
     /// The folder made already, under a name of its own reserved for it (see reserveStagingFolder): it is
     /// filled, not made again.
