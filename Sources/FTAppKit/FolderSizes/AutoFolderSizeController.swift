@@ -26,7 +26,8 @@ final class AutoFolderSizeController {
 
     /// The folder to measure now (nil: none). Called whenever it may have changed; only a change does anything.
     func setPath(_ next: String?) {
-        guard next != path else { return }
+        // Another folder by its path's bytes: one whose name differs only in how an accent is spelled is another.
+        guard next.map(DiskPath.init) != path.map(DiskPath.init) else { return }
         leave()
         path = next
         guard let next else { return }
@@ -49,7 +50,7 @@ final class AutoFolderSizeController {
 
     private func fire(_ target: String) {
         timer = nil
-        guard path == target else { return }
+        guard path.map(DiskPath.init) == DiskPath(target) else { return }
         guard case .idle = sizes.entry(target) else { return }
         sizes.calculate(target, recalculate: false, automatic: true)
         if case .calculating(let job, _) = sizes.entry(target), !job.isEmpty {

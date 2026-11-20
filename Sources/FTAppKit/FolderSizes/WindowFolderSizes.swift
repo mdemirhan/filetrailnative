@@ -25,7 +25,9 @@ extension FolderSizeJobs: FolderSizeBackend {
 
 /// One window's view of the folder sizes: what it knows of each folder's size, asked of the jobs as the views draw
 /// folders and kept current while a calculation runs. The cache is per window: other windows' walks do not repaint
-/// this one.
+/// this one. A folder is told from another by its path byte for byte (`DiskPath`): two folders whose names differ
+/// only in how an accent is spelled each have their size, their measurement and their place in a run. The key is
+/// made once, where a path comes in.
 @MainActor
 final class WindowFolderSizes {
     /// A polled calculation is looked at this often.
@@ -60,7 +62,7 @@ final class WindowFolderSizes {
     private let now: () -> TimeInterval
     private let homePath: String
 
-    private var cache: [String: Slot] = [:]
+    private var cache: [DiskPath: Slot] = [:]
     private var sequence = 0
     /// The repaint at which the cache was last trimmed: once a repaint is enough, since what is stored or read
     /// meanwhile stays until the next.
@@ -78,31 +80,32 @@ final class WindowFolderSizes {
     private var lastRepaint = -TimeInterval.infinity
     private var repaintTimer: TimerToken?
     private var storedTimer: TimerToken?
-    private var pollTimers: [String: TimerToken] = [:]
-    private var pollJobs: [String: String] = [:]
-    private var polls: [String: Poll] = [:]
+    private var pollTimers: [DiskPath: TimerToken] = [:]
+    private var pollJobs: [DiskPath: String] = [:]
+    private var polls: [DiskPath: Poll] = [:]
+    /// By job.
     private var lookNow: [String: () -> Void] = [:]
     private var settledEarly: [String] = []
-    private var finishWaiters: [String: [(FolderSizeEntry) -> Void]] = [:]
+    private var finishWaiters: [DiskPath: [(FolderSizeEntry) -> Void]] = [:]
     /// The runs of several folders under way, each with the folders it has yet to finish: a new one doesn't stop
     /// another.
-    private var folderRuns: [Int: Set<String>] = [:]
+    private var folderRuns: [Int: Set<DiskPath>] = [:]
     private var lastFolderRun = 0
     /// The folders of a run whose turn hasn't come, each with its run: they show as waiting, with no job yet.
-    private var runWaiting: [String: Int] = [:]
+    private var runWaiting: [DiskPath: Int] = [:]
     /// Each run under way of more than one folder, for the Activity list: how many folders it has, how many it has
     /// done with, and the one it is on.
-    private var runStates: [Int: (total: Int, done: Int, current: String?)] = [:]
+    private var runStates: [Int: (total: Int, done: Int, current: DiskPath?)] = [:]
     /// How the last runs ended (true: every folder had its turn; false: stopped), for the Activity list's rows.
     private var runEnds: [Int: Bool] = [:]
     /// The measurement asked for of each folder (Calculate Size, by any route), by its job, while it runs or
     /// waits. One the app started by itself that was then asked for keeps its job, and is no longer the app's own
     /// to stop.
-    private var askedJobs: [String: String] = [:]
-    private var probeMissedAt: [String: (time: TimeInterval, sequence: Int)] = [:]
+    private var askedJobs: [DiskPath: String] = [:]
+    private var probeMissedAt: [DiskPath: (time: TimeInterval, sequence: Int)] = [:]
     private var probeSequence = 0
-    private var probeQueue: [String: ProbeKind] = [:]
-    private var probeQueueOrder: [String] = []
+    private var probeQueue: [DiskPath: ProbeKind] = [:]
+    private var probeQueueOrder: [DiskPath] = []
     private var probeFlushQueued = false
 
     init(
@@ -165,7 +168,7 @@ final class WindowFolderSizes {
     // MARK: The cache
 
     /// Stores an entry without repainting; the caller repaints once for all it stored.
-    private func setEntry(_ path: String, _ entry: FolderSizeEntry, partial: FolderSizePartial = []) {
+    private func setEntry(_ path: DiskPath, _ entry: FolderSizeEntry, partial: FolderSizePartial = []) {
         sequence += 1
         cache[path] = Slot(entry: entry, partial: partial, sequence: sequence, readAt: version)
         trimCache()
@@ -174,7 +177,7 @@ final class WindowFolderSizes {
         for resolve in waiters { resolve(entry) }
     }
 
-    private func updateEntry(_ path: String, _ entry: FolderSizeEntry, partial: FolderSizePartial = []) {
+    private func updateEntry(_ path: DiskPath, _ entry: FolderSizeEntry, partial: FolderSizePartial = []) {
         setEntry(path, entry, partial: partial)
         bumpVersion()
     }
@@ -196,7 +199,7 @@ final class WindowFolderSizes {
         }
     }
 
-    private func noteProbeMiss(_ path: String) {
+    private func noteProbeMiss(_ path: DiskPath) {
         probeSequence += 1
         probeMissedAt[path] = (now(), probeSequence)
         if probeMissedAt.count > Self.maxEntries {
@@ -212,6 +215,10 @@ final class WindowFolderSizes {
     /// A folder's size, or idle when it isn't known: then the jobs are asked (all the folders a redraw asks about,
     /// in one request), unless they were asked lately.
     func entry(_ path: String) -> FolderSizeEntry {
+        entry(key: DiskPath(path))
+    }
+
+    private func entry(key path: DiskPath) -> FolderSizeEntry {
         if let slot = cache[path] {
             if slot.readAt != version { cache[path]?.readAt = version }
             return slot.entry
@@ -232,11 +239,11 @@ final class WindowFolderSizes {
     }
 
     /// What the cache holds, without asking anything.
-    func cachedEntry(_ path: String) -> FolderSizeEntry? { cache[path]?.entry }
+    func cachedEntry(_ path: String) -> FolderSizeEntry? { cache[DiskPath(path)]?.entry }
 
     /// What a ready size leaves out, and why (empty: complete); nil without a ready size. Nothing shows it yet.
     func partial(_ path: String) -> FolderSizePartial? {
-        guard let slot = cache[path], case .ready = slot.entry else { return nil }
+        guard let slot = cache[DiskPath(path)], case .ready = slot.entry else { return nil }
         return slot.partial
     }
 
@@ -244,7 +251,7 @@ final class WindowFolderSizes {
         cache.values.contains { if case .calculating = $0.entry { true } else { false } }
     }
 
-    private func queueProbes(_ paths: some Sequence<String>, _ kind: ProbeKind) {
+    private func queueProbes(_ paths: some Sequence<DiskPath>, _ kind: ProbeKind) {
         for path in paths {
             // A refresh is the stronger question: a size it can't confirm is forgotten.
             if probeQueue[path] == .refresh { continue }
@@ -266,7 +273,8 @@ final class WindowFolderSizes {
         probeQueueOrder.removeAll()
         var changed = false
         let known = Dictionary(
-            backend.probeMany(queued.map(\.0)).map { ($0.path, $0) }, uniquingKeysWith: { first, _ in first })
+            backend.probeMany(queued.map(\.0.string)).map { (DiskPath($0.path), $0) },
+            uniquingKeysWith: { first, _ in first })
         for (path, kind) in queued {
             let current = cache[path]?.entry
             if case .calculating? = current { continue }
@@ -311,11 +319,13 @@ final class WindowFolderSizes {
 
     /// The folders inside `path` without a size, or all of them (`includeKnown`), asked about again at once: a walk
     /// of `path` measured some or all of them.
-    private func askAgainInside(_ path: String, includeKnown: Bool, kind: ProbeKind = .ask) {
-        let prefix = path.hasSuffix("/") ? path : path + "/"
-        var inside: [String] = []
-        for missed in probeMissedAt.keys where missed.hasPrefix(prefix) { inside.append(missed) }
-        for (cached, slot) in cache where cached.hasPrefix(prefix) {
+    private func askAgainInside(_ path: DiskPath, includeKnown: Bool, kind: ProbeKind = .ask) {
+        // Inside by the folder's bytes and a slash; a folder spelled with a slash at its end ("/") is its own prefix.
+        let prefix = Array((path.string.hasSuffix("/") ? path.string : path.string + "/").utf8)
+        func isInside(_ other: DiskPath) -> Bool { other.string.utf8.starts(with: prefix) }
+        var inside: [DiskPath] = []
+        for missed in probeMissedAt.keys where isInside(missed) { inside.append(missed) }
+        for (cached, slot) in cache where isInside(cached) {
             if case .calculating = slot.entry { continue }
             // A folder whose own calculation was stopped or failed shows no size either.
             var wanted = includeKnown
@@ -336,14 +346,14 @@ final class WindowFolderSizes {
         var measuredFolderCount = 0
     }
 
-    private func stopPolling(_ path: String) {
+    private func stopPolling(_ path: DiskPath) {
         askedJobs[path] = nil
         pollTimers.removeValue(forKey: path)?.cancel()
         polls[path] = nil
         if let jobId = pollJobs.removeValue(forKey: path) { lookNow[jobId] = nil }
     }
 
-    private func startPolling(_ path: String, _ jobId: String) {
+    private func startPolling(_ path: DiskPath, _ jobId: String) {
         stopPolling(path)
         let poll = Poll()
         polls[path] = poll
@@ -356,7 +366,7 @@ final class WindowFolderSizes {
         }
     }
 
-    private func arm(_ path: String, _ jobId: String, _ poll: Poll) {
+    private func arm(_ path: DiskPath, _ jobId: String, _ poll: Poll) {
         pollTimers[path] = scheduler.schedule(after: Self.pollInterval) { [weak self] in
             guard let self, self.polls[path] === poll else { return }
             self.look(path, jobId, poll)
@@ -364,7 +374,7 @@ final class WindowFolderSizes {
         }
     }
 
-    private func look(_ path: String, _ jobId: String, _ poll: Poll) {
+    private func look(_ path: DiskPath, _ jobId: String, _ poll: Poll) {
         // Another calculation of this folder took over meanwhile.
         guard polls[path] === poll else { return }
         let result = backend.getStatus(jobId: jobId)
@@ -418,6 +428,10 @@ final class WindowFolderSizes {
     /// `automatic` for a measurement the app starts by itself (the Info panel's), which the jobs run at a lower
     /// priority.
     func calculate(_ path: String, recalculate: Bool = false, automatic: Bool = false) {
+        calculate(key: DiskPath(path), recalculate: recalculate, automatic: automatic)
+    }
+
+    private func calculate(key path: DiskPath, recalculate: Bool = false, automatic: Bool = false) {
         // Asked for before the app measured it by itself, it stays asked for: the jobs join the two.
         let asked = !automatic || askedJobs[path] != nil
         // Asked for by itself, it no longer waits for its turn in a run.
@@ -426,7 +440,8 @@ final class WindowFolderSizes {
         stopPolling(path)
         updateEntry(path, .calculating(jobID: ""))
         let response = backend.start(
-            FolderSizeStartRequest(path: path, recalculate: recalculate, automatic: automatic), owner: owner)
+            FolderSizeStartRequest(path: path.string, recalculate: recalculate, automatic: automatic),
+            owner: owner)
         if response.status == .ready {
             let status = backend.getStatus(jobId: response.jobId)
             if status.status == .ready, let size = status.sizeBytes {
@@ -447,7 +462,7 @@ final class WindowFolderSizes {
 
     /// Whether the measurement of `path` under way, running or waiting, was asked for, not only started by the app
     /// itself.
-    func isAskedFor(_ path: String) -> Bool { askedJobs[path] != nil }
+    func isAskedFor(_ path: String) -> Bool { askedJobs[DiskPath(path)] != nil }
 
     func recalculate(_ path: String) {
         calculate(path, recalculate: true)
@@ -461,9 +476,9 @@ final class WindowFolderSizes {
     func calculate(_ paths: [String], recalculate: Bool = false) {
         lastFolderRun += 1
         let run = lastFolderRun
-        var wanted: [String] = []
-        var seen = Set<String>()
-        for path in paths where seen.insert(path).inserted {
+        var wanted: [DiskPath] = []
+        var seen = Set<DiskPath>()
+        for path in paths.map(DiskPath.init) where seen.insert(path).inserted {
             switch cache[path]?.entry {
             case .calculating: continue
             case .ready where !recalculate: continue
@@ -504,7 +519,7 @@ final class WindowFolderSizes {
                 }
                 runWaiting[path] = nil
                 runStates[run]?.current = path
-                calculate(path, recalculate: recalculate)
+                calculate(key: path, recalculate: recalculate)
                 activityChanged()
                 return
             }
@@ -535,7 +550,7 @@ final class WindowFolderSizes {
     }
 
     /// `path` no longer waits for its turn in a run.
-    private func leaveRun(_ path: String) {
+    private func leaveRun(_ path: DiskPath) {
         guard let run = runWaiting.removeValue(forKey: path) else { return }
         folderRuns[run]?.remove(path)
         activityChanged()
@@ -562,7 +577,7 @@ final class WindowFolderSizes {
     /// Stops a run of several folders: the folder being measured for it and those still waiting.
     func cancelRun(_ run: Int) {
         guard let paths = folderRuns[run] else { return }
-        cancel(Array(paths))
+        cancel(keys: Array(paths))
     }
 
     /// Told when the runs waiting changed; the Activity list follows.
@@ -573,6 +588,10 @@ final class WindowFolderSizes {
     /// Stop: polling stops, the jobs are told to cancel, the entry returns to idle and the sizes of folders inside
     /// that were already measured stay shown. A folder waiting its turn in a run leaves the run.
     func cancel(_ path: String) {
+        cancel(key: DiskPath(path))
+    }
+
+    private func cancel(key path: DiskPath) {
         leaveRun(path)
         if case .calculating(let jobID, _)? = cache[path]?.entry {
             stopPolling(path)
@@ -584,12 +603,16 @@ final class WindowFolderSizes {
 
     /// Stops the runs of several folders holding any of `paths`, and those of them being measured or waiting.
     func cancel(_ paths: [String]) {
+        cancel(keys: paths.map(DiskPath.init))
+    }
+
+    private func cancel(keys paths: [DiskPath]) {
         let stopping = Set(paths)
         for (run, runPaths) in folderRuns where !runPaths.isDisjoint(with: stopping) {
             endRun(run, completed: false)
         }
         for path in paths {
-            if case .calculating? = cache[path]?.entry { cancel(path) }
+            if case .calculating? = cache[path]?.entry { cancel(key: path) }
         }
     }
 
@@ -603,19 +626,21 @@ final class WindowFolderSizes {
         // Where the Trash is, the folders holding it may have changed; the Trash itself too.
         let trashPath = intoTrash ? homeTrashPath : nil
         let trash = trashPath.map { ChangeMatcher(changedPaths: [$0]) }
-        var toRefresh: [String] = []
+        let trashKey = trashPath.map(DiskPath.init)
+        var toRefresh: [DiskPath] = []
         var forgotten = false
-        for (path, slot) in cache {
+        for (key, slot) in cache {
             if case .calculating = slot.entry { continue }
-            if changes.holdsChange(path) || path == trashPath || trash?.holdsChange(path) == true {
-                toRefresh.append(path)
+            let path = key.string
+            if changes.holdsChange(path) || key == trashKey || trash?.holdsChange(path) == true {
+                toRefresh.append(key)
             } else if changes.isAtOrInsideChange(path) {
                 // What changed, and what is inside it: the jobs forgot these.
-                cache[path] = nil
+                cache[key] = nil
                 forgotten = true
             }
         }
-        for missed in Array(probeMissedAt.keys) where changes.isAffected(missed) {
+        for missed in Array(probeMissedAt.keys) where changes.isAffected(missed.string) {
             probeMissedAt[missed] = nil
         }
         queueProbes(toRefresh, .refresh)
