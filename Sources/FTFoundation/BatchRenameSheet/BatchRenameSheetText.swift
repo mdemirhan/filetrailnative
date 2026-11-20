@@ -211,14 +211,14 @@ public enum BatchRenameSheetText {
         public var danger: Bool
     }
 
-    /// The footer's line: the first that applies, in order of precedence. A pattern that isn't valid is said under
-    /// the Find field, once: the footer says what it says of any plan that renames nothing.
+    /// The footer's line: the first that applies, in order of precedence. A pattern that isn't valid, or takes too
+    /// long, is said under the Find field, once: the footer says what it says of any plan that renames nothing.
     public static func summary(plan: BatchRenamePlan, checking: Bool, checkError: String?) -> Summary {
         if let checkError, !checkError.isEmpty {
             return Summary(text: checkError, danger: true)
         }
         if let settingsError = plan.settingsError, !settingsError.isEmpty,
-            settingsError != BatchRename.patternIsNotValid
+            settingsError != BatchRename.patternIsNotValid, settingsError != BatchRename.patternTakesTooLong
         {
             return Summary(text: settingsError, danger: true)
         }

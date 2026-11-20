@@ -55,6 +55,11 @@ import Testing
         #expect(
             BatchRenameSheetText.summary(plan: invalid, checking: false, checkError: nil)
                 == .init(text: "Nothing to rename yet", danger: false))
+        // Nor is one that takes too long.
+        let slow = plan([.unchanged], settingsError: BatchRename.patternTakesTooLong)
+        #expect(
+            BatchRenameSheetText.summary(plan: slow, checking: false, checkError: nil)
+                == .init(text: "Nothing to rename yet", danger: false))
         let fixing = plan([.problem(proposedName: "x", segments: [], problem: .taken(byItemInBatch: false))])
         #expect(
             BatchRenameSheetText.summary(plan: fixing, checking: false, checkError: nil)
