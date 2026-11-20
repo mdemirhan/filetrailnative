@@ -25,6 +25,5 @@ Sources/FTAppKit/WriteOperations/AppWriteOperations.swift: userData.appendingPat
 
 # Not URLs: a struct named `folder` with a path of its own, in the module where the check takes a `folder` read for
 # its path for a URL.
-Sources/FTAppKit/BatchRename/BatchRenameSheetModel.swift: folders[folder.path] = BatchRenameFolder(names: folder.names, caseSensitive: folder.caseSensitive)
 Sources/FTAppKit/PathBar/PathFolderMenu.swift: title: folder.name, checked: folder.path == activePath ? true : nil, tooltip: folder.path,
 Sources/FTAppKit/PathBar/PathFolderMenu.swift: if folder.path != active { onNavigate(folder.path) }

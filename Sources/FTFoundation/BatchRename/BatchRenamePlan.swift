@@ -12,28 +12,19 @@ extension BatchRename {
     public static func planBatchRename(_ input: BatchRenamePlanInput) -> BatchRenamePlan {
         let proposed = proposeNames(settings: input.settings, items: input.items, now: input.now)
         var plan = [BatchRenamePlanItem](repeating: .unchanged, count: input.items.count)
-        // Each item's place in the batch, grouped by the folder it is in, in the order the folders first appear.
-        var folderOrder: [NameKeys.Exact] = []
-        var folderPaths: [NameKeys.Exact: String] = [:]
-        var byFolder: [NameKeys.Exact: [Int]] = [:]
+        // Each item's place in the batch, grouped by the folder it is in, in the order the folders first appear. A
+        // folder is told from another by its path's bytes.
+        var folderOrder: [DiskPath] = []
+        var byFolder: [DiskPath: [Int]] = [:]
         for (index, item) in input.items.enumerated() {
-            let path = parentPath(of: item.path)
-            let key = NameKeys.Exact(path)
-            if byFolder[key] == nil {
-                folderOrder.append(key)
-                folderPaths[key] = path
-            }
+            let key = DiskPath(parentPath(of: item.path))
+            if byFolder[key] == nil { folderOrder.append(key) }
             byFolder[key, default: []].append(index)
         }
-        // Dictionaries keyed by path compare strings by canonical equivalence; these compare them exactly.
-        var folders: [NameKeys.Exact: BatchRenameFolder] = [:]
-        for (path, folder) in input.folders { folders[NameKeys.Exact(path)] = folder }
-        var cannotRename: [NameKeys.Exact: String] = [:]
-        for (path, message) in input.cannotRename { cannotRename[NameKeys.Exact(path)] = message }
 
         for folderKey in folderOrder {
             let entries = byFolder[folderKey] ?? []
-            let folder = folders[folderKey]
+            let folder = input.folders[folderKey]
             let caseSensitive = folder?.caseSensitive ?? false
             func key(_ name: String) -> NameKeys.Exact {
                 NameKeys.Exact(NameKeys.nameKey(name, caseSensitive: caseSensitive))
@@ -47,7 +38,7 @@ extension BatchRename {
                     continue
                 }
                 let invalid = emptyName ? "The name can\u{2019}t be only an extension." : ItemNames.error(for: name)
-                let locked = cannotRename[NameKeys.Exact(item.path)]
+                let locked = input.cannotRename[DiskPath(item.path)]
                 if invalid != nil || locked != nil {
                     plan[index] = .problem(
                         proposedName: name, segments: segments,

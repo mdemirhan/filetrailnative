@@ -178,7 +178,7 @@ extension WriteCoordinator {
             }
             let direction = started.look.direction
             let entry = started.entry
-            let changedAgreed = Set(asked.changed.map(\.path))
+            let changedAgreed = Set(asked.changed.map { DiskPath($0.path) })
             return try queueLocalWriteOperation(
                 action: direction == .undo ? .undo : .redo, window: window, reservation: reservation
             ) { [weak self] operation in
@@ -195,7 +195,7 @@ extension WriteCoordinator {
     }
 
     func executeUndo(
-        _ history: UndoHistory, _ direction: UndoDirection, _ entry: UndoEntry, changedAgreed: Set<String>,
+        _ history: UndoHistory, _ direction: UndoDirection, _ entry: UndoEntry, changedAgreed: Set<DiskPath>,
         _ operation: LocalWriteOperation, _ fileSystem: any UndoFileSystem
     ) async {
         let startedAt = Date()

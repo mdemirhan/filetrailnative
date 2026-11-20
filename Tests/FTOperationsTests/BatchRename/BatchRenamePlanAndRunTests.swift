@@ -26,10 +26,10 @@ private func planAndRename(_ disk: MemoryDisk, _ paths: [String], _ settings: Ba
             path: $0, name: NodePath.basename($0), isFolder: false, createdAt: "2026-09-30T10:12:40",
             modifiedAt: "2026-10-01T08:30:15", takenAt: nil)
     }
-    var folders: [String: BatchRenameFolder] = [:]
+    var folders: [DiskPath: BatchRenameFolder] = [:]
     for path in paths {
         let folder = BatchRename.parentPath(of: path)
-        folders[folder] = BatchRenameFolder(names: disk.names(folder), caseSensitive: disk.caseSensitive)
+        folders[DiskPath(folder)] = BatchRenameFolder(names: disk.names(folder), caseSensitive: disk.caseSensitive)
     }
     let plan = BatchRename.planBatchRename(
         BatchRenamePlanInput(settings: settings, items: items, folders: folders, now: now))

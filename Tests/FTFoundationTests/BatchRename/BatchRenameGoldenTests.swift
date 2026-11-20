@@ -118,13 +118,17 @@ struct BatchRenameGoldenTests {
     }
 
     static func plan(_ input: PlanInput) -> PlanOutput {
+        // The plan takes its folders and its locked items by path.
+        var folders: [DiskPath: BatchRenameFolder] = [:]
+        for (path, folder) in input.folders {
+            folders[DiskPath(path)] = BatchRenameFolder(names: folder.names, caseSensitive: folder.caseSensitive)
+        }
+        var cannotRename: [DiskPath: String] = [:]
+        for (path, reason) in input.cannotRename { cannotRename[DiskPath(path)] = reason }
         let result = BatchRename.planBatchRename(
             BatchRenamePlanInput(
-                settings: input.settings, items: input.items.map(\.item),
-                folders: input.folders.mapValues {
-                    BatchRenameFolder(names: $0.names, caseSensitive: $0.caseSensitive)
-                },
-                cannotRename: input.cannotRename, now: input.now))
+                settings: input.settings, items: input.items.map(\.item), folders: folders,
+                cannotRename: cannotRename, now: input.now))
         let items = result.items.map { planItem -> WirePlanItem in
             switch planItem {
             case .unchanged:

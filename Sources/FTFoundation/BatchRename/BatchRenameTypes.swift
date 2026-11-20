@@ -274,14 +274,14 @@ public struct BatchRenamePlanInput: Sendable {
     public var settings: BatchRenameSettings
     public var items: [BatchRenameItem]
     /// Keyed by folder path. A folder missing here is taken to hold only the items.
-    public var folders: [String: BatchRenameFolder]
-    /// Items that can't be renamed, and why.
-    public var cannotRename: [String: String]
+    public var folders: [DiskPath: BatchRenameFolder]
+    /// Items that can't be renamed, by their paths, and why.
+    public var cannotRename: [DiskPath: String]
     public var now: LocalDateTime
 
     public init(
-        settings: BatchRenameSettings, items: [BatchRenameItem], folders: [String: BatchRenameFolder] = [:],
-        cannotRename: [String: String] = [:], now: LocalDateTime
+        settings: BatchRenameSettings, items: [BatchRenameItem], folders: [DiskPath: BatchRenameFolder] = [:],
+        cannotRename: [DiskPath: String] = [:], now: LocalDateTime
     ) {
         self.settings = settings
         self.items = items

@@ -32,7 +32,7 @@ private func renamedName(_ name: ProposedName) -> String? {
 
 private func plan(
     _ settings: BatchRenameSettings, _ itemNames: [String], folderNames: [String]? = nil,
-    caseSensitive: Bool = false, cannotRename: [String: String] = [:]
+    caseSensitive: Bool = false, cannotRename: [DiskPath: String] = [:]
 ) -> BatchRenamePlan {
     BatchRename.planBatchRename(
         BatchRenamePlanInput(
@@ -801,7 +801,7 @@ struct PlanTests {
     }
 
     @Test func skipsAnItemThatCantBeRenamedAndKeepsItsNameTaken() {
-        let locked = ["/trip/locked.txt": "The item is locked."]
+        let locked: [DiskPath: String] = ["/trip/locked.txt": "The item is locked."]
         let result = plan(
             BatchRenameSettings(mode: .format, customName: "x"), ["locked.txt", "b.txt"], cannotRename: locked)
         #expect(result.items.map(outcome) == ["cannotRename:x 1.txt", "x 2.txt"])
@@ -878,11 +878,12 @@ struct PlanShownTests {
     private func planned(
         _ folderNames: [String], _ itemPaths: [String], _ settings: BatchRenameSettings, caseSensitive: Bool = false
     ) -> BatchRenamePlan {
-        var folders: [String: BatchRenameFolder] = [:]
+        var folders: [DiskPath: BatchRenameFolder] = [:]
         for name in folderNames {
             let folder = BatchRename.parentPath(of: name)
             let leaf = String(name.dropFirst(folder.count + 1))
-            folders[folder, default: BatchRenameFolder(names: [], caseSensitive: caseSensitive)].names.append(leaf)
+            folders[DiskPath(folder), default: BatchRenameFolder(names: [], caseSensitive: caseSensitive)]
+                .names.append(leaf)
         }
         return BatchRename.planBatchRename(
             BatchRenamePlanInput(
@@ -995,7 +996,7 @@ private enum ClashCase {
                 continue
             }
             let invalid = emptyName || ItemNames.error(for: newName) != nil
-            if invalid || input.cannotRename[input.items[index].path] != nil {
+            if invalid || input.cannotRename[DiskPath(input.items[index].path)] != nil {
                 result[index] = "\(invalid ? "invalid" : "cannotRename"):\(newName)"
                 leftAsIs.insert(index)
             }

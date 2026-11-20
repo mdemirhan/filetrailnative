@@ -301,7 +301,7 @@ extension ExplorerWindowlessTests {
         WriteOperationItem(sourcePath: source, destinationPath: destination, status: status)
     }
 
-    private func targets(_ items: [WriteOperationItem], folders: [String: Bool] = [:]) -> [BatchRenameTarget] {
+    private func targets(_ items: [WriteOperationItem], folders: [DiskPath: Bool] = [:]) -> [BatchRenameTarget] {
         MainWindowController.retryTargets(ended(items), folders: folders)
     }
 

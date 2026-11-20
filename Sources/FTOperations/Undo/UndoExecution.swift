@@ -41,9 +41,9 @@ public struct UndoRunOptions: Sendable {
     /// Whether the disk holding a path has a Trash (`makeDiskHasTrash`), to tell a Trash that failed without saying
     /// why from a disk that has none.
     public var diskHasTrash: (@Sendable (String) -> Bool)?
-    /// The items the person agreed to move to the Trash though they changed since. Another that changed once the Undo
-    /// started is left, and the next Undo asks about it.
-    public var changedAgreed: Set<NameKeys.Exact>
+    /// The items the person agreed to move to the Trash though they changed since, by their paths. Another that
+    /// changed once the Undo started is left, and the next Undo asks about it.
+    public var changedAgreed: Set<DiskPath>
     /// Where a rename of several writes down the items it moves aside (see WriteJournal).
     public var journal: (any WriteJournal)?
     /// The batch rename a batch step runs (`runBatchRename`; tests give their own).
@@ -56,7 +56,7 @@ public struct UndoRunOptions: Sendable {
 
     public init(
         direction: UndoDirection, fileSystem: any UndoFileSystem, signal: StopSignal = StopSignal(),
-        homeDev: Int64? = nil, diskHasTrash: (@Sendable (String) -> Bool)? = nil, changedAgreed: Set<String> = [],
+        homeDev: Int64? = nil, diskHasTrash: (@Sendable (String) -> Bool)? = nil, changedAgreed: Set<DiskPath> = [],
         journal: (any WriteJournal)? = nil, batchRename: @escaping UndoBatchRenamer = UndoBatchRename.runBatchRename,
         onStepStart: (@Sendable (String, Int) -> Void)? = nil, exactItems: Bool = false
     ) {
@@ -65,7 +65,7 @@ public struct UndoRunOptions: Sendable {
         self.signal = signal
         self.homeDev = homeDev
         self.diskHasTrash = diskHasTrash
-        self.changedAgreed = Set(changedAgreed.map(NameKeys.Exact.init))
+        self.changedAgreed = changedAgreed
         self.journal = journal
         self.batchRename = batchRename
         self.onStepStart = onStepStart
@@ -612,7 +612,7 @@ public enum UndoExecution {
             changed = isChanged
             id = itemId
         }
-        if changed && !options.changedAgreed.contains(NameKeys.Exact(planned.path)) {
+        if changed && !options.changedAgreed.contains(DiskPath(planned.path)) {
             return failedStep(
                 original, planned.path, nil,
                 "\u{201C}\(NodePath.basename(planned.path))\u{201D} was changed after \(options.direction.command) was chosen, so it was left as it is."

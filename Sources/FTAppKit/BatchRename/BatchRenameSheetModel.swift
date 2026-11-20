@@ -182,21 +182,22 @@ final class BatchRenameSheetModel {
         if let cachedPlan { return cachedPlan }
         guard let sheet else { return nil }
         let answer = sheet.inspect
-        var itemsByPath: [String: BatchRenameInspection.Item] = [:]
-        for item in answer?.items ?? [] { itemsByPath[item.path] = item }
+        var itemsByPath: [DiskPath: BatchRenameInspection.Item] = [:]
+        for item in answer?.items ?? [] { itemsByPath[DiskPath(item.path)] = item }
         let items = sheet.targets.map { target in
-            let inspected = itemsByPath[target.path]
+            let inspected = itemsByPath[DiskPath(target.path)]
             return BatchRenameItem(
                 path: target.path, name: target.name, isFolder: target.isFolder, createdAt: inspected?.createdAt,
                 modifiedAt: inspected?.modifiedAt, takenAt: inspected?.takenAt)
         }
-        var folders: [String: BatchRenameFolder] = [:]
-        for folder in answer?.folders ?? [] {
-            folders[folder.path] = BatchRenameFolder(names: folder.names, caseSensitive: folder.caseSensitive)
+        var folders: [DiskPath: BatchRenameFolder] = [:]
+        for listed in answer?.folders ?? [] {
+            folders[DiskPath(listed.path)] = BatchRenameFolder(
+                names: listed.names, caseSensitive: listed.caseSensitive)
         }
-        var cannotRename: [String: String] = [:]
+        var cannotRename: [DiskPath: String] = [:]
         for item in answer?.items ?? [] {
-            if let reason = item.cannotRename { cannotRename[item.path] = reason }
+            if let reason = item.cannotRename { cannotRename[DiskPath(item.path)] = reason }
         }
         let made = BatchRename.planBatchRename(
             BatchRenamePlanInput(

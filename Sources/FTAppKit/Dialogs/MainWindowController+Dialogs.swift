@@ -148,7 +148,7 @@ extension MainWindowController {
     func submitGoTo(_ path: String, box: GoToFolderBox) {
         let home = DiskPath.home.string
         let expanded = GoToBoxState.folderPath(path, homePath: home, currentPath: box.options.currentPath)
-        let wasVisited = box.state.places.contains { $0.isVisited && $0.path == path }
+        let wasVisited = box.state.places.contains { $0.isVisited && samePath($0.path, path) }
         box.setError(nil)
         box.setSubmitting(true)
         Task { @MainActor [weak self, weak box] in
@@ -281,7 +281,7 @@ extension MainWindowController {
         // A folder that isn't there, in one that is, can be made first.
         let parent = NodePath.dirname(folder)
         let isMissing = await BlockingWork.run { (try? FileManager.default.attributesOfItem(atPath: folder)) == nil }
-        guard isMissing, parent != folder,
+        guard isMissing, !samePath(parent, folder),
             await TabDragDrop.destinationRefusal(parent, services.directoryService) == nil
         else { return .blocked(message: refused) }
         guard creates else {
@@ -301,15 +301,17 @@ extension MainWindowController {
     }
 
     /// Why a move into `folder` can't be: it is inside one of the items. Said before a folder typed there is made,
-    /// which would otherwise be left behind inside the item when the move is refused.
+    /// which would otherwise be left behind inside the item when the move is refused. Byte for byte: a folder whose
+    /// path differs from an item's only in how an accent is stored is another folder, and takes the item.
     static func insideItself(_ paths: [String], folder: String) -> String? {
-        guard let item = paths.first(where: { folder.hasPrefix($0 + "/") }) else { return nil }
+        guard let item = paths.first(where: { folder.utf8.starts(with: ($0 + "/").utf8) }) else { return nil }
         return "\u{201C}\(NodePath.basename(item))\u{201D} can\u{2019}t be moved into itself."
     }
 
-    /// Why a move into `folder` would do nothing: every item is in it already.
+    /// Why a move into `folder` would do nothing: every item is in it already, by its path's bytes.
     static func alreadyThere(_ paths: [String], in folder: String) -> String? {
-        guard !paths.isEmpty, paths.allSatisfy({ NodePath.dirname($0) == folder }) else { return nil }
+        let folder = DiskPath(folder)
+        guard !paths.isEmpty, paths.allSatisfy({ DiskPath($0).parent == folder }) else { return nil }
         return paths.count == 1
             ? "\u{201C}\(NodePath.basename(paths[0]))\u{201D} is already in this folder."
             : "These items are already in this folder."

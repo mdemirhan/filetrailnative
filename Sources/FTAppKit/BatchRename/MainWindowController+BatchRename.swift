@@ -17,7 +17,7 @@ extension MainWindowController {
 
     /// Which items of the last rename of several were folders, by explorer window and by the path asked for: the sheet
     /// opens again on the items that weren't renamed, each numbered as it was.
-    private static var batchRenameFolders: [Int: [String: Bool]] = [:]
+    private static var batchRenameFolders: [Int: [DiskPath: Bool]] = [:]
 
     /// An explorer window closed: what its last rename of several asked for goes with it.
     static func forgetBatchRenameFolders(windowID: Int) {
@@ -47,11 +47,16 @@ extension MainWindowController {
     /// The items in the order the list (or the search results) shows them, which numbers them. A
     /// folder, or a link to one, is renamed whole; a package keeps its extension.
     func openBatchRename(for entries: [DirectoryEntry]) {
-        let wanted = Set(entries.map(\.path))
-        let targets = content.entries.filter { wanted.contains($0.path) }.map {
+        openBatchRenameSheet(Self.batchRenameTargets(for: entries, listed: content.entries))
+    }
+
+    /// The sheet's items for `entries`: those of `listed` at their paths, in the order the list shows them. An item
+    /// beside one of them whose path differs only in how an accent is stored is another item, and stays out.
+    static func batchRenameTargets(for entries: [DirectoryEntry], listed: [DirectoryEntry]) -> [BatchRenameTarget] {
+        let wanted = Set(entries.map { DiskPath($0.path) })
+        return listed.filter { wanted.contains(DiskPath($0.path)) }.map {
             BatchRenameTarget(path: $0.path, name: $0.name, isFolder: $0.isDirectoryLike)
         }
-        openBatchRenameSheet(targets)
     }
 
     /// `openBatchRenameSheet`, every way in: the menus close; a write running here or in another window is said
@@ -103,7 +108,7 @@ extension MainWindowController {
         guard let actions = writeActions else { return }
         if actions.refuseWhileBusy(.operation(.batchRename)) { return }
         Self.batchRenameFolders[batchRenameWindowKey] = Dictionary(
-            request.items.map { ($0.sourcePath, $0.isFolder) }, uniquingKeysWith: { _, last in last })
+            request.items.map { (DiskPath($0.sourcePath), $0.isFolder) }, uniquingKeysWith: { _, last in last })
         let run = Self.runBatchRename
         Task { await run(actions, request) }
     }
@@ -116,13 +121,14 @@ extension MainWindowController {
         openBatchRenameSheet(Self.retryTargets(result, folders: Self.batchRenameFolders[batchRenameWindowKey] ?? [:]))
     }
 
-    /// The targets of a Try Again: the items not completed, under their names now.
-    static func retryTargets(_ result: WriteOperationResult, folders: [String: Bool]) -> [BatchRenameTarget] {
+    /// The targets of a Try Again: the items not completed, under their names now. `folders` says which were folders,
+    /// by the paths asked for.
+    static func retryTargets(_ result: WriteOperationResult, folders: [DiskPath: Bool]) -> [BatchRenameTarget] {
         result.items.compactMap { item in
             guard item.status != .completed, let path = item.destinationPath ?? item.sourcePath, !path.isEmpty else {
                 return nil
             }
-            let isFolder = folders[item.sourcePath ?? path] ?? false
+            let isFolder = folders[DiskPath(item.sourcePath ?? path)] ?? false
             return BatchRenameTarget(path: path, name: NodePath.basename(path), isFolder: isFolder)
         }
     }
