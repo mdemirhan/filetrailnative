@@ -24,53 +24,59 @@ extension ExplorerWindowlessTests {
             try #require(descendants(of: tab.window?.contentView, ListTableView.self).first?.pane)
         }
 
-        // The List as Finder's: the first group's items, its name in the Name column's title, then for each other
-        // group an empty row, its title, and its items. Neither of the two extra rows is an item.
-        @Test func theListPutsAnEmptyRowAndATitleBeforeEachGroupButTheFirst() async throws {
+        // The List: every group has its title in a row of its own, the first as the others, with an empty row before
+        // each group but the first. Neither kind of extra row is an item.
+        @Test func theListPutsATitleBeforeEachGroupAndAnEmptyRowBeforeAllButTheFirst() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness, view: .viewAsDetails)
             let pane = try list(tab)
-            #expect(pane.rows.count == 6 + 2 * 2)
-            #expect(pane.rows.prefix(4) == [.entry(0), .entry(1), .entry(2), .gap])
-            #expect(pane.rows[4] == .header(1))
-            #expect(pane.groupIndex(atRow: 4) == 1 && pane.entryIndex(atRow: 4) == nil)
-            #expect(pane.entryIndex(atRow: 5) == 3 && pane.tableRow(ofEntry: 3) == 5)
-            #expect(pane.rowPaths.filter(\.isEmpty).count == 4)
-            #expect(header(tab)?.nameTitle == "Today")
+            #expect(pane.rows.count == 6 + 3 + 2)
+            #expect(pane.rows.prefix(6) == [.header(0), .entry(0), .entry(1), .entry(2), .gap, .header(1)])
+            #expect(pane.groupIndex(atRow: 0) == 0 && pane.entryIndex(atRow: 0) == nil)
+            #expect(pane.groupIndex(atRow: 5) == 1 && pane.entryIndex(atRow: 5) == nil)
+            #expect(pane.entryIndex(atRow: 6) == 3 && pane.tableRow(ofEntry: 3) == 6)
+            #expect(pane.rowPaths.filter(\.isEmpty).count == 5)
+            // The titles on screen, the first group's among them.
+            let titles = descendants(of: pane.table, GroupHeaderView.self).compactMap { $0.accessibilityLabel() }
+            #expect(Set(titles) == ["Today", "Yesterday", "2020"])
             // A press on a title selects nothing; a press on an item selects that item.
             let table = pane.table
             // As a person presses: the release is queued, so the press ends.
             let probe = ListProbe(tab: tab)
-            probe.press(at: probe.center(ofRow: 4))
+            probe.press(at: probe.center(ofRow: 5))
             #expect(tab.content.selection.paths.isEmpty)
-            #expect(!pane.tableView(table, shouldSelectRow: 3) && pane.tableView(table, shouldSelectRow: 5))
+            probe.press(at: probe.center(ofRow: 0))
+            #expect(tab.content.selection.paths.isEmpty)
+            #expect(!pane.tableView(table, shouldSelectRow: 0) && !pane.tableView(table, shouldSelectRow: 4))
+            #expect(pane.tableView(table, shouldSelectRow: 6))
             tab.content.select(paths: [tab.content.entries[3].path])
-            #expect(table.selectedRowIndexes == [5])
+            #expect(table.selectedRowIndexes == [6])
             // Selected from outside (a scenario, accessibility), a title's row is passed over.
-            pane.selectFromOutside([4, 5])
+            pane.selectFromOutside([5, 6])
             #expect(tab.content.selection.paths == [tab.content.entries[3].path])
             // A drag-to-select from a title down over the next group's item selects the item, never the title.
-            probe.press(at: probe.center(ofRow: 4), moves: [probe.center(ofRow: 5)])
+            probe.press(at: probe.center(ofRow: 5), moves: [probe.center(ofRow: 6)])
             #expect(tab.content.selection.paths == [tab.content.entries[3].path])
             #expect(pane.isWhollyInView(index: 3))
-            // Not grouped, a row is an entry again and Name is Name.
+            // Not grouped, a row is an entry again.
             await tab.group(by: .groupByNone, expecting: [])
             #expect(pane.rows.isEmpty && pane.rowCount == 6 && pane.tableRow(ofEntry: 3) == 3)
-            #expect(header(tab)?.nameTitle == nil)
         }
 
-        // Scrolled, the Name column's title names the group at the top of the list.
-        @Test func theNameColumnsTitleFollowsTheGroupAtTheTop() async throws {
+        // Grouped, the first column's title is still Name, with its sort arrow, wherever the list is scrolled: a
+        // group's name there read as the column's.
+        @Test func theNameColumnsTitleStaysNameWhileGrouped() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness, view: .viewAsDetails)
             // A window short enough for the list to scroll.
             tab.window?.setContentSize(NSSize(width: 900, height: 260))
             harness.layout(tab)
             let pane = try list(tab)
-            pane.scrollPosition = (Double(pane.table.rect(ofRow: 5).minY), 0)
-            #expect(await waitUntil { header(tab)?.nameTitle == "Yesterday" })
-            pane.scrollPosition = (0, 0)
-            #expect(await waitUntil { header(tab)?.nameTitle == "Today" })
+            let name = try #require(header(tab)?.cell(for: .name))
+            #expect(name.title.stringValue == "Name" && name.active && !name.chevron.isHidden)
+            pane.scrollPosition = (Double(pane.table.rect(ofRow: 6).minY), 0)
+            harness.layout(tab)
+            #expect(name.title.stringValue == "Name")
         }
 
         // Grouped, the list has two more rows for each group after the first, so the rows on screen at its end are
@@ -92,7 +98,7 @@ extension ExplorerWindowlessTests {
             tab.window?.setContentSize(NSSize(width: 900, height: 260))
             harness.layout(tab)
             let pane = try list(tab)
-            #expect(pane.rowCount == 26 + 2 * 25)
+            #expect(pane.rowCount == 26 + 26 + 25)
             pane.scrollPosition = (Double(pane.table.rect(ofRow: pane.rowCount - 1).maxY), 0)
             let rows = pane.table.rows(in: pane.table.visibleRect)
             // The case: the first row on screen, less the ten before it, is past the last item.

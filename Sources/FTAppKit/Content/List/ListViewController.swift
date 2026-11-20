@@ -84,8 +84,8 @@ final class ListTableView: NSTableView {
     override func cancelOperation(_ sender: Any?) {}
 }
 
-/// A row of the table while the list is grouped: the empty row before a group, its title, or an entry by its place in
-/// `entries`.
+/// A row of the table while the list is grouped: the empty row before a group but the first, a group's title, or an
+/// entry by its place in `entries`.
 enum ListRow: Equatable {
     case gap
     case header(Int)
@@ -167,9 +167,10 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
     private let column = NSTableColumn(identifier: DetailsCellView.identifier)
 
     var entries: [DirectoryEntry] = []
-    /// The table's rows while the list is grouped, as Finder has them: the first group's items, its name in the Name
-    /// column's title, then for each other group an empty row, its title and its items; empty while it isn't grouped,
-    /// when a row is the entry at the same place. Every row is as high, so a row's place says where it is.
+    /// The table's rows while the list is grouped: for each group its title and its items, with an empty row before
+    /// every group but the first; empty while it isn't grouped, when a row is the entry at the same place. Every row
+    /// is as high, so a row's place says where it is. The Name column's title stays Name: a group's name in its place
+    /// read as a column called "Today", or "work" for a folder of search results.
     private(set) var rows: [ListRow] = []
     /// The table row of each entry, while grouped.
     private var entryRows: [Int] = []
@@ -285,7 +286,6 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         configureHeader()
         isSyncing = true
         table.reloadData()
-        showTopGroup()
         mirrorSort()
         isSyncing = false
         applySelection()
@@ -493,7 +493,6 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         // Scrolled back, the list gives up the empty room it no longer shows.
         if holdsRoom { sizeColumns() }
         positionHeader()
-        showTopGroup()
         requestMetadata()
         // Scrolling moves the row away from the reason a name was refused, so it is dropped until the next try.
         renameField?.hideError()
@@ -543,10 +542,8 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         made.reserveCapacity(entries.count + groups.count)
         var rowOf = [Int](repeating: 0, count: entries.count)
         for (number, group) in groups.enumerated() {
-            if number > 0 {
-                made.append(.gap)
-                made.append(.header(number))
-            }
+            if number > 0 { made.append(.gap) }
+            made.append(.header(number))
             for index in group.range where index < entries.count {
                 rowOf[index] = made.count
                 made.append(.entry(index))
@@ -584,27 +581,6 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
             case .entry(let index): entries[index].path
             }
         }
-    }
-
-    /// The group of the row at the top of the list: its name stands in the Name column's title, as Finder's does.
-    private func showTopGroup() {
-        guard !groups.isEmpty, !rows.isEmpty else {
-            header.nameTitle = nil
-            return
-        }
-        let top = max(0, table.row(at: NSPoint(x: 1, y: scroll.contentView.bounds.minY + 1)))
-        var number = 0
-        for row in stride(from: min(top, rows.count - 1), through: 0, by: -1) {
-            switch rows[row] {
-            case .header(let found): number = found
-            case .gap: continue
-            case .entry: continue
-            }
-            break
-        }
-        // The empty row before a group still belongs to the one above it.
-        if rows.indices.contains(top), case .gap = rows[top], number > 0 { number -= 1 }
-        header.nameTitle = groups.indices.contains(number) ? groups[number].group.title : nil
     }
 
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool { entryIndex(atRow: row) != nil }
