@@ -314,18 +314,19 @@ private struct ReportBuilder<FileSystem: AnalysisFileSystem> {
 
         // Replacing an item that is, or holds, any item of this paste would destroy that item too. Items inside
         // merged folders are checked as well: a Replace offered there would only be refused when the paste
-        // reaches it.
+        // reaches it. `holderDev` is the disk of the folder the item would be replaced in: the destination folder,
+        // or the merged folder it is in.
         let pasted = PastedItems(realPaths: realItemPaths(fileSystem, nodes.map(\.sourcePath)))
-        func annotate(_ node: inout CopyPasteAnalysisNode) {
-            node.replaceBlockedReason = findReplaceBlockedReason(node, fileSystem, pasted)
+        func annotate(_ node: inout CopyPasteAnalysisNode, holderDev: Int64?) {
+            node.replaceBlockedReason = findReplaceBlockedReason(node, fileSystem, pasted, holderDev: holderDev)
             if node.conflictClass == .directoryConflict {
                 for index in node.children.indices {
-                    annotate(&node.children[index])
+                    annotate(&node.children[index], holderDev: node.destinationFingerprint.dev)
                 }
             }
         }
         for index in nodes.indices {
-            annotate(&nodes[index])
+            annotate(&nodes[index], holderDev: destinationFingerprint.dev)
         }
 
         try annotateKeepBothNames(&nodes, fileSystem, caseSensitive: caseSensitive, signal: signal)
@@ -629,9 +630,10 @@ private func annotateKeepBothNames(
 }
 
 /// Replacing an item that is, or contains, the item being pasted would destroy the source; so would replacing a
-/// folder that holds another item of the same paste.
+/// folder that holds another item of the same paste. A folder a disk is mounted on (it is on another disk than
+/// `holderDev`, the disk of the folder it is in) is never replaced: what would go is that whole disk.
 private func findReplaceBlockedReason(
-    _ node: CopyPasteAnalysisNode, _ fileSystem: some AnalysisFileSystem, _ pasted: PastedItems
+    _ node: CopyPasteAnalysisNode, _ fileSystem: some AnalysisFileSystem, _ pasted: PastedItems, holderDev: Int64?
 ) -> String? {
     if node.conflictClass == nil {
         return nil
@@ -652,6 +654,9 @@ private func findReplaceBlockedReason(
     // the paste itself tells it, so another spelling of its path counts.
     if isAnyOf(fileSystem, node.destinationPath, pasted) {
         return "It is another item being pasted."
+    }
+    if isMountPoint(node.destinationFingerprint, holderDev: holderDev) {
+        return "It is a disk mounted here."
     }
     return nil
 }

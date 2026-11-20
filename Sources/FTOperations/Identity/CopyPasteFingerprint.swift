@@ -114,6 +114,14 @@ public func isSameExistingItem(_ left: NodeFingerprint, _ right: NodeFingerprint
         && left.dev == right.dev
 }
 
+/// Whether a disk is mounted on a folder (`folder`, as it was read): the folder is on another disk than the folder
+/// that holds it (`holderDev`, that folder's disk). Replacing it would send that whole disk to the Trash, or
+/// delete everything on it. A file never is one: a disk is only ever mounted on a folder.
+public func isMountPoint(_ folder: NodeFingerprint, holderDev: Int64?) -> Bool {
+    guard folder.kind == .directory, let dev = folder.dev, let holderDev else { return false }
+    return dev != holderDev
+}
+
 public enum SourceRelation: String, Sendable {
     case same, contains
 }

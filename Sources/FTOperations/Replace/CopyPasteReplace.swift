@@ -22,6 +22,15 @@ func executeReplace(
         throw OperationError(
             "Can't replace \u{201C}\(basenameOf(finalPath))\u{201D} because it is another item being pasted.")
     }
+    // A folder a disk is mounted on, perhaps only since the review: what would go to the Trash, or be deleted for
+    // good where there is no Trash, is everything on that disk. Refused before the pasted item is moved aside. The
+    // folder holding it is looked at through a link to it, as pasting into a link pastes into its folder.
+    if destination.kind == .directory,
+        isMountPoint(destination, holderDev: (try? fileSystem.stat(dirnameOf(finalPath)))?.dev)
+    {
+        throw OperationError(
+            "Can't replace \u{201C}\(basenameOf(finalPath))\u{201D} because it is a disk mounted here.")
+    }
     // A locked item can't go to the Trash; found out now, before anything is written.
     if isLocked(context.getFlags, finalPath) {
         throw OperationError(lockedMessage(finalPath))
