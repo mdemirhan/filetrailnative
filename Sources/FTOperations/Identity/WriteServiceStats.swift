@@ -102,6 +102,11 @@ public struct PosixFileSystem: IdentityFileSystem {
             throw NativeError.errno(errno, syscall: "scandir", path: path)
         }
         defer { closedir(directory) }
+        return try Self.names(in: directory, path: path)
+    }
+
+    /// The names the open folder `directory` lists from where it is, without "." and ".."; `path` is for the error.
+    static func names(in directory: UnsafeMutablePointer<DIR>, path: String) throws -> [String] {
         var names: [String] = []
         while true {
             errno = 0

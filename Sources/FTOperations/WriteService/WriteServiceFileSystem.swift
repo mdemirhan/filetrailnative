@@ -220,7 +220,10 @@ enum NativeRemoval {
     /// `unlockingFolders`, for a folder of the app's own making that is being cleared away: a folder its owner
     /// can't list or change (an archive's read-only folder, extracted) is first made so, as otherwise nothing in
     /// it could be removed. Never for a delete someone asked for, which stops at such a folder.
-    static func rm(_ path: String, recursive: Bool, force: Bool, unlockingFolders: Bool = false) throws {
+    static func rm(
+        _ path: String, recursive: Bool, force: Bool, unlockingFolders: Bool = false,
+        calls: RemovalCalls = RemovalCalls()
+    ) throws {
         var info = Darwin.stat()
         if lstat(path, &info) != 0 {
             let errnum = errno
@@ -244,38 +247,145 @@ enum NativeRemoval {
                 message: "Path is a directory: rm returned EISDIR (is a directory) \(path)", code: .errno(EISDIR),
                 path: path)
         }
-        try removeTree(path, dev: info.st_dev, mode: unlockingFolders ? info.st_mode : nil)
+        try emptyTree(path, mode: unlockingFolders ? info.st_mode : nil, calls)
+        try rmdir(path)
     }
 
-    /// What is inside first, deepest first, then the folder. Only what is on the folder's own disk: a folder inside
-    /// that another disk is mounted on stops the delete before anything on that disk is touched (its items are
-    /// someone's other disk, not part of what was asked to be deleted).
+    /// A folder the removal is inside of: what tells it from every other folder, and what is still to go from it.
+    private struct Level {
+        let path: String
+        /// Its name in the folder it is in.
+        let name: String
+        let dev: dev_t
+        let ino: ino_t
+        /// The names still to be removed, the next one last.
+        var names: [String]
+    }
+
+    /// A folder opened and listed.
+    private struct OpenFolder {
+        let descriptor: Int32
+        let info: stat
+        let names: [String]
+    }
+
+    /// Removes what is inside the folder at `path`, deepest first. Only what is on the folder's own disk: a folder
+    /// inside that another disk is mounted on stops the delete before anything on that disk is touched (its items
+    /// are someone's other disk, not part of what was asked to be deleted).
+    ///
+    /// Nothing is reached by its path: each item is looked at, opened and removed by its name in the open folder it
+    /// is in, and a folder is opened only as a folder, never through a link. So a folder swapped for a link to
+    /// another one while the removal runs is not gone into, the disk a folder is on is read from the open folder
+    /// itself, and a tree whose paths pass the longest a path can be is removed like any other.
+    ///
+    /// One folder is open at a time, however deep the tree (a folder for each level would run out of descriptors
+    /// some hundreds of levels down): going into a folder closes the one around it, which is opened again through
+    /// ".." once the inner one is empty, and checked to be the folder the removal came from.
     /// `mode`: the folder's permissions when folders are to be unlocked, nil when not.
-    private static func removeTree(_ path: String, dev: dev_t, mode: mode_t?) throws {
-        if let mode, mode & S_IRWXU != S_IRWXU {
-            // When this fails, what follows fails with the reason.
-            _ = chmod(path, (mode & 0o7777) | S_IRWXU)
-        }
-        for name in try PosixFileSystem().readdir(path) {
-            let child = path + "/" + name
+    private static func emptyTree(_ path: String, mode: mode_t?, _ calls: RemovalCalls) throws {
+        let top = try openFolder(path, in: AT_FDCWD, path: path, dev: nil, mode: mode, calls)
+        var folder = top.descriptor
+        defer { close(folder) }
+        let dev = top.info.st_dev
+        var levels = [Level(path: path, name: path, dev: dev, ino: top.info.st_ino, names: top.names.reversed())]
+        while true {
+            let innermost = levels.count - 1
+            guard let name = levels[innermost].names.popLast() else {
+                // Nothing is left in it: back to the folder it is in, which it is removed from.
+                let emptied = levels.removeLast()
+                guard innermost > 0 else { return }
+                let around = calls.openFolder(folder, "..")
+                guard around >= 0 else { throw NativeError.errno(errno, syscall: "rm", path: emptied.path) }
+                close(folder)
+                folder = around
+                var info = Darwin.stat()
+                guard fstat(folder, &info) == 0, info.st_dev == levels[innermost - 1].dev,
+                    info.st_ino == levels[innermost - 1].ino
+                else {
+                    throw NativeError(
+                        message:
+                            "\u{201C}\(emptied.name)\u{201D} was moved while it was being deleted, so the delete stopped there.",
+                        path: emptied.path)
+                }
+                try removeFolder(emptied.name, in: folder, path: emptied.path)
+                continue
+            }
+            let child = levels[innermost].path + "/" + name
             var info = Darwin.stat()
-            if lstat(child, &info) != 0 {
+            if fstatat(folder, name, &info, AT_SYMLINK_NOFOLLOW) != 0 {
                 if errno == ENOENT { continue }
                 throw NativeError.errno(errno, syscall: "rm", path: child)
             }
-            if info.st_mode & S_IFMT == S_IFDIR {
-                if info.st_dev != dev {
-                    throw NativeError(
-                        message:
-                            "\u{201C}\(name)\u{201D} is another disk, mounted inside the folder being deleted, so the delete stopped there. Eject it and try again.",
-                        path: child)
+            guard info.st_mode & S_IFMT == S_IFDIR else {
+                if unlinkat(folder, name, 0) != 0 && errno != ENOENT {
+                    throw NativeError.errno(errno, syscall: "rm", path: child)
                 }
-                try removeTree(child, dev: dev, mode: mode == nil ? nil : info.st_mode)
-            } else if unlink(child) != 0 && errno != ENOENT {
-                throw NativeError.errno(errno, syscall: "rm", path: child)
+                continue
             }
+            // Before anything is asked of it: a folder being unlocked is changed before it is opened.
+            if info.st_dev != dev { throw anotherDisk(name, child) }
+            let inside = try openFolder(
+                name, in: folder, path: child, dev: dev, mode: mode == nil ? nil : info.st_mode, calls)
+            if inside.names.isEmpty {
+                // Removed from here, without going in: an empty folder that can be listed but not gone into goes
+                // too, and nothing is opened again for it.
+                close(inside.descriptor)
+                try removeFolder(name, in: folder, path: child)
+                continue
+            }
+            close(folder)
+            folder = inside.descriptor
+            levels.append(
+                Level(
+                    path: child, name: name, dev: inside.info.st_dev, ino: inside.info.st_ino,
+                    names: inside.names.reversed()))
         }
-        try rmdir(path)
+    }
+
+    /// Opens the folder `name` in the open folder `parent` (`AT_FDCWD` for a path) and lists it. A link there is
+    /// not followed, and a folder on another disk than `dev` is not listed: the delete stops at it.
+    private static func openFolder(
+        _ name: String, in parent: Int32, path: String, dev: dev_t?, mode: mode_t?, _ calls: RemovalCalls
+    ) throws -> OpenFolder {
+        if let mode, mode & S_IRWXU != S_IRWXU {
+            // When this fails, what follows fails with the reason.
+            _ = fchmodat(parent, name, (mode & 0o7777) | S_IRWXU, AT_SYMLINK_NOFOLLOW)
+        }
+        let descriptor = calls.openFolder(parent, name)
+        guard descriptor >= 0 else { throw NativeError.errno(errno, syscall: "scandir", path: path) }
+        do {
+            var info = Darwin.stat()
+            guard fstat(descriptor, &info) == 0 else { throw NativeError.errno(errno, syscall: "scandir", path: path) }
+            if let dev, info.st_dev != dev { throw anotherDisk(name, path) }
+            // The listing reads through a descriptor of its own, closed with it.
+            let copy = fcntl(descriptor, F_DUPFD_CLOEXEC, 0)
+            guard copy >= 0 else { throw NativeError.errno(errno, syscall: "scandir", path: path) }
+            guard let listing = fdopendir(copy) else {
+                let errnum = errno
+                close(copy)
+                throw NativeError.errno(errnum, syscall: "scandir", path: path)
+            }
+            defer { closedir(listing) }
+            return OpenFolder(
+                descriptor: descriptor, info: info, names: try PosixFileSystem.names(in: listing, path: path))
+        } catch {
+            close(descriptor)
+            throw error
+        }
+    }
+
+    private static func anotherDisk(_ name: String, _ path: String) -> NativeError {
+        NativeError(
+            message:
+                "\u{201C}\(name)\u{201D} is another disk, mounted inside the folder being deleted, so the delete stopped there. Eject it and try again.",
+            path: path)
+    }
+
+    /// Removes the empty folder `name` from the open folder `parent`.
+    private static func removeFolder(_ name: String, in parent: Int32, path: String) throws {
+        if unlinkat(parent, name, AT_REMOVEDIR) != 0 {
+            throw NativeError.errno(errno, syscall: "rmdir", path: path)
+        }
     }
 
     static func rmdir(_ path: String) throws {
@@ -283,4 +393,12 @@ enum NativeRemoval {
             throw NativeError.errno(errno, syscall: "rmdir", path: path)
         }
     }
+}
+
+/// The system call `rm` opens folders with, replaceable to change what is on the disk between the look at a folder
+/// and its opening.
+struct RemovalCalls {
+    /// Opens the folder `name` in the open folder `parent` (`AT_FDCWD` for a path), as a folder only: a link there
+    /// is not followed.
+    var openFolder: (Int32, String) -> Int32 = { openat($0, $1, O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC) }
 }
