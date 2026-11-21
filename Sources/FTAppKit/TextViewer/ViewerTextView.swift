@@ -129,10 +129,38 @@ final class ViewerTextView: NSTextView {
         }
         scrollBy(dx: 0, dy: dy)
         movingByPage = true
-        setSelectedRange(NSRange(location: min(target, text.length), length: 0))
+        // At the start of a wrapped line: the caret is drawn there, not at the end of the line before, which may be
+        // off screen and would be scrolled to.
+        setSelectedRange(
+            NSRange(location: min(target, text.length), length: 0), affinity: .downstream, stillSelecting: false)
         movingByPage = false
         pageColumn = column
+        showCaretLine()
         scrollRangeToVisible(selectedRange())
+    }
+
+    /// The caret's line wholly on screen, the text moved as little as that takes. A page lands the caret's line where
+    /// the caret's was, which can be a point past the top; the system's own scrolling would center it, a jump back.
+    private func showCaretLine() {
+        guard let manager = layoutManager, let clip = enclosingScrollView?.contentView else { return }
+        let text = string as NSString
+        let location = min(selectedRange().location, text.length)
+        var line: NSRect
+        if location >= text.length, !manager.extraLineFragmentRect.isEmpty {
+            line = manager.extraLineFragmentRect
+        } else if text.length > 0 {
+            let glyph = manager.glyphIndexForCharacter(at: min(location, text.length - 1))
+            line = manager.lineFragmentRect(forGlyphAt: glyph, effectiveRange: nil)
+        } else {
+            return
+        }
+        line.origin.y += textContainerOrigin.y
+        let shown = clip.bounds
+        if line.minY < shown.minY {
+            scrollBy(dx: 0, dy: line.minY - shown.minY)
+        } else if line.maxY > shown.maxY {
+            scrollBy(dx: 0, dy: min(line.maxY - shown.maxY, line.minY - shown.minY))
+        }
     }
 
     /// The first character of the first line shown, even in part.

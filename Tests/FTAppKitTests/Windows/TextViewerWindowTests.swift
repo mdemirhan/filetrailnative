@@ -495,6 +495,62 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { pane.viewer == nil })
         }
 
+        // Long lines wrap: Edit from the Preview starts at a line's start, and each half page from there moves the text
+        // and the caret half a page, the caret drawn at the start of a wrapped line and not at the end of the one
+        // before, off screen, which the text would jump back to. A caret line partly off the top is brought on screen
+        // by as little as that takes.
+        @Test func theHalfPageKeysGoOnThroughWrappedLinesInEdit() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let words = (0..<90).map { "word\($0)" }.joined(separator: " ")
+            let paragraphs = (0..<80).map { "Paragraph \($0): \(words)" }
+            try ("# Notes\n\n" + paragraphs.joined(separator: "\n\n") + "\n").write(
+                to: harness.folder.appending("long.md"), atomically: true, encoding: .utf8)
+            let tab = try await tabWithFiles(harness)
+            let pane = tab.activePane
+            let long = real(harness, "long.md")
+            #expect(await waitUntil { pane.content.listedEntry(at: long) != nil })
+            select(long, in: tab)
+            tab.perform(.viewFile)
+            let viewer = try #require(pane.viewer)
+            #expect(await waitUntil { viewer.isText && viewer.previewText.length > 0 })
+            tab.focusPane(pane)
+            let window = try #require(tab.window)
+            func press(_ characters: String, _ ignoring: String, _ keyCode: UInt16, _ flags: NSEvent.ModifierFlags = [])
+                throws
+            {
+                let event = try #require(
+                    NSEvent.keyEvent(
+                        with: .keyDown, location: .zero, modifierFlags: flags, timestamp: 0,
+                        windowNumber: window.windowNumber, context: nil, characters: characters,
+                        charactersIgnoringModifiers: ignoring, isARepeat: false, keyCode: keyCode))
+                (window.firstResponder as? NSView)?.keyDown(with: event)
+            }
+            let pageDown = String(UnicodeScalar(UInt16(NSPageDownFunctionKey))!)
+            for _ in 0..<4 { try press(pageDown, pageDown, 121) }
+            try press("\r", "\r", 36)
+            #expect(viewer.isEditing)
+            let text = viewer.textView
+            let clip = viewer.scrollView.contentView
+            let font = try #require(text.font)
+            let lineHeight = try #require(text.layoutManager).defaultLineHeight(for: font)
+            let half = (clip.bounds.height - 2 * lineHeight) / 2
+            #expect(half > 100)
+            // The top line partly scrolled off, as after a scroll: the caret's line comes in on screen, as little as
+            // that takes, and not to the middle.
+            text.scroll(lines: 0.4)
+            for step in 0..<6 {
+                // As keys come, with the run loop turning between them.
+                try await Task.sleep(for: .milliseconds(150))
+                let before = clip.bounds.origin.y
+                let caret = text.selectedRange().location
+                try press("\u{4}", "d", 2, [.control])
+                let moved = clip.bounds.origin.y - before
+                #expect(moved > half - lineHeight && moved < half + 1, "step \(step): \(moved)")
+                #expect(text.selectedRange().location > caret, "step \(step)")
+            }
+        }
+
         // A Markdown file's Preview shows the pictures beside it from the first, and one added in Edit once it is
         // read, back in Read.
         @Test func theMarkdownPreviewShowsPicturesOnTheDiskAndOneAddedInEdit() async throws {
