@@ -38,7 +38,7 @@ Check each against the code; names may have moved.
 ## The target
 
 1. **Every stored path is a `DiskPath`** (or `DiskPath?`, `[DiskPath]`): model fields, cached values, parameters, return values, keys.
-2. **A name is a `String`.** A single name (what `basename` returns, what a person types in a rename) is not a path. Where names are keys or are compared exactly, they are `NameKeys.Exact`. Do not introduce a third type for names in this work; say in the report if one would have helped.
+2. **A name is a `String`.** A single name (what `basename` returns, what a person types in a rename) is not a path. Where names are keys or are compared exactly, they are `NameKeys.Exact`. Do not introduce a type for names in this work ([file-name-type.md](file-name-type.md) asks whether one is worth having); note in the report where one would have helped or got in the way, as that plan's investigation will want it.
 3. **A relative path is not a `DiskPath`.** `relativeParentPath` and their kin stay `String`, with a comment saying so.
 4. **A `String` becomes a `DiskPath` only where a path is born:** a listing (the C listing's bytes), `realpath`, `nameOnDisk`, `fd`'s output, the mount table, the decoding of saved state and of the journal, the boundary files, a path built from another `DiskPath` (`appending`, `parent`), a literal for a place the system names (`"/"`, `"/Volumes"`, `"/Applications"`), and tests. Everything else that makes one (typed text, a panel's answer, a drop, a launch argument, a URL) goes through the boundary first (`asOnDisk()`, `itemAsOnDisk()`, `init?(urlSpelling:)`).
 5. **A `DiskPath` gives up its `String` only at a leaf:** a C or POSIX call, text shown to a person, a log line, the hand-written encoders, and `NodePath`'s own functions.
@@ -265,6 +265,6 @@ It is not complete if any step was landed with a failing or skipped test, if a g
 
 ## Questions for the owner before starting
 
-1. Should names get a type of their own later, or stay `String`? This plan keeps them `String`.
+1. Names stay `String` in this plan. Whether they should get a type of their own, with no `==` so each comparison says which question it asks, is a plan of its own that starts with an investigation: [file-name-type.md](file-name-type.md). Nothing here depends on its answer.
 2. Should the engine name what it made as the disk has it (one disk call per made item), or should callers keep respelling their misses?
 3. Is "no folder on screen" better as `DiskPath?` (this plan) or as an empty path, as today?
