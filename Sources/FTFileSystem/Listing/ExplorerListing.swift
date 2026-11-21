@@ -135,16 +135,21 @@ enum ExplorerListing {
     }
 
     /// What an entry is: a symlink is followed to see whether its target is a file or a folder, and a
-    /// folder named like a package (.app, .framework…) is a bundle.
+    /// folder the system shows as one item is a bundle: one named like a package (.app, .framework…), or one with
+    /// another extension that has the bundle bit (the read gives it) or whose type the system declares a package,
+    /// asked once for each such folder of the read and of nothing else (`ItemNames.isPackageFolder`).
     static func classify(_ record: DirectoryRecord, path: String, _ fileSystem: any ExplorerFileSystem) -> EntryKind {
         switch record.type {
         case .directory:
-            return ItemNames.isMacOSPackageName(record.name) ? .bundle : .directory
+            let isPackage = ItemNames.isPackageFolder(named: record.name) {
+                record.hasBundleBit || fileSystem.isPackageType(extensionName(ofName: record.name))
+            }
+            return isPackage ? .bundle : .directory
         case .file:
             return record.isAlias ? .alias : .file
         case .symlink:
             guard let stats = try? fileSystem.stat(path) else { return .other }
-            return kind(from: stats, isSymlink: true, path: path)
+            return kind(from: stats, isSymlink: true, path: path, fileSystem)
         case .other:
             return .other
         }
@@ -159,9 +164,17 @@ enum ExplorerListing {
         return names
     }
 
-    static func kind(from stats: FileStats, isSymlink: Bool, path: String?) -> EntryKind {
+    /// What `stats` of the item at `path` make it, for an item no folder read described or a link. A folder is a
+    /// bundle as `classify` says, by the name at `path` (a link's own); the system is asked about the folder itself, or
+    /// the one a link leads to.
+    static func kind(
+        from stats: FileStats, isSymlink: Bool, path: String, _ fileSystem: any ExplorerFileSystem
+    ) -> EntryKind {
         if stats.isDirectory {
-            if let path, ItemNames.isMacOSPackageName(NodePath.basename(path)) { return .bundle }
+            let isPackage = ItemNames.isPackageFolder(named: NodePath.basename(path)) {
+                fileSystem.isPackage(isSymlink ? (try? fileSystem.realpath(path)) ?? path : path)
+            }
+            if isPackage { return .bundle }
             return isSymlink ? .symlinkDirectory : .directory
         }
         if stats.isFile {
@@ -494,7 +507,7 @@ enum ExplorerListing {
         let stats = safeStat(path, fileSystem)
         let metadataStats = stats ?? symlinkStats
         let isSymlink = symlinkStats?.isSymbolicLink ?? false
-        var kind = stats.map { self.kind(from: $0, isSymlink: isSymlink, path: path) } ?? .other
+        var kind = stats.map { self.kind(from: $0, isSymlink: isSymlink, path: path, fileSystem) } ?? .other
         if kind == .file, fileSystem.isFinderAlias(path) {
             kind = fileSystem.aliasLeadsToFolder(path) ? .aliasDirectory : .alias
         }

@@ -36,8 +36,9 @@ public enum ItemNames {
         return nil
     }
 
-    /// Folders macOS shows as a single item, as far as their extension tells: listings show them as one item, and
-    /// naming keeps their extension at the end.
+    /// Folders macOS shows as a single item, as far as their extension tells: listings show them as one item without
+    /// asking, and naming keeps their extension at the end. Any other package is known by asking the system
+    /// (`isPackageFolder`).
     public static let packageExtensions: Set<String> = [
         ".action", ".app", ".appex", ".band", ".bundle", ".component", ".docset", ".fcpbundle",
         ".fcpxbundle", ".framework", ".imovielibrary", ".kext", ".key", ".logicx", ".mdimporter",
@@ -51,5 +52,22 @@ public enum ItemNames {
         guard let dot = units.lastIndex(of: 0x2E), dot > 0 else { return false }
         let ext = String(decoding: units[dot...], as: UTF16.self)
         return packageExtensions.contains(JSText.lowercased(ext))
+    }
+
+    /// Whether a folder named `name` is a package. One of `packageExtensions` is, without asking. A name with any other
+    /// extension is what `askSystem` says (macOS knows a package by its bundle bit or by a type an app declares, as
+    /// UTM's `.utm` or Parallels' `.pvm`), and only such a name is asked about: a folder with a dot in its name is
+    /// rare. A name without an extension is a plain folder.
+    public static func isPackageFolder(named name: String, askSystem: () -> Bool?) -> Bool {
+        if isMacOSPackageName(name) { return true }
+        guard hasExtension(name) else { return false }
+        return askSystem() ?? false
+    }
+
+    /// Whether a name has an extension: a dot after its first character with something after it.
+    public static func hasExtension(_ name: String) -> Bool {
+        let units = name.utf16
+        guard let dot = units.lastIndex(of: 0x2E), dot > units.startIndex else { return false }
+        return units.index(after: dot) < units.endIndex
     }
 }

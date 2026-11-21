@@ -5,8 +5,12 @@ public enum SearchResults {
     // MARK: - Items from fd's output
 
     /// A result from one record of fd's output. fd ends a folder's path with a slash, which tells folders from files
-    /// without a stat call.
-    public static func item(rootPath: String, outputPath: String) -> SearchResultItem {
+    /// without a stat call. A folder is a package as a listing tells (`ItemNames.isPackageFolder`), from its name
+    /// alone: by the list, or for another extension by whether its type is a package (`isPackageType`, given the
+    /// extension). The folder isn't looked at, so one known only by its bundle bit is a folder here.
+    public static func item(
+        rootPath: String, outputPath: String, isPackageType: (String) -> Bool = SystemPackages.isPackageType
+    ) -> SearchResultItem {
         let units = Array(outputPath.utf16)
         let isFolder = units.count > 1 && units.last == slash
         let entryPath = isFolder ? String(decoding: units.dropLast(), as: UTF16.self) : outputPath
@@ -18,7 +22,7 @@ public enum SearchResults {
             kind = .file
         } else {
             // Packages (.app and the like) are folders on disk but single items to the user.
-            kind = ItemNames.isMacOSPackageName(name) ? .bundle : .directory
+            kind = ItemNames.isPackageFolder(named: name) { isPackageType(extensionOf(name)) } ? .bundle : .directory
         }
         return SearchResultItem(
             path: entryPath, name: name, fileExtension: extensionOf(name), kind: kind,

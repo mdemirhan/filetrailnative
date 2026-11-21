@@ -40,7 +40,7 @@ public enum Links {
         guard let original = original(of: path) else { return nil }
         var isDirectory: ObjCBool = false
         guard FileManager.default.fileExists(atPath: original, isDirectory: &isDirectory) else { return nil }
-        return (original, isDirectory.boolValue && !ItemNames.isMacOSPackageName(NodePath.basename(original)))
+        return (original, isDirectory.boolValue && !SystemPackages.isPackageFolder(at: original))
     }
 
     /// Each path, or an alias's original in its place; nil for an alias whose original can't be found. Looked up away

@@ -106,6 +106,20 @@ private func paths(_ items: [SearchResultItem]?) -> [String]? {
         #expect(after?.map(\.kind) == [.bundle, .directory])
     }
 
+    // A package the system named one (a virtual machine), and a package inside a renamed folder, stay packages: their
+    // extension didn't change, and the system isn't asked again.
+    @Test func aPackageTheSystemNamedStaysOneWhileItsExtensionStays() {
+        var machine = found("Machine.utm/")
+        machine.kind = .bundle
+        var inside = found("Docs/Inner.pvm/")
+        inside.kind = .bundle
+        let after = SearchResults.afterWrite(
+            [machine, inside], rootPath: root, removed: [],
+            renamed: [rename("Machine.utm", "Renamed.utm"), rename("Docs", "Papers")])
+        #expect(paths(after) == ["Renamed.utm", "Papers/Inner.pvm"])
+        #expect(after?.map(\.kind) == [.bundle, .bundle])
+    }
+
     // A link stays a link, and a link to a folder stays one, under its new name.
     @Test func aLinkStaysALink() {
         var link = found("link")

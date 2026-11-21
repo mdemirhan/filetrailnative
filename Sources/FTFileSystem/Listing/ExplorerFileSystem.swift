@@ -56,12 +56,15 @@ public struct DirectoryRecord: Sendable, Hashable {
     /// When the item was put in the folder (Date Added), in milliseconds since 1970; nil on a disk that doesn't keep
     /// it.
     public var addedMs: Int64?
+    /// Finder's flags say it is a package (the bundle bit): a folder the system shows as one item, whatever its name.
+    public var hasBundleBit: Bool
 
     public init(
         name: String, type: FileType, lstat: FileStats? = nil, hasCustomIcon: Bool = false,
         tagColor: FinderTagColor? = nil, isEmptyFolder: Bool = false, hasHiddenFlag: Bool = false,
-        addedMs: Int64? = nil, isAlias: Bool = false
+        addedMs: Int64? = nil, isAlias: Bool = false, hasBundleBit: Bool = false
     ) {
+        self.hasBundleBit = hasBundleBit
         self.isAlias = isAlias
         self.addedMs = addedMs
         self.hasHiddenFlag = hasHiddenFlag
@@ -96,6 +99,13 @@ public protocol ExplorerFileSystem: Sendable {
     func isFinderAlias(_ path: String) -> Bool
     /// Whether the alias at `path` leads to a folder to open in place (`Links.originalItem`).
     func aliasLeadsToFolder(_ path: String) -> Bool
+    /// Whether the system declares folders with this extension (lowercased, without its dot) packages
+    /// (`SystemPackages.isPackageType`). A listing asks it only of folders whose name has an extension that isn't one
+    /// of `ItemNames.packageExtensions`, and that lack the bundle bit.
+    func isPackageType(_ fileExtension: String) -> Bool
+    /// What the system says of whether the folder at `path` is a package (`SystemPackages.answer`), for one item that
+    /// no folder read gave; nil when it can't be asked.
+    func isPackage(_ path: String) -> Bool?
 }
 
 extension ExplorerFileSystem {
@@ -107,6 +117,8 @@ extension ExplorerFileSystem {
     public func lastOpenedReader() -> @Sendable (String) -> Int64? { { lastOpenedMs($0) } }
     public func isFinderAlias(_ path: String) -> Bool { Links.isFinderAlias(path) }
     public func aliasLeadsToFolder(_ path: String) -> Bool { Links.originalItem(of: path)?.isFolder ?? false }
+    public func isPackageType(_ fileExtension: String) -> Bool { SystemPackages.isPackageType(fileExtension) }
+    public func isPackage(_ path: String) -> Bool? { SystemPackages.answer(path) }
 }
 
 public struct NativeFileSystem: ExplorerFileSystem {
@@ -143,7 +155,7 @@ public struct NativeFileSystem: ExplorerFileSystem {
                     tagColor: FinderTagColor(rawValue: Int(entry.finder_label)),
                     isEmptyFolder: entry.is_empty_folder != 0, hasHiddenFlag: entry.has_hidden_flag != 0,
                     addedMs: entry.added_valid != 0 ? Self.milliseconds(entry.added_sec, entry.added_nsec) : nil,
-                    isAlias: entry.is_alias != 0))
+                    isAlias: entry.is_alias != 0, hasBundleBit: entry.has_bundle_bit != 0))
         }
         return records
     }

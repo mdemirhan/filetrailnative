@@ -219,9 +219,10 @@ int ft_read_directory(const char *path, unsigned int attributes, FTDirListing *l
                 entry.mtime_valid = 1;
             }
             if (returned.commonattr & ATTR_CMN_FNDRINFO) {
-                // Bytes 8 and 9 of Finder's information are its flags: kIsAlias is 0x8000, kHasCustomIcon 0x0400, the
-                // label 0x000E.
+                // Bytes 8 and 9 of Finder's information are its flags: kIsAlias is 0x8000, kHasBundle 0x2000 (a
+                // folder shown as one item), kHasCustomIcon 0x0400, the label 0x000E.
                 entry.is_alias = (((uint8_t *)field)[8] & 0x80) != 0;
+                entry.has_bundle_bit = (((uint8_t *)field)[8] & 0x20) != 0;
                 entry.has_custom_icon = (((uint8_t *)field)[8] & 0x04) != 0;
                 entry.finder_label = (((uint8_t *)field)[9] >> 1) & 0x07;
                 field += 32;

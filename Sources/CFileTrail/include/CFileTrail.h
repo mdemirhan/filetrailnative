@@ -40,6 +40,7 @@ typedef struct {
     int32_t is_empty_folder;
     int32_t has_hidden_flag;
     int32_t is_alias;
+    int32_t has_bundle_bit;
 } FTDirEntry;
 
 typedef struct {
@@ -55,7 +56,7 @@ enum {
     FT_READ_SIZE = 2,         /* the size of a file (not of a folder) */
     FT_READ_MODIFIED = 4,     /* the modification time */
     FT_READ_CREATED = 8,      /* the creation time */
-    FT_READ_FINDER_INFO = 16, /* Finder's custom-icon and alias flags and label color */
+    FT_READ_FINDER_INFO = 16, /* Finder's custom-icon, alias and package flags and label color */
     FT_READ_EMPTY_FOLDERS = 32, /* which folders hold nothing, on the disks that store a folder's count (APFS, HFS+) */
     FT_READ_HIDDEN_FLAG = 64, /* the flag that hides an item whatever its name (UF_HIDDEN) */
     FT_READ_ADDED = 128,      /* when the item was put in the folder (Date Added), on the disks that keep it */

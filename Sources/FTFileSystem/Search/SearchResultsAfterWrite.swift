@@ -121,10 +121,14 @@ extension SearchResults {
     }
 
     /// `item` at `path`: its name, extension, hidden mark and folders as the search would give them there; a folder
-    /// stays a folder (or becomes a package by its new name), a file a file, a link a link.
+    /// stays a folder, or a package, while its extension stays (an item inside a renamed folder keeps its name), and
+    /// one renamed to another extension is a package as its new name tells; a file stays a file, a link a link.
     private static func moved(_ item: SearchResultItem, to path: String, rootPath: String) -> SearchResultItem {
         let isFolder = item.kind == .directory || item.kind == .bundle
-        var next = SearchResults.item(rootPath: rootPath, outputPath: isFolder ? path + "/" : path)
+        let keepsExtension = SearchResults.extensionOf(NodePath.basename(path)) == item.fileExtension
+        var next = SearchResults.item(
+            rootPath: rootPath, outputPath: isFolder ? path + "/" : path,
+            isPackageType: { keepsExtension ? item.kind == .bundle : SystemPackages.isPackageType($0) })
         if !isFolder { next.kind = item.kind }
         next.isSymlink = item.isSymlink
         return next

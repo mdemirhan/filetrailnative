@@ -98,10 +98,12 @@ public enum TreePaths {
     }
 
     /// The tree lists no packages, so one that is open, or that the open folder is
-    /// inside (Show Package Contents), is added under `parentPath` to keep the path to it in the tree.
+    /// inside (Show Package Contents), is added under `parentPath` to keep the path to it in the tree. Which folders
+    /// are packages only the tree's read tells (the system is asked about some), so this is the child on the way to
+    /// the open folder whose name has an extension, as every package's has: `withPackageChild` adds it only when the
+    /// read left it out.
     public static func forcedVisiblePackageChild(of parentPath: String, activePath: String) -> String? {
-        guard let child = childPath(of: parentPath, towards: activePath),
-            ItemNames.isMacOSPackageName(segmentName(child))
+        guard let child = childPath(of: parentPath, towards: activePath), ItemNames.hasExtension(segmentName(child))
         else { return nil }
         return child
     }

@@ -59,9 +59,8 @@ public final class IconSamples: @unchecked Sendable {
         if isFolder && !IconCacheKey.isDrawnBySystem(path: original) {
             name = "alias-folder"
             target = try path(for: .folder)
-        } else if isFolder || ItemNames.isMacOSPackageName(NodePath.basename(original))
-            || IconCacheKey.isDrawnBySystem(path: original)
-        {
+        } else if isFolder || IconCacheKey.isDrawnBySystem(path: original) || Self.isFolderOnDisk(original) {
+            // A folder not opened in place (`isFolder` false) is a package, whatever its name.
             name = "alias-item-\(Self.stableHash(original))"
             target = original
         } else {
@@ -94,6 +93,12 @@ public final class IconSamples: @unchecked Sendable {
             try Data().write(to: DiskPath(sample).url(isDirectory: false))
         }
         return sample
+    }
+
+    /// Whether a folder is at `path`, a link followed.
+    private static func isFolderOnDisk(_ path: String) -> Bool {
+        var isDirectory: ObjCBool = false
+        return FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory) && isDirectory.boolValue
     }
 
     /// A name for a path that stays the same from launch to launch, unlike `hashValue`: FNV-1a over its bytes.

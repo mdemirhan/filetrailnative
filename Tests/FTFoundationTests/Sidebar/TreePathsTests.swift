@@ -72,6 +72,11 @@ struct TreePathsTests {
                 of: "/Applications/Safari.app", activePath: "/Applications/Safari.app/Contents") == nil)
         #expect(
             TreePaths.forcedVisiblePackageChild(of: "/Applications", activePath: "/Applications/Utilities") == nil)
+        // A package the system names (a virtual machine), as any folder with an extension on the way may be one: the
+        // tree's read tells, as it is added only when the read left it out.
+        #expect(
+            TreePaths.forcedVisiblePackageChild(of: "/Users/demo", activePath: "/Users/demo/Machine.utm/Data")
+                == "/Users/demo/Machine.utm")
         let children = [
             TreePaths.Child(path: "/Applications/Alpha", name: "Alpha", isHidden: false, isSymlink: false),
             TreePaths.Child(path: "/Applications/Zed", name: "Zed", isHidden: false, isSymlink: false),
@@ -79,6 +84,8 @@ struct TreePathsTests {
         let withApp = TreePaths.withPackageChild(children, packagePath: "/Applications/Mail.app")
         #expect(withApp.map(\.name) == ["Alpha", "Mail.app", "Zed"])
         #expect(TreePaths.withPackageChild(withApp, packagePath: "/Applications/Mail.app") == withApp)
+        // A folder the read listed stays once.
+        #expect(TreePaths.withPackageChild(children, packagePath: "/Applications/Alpha") == children)
         #expect(
             TreePaths.withPackageChild(children, packagePath: "/Applications/Zz.app").map(\.name) == [
                 "Alpha", "Zed", "Zz.app",

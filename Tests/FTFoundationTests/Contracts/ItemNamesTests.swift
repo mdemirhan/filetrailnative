@@ -63,6 +63,28 @@ struct ItemNamesTests {
         }
     }
 
+    @Test func asksTheSystemOnlyAboutAFolderWithAnExtensionOffTheList() {
+        var asked: [String] = []
+        func isPackage(_ name: String, system: Bool?) -> Bool {
+            ItemNames.isPackageFolder(named: name) {
+                asked.append(name)
+                return system
+            }
+        }
+        #expect(isPackage("Safari.app", system: false))
+        #expect(!isPackage("Plain", system: true))
+        #expect(!isPackage(".hidden", system: true))
+        #expect(!isPackage("Ends with a dot.", system: true))
+        #expect(asked.isEmpty)
+        #expect(isPackage("Machine.utm", system: true))
+        #expect(!isPackage("Notes.d", system: false))
+        #expect(!isPackage("Gone.pvm", system: nil))
+        #expect(asked == ["Machine.utm", "Notes.d", "Gone.pvm"])
+        #expect(ItemNames.hasExtension("..double"))
+        #expect(!ItemNames.hasExtension(".."))
+        #expect(!ItemNames.hasExtension(""))
+    }
+
     struct Output: Codable, Equatable, Sendable {
         let error: String?
         let package: Bool

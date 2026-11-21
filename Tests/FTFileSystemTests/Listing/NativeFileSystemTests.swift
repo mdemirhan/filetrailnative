@@ -366,6 +366,90 @@ struct NativeFileSystemTests {
         }
     }
 
+    @Test func treatsAFolderTheSystemCallsAPackageAsOneItemWhateverItsExtension() async throws {
+        try await withTemporaryDirectory { directory in
+            let path = directory.path
+            // "Machine.utm" has the package bit, as a virtual machine of UTM's has; ".scptd" is a package type macOS
+            // declares itself. Neither extension is on the app's list.
+            for name in ["Machine.utm", "Plain.utm", "Script.scptd", "Notes.d", "Plain", "Sample.app"] {
+                try FileManager.default.createDirectory(atPath: path + "/" + name, withIntermediateDirectories: false)
+            }
+            try Self.setPackageBit(path + "/Machine.utm")
+            try FileManager.default.createSymbolicLink(atPath: path + "/Link.utm", withDestinationPath: "Machine.utm")
+            try "x".write(toFile: path + "/notes.txt", atomically: true, encoding: .utf8)
+            let disk = AskedDisk()
+            let service = DirectoryService(fileSystem: disk, kinds: .system)
+            let snapshot = try await service.snapshot(path: path)
+            let kinds = Dictionary(uniqueKeysWithValues: snapshot.entries.map { ($0.name, $0.kind) })
+            #expect(
+                kinds == [
+                    "Machine.utm": .bundle, "Plain.utm": .directory, "Script.scptd": .bundle, "Notes.d": .directory,
+                    "Plain": .directory, "Sample.app": .bundle, "Link.utm": .bundle, "notes.txt": .file,
+                ])
+            // With Folders First, the packages sort with the files.
+            #expect(
+                snapshot.entries.map(\.name) == [
+                    "Notes.d", "Plain", "Plain.utm", "Link.utm", "Machine.utm", "notes.txt", "Sample.app",
+                    "Script.scptd",
+                ])
+            // The read gives the bundle bit. The system's types are asked once for each other folder whose extension
+            // isn't on the list, and no folder is looked into but the one the link named so leads to.
+            let root = try native.realpath(path)
+            let records = try native.readDirectory(root)
+            #expect(Set(records.filter(\.hasBundleBit).map(\.name)) == ["Machine.utm"])
+            #expect(disk.askedTypes.sorted() == ["d", "scptd", "utm"])
+            #expect(disk.askedPaths == [root + "/Machine.utm"])
+            // The tree doesn't open a package.
+            let tree = try await service.treeChildren(path: path)
+            #expect(tree.children.map(\.name) == ["Notes.d", "Plain", "Plain.utm"])
+            // A package's kind is the one the system gives it, as for the packages of the list.
+            let details = try await service.metadata(
+                directoryPath: path, paths: [root + "/Script.scptd", root + "/Plain.utm"])
+            let labels = details.items.map(\.kindLabel)
+            #expect(labels.count == 2 && labels[1] == "Folder")
+            #expect(labels.first.map { !["Folder", "Bundle"].contains($0) } == true, "\(labels)")
+            // A search result is a package as the listing says, by its type: fd's results aren't looked into, so a
+            // folder known only by its bundle bit is a folder there.
+            #expect(SearchResults.item(rootPath: root, outputPath: root + "/Script.scptd/").kind == .bundle)
+            #expect(SearchResults.item(rootPath: root, outputPath: root + "/Plain.utm/").kind == .directory)
+            // An alias's original is not a folder to open in place when it is such a package.
+            #expect(Links.originalItem(of: root + "/Link.utm")?.isFolder == false)
+            #expect(Links.originalItem(of: root + "/Plain.utm")?.isFolder == true)
+        }
+    }
+
+    /// Sets the folder's package bit (`kHasBundle` in its Finder flags), which macOS goes by whatever the name.
+    private static func setPackageBit(_ path: String) throws {
+        var info = [UInt8](repeating: 0, count: 32)
+        info[8] = 0x20  // The Finder flags are a big-endian UInt16 at offset 8; kHasBundle is 0x2000.
+        guard setxattr(path, "com.apple.FinderInfo", &info, info.count, 0, 0) == 0 else {
+            throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO)
+        }
+    }
+
+    /// The disk, keeping what it was asked about packages: the extensions whose type, and the folders.
+    private final class AskedDisk: ExplorerFileSystem, @unchecked Sendable {
+        private let disk = NativeFileSystem()
+        private let lock = NSLock()
+        private var types: [String] = []
+        private var paths: [String] = []
+        var askedTypes: [String] { lock.withLock { types } }
+        var askedPaths: [String] { lock.withLock { paths } }
+
+        func readDirectory(_ path: String) throws -> [DirectoryRecord] { try disk.readDirectory(path) }
+        func stat(_ path: String) throws -> FileStats { try disk.stat(path) }
+        func lstat(_ path: String) throws -> FileStats { try disk.lstat(path) }
+        func realpath(_ path: String) throws -> String { try disk.realpath(path) }
+        func isPackageType(_ fileExtension: String) -> Bool {
+            lock.withLock { types.append(fileExtension) }
+            return disk.isPackageType(fileExtension)
+        }
+        func isPackage(_ path: String) -> Bool? {
+            lock.withLock { paths.append(path) }
+            return disk.isPackage(path)
+        }
+    }
+
     @Test func keepsHiddenMeaningALeadingDot() async throws {
         try await withTemporaryDirectory { directory in
             for name in [".config", "visible.txt", "..double"] {
