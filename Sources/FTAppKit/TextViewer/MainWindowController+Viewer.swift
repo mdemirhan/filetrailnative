@@ -407,10 +407,15 @@ extension MainWindowController {
 
     /// A pane comes back with the file it showed, read or edited as it was. A following viewer's file is selected
     /// again in the pane beside it, once that pane has read its folder, so the window opens showing what was being
-    /// read.
-    func restoreViewer(_ saved: ViewerPreference, in pane: BrowserPane) {
+    /// read. A following viewer's pane opened again beside a list in use (`beside`, Two Panes after it was closed)
+    /// follows that list as it is now instead: it shows what the list selects, which keeps its selection.
+    func restoreViewer(_ saved: ViewerPreference, in pane: BrowserPane, beside list: BrowserPane? = nil) {
         let viewer = makeViewer(in: pane, mode: saved.mode)
         viewer.setPreview(saved.preview)
+        if saved.mode == .following, let list {
+            viewer.show(leadPath(of: list), editing: saved.editing)
+            return
+        }
         viewer.show(saved.path, editing: saved.editing)
         if saved.mode == .following, let path = saved.path {
             viewerSelectsAfterRead = path

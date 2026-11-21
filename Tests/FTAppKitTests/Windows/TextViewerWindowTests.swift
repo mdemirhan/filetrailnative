@@ -31,6 +31,11 @@ extension ExplorerWindowlessTests {
             tab.activePane.content.select(paths: [path])
         }
 
+        /// The name of the file a viewer shows, for a failure's message.
+        private func shown(_ viewer: TextViewerController) -> String {
+            viewer.path.map(NodePath.basename) ?? "nothing"
+        }
+
         @Test func openInViewerIsAStepOfTheHistoryAndBackReturnsWithTheFileSelected() async throws {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }
@@ -126,6 +131,60 @@ extension ExplorerWindowlessTests {
             tab.perform(.toggleTwoPanes)
             let back = try #require(tab.otherPane?.viewer)
             #expect(back.mode == .following)
+        }
+
+        // A following viewer's pane closed with Two Panes and opened again comes back following the list as it is
+        // now: it shows the file selected since, and the list keeps that selection when it reads its folder again,
+        // where the pane showed the file it was closed on and the list's next read selected that one again.
+        @Test func aFollowingPaneOpenedAgainShowsWhatTheListSelectsNow() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await tabWithFiles(harness)
+            let list = tab.activePane
+            select(real(harness, "a.swift"), in: tab)
+            tab.perform(.openSelectionInOtherPane)
+            let first = try #require(tab.otherPane)
+            var firstRead = false
+            first.whenFirstReadFinished { _ in firstRead = true }
+            #expect(await waitUntil { firstRead && first.viewer?.path == real(harness, "a.swift") })
+
+            tab.perform(.toggleTwoPanes)
+            #expect(!tab.showsTwoPanes)
+            select(real(harness, "b.json"), in: tab)
+            tab.perform(.toggleTwoPanes)
+            let back = try #require(tab.otherPane?.viewer)
+            #expect(back.mode == .following)
+            #expect(back.path == real(harness, "b.json"), "shows \(shown(back)) at once")
+            #expect(tab.activePane === list)
+
+            // The list reads its folder again: what it selects stays selected, and the viewer shows it.
+            try "c\n".write(to: harness.folder.appending("c.txt"), atomically: true, encoding: .utf8)
+            tab.perform(.refreshOrApplySearchSort)
+            #expect(await waitUntil { list.content.listedEntry(at: real(harness, "c.txt")) != nil })
+            #expect(list.content.selection.paths == [real(harness, "b.json")])
+            try await Task.sleep(for: .seconds(InfoMetrics.fetchDelay + 0.3))
+            #expect(back.path == real(harness, "b.json") && back.isText, "shows \(shown(back))")
+        }
+
+        // A second pane closed with Two Panes before its first read ends finishes that read in a pane no longer the
+        // tab's: nothing it selects reaches the viewer of the pane opened again, which showed nothing once it had.
+        @Test func aClosedPanesLastReadLeavesTheViewerOpenedAgainAlone() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await tabWithFiles(harness)
+            select(real(harness, "a.swift"), in: tab)
+            tab.perform(.openSelectionInOtherPane)
+            let closed = try #require(tab.otherPane)
+            var closedRead = false
+            closed.whenFirstReadFinished { _ in closedRead = true }
+            // Closed and opened again in the same turn, before the closed pane's read can end.
+            tab.perform(.toggleTwoPanes)
+            #expect(!closedRead)
+            tab.perform(.toggleTwoPanes)
+            let back = try #require(tab.otherPane?.viewer)
+            #expect(await waitUntil { closedRead }, "the closed pane's read ended")
+            try await Task.sleep(for: .seconds(InfoMetrics.fetchDelay + 0.3))
+            #expect(back.path == real(harness, "a.swift") && back.isText, "shows \(shown(back))")
         }
 
         @Test func editingKeepsFollowingAndSaveWritesTheFile() async throws {

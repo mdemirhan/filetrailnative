@@ -71,7 +71,7 @@ extension MainWindowController {
         let keyboard = paneWithKeyboard
         let pane = addSecondPane(start: start, history: history)
         if let view { pane.carry(view) }
-        if let viewer { restoreViewer(viewer, in: pane) }
+        if let viewer { restoreViewer(viewer, in: pane, beside: source) }
         pane.ensureLoaded()
         panesChanged()
         keepKeyboard(in: keyboard)
@@ -313,6 +313,10 @@ extension MainWindowController {
     /// that what follows the active pane keeps what it shows: Show Info's item stays, the active item isn't read again,
     /// and the toolbar keeps the active pane's Back and Forward, view and search.
     func paneChanged(_ change: ExplorerWindowChange, in pane: BrowserPane) {
+        // A pane closed with Two Panes may still finish a read it started: it is no longer the tab's, and what it
+        // selects then is nothing a viewer follows. A following viewer opened again showed nothing once a second pane
+        // closed while reading its first folder finished that read.
+        guard panes.contains(where: { $0 === pane }) else { return }
         switch change {
         case .selection: followSelection(of: pane)
         case .folder:
