@@ -360,9 +360,11 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .duplicateSelection, label: "Duplicate", group: .files, defaults: ["Cmd+D"],
             menuPath: "File > Duplicate"),
-        // No keys of their own: Finder's ⌃⌘A is free, and its ⌘R is Refresh here. One can be given in Settings.
+        // Make Alias has Finder's ⌃⌘A. Show Original has no key, as Finder's ⌘R is Refresh here; one can be given in
+        // Settings.
         ShortcutCommandDefinition(
-            id: .makeAlias, label: "Make Alias", group: .files, defaults: [], menuPath: "File > Make Alias"),
+            id: .makeAlias, label: "Make Alias", group: .files, defaults: ["Ctrl+Cmd+A"],
+            menuPath: "File > Make Alias"),
         ShortcutCommandDefinition(
             id: .showOriginal, label: "Show Original", group: .files, defaults: [], menuPath: "File > Show Original"),
         ShortcutCommandDefinition(

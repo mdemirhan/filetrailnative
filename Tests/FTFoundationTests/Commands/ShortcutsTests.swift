@@ -440,7 +440,7 @@ struct ShortcutsTests {
             (.editSelection, ["Cmd+Shift+E"]), (.quickLookSelection, ["Cmd+Y", "Space"]),
             (.viewFile, ["Cmd+E"]),
             (.deselectAll, ["Cmd+Option+A"]), (.invertSelection, []), (.renameSelection, ["F2"]),
-            (.duplicateSelection, ["Cmd+D"]), (.makeAlias, []), (.showOriginal, []), (.convertImages, []),
+            (.duplicateSelection, ["Cmd+D"]), (.makeAlias, ["Ctrl+Cmd+A"]), (.showOriginal, []), (.convertImages, []),
             (.moveSelection, ["Cmd+Shift+M"]),
             (.compressSelection, []), (.extractSelection, []), (.extractSelectionTo, []), (.newFolder, ["Cmd+Shift+N"]),
             (.newFolderWithSelection, ["Ctrl+Cmd+N"]), (.newTextFile, []), (.openTemplatesFolder, []),

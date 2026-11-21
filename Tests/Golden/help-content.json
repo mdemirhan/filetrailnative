@@ -342,6 +342,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+A",
+            "description": "Make an alias of each selected item beside it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Shift+M",
             "description": "Move the selected items to a folder chosen by name or path"
           },
@@ -2948,6 +2953,11 @@
             "group": "files",
             "shortcut": "Cmd+D",
             "description": "Make a copy of each selected item beside it"
+          },
+          {
+            "group": "files",
+            "shortcut": "Ctrl+Cmd+A",
+            "description": "Make an alias of each selected item beside it"
           },
           {
             "group": "files",
@@ -5581,6 +5591,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+A",
+            "description": "Make an alias of each selected item beside it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Shift+M",
             "description": "Move the selected items to a folder chosen by name or path"
           },
@@ -8146,6 +8161,11 @@
             "group": "files",
             "shortcut": "Cmd+D",
             "description": "Make a copy of each selected item beside it"
+          },
+          {
+            "group": "files",
+            "shortcut": "Ctrl+Cmd+A",
+            "description": "Make an alias of each selected item beside it"
           },
           {
             "group": "files",
@@ -14151,6 +14171,7 @@
           "calculateSize": [],
           "renameSelection": [],
           "duplicateSelection": [],
+          "makeAlias": [],
           "moveSelection": [],
           "newFolder": [],
           "trashSelection": [],
@@ -14356,6 +14377,11 @@
               "group": "files",
               "shortcut": "Cmd+D",
               "description": "Make a copy of each selected item beside it"
+            },
+            {
+              "group": "files",
+              "shortcut": "Ctrl+Cmd+A",
+              "description": "Make an alias of each selected item beside it"
             },
             {
               "group": "files",

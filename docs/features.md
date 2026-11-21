@@ -157,5 +157,5 @@ The [README](../README.md) is about what is different from Finder. This page lis
 - **Share** the selected items by AirDrop, Mail, Messages and the rest, from the File menu, the right-click menu, the Info panel or the toolbar.
 - **Disk images** open in File Trail instead of a Finder window, and disks eject from the sidebar.
 - **Show in Finder** takes you to the same item there.
-- **Finder aliases** open their originals, in File Trail for an alias of a folder, and look and sort as in Finder. File ▸ Make Alias makes one beside the item, and Show Original selects the original in its folder. Symbolic links are called symbolic links.
+- **Finder aliases** open their originals, in File Trail for an alias of a folder, and look and sort as in Finder. File ▸ Make Alias (⌃⌘A) makes one beside the item, and Show Original selects the original in its folder. Symbolic links are called symbolic links.
 - **The icons macOS itself draws** for each file and folder.

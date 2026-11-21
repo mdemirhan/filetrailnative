@@ -265,7 +265,7 @@ import Testing
             ("File", "Rename", "Return", .renameSelection),
             ("File", "Edit in Text Editor", "Command+Shift+E", .editSelection),
             ("File", "Duplicate", "Command+D", .duplicateSelection),
-            ("File", "Make Alias", nil, .makeAlias),
+            ("File", "Make Alias", "Control+Command+A", .makeAlias),
             ("File", "Move to…", "Command+Shift+M", .moveSelection),
             ("File", "Add to Favorites", "Control+Command+T", .toggleFavorite),
             ("File", "Open in Terminal", "Command+Alt+T", .openInTerminal),

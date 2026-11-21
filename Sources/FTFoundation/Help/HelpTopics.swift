@@ -313,7 +313,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Aliases and symbolic links",
                             description:
-                                "File ▸ Make Alias makes an alias of each selected item beside it, named as Finder names one (“Report.pdf alias”), and {undo} moves them to the Trash. Opening an alias or a symbolic link opens its original, and so do Open With, Open in Viewer, Quick Look and Copy Contents; Rename, Copy, Compress, Move to Trash and Show Info act on the alias or the link itself. File ▸ Show Original selects the original in its folder, and Show Info says where it is."
+                                "{makeAlias} makes an alias of each selected item beside it, named as Finder names one (“Report.pdf alias”), and {undo} moves them to the Trash. Opening an alias or a symbolic link opens its original, and so do Open With, Open in Viewer, Quick Look and Copy Contents; Rename, Copy, Compress, Move to Trash and Show Info act on the alias or the link itself. File ▸ Show Original selects the original in its folder, and Show Info says where it is."
                         ),
                         HelpRow(
                             label: "Move to Trash",
