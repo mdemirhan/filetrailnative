@@ -309,6 +309,22 @@ public struct FolderViews: Equatable, Sendable {
         return all.filter { DiskPath($0.path).isInside(folder) }
     }
 
+    /// The view kept as `old` is the view of the folder at `path`, which is how its listing spells it: `old` is
+    /// another spelling of the same path, the one an earlier launch kept the view under. The view goes to `path`,
+    /// once; a view `path` has of its own stays, and the one at `old`, which no folder could be found by again, is
+    /// dropped. Whether anything changed. That the two paths are one folder is for the disk to say, before this is
+    /// called: to every other function here they are two folders.
+    @discardableResult
+    public mutating func respell(from old: String, to path: String) -> Bool {
+        let (from, to) = (DiskPath(old), DiskPath(path))
+        guard from != to, var view = byPath.removeValue(forKey: from) else { return false }
+        if byPath[to] == nil {
+            view.path = path
+            byPath[to] = view
+        }
+        return true
+    }
+
     /// A folder renamed or moved by the app: its view and every view inside it go with it, to another disk too.
     public mutating func moved(from old: String, to new: String) {
         moved([(from: old, to: new)])

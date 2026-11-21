@@ -115,6 +115,15 @@ public final class DirectoryService: Sendable {
         return MetadataBatch(directoryPath: directoryPath, items: items)
     }
 
+    /// Where the item at `path` really is, as a listing would give its path (links followed, every part named as
+    /// its folder holds it); nil when nothing is there. For telling whether a path saved under another spelling
+    /// names a folder just listed.
+    @concurrent
+    public func realPath(_ path: String) async -> String? {
+        let fileSystem = fileSystem
+        return await BlockingWork.run { try? fileSystem.realpath(path) }
+    }
+
     /// Whether the item itself has the flag that hides it, for telling a hidden folder from its path alone.
     @concurrent
     public func hasHiddenFlag(path: String) async -> Bool {

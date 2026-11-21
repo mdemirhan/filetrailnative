@@ -854,12 +854,19 @@ final class BrowserPane {
         content.beginLoading(quiet: quiet)
         var read = await readFolder(path, view: view)
         guard token == navigationToken else { return .superseded }
+        // What an earlier launch saved under another spelling of the path this listing gives (a view, a favorite, its
+        // visits) is this folder's from here on, before its view is looked for and its row selected.
+        let takenOver = await takeOverSavedSpellings(of: read, open: open)
+        guard token == navigationToken else { return .superseded }
+        let open = takenOver.open
         // A folder asked for by another spelling of its path (a link, `/tmp`, an accent encoded the other way) is
         // known by its real path, which its listing gives. Where that is the folder on screen, it is read in place
         // after all, and the view on screen stays; any other folder has the view saved for its real path. Where the
         // view isn't the one the folder was read with, it is the one shown, and where its order is another the folder
         // is read once more, in that order, before anything shows.
-        if opensAnotherFolder, case .success(let snapshot) = read, !samePath(snapshot.path, path) {
+        if opensAnotherFolder, case .success(let snapshot) = read,
+            takenOver.views || !samePath(snapshot.path, path)
+        {
             let isOnScreen = hasShownFolder && !folderLetGo && !placeTaken && samePath(snapshot.path, folderPath)
             if isOnScreen { opensAnotherFolder = false }
             let real = isOnScreen ? folderView : folderViewUse(for: snapshot.path).map(FolderViewOnScreen.init)
@@ -925,11 +932,6 @@ final class BrowserPane {
 
         // The folder arrived: the history is where the folder on screen is again.
         historyIndexOnScreen = nil
-        // Visits kept under the folder's path as a `URL` spells it are this folder's: Go To lists it once, as its
-        // listing spells it.
-        if !opensWithError, let kept = Self.asAURLSpells(shownPath), !samePath(kept, shownPath) {
-            MainWindowController.visitStore()?.folderVisitsRespelled(from: kept, to: shownPath)
-        }
         // A folder is added to the history only after its listing has arrived and been applied.
         let visits = visitTracker
         switch move {
@@ -1022,17 +1024,6 @@ final class BrowserPane {
         window?.displayIfNeeded()
         tab.group?.tabChanged(tab)
         return .opened
-    }
-
-    /// `path` with its accents taken apart as a `URL` made from it gives them, which is how a folder's visits may be
-    /// kept from an earlier launch; nil when the path can't be given so. The system takes fewer accents apart than
-    /// Unicode's own decomposition does, so it is the one asked. No disk is.
-    private static func asAURLSpells(_ path: String) -> String? {
-        // A path with no accent is spelled one way only.
-        guard path.utf8.contains(where: { $0 >= 0x80 }) else { return nil }
-        var bytes = [CChar](repeating: 0, count: 4 * Int(PATH_MAX))
-        guard (path as NSString).getFileSystemRepresentation(&bytes, maxLength: bytes.count) else { return nil }
-        return bytes.withUnsafeBufferPointer { $0.baseAddress.map { String(cString: $0) } }
     }
 
     /// Where the pane is, history and sidebar row with it (`TabPlace`).

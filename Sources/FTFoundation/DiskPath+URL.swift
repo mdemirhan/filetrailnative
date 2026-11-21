@@ -25,4 +25,16 @@ extension DiskPath {
         guard url.isFileURL else { return nil }
         self.init(url.path)
     }
+
+    /// The path with its accents taken apart as a `URL` made from it spells them (`URL(fileURLWithPath:).path`). The
+    /// app once knew the folder on screen by that spelling, whatever the disk kept, so it is how a launch from then
+    /// saved a folder: its view, its visits, a favorite or a tab on it. nil for a path with no accent, which is
+    /// spelled one way only, and for one that can't be given so. The system takes fewer accents apart than Unicode's
+    /// own decomposition does, so it is the one asked. No disk is.
+    public func asAURLSpells() -> DiskPath? {
+        guard string.utf8.contains(where: { $0 >= 0x80 }) else { return nil }
+        var bytes = [CChar](repeating: 0, count: 4 * Int(PATH_MAX))
+        guard (string as NSString).getFileSystemRepresentation(&bytes, maxLength: bytes.count) else { return nil }
+        return bytes.withUnsafeBufferPointer { $0.baseAddress.map { DiskPath(String(cString: $0)) } }
+    }
 }

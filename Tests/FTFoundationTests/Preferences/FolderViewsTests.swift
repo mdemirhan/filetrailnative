@@ -473,6 +473,39 @@ struct FolderViewsTests {
         #expect(views.all.count == 4)
     }
 
+    // What an earlier launch kept under another spelling of a folder's path goes to the path its listing gives.
+    @Test func aViewKeptUnderAnotherSpellingGoesToTheListingsOnce() {
+        var views = FolderViews([
+            FolderView(path: "/Volumes/Card", keeps: Self.previews),
+            FolderView(path: Self.decomposed, subfolders: true, keeps: Self.previews),
+        ])
+
+        let went = views.respell(from: Self.decomposed, to: Self.composed)
+
+        #expect(went)
+        #expect(views.own(Self.decomposed) == nil)
+        #expect(bytes([views.own(Self.composed)?.path]) == bytes([Self.composed]))
+        #expect(views.own(Self.composed)?.subfolders == true)
+        #expect(views.own(Self.composed)?.keeps == Self.previews)
+        #expect(bytes([views.use(for: Self.composed + "/2019")?.view.path]) == bytes([Self.composed]))
+        #expect(views.all.count == 2)
+        // Once: nothing is left under the old spelling.
+        let taken = views
+        let again = [
+            views.respell(from: Self.decomposed, to: Self.composed),
+            views.respell(from: Self.composed, to: Self.composed),
+        ]
+        #expect(again == [false, false])
+        #expect(views == taken)
+
+        // A folder with a view of its own keeps it; the one under the old spelling, never to be found again, goes.
+        views.set(FolderView(path: Self.decomposed, keeps: FolderViewKeeps(view: .list)))
+        let dropped = views.respell(from: Self.decomposed, to: Self.composed)
+        #expect(dropped)
+        #expect(views.own(Self.composed)?.keeps == Self.previews)
+        #expect(views.own(Self.decomposed) == nil)
+    }
+
     // The file's order is the order text has in Swift, as it always was, whatever the paths' bytes are: a file with
     // no path respelled is written as it was read. Two paths that order takes for one go by their bytes.
     @Test func theFilesOrderIsWhatItWasAndOneOrderForPathsThatDifferOnlyInEncoding() throws {

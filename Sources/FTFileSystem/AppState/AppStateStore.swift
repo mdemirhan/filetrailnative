@@ -179,6 +179,17 @@ public final class AppStateStore: @unchecked Sendable {
         }
     }
 
+    /// As `folderVisitsRespelled`, for the folders chosen in Move To and Extract To: one recorded as `old`, another
+    /// spelling of the path its listing gives, becomes `path`'s, so the box lists the folder once.
+    public func destinationsRespelled(from old: String, to path: String) {
+        locked {
+            guard let respelled = VisitedFolders.respelled(destinationFolders, from: old, to: path) else { return }
+            destinationFolders = respelled
+            markUnsaved(.destinations)
+            saveLater()
+        }
+    }
+
     // MARK: Recent commands
 
     /// The commands run from the command palette, the last first.
