@@ -14,8 +14,9 @@ final class AliasOriginals {
 
     private enum Known { case notAlias, folder, file, missing }
 
-    private var known: [String: Known] = [:]
-    private var asked: Set<String> = []
+    /// By each path's bytes, as two names that differ only in how an accent is spelled are two items.
+    private var known: [DiskPath: Known] = [:]
+    private var asked: Set<DiskPath> = []
 
     /// At most this many of a selection are looked up: past it, the menus show what they show for any alias.
     static let lookupLimit = 20
@@ -24,7 +25,7 @@ final class AliasOriginals {
     func commandKind(_ entry: DirectoryEntry) -> FTFoundation.EntryKind {
         let kind = FTFoundation.EntryKind(rawValue: entry.kind.rawValue) ?? .other
         guard kind == .alias || kind == .file else { return kind }
-        switch known[entry.path] {
+        switch known[DiskPath(entry.path)] {
         case .folder: return .symlinkDirectory
         case .file: return .symlinkFile
         case .missing: return .alias
@@ -37,10 +38,10 @@ final class AliasOriginals {
     func lookUp(_ entries: [DirectoryEntry], filesMayBeAliases: Bool, changed: @escaping @MainActor () -> Void) {
         let paths = entries.prefix(Self.lookupLimit).compactMap { entry -> String? in
             guard entry.kind == .alias || (filesMayBeAliases && entry.kind == .file) else { return nil }
-            return asked.contains(entry.path) ? nil : entry.path
+            return asked.contains(DiskPath(entry.path)) ? nil : entry.path
         }
         guard !paths.isEmpty else { return }
-        asked.formUnion(paths)
+        asked.formUnion(paths.map(DiskPath.init))
         Task {
             let found = await BlockingWork.run {
                 paths.map { path -> (String, Known) in
@@ -50,7 +51,7 @@ final class AliasOriginals {
                 }
             }
             var anyChanged = false
-            for (path, kind) in found {
+            for (path, kind) in found.map({ (DiskPath($0.0), $0.1) }) {
                 asked.remove(path)
                 if (known[path] ?? .notAlias) != kind { anyChanged = true }
                 known[path] = kind == .notAlias ? nil : kind

@@ -10,7 +10,8 @@ public enum Links {
     /// Whether the file at `path` is a Finder alias. A symbolic link isn't one, though the system's own check says it
     /// is.
     public static func isFinderAlias(_ path: String) -> Bool {
-        let values = try? URL(fileURLWithPath: path).resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey])
+        let values = try? DiskPath(path).url(isDirectory: false).resourceValues(
+            forKeys: [.isAliasFileKey, .isSymbolicLinkKey])
         return values?.isAliasFile == true && values?.isSymbolicLink != true
     }
 
@@ -24,9 +25,12 @@ public enum Links {
             guard isFinderAlias(real) else { return real }
             guard
                 let next = try? URL(
-                    resolvingAliasFileAt: URL(fileURLWithPath: real), options: [.withoutUI, .withoutMounting])
+                    resolvingAliasFileAt: DiskPath(real).url(isDirectory: false),
+                    options: [.withoutUI, .withoutMounting]),
+                let spelled = DiskPath(urlSpelling: next)
             else { return nil }
-            current = next.path
+            // In the URL's spelling, which `realpath` above spells as the disk does on the next turn.
+            current = spelled.string
         }
         return nil
     }
@@ -54,8 +58,8 @@ public enum Links {
     /// Writes a Finder alias of `original` at `aliasPath`, as Finder's Make Alias does: a file holding where the
     /// original is, marked as an alias, that finds it again after it is moved or renamed.
     public static func writeAlias(of original: String, at aliasPath: String) throws {
-        let data = try URL(fileURLWithPath: original).bookmarkData(
+        let data = try DiskPath(original).fileURL().bookmarkData(
             options: .suitableForBookmarkFile, includingResourceValuesForKeys: nil, relativeTo: nil)
-        try URL.writeBookmarkData(data, to: URL(fileURLWithPath: aliasPath))
+        try URL.writeBookmarkData(data, to: DiskPath(aliasPath).url(isDirectory: false))
     }
 }

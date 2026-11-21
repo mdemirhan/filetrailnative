@@ -46,7 +46,7 @@ struct ViewerFile: @unchecked Sendable {
                     "The original of \u{201C}\(NodePath.basename(shownPath))\u{201D} can\u{2019}t be found."),
                 modified: nil, size: 0)
         }
-        let url = URL(fileURLWithPath: path)
+        let url = DiskPath(path).url(isDirectory: false)
         let values = try? url.resourceValues(forKeys: [
             .isDirectoryKey, .isPackageKey, .fileSizeKey, .contentModificationDateKey, .contentTypeKey,
         ])
@@ -58,7 +58,7 @@ struct ViewerFile: @unchecked Sendable {
         guard let values else { return file(.unreadable("The file can’t be read.")) }
         if values.isDirectory == true { return file(values.isPackage == true ? .other : .folder) }
         // A name the viewer knows is read as text, whatever the system takes it for: `.ts` is a video to it.
-        let named = TextLanguage.detect(fileName: url.lastPathComponent) != .plainText
+        let named = TextLanguage.detect(fileName: NodePath.basename(path)) != .plainText
         if !named, let type = values.contentType, !type.conforms(to: .text),
             previewTypes.contains(where: { type.conforms(to: $0) })
         {
@@ -84,7 +84,7 @@ struct ViewerFile: @unchecked Sendable {
         }
         guard let (text, format) = TextDecoding.decode(data) else { return file(.other) }
         let firstLine = text.prefix(200).split(separator: "\n", maxSplits: 1).first.map(String.init)
-        let language = TextLanguage.detect(fileName: url.lastPathComponent, firstLine: firstLine)
+        let language = TextLanguage.detect(fileName: NodePath.basename(path), firstLine: firstLine)
         return file(.text(text, format, language, TextDecoding.indentation(of: text)))
     }
 
@@ -95,12 +95,13 @@ struct ViewerFile: @unchecked Sendable {
         guard let data = TextDecoding.encode(text, as: format) else {
             throw ViewerSaveError.encoding(format.encodingName)
         }
-        let url = URL(fileURLWithPath: path).resolvingSymlinksInPath()
+        // A link is followed to the file it names, as the disk spells it.
+        let url = DiskPath(path).asOnDisk().url(isDirectory: false)
         let manager = FileManager.default
         let folder = try manager.url(
             for: .itemReplacementDirectory, in: .userDomainMask, appropriateFor: url, create: true)
         defer { try? manager.removeItem(at: folder) }
-        let temporary = folder.appendingPathComponent(url.lastPathComponent)
+        let temporary = folder.appendingPathComponent(NodePath.basename(path))
         try data.write(to: temporary)
         _ = try manager.replaceItemAt(url, withItemAt: temporary)
         return (try? url.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate

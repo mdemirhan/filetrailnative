@@ -197,6 +197,28 @@ extension AccentScenario {
             note("Undo runs", await undo())
             note("Undo takes the copy away", await arrives { self.rowsNew(since: before).isEmpty && self.isIdle })
         }
+
+        // An alias beside the item, listed as one; Show Original from it selects the item, in the folder on screen.
+        begin("make alias and show original")
+        if let items = rows([.duplicated]) {
+            let before = rowPaths
+            select(items)
+            tab.perform(.makeAlias)
+            note("the alias is listed", await arrives { self.rowsNew(since: before).count == 1 && self.isIdle })
+            let made = rowsNew(since: before)
+            note("the alias", told: made)
+            note("the alias is selected", await arrives { self.selects(made) })
+            let alias = rows.first { row in made.contains { self.same($0, row.path) } }
+            note("it is listed as an alias", alias?.kind == .alias)
+            if let alias {
+                select([alias])
+                tab.perform(.showOriginal)
+                note("Show Original selects the item", await arrives { self.selects([items[0].path]) })
+                note("Show Original stays in the folder", shows(folder))
+            }
+            note("Undo runs", await undo())
+            note("Undo takes the alias away", await arrives { self.rowsNew(since: before).isEmpty && self.isIdle })
+        }
     }
 
     // MARK: Into the sub-folder

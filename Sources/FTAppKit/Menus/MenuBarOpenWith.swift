@@ -34,7 +34,8 @@ final class MenuBarOpenWith: NSObject, NSMenuDelegate {
             menu.addItem(none)
             return
         }
-        if tab.selectedPaths != paths {
+        // By their bytes: two names that differ only in how an accent is spelled are two items.
+        if tab.selectedPaths.map(DiskPath.init) != paths.map(DiskPath.init) {
             paths = tab.selectedPaths
             lookup = nil
             ask(paths, pinned: tab.preferences.openWithApplications, menu: menu)
@@ -46,7 +47,7 @@ final class MenuBarOpenWith: NSObject, NSMenuDelegate {
         let pinnedPaths = pinned.map(\.appPath)
         Task { [weak self, weak menu] in
             let answer = await SystemActions.openWithApplications(paths: asked, pinnedAppPaths: pinnedPaths)
-            guard let self, self.paths == asked else { return }
+            guard let self, self.paths.map(DiskPath.init) == asked.map(DiskPath.init) else { return }
             self.lookup = answer
             if let menu { self.fill(menu, pinned: pinned) }
         }

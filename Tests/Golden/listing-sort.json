@@ -40935,34 +40935,6 @@
             "isSymlink": false
           },
           {
-            "name": "ðçŽae.é",
-            "extension": "é",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "iÉ",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "ñbı.md",
-            "extension": "md",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "ǖu.md",
-            "extension": "md",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "öangstræoÅm.é",
             "extension": "é",
             "kind": "file",
@@ -41143,6 +41115,34 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "ðçŽae.é",
+            "extension": "é",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "iÉ",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "ñbı.md",
+            "extension": "md",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "ǖu.md",
+            "extension": "md",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "—日cafñe.TXT 58",
@@ -44180,34 +44180,6 @@
       "output": {
         "entries": [
           {
-            "name": "ø",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "photo 3.jpg",
-            "extension": "jpg",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "photo 003.jpg 13",
-            "extension": "jpg 13",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "TEMP",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "Notes.app",
             "extension": "app",
             "kind": "bundle",
@@ -44418,6 +44390,34 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "ø",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "photo 3.jpg",
+            "extension": "jpg",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "photo 003.jpg 13",
+            "extension": "jpg 13",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "TEMP",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "x.app.txt",
@@ -45505,6 +45505,13 @@
       "output": {
         "entries": [
           {
+            "name": "x̧1 47",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "s½ǖœ.md",
             "extension": "md",
             "kind": "directory",
@@ -45559,13 +45566,6 @@
             "kind": "directory",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "x̧1 47",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
           },
           {
             "name": "łn.TXT",
@@ -46180,6 +46180,13 @@
       "output": {
         "entries": [
           {
+            "name": "README.md",
+            "extension": "md",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "src",
             "extension": "",
             "kind": "directory",
@@ -46215,18 +46222,32 @@
             "isSymlink": false
           },
           {
-            "name": "README.md",
-            "extension": "md",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "File 02.TXT",
             "extension": "txt",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "tool.framework",
+            "extension": "framework",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "plug.plugin 14",
+            "extension": "plugin 14",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "archive.zip",
+            "extension": "zip",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "resume.pdf 21",
@@ -46324,27 +46345,6 @@
             "kind": "bundle",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "tool.framework",
-            "extension": "framework",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "plug.plugin 14",
-            "extension": "plugin 14",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "archive.zip",
-            "extension": "zip",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           }
         ],
         "tree": [
@@ -48325,13 +48325,6 @@
       "output": {
         "entries": [
           {
-            "name": "—日Ñi.Ä",
-            "extension": "ä",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "Æǿl",
             "extension": "",
             "kind": "directory",
@@ -48395,6 +48388,13 @@
             "isSymlink": false
           },
           {
+            "name": "—日Ñi.Ä",
+            "extension": "ä",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "ső²̈s.Ä 106",
             "extension": "ä 106",
             "kind": "file",
@@ -48421,20 +48421,6 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "eǿ",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "Rıesume 27",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           },
           {
             "name": "øΩtü.é 16",
@@ -48565,6 +48551,20 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "eǿ",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "Rıesume 27",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "🎉t.TXT",
@@ -49606,6 +49606,13 @@
             "isSymlink": false
           },
           {
+            "name": "Zebra",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "report.pdf",
             "extension": "pdf",
             "kind": "file",
@@ -49757,13 +49764,6 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "Zebra",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           }
         ],
         "tree": [
@@ -51115,18 +51115,18 @@
             "isSymlink": false
           },
           {
-            "name": "oǅếê 8",
-            "extension": "",
-            "kind": "other",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
             "name": "Üæt",
             "extension": "",
             "kind": "symlink_file",
             "isHidden": false,
             "isSymlink": true
+          },
+          {
+            "name": "oǅếê 8",
+            "extension": "",
+            "kind": "other",
+            "isHidden": false,
+            "isSymlink": false
           }
         ],
         "tree": []
@@ -51705,13 +51705,6 @@
       "output": {
         "entries": [
           {
-            "name": "svc.xpc 89",
-            "extension": "xpc 89",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": ".app",
             "extension": "",
             "kind": "directory",
@@ -51782,16 +51775,9 @@
             "isSymlink": false
           },
           {
-            "name": "$dollar",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "中文",
-            "extension": "",
-            "kind": "symlink_file",
+            "name": "svc.xpc 89",
+            "extension": "xpc 89",
+            "kind": "symlink_directory",
             "isHidden": false,
             "isSymlink": true
           },
@@ -51962,6 +51948,20 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "$dollar",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "中文",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "svc.xpc",
@@ -52276,20 +52276,6 @@
       "output": {
         "entries": [
           {
-            "name": "Ñnaiåveü.txt",
-            "extension": "txt",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "töǿ",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "ŽangstroØm.é",
             "extension": "é",
             "kind": "file",
@@ -52478,6 +52464,20 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "Ñnaiåveü.txt",
+            "extension": "txt",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "töǿ",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "ếu日.TXT 46",
@@ -53156,6 +53156,34 @@
             "isSymlink": false
           },
           {
+            "name": "resumeǿ",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "dΩ.TXT",
+            "extension": "txt",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "Cafe².é",
+            "extension": "é",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "‘Žuber",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "z​oe.md",
             "extension": "md",
             "kind": "file",
@@ -53279,34 +53307,6 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "‘Žuber",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "resumeǿ",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "dΩ.TXT",
-            "extension": "txt",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "Cafe².é",
-            "extension": "é",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           }
         ],
         "tree": [
@@ -55316,13 +55316,6 @@
       "output": {
         "entries": [
           {
-            "name": "ðnü.TXT",
-            "extension": "txt",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "—’ßl.TXT",
             "extension": "txt",
             "kind": "directory",
@@ -55421,6 +55414,13 @@
             "isSymlink": false
           },
           {
+            "name": "ðnü.TXT",
+            "extension": "txt",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "cäfeœè.Ä 40",
             "extension": "ä 40",
             "kind": "file",
@@ -55433,13 +55433,6 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "fiǆle.md",
-            "extension": "md",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           },
           {
             "name": "1’0 39",
@@ -55555,6 +55548,13 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "fiǆle.md",
+            "extension": "md",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "aǆngstrom.txt",
@@ -56008,6 +56008,13 @@
             "isSymlink": false
           },
           {
+            "name": "straße",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "report (2).pdf",
             "extension": "pdf",
             "kind": "file",
@@ -56136,13 +56143,6 @@
             "kind": "bundle",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "straße",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           }
         ],
         "tree": [
@@ -58763,6 +58763,13 @@
             "isSymlink": false
           },
           {
+            "name": "ǖœstṓrasse",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "Res’ume",
             "extension": "",
             "kind": "other",
@@ -58958,13 +58965,6 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "ǖœstṓrasse",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           },
           {
             "name": "Caf̈ﬁe.Ä",
@@ -60282,6 +60282,13 @@
       "output": {
         "entries": [
           {
+            "name": "FOLDER",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "xy",
             "extension": "",
             "kind": "directory",
@@ -60310,13 +60317,6 @@
             "isSymlink": false
           },
           {
-            "name": "FOLDER",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "x.y",
             "extension": "y",
             "kind": "file",
@@ -60343,6 +60343,27 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "readme.md",
+            "extension": "md",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "file 10",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "12",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "play.playground",
@@ -60434,27 +60455,6 @@
             "kind": "bundle",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "readme.md",
-            "extension": "md",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "file 10",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "12",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           }
         ],
         "tree": [
@@ -61453,13 +61453,6 @@
       "output": {
         "entries": [
           {
-            "name": "beta",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "!bang",
             "extension": "",
             "kind": "directory",
@@ -61509,16 +61502,9 @@
             "isSymlink": false
           },
           {
-            "name": "'quote",
+            "name": "beta",
             "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "file 1.txt",
-            "extension": "txt",
-            "kind": "symlink_file",
+            "kind": "symlink_directory",
             "isHidden": false,
             "isSymlink": true
           },
@@ -61612,6 +61598,20 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "'quote",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "file 1.txt",
+            "extension": "txt",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "File 02.TXT",
@@ -62744,13 +62744,6 @@
       "output": {
         "entries": [
           {
-            "name": "n“éaive",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "ǆo",
             "extension": "",
             "kind": "directory",
@@ -62779,18 +62772,18 @@
             "isSymlink": false
           },
           {
+            "name": "n“éaive",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "št.Ä 85",
             "extension": "ä 85",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "ǆéZo🎉e.txt 116",
-            "extension": "txt 116",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           },
           {
             "name": "🎉ëṓn",
@@ -62852,6 +62845,13 @@
             "kind": "other",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "ǆéZo🎉e.txt 116",
+            "extension": "txt 116",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "b ñ.txt 62",
@@ -63745,6 +63745,20 @@
       "output": {
         "entries": [
           {
+            "name": "ŗeṓport.md",
+            "extension": "md",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "ë́Æz.TXT",
+            "extension": "txt",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "жőÅd",
             "extension": "",
             "kind": "directory",
@@ -63822,20 +63836,6 @@
             "isSymlink": false
           },
           {
-            "name": "ŗeṓport.md",
-            "extension": "md",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "ë́Æz.TXT",
-            "extension": "txt",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "źoe×.TXT",
             "extension": "txt",
             "kind": "file",
@@ -63883,6 +63883,13 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "xêǖ1×.md 90",
+            "extension": "md 90",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "z🎉çþ.md",
@@ -64000,13 +64007,6 @@
             "isHidden": false,
             "isSymlink": false,
             "isExecutable": false
-          },
-          {
-            "name": "xêǖ1×.md 90",
-            "extension": "md 90",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           },
           {
             "name": "þx1.Ä",
@@ -66821,27 +66821,6 @@
             "isSymlink": false
           },
           {
-            "name": "str aŽsðse.TXT",
-            "extension": "txt",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "’t​.txt",
-            "extension": "txt",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "ǆfèile.Ä",
-            "extension": "ä",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "iåế.é",
             "extension": "é",
             "kind": "file",
@@ -66956,6 +66935,27 @@
             "kind": "other",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "’t​.txt",
+            "extension": "txt",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "ǆfèile.Ä",
+            "extension": "ä",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "str aŽsðse.TXT",
+            "extension": "txt",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "reæp日oœrt.txt",
@@ -67683,6 +67683,34 @@
             "isSymlink": false
           },
           {
+            "name": "zếš🎉.é",
+            "extension": "é",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "Cła🎉fe",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "cåççafe.txt",
+            "extension": "txt",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "́ Zoe.Ä",
+            "extension": "ä",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "Ŕesumǖ²e.txt",
             "extension": "txt",
             "kind": "other",
@@ -67894,34 +67922,6 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "zếš🎉.é",
-            "extension": "é",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "Cła🎉fe",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "cåççafe.txt",
-            "extension": "txt",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "́ Zoe.Ä",
-            "extension": "ä",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           },
           {
             "name": "cafêe.Ä",
@@ -73637,6 +73637,13 @@
       "output": {
         "entries": [
           {
+            "name": "TEMP",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "folder 39",
             "extension": "",
             "kind": "directory",
@@ -73658,13 +73665,6 @@
             "isSymlink": false
           },
           {
-            "name": "TEMP",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "Gamma.TXT",
             "extension": "txt",
             "kind": "file",
@@ -73677,6 +73677,13 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "README.md",
+            "extension": "md",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "pane.prefpane",
@@ -73799,13 +73806,6 @@
             "isHidden": false,
             "isSymlink": false,
             "isExecutable": false
-          },
-          {
-            "name": "README.md",
-            "extension": "md",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           }
         ],
         "tree": [
@@ -84036,6 +84036,20 @@
       "output": {
         "entries": [
           {
+            "name": "üss.é",
+            "extension": "é",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "angstǖ–rom.TXT",
+            "extension": "txt",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "ǿl.TXT",
             "extension": "txt",
             "kind": "other",
@@ -84083,20 +84097,6 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "üss.é",
-            "extension": "é",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "angstǖ–rom.TXT",
-            "extension": "txt",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
           }
         ],
         "tree": [
@@ -85216,6 +85216,20 @@
             "isSymlink": false
           },
           {
+            "name": "Üože",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "–œo.é",
+            "extension": "é",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "őñuè.txt",
             "extension": "txt",
             "kind": "other",
@@ -85321,20 +85335,6 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "Üože",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "–œo.é",
-            "extension": "é",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           }
         ],
         "tree": [
@@ -86649,6 +86649,41 @@
             "isSymlink": false
           },
           {
+            "name": "Gamma.TXT",
+            "extension": "txt",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "B",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "a",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "12",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "!bang",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "README.md",
             "extension": "md",
             "kind": "file",
@@ -86877,41 +86912,6 @@
             "kind": "bundle",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "Gamma.TXT",
-            "extension": "txt",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "B",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "a",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "12",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "!bang",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           }
         ],
         "tree": [
@@ -90842,6 +90842,13 @@
             "isSymlink": false
           },
           {
+            "name": "file",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "😀.png",
             "extension": "png",
             "kind": "file",
@@ -90967,13 +90974,6 @@
             "isHidden": false,
             "isSymlink": false,
             "isExecutable": false
-          },
-          {
-            "name": "file",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           }
         ],
         "tree": [
@@ -91663,6 +91663,13 @@
       "output": {
         "entries": [
           {
+            "name": "z10",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "x-y",
             "extension": "",
             "kind": "directory",
@@ -91703,13 +91710,6 @@
             "kind": "directory",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "z10",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
           },
           {
             "name": "gamma.txt",
@@ -92592,13 +92592,6 @@
       "output": {
         "entries": [
           {
-            "name": "İstanbul",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "0",
             "extension": "",
             "kind": "directory",
@@ -92620,9 +92613,9 @@
             "isSymlink": false
           },
           {
-            "name": "x-y 35",
+            "name": "İstanbul",
             "extension": "",
-            "kind": "symlink_file",
+            "kind": "symlink_directory",
             "isHidden": false,
             "isSymlink": true
           },
@@ -92676,6 +92669,13 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "x-y 35",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
           }
         ],
         "tree": [
@@ -94062,6 +94062,13 @@
       "output": {
         "entries": [
           {
+            "name": "zł",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "‘report",
             "extension": "",
             "kind": "directory",
@@ -94069,9 +94076,9 @@
             "isSymlink": false
           },
           {
-            "name": "zł",
-            "extension": "",
-            "kind": "symlink_directory",
+            "name": "i​Ü.TXT 83",
+            "extension": "txt 83",
+            "kind": "symlink_file",
             "isHidden": false,
             "isSymlink": true
           },
@@ -94104,13 +94111,6 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "i​Ü.TXT 83",
-            "extension": "txt 83",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           }
         ],
         "tree": [
@@ -94361,27 +94361,6 @@
       "output": {
         "entries": [
           {
-            "name": "100 39",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "ﬁle",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "x  y",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "a",
             "extension": "",
             "kind": "directory",
@@ -94422,6 +94401,27 @@
             "kind": "directory",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "100 39",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "ﬁle",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "x  y",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "Safari.APP",
@@ -97058,6 +97058,13 @@
       "output": {
         "entries": [
           {
+            "name": "ñü2Ñ.txt",
+            "extension": "txt",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "ušž.md",
             "extension": "md",
             "kind": "directory",
@@ -97121,13 +97128,6 @@
             "isSymlink": false
           },
           {
-            "name": "ñü2Ñ.txt",
-            "extension": "txt",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "ëcaΩıfe.TXT",
             "extension": "txt",
             "kind": "file",
@@ -97147,6 +97147,13 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "2🎉.md",
+            "extension": "md",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "naivçe.md",
@@ -97323,13 +97330,6 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "2🎉.md",
-            "extension": "md",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           },
           {
             "name": "zoþeǆ.Ä",
@@ -98054,6 +98054,41 @@
             "isSymlink": false
           },
           {
+            "name": "untitled folder",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "über 83",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "tests",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "ecole",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "02",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "tool.framework 86",
             "extension": "framework 86",
             "kind": "other",
@@ -98149,41 +98184,6 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "untitled folder",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "über 83",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "tests",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "02",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "ecole",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           }
         ],
         "tree": [
@@ -98924,27 +98924,6 @@
       "output": {
         "entries": [
           {
-            "name": "őangstro̧m",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "ŕcaæÅfe.md 62",
-            "extension": "md 62",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "repo🎉rt",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": " 🎉đ10",
             "extension": "",
             "kind": "directory",
@@ -99001,39 +98980,32 @@
             "isSymlink": false
           },
           {
+            "name": "őangstro̧m",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "ŕcaæÅfe.md 62",
+            "extension": "md 62",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "repo🎉rt",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "sš.Ä",
             "extension": "ä",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "angsǆtroßm",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "Éı🎉l.md",
-            "extension": "md",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "ëÑŕb",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "日filðŕe.TXT",
-            "extension": "txt",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           },
           {
             "name": "reåsǿume.é 40",
@@ -99148,6 +99120,34 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "angsǆtroßm",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "Éı🎉l.md",
+            "extension": "md",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "ëÑŕb",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "日filðŕe.TXT",
+            "extension": "txt",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "aê.txt 62",
@@ -99584,13 +99584,6 @@
       "output": {
         "entries": [
           {
-            "name": "dåæ.Ä",
-            "extension": "ä",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "aǖe×.é",
             "extension": "é",
             "kind": "directory",
@@ -99661,9 +99654,9 @@
             "isSymlink": false
           },
           {
-            "name": "öz",
-            "extension": "",
-            "kind": "symlink_file",
+            "name": "dåæ.Ä",
+            "extension": "ä",
+            "kind": "symlink_directory",
             "isHidden": false,
             "isSymlink": true
           },
@@ -99757,6 +99750,13 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "öz",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
           }
         ],
         "tree": [
@@ -102472,6 +102472,20 @@
             "isSymlink": false
           },
           {
+            "name": "Æble",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "1a",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "data.json",
             "extension": "json",
             "kind": "file",
@@ -102574,20 +102588,6 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "Æble",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "1a",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           }
         ],
         "tree": [
@@ -103471,6 +103471,13 @@
       "output": {
         "entries": [
           {
+            "name": "šaΩ.txt",
+            "extension": "txt",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "Zo½e.TXT",
             "extension": "txt",
             "kind": "directory",
@@ -103555,13 +103562,6 @@
             "isSymlink": false
           },
           {
-            "name": "šaΩ.txt",
-            "extension": "txt",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "resuŽmŽe.TXT",
             "extension": "txt",
             "kind": "file",
@@ -103581,6 +103581,27 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "straŽếsse",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "aöngstro̧Žm.txt 89",
+            "extension": "txt 89",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "–ŕŕb.Ä 85",
+            "extension": "ä 85",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "èšd.md",
@@ -103708,27 +103729,6 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "straŽếsse",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "aöngstro̧Žm.txt 89",
-            "extension": "txt 89",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "–ŕŕb.Ä 85",
-            "extension": "ä 85",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           },
           {
             "name": "ñd.Ä",
@@ -104574,6 +104574,20 @@
       "output": {
         "entries": [
           {
+            "name": "ñb.txt 69",
+            "extension": "txt 69",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "filđe 114",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "日ıx1’.txt",
             "extension": "txt",
             "kind": "directory",
@@ -104607,20 +104621,6 @@
             "kind": "directory",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "ñb.txt 69",
-            "extension": "txt 69",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "filđe 114",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
           },
           {
             "name": "oñ“ǖ.txt 78",
@@ -106617,6 +106617,27 @@
       "output": {
         "entries": [
           {
+            "name": "x y",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "photo 003.jpg",
+            "extension": "jpg",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "A-B 40",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "pane.prefpane",
             "extension": "prefpane",
             "kind": "file",
@@ -106811,27 +106832,6 @@
             "isHidden": false,
             "isSymlink": false,
             "isExecutable": false
-          },
-          {
-            "name": "x y",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "A-B 40",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "photo 003.jpg",
-            "extension": "jpg",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           }
         ],
         "tree": [
@@ -107145,13 +107145,6 @@
             "isSymlink": false
           },
           {
-            "name": "😀.png",
-            "extension": "png",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "Notes.app",
             "extension": "app",
             "kind": "bundle",
@@ -107234,6 +107227,13 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "😀.png",
+            "extension": "png",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "x.app.txt",
@@ -109087,6 +109087,27 @@
       "output": {
         "entries": [
           {
+            "name": "z10",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "x-y",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "Makefile",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "photo 10.jpg",
             "extension": "jpg",
             "kind": "directory",
@@ -109129,27 +109150,6 @@
             "isSymlink": false
           },
           {
-            "name": "z10",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "x-y",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "Makefile",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "gamma.txt",
             "extension": "txt",
             "kind": "file",
@@ -109162,6 +109162,20 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "B",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": ".hidden",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": true,
+            "isSymlink": true
           },
           {
             "name": "c",
@@ -109254,20 +109268,6 @@
             "kind": "file",
             "isHidden": true,
             "isSymlink": false
-          },
-          {
-            "name": "B",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": ".hidden",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": true,
-            "isSymlink": true
           }
         ],
         "tree": [
@@ -109567,6 +109567,27 @@
             "isSymlink": false
           },
           {
+            "name": "çZŽoe“ 81",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "çCaf̈Üe.md",
+            "extension": "md",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "–‘n 12",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "ss ë",
             "extension": "",
             "kind": "file",
@@ -109596,27 +109617,6 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "çZŽoe“ 81",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "çCaf̈Üe.md",
-            "extension": "md",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "–‘n 12",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           },
           {
             "name": "ı²a.Ä",
@@ -111642,18 +111642,18 @@
       "output": {
         "entries": [
           {
-            "name": "ǖ’b",
-            "extension": "",
-            "kind": "directory",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
             "name": "–na🎉Æive.é 95",
             "extension": "é 95",
             "kind": "symlink_directory",
             "isHidden": false,
             "isSymlink": true
+          },
+          {
+            "name": "ǖ’b",
+            "extension": "",
+            "kind": "directory",
+            "isHidden": false,
+            "isSymlink": false
           },
           {
             "name": "Zǆoe",
@@ -112661,6 +112661,13 @@
       "output": {
         "entries": [
           {
+            "name": "oñe.Ä",
+            "extension": "ä",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "stœrasse.md",
             "extension": "md",
             "kind": "directory",
@@ -112680,13 +112687,6 @@
             "kind": "directory",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "oñe.Ä",
-            "extension": "ä",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
           },
           {
             "name": "oжe.txt",
@@ -113893,13 +113893,6 @@
       "output": {
         "entries": [
           {
-            "name": "a-b",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "ALPHA",
             "extension": "",
             "kind": "directory",
@@ -113963,16 +113956,9 @@
             "isSymlink": false
           },
           {
-            "name": "a2",
+            "name": "a-b",
             "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "readme.md",
-            "extension": "md",
-            "kind": "symlink_file",
+            "kind": "symlink_directory",
             "isHidden": false,
             "isSymlink": true
           },
@@ -114074,6 +114060,20 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "a2",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "readme.md",
+            "extension": "md",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
           }
         ],
         "tree": [
@@ -114921,13 +114921,6 @@
       "output": {
         "entries": [
           {
-            "name": ".app",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": true,
-            "isSymlink": true
-          },
-          {
             "name": "'quote",
             "extension": "",
             "kind": "file",
@@ -115038,6 +115031,13 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": ".app",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": true,
+            "isSymlink": true
           }
         ],
         "tree": [
@@ -115302,13 +115302,6 @@
       "output": {
         "entries": [
           {
-            "name": "=eq 84",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "Notes.app",
             "extension": "app",
             "kind": "file",
@@ -115469,6 +115462,13 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "=eq 84",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "file 2.txt",
@@ -115639,20 +115639,6 @@
       "output": {
         "entries": [
           {
-            "name": "İstanbul",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "Photo 1.jpg 64",
-            "extension": "jpg 64",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "Safari.APP",
             "extension": "app",
             "kind": "file",
@@ -115746,6 +115732,20 @@
             "kind": "other",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "İstanbul",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "Photo 1.jpg 64",
+            "extension": "jpg 64",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "x.app.txt 55",
@@ -118058,13 +118058,6 @@
       "output": {
         "entries": [
           {
-            "name": "üåzß",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "–İoő",
             "extension": "",
             "kind": "directory",
@@ -118170,6 +118163,13 @@
             "isSymlink": false
           },
           {
+            "name": "üåzß",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "öcafe.Ä 74",
             "extension": "ä 74",
             "kind": "file",
@@ -118196,13 +118196,6 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "dđš½",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           },
           {
             "name": "èn‘ë.é 76",
@@ -118349,6 +118342,13 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "dđš½",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
           }
         ],
         "tree": [
@@ -118821,6 +118821,27 @@
             "isSymlink": false
           },
           {
+            "name": "file 10.txt",
+            "extension": "txt",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "a_b",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "$dollar",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "Photo 1.jpg",
             "extension": "jpg",
             "kind": "file",
@@ -119004,27 +119025,6 @@
             "kind": "bundle",
             "isHidden": false,
             "isSymlink": false
-          },
-          {
-            "name": "a_b",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "$dollar",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "file 10.txt",
-            "extension": "txt",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           }
         ],
         "tree": [
@@ -120516,6 +120516,13 @@
             "isSymlink": false
           },
           {
+            "name": "åz.txt",
+            "extension": "txt",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "ðtØ.md",
             "extension": "md",
             "kind": "file",
@@ -120553,13 +120560,6 @@
             "isHidden": false,
             "isSymlink": false,
             "isExecutable": false
-          },
-          {
-            "name": "åz.txt",
-            "extension": "txt",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           }
         ],
         "tree": [
@@ -120736,6 +120736,13 @@
       "output": {
         "entries": [
           {
+            "name": "tool.framework",
+            "extension": "framework",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "plug.plugin",
             "extension": "plugin",
             "kind": "file",
@@ -120877,13 +120884,6 @@
             "isHidden": false,
             "isSymlink": false,
             "isExecutable": false
-          },
-          {
-            "name": "tool.framework",
-            "extension": "framework",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           }
         ],
         "tree": [
@@ -122613,6 +122613,20 @@
       "output": {
         "entries": [
           {
+            "name": "strasǆsæe.é",
+            "extension": "é",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
+            "name": "ŕÑđo",
+            "extension": "",
+            "kind": "symlink_directory",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "žsǅð",
             "extension": "",
             "kind": "directory",
@@ -122669,20 +122683,6 @@
             "isSymlink": false
           },
           {
-            "name": "strasǆsæe.é",
-            "extension": "é",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
-            "name": "ŕÑđo",
-            "extension": "",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "t’.TXT",
             "extension": "txt",
             "kind": "file",
@@ -122723,6 +122723,13 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "naıive 87",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
           },
           {
             "name": "žİl",
@@ -122816,13 +122823,6 @@
             "isHidden": false,
             "isSymlink": false,
             "isExecutable": false
-          },
-          {
-            "name": "naıive 87",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           },
           {
             "name": "Resš́uǖme.Ä",
@@ -123499,13 +123499,6 @@
       "output": {
         "entries": [
           {
-            "name": "archive.tar.gz",
-            "extension": "gz",
-            "kind": "symlink_directory",
-            "isHidden": false,
-            "isSymlink": true
-          },
-          {
             "name": "12",
             "extension": "",
             "kind": "directory",
@@ -123534,9 +123527,9 @@
             "isSymlink": false
           },
           {
-            "name": "tests",
-            "extension": "",
-            "kind": "symlink_file",
+            "name": "archive.tar.gz",
+            "extension": "gz",
+            "kind": "symlink_directory",
             "isHidden": false,
             "isSymlink": true
           },
@@ -123570,6 +123563,13 @@
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
+          },
+          {
+            "name": "tests",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
           }
         ],
         "tree": [

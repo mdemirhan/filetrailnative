@@ -57,7 +57,7 @@ extension MainWindowController {
             let viewer = pane.viewer, let path = viewer.path
         else { return }
         let files = viewableFiles(of: pane)
-        guard let index = files.firstIndex(of: path), files.count > 1 else { return }
+        guard let index = files.firstIndex(where: { samePath($0, path) }), files.count > 1 else { return }
         let next = files[(index + step + files.count) % files.count]
         Task { [weak self] in
             guard await viewer.confirmLeave(), let self, pane.viewer === viewer else { return }
@@ -76,7 +76,7 @@ extension MainWindowController {
 
     private func updatePosition(of viewer: TextViewerController, in pane: BrowserPane) {
         let files = viewableFiles(of: pane)
-        if let path = viewer.path, let index = files.firstIndex(of: path) {
+        if let path = viewer.path, let index = files.firstIndex(where: { samePath($0, path) }) {
             viewer.position = (index, files.count)
         } else {
             viewer.position = nil
@@ -92,7 +92,7 @@ extension MainWindowController {
         else { return false }
         let pane = activePane
         if pane.viewer != nil { return true }
-        if parent == pane.shownFolderPath {
+        if samePath(parent, pane.shownFolderPath) {
             switch move {
             case .back: _ = pane.navigationHistory.goBack()
             case .forward: _ = pane.navigationHistory.goForward()
@@ -123,19 +123,19 @@ extension MainWindowController {
         let target = otherPane ?? openSecondPane(reopening: false)
         if let viewer = target.viewer {
             Task { [weak self] in
-                if viewer.path != path {
+                if !Self.isShown(path, in: viewer) {
                     guard await viewer.confirmLeave() else { return }
                 }
                 guard let self else { return }
                 viewer.mode = .following
                 viewer.position = nil
-                if viewer.path != path { viewer.show(path) }
+                if !Self.isShown(path, in: viewer) { viewer.show(path) }
                 self.commandsChanged()
             }
             return
         }
         let folder = ExplorerTabs.parentDirectoryPath(path) ?? target.shownFolderPath
-        if target.shownFolderPath != folder { target.go(to: folder) }
+        if !samePath(target.shownFolderPath, folder) { target.go(to: folder) }
         let viewer = openViewer(in: target, mode: .following, path: path, focus: false)
         viewer.folderPath = folder
         focusPane(source)
@@ -150,13 +150,13 @@ extension MainWindowController {
             return
         }
         let path = leadPath(of: pane)
-        guard path != viewer.path else { return }
+        guard !Self.isShown(path, in: viewer) else { return }
         viewerFollowNumber += 1
         let number = viewerFollowNumber
         DispatchQueue.main.asyncAfter(deadline: .now() + InfoMetrics.fetchDelay) { [weak self, weak viewer] in
             MainActor.assumeIsolated {
                 guard let self, let viewer, number == self.viewerFollowNumber, viewer.mode == .following,
-                    viewer.path != path
+                    !Self.isShown(path, in: viewer)
                 else { return }
                 self.follow(path, in: viewer, from: pane)
             }
@@ -193,7 +193,7 @@ extension MainWindowController {
             return
         }
         viewer.mode = .following
-        if let source = followedPane, leadPath(of: source) != viewer.path {
+        if let source = followedPane, !Self.isShown(leadPath(of: source), in: viewer) {
             follow(leadPath(of: source), in: viewer, from: source)
         }
         commandsChanged()
@@ -265,7 +265,7 @@ extension MainWindowController {
         pane.viewer = nil
         pane.content.showViewer(nil)
         if viewer.mode == .inPlace, let path = viewer.path {
-            if pane.navigationHistory.current == path, pane.navigationHistory.canGoBack {
+            if pane.navigationHistory.current.map({ samePath($0, path) }) == true, pane.navigationHistory.canGoBack {
                 _ = pane.navigationHistory.goBack()
                 paneChanged(.history, in: pane)
             }
@@ -363,7 +363,9 @@ extension MainWindowController {
     /// A pane with a viewer went to another folder (the tree, the path bar, a search): the viewer gives way to the
     /// folder, unless it has edits, which stay on screen until they are saved or dropped.
     func viewerPaneMoved(_ pane: BrowserPane) {
-        guard let viewer = pane.viewer, !viewer.isDirty, pane.shownFolderPath != viewer.folderPath else { return }
+        guard let viewer = pane.viewer, !viewer.isDirty, !samePath(pane.shownFolderPath, viewer.folderPath) else {
+            return
+        }
         pane.viewer = nil
         pane.content.showViewer(nil)
         commandsChanged()
@@ -422,6 +424,18 @@ extension MainWindowController {
             pane.content.select(paths: [path])
         }
         if let viewer = pane.viewer, viewer.mode == .inPlace { updatePosition(of: viewer, in: pane) }
+    }
+}
+
+extension MainWindowController {
+    /// Whether `viewer` shows the file at `path`, or shows nothing for nil: paths are told apart by their bytes, as
+    /// two names that differ only in how an accent is spelled are two files.
+    static func isShown(_ path: String?, in viewer: TextViewerController) -> Bool {
+        switch (path, viewer.path) {
+        case (nil, nil): true
+        case (let path?, let shown?): samePath(path, shown)
+        default: false
+        }
     }
 }
 

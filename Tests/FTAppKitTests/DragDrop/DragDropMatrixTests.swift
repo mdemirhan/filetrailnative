@@ -524,7 +524,7 @@ extension ExplorerWindowlessTests {
             var link = real
             link.item.isSymlink = true
             let linkBadge = findViews("sidebar.row.badge", in: cell(link)).first as? SidebarBadgeView
-            #expect(linkBadge?.title == "Alias")
+            #expect(linkBadge?.title == "Symlink")
             #expect(shows("sidebar.row.eject", valid))
             #expect(shows("sidebar.row.eject", invalid))
             await window.close()

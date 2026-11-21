@@ -193,7 +193,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
 
     // MARK: Showing a file
 
-    var fileName: String? { path.map { ($0 as NSString).lastPathComponent } }
+    var fileName: String? { path.map(NodePath.basename) }
 
     /// What is read, saved and watched: the file shown, or the original of a symbolic link or an alias shown.
     private var filePath: String? { file?.path ?? path }
@@ -339,7 +339,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         imageView.isHidden = shown != .image
         if shown != .image { imageView.image = nil }
         if shown == .preview { renderPreview() }
-        let quickLookItem = shown == .quickLook ? filePath.map { URL(fileURLWithPath: $0) } : nil
+        let quickLookItem = shown == .quickLook ? filePath.map { DiskPath($0).url(isDirectory: false) } : nil
         quickLook.item = quickLookItem
         quickLook.isHidden = quickLookItem == nil
         // The keyboard follows what is shown, between the text and the viewer itself.
@@ -518,20 +518,21 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     // MARK: Changes on disk
 
     private func watch(_ path: String) {
-        let folder = (path as NSString).deletingLastPathComponent
-        let name = (path as NSString).lastPathComponent
+        // The original's real path, as the watch's events spell the folder's names: told apart byte for byte.
+        let folder = NodePath.dirname(path)
+        let name = NodePath.basename(path)
         stopWatching = FSEventsFolderWatcher.watchFolder(
             path: folder,
             onChange: { [weak self] changed in
-                guard changed == nil || changed == name else { return }
+                guard changed.map({ $0.utf8.elementsEqual(name.utf8) }) ?? true else { return }
                 self?.changedOnDisk()
             }, onFail: {})
     }
 
     private func changedOnDisk() {
         guard let path = filePath else { return }
-        let modified = (try? URL(fileURLWithPath: path).resourceValues(forKeys: [.contentModificationDateKey]))?
-            .contentModificationDate
+        let url = DiskPath(path).url(isDirectory: false)
+        let modified = (try? url.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
         guard modified != knownModified else { return }
         if isDirty {
             knownModified = modified

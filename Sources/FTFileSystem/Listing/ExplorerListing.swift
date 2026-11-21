@@ -150,6 +150,15 @@ enum ExplorerListing {
         }
     }
 
+    /// The names whose AppleDouble file ("._name") a folder read listed, by their bytes; none on most disks.
+    static func appleDoubleNames(_ records: [DirectoryRecord]) -> Set<FTFoundation.NameKeys.Exact> {
+        var names: Set<FTFoundation.NameKeys.Exact> = []
+        for record in records where record.type == .file && record.name.utf8.starts(with: "._".utf8) {
+            names.insert(FTFoundation.NameKeys.Exact(String(record.name.dropFirst(2))))
+        }
+        return names
+    }
+
     static func kind(from stats: FileStats, isSymlink: Bool, path: String?) -> EntryKind {
         if stats.isDirectory {
             if let path, ItemNames.isMacOSPackageName(NodePath.basename(path)) { return .bundle }
@@ -235,12 +244,21 @@ enum ExplorerListing {
         // read gives, Date Last Opened and the tags with one more look at each item.
         let groupNeedsStats = groupRead == .modified || groupRead == .created || groupRead == .size
         for folder in folders {
+            // On FAT and exFAT a file's Finder flags are in its AppleDouble file ("._name") beside it, which the
+            // folder read doesn't look into: an alias there is known by asking about the file, only for a file that
+            // has one. Other disks keep the flags with the file and list no such files.
+            let appleDouble = Self.appleDoubleNames(folder.records)
             for record in folder.records {
                 let hidden = isHidden(record)
                 if !includeHidden && hidden { continue }
                 if trash?.isAlwaysHidden(record.name, in: folder.path) == true { continue }
                 let entryPath = join(folder.path, record.name)
-                let kind = classify(record, path: entryPath, fileSystem)
+                var kind = classify(record, path: entryPath, fileSystem)
+                if kind == .file, !appleDouble.isEmpty, appleDouble.contains(FTFoundation.NameKeys.Exact(record.name)),
+                    fileSystem.isFinderAlias(entryPath)
+                {
+                    kind = .alias
+                }
                 let fileExtension = extensionName(ofName: record.name)
                 // A file without an extension is drawn as a document or as an executable, which only its
                 // permissions tell apart. Other entries are not looked at unless the sort needs it.
