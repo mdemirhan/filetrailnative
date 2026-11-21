@@ -92,7 +92,8 @@ private final class HeldIcons: IconSource, @unchecked Sendable {
         store.load(path: decomposed, kind: .file, listing: listing) { second.answers.append($0) }
         // Two loads, one for each: the second didn't join the first.
         await pollUntil { provider.paths.count == 2 }
-        #expect(provider.paths == [DiskPath(composed), DiskPath(decomposed)])
+        // Asked for in no fixed order: the two loads run side by side.
+        #expect(Set(provider.paths) == [DiskPath(composed), DiskPath(decomposed)])
         #expect(!store.isKept(path: composed) && !store.isKept(path: decomposed))
 
         // One answers: its file has its picture, and the other is still waiting for its own.
@@ -148,7 +149,8 @@ private final class HeldIcons: IconSource, @unchecked Sendable {
             }
             // The first is still being drawn, and the second is asked for all the same: it didn't join the first.
             await pollUntil { source.paths.count == 2 }
-            #expect(source.paths == [DiskPath("/x/caf\u{E9}"), DiskPath("/x/cafe\u{301}")])
+            // In no fixed order: the two loads run side by side.
+            #expect(Set(source.paths) == [DiskPath("/x/caf\u{E9}"), DiskPath("/x/cafe\u{301}")])
             source.letFirstAnswer()
             await pollUntil { answered == 2 }
             #expect(drawn[0] != nil && drawn[0] === source.image(for: "/x/caf\u{E9}"))
