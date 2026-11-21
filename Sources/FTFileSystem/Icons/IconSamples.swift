@@ -85,6 +85,17 @@ public final class IconSamples: @unchecked Sendable {
         return link
     }
 
+    /// Dates the plain folder samples now, so Quick Look draws them again rather than give back a picture it kept from
+    /// before System Settings' colors changed. Reads and writes the disk.
+    public func markFoldersChanged() {
+        lock.lock()
+        let paths = [made?[.folder], made?[.emptyFolder]].compactMap { $0 }
+        lock.unlock()
+        for path in paths {
+            try? FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: path)
+        }
+    }
+
     /// An empty file of ours named with `fileExtension`, drawn with the icon of the files of that extension.
     private func sampleFile(withExtension fileExtension: String) throws -> String {
         let sample = folder.appending("sample.\(fileExtension)").string

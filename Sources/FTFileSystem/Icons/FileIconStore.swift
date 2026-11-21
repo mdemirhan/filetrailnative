@@ -152,6 +152,76 @@ public final class FileIconStore {
         pending[key] = nil
     }
 
+    // MARK: The system's colors
+
+    /// Posted, with the store as its object, once the icons macOS draws in the accent's color were dropped: what
+    /// shows them asks for them again.
+    public nonisolated static let accentDrawnIconsDropped = Notification.Name("FileIconStore.accentDrawnIconsDropped")
+    /// How long after System Settings' colors change the icons are dropped: one change comes as several notices, and
+    /// the system draws its icons in the new color only once it has taken the change itself.
+    public nonisolated static let systemColorsSettleDelay: Duration = .milliseconds(500)
+    private var colorsObserver: (observer: any NSObjectProtocol, center: NotificationCenter)?
+    private var notices = NotificationCenter.default
+    private var droppingAfterColorChange: Task<Void, Never>?
+
+    /// Whether macOS draws the icon of this key in the accent's color: a plain folder, and anything drawn from its own
+    /// path (the home folder's special folders, a disk, a folder's alias or link). A folder of a tag's color, a
+    /// document's or an app's icon is the same in every accent, and stays.
+    public nonisolated static func isDrawnInAccent(key: String) -> Bool {
+        key == GenericIconKind.folder.cacheKey || key == GenericIconKind.emptyFolder.cacheKey || key.hasPrefix("path:")
+    }
+
+    /// Follows System Settings' colors: when they change, the icons drawn in the accent's color are drawn again.
+    public func followSystemColors(center: NotificationCenter = .default) {
+        guard colorsObserver == nil else { return }
+        notices = center
+        let observer = center.addObserver(
+            forName: NSColor.systemColorsDidChangeNotification, object: nil, queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated { self?.systemColorsChanged() }
+        }
+        colorsObserver = (observer, center)
+    }
+
+    isolated deinit {
+        if let colorsObserver { colorsObserver.center.removeObserver(colorsObserver.observer) }
+        droppingAfterColorChange?.cancel()
+    }
+
+    /// The system's colors changed: once they have settled, the icons drawn in the accent are dropped.
+    func systemColorsChanged() {
+        droppingAfterColorChange?.cancel()
+        let sleep = self.sleep
+        let samples = self.samples
+        droppingAfterColorChange = Task { [weak self] in
+            try? await sleep(Self.systemColorsSettleDelay)
+            guard !Task.isCancelled else { return }
+            // Quick Look keeps the pictures it drew of a folder until the folder changes.
+            await BlockingWork.run { samples.markFoldersChanged() }
+            guard !Task.isCancelled, let self else { return }
+            self.dropAccentDrawnIconsQuietly()
+            // The plain folders are drawn again before anything is told, so most rows go from the old color to the new
+            // one with no empty frame between.
+            let plain = [GenericIconKind.folder, .emptyFolder].map { kind in
+                self.fetch(.generic(kind), Key(kind.cacheKey))
+            }
+            for drawing in plain { _ = await drawing.value }
+            guard !Task.isCancelled else { return }
+            self.notices.post(name: Self.accentDrawnIconsDropped, object: self)
+        }
+    }
+
+    /// Drops the icons drawn in the accent's color, and drawings of them under way, and says so.
+    public func dropAccentDrawnIcons() {
+        dropAccentDrawnIconsQuietly()
+        notices.post(name: Self.accentDrawnIconsDropped, object: self)
+    }
+
+    private func dropAccentDrawnIconsQuietly() {
+        cache.removeAll { Self.isDrawnInAccent(key: $0.string) }
+        for key in pending.keys where Self.isDrawnInAccent(key: key.string) { pending[key] = nil }
+    }
+
     /// Asks for the plain folder icons, those of each tag color and the document icon, so the first folder already
     /// draws them: Quick Look takes a moment to draw a folder.
     public func preloadGenericIcons() {

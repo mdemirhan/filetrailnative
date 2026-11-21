@@ -217,6 +217,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         let iconStore = FileIconStore()
         // The icons nearly every folder shows are drawn while the first window opens.
         iconStore.preloadGenericIcons()
+        iconStore.followSystemColors()
         let folderViews = SharedFolderViews(store: store)
         folderViews.onChanged = { [weak windows] senderID in windows?.folderViewsChanged(from: senderID) }
         windows.folderViews = folderViews

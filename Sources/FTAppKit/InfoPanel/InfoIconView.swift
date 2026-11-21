@@ -61,8 +61,35 @@ final class InfoIconView: NSView {
     /// each, so a file changed since gets a new one.
     private var pictureReading = NSObject()
 
+    /// What the icon shown was asked for with, to ask again once it was dropped as System Settings' colors changed.
+    private var asked: (entry: IconEntry, deferLoad: Bool)?
+    private weak var askedStore: FileIconStore?
+
+    override init(frame: NSRect) {
+        super.init(frame: frame)
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(accentDrawnIconsDropped(_:)), name: FileIconStore.accentDrawnIconsDropped,
+            object: nil)
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
     override var isFlipped: Bool { true }
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
+
+    /// A folder's icon shown, or one of the stack, was dropped: it is asked for again, in the new color.
+    @objc private func accentDrawnIconsDropped(_ notification: Notification) {
+        guard let store = askedStore, notification.object as AnyObject? === store else { return }
+        if let stack {
+            for kind in [stack.back, stack.front] where FileIconStore.isDrawnInAccent(key: kind.cacheKey) {
+                stackImages[kind] = nil
+            }
+            showStack(back: stack.back, front: stack.front, store: store)
+        } else if let asked, let shown, FileIconStore.isDrawnInAccent(key: shown) {
+            self.shown = nil
+            show(asked.entry, store: store, deferLoad: false)
+        }
+    }
 
     /// Asks for the preview of the file the icon is of. `version` changes when the file does (its date and size). The
     /// same file changed keeps the preview drawn until the new one comes; another file starts from its icon.
@@ -97,6 +124,8 @@ final class InfoIconView: NSView {
 
     func show(_ entry: IconEntry?, store: FileIconStore?, deferLoad: Bool) {
         stack = nil
+        askedStore = store
+        asked = entry.map { ($0, deferLoad) }
         guard let entry else {
             clearPreview()
             shown = nil
@@ -123,6 +152,8 @@ final class InfoIconView: NSView {
 
     /// The stacked icon of several items.
     func showStack(back: GenericIconKind, front: GenericIconKind, store: FileIconStore?) {
+        askedStore = store
+        asked = nil
         clearPreview()
         shown = "stack:\(back):\(front)"
         image = nil

@@ -63,4 +63,9 @@ struct LRUCache<Key: Hashable, Value> {
     mutating func removeAll() {
         entries.removeAll()
     }
+
+    /// Drops every entry whose key `matches`.
+    mutating func removeAll(where matches: (Key) -> Bool) {
+        for key in Array(entries.keys) where matches(key) { entries[key] = nil }
+    }
 }

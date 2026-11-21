@@ -149,11 +149,19 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
         themeObservation = AppearanceModel.shared.observe { [weak self] _ in self?.reloadAll() }
         NotificationCenter.default.addObserver(
             self, selector: #selector(systemSidebarSizeChanged), name: SystemSidebarSize.didChange, object: nil)
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(accentDrawnIconsDropped(_:)), name: FileIconStore.accentDrawnIconsDropped,
+            object: nil)
         refresh()
     }
 
     @objc private func systemSidebarSizeChanged() {
         if filesDensity.isFinder { refresh() }
+    }
+
+    /// The folders' icons were dropped as System Settings' colors changed: the rows ask for them again.
+    @objc private func accentDrawnIconsDropped(_ notification: Notification) {
+        if SidebarFolderIcons.shared.draws(from: notification.object as AnyObject?) { reloadAll() }
     }
 
     override func viewDidAppear() {

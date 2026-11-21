@@ -13,6 +13,9 @@ public enum NameKeys {
             self.text = ExactBytes.contiguous(text)
         }
 
+        /// The text the key was made of, to be read, never compared with `==`.
+        public var string: String { text }
+
         public static func == (left: Exact, right: Exact) -> Bool {
             ExactBytes.equal(left.text, right.text)
         }

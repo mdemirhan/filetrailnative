@@ -10,7 +10,11 @@ final class SidebarFolderIcons {
 
     init(store: FileIconStore = FileIconStore()) {
         self.store = store
+        store.followSystemColors()
     }
+
+    /// Whether `store` is the one the tree's icons come from.
+    func draws(from store: AnyObject?) -> Bool { store === self.store }
 
     /// The icon for a folder row, if it is known; asks for it otherwise and calls `arrived` with it when it comes.
     func icon(path: String, alias: Bool, arrived: @escaping @MainActor (NSImage?) -> Void) -> NSImage? {

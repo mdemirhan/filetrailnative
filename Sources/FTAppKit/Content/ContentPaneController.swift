@@ -336,6 +336,15 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         view = shell
         installPane()
         observation = AppearanceModel.shared.observe { [weak self] _ in self?.lookChanged() }
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(accentDrawnIconsDropped(_:)), name: FileIconStore.accentDrawnIconsDropped,
+            object: nil)
+    }
+
+    /// The folders' icons were dropped as System Settings' colors changed: the rows ask for them again.
+    @objc private func accentDrawnIconsDropped(_ notification: Notification) {
+        guard let store = iconStore, notification.object as AnyObject? === store else { return }
+        pane?.reload(scrollToTop: false)
     }
 
     private func observeWindow(_ window: NSWindow?) {
