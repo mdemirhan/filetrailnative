@@ -11,14 +11,14 @@ struct ApplicationMenuOptions {
     var returnKeyAction: ReturnKeyAction = .rename
     /// What the startup disk is called, which Go names.
     var startupDiskName = VolumePaths.defaultStartupDiskName
-    /// The tab views and window views Saved Views lists, each in its order.
+    /// The tab views and window views Layout lists, each in its order.
     var tabViews: [SavedViewMenuEntry] = []
     var windowViews: [SavedViewMenuEntry] = []
     /// The files of the Templates folder File ▸ New File lists, by name in order.
     var templates: [String] = []
 }
 
-/// A tab view or a window view as Saved Views lists it.
+/// A tab view or a window view as Layout lists it.
 struct SavedViewMenuEntry: Equatable {
     var id: String
     var name: String
@@ -258,7 +258,7 @@ enum ApplicationMenuBuilder {
         }
 
         // A folder's own view, a tab's and a window's, each saved by name; the list's right-click menu has the folder's.
-        context.addSubmenu(to: main, title: "Saved Views") { menu in
+        context.addSubmenu(to: main, title: "Layout") { menu in
             menu.addItem(.sectionHeader(title: "Folder View"))
             menu.addItem(context.command(.rememberFolderView, "Remember View for This Folder"))
             menu.addItem(context.command(.updateFolderView, "Update Folder View"))
@@ -425,7 +425,7 @@ enum ApplicationMenuBuilder {
             return [shown, alternate]
         }
 
-        /// Saved Views' Tab Views: Save, each tab view with the key of the first five, and Manage.
+        /// Layout' Tab Views: Save, each tab view with the key of the first five, and Manage.
         func addTabViews(to menu: NSMenu) {
             menu.addItem(.sectionHeader(title: "Tab Views"))
             menu.addItem(command(.saveTabView, "Save Tab View…"))
@@ -439,7 +439,7 @@ enum ApplicationMenuBuilder {
             menu.addItem(plain("Manage Tab Views…", id: ApplicationMenu.manageTabViewsItemID))
         }
 
-        /// Saved Views' Window Views: Save, each window view with the key of the first five, and Manage. Each window
+        /// Layout' Window Views: Save, each window view with the key of the first five, and Manage. Each window
         /// view has an item ⌥ shows in its place, which opens it in place of this window.
         func addWindowViews(to menu: NSMenu) {
             menu.addItem(.sectionHeader(title: "Window Views"))

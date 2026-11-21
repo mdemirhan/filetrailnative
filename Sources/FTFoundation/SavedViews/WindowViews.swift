@@ -44,8 +44,8 @@ public struct WindowView: Codable, Equatable, Sendable, NamedSavedView {
         self.propertiesOpen = propertiesOpen
     }
 
-    /// The smallest size kept; a window is kept at least as big as it can be made, which the window itself holds.
-    public static let minimumSize = Size(width: 400, height: 300)
+    /// The smallest size kept: the smallest an explorer window can be made.
+    public static let minimumSize = Size(width: 760, height: 480)
 
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)

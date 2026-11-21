@@ -292,7 +292,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         for tab in allTabs {
             tab.preferencesChanged(change)
         }
-        // Saved, renamed, removed or put in another order: Saved Views lists them again, and the Views window.
+        // Saved, renamed, removed or put in another order: Layout lists them again, and the Views window.
         if change.keys.contains(.tabViews) || change.keys.contains(.windowViews)
             || change.keys.contains(.newTabViewID)
         {

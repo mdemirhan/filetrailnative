@@ -23,6 +23,37 @@ struct TabViewDraftTests {
         #expect(draft.foldersNow.map(\.pane) == ["the Left Pane Now", "the Right Pane Now"])
     }
 
+    // A pane showing the viewer now is kept as the viewer to begin with; choosing Viewer in one pane gives the other
+    // its view of a folder back; the pane of one, or the active pane, never keeps the viewer.
+    @Test func theViewerIsChosenInOnePaneOfTwo() {
+        var state = Self.tab(["/a", "/b"])
+        state.panes[1].viewer = PaneViewer(follows: true, editing: true)
+        var draft = TabViewDraft(tab: state, columnWidth: 1009)
+        #expect(draft.keeps.right == PaneKeeps(viewer: PaneViewer(follows: true, editing: true)))
+        #expect(draft.keeps.left == PaneKeeps(view: FolderViewKeeps(view: .icons)))
+        draft.setViewer(.left, PaneViewer(follows: false))
+        #expect(draft.left.viewer == PaneViewer(follows: false) && draft.right.viewer == nil)
+        #expect(draft.keeps.left == PaneKeeps(viewer: PaneViewer(follows: false)))
+        #expect(draft.keeps.right == PaneKeeps(view: FolderViewKeeps(view: .icons)))
+        // View unchecked: the viewer isn't kept.
+        draft[.left].keep(.view, false)
+        #expect(draft.keeps.left == nil)
+        // Back to a view of a folder.
+        draft.setViewer(.left, nil)
+        draft[.left].set(.view) { $0.view = .details }
+        #expect(draft.keeps.left == PaneKeeps(view: FolderViewKeeps(view: .details)))
+        #expect(TabViewDraft.offersViewer(.left) && TabViewDraft.offersViewer(.right))
+        #expect(!TabViewDraft.offersViewer(.onePane) && !TabViewDraft.offersViewer(.activePane))
+        // One pane: what the pane shows as the viewer isn't kept; its view of a folder is.
+        var one = Self.tab(["/a"])
+        one.panes[0].viewer = PaneViewer()
+        #expect(TabViewDraft(tab: one, columnWidth: 1009).keeps.pane == PaneKeeps(view: FolderViewKeeps(view: .icons)))
+        // Edited, a saved viewer shows with View checked.
+        let saved = TabView(id: "v", name: "V", keeps: TabViewKeeps(panes: 2, right: PaneKeeps(viewer: PaneViewer())))
+        let edited = TabViewDraft(tab: Self.tab(["/a", "/b"]), columnWidth: 1009, editing: saved)
+        #expect(edited.right.viewer == PaneViewer() && edited.right.kept.contains(.view))
+    }
+
     @Test func aValueChosenIsKeptAndAKeepUncheckedIsNot() {
         var draft = TabViewDraft(tab: Self.tab(["/a"]), columnWidth: 1009)
         draft[.onePane].set(.sort) { $0.sort = FolderViewSort(by: .size, direction: .desc) }
@@ -97,5 +128,19 @@ struct TabViewDraftTests {
         #expect(
             SavedViewText.parts(TabViewKeeps(pane: PaneKeeps(view: FolderViewKeeps(view: .previews))))
                 == ["Active pane: Previews", "Folders from the tab"])
+        #expect(
+            SavedViewText.parts(TabViewKeeps(panes: 2, right: PaneKeeps(viewer: PaneViewer(editing: true))))
+                == ["Two panes", "Right: Viewer, following the selection", "Right: edit", "Folders from the tab"])
+        #expect(
+            SavedViewText.parts(TabViewKeeps(panes: 2, left: PaneKeeps(viewer: PaneViewer(follows: false))))
+                == ["Two panes", "Left: Viewer, on the file selected", "Left: read", "Folders from the tab"])
+    }
+
+    // The pane groups are called by the pane they set, plainly.
+    @Test func eachPaneGroupIsCalledByItsPane() {
+        #expect(
+            [TabViewDraft.PaneGroup.left, .right, .onePane, .activePane].map(\.title) == [
+                "Left Pane", "Right Pane", "The Pane", "The Active Pane",
+            ])
     }
 }

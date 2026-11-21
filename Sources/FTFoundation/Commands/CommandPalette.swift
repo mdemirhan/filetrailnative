@@ -146,11 +146,11 @@ public enum CommandPalette {
             id: "Zoom", title: "Zoom", place: "Window", group: .standard, run: .system(.zoom),
             help: "Make the window as large as the screen allows, or as it was"),
         MenuItem(
-            id: ApplicationMenu.manageTabViewsItemID, title: "Manage Tab Views…", place: "Saved Views",
+            id: ApplicationMenu.manageTabViewsItemID, title: "Manage Tab Views…", place: "Layout",
             group: .tabs, run: .menuItem(ApplicationMenu.manageTabViewsItemID),
             help: "Rename, edit, remove or reorder the tab views, in the Views window"),
         MenuItem(
-            id: ApplicationMenu.manageWindowViewsItemID, title: "Manage Window Views…", place: "Saved Views",
+            id: ApplicationMenu.manageWindowViewsItemID, title: "Manage Window Views…", place: "Layout",
             group: .tabs, run: .menuItem(ApplicationMenu.manageWindowViewsItemID),
             help: "Rename, edit, remove or reorder the window views, in the Views window"),
         MenuItem(
@@ -186,7 +186,7 @@ public enum CommandPalette {
         guard let menuPath else { return nil }
         let parts = menuPath.components(separatedBy: " > ")
         guard parts.count > 1 else { return nil }
-        // "Saved Views > Window Views, with Option" names a variant, not a place.
+        // "Layout > Window Views, with Option" names a variant, not a place.
         return parts.dropLast().joined(separator: " > ").components(separatedBy: ",")[0]
     }
 
@@ -255,7 +255,7 @@ public enum CommandPalette {
             let slots = TabViews.slotCommands
             result.append(
                 CommandPaletteEntry(
-                    id: itemID, title: "Tab View \u{201C}\(view.name)\u{201D}", place: "Saved Views > Tab Views",
+                    id: itemID, title: "Tab View \u{201C}\(view.name)\u{201D}", place: "Layout > Tab Views",
                     keys: slots.indices.contains(index) ? keys(bindings, slots[index]) : [],
                     enabled: states[itemID]?.enabled ?? true, group: .tabs, run: .menuItem(itemID),
                     help: "Give this tab what the tab view keeps"))
@@ -268,7 +268,7 @@ public enum CommandPalette {
                 result.append(
                     CommandPaletteEntry(
                         id: itemID, title: inThisWindow ? "\(name) in This Window" : name,
-                        place: "Saved Views > Window Views",
+                        place: "Layout > Window Views",
                         keys: slots.indices.contains(index) ? keys(bindings, slots[index]) : [],
                         enabled: states[itemID]?.enabled ?? true, group: .tabs, run: .menuItem(itemID),
                         help: inThisWindow

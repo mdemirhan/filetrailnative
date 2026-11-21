@@ -217,7 +217,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     /// The default size of an explorer window, and the smallest it can be.
     static let defaultContentSize = NSSize(width: 1200, height: 760)
-    static let minimumSize = NSSize(width: 760, height: 480)
+    static let minimumSize = NSSize(
+        width: CGFloat(WindowView.minimumSize.width), height: CGFloat(WindowView.minimumSize.height))
     private static var nextWindowID = 1
 
     /// A number for a second pane's folder watch, from the same count as the tabs' own.

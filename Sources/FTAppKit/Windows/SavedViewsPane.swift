@@ -91,21 +91,23 @@ final class SavedViewsPane: NSView, NSTableViewDataSource, NSTableViewDelegate, 
 
         empty.stringValue =
             kind == .tab
-            ? "No tab views yet. Save one from Saved Views \u{203A} Save Tab View\u{2026}"
-            : "No window views yet. Save one from Saved Views \u{203A} Save Window View\u{2026}"
+            ? "No tab views yet. Save one from Layout \u{203A} Save Tab View\u{2026}"
+            : "No window views yet. Save one from Layout \u{203A} Save Window View\u{2026}"
         empty.alignment = .center
         empty.textColor = .secondaryLabelColor
         empty.preferredMaxLayoutWidth = 320
 
         apply.title = kind == .tab ? "Apply" : "Open"
-        for (button, action) in [
-            (apply, #selector(applySelected)), (edit, #selector(editSelected)),
-            (duplicate, #selector(duplicateSelected)), (remove, #selector(removeSelected)),
-            (removeAll, #selector(askToRemoveAll)),
+        let prefix = kind == .tab ? "tabViews" : "windowViews"
+        for (button, action, name) in [
+            (apply, #selector(applySelected), "apply"), (edit, #selector(editSelected), "edit"),
+            (duplicate, #selector(duplicateSelected), "duplicate"), (remove, #selector(removeSelected), "remove"),
+            (removeAll, #selector(askToRemoveAll), "removeAll"),
         ] {
             button.target = self
             button.action = action
             button.bezelStyle = .push
+            button.setAccessibilityIdentifier("\(prefix).\(name)")
         }
         let keysNote = NSTextField(
             labelWithString: "Drag to reorder. The first five can be given keys in Settings \u{203A} Shortcuts.")
@@ -214,9 +216,11 @@ final class SavedViewsPane: NSView, NSTableViewDataSource, NSTableViewDelegate, 
         case "name":
             field.stringValue = rows[row].name
             field.font = .systemFont(ofSize: NSFont.systemFontSize, weight: .medium)
-            field.isEditable = true
+            // Editable only once double-clicked: a click selects the row, as anywhere in a list.
+            field.isEditable = false
             field.delegate = self
             field.tag = row
+            field.setAccessibilityIdentifier("\(kind == .tab ? "tabViews" : "windowViews").name")
         default:
             field.stringValue = rows[row].keeps
             field.textColor = .secondaryLabelColor
@@ -229,16 +233,27 @@ final class SavedViewsPane: NSView, NSTableViewDataSource, NSTableViewDelegate, 
 
     // MARK: Renaming
 
+    /// A double-click on a row: its name is edited in place.
     @objc private func doubleClicked() {
         let row = table.clickedRow
         guard rows.indices.contains(row), table.clickedColumn >= 0 else { return }
-        table.editColumn(
-            table.column(withIdentifier: NSUserInterfaceItemIdentifier("name")), row: row, with: nil, select: true)
+        startRenaming(row: row)
+    }
+
+    func startRenaming(row: Int) {
+        let column = table.column(withIdentifier: NSUserInterfaceItemIdentifier("name"))
+        guard column >= 0, let field = table.view(atColumn: column, row: row, makeIfNecessary: true) as? NSTextField
+        else { return }
+        table.selectRowIndexes([row], byExtendingSelection: false)
+        field.isEditable = true
+        window?.makeFirstResponder(field)
+        field.currentEditor()?.selectAll(nil)
     }
 
     /// A name typed in a row: kept when no other has it, or else said why and put back.
     func controlTextDidEndEditing(_ notification: Notification) {
         guard let field = notification.object as? NSTextField, rows.indices.contains(field.tag) else { return }
+        field.isEditable = false
         rename(rows[field.tag].id, to: field.stringValue)
     }
 

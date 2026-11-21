@@ -11,6 +11,27 @@ public enum FolderViewsChoice: String, Codable, CaseIterable, Sendable {
     case notUsed
 }
 
+/// A pane showing a file in the viewer beside the other pane's list, as Open in Other Pane shows one.
+public struct PaneViewer: Codable, Equatable, Sendable {
+    /// Follow, as the viewer's bar has it: the file the other pane selects, as the selection moves; off, the file
+    /// selected as the tab view is applied, whatever is selected after.
+    public var follows: Bool
+    /// Edit, as the viewer's bar has it: the file opens to be edited, not only read.
+    public var editing: Bool
+
+    public init(follows: Bool = true, editing: Bool = false) {
+        self.follows = follows
+        self.editing = editing
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            follows: (try? container.decode(Bool.self, forKey: .follows)) ?? true,
+            editing: (try? container.decode(Bool.self, forKey: .editing)) ?? false)
+    }
+}
+
 /// What a tab view keeps of one pane, each part only if kept.
 public struct PaneKeeps: Codable, Equatable, Sendable {
     /// The folder the pane goes to; nil: it stays on its folder.
@@ -19,13 +40,18 @@ public struct PaneKeeps: Codable, Equatable, Sendable {
     public var view: FolderViewKeeps
     /// How folders with a view are treated; nil is `.folderFirst`, which the file doesn't write.
     public var folderViews: FolderViewsChoice?
+    /// The pane shows the viewer, not a folder: then it keeps nothing else, as a folder's settings don't show in it.
+    public var viewer: PaneViewer?
 
     public init(
-        folder: String? = nil, view: FolderViewKeeps = FolderViewKeeps(), folderViews: FolderViewsChoice = .folderFirst
+        folder: String? = nil, view: FolderViewKeeps = FolderViewKeeps(), folderViews: FolderViewsChoice = .folderFirst,
+        viewer: PaneViewer? = nil
     ) {
-        self.folder = folder?.isEmpty == true ? nil : folder
-        self.view = view
-        self.folderViews = folderViews == .folderFirst ? nil : folderViews
+        self.viewer = viewer
+        let list = viewer == nil
+        self.folder = !list || folder?.isEmpty == true ? nil : folder
+        self.view = list ? view : FolderViewKeeps()
+        self.folderViews = !list || folderViews == .folderFirst ? nil : folderViews
     }
 
     /// Each part is read on its own: one that can't be read is not kept, and the others are.
@@ -34,13 +60,17 @@ public struct PaneKeeps: Codable, Equatable, Sendable {
         self.init(
             folder: (try? container.decode(SavedPathIfAny.self, forKey: .folder))?.wrappedValue,
             view: (try? container.decode(FolderViewKeeps.self, forKey: .view)) ?? FolderViewKeeps(),
-            folderViews: (try? container.decode(FolderViewsChoice.self, forKey: .folderViews)) ?? .folderFirst)
+            folderViews: (try? container.decode(FolderViewsChoice.self, forKey: .folderViews)) ?? .folderFirst,
+            viewer: try? container.decode(PaneViewer.self, forKey: .viewer))
     }
 
     public var choice: FolderViewsChoice { folderViews ?? .folderFirst }
 
     /// Keeps nothing and changes nothing: not kept.
-    public var isEmpty: Bool { folder == nil && view.isEmpty && folderViews == nil }
+    public var isEmpty: Bool { folder == nil && view.isEmpty && folderViews == nil && viewer == nil }
+
+    /// The same as a list: no viewer.
+    var withoutViewer: PaneKeeps { PaneKeeps(folder: folder, view: view, folderViews: choice) }
 }
 
 /// What a tab view keeps of a tab: each setting only if kept; nil carries over from the tab it is applied to.
@@ -67,7 +97,8 @@ public struct TabViewKeeps: Codable, Equatable, Sendable {
     public var pane: PaneKeeps?
 
     /// What makes sense of the parts is kept: a divider only with two panes, `left` and `right` only with two, `pane`
-    /// only without; a share within the divider's limits; a pane that keeps nothing is not kept.
+    /// only without; a share within the divider's limits; the viewer only in one of two panes, the left's when both
+    /// ask, as it shows what the other's list selects; a pane that keeps nothing is not kept.
     public init(
         panes: Int? = nil, divider: Divider? = nil, includeHidden: Bool? = nil, left: PaneKeeps? = nil,
         right: PaneKeeps? = nil, pane: PaneKeeps? = nil
@@ -78,8 +109,9 @@ public struct TabViewKeeps: Codable, Equatable, Sendable {
         let two = panes == 2
         self.divider = two ? divider.flatMap(Self.valid) : nil
         self.left = two ? left.flatMap(Self.kept) : nil
+        let right = left?.viewer != nil ? right?.withoutViewer : right
         self.right = two ? right.flatMap(Self.kept) : nil
-        self.pane = two ? nil : pane.flatMap(Self.kept)
+        self.pane = two ? nil : pane.map(\.withoutViewer).flatMap(Self.kept)
     }
 
     private static func kept(_ pane: PaneKeeps) -> PaneKeeps? { pane.isEmpty ? nil : pane }
@@ -171,14 +203,16 @@ public struct TabView: Codable, Equatable, Sendable, NamedSavedView {
 // MARK: Applying
 
 /// One pane as a tab view sees it: the folder it shows and the six settings it carries from folder to folder, every
-/// one of them set.
+/// one of them set, and the viewer it shows beside the other pane, if it does.
 public struct PaneState: Equatable, Sendable {
     public var folder: String?
     public var settings: FolderViewKeeps
+    public var viewer: PaneViewer?
 
-    public init(folder: String?, settings: FolderViewKeeps) {
+    public init(folder: String?, settings: FolderViewKeeps, viewer: PaneViewer? = nil) {
         self.folder = folder
         self.settings = settings
+        self.viewer = viewer
     }
 }
 
@@ -267,6 +301,10 @@ public struct TabViewApplied: Equatable, Sendable {
     public var panesMoved: [Int]
     /// The overrides the tab view leaves, by pane (after).
     public var overrides: [Int: TabViewOverride]
+    /// The panes (after) that show the viewer beside the other pane, with how.
+    public var viewers: [Int: PaneViewer] = [:]
+    /// The panes (after) whose viewer closes: the tab view keeps a view of a folder for them.
+    public var viewersClosed: [Int] = []
 }
 
 /// The rules of the tab views: applying one, and its folders that are gone.
@@ -310,8 +348,21 @@ public enum TabViews {
         var given: [Int] = []
         var moved: [Int] = []
         var overrides: [Int: TabViewOverride] = [:]
+        var viewers: [Int: PaneViewer] = [:]
+        var viewersClosed: [Int] = []
         for (index, paneKeeps) in keeps.paneKeeps(active: tab.active) where tab.panes.indices.contains(index) {
             given.append(index)
+            if let viewer = paneKeeps.viewer {
+                // The viewer shows what the other pane selects, in the other pane's folder: nothing else is the
+                // tab view's in it.
+                tab.panes[index].viewer = viewer
+                viewers[index] = viewer
+                continue
+            }
+            if paneKeeps.view.view != nil, tab.panes[index].viewer != nil {
+                tab.panes[index].viewer = nil
+                viewersClosed.append(index)
+            }
             if let folder = paneKeeps.folder, tab.panes[index].folder.map({ DiskPath($0) }) != DiskPath(folder) {
                 tab.panes[index].folder = folder
                 moved.append(index)
@@ -325,7 +376,8 @@ public enum TabViews {
             }
         }
         return TabViewApplied(
-            tab: tab, secondPane: secondPane, panesGiven: given, panesMoved: moved, overrides: overrides)
+            tab: tab, secondPane: secondPane, panesGiven: given, panesMoved: moved, overrides: overrides,
+            viewers: viewers, viewersClosed: viewersClosed)
     }
 
     /// The left pane's share a divider gives in a column `columnWidth` wide.

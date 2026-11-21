@@ -78,9 +78,9 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     public var convertImagesSettings: ConvertImagesSettings
     /// The text viewer's own look: its appearance, themes, font size, wrapping and line numbers.
     public var textViewerSettings: TextViewerSettings
-    /// Tabs' settings saved by name (Saved Views ▸ Tab Views), in the order the menu lists them.
+    /// Tabs' settings saved by name (Layout ▸ Tab Views), in the order the menu lists them.
     public var tabViews: [TabView]
-    /// Windows made of tab views, saved by name (Saved Views ▸ Window Views), in the order the menu lists them.
+    /// Windows made of tab views, saved by name (Layout ▸ Window Views), in the order the menu lists them.
     public var windowViews: [WindowView]
     /// The tab view New Tab and New Window open with; nil for none, and a new tab has one pane as before.
     @NullEncoded public var newTabViewID: String?

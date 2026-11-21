@@ -18,7 +18,7 @@ import Testing
         let main = built.menu
 
         #expect(
-            main.items.map(\.title) == ["File Trail", "File", "Edit", "View", "Saved Views", "Go", "Window", "Help"])
+            main.items.map(\.title) == ["File Trail", "File", "Edit", "View", "Layout", "Go", "Window", "Help"])
         #expect(
             titles(submenu(main, "File Trail")) == [
                 "About File Trail", "-", "Settings…", "-", "Empty Trash…", "-", "Services", "-", "Hide File Trail",
@@ -62,13 +62,13 @@ import Testing
             ])
         // Each kind under a heading of its own; the tab views and window views come between Save and Manage.
         #expect(
-            titles(submenu(main, "Saved Views")) == [
+            titles(submenu(main, "Layout")) == [
                 "Folder View", "Remember View for This Folder", "Update Folder View", "Revert to Saved View",
                 "Folder View Options…", "Reset Folder View", "Manage Folder Views…", "-",
                 "Tab Views", "Save Tab View…", "Manage Tab Views…", "-",
                 "Window Views", "Save Window View…", "Manage Window Views…",
             ])
-        let headings = submenu(main, "Saved Views").items.filter(\.isSectionHeader).map(\.title)
+        let headings = submenu(main, "Layout").items.filter(\.isSectionHeader).map(\.title)
         #expect(headings == ["Folder View", "Tab Views", "Window Views"])
         #expect(
             titles(submenu(main, "Go")) == [
@@ -92,7 +92,7 @@ import Testing
     @Test func listsTheTabViewsTheFirstFiveWithTheirKeys() {
         let entries = (1...6).map { SavedViewMenuEntry(id: "t\($0)", name: "Compare \($0)") }
         let (built, router) = build(.init(tabViews: entries))
-        let menu = submenu(built.menu, "Saved Views")
+        let menu = submenu(built.menu, "Layout")
         let titles = titles(menu)
         let start = titles.firstIndex(of: "Save Tab View…") ?? 0
         #expect(
@@ -114,7 +114,7 @@ import Testing
     @Test func listsTheWindowViewsTheFirstFiveWithTheirKeysEachWithAnItemForThisWindow() {
         let entries = (1...6).map { SavedViewMenuEntry(id: "w\($0)", name: "Work \($0)") }
         let (built, router) = build(.init(windowViews: entries))
-        let menu = submenu(built.menu, "Saved Views")
+        let menu = submenu(built.menu, "Layout")
         let titles = titles(menu)
         let start = titles.firstIndex(of: "Save Window View…") ?? 0
         #expect(
@@ -149,7 +149,7 @@ import Testing
         ]).bindings
         let entries = (1...3).map { SavedViewMenuEntry(id: "w\($0)", name: "Work \($0)") }
         let (built, _) = build(.init(shortcuts: bindings, windowViews: entries))
-        let menu = submenu(built.menu, "Saved Views")
+        let menu = submenu(built.menu, "Layout")
         // Its key has ⌥ already: nothing can be ⌥ away from it.
         #expect(item(menu, "Work 1").keyEquivalentModifierMask == [.option, .command])
         #expect(!item(menu, "Work 1 in This Window").isAlternate)
@@ -166,7 +166,7 @@ import Testing
         let bindings = ShortcutCommands.resolve(["openWindowView1InThisWindow": ["Ctrl+Cmd+Option+1"]]).bindings
         let (built, _) = build(
             .init(shortcuts: bindings, windowViews: [SavedViewMenuEntry(id: "w1", name: "Work 1")]))
-        let menu = submenu(built.menu, "Saved Views")
+        let menu = submenu(built.menu, "Layout")
         let here = item(menu, "Work 1 in This Window")
         #expect(here.isAlternate)
         #expect(here.keyEquivalent == item(menu, "Work 1").keyEquivalent)

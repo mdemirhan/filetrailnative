@@ -344,6 +344,8 @@
                 return await scroll(by: distance, milliseconds: milliseconds, window: window)
             case .selectWindow(let index, let title):
                 return await selectWindow(index: index, title: title)
+            case .choose(let ref, let item):
+                return choose(item, in: ref, window: window)
             }
         }
 
@@ -376,6 +378,23 @@
             }
             return missing.isEmpty
                 ? Outcome(.ok) : Outcome(.failed, "not found: " + missing.sorted().joined(separator: ", "))
+        }
+
+        /// The pop-up's item chosen and its action sent, as choosing it in the pop-up's menu does.
+        private func choose(_ item: String, in ref: Scenario.ElementRef, window: NSWindow) -> Outcome {
+            let match: ElementFinder.Match
+            switch ElementFinder.find(ref, elements: elements, in: window) {
+            case .failure(let failure): return Outcome(.failed, failure.message)
+            case .success(let found): match = found
+            }
+            guard let popup = match.view as? NSPopUpButton else { return Outcome(.failed, "\(ref) is no pop-up") }
+            guard popup.isEnabled else { return Outcome(.failed, "\(ref) is dimmed") }
+            guard let index = popup.itemTitles.firstIndex(of: item) else {
+                return Outcome(.failed, "no \u{201C}\(item)\u{201D} in \(popup.itemTitles)")
+            }
+            popup.selectItem(at: index)
+            if let action = popup.action { NSApp.sendAction(action, to: popup.target, from: popup) }
+            return Outcome(.ok)
         }
 
         func press(_ name: String, modifiers names: [String], window: NSWindow) -> Outcome {

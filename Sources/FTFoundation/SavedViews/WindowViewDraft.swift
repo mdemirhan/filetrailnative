@@ -25,7 +25,12 @@ public struct WindowViewDraft: Equatable, Sendable {
     public var sizeChoice: SizeChoice
     public let sizeNow: WindowView.Size
     public let savedSize: WindowView.Size?
-    public var customSize: WindowView.Size
+    /// A width and height typed in, held between the smallest a window can be and `largestSize`.
+    public var customSize: WindowView.Size {
+        didSet { customSize = held(customSize) }
+    }
+    /// The room the screen gives a window: the largest size that can be typed in. Nil: no limit known.
+    public let largestSize: WindowView.Size?
     public var keepsFolderTree: Bool
     public var folderTreeOpen: Bool
     public var keepsInfoPanel: Bool
@@ -33,7 +38,10 @@ public struct WindowViewDraft: Equatable, Sendable {
 
     /// A new window view, from a window: its tabs, the one in front, its size and panels as they are. Nothing of the
     /// window's own is kept to begin with: what isn't checked comes from the window it is opened from.
-    public init(tabs: [String?], front: Int, size: WindowView.Size, folderTreeOpen: Bool, propertiesOpen: Bool) {
+    public init(
+        tabs: [String?], front: Int, size: WindowView.Size, folderTreeOpen: Bool, propertiesOpen: Bool,
+        largestSize: WindowView.Size? = nil
+    ) {
         name = ""
         editingID = nil
         self.tabs = tabs.isEmpty ? [nil] : Array(tabs.prefix(AppPreferenceLimits.openTabsLimit))
@@ -42,7 +50,8 @@ public struct WindowViewDraft: Equatable, Sendable {
         sizeChoice = .now
         sizeNow = size
         savedSize = nil
-        customSize = size
+        self.largestSize = largestSize
+        customSize = Self.held(size, largest: largestSize)
         keepsFolderTree = false
         self.folderTreeOpen = folderTreeOpen
         keepsInfoPanel = false
@@ -50,7 +59,10 @@ public struct WindowViewDraft: Equatable, Sendable {
     }
 
     /// A window view being edited: what it keeps, over the window it is edited from.
-    public init(editing view: WindowView, sizeNow: WindowView.Size, folderTreeOpen: Bool, propertiesOpen: Bool) {
+    public init(
+        editing view: WindowView, sizeNow: WindowView.Size, folderTreeOpen: Bool, propertiesOpen: Bool,
+        largestSize: WindowView.Size? = nil
+    ) {
         name = view.name
         editingID = view.id
         tabs = view.tabs
@@ -59,11 +71,26 @@ public struct WindowViewDraft: Equatable, Sendable {
         sizeChoice = view.size == nil ? .now : .saved
         self.sizeNow = sizeNow
         savedSize = view.size
-        customSize = view.size ?? sizeNow
+        self.largestSize = largestSize
+        customSize = Self.held(view.size ?? sizeNow, largest: largestSize)
         keepsFolderTree = view.folderTreeOpen != nil
         self.folderTreeOpen = view.folderTreeOpen ?? folderTreeOpen
         keepsInfoPanel = view.propertiesOpen != nil
         self.propertiesOpen = view.propertiesOpen ?? propertiesOpen
+    }
+
+    /// The smallest size a window can be.
+    public static var smallestSize: WindowView.Size { WindowView.minimumSize }
+
+    /// `size` held between `smallestSize` and `largestSize`.
+    public func held(_ size: WindowView.Size) -> WindowView.Size { Self.held(size, largest: largestSize) }
+
+    private static func held(_ size: WindowView.Size, largest: WindowView.Size?) -> WindowView.Size {
+        let low = smallestSize
+        let high = largest ?? WindowView.Size(width: Int.max, height: Int.max)
+        return WindowView.Size(
+            width: min(max(size.width, low.width), max(low.width, high.width)),
+            height: min(max(size.height, low.height), max(low.height, high.height)))
     }
 
     /// As many tabs as `count` (1 to the tab limit): the first ones keep their tab views, new ones are plain tabs.

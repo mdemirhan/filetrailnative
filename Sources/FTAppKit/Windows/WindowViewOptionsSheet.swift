@@ -11,6 +11,8 @@ final class WindowViewOptionsSheet: SavedViewSheet {
     private let saved: [WindowView]
     private let tabViews: [TabView]
     private let nameField = NSTextField()
+    /// Under the name while another window view has it, changed in place as the name is typed.
+    private let nameNote = NSTextField(wrappingLabelWithString: "")
     private var saveButton: NSButton?
 
     var onCancel: () -> Void = {}
@@ -31,6 +33,10 @@ final class WindowViewOptionsSheet: SavedViewSheet {
         nameField.setAccessibilityIdentifier("windowViewOptions.name")
         NotificationCenter.default.addObserver(
             self, selector: #selector(nameChanged), name: NSControl.textDidChangeNotification, object: nameField)
+        nameNote.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
+        nameNote.textColor = .secondaryLabelColor
+        nameNote.preferredMaxLayoutWidth = contentWidth
+        nameNote.setAccessibilityIdentifier("windowViewOptions.nameNote")
         build()
         applyTheme(theme)
     }
@@ -61,11 +67,25 @@ final class WindowViewOptionsSheet: SavedViewSheet {
 
     var canSave: Bool { !SavedViewNames.clean(draft.name).isEmpty }
 
+    /// The screen's room for a window: the largest size that can be typed in.
+    static func screenRoom(of window: NSWindow?) -> WindowView.Size? {
+        guard let room = (window?.screen ?? NSScreen.main)?.visibleFrame.size else { return nil }
+        return WindowView.Size(width: Int(room.width), height: Int(room.height))
+    }
+
     @objc private func nameChanged() {
         draft.name = nameField.stringValue
-        let field = window?.firstResponder
-        build()
-        if field != nil { window?.makeFirstResponder(nameField) }
+        showNameNote()
+        saveButton?.title = takenBy == nil ? "Save" : "Replace"
+        saveButton?.isEnabled = canSave
+        needsLayout = true
+        superview?.needsLayout = true
+    }
+
+    private func showNameNote() {
+        nameNote.stringValue =
+            takenBy.map { "A window view called \u{201C}\($0.name)\u{201D} exists. Saving replaces it." } ?? ""
+        nameNote.isHidden = takenBy == nil
     }
 
     private func save() {
@@ -73,9 +93,10 @@ final class WindowViewOptionsSheet: SavedViewSheet {
         onSave(draft)
     }
 
+    /// The draft changed: the sheet shows it, the keyboard where it was.
     private func change(_ edit: (inout WindowViewDraft) -> Void) {
         edit(&draft)
-        build()
+        rebuild { build() }
     }
 
     // MARK: Building
@@ -88,17 +109,18 @@ final class WindowViewOptionsSheet: SavedViewSheet {
                 symbol: "macwindow", title: "Window View Options",
                 subtitle: count == 1 ? "1 tab" : "\(count) tabs"))
         add(row(label("Name"), nameField, stretch: true), after: 4)
-        if let taken = takenBy {
-            add(note("A window view called \u{201C}\(taken.name)\u{201D} exists. Saving replaces it."), after: 8)
-        }
+        showNameNote()
+        add(nameNote, after: 8)
         add(sectionTitle("Tabs"), after: 2)
         add(tabsCard(), after: 10)
         add(sectionTitle("Keep for This Window"), after: 2)
         add(card(windowRows()), after: 4)
-        add(note("What isn\u{2019}t checked comes from the window you open it from."), after: 8)
+        add(note("What isn\u{2019}t checked comes from the window you open it from.", fullWidth: true), after: 8)
         add(separator())
         let view = draft.windowView(id: draft.editingID ?? "")
-        add(note(SavedViewText.parts(view, tabViews: tabViews).joined(separator: " \u{00B7} ")), after: 8)
+        add(
+            note(SavedViewText.parts(view, tabViews: tabViews).joined(separator: " \u{00B7} "), fullWidth: true),
+            after: 8)
         setFooter(footer())
         needsLayout = true
         superview?.needsLayout = true
@@ -107,21 +129,20 @@ final class WindowViewOptionsSheet: SavedViewSheet {
     /// Number of Tabs, a row for each tab with its tab view, and the tab in front; past a few tabs the rows scroll.
     private func tabsCard() -> NSView {
         let counts = Array(1...AppPreferenceLimits.openTabsLimit)
-        let number = popUp(counts.map { $0 == 1 ? "1 tab" : "\($0) tabs" }, selected: draft.tabs.count - 1) {
-            [weak self] index in
+        let number = popUp(
+            counts.map { $0 == 1 ? "1 tab" : "\($0) tabs" }, selected: draft.tabs.count - 1, id: "count"
+        ) { [weak self] index in
             self?.change { $0.setTabCount(counts[index]) }
         }
-        number.setAccessibilityIdentifier("windowViewOptions.count")
         var rows: [NSView] = [row(label("Number of Tabs"), number)]
         var tabRows: [NSView] = []
         let ids: [String?] = [nil] + tabViews.map(\.id)
         let titles = ["None: a New Tab"] + tabViews.map { MenuName.shortened($0.name) }
         for (index, id) in draft.tabs.enumerated() {
             let chosen = ids.firstIndex { $0 == id } ?? 0
-            let popup = popUp(titles, selected: chosen, width: 220) { [weak self] picked in
+            let popup = popUp(titles, selected: chosen, width: 220, id: "tab\(index + 1)") { [weak self] picked in
                 self?.change { $0.setTab(index, to: ids[picked]) }
             }
-            popup.setAccessibilityIdentifier("windowViewOptions.tab\(index + 1)")
             tabRows.append(row(label("Tab \(index + 1)"), popup))
         }
         let list = card(tabRows)
@@ -138,10 +159,10 @@ final class WindowViewOptionsSheet: SavedViewSheet {
         } else {
             rows.append(list)
         }
-        let front = popUp(draft.tabs.indices.map { "Tab \($0 + 1)" }, selected: draft.front) { [weak self] index in
+        let front = popUp(draft.tabs.indices.map { "Tab \($0 + 1)" }, selected: draft.front, id: "front") {
+            [weak self] index in
             self?.change { $0.front = index }
         }
-        front.setAccessibilityIdentifier("windowViewOptions.front")
         rows.append(row(label("Front Tab"), front))
         return card(rows)
     }
@@ -154,21 +175,21 @@ final class WindowViewOptionsSheet: SavedViewSheet {
             choices.append((.saved, "Saved: \(size.width) \u{00D7} \(size.height)"))
         }
         choices.append((.custom, "Custom"))
-        let sizePopUp = popUp(choices.map(\.1), selected: choices.firstIndex { $0.0 == draft.sizeChoice } ?? 0) {
-            [weak self] index in
+        let sizePopUp = popUp(
+            choices.map(\.1), selected: choices.firstIndex { $0.0 == draft.sizeChoice } ?? 0, id: "size"
+        ) { [weak self] index in
             self?.change {
                 $0.sizeChoice = choices[index].0
                 $0.keepsSize = true
             }
         }
-        sizePopUp.setAccessibilityIdentifier("windowViewOptions.size")
         var sizeControl: NSView = sizePopUp
         if draft.sizeChoice == .custom {
             let width = sizeField(draft.customSize.width, "windowViewOptions.width") { [weak self] value in
-                self?.change { $0.customSize.width = value }
+                self?.draft.customSize.width = value
             }
             let height = sizeField(draft.customSize.height, "windowViewOptions.height") { [weak self] value in
-                self?.change { $0.customSize.height = value }
+                self?.draft.customSize.height = value
             }
             let times = NSTextField(labelWithString: "\u{00D7}")
             let stack = NSStackView(views: [sizePopUp, width, times, height])
@@ -176,21 +197,33 @@ final class WindowViewOptionsSheet: SavedViewSheet {
             stack.spacing = 6
             sizeControl = stack
         }
-        let tree = popUp(["Shown", "Hidden"], selected: draft.folderTreeOpen ? 0 : 1) { [weak self] index in
+        let tree = popUp(["Shown", "Hidden"], selected: draft.folderTreeOpen ? 0 : 1, id: "folderTree") {
+            [weak self] index in
             self?.change {
                 $0.folderTreeOpen = index == 0
                 $0.keepsFolderTree = true
             }
         }
-        let info = popUp(["Shown", "Hidden"], selected: draft.propertiesOpen ? 0 : 1) { [weak self] index in
+        let info = popUp(["Shown", "Hidden"], selected: draft.propertiesOpen ? 0 : 1, id: "infoPanel") {
+            [weak self] index in
             self?.change {
                 $0.propertiesOpen = index == 0
                 $0.keepsInfoPanel = true
             }
         }
-        return [
+        var rows = [
             keepRow("Size", kept: draft.keepsSize, sizeControl) { [weak self] on in self?.change { $0.keepsSize = on }
-            },
+            }
+        ]
+        if draft.sizeChoice == .custom {
+            let low = WindowViewDraft.smallestSize
+            var range = "From \(low.width) \u{00D7} \(low.height)"
+            if let high = draft.largestSize {
+                range += " to \(high.width) \u{00D7} \(high.height), the screen\u{2019}s room"
+            }
+            rows.append(row(NSView(), note(range + "."), height: 26))
+        }
+        return rows + [
             keepRow("Folder Tree", kept: draft.keepsFolderTree, tree) { [weak self] on in
                 self?.change { $0.keepsFolderTree = on }
             },
@@ -200,43 +233,74 @@ final class WindowViewOptionsSheet: SavedViewSheet {
         ]
     }
 
-    /// A width or a height typed in, in points.
+    /// A width or a height typed in, in points: kept as it is typed, and shown held to what a window can be once the
+    /// field is left.
     private func sizeField(_ value: Int, _ identifier: String, _ typed: @escaping (Int) -> Void) -> NSTextField {
-        let field = ClosureField(string: "\(value)", action: typed)
+        let field = ClosureField(string: "\(value)") { text in
+            guard let number = Int(text.trimmingCharacters(in: .whitespaces)) else { return }
+            typed(number)
+        } ended: { [weak self] in
+            self?.rebuildSoon { self?.build() }
+        }
+        field.formatter = Self.pointsFormatter
         field.alignment = .right
         field.setAccessibilityIdentifier(identifier)
         field.widthAnchor.constraint(equalToConstant: 56).isActive = true
         return field
     }
 
+    #if DEBUG
+        func buildForTesting() { build() }
+        func changeForTesting(_ edit: (inout WindowViewDraft) -> Void) { change(edit) }
+    #endif
+
     private func footer() -> NSView {
         let manage = ClosureButton(title: "All Window Views\u{2026}") { [weak self] in self?.onManage() }
         manage.bezelStyle = .push
+        manage.setAccessibilityIdentifier("windowViewOptions.manage")
         let cancel = ClosureButton(title: "Cancel") { [weak self] in self?.onCancel() }
         cancel.bezelStyle = .push
+        cancel.setAccessibilityIdentifier("windowViewOptions.cancel")
         let save = ClosureButton(title: takenBy == nil ? "Save" : "Replace") { [weak self] in self?.save() }
         save.bezelStyle = .push
         save.keyEquivalent = "\r"
         save.isEnabled = canSave
         save.setAccessibilityIdentifier("windowViewOptions.save")
         saveButton = save
-        let row = NSStackView(views: [manage, NSView(), cancel, save])
-        row.orientation = .horizontal
-        row.spacing = 8
-        return row
+        return footerRow(leading: [manage], trailing: [cancel, save])
     }
 }
 
-/// A field that runs a closure with the whole number typed, once it is entered.
+/// A field that tells what is typed as it is typed, and when it is left: by Tab, by a click elsewhere, by Return.
 final class ClosureField: NSTextField {
-    private var run: (Int) -> Void = { _ in }
+    private var changed: (String) -> Void = { _ in }
+    private var ended: () -> Void = {}
 
-    convenience init(string: String, action: @escaping (Int) -> Void) {
+    convenience init(string: String, changed: @escaping (String) -> Void, ended: @escaping () -> Void) {
         self.init(string: string)
-        run = action
-        target = self
-        self.action = #selector(fire)
+        self.changed = changed
+        self.ended = ended
     }
 
-    @objc private func fire() { run(integerValue) }
+    override func textDidChange(_ notification: Notification) {
+        super.textDidChange(notification)
+        changed(stringValue)
+    }
+
+    override func textDidEndEditing(_ notification: Notification) {
+        super.textDidEndEditing(notification)
+        ended()
+    }
+}
+
+extension WindowViewOptionsSheet {
+    /// Whole points, digits only.
+    fileprivate static let pointsFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .none
+        formatter.allowsFloats = false
+        formatter.minimum = 0
+        formatter.maximum = 100_000
+        return formatter
+    }()
 }

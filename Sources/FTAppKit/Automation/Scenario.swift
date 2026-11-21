@@ -63,6 +63,9 @@
             /// Scrolls the folder's view by `distance` points (back when negative) over `milliseconds`, a step each frame;
             /// the step's message says how long the main thread took over the frames.
             case scroll(distance: Double, milliseconds: Int)
+            /// Chooses the item titled `item` of the pop-up button `element`, as a click on it in its menu does: the
+            /// menu itself is not shown, as its tracking loop would hold the run.
+            case choose(ElementRef, item: String)
 
             /// The step's name as written in the file.
             var kind: String {
@@ -86,6 +89,7 @@
                 case .selectTab: "selectTab"
                 case .selectWindow: "selectWindow"
                 case .scroll: "scroll"
+                case .choose: "choose"
                 }
             }
         }
@@ -269,6 +273,8 @@
                 return .selectWindow(index: position, title: title)
             case "scroll":
                 return .scroll(distance: try number("distance"), milliseconds: Int(try number("ms")))
+            case "choose":
+                return .choose(try element(), item: try string("item"))
             default:
                 throw ParseError(description: "step \(index): unknown step \"\(kind)\"")
             }

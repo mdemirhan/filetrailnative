@@ -1,4 +1,4 @@
-// Saved Views ▸ Window Views: a window of tab views, opened by name, and saved from a window
+// Layout ▸ Window Views: a window of tab views, opened by name, and saved from a window
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -77,7 +77,8 @@ extension ExplorerWindows {
             },
             front: group.tabs.firstIndex { $0 === group.selected } ?? 0,
             size: WindowView.Size(width: Int(window.frame.width), height: Int(window.frame.height)),
-            folderTreeOpen: tab.preferences.folderTreeOpen, propertiesOpen: tab.preferences.propertiesOpen)
+            folderTreeOpen: tab.preferences.folderTreeOpen, propertiesOpen: tab.preferences.propertiesOpen,
+            largestSize: WindowViewOptionsSheet.screenRoom(of: window))
         tab.presentWindowViewOptions(draft, saved: windowViews, tabViews: tabViews)
     }
 }

@@ -37,8 +37,8 @@ The [README](../README.md) is about what is different from Finder. This page lis
 - **A line along the top of the active pane** shows where the keyboard is: bright while the pane has it, dimmer while the sidebar or the search field does.
 - **⌘W closes the pane you are in** when a tab has two, and the tab when it has one; ⌥⌘W closes the tab with both. ⌘\\ brings a closed pane back as it was.
 - **Windows**, each with its own tabs. Move a tab into a window of its own, or merge every window back into one.
-- **Tab views**: save what you choose of a tab under a name, two panes with the left in List and the right in Previews, say, with or without their folders, and give any tab that setup with one choice from Saved Views, or ⌥⌘1 to ⌥⌘5. What you don't choose stays as the tab has it. A tab view can also be what every new tab opens with.
-- **Window views**: a window of tabs, each opened with a tab view, its size and panels if you like. Saved Views opens it in a new window, or with ⌥ in place of the one you are in, and the first five open with ⌃⌘1 to ⌃⌘5. The Views window lists folder views, tab views and window views, to reorder, rename, edit and remove.
+- **Tab views**: save what you choose of a tab under a name, two panes with the left in List and the right in Previews, say, with or without their folders, and give any tab that setup with one choice from Layout, or ⌥⌘1 to ⌥⌘5. What you don't choose stays as the tab has it. A tab view can also be what every new tab opens with.
+- **Window views**: a window of tabs, each opened with a tab view, its size and panels if you like. Layout opens it in a new window, or with ⌥ in place of the one you are in, and the first five open with ⌃⌘1 to ⌃⌘5. The Views window lists folder views, tab views and window views, to reorder, rename, edit and remove.
 - **Back as you left it**: your windows, tabs and panes come back when you open File Trail again, if you want them.
 
 ## Search and filtering

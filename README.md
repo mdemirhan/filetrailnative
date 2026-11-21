@@ -51,7 +51,7 @@ In Finder, moving files between two folders means two windows, or a drag held ov
 - **Stay on the keyboard.** Tab moves between the tree and the two panes, ⌥⌘↓ opens the selected folder in the other pane, and ⌘U swaps the panes.
 - **One tree for both.** The folder tree follows the pane you are in and marks the folder each pane shows.
 
-A way of working can be saved and given back in one step. A tab view keeps what you choose of a tab, two panes in List and Previews, say, with or without their folders, and applies it to the tab you are in (⌥⌘1 to ⌥⌘5). A window view opens a window of such tabs (⌃⌘1 to ⌃⌘5). Both are in the Saved Views menu, beside each folder's own view.
+A way of working can be saved and given back in one step. A tab view keeps what you choose of a tab, two panes in List and Previews, say, with or without their folders, and applies it to the tab you are in (⌥⌘1 to ⌥⌘5). A window view opens a window of such tabs (⌃⌘1 to ⌃⌘5). Both are in the Layout menu, beside each folder's own view.
 
 ## Read and edit a file beside its folder
 

@@ -312,12 +312,12 @@ public enum ApplicationMenu {
 
     // MARK: Saved views
 
-    /// The id of the Saved Views item that applies a tab view to the tab the menu acts on.
+    /// The id of the Layout item that applies a tab view to the tab the menu acts on.
     public static func tabViewItemID(_ tabViewID: String) -> String {
         tabViewPrefix + tabViewID
     }
 
-    /// The id of the Saved Views item that opens a window view in a new window, and of the one ⌥ shows in its place,
+    /// The id of the Layout item that opens a window view in a new window, and of the one ⌥ shows in its place,
     /// which opens it in place of the window the menu acts on.
     public static func windowViewItemID(_ windowViewID: String, inThisWindow: Bool = false) -> String {
         (inThisWindow ? windowViewHerePrefix : windowViewPrefix) + windowViewID
@@ -327,14 +327,14 @@ public enum ApplicationMenu {
     public static let manageTabViewsItemID = "manageTabViews"
     public static let manageWindowViewsItemID = "manageWindowViews"
 
-    /// The tab view a Saved Views item applies; nil for any other item.
+    /// The tab view a Layout item applies; nil for any other item.
     public static func tabViewItem(_ itemID: String) -> String? {
         guard itemID.hasPrefix(tabViewPrefix) else { return nil }
         let id = String(itemID.dropFirst(tabViewPrefix.count))
         return id.isEmpty ? nil : id
     }
 
-    /// The window view a Saved Views item opens, and whether in place of the window the menu acts on; nil for any other
+    /// The window view a Layout item opens, and whether in place of the window the menu acts on; nil for any other
     /// item.
     public static func windowViewItem(_ itemID: String) -> (windowViewID: String, inThisWindow: Bool)? {
         for (prefix, here) in [(windowViewHerePrefix, true), (windowViewPrefix, false)] where itemID.hasPrefix(prefix) {

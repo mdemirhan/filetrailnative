@@ -19,7 +19,9 @@ by a scratch scenario:
 - Write a throwaway scenario on a scratch folder and run the app's binary with `--automation <scenario> --out <folder>
   --elements tools/capture/elements.json --user-data-dir <folder>`, with `CFFIXED_USER_HOME` set to a scratch home, as
   `scripts/readme-screenshots.sh` does. `report.json` in the out folder says how each step went.
-- `menu` steps fail when a title is missing or dimmed, so they check titles; `key` steps with modifiers go through the menu
+- `menu` steps fail when a title is missing or dimmed, so they check titles; `choose` picks a pop-up button's item by its
+  title (`{"step": "choose", "element": "tab view view", "item": "Viewer"}`), as its menu would, and fails on a
+  dimmed pop-up; `key` steps with modifiers go through the menu
   bar's keys; `snapshot` and `windowShot` give pictures to look at. System Events has no accessibility permission here:
   don't ask for it.
 - No before and after pictures for the owner, and no waiting for a look to be approved: look, say in the report what was

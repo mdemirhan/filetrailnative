@@ -67,8 +67,8 @@ struct WindowViewsTests {
         arguments: [
             (1440, 900, 1512, 945, 1440, 900),
             (3000, 2000, 1512, 945, 1512, 945),
-            (200, 100, 1512, 945, 400, 300),
-            (1440, 900, 300, 200, 400, 300),
+            (200, 100, 1512, 945, 760, 480),
+            (1440, 900, 300, 200, 760, 480),
         ])
     func aSizeIsHeldToTheScreen(
         width: Int, height: Int, roomWidth: Int, roomHeight: Int, heldWidth: Int, heldHeight: Int
@@ -76,6 +76,34 @@ struct WindowViewsTests {
         let held = WindowView.held(
             .init(width: width, height: height), within: .init(width: roomWidth, height: roomHeight))
         #expect(held == WindowView.Size(width: heldWidth, height: heldHeight))
+    }
+
+    // A size typed in Window View Options is held between the smallest an explorer window can be and the screen's
+    // room, as it is typed and when it starts.
+    @Test func aSizeTypedIsHeldBetweenTheSmallestWindowAndTheScreen() {
+        #expect(WindowView.minimumSize == WindowView.Size(width: 760, height: 480))
+        var draft = WindowViewDraft(
+            tabs: [nil], front: 0, size: .init(width: 2000, height: 1400), folderTreeOpen: true, propertiesOpen: false,
+            largestSize: .init(width: 1512, height: 945))
+        #expect(draft.customSize == WindowView.Size(width: 1512, height: 945))
+        draft.customSize.width = 100
+        draft.customSize.height = 99_999
+        #expect(draft.customSize == WindowView.Size(width: 760, height: 945))
+        draft.customSize = .init(width: 1000, height: 700)
+        #expect(draft.customSize == WindowView.Size(width: 1000, height: 700))
+        draft.keepsSize = true
+        draft.sizeChoice = .custom
+        #expect(draft.windowView(id: "w").size == WindowView.Size(width: 1000, height: 700))
+        // With no screen known, only the smallest holds.
+        var free = WindowViewDraft(
+            tabs: [nil], front: 0, size: .init(width: 900, height: 600), folderTreeOpen: true, propertiesOpen: false)
+        free.customSize.width = 5000
+        #expect(free.customSize.width == 5000)
+        // A screen smaller than the smallest window still gives the smallest.
+        let tiny = WindowViewDraft(
+            tabs: [nil], front: 0, size: .init(width: 900, height: 600), folderTreeOpen: true, propertiesOpen: false,
+            largestSize: .init(width: 600, height: 400))
+        #expect(tiny.customSize == WindowView.minimumSize)
     }
 
     // MARK: Names

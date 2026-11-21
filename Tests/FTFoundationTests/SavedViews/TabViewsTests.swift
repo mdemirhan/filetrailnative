@@ -60,6 +60,51 @@ struct TabViewsTests {
         #expect(TabViewKeeps(pane: PaneKeeps()).isEmpty)
     }
 
+    // A pane showing the viewer keeps nothing else; only one of two panes can, the left's when both ask, and never the
+    // pane of one or the active pane.
+    @Test func theViewerIsOneOfTwoPanesAndKeepsNothingElse() throws {
+        let viewer = PaneViewer(follows: false, editing: true)
+        let alone = PaneKeeps(
+            folder: "/a", view: FolderViewKeeps(view: .details), folderViews: .notUsed, viewer: viewer)
+        #expect(alone == PaneKeeps(viewer: viewer))
+        #expect(!alone.isEmpty)
+        let both = TabViewKeeps(
+            panes: 2, left: PaneKeeps(viewer: viewer),
+            right: PaneKeeps(view: FolderViewKeeps(view: .details), viewer: PaneViewer()))
+        #expect(both.left?.viewer == viewer)
+        // The right's viewer goes; what it kept as a list is kept.
+        #expect(both.right == nil)
+        let right = TabViewKeeps(panes: 2, right: PaneKeeps(viewer: viewer))
+        #expect(right.right?.viewer == viewer)
+        #expect(TabViewKeeps(panes: 1, pane: PaneKeeps(viewer: viewer)) == TabViewKeeps(panes: 1))
+        #expect(TabViewKeeps(pane: PaneKeeps(viewer: viewer)).isEmpty)
+        // Read back as written; a viewer's parts not read are Follow on, Read.
+        let data = try JSONEncoder().encode(right)
+        #expect(try JSONDecoder().decode(TabViewKeeps.self, from: data) == right)
+        let partial = Data(#"{"panes": 2, "right": {"viewer": {}}}"#.utf8)
+        #expect(try JSONDecoder().decode(TabViewKeeps.self, from: partial).right?.viewer == PaneViewer())
+    }
+
+    // Applied, a viewer is the pane's and its settings stay; a pane given a view of a folder closes its viewer.
+    @Test func aViewerIsAppliedAndAViewOfAFolderClosesOne() {
+        var tab = Self.tab(["/a", "/b"])
+        let applied = Self.apply(TabViewKeeps(panes: 2, right: PaneKeeps(viewer: PaneViewer(editing: true))), tab)
+        #expect(applied.viewers == [1: PaneViewer(editing: true)])
+        #expect(applied.tab.panes[1].viewer == PaneViewer(editing: true))
+        #expect(applied.tab.panes[1].settings == tab.panes[1].settings)
+        #expect(applied.tab.panes[1].folder == "/b")
+        #expect(applied.viewersClosed.isEmpty)
+
+        tab.panes[1].viewer = PaneViewer()
+        let list = Self.apply(TabViewKeeps(panes: 2, right: PaneKeeps(view: FolderViewKeeps(view: .details))), tab)
+        #expect(list.viewersClosed == [1])
+        #expect(list.tab.panes[1].viewer == nil)
+        // A tab view that keeps no view for the pane leaves its viewer.
+        let sorted = Self.apply(
+            TabViewKeeps(panes: 2, right: PaneKeeps(view: FolderViewKeeps(foldersFirst: false))), tab)
+        #expect(sorted.viewersClosed.isEmpty)
+    }
+
     @Test func aDividerIsKeptWithinWhatADragAllows() {
         func divider(_ value: TabViewKeeps.Divider) -> TabViewKeeps.Divider? {
             TabViewKeeps(panes: 2, divider: value).divider

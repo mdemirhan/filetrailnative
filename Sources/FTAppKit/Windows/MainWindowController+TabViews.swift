@@ -1,4 +1,4 @@
-// Saved Views ▸ Tab Views: a tab view applied to this tab, and the one new tabs open with
+// Layout ▸ Tab Views: a tab view applied to this tab, and the one new tabs open with
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -70,7 +70,8 @@ extension MainWindowController {
         let draft = TabViewDraft(
             tab: tabViewState, columnWidth: workspace.paneColumnWidth, editing: editing, name: label)
         let sheet = TabViewOptionsSheet(
-            draft: draft, saved: tabViews, density: preferences.density, subtitle: label)
+            draft: draft, saved: tabViews, density: preferences.density, subtitle: label,
+            startsOn: showsTwoPanes && activePaneIndex == 1 ? .right : .left)
         let scrim = DialogScrim(panel: sheet, placement: .sheet)
         scrim.setAccessibilityIdentifier("tabViewOptions.scrim")
         sheet.onCancel = { [weak scrim] in scrim?.dismiss() }
@@ -152,7 +153,8 @@ extension MainWindowController {
         guard let window else { return }
         let draft = WindowViewDraft(
             editing: view, sizeNow: WindowView.Size(width: Int(window.frame.width), height: Int(window.frame.height)),
-            folderTreeOpen: preferences.folderTreeOpen, propertiesOpen: preferences.propertiesOpen)
+            folderTreeOpen: preferences.folderTreeOpen, propertiesOpen: preferences.propertiesOpen,
+            largestSize: WindowViewOptionsSheet.screenRoom(of: window))
         presentWindowViewOptions(draft, saved: preferences.windowViews, tabViews: tabViews)
     }
 
@@ -209,8 +211,24 @@ extension MainWindowController {
         if keeps.divider != nil, showsTwoPanes { workspace.setPaneSplit(applied.tab.split) }
         if applied.tab.includeHidden != includeHidden { perform(.toggleHiddenFiles) }
         let given = keeps.paneKeeps(active: activePaneIndex)
+        for index in applied.viewersClosed where panes.indices.contains(index) {
+            let pane = panes[index]
+            Task { [weak self] in await self?.closeViewer(in: pane) }
+        }
         for (index, paneKeeps) in given where panes.indices.contains(index) {
             let pane = panes[index]
+            if let viewer = paneKeeps.viewer {
+                // A viewer is applied once the other pane has taken its folder and settings: it shows what that
+                // list selects there.
+                let list = panes[index == 0 ? 1 : 0]
+                DispatchQueue.main.async { [weak self, weak pane, weak list] in
+                    guard let self, let pane, let list else { return }
+                    list.whenFirstReadFinished { [weak self] _ in
+                        self?.showTabViewViewer(viewer, in: pane, beside: list)
+                    }
+                }
+                continue
+            }
             let before = pane.shownOrder
             pane.tabViewOverride = nil
             pane.arrivingTabViewOverride = nil

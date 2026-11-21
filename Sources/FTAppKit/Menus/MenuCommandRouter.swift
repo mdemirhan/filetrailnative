@@ -40,7 +40,7 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
     /// New Window chosen while another window (Settings) has the keyboard: the host opens it beside the explorer window
     /// in front, which may not be able to take the command.
     var onNewWindowFromOtherWindow: (() -> Void)?
-    /// A window view chosen in Saved Views, by its id: in a window of its own, or in place of the explorer window given
+    /// A window view chosen in Layout, by its id: in a window of its own, or in place of the explorer window given
     /// (the item ⌥ shows), which has the keyboard. It opens with no explorer window open too.
     var onOpenWindowView: ((String, (any ExplorerWindowHandle)?) -> Void)?
     /// Manage Folder Views…, Manage Tab Views… or Manage Window Views…: the Views window, on that pane.

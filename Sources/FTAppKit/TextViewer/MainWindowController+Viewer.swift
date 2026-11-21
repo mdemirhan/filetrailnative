@@ -142,6 +142,35 @@ extension MainWindowController {
         notify(.panels)
     }
 
+    /// A tab view's viewer: `pane` shows the file `list` selects, following its selection or staying on that file,
+    /// read or edited. A viewer there already takes it on, after asking about its edits when it would show another
+    /// file. The keyboard stays in the list.
+    func showTabViewViewer(_ setting: PaneViewer, in pane: BrowserPane, beside list: BrowserPane) {
+        let path = leadPath(of: list)
+        let mode: TextViewerController.Mode = setting.follows ? .following : .pinned
+        guard let viewer = pane.viewer else {
+            let viewer = makeViewer(in: pane, mode: mode)
+            viewer.folderPath = list.shownFolderPath
+            viewer.show(path, editing: setting.editing)
+            focusPane(list)
+            notify(.panels)
+            return
+        }
+        Task { [weak self] in
+            let sameFile = Self.isShown(path, in: viewer)
+            if !sameFile || viewer.isEditing != setting.editing {
+                guard await viewer.confirmLeave() else { return }
+            }
+            guard let self else { return }
+            viewer.mode = mode
+            viewer.position = nil
+            viewer.folderPath = list.shownFolderPath
+            viewer.show(path, editing: setting.editing)
+            self.focusPane(list)
+            self.commandsChanged()
+        }
+    }
+
     /// The selection of `pane` changed: the viewer beside it shows its lead item a moment after the last change, as
     /// the Info panel waits (`InfoMetrics.fetchDelay`), so holding an arrow key reads only where it stops. A file
     /// with unsaved edits is asked about first; Cancel keeps it, and the list's selection goes back to it.

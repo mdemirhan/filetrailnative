@@ -25,6 +25,8 @@ public struct TabViewDraft: Equatable, Sendable {
         public var values: FolderViewKeeps
         public var kept: Set<FolderViewSetting>
         public var folderViews: FolderViewsChoice
+        /// The View row's choice is Viewer, with how it follows and opens; nil: one of the folder's views, `values`'.
+        public var viewer: PaneViewer?
 
         public init(state: PaneState, keeps: PaneKeeps?) {
             keepsFolder = keeps?.folder != nil
@@ -34,10 +36,19 @@ public struct TabViewDraft: Equatable, Sendable {
             self.values = values
             kept = Set(keeps?.view.kept ?? [])
             folderViews = keeps?.choice ?? .folderFirst
+            if let viewer = keeps?.viewer {
+                self.viewer = viewer
+                kept.insert(.view)
+            } else {
+                // A view kept is the view the pane gets; else the row shows what the pane shows now.
+                self.viewer = keeps?.view.view == nil ? state.viewer : nil
+            }
         }
 
-        /// What it keeps: the folder where checked, each setting checked with its value, and the choice.
-        public var keeps: PaneKeeps {
+        /// What it keeps: the folder where checked, each setting checked with its value, and the choice; or the viewer
+        /// alone, where `viewerAllowed` and View is checked with Viewer chosen.
+        public func keeps(viewerAllowed: Bool) -> PaneKeeps {
+            if viewerAllowed, kept.contains(.view), let viewer { return PaneKeeps(viewer: viewer) }
             var view = FolderViewKeeps()
             for setting in FolderViewSetting.allCases where kept.contains(setting) { view.take(setting, from: values) }
             return PaneKeeps(folder: keepsFolder ? folder : nil, view: view, folderViews: folderViews)
@@ -62,10 +73,10 @@ public struct TabViewDraft: Equatable, Sendable {
 
         public var title: String {
             switch self {
-            case .left: "Keep for the Left Pane"
-            case .right: "Keep for the Right Pane"
-            case .onePane: "Keep for This Pane"
-            case .activePane: "Keep for the Active Pane"
+            case .left: "Left Pane"
+            case .right: "Right Pane"
+            case .onePane: "The Pane"
+            case .activePane: "The Active Pane"
             }
         }
     }
@@ -134,7 +145,8 @@ public struct TabViewDraft: Equatable, Sendable {
             keepsPanes = true
             panes = tab.panes.count
             let viewOnly = { (state: PaneState) in
-                PaneKeeps(view: FolderViewKeeps(view: state.settings.view))
+                state.viewer.map { PaneKeeps(viewer: $0) }
+                    ?? PaneKeeps(view: FolderViewKeeps(view: state.settings.view))
             }
             left = Pane(state: leftState, keeps: viewOnly(leftState))
             right = Pane(state: rightState, keeps: viewOnly(rightState))
@@ -184,6 +196,22 @@ public struct TabViewDraft: Equatable, Sendable {
         }
     }
 
+    /// Whether a group's View row offers Viewer: in either of two panes, beside the other's list.
+    public static func offersViewer(_ group: PaneGroup) -> Bool { group == .left || group == .right }
+
+    /// The pane group shows the viewer (`viewer`) or a view of its folder (nil, `values`'), kept from then on. One pane
+    /// of two shows the viewer: choosing it in one gives the other back its folder.
+    public mutating func setViewer(_ group: PaneGroup, _ viewer: PaneViewer?) {
+        self[group].viewer = viewer
+        self[group].kept.insert(.view)
+        guard viewer != nil else { return }
+        switch group {
+        case .left: right.viewer = nil
+        case .right: left.viewer = nil
+        case .onePane, .activePane: break
+        }
+    }
+
     /// The divider as Save keeps it.
     public var dividerKept: TabViewKeeps.Divider {
         switch divider {
@@ -200,8 +228,8 @@ public struct TabViewDraft: Equatable, Sendable {
         let two = keepsPanes && panes == 2
         return TabViewKeeps(
             panes: keepsPanes ? panes : nil, divider: two && keepsDivider ? dividerKept : nil,
-            includeHidden: keepsHidden ? hidden : nil, left: two ? left.keeps : nil, right: two ? right.keeps : nil,
-            pane: two ? nil : active.keeps)
+            includeHidden: keepsHidden ? hidden : nil, left: two ? left.keeps(viewerAllowed: true) : nil,
+            right: two ? right.keeps(viewerAllowed: true) : nil, pane: two ? nil : active.keeps(viewerAllowed: false))
     }
 
     /// Reset: nothing kept, each value left as it shows.
@@ -246,6 +274,12 @@ public enum SavedViewText {
 
     private static func paneParts(_ pane: PaneKeeps?, _ prefix: String) -> [String] {
         guard let pane else { return [] }
+        if let viewer = pane.viewer {
+            return [
+                prefix + (viewer.follows ? "Viewer, following the selection" : "Viewer, on the file selected"),
+                prefix + (viewer.editing ? "edit" : "read"),
+            ]
+        }
         var parts: [String] = []
         if let folder = pane.folder { parts.append(prefix + "opens \u{201C}\(NodePath.basename(folder))\u{201D}") }
         let view = pane.view

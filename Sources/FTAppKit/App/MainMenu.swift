@@ -18,7 +18,7 @@ public final class MainMenu {
     var returnKeyAction: () -> ReturnKeyAction = { .rename }
     /// What the startup disk is called, which Go names; the menu is built again when it is renamed.
     var startupDiskName: () -> String = { StartupDisk.shared.name }
-    /// The tab views and window views Saved Views lists; the menu is built again when they change.
+    /// The tab views and window views Layout lists; the menu is built again when they change.
     var tabViews: () -> [SavedViewMenuEntry] = { [] }
     var windowViews: () -> [SavedViewMenuEntry] = { [] }
     /// The files of the Templates folder File ▸ New File lists; the menu is built again when they change.

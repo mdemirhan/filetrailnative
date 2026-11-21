@@ -5,14 +5,17 @@ import FTFoundation
 /// A sheet of rows laid out as Folder View Options lays out its own: a header with a symbol, a title and what it is
 /// for; groups titled as Settings titles them, each a card of rows with a hairline between each two; each row a
 /// checkbox titled with its setting (or a name) and its control in a column that starts at the same place in every
-/// row. Built again whole whenever something in it changes. A sheet taller than the window it is in scrolls, its
-/// buttons staying at its foot, so it is never cut by the window's size.
+/// row. Built again whole whenever something in it changes, the keyboard staying on the control it was on. A sheet
+/// taller than the room under the toolbar scrolls, its buttons staying at its foot, so the window never cuts it. Tab
+/// goes along each row, then down.
 @MainActor
 class SavedViewSheet: DialogPanelView {
     let stack = NSStackView()
     private let scroll = NSScrollView()
     private let document = SheetDocumentView()
     private var footerView: NSView?
+    /// A hairline over the buttons while the rows scroll under them.
+    private let footerLine = NSBox()
     static var width: Double { FolderViewPopover.width + 40 }
     static let margin = 20.0
     var contentWidth: Double { Self.width - 2 * Self.margin }
@@ -26,7 +29,7 @@ class SavedViewSheet: DialogPanelView {
         stack.orientation = .vertical
         stack.alignment = .leading
         stack.spacing = 12
-        stack.edgeInsets = NSEdgeInsets(top: Self.margin, left: Self.margin, bottom: Self.margin, right: Self.margin)
+        stack.edgeInsets = NSEdgeInsets(top: Self.margin, left: Self.margin, bottom: 4, right: Self.margin)
         document.addSubview(stack)
         scroll.documentView = document
         scroll.hasVerticalScroller = true
@@ -34,9 +37,21 @@ class SavedViewSheet: DialogPanelView {
         scroll.drawsBackground = false
         scroll.borderType = .noBorder
         addSubview(scroll)
+        footerLine.boxType = .separator
+        addSubview(footerLine)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    /// A footer's buttons: `leading` at its left, `trailing` at its right, the last of them the default.
+    func footerRow(leading: [NSView], trailing: [NSView]) -> NSView {
+        let row = NSStackView()
+        row.orientation = .horizontal
+        row.spacing = 8
+        row.setViews(leading, in: .leading)
+        row.setViews(trailing, in: .trailing)
+        return row
+    }
 
     /// The buttons along the sheet's foot, outside what scrolls.
     func setFooter(_ view: NSView) {
@@ -52,10 +67,69 @@ class SavedViewSheet: DialogPanelView {
         return ceil(footerView.fittingSize.height) + 2 * Self.margin
     }
 
+    /// Room left under the sheet, above the window's bottom edge.
+    static let bottomInset = 24.0
+
     override func panelSize(in size: NSSize) -> NSSize {
         stack.layoutSubtreeIfNeeded()
         let whole = ceil(stack.fittingSize.height) + footerRoom
-        return NSSize(width: Self.width, height: min(max(160, size.height - 40), whole))
+        // The sheet starts under the toolbar: what is left of the window below that is its room.
+        let room = size.height - DialogLayout.sheetTop - Self.bottomInset
+        return NSSize(width: Self.width, height: max(min(160, whole), min(room, whole)))
+    }
+
+    // MARK: The keyboard
+
+    /// Along each row, left to right, then down: a row's controls are centered on one line, though not all of a
+    /// height. The pane chooser counts as a control.
+    override func focusOrder() -> [NSView] {
+        var found = Self.focusable(in: self)
+        func visit(_ view: NSView) {
+            guard !view.isHidden else { return }
+            if let segmented = view as? NSSegmentedControl, segmented.isEnabled { found.append(segmented) }
+            for child in view.subviews { visit(child) }
+        }
+        visit(self)
+        let frames = Dictionary(
+            uniqueKeysWithValues: found.map { (ObjectIdentifier($0), $0.convert($0.bounds, to: self)) })
+        return found.sorted { a, b in
+            let ra = frames[ObjectIdentifier(a)] ?? .zero
+            let rb = frames[ObjectIdentifier(b)] ?? .zero
+            if abs(ra.midY - rb.midY) > 8 { return ra.midY < rb.midY }
+            return ra.minX < rb.minX
+        }
+    }
+
+    /// A control Tab lands on is scrolled into view.
+    override func moveKeyboard(to view: NSView) {
+        super.moveKeyboard(to: view)
+        view.scrollToVisible(view.bounds.insetBy(dx: 0, dy: -8))
+    }
+
+    /// `build` run, and the keyboard put back on the control it was on: the same control, by its identifier, or else
+    /// the one in its place in Tab's order.
+    func rebuild(_ build: () -> Void) {
+        let focused = focusedControl.flatMap { $0.isDescendant(of: self) ? $0 : nil }
+        let identifier = focused?.accessibilityIdentifier() ?? ""
+        let place = focused.flatMap { view in focusOrder().firstIndex { $0 === view } }
+        let scrolled = scroll.contentView.bounds.origin
+        build()
+        layoutSubtreeIfNeeded()
+        scroll.contentView.scroll(to: scrolled)
+        scroll.reflectScrolledClipView(scroll.contentView)
+        guard focused != nil, let window else { return }
+        let order = focusOrder()
+        let again =
+            identifier.isEmpty ? nil : order.first { $0.accessibilityIdentifier() == identifier }
+        if let view = again ?? place.flatMap({ order.indices.contains($0) ? order[$0] : nil }) {
+            window.makeFirstResponder(view)
+        }
+    }
+
+    /// `rebuild` once the event at hand is done: a field left by Tab has handed the keyboard on by then, and it
+    /// stays where Tab put it.
+    func rebuildSoon(_ build: @escaping () -> Void) {
+        DispatchQueue.main.async { [weak self] in self?.rebuild(build) }
     }
 
     override func layout() {
@@ -70,6 +144,8 @@ class SavedViewSheet: DialogPanelView {
         scroll.frame = NSRect(x: 0, y: 0, width: Self.width, height: max(0, bounds.height - footer))
         document.frame = NSRect(x: 0, y: 0, width: Self.width, height: rows)
         stack.frame = document.bounds
+        footerLine.frame = NSRect(x: 0, y: scroll.frame.maxY, width: Self.width, height: 1)
+        footerLine.isHidden = rows <= scroll.frame.height + 0.5
     }
 
     /// Takes everything off, to be built again.
@@ -77,9 +153,9 @@ class SavedViewSheet: DialogPanelView {
         for view in stack.arrangedSubviews { view.removeFromSuperview() }
     }
 
-    func add(_ view: NSView, after spacing: Double? = nil) {
+    func add(_ view: NSView, fullWidth: Bool = true, after spacing: Double? = nil) {
         stack.addArrangedSubview(view)
-        view.widthAnchor.constraint(equalToConstant: contentWidth).isActive = true
+        if fullWidth { view.widthAnchor.constraint(equalToConstant: contentWidth).isActive = true }
         if let spacing { stack.setCustomSpacing(spacing, after: view) }
     }
 
@@ -113,11 +189,12 @@ class SavedViewSheet: DialogPanelView {
         return field
     }
 
-    func note(_ text: String) -> NSTextField {
+    /// A note in the controls' column; `fullWidth`, one across the sheet.
+    func note(_ text: String, fullWidth: Bool = false) -> NSTextField {
         let field = NSTextField(wrappingLabelWithString: text)
         field.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
         field.textColor = .secondaryLabelColor
-        field.preferredMaxLayoutWidth = contentWidth - FolderViewPopover.controlColumn
+        field.preferredMaxLayoutWidth = fullWidth ? contentWidth : contentWidth - FolderViewPopover.controlColumn
         return field
     }
 
@@ -141,12 +218,15 @@ class SavedViewSheet: DialogPanelView {
         return pair
     }
 
+    /// A pop-up of `titles`, identified as `id` in the sheet so the keyboard finds it again once the sheet is built
+    /// again.
     func popUp(
-        _ titles: [String], selected: Int, width: Double = FolderViewPopover.popUpWidth,
+        _ titles: [String], selected: Int, width: Double = FolderViewPopover.popUpWidth, id: String? = nil,
         _ action: @escaping (Int) -> Void
     ) -> ClosurePopUp {
         let popup = ClosurePopUp(titles: titles, action: action)
         popup.selectItem(at: selected)
+        if let id { popup.setAccessibilityIdentifier("\(identifierPrefix).\(id)") }
         popup.translatesAutoresizingMaskIntoConstraints = false
         popup.widthAnchor.constraint(equalToConstant: width).isActive = true
         return popup

@@ -1,4 +1,4 @@
-// The Views window: every customized folder, every tab view and every window view (Saved Views ▸ Manage…)
+// The Views window: every customized folder, every tab view and every window view (Layout ▸ Manage…)
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -197,7 +197,7 @@ final class ViewsWindowController: NSWindowController, NSWindowDelegate, NSOutli
         emptyTitle.textColor = .secondaryLabelColor
         let emptyText = NSTextField(
             wrappingLabelWithString:
-                "To give the folder you\u{2019}re in a view of its own, choose Saved Views \u{203A} Remember View for This Folder."
+                "To give the folder you\u{2019}re in a view of its own, choose Layout \u{203A} Remember View for This Folder."
         )
         emptyText.alignment = .center
         emptyText.textColor = .secondaryLabelColor

@@ -80,7 +80,12 @@ extension BrowserPane {
             size: FolderViewSizes(
                 iconSizes: preferences.iconSizes, compactListWidths: preferences.compactListWidths,
                 previewCounts: preferences.previewCounts))
-        return PaneState(folder: folderLetGo ? nil : folderPath, settings: settings)
+        // A viewer beside the other pane's list; a file in place of the folder is the folder's, for a tab view.
+        let viewer = self.viewer.flatMap { viewer in
+            viewer.mode == .inPlace
+                ? nil : PaneViewer(follows: viewer.mode == .following, editing: viewer.isEditing)
+        }
+        return PaneState(folder: folderLetGo ? nil : folderPath, settings: settings, viewer: viewer)
     }
 
     /// The settings a tab view keeps of this pane, taken as a change by hand would take them, but into what the pane

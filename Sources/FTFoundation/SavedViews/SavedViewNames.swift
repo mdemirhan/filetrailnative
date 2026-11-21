@@ -75,7 +75,7 @@ public enum SavedViewNames {
     public static func limitTitle(kind: String) -> String { "No more \(kind) can be saved" }
 
     public static let limitMessage =
-        "Up to \(limit) are kept. Remove one in the Views window (Saved Views \u{203A} Manage) to save another."
+        "Up to \(limit) are kept. Remove one in the Views window (Layout \u{203A} Manage) to save another."
 
     /// A new id, with the kind's prefix.
     public static func newID(_ prefix: String) -> String {

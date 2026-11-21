@@ -277,59 +277,59 @@ extension ShortcutCommands {
             menuPath: "Window > Merge All Windows"),
         ShortcutCommandDefinition(
             id: .saveTabView, label: "Save Tab View…", group: .tabs, defaults: [],
-            menuPath: "Saved Views > Save Tab View…"),
+            menuPath: "Layout > Save Tab View…"),
         // The first five tab views in the list, whatever they are called.
         ShortcutCommandDefinition(
             id: .applyTabView1, label: "Tab View 1", group: .tabs, defaults: ["Cmd+Option+1"],
-            menuPath: "Saved Views > Tab Views"),
+            menuPath: "Layout > Tab Views"),
         ShortcutCommandDefinition(
             id: .applyTabView2, label: "Tab View 2", group: .tabs, defaults: ["Cmd+Option+2"],
-            menuPath: "Saved Views > Tab Views"),
+            menuPath: "Layout > Tab Views"),
         ShortcutCommandDefinition(
             id: .applyTabView3, label: "Tab View 3", group: .tabs, defaults: ["Cmd+Option+3"],
-            menuPath: "Saved Views > Tab Views"),
+            menuPath: "Layout > Tab Views"),
         ShortcutCommandDefinition(
             id: .applyTabView4, label: "Tab View 4", group: .tabs, defaults: ["Cmd+Option+4"],
-            menuPath: "Saved Views > Tab Views"),
+            menuPath: "Layout > Tab Views"),
         ShortcutCommandDefinition(
             id: .applyTabView5, label: "Tab View 5", group: .tabs, defaults: ["Cmd+Option+5"],
-            menuPath: "Saved Views > Tab Views"),
+            menuPath: "Layout > Tab Views"),
         ShortcutCommandDefinition(
             id: .saveWindowView, label: "Save Window View…", group: .tabs, defaults: [],
-            menuPath: "Saved Views > Save Window View…"),
+            menuPath: "Layout > Save Window View…"),
         // The first five window views in the list, whatever they are called.
         ShortcutCommandDefinition(
             id: .openWindowView1, label: "Window View 1", group: .tabs, defaults: ["Ctrl+Cmd+1"],
-            menuPath: "Saved Views > Window Views"),
+            menuPath: "Layout > Window Views"),
         ShortcutCommandDefinition(
             id: .openWindowView2, label: "Window View 2", group: .tabs, defaults: ["Ctrl+Cmd+2"],
-            menuPath: "Saved Views > Window Views"),
+            menuPath: "Layout > Window Views"),
         ShortcutCommandDefinition(
             id: .openWindowView3, label: "Window View 3", group: .tabs, defaults: ["Ctrl+Cmd+3"],
-            menuPath: "Saved Views > Window Views"),
+            menuPath: "Layout > Window Views"),
         ShortcutCommandDefinition(
             id: .openWindowView4, label: "Window View 4", group: .tabs, defaults: ["Ctrl+Cmd+4"],
-            menuPath: "Saved Views > Window Views"),
+            menuPath: "Layout > Window Views"),
         ShortcutCommandDefinition(
             id: .openWindowView5, label: "Window View 5", group: .tabs, defaults: ["Ctrl+Cmd+5"],
-            menuPath: "Saved Views > Window Views"),
+            menuPath: "Layout > Window Views"),
         // The same five in place of the window the menu acts on: the items ⌥ shows in their place. No keys to begin
         // with: each can be given one in Settings → Shortcuts.
         ShortcutCommandDefinition(
             id: .openWindowView1InThisWindow, label: "Window View 1 in This Window", group: .tabs, defaults: [],
-            menuPath: "Saved Views > Window Views, with Option"),
+            menuPath: "Layout > Window Views, with Option"),
         ShortcutCommandDefinition(
             id: .openWindowView2InThisWindow, label: "Window View 2 in This Window", group: .tabs, defaults: [],
-            menuPath: "Saved Views > Window Views, with Option"),
+            menuPath: "Layout > Window Views, with Option"),
         ShortcutCommandDefinition(
             id: .openWindowView3InThisWindow, label: "Window View 3 in This Window", group: .tabs, defaults: [],
-            menuPath: "Saved Views > Window Views, with Option"),
+            menuPath: "Layout > Window Views, with Option"),
         ShortcutCommandDefinition(
             id: .openWindowView4InThisWindow, label: "Window View 4 in This Window", group: .tabs, defaults: [],
-            menuPath: "Saved Views > Window Views, with Option"),
+            menuPath: "Layout > Window Views, with Option"),
         ShortcutCommandDefinition(
             id: .openWindowView5InThisWindow, label: "Window View 5 in This Window", group: .tabs, defaults: [],
-            menuPath: "Saved Views > Window Views, with Option"),
+            menuPath: "Layout > Window Views, with Option"),
         ShortcutCommandDefinition(
             id: .toggleTwoPanes, label: "Two Panes", group: .tabs, defaults: ["Cmd+\\"],
             menuPath: "View > Two Panes"),

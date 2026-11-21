@@ -395,7 +395,7 @@ final class FolderViewPopover {
         case .groupBy: "Group By"
         case .sort: "Sort By"
         case .foldersFirst: "Folders First"
-        case .columns: "Column Visibility and Order"
+        case .columns: "Column Visibility, Order and Sizes"
         case .size:
             switch mode {
             case .icons: "Icon Size"
