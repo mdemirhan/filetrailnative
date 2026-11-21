@@ -288,7 +288,7 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
     /// The image file's picture read by ImageIO, upright, its longer side at most `side` and never larger than the
     /// image itself; nil when the file is not an image ImageIO reads. For the sizes Quick Look refuses. An image of a
     /// high dynamic range is read at its standard range, as previews show it.
-    static func decodedImage(_ url: URL, side: Int) -> CGImage? {
+    public static func decodedImage(_ url: URL, side: Int) -> CGImage? {
         guard let source = CGImageSourceCreateWithURL(linkTarget(of: url) as CFURL, nil),
             CGImageSourceGetCount(source) > 0
         else { return nil }

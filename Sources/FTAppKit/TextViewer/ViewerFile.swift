@@ -21,6 +21,8 @@ struct ViewerFile: @unchecked Sendable {
     let size: Int64
     /// A picture's image, read with the file.
     var image: NSImage?
+    /// The pictures on the disk a Markdown file names, read with it.
+    var markdownImages = MarkdownImages()
 
     /// A file up to this size is shown and can be edited.
     static let viewLimit: Int64 = 50 * 1024 * 1024
@@ -85,7 +87,9 @@ struct ViewerFile: @unchecked Sendable {
         guard let (text, format) = TextDecoding.decode(data) else { return file(.other) }
         let firstLine = text.prefix(200).split(separator: "\n", maxSplits: 1).first.map(String.init)
         let language = TextLanguage.detect(fileName: NodePath.basename(path), firstLine: firstLine)
-        return file(.text(text, format, language, TextDecoding.indentation(of: text)))
+        var read = file(.text(text, format, language, TextDecoding.indentation(of: text)))
+        if language.hasPreview { read.markdownImages = MarkdownImages.read(in: text, file: url) }
+        return read
     }
 
     /// Writes `text` over the file at `path` as `format` says. The file is written beside its original and then put in

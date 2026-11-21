@@ -381,6 +381,47 @@ extension ExplorerWindowlessTests {
             #expect(viewer.isEditing)
         }
 
+        // A Markdown file's Preview shows the pictures beside it from the first, and one added in Edit once it is
+        // read, back in Read.
+        @Test func theMarkdownPreviewShowsPicturesOnTheDiskAndOneAddedInEdit() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            func png(_ width: Int) throws -> Data {
+                let rep = try #require(
+                    NSBitmapImageRep(
+                        bitmapDataPlanes: nil, pixelsWide: width, pixelsHigh: 10, bitsPerSample: 8,
+                        samplesPerPixel: 3, hasAlpha: false, isPlanar: false, colorSpaceName: .deviceRGB,
+                        bytesPerRow: 0, bitsPerPixel: 0))
+                return try #require(rep.representation(using: .png, properties: [:]))
+            }
+            try png(30).write(to: harness.folder.appending("one.png"))
+            try png(20).write(to: harness.folder.appending("two.png"))
+            try "# Notes\n\n![one](one.png)\n".write(
+                to: harness.folder.appending("notes.md"), atomically: true, encoding: .utf8)
+            let tab = try await tabWithFiles(harness)
+            let pane = tab.activePane
+            let notes = real(harness, "notes.md")
+            #expect(await waitUntil { pane.content.listedEntry(at: notes) != nil })
+            select(notes, in: tab)
+            tab.perform(.viewFile)
+            let viewer = try #require(pane.viewer)
+            func widths() -> [CGFloat] {
+                var found: [CGFloat] = []
+                let text = viewer.previewText
+                text.enumerateAttribute(.attachment, in: NSRange(location: 0, length: text.length)) { value, _, _ in
+                    if let cell = (value as? NSTextAttachment)?.attachmentCell { found.append(cell.cellSize().width) }
+                }
+                return found
+            }
+            #expect(await waitUntil { viewer.isText })
+            #expect(widths() == [30], "read with the file")
+
+            viewer.setEditing(true)
+            viewer.textView.insertText("![two](two.png)\n\n", replacementRange: NSRange(location: 9, length: 0))
+            viewer.setEditing(false)
+            #expect(await waitUntil { widths() == [20, 30] }, "\(widths())")
+        }
+
         @Test func escClosesAFileInPlaceThatIsNotTextAndTabGoesOnBesideTheList() async throws {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }

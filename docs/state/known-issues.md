@@ -126,4 +126,5 @@ If this is picked up: the disk says whether it keeps attributes this way (`getat
 - **Over 50 MB a file isn't shown**, and over 10 MB its text has no colors. Reading a large file a page at a time is for later.
 - **Line endings are made one kind on Save**: a file that mixes them is written with the kind most of its lines have.
 - **Markdown has Source and Preview, not both side by side**, and HTML, CSV and SVG have no preview of their own.
+- **Markdown's Preview shows pictures on the Mac only**: one on the web shows as its description, by choice (see views.md). Of HTML only `<img>` is drawn, at its `width` and `height` and centered by `align="center"`; other tags show as their text. An animation shows its first frame, and past 256 MB of pictures in one file the rest show as their descriptions.
 - **The colors come from the app's own lexer**, which knows keywords, strings, comments and numbers, not the grammar: a regular expression in JavaScript or a here-document in a shell script is colored as the code around it.

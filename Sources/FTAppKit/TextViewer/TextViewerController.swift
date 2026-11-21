@@ -72,6 +72,12 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     private let previewScroll = NSScrollView()
     /// TextKit 1, as a Markdown table is drawn with `NSTextTable`, which TextKit 2 doesn't lay out.
     private let previewView = NSTextView(usingTextLayoutManager: false)
+    /// The pictures the Markdown names, read from the disk with the file and as the Preview finds more.
+    private var previewImages = MarkdownImages()
+    /// The file whose pictures are being read (its `loadNumber`), so one read goes at a time.
+    private var readingImagesFor: Int?
+    /// What the Markdown Preview shows.
+    var previewText: NSAttributedString { previewView.attributedString() }
     let quickLook = QuickLookHost()
     private let message = ViewerMessageView()
     /// A picture is drawn by the viewer itself; other files that aren't text by Quick Look's view.
@@ -244,6 +250,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         self.path = path
         // Nothing is known of the new file until it is read: the old one's kind isn't kept meanwhile.
         file = nil
+        previewImages = MarkdownImages()
         isDirty = false
         isEditing = false
         textView.isEditable = false
@@ -285,6 +292,8 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
             self.format = format
             self.indentation = indentation
             self.language = language
+            // Read again with the file: a picture changed on disk shows as it is now.
+            previewImages = file.markdownImages
             let place = keepingPlace ? (textView.selectedRange(), scrollView.contentView.bounds.origin) : nil
             setText(text)
             savedText = text as NSString
@@ -356,9 +365,34 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     }
 
     private func renderPreview() {
-        previewView.textStorage?.setAttributedString(
-            MarkdownRendering.render(textView.string, theme: currentTheme, fontSize: settings.fontSize))
+        let fileURL = filePath.map { DiskPath($0).url(isDirectory: false) }
+        let rendered = MarkdownRendering.render(
+            textView.string, theme: currentTheme, fontSize: settings.fontSize, file: fileURL, images: previewImages)
+        previewView.textStorage?.setAttributedString(rendered.text)
         previewView.backgroundColor = NSColor(currentTheme.background)
+        readImages(rendered.untried)
+    }
+
+    /// Pictures the Preview names that weren't read with the file (one added in Edit, or a file given the Markdown
+    /// language), read off the main actor; the Preview is drawn again with them, where it was.
+    private func readImages(_ untried: [URL]) {
+        guard !untried.isEmpty, readingImagesFor != loadNumber else { return }
+        let number = loadNumber
+        let spent = previewImages.bytes
+        readingImagesFor = number
+        Task { [weak self] in
+            let read = await Task.detached(priority: .userInitiated) { MarkdownImages.read(untried, spent: spent) }
+                .value
+            guard let self else { return }
+            if self.readingImagesFor == number { self.readingImagesFor = nil }
+            guard number == self.loadNumber else { return }
+            self.previewImages.add(read)
+            guard !self.previewScroll.isHidden else { return }
+            let place = self.previewScroll.contentView.bounds.origin
+            self.renderPreview()
+            self.previewScroll.contentView.scroll(to: place)
+            self.previewScroll.reflectScrolledClipView(self.previewScroll.contentView)
+        }
     }
 
     // MARK: Read and Edit

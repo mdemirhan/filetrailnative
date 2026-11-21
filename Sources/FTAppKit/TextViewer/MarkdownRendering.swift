@@ -1,16 +1,27 @@
 import AppKit
 import FTFoundation
 
-/// Markdown as the viewer's Preview shows it: the system's parser, drawn in the viewer's theme. Nothing is loaded from
-/// the network: images show as their text, links stay links. A table is a table: each cell a paragraph in its own
+/// Markdown as the viewer's Preview shows it: the system's parser, drawn in the viewer's theme. A picture on the disk
+/// shows once it has been read (`MarkdownImages`), from Markdown or an HTML `<img>` (`MarkdownHTML`); one on the web
+/// is never fetched and shows as its text, as does one not read. Links stay links. A table is a table: each cell a paragraph in its own
 /// block of an `NSTextTable`, the header row bold on the code background, each column aligned as the Markdown says,
 /// which the Preview's text view draws as it lays out with TextKit 1.
+@MainActor
 enum MarkdownRendering {
     static func render(_ markdown: String, theme: TextViewerTheme, fontSize: Double) -> NSAttributedString {
+        render(markdown, theme: theme, fontSize: fontSize, file: nil, images: MarkdownImages()).text
+    }
+
+    /// `file`: the Markdown file's own address, which a picture's relative path is read from; `images`: the pictures
+    /// read so far. `untried`: the pictures on the disk it names that `images` hasn't tried, each once, in order.
+    static func render(
+        _ markdown: String, theme: TextViewerTheme, fontSize: Double, file: URL?, images: MarkdownImages
+    ) -> (text: NSAttributedString, untried: [URL]) {
+        var untried: [URL] = []
         let options = AttributedString.MarkdownParsingOptions(
             allowsExtendedAttributes: false, interpretedSyntax: .full, failurePolicy: .returnPartiallyParsedIfPossible)
-        guard let parsed = try? AttributedString(markdown: markdown, options: options) else {
-            return NSAttributedString(string: markdown, attributes: [.foregroundColor: NSColor(theme.text)])
+        guard let parsed = try? AttributedString(markdown: markdown, options: options, baseURL: file) else {
+            return (NSAttributedString(string: markdown, attributes: [.foregroundColor: NSColor(theme.text)]), [])
         }
         let result = NSMutableAttributedString()
         let text = NSColor(theme.text)
@@ -20,13 +31,20 @@ enum MarkdownRendering {
         var previousListItem: Int?
         var previousAttributes: [NSAttributedString.Key: Any] = [:]
         var previousWasCell = false
+        /// The picture the run before showed, and its block.
+        var previousImage: (url: URL, block: Int?)?
         var tables: [Int: NSTextTable] = [:]
+        var runNumber = 0
 
         for run in parsed.runs {
+            runNumber += 1
             let piece = String(parsed[run.range].characters)
             let intent = run.presentationIntent
             let components = intent?.components ?? []
-            let block = components.first?.identity
+            let inlineHTML = run.inlinePresentationIntent?.contains(.inlineHTML) ?? false
+            let blockHTML = run.inlinePresentationIntent?.contains(.blockHTML) ?? false
+            // A block of HTML comes with no block of its own: it is given one, so it is a paragraph of its own.
+            let block = components.first?.identity ?? (blockHTML ? -runNumber : nil)
             var attributes: [NSAttributedString.Key: Any] = [.foregroundColor: text, .font: body]
             let paragraph = NSMutableParagraphStyle()
             paragraph.paragraphSpacing = CGFloat(fontSize) * 0.6
@@ -148,11 +166,65 @@ enum MarkdownRendering {
             previousBlock = block
             previousWasCell = cell != nil
             previousAttributes = attributes
+            if inlineHTML || blockHTML, let parts = MarkdownHTML.parts(of: piece, file: file) {
+                if blockHTML && MarkdownHTML.isCentered(piece) { paragraph.alignment = .center }
+                paragraph.lineHeightMultiple = 1
+                var shown = prefix
+                for part in parts {
+                    switch part {
+                    case .text(let words):
+                        shown += words
+                    case .picture(let picture):
+                        let image = picture.url.flatMap { $0.isFileURL ? images[$0] : nil }
+                        if let url = picture.url, url.isFileURL, image == nil, !images.tried(url),
+                            !untried.contains(url)
+                        {
+                            untried.append(url)
+                        }
+                        guard let image else {
+                            shown += picture.alt
+                            continue
+                        }
+                        result.append(NSAttributedString(string: shown, attributes: attributes))
+                        shown = ""
+                        let sized = (image.copy() as? NSImage) ?? image
+                        sized.size = picture.size(of: image.size)
+                        let attachment = NSTextAttachment()
+                        attachment.attachmentCell = MarkdownImageCell(picture: sized)
+                        var pictured = attributes
+                        pictured[.attachment] = attachment
+                        result.append(NSAttributedString(string: "\u{FFFC}", attributes: pictured))
+                    }
+                }
+                if !shown.isEmpty { result.append(NSAttributedString(string: shown, attributes: attributes)) }
+                continue
+            }
+            // A picture read takes the place of its text. Its text may be several runs (`![a *b*](c.png)`): the
+            // picture goes in once, for the first.
+            let named = run.imageURL.flatMap { $0.isFileURL ? $0.absoluteURL.standardizedFileURL : nil }
+            let image = named.flatMap { images[$0] }
+            if let named, image == nil, !images.tried(named), !untried.contains(named) { untried.append(named) }
+            defer { previousImage = image == nil ? nil : named.map { ($0, block) } }
+            if let image {
+                guard previousImage?.url != named || previousImage?.block != block else { continue }
+                let attachment = NSTextAttachment()
+                // Starting a list item, it hangs from the bullet's line, so the bullet is at its top.
+                let ascent = prefix.isEmpty ? nil : ((attributes[.font] as? NSFont) ?? body).ascender
+                attachment.attachmentCell = MarkdownImageCell(picture: image, hangsFrom: ascent)
+                // The line is the picture's height: the text's line spacing under a tall picture is a gap.
+                let tight = (paragraph.copy() as? NSMutableParagraphStyle) ?? paragraph
+                tight.lineHeightMultiple = 1
+                attributes[.paragraphStyle] = tight
+                if !prefix.isEmpty { result.append(NSAttributedString(string: prefix, attributes: attributes)) }
+                attributes[.attachment] = attachment
+                result.append(NSAttributedString(string: "\u{FFFC}", attributes: attributes))
+                continue
+            }
             let shown =
                 components.contains { if case .thematicBreak = $0.kind { true } else { false } }
                 ? String(repeating: "─", count: 24) : piece
             result.append(NSAttributedString(string: prefix + shown, attributes: attributes))
         }
-        return result
+        return (result, untried)
     }
 }
