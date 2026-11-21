@@ -42,9 +42,14 @@ The [README](../README.md) is about what is different from Finder. This page lis
 
 ## Search and filtering
 
+<p align="center">
+  <img src="screenshots/search-groups.png" alt="Search results for trip in a project, grouped under the folder each result is in: app › src › components, app › src › pages and app › tests" width="900">
+</p>
+
 - **Search as you type**, of everything under the folder you are in, by name or full path, in plain text, glob or regex. One click widens it to Home or the whole disk.
 - **Plain text** ignores case, and a plain letter finds its accented forms: `resume` finds Résumé.
 - **Options**: hidden files, and inside a Git repository, leaving out `.git` and whatever `.gitignore` excludes.
+- **Results grouped and sorted your way**: by the folder each result is in, by name or kind, or by a date, size or tag, which File Trail reads for the results in the background while they are grouped or sorted by it.
 - **Results in any view**, with columns of their own that you choose and sort, and a filter field that trims them by name or by folder without searching again. A search stops at 50,000 results, and the status bar says so when some folders couldn't be read.
 - **Each tab keeps its own search**, a search keeps running while you look at another tab, and ⇧⌘F shows the last results again.
 - **Results stay put while you work in them**: what you move away or delete leaves the list, what you rename keeps its place, and when you add something to the folder searched a note offers Search Again rather than searching on its own.
@@ -92,7 +97,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
 ## Views
 
 - **Icons** shows Quick Look previews of photos, PDFs and other documents, at the size you set.
-- **List** has columns for date, size and kind, and optionally date created, date added, date last opened and permissions. Right-click a column heading to show or hide columns, and drag a heading to move its column. Each column keeps the width you give it, in each pane apart.
+- **List** has columns for date, size and kind, and optionally date created, date added, date last opened and permissions. Right-click a column heading, or choose View ▸ Columns, to show or hide columns, and drag a heading to move its column. Each column keeps the width you give it, in each pane apart.
 - **Folder views**: a folder can keep its own view, order, columns and size, for itself or for every folder inside it. Changes you make there show at once but are kept only with Save (View ▸ Folder View ▸ Update Folder View), and a small symbol in the status bar shows whether a folder has a view of its own and opens its options.
 - **Folder Views** (View ▸ Folder View ▸ Manage Folder Views…) lists every folder with a view of its own, opens it, and removes its view, with or without those of the folders inside it.
 - **Compact List** packs a folder into columns of names.
@@ -100,6 +105,10 @@ The [README](../README.md) is about what is different from Finder. This page lis
 - **Previews (⌘4)** fills the pane with 9, 4, 2 or 1 large previews, each in its own proportions. View ▸ Show Previews switches to it at the count you pick from any view, search results too, with the selected file on screen.
 - **At 1 preview at a time** the file on screen is the selected one, so Space, the Info panel and Move to Trash act on what you see.
 - **Quick Look** on Space and ⌘Y, in every view.
+<p align="center">
+  <img src="screenshots/markdown-pane.png" alt="A project folder with README.md selected, and the pane beside it showing the Markdown as it reads, with headings, lists, a link and a code block" width="900">
+</p>
+
 - **Open in Viewer (⌘E)** shows a file's text in place of the folder, with colors for about 60 languages and formats, to read or to edit and save, in Read or Edit as you last chose. It's a step of Back and Forward, so Back returns to the folder with the file selected, and the viewer's bar steps to the next and previous file.
 - **Open in Other Pane (⌥⌘↓ or ⌥⌘E)** on a file shows it in the other pane, which then follows the list as you move through it: text with colors, Markdown as it reads, pictures and other files as Quick Look shows them. It keeps following while you edit, and asks to save before it moves on. A workspace keeps it, and the file it showed.
 - **The viewer's own bar and menu**: Read or Edit, Save, Follow, and a ⋯ menu with Find, the language, light or dark whatever the app's appearance, one of three themes for each, the text size, wrapped lines and line numbers.
@@ -147,4 +156,5 @@ The [README](../README.md) is about what is different from Finder. This page lis
 - **Share** the selected items by AirDrop, Mail, Messages and the rest, from the File menu, the right-click menu, the Info panel or the toolbar.
 - **Disk images** open in File Trail instead of a Finder window, and disks eject from the sidebar.
 - **Show in Finder** takes you to the same item there.
+- **Finder aliases** open their originals, in File Trail for an alias of a folder, and look and sort as in Finder. File ▸ Make Alias makes one beside the item, and Show Original selects the original in its folder. Symbolic links are called symbolic links.
 - **The icons macOS itself draws** for each file and folder.

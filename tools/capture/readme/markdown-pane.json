@@ -1,0 +1,59 @@
+{
+  "name": "markdown-pane",
+  "description": "The project's README shown as it reads in the other pane, beside the project folder's list",
+  "root": "/Users/Shared/Lighthouse",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1180,
+      "height": 700
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "density": "standard",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "notificationsEnabled": false
+      }
+    },
+    {
+      "step": "rootTree",
+      "path": "/Users/Shared/Lighthouse"
+    },
+    {
+      "step": "open",
+      "path": "."
+    },
+    {
+      "step": "wait",
+      "ms": 500
+    },
+    {
+      "step": "select",
+      "names": [
+        "README.md"
+      ]
+    },
+    {
+      "step": "command",
+      "id": "openSelectionInOtherPane"
+    },
+    {
+      "step": "wait",
+      "ms": 2000
+    },
+    {
+      "step": "snapshot",
+      "name": "preview"
+    },
+    {
+      "step": "windowShot",
+      "name": "markdown-pane"
+    }
+  ]
+}

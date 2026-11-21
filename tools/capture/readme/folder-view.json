@@ -1,0 +1,65 @@
+{
+  "name": "folder-view",
+  "description": "The project folder grouped by date modified, with its Folder View Options open",
+  "root": "/Users/Shared/Lighthouse",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1000,
+      "height": 625
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "density": "standard",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "notificationsEnabled": false
+      }
+    },
+    {
+      "step": "rootTree",
+      "path": "/Users/Shared/Lighthouse"
+    },
+    {
+      "step": "open",
+      "path": "."
+    },
+    {
+      "step": "wait",
+      "ms": 500
+    },
+    {
+      "step": "command",
+      "id": "groupByModified"
+    },
+    {
+      "step": "wait",
+      "ms": 800
+    },
+    {
+      "step": "click",
+      "element": "folder view symbol"
+    },
+    {
+      "step": "expectSheet",
+      "name": "folder view popover"
+    },
+    {
+      "step": "wait",
+      "ms": 700
+    },
+    {
+      "step": "snapshot",
+      "name": "preview"
+    },
+    {
+      "step": "windowShot",
+      "name": "folder-view"
+    }
+  ]
+}

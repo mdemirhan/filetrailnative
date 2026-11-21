@@ -11,6 +11,7 @@ A Mac file browser with fast search, a real folder tree, two panes and true cut 
 - **Search that works, and is fast.** Results appear as you type, from the folder you are in, by name or full path, in plain text, glob or regex. There is no index to wait for, and nothing left out for not being indexed.
 - **A folder tree beside your files.** See where you are and what is around it, and open any folder's arrow to look inside without leaving.
 - **Two folders side by side.** ⌘\\ splits a tab into two panes, and F5 and F6 copy or move what is selected from one to the other. No second window to line up.
+- **Read and edit files where they are.** ⌘E shows a file's code or text in color, ready to edit, and the other pane can show each file as you move through the list.
 - **Cut and paste files.** ⌘X and ⌘V move files. What you cut or copied stays marked until you paste it, and a paste never destroys anything: what it replaces goes to the Trash.
 - **Any folder, any command, in a few keystrokes.** ⌘K finds a folder you have used from a few letters, typing in a folder narrows it to the names that match, and ⇧⌘P finds any command by name. Every command can have a shortcut that you choose.
 - **Free, open source and private.** MIT licensed, with no accounts, no analytics and nothing sent anywhere.
@@ -50,6 +51,18 @@ In Finder, moving files between two folders means two windows, or a drag held ov
 
 A set of folders that is one piece of work can be saved as a workspace: the window's tabs with their panes, views and sizes. It opens again from Window ▸ Workspaces, and the first five with ⌃⌘1 to ⌃⌘5.
 
+## Read and edit a file beside its folder
+
+<p align="center">
+  <img src="docs/screenshots/viewer.png" alt="A folder of components in a list, with TripCard.jsx selected and its code shown in color in the pane beside it, Follow checked" width="900">
+</p>
+
+Quick Look shows a file but doesn't let you change it, and opening an editor takes you away from the folder. In File Trail, ⌘E shows the selected file in place of the folder, in color for about 60 languages and formats; switch to Edit to change it, and ⌘S saves. Show it in the other pane instead (⌥⌘↓) and it follows the list: move from file to file and each one appears beside it.
+
+- **More than text.** Markdown shows as it reads, pictures as pictures, and anything else as Quick Look shows it.
+- **Part of browsing.** Back returns to the folder with the file selected, ⌥⌘] and ⌥⌘[ step to the next and previous file, and the file asks before unsaved edits are lost.
+- **Your way to read.** Light and dark themes of its own, the text size, line numbers, wrapped lines and Find are in the viewer's ⋯ menu.
+
 ## Cut, copy and paste, with a clipboard you can see
 
 <p align="center">
@@ -63,7 +76,8 @@ In Finder, moving files with the keyboard means ⌘C and then ⌥⌘V, and that 
 **Pasting is built not to lose your files.**
 
 - **You choose what a paste does** when something of the same name is already there: Skip, Keep Both, Replace, or for folders, Add Missing, which copies only what the folder there lacks.
-- **Anything replaced goes to the Trash**, and a move to another disk checks each copy before it removes the original.
+- **Bring a backup up to date with Replace Older**: folders of the same name are merged, and only the files that are newer than the ones there replace them, so running it again replaces nothing.
+- **Anything replaced goes to the Trash**, and a move to another disk checks each copy, and that the disk has saved it, before it removes the original.
 - **A paste cut short picks up again.** If File Trail stops in the middle of a Replace, it carries on the next time it opens and tells you where everything is.
 - **Undo (⌘Z)** takes back renames, moves, copies and Move to Trash, one at a time.
 
@@ -116,6 +130,16 @@ Everything File Trail does can be done from the keyboard, and the keys are yours
 </p>
 
 Ask for a folder's size and File Trail measures it, and every folder inside it, in one pass. Sort the List view by Size and each row gets a bar, so the heavy folders stand out before you read a number. Sizes are worked out for the folder you select or ask about, never for everything you pass while browsing, so opening a large folder stays instant.
+
+## Each folder the way you want it
+
+<p align="center">
+  <img src="docs/screenshots/folder-view.png" alt="A project folder in List view grouped by date modified, under Today, Yesterday, Previous 7 Days and earlier months, with the Folder View Options popover open" width="900">
+</p>
+
+- **Groups in every view.** View ▸ Group By sorts a folder's items into groups by name, date, size, kind or tag, under a title for each: Today, Yesterday, Previous 7 Days and so on for dates. Search results can be grouped by the folder each one is in.
+- **A view that stays with its folder.** A folder can keep its own view, sort order, columns, size and grouping, for itself or for every folder inside it. Press ⌘J, or the symbol at the right end of the status bar, choose what the folder keeps, and Save.
+- **Nothing changes by accident.** Trying another look shows at once but is kept only when you press Save, and folder views are kept by File Trail, never written into your folders. View ▸ Folder View ▸ Manage Folder Views lists every folder that has one.
 
 ## Look through pictures a pane at a time
 

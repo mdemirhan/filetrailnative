@@ -56,6 +56,17 @@ mkdir "$project/mobile/screens"
 cp -p "$project/design/screens/home.png" "$project/design/screens/map.png" "$project/mobile/screens/"
 touch -r "$project/design/screens" "$project/mobile/screens"
 touch -r "$project/mobile/README.md" "$project/mobile"
+mkdir -p "$out"
+# The fixture's text files are placeholders; the scenes that show a file's text get real ones, each file and its
+# folder keeping their dates.
+(cd tools/capture/readme/files && find . -type f) | while read -r file; do
+    target="$project/${file#./}"
+    touch -r "$target" "$out/file-time"
+    touch -r "$(dirname "$target")" "$out/folder-time"
+    cp "tools/capture/readme/files/${file#./}" "$target"
+    touch -r "$out/file-time" "$target"
+    touch -r "$out/folder-time" "$(dirname "$target")"
+done
 # The fixture's big files are sparse, which would show as "on disk" sizes of nothing.
 python3 - "$project" <<'PY'
 import os, sys
@@ -98,6 +109,11 @@ if scene in ("folder-sizes", "dark-mode"):
     prefs["detailColumnWidths"] = {"name": 160, "modified": 150, "size": 90, "kind": 60}
 if scene == "two-panes":
     prefs["detailColumnWidths"] = {"name": 190, "modified": 150, "size": 90, "kind": 60}
+if scene in ("viewer", "markdown-pane"):
+    prefs["detailColumnWidths"] = {"name": 200, "modified": 150, "size": 70, "kind": 60}
+# A kind the Mac's own apps name (a Zed.app Document) stays out of these pictures.
+if scene in ("viewer", "markdown-pane", "folder-view"):
+    prefs["detailColumns"] = {"kind": False}
 json.dump({"preferences": prefs}, open(target.replace("visited-folders", "app-state"), "w"))
 PY
     # The two-panes scene copies three photos into a folder that holds four already. Only that scene has the folder.
