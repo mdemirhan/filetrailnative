@@ -79,6 +79,11 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     /// The file was read again after it changed on disk: its pictures are read again too, and the ones read before
     /// stay in the Preview until then, so it keeps its place.
     private var previewImagesAreStale = false
+    /// Where the source and the Preview were after the last switch between them, and the text's changes then: one
+    /// switched back to, with nothing scrolled or changed since, is where it was.
+    private var switchPlace: (source: CGFloat, preview: CGFloat, changes: Int)?
+    /// The text's changes, typed or read again.
+    private var changes = 0
     /// The file whose pictures are being read (its `loadNumber`), so one read goes at a time.
     private var readingImagesFor: Int?
     /// What the Markdown Preview shows.
@@ -284,6 +289,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         file = nil
         previewImages = MarkdownImages()
         previewImagesAreStale = false
+        switchPlace = nil
         isDirty = false
         isEditing = false
         textView.isEditable = false
@@ -358,6 +364,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     }
 
     private func setText(_ text: String) {
+        changes += 1
         coloring.ignoresEdits = true
         textView.string = text
         coloring.ignoresEdits = false
@@ -452,7 +459,12 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         guard isText, editing != isEditing else { return }
         isEditing = editing
         textView.isEditable = editing
-        if language.hasPreview { showBody(editing || !showsPreview ? .text : .preview) }
+        if language.hasPreview {
+            let fromPreview = !previewScroll.isHidden
+            showKeepingPlace(editing || !showsPreview ? .text : .preview)
+            // Edit begins on what was being read.
+            if editing && fromPreview { textView.caretOnScreen() }
+        }
         if editing && focus { view.window?.makeFirstResponder(textView) }
         textView.needsDisplay = true
         refreshChrome()
@@ -460,8 +472,52 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
 
     func setPreview(_ preview: Bool) {
         showsPreview = preview
-        if language.hasPreview && !isEditing { showBody(preview ? .preview : .text) }
+        if language.hasPreview && !isEditing { showKeepingPlace(preview ? .preview : .text) }
         refreshChrome()
+    }
+
+    /// The source or the Preview, the other one's place kept: the line at the top of the one shown is at the top of
+    /// the other, by the lines of the Markdown each piece of the Preview comes from.
+    private func showKeepingPlace(_ shown: Body) {
+        let fromSource = !scrollView.isHidden
+        let fromPreview = !previewScroll.isHidden
+        guard shown == .text && fromPreview || shown == .preview && fromSource else {
+            showBody(shown)
+            return
+        }
+        let sourceClip = scrollView.contentView
+        let previewClip = previewScroll.contentView
+        let before = (fromSource ? sourceClip : previewClip).bounds.origin.y
+        let line =
+            fromSource
+            ? coloring.line(at: textView.firstCharacterShown) + 1
+            : MarkdownRendering.sourceLine(at: previewView.firstCharacterShown, in: previewView.attributedString())
+        showBody(shown)
+        view.layoutSubtreeIfNeeded()
+        if let place = switchPlace, place.changes == changes, before == (fromSource ? place.source : place.preview) {
+            let (scroll, clip) = fromSource ? (previewScroll, previewClip) : (scrollView, sourceClip)
+            clip.scroll(to: NSPoint(x: clip.bounds.origin.x, y: fromSource ? place.preview : place.source))
+            scroll.reflectScrolledClipView(clip)
+        } else if let line, fromSource {
+            // Its text is new: laid out whole, as it is drawn, so it is as tall as the way to the line.
+            if let manager = previewView.layoutManager, let container = previewView.textContainer {
+                manager.ensureLayout(for: container)
+                previewView.sizeToFit()
+            }
+            let shown = previewView.attributedString()
+            previewView.scrollLineToTop(MarkdownRendering.location(ofSourceLine: line, in: shown))
+        } else if let line {
+            // The source, hidden behind the Preview, is laid out as far as it was ever shown: laid out in parts, it
+            // places a line it hasn't reached by a guess, which the page keys and the scrolling then correct by jumps.
+            // A Markdown file is laid out whole, as its Preview is.
+            if let manager = textView.layoutManager, let container = textView.textContainer {
+                manager.ensureLayout(for: container)
+                textView.sizeToFit()
+            }
+            let starts = coloring.lineStarts
+            textView.scrollLineToTop(starts[max(0, min(line - 1, starts.count - 1))])
+        }
+        switchPlace = (sourceClip.bounds.origin.y, previewClip.bounds.origin.y, changes)
     }
 
     func setLanguage(_ id: String) {
@@ -473,6 +529,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     }
 
     func textDidChange(_ notification: Notification) {
+        changes += 1
         let text = (textView.textStorage?.string ?? "") as NSString
         let dirty = text.length != savedText.length || !text.isEqual(to: savedText as String)
         if dirty != isDirty {

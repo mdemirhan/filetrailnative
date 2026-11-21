@@ -437,17 +437,59 @@ extension ExplorerWindowlessTests {
             #expect(tab.runPaletteKeyCommand(.halfPageDown))
             #expect(top() > beforePalette)
 
-            // Return: Edit, in the source, with the keyboard; the next file still opens in Read.
+            // Return: Edit, in the source, with the keyboard, at the paragraph the Preview showed at its top, the caret
+            // on its line; the next file still opens in Read.
+            for _ in 0..<12 { try press(pageDown, pageDown, 121) }
+            let preview = viewer.previewView
+            let previewString = preview.string as NSString
+            let topParagraph = previewString.substring(
+                with: previewString.lineRange(for: NSRange(location: preview.firstCharacterShown, length: 0)))
+            let number = try #require(Int(topParagraph.split(separator: " ")[1]))
+            #expect(number > 40, "\(topParagraph)")
             try press("\r", "\r", 36)
             #expect(viewer.isEditing)
             #expect(window.firstResponder === viewer.textView)
-            #expect(viewer.previewView.enclosingScrollView?.isHidden == true)
+            #expect(preview.enclosingScrollView?.isHidden == true)
             #expect(!viewer.scrollView.isHidden)
             #expect(!tab.preferences.textViewerSettings.opensForEditing)
-            // Esc: the Preview again, and the keyboard with it.
+            let source = viewer.textView.string as NSString
+            func sourceLine(_ location: Int) -> String {
+                source.substring(with: source.lineRange(for: NSRange(location: location, length: 0)))
+            }
+            #expect(sourceLine(viewer.textView.firstCharacterShown) == "Paragraph \(number) of the notes.\n")
+            #expect(sourceLine(viewer.textView.selectedRange().location) == "Paragraph \(number) of the notes.\n")
+            // A half page at once moves the text and the caret as far, though the source was hidden till now.
+            let sourceClip = viewer.scrollView.contentView
+            let beforeHalf = sourceClip.bounds.origin.y
+            let caretBefore = viewer.textView.selectedRange().location
+            try press("\u{4}", "d", 2, [.control])
+            let moved = sourceClip.bounds.origin.y - beforeHalf
+            #expect(moved > sourceClip.bounds.height * 0.4 && moved < sourceClip.bounds.height * 0.6, "\(moved)")
+            #expect(viewer.textView.selectedRange().location > caretBefore)
+            // Esc: the Preview follows the source, and the keyboard goes with it.
+            let sourceTop = sourceLine(viewer.textView.firstCharacterShown)
+            #expect(sourceTop.hasPrefix("Paragraph"))
+            let sourcePlace = sourceClip.bounds.origin.y
             viewer.textView.cancelOperation(nil)
             #expect(!viewer.isEditing)
-            #expect(window.firstResponder === viewer.previewView)
+            #expect(window.firstResponder === preview)
+            let previewTop = previewString.substring(
+                with: previewString.lineRange(for: NSRange(location: preview.firstCharacterShown, length: 0)))
+            #expect(previewTop == sourceTop, "\(previewTop) for \(sourceTop)")
+            // Back and forth with nothing moved: each where it was.
+            let previewPlace = top()
+            try press("\r", "\r", 36)
+            #expect(sourceClip.bounds.origin.y == sourcePlace)
+            viewer.textView.cancelOperation(nil)
+            #expect(top() == previewPlace)
+            // So does Source and Preview in Read, and back at the top, the top.
+            viewer.setPreview(false)
+            #expect(sourceLine(viewer.textView.firstCharacterShown) == sourceTop)
+            viewer.setPreview(true)
+            preview.page(-1000)
+            viewer.setPreview(false)
+            #expect(viewer.scrollView.contentView.bounds.origin.y <= 0)
+            viewer.setPreview(true)
             // Esc in the Preview closes the file, as in Read.
             viewer.previewView.cancelOperation(nil)
             #expect(await waitUntil { pane.viewer == nil })

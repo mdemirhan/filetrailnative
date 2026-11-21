@@ -67,6 +67,34 @@ struct MarkdownRenderingTests {
         }
     }
 
+    // Each piece of the Preview knows the Markdown line it comes from, so the source and the Preview keep their place
+    // between them: a line in a block is shown at the block's start, and a blank line at the block before it.
+    @Test func eachPieceKnowsTheLineOfTheMarkdownItComesFrom() {
+        let markdown = "# Title\n\nOne *two*\nthree\n\n- a\n- b\n\n```\ncode\nmore\n```\n\n| A |\n|---|\n| x |\n"
+        let rendered = MarkdownRendering.render(markdown, theme: TextViewerTheme.light[0], fontSize: 13)
+        let string = rendered.string as NSString
+        func line(of piece: String) -> Int? {
+            MarkdownRendering.sourceLine(at: string.range(of: piece).location, in: rendered)
+        }
+        #expect(line(of: "Title") == 1)
+        #expect(line(of: "One") == 3)
+        #expect(line(of: "three") == 4)
+        #expect(line(of: "a") == 6)
+        #expect(line(of: "b") == 7)
+        #expect(line(of: "code") == 9)
+        #expect(line(of: "x") == 16)
+        func shown(_ line: Int) -> String {
+            let location = MarkdownRendering.location(ofSourceLine: line, in: rendered)
+            return string.substring(with: NSRange(location: location, length: min(3, string.length - location)))
+        }
+        #expect(shown(1) == "Tit")
+        #expect(shown(2) == "Tit")
+        #expect(shown(3) == "One")
+        #expect(shown(10).hasPrefix("cod"))
+        #expect(shown(100) == "x")
+        #expect(MarkdownRendering.sourceLine(at: string.length, in: rendered) == nil)
+    }
+
     /// A picture `width` by `height` pixels, as PNG.
     private func png(width: Int, height: Int) throws -> Data {
         let rep = try #require(

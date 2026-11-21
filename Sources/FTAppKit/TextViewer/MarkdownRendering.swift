@@ -8,6 +8,10 @@ import FTFoundation
 /// which the Preview's text view draws as it lays out with TextKit 1.
 @MainActor
 enum MarkdownRendering {
+    /// The line of the Markdown a piece of the Preview comes from, counted from 1: the source and the Preview keep
+    /// their place between them by it.
+    static let sourceLine = NSAttributedString.Key("FileTrail.markdownSourceLine")
+
     static func render(_ markdown: String, theme: TextViewerTheme, fontSize: Double) -> NSAttributedString {
         render(markdown, theme: theme, fontSize: fontSize, file: nil, images: MarkdownImages()).text
     }
@@ -19,7 +23,8 @@ enum MarkdownRendering {
     ) -> (text: NSAttributedString, untried: [URL]) {
         var untried: [URL] = []
         let options = AttributedString.MarkdownParsingOptions(
-            allowsExtendedAttributes: false, interpretedSyntax: .full, failurePolicy: .returnPartiallyParsedIfPossible)
+            allowsExtendedAttributes: false, interpretedSyntax: .full, failurePolicy: .returnPartiallyParsedIfPossible,
+            appliesSourcePositionAttributes: true)
         guard let parsed = try? AttributedString(markdown: markdown, options: options, baseURL: file) else {
             return (NSAttributedString(string: markdown, attributes: [.foregroundColor: NSColor(theme.text)]), [])
         }
@@ -126,6 +131,7 @@ enum MarkdownRendering {
                     }
             }
             attributes[.paragraphStyle] = paragraph
+            if let line = run.markdownSourcePosition?.startLine { attributes[Self.sourceLine] = line }
 
             if let inline = run.inlinePresentationIntent {
                 let size = (attributes[.font] as? NSFont)?.pointSize ?? body.pointSize
@@ -155,10 +161,10 @@ enum MarkdownRendering {
                 // The line break ends the paragraph before it: next to a table it is that paragraph's, so a cell's
                 // block ends with its cell, and the paragraph before a table doesn't end in the table's first cell.
                 // It carries no code background, link or strikethrough: TextKit paints a line break's background to
-                // the end of its line.
+                // the end of its line. Nor a line of the Markdown, so the next block is found at its own first line.
                 let nearTable = previousWasCell || cell != nil
                 var lineBreak = nearTable ? previousAttributes : attributes
-                for key in [NSAttributedString.Key.backgroundColor, .link, .strikethroughStyle] {
+                for key in [NSAttributedString.Key.backgroundColor, .link, .strikethroughStyle, Self.sourceLine] {
                     lineBreak[key] = nil
                 }
                 result.append(NSAttributedString(string: "\n", attributes: lineBreak))
@@ -226,5 +232,33 @@ enum MarkdownRendering {
             result.append(NSAttributedString(string: prefix + shown, attributes: attributes))
         }
         return (result, untried)
+    }
+
+    /// Where the Preview `text` shows the Markdown's line `line` (from 1): the start of the last piece that begins on
+    /// it or before it, the block the line is in.
+    static func location(ofSourceLine line: Int, in text: NSAttributedString) -> Int {
+        var found = 0
+        text.enumerateAttribute(sourceLine, in: NSRange(location: 0, length: text.length)) { value, range, stop in
+            guard let start = value as? Int else { return }
+            if start > line {
+                stop.pointee = true
+            } else {
+                found = range.location
+            }
+        }
+        return found
+    }
+
+    /// The Markdown's line (from 1) the Preview `text` shows at `location`, or the next piece's; nil with none.
+    static func sourceLine(at location: Int, in text: NSAttributedString) -> Int? {
+        guard location < text.length else { return nil }
+        var found: Int?
+        let rest = NSRange(location: location, length: text.length - location)
+        text.enumerateAttribute(sourceLine, in: rest) { value, _, stop in
+            guard let line = value as? Int else { return }
+            found = line
+            stop.pointee = true
+        }
+        return found
     }
 }

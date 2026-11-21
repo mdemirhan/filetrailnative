@@ -59,7 +59,7 @@ final class ViewerTextView: NSTextView {
     }
 
     /// A caret left off screen while reading goes to the first line shown, where editing begins.
-    private func caretOnScreen() {
+    func caretOnScreen() {
         guard let manager = layoutManager, let container = textContainer else { return }
         let visible = visibleRect
         let glyphs = manager.glyphRange(forBoundingRect: visible, in: container)
@@ -133,6 +133,38 @@ final class ViewerTextView: NSTextView {
         movingByPage = false
         pageColumn = column
         scrollRangeToVisible(selectedRange())
+    }
+
+    /// The first character of the first line shown, even in part.
+    var firstCharacterShown: Int {
+        guard let manager = layoutManager, let container = textContainer, manager.numberOfGlyphs > 0 else { return 0 }
+        var shown = visibleRect
+        shown.origin.y -= textContainerOrigin.y
+        shown.size.height = max(1, shown.height)
+        let glyphs = manager.glyphRange(forBoundingRect: shown, in: container)
+        return manager.characterIndexForGlyph(at: min(glyphs.location, manager.numberOfGlyphs - 1))
+    }
+
+    /// The line `location` is on at the top of what is shown; the first line with the space above it. The text is to
+    /// be laid out as far as the line and a screen past it: laid out in parts, it places a line it hasn't reached by a
+    /// guess.
+    func scrollLineToTop(_ location: Int) {
+        guard let manager = layoutManager, let clip = enclosingScrollView?.contentView else { return }
+        let length = (string as NSString).length
+        guard location > 0, length > 0 else {
+            scrollToEdge(top: true)
+            return
+        }
+        let line =
+            location >= length && !manager.extraLineFragmentRect.isEmpty
+            ? manager.extraLineFragmentRect
+            : manager.lineFragmentRect(
+                forGlyphAt: manager.glyphIndexForCharacter(at: min(location, length - 1)), effectiveRange: nil)
+        guard line.minY > 0 else {
+            scrollToEdge(top: true)
+            return
+        }
+        scrollBy(dx: 0, dy: line.minY + textContainerOrigin.y - clip.bounds.origin.y)
     }
 
     func scroll(columns: CGFloat) {
