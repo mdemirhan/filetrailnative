@@ -9,7 +9,8 @@ extension MainWindowController {
     static let writeCommands: Set<AppCommand> = [
         .undo, .redo, .renameSelection, .duplicateSelection, .newFolder, .newFolderWithSelection, .newTextFile,
         .saveAsTemplate, .pasteAsFile,
-        .trashSelection, .emptyTrash, .cutSelection, .copySelection, .pasteSelection, .moveSelection, .editCut,
+        .trashSelection, .deleteImmediately, .emptyTrash, .cutSelection, .copySelection, .pasteSelection,
+        .moveSelection, .editCut,
         .editCopy, .editPaste, .addToCopied, .addToCut, .moveItemsHere, .removeFromClipboard,
         .compressSelection, .extractSelection, .extractSelectionTo,
     ]
@@ -143,6 +144,15 @@ extension MainWindowController {
             let paths = selectedPaths
             guard !paths.isEmpty else { return true }
             Task { _ = await actions.trash(paths) }
+        case .deleteImmediately:
+            // What is selected in the Trash, after Finder's question; never anything outside it, whichever way the
+            // key arrives (a dimmed item's key still reaches the window).
+            let paths = selectedPaths
+            guard !paths.isEmpty, canPerform(.deleteImmediately) else {
+                NSSound.beep()
+                return true
+            }
+            Task { _ = await actions.deleteImmediately(paths) }
         case .emptyTrash:
             Task { _ = await actions.emptyTrash() }
         case .undo, .redo:

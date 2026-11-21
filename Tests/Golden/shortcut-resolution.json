@@ -180,7 +180,9 @@
           "openSelectedItem": [
             "Cmd+Down"
           ],
-          "editSelection": [],
+          "editSelection": [
+            "Cmd+Shift+E"
+          ],
           "quickLookSelection": [
             "Cmd+Y",
             "Space"
@@ -211,6 +213,9 @@
           "trashSelection": [
             "Cmd+Backspace"
           ],
+          "deleteImmediately": [
+            "Cmd+Option+Backspace"
+          ],
           "ejectVolume": [],
           "emptyTrash": [
             "Cmd+Shift+Backspace"
@@ -240,7 +245,9 @@
             "Cmd+Option+T"
           ],
           "showInFinder": [],
-          "toggleFavorite": [],
+          "toggleFavorite": [
+            "Ctrl+Cmd+T"
+          ],
           "focusFileSearch": [
             "Cmd+F"
           ],
@@ -519,6 +526,10 @@
             "openSelectedItem"
           ],
           [
+            "Cmd+Shift+E",
+            "editSelection"
+          ],
+          [
             "Cmd+Y",
             "quickLookSelection"
           ],
@@ -563,6 +574,10 @@
             "trashSelection"
           ],
           [
+            "Cmd+Option+Backspace",
+            "deleteImmediately"
+          ],
+          [
             "Cmd+Shift+Backspace",
             "emptyTrash"
           ],
@@ -593,6 +608,10 @@
           [
             "Cmd+Option+T",
             "openInTerminal"
+          ],
+          [
+            "Ctrl+Cmd+T",
+            "toggleFavorite"
           ],
           [
             "Cmd+F",
@@ -4790,6 +4809,10 @@
             [
               "Cmd+Option+T",
               "openInTerminal"
+            ],
+            [
+              "Ctrl+Cmd+T",
+              "toggleFavorite"
             ]
           ],
           "$insert": [
@@ -7538,6 +7561,10 @@
             [
               "Cmd+Plus",
               "increaseSize"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -7598,7 +7625,8 @@
           "viewAsList": [],
           "increaseSize": [
             "Cmd+="
-          ]
+          ],
+          "editSelection": []
         },
         "probes": [
           {
@@ -8036,6 +8064,10 @@
             [
               "?",
               "openHelp"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -8216,7 +8248,8 @@
           "openHelp": [
             "Cmd+PageUp",
             "Cmd+Up"
-          ]
+          ],
+          "editSelection": []
         },
         "probes": [
           {
@@ -13416,7 +13449,7 @@
             "id": "toggleInfoPanel",
             "shortcut": "Cmd+Shift+E",
             "slot": 1,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
             "customized": true,
             "assigned": {
@@ -13493,7 +13526,8 @@
               "toggleInfoRow": [],
               "openKeyboardShortcuts": [
                 "Cmd+\\"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goHomeRootTree": [],
@@ -13644,7 +13678,8 @@
             "takenFrom": [
               "newTab"
             ],
-            "menuShortcut": null
+            "menuShortcut": null,
+            "command": "editSelection"
           },
           {
             "id": "goLibrary",
@@ -14782,6 +14817,10 @@
             [
               "Cmd+Shift+I",
               "toggleInfoRow"
+            ],
+            [
+              "Ctrl+Cmd+T",
+              "toggleFavorite"
             ]
           ],
           "$insert": [
@@ -17849,6 +17888,10 @@
             [
               "Cmd+Down",
               "openSelectedItem"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -17878,7 +17921,8 @@
           "pageDown": [],
           "openSelectedItem": [
             "PageDown"
-          ]
+          ],
+          "editSelection": []
         },
         "probes": [
           {
@@ -17979,7 +18023,8 @@
               ],
               "quickLookSelection": [
                 "Space"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "pageUp": [
@@ -17989,7 +18034,8 @@
               "openSelectedItem": [
                 "PageDown"
               ],
-              "minimize": []
+              "minimize": [],
+              "editSelection": []
             },
             "reset": {
               "pageUp": [
@@ -17998,7 +18044,8 @@
               "pageDown": [],
               "openSelectedItem": [
                 "PageDown"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+M"
@@ -18019,7 +18066,8 @@
               "openSelectedItem": [
                 "PageDown"
               ],
-              "toggleInfoPanel": []
+              "toggleInfoPanel": [],
+              "editSelection": []
             },
             "removed": {
               "pageUp": [
@@ -18028,7 +18076,8 @@
               "pageDown": [],
               "openSelectedItem": [
                 "PageDown"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "pageUp": [
@@ -18037,7 +18086,8 @@
               "pageDown": [],
               "openSelectedItem": [
                 "PageDown"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -18061,7 +18111,8 @@
               "newFolder": [
                 "Cmd+Shift+Backspace"
               ],
-              "emptyTrash": []
+              "emptyTrash": [],
+              "editSelection": []
             },
             "removed": {
               "pageUp": [
@@ -18071,7 +18122,8 @@
               "openSelectedItem": [
                 "PageDown"
               ],
-              "newFolder": []
+              "newFolder": [],
+              "editSelection": []
             },
             "reset": {
               "pageUp": [
@@ -18080,7 +18132,8 @@
               "pageDown": [],
               "openSelectedItem": [
                 "PageDown"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Shift+N"
@@ -18210,6 +18263,10 @@
             [
               "Cmd+1",
               "viewAsIcons"
+            ],
+            [
+              "Ctrl+Cmd+T",
+              "toggleFavorite"
             ]
           ],
           "$insert": [
@@ -18825,6 +18882,14 @@
             [
               "?",
               "openHelp"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
+            ],
+            [
+              "Ctrl+Cmd+T",
+              "toggleFavorite"
             ]
           ],
           "$insert": [
@@ -19140,7 +19205,8 @@
           "openHelp": [
             "Ctrl+Cmd+K",
             "Cmd+Right"
-          ]
+          ],
+          "editSelection": []
         },
         "probes": [
           {
@@ -19291,7 +19357,8 @@
               "openHelp": [
                 "Ctrl+Cmd+K",
                 "Cmd+Right"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goForward": [
@@ -19369,7 +19436,8 @@
               "openHelp": [
                 "Ctrl+Cmd+K",
                 "Cmd+Right"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "goForward": [
@@ -19444,7 +19512,8 @@
               "openHelp": [
                 "Ctrl+Cmd+K",
                 "Cmd+Right"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Ctrl+Shift+Tab"
@@ -19533,7 +19602,8 @@
               "openHelp": [
                 "Ctrl+Cmd+K",
                 "Cmd+Right"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goForward": [
@@ -19608,7 +19678,8 @@
               "openHelp": [
                 "Ctrl+Cmd+K",
                 "Cmd+Right"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "goForward": [
@@ -19683,7 +19754,8 @@
               "openHelp": [
                 "Ctrl+Cmd+K",
                 "Cmd+Right"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -19773,7 +19845,8 @@
               "openHelp": [
                 "Ctrl+Cmd+K",
                 "Cmd+Right"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goForward": [
@@ -19848,7 +19921,8 @@
               "openHelp": [
                 "Ctrl+Cmd+K",
                 "Cmd+Right"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "goForward": [
@@ -19920,7 +19994,8 @@
               "openHelp": [
                 "Ctrl+Cmd+K",
                 "Cmd+Right"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Shift+K"
@@ -23193,6 +23268,10 @@
             [
               "Cmd+F",
               "focusFileSearch"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -23212,7 +23291,8 @@
           "copyPath": [],
           "focusFileSearch": [
             "Cmd+Right"
-          ]
+          ],
+          "editSelection": []
         },
         "probes": [
           {
@@ -24114,6 +24194,10 @@
             [
               "Cmd+E",
               "viewFile"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -25349,7 +25433,8 @@
           "duplicateSelection": [],
           "newFolder": [],
           "viewAsDetails": [],
-          "toggleFolderTree": []
+          "toggleFolderTree": [],
+          "toggleFavorite": []
         },
         "commandByShortcut": {
           "$remove": [
@@ -25452,6 +25537,10 @@
             [
               "Cmd+Shift+I",
               "toggleInfoRow"
+            ],
+            [
+              "Ctrl+Cmd+T",
+              "toggleFavorite"
             ]
           ],
           "$insert": [
@@ -25754,7 +25843,8 @@
           "toggleFolderTree": [],
           "toggleInfoRow": [
             "Cmd+;"
-          ]
+          ],
+          "toggleFavorite": []
         },
         "probes": [
           {
@@ -25883,7 +25973,8 @@
               "toggleFolderTree": [],
               "toggleInfoRow": [
                 "Cmd+;"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "removed": {
               "goHomeRootTree": [
@@ -25955,7 +26046,8 @@
               "toggleFolderTree": [],
               "toggleInfoRow": [
                 "Cmd+;"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "reset": {
               "goHomeRootTree": [
@@ -26024,7 +26116,8 @@
               "toggleFolderTree": [],
               "toggleInfoRow": [
                 "Cmd+;"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Option+K"
@@ -26111,7 +26204,8 @@
               "toggleInfoRow": [
                 "Cmd+;"
               ],
-              "minimize": []
+              "minimize": [],
+              "toggleFavorite": []
             },
             "removed": {
               "goHomeRootTree": [
@@ -26183,7 +26277,8 @@
               "toggleFolderTree": [],
               "toggleInfoRow": [
                 "Cmd+;"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "reset": {
               "goHomeRootTree": [
@@ -26254,7 +26349,8 @@
               "toggleFolderTree": [],
               "toggleInfoRow": [
                 "Cmd+;"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -26340,7 +26436,8 @@
               "toggleFolderTree": [],
               "toggleInfoRow": [
                 "Cmd+;"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "removed": {
               "goHomeRootTree": [
@@ -26413,7 +26510,8 @@
               "toggleFolderTree": [],
               "toggleInfoRow": [
                 "Cmd+;"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "reset": {
               "goHomeRootTree": [
@@ -26485,7 +26583,8 @@
               "toggleFolderTree": [],
               "toggleInfoRow": [
                 "Cmd+;"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+O"
@@ -26568,7 +26667,8 @@
               "toggleFolderTree": [],
               "toggleInfoRow": [
                 "Cmd+;"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "removed": {
               "goHomeRootTree": [
@@ -26640,7 +26740,8 @@
               "toggleFolderTree": [],
               "toggleInfoRow": [
                 "Cmd+;"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "reset": {
               "goHomeRootTree": [
@@ -26712,7 +26813,8 @@
               "toggleFolderTree": [],
               "toggleInfoRow": [
                 "Cmd+;"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+1"
@@ -26965,6 +27067,10 @@
             [
               "Cmd+Shift+.",
               "toggleHiddenFiles"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -29831,6 +29937,10 @@
             [
               "Ctrl+Cmd+S",
               "toggleFolderTree"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -31346,7 +31456,7 @@
               "toggleInfoRow": []
             },
             "takenFrom": [],
-            "menuShortcut": null
+            "menuShortcut": "Ctrl+Cmd+T"
           }
         ],
         "events": [
@@ -32423,6 +32533,10 @@
             [
               "Cmd+Shift+Backspace",
               "emptyTrash"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -32522,7 +32636,8 @@
           ],
           "openKeyboardShortcuts": [
             "Delete"
-          ]
+          ],
+          "editSelection": []
         },
         "probes": [
           {
@@ -32633,7 +32748,8 @@
               "emptyTrash": [],
               "openKeyboardShortcuts": [
                 "Delete"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goForward": [
@@ -32662,7 +32778,8 @@
               ],
               "openKeyboardShortcuts": [
                 "Delete"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "goForward": [
@@ -32690,7 +32807,8 @@
               ],
               "openKeyboardShortcuts": [
                 "Delete"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -32734,7 +32852,8 @@
               "minimize": [
                 "Cmd+M",
                 "Cmd+Enter"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goForward": [
@@ -32763,7 +32882,8 @@
               ],
               "openKeyboardShortcuts": [
                 "Delete"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "goForward": [
@@ -32792,7 +32912,8 @@
               ],
               "openKeyboardShortcuts": [
                 "Delete"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+M"
@@ -32835,7 +32956,8 @@
               ],
               "openKeyboardShortcuts": [
                 "Delete"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goForward": [
@@ -32865,7 +32987,8 @@
               ],
               "openKeyboardShortcuts": [
                 "Delete"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "goForward": [
@@ -32894,7 +33017,8 @@
               ],
               "openKeyboardShortcuts": [
                 "Delete"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+1"
@@ -34042,6 +34166,10 @@
             [
               "Cmd+Shift+I",
               "toggleInfoRow"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -34267,7 +34395,8 @@
           "toggleHiddenFiles": [],
           "toggleFolderTree": [],
           "toggleInfoPanel": [],
-          "toggleInfoRow": []
+          "toggleInfoRow": [],
+          "editSelection": []
         },
         "probes": [
           {
@@ -34345,7 +34474,8 @@
               "toggleInfoRow": [],
               "paste": [
                 "Command+K"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goEnclosingFolder": [],
@@ -34401,7 +34531,8 @@
               "toggleFolderTree": [],
               "toggleInfoPanel": [],
               "toggleInfoRow": [],
-              "paste": []
+              "paste": [],
+              "editSelection": []
             },
             "reset": {
               "goEnclosingFolder": [],
@@ -34456,7 +34587,8 @@
               "toggleHiddenFiles": [],
               "toggleFolderTree": [],
               "toggleInfoPanel": [],
-              "toggleInfoRow": []
+              "toggleInfoRow": [],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+V"
@@ -34991,6 +35123,10 @@
             [
               "Cmd+Shift+T",
               "reopenClosedTab"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -35017,7 +35153,8 @@
           "reopenClosedTab": [
             "Cmd+Shift+E",
             "Cmd+Option+K"
-          ]
+          ],
+          "editSelection": []
         },
         "probes": [
           {
@@ -35071,19 +35208,22 @@
               "reopenClosedTab": [
                 "Cmd+Shift+E",
                 "Cmd+Option+K"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "reopenClosedTab": [
                 "Cmd+Shift+E",
                 "Cmd+Option+K"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "reopenClosedTab": [
                 "Cmd+Shift+E",
                 "Cmd+Option+K"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Option+W"
@@ -35105,19 +35245,22 @@
                 "Cmd+Shift+E",
                 "Cmd+Option+K"
               ],
-              "emptyTrash": []
+              "emptyTrash": [],
+              "editSelection": []
             },
             "removed": {
               "reopenClosedTab": [
                 "Cmd+Shift+E",
                 "Cmd+Option+K"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "reopenClosedTab": [
                 "Cmd+Shift+E",
                 "Cmd+Option+K"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Ctrl+D"
@@ -35902,7 +36045,8 @@
                 "Cmd+Right"
               ],
               "toggleInfoRow": [],
-              "openHelp": []
+              "openHelp": [],
+              "editSelection": []
             },
             "reset": {
               "goBack": [
@@ -35956,7 +36100,8 @@
               "toggleInfoRow": [],
               "openHelp": []
             },
-            "takenFrom": []
+            "takenFrom": [],
+            "menuShortcut": "Cmd+Shift+E"
           },
           {
             "id": "emptyTrash",
@@ -37523,6 +37668,10 @@
             [
               "Cmd+Shift+I",
               "toggleInfoRow"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -38492,6 +38641,10 @@
             [
               "?",
               "openHelp"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -38790,7 +38943,8 @@
           ],
           "openHelp": [
             "Ctrl+F4"
-          ]
+          ],
+          "editSelection": []
         },
         "probes": [
           {
@@ -38894,7 +39048,8 @@
               ],
               "openHelp": [
                 "Ctrl+F4"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goBack": [
@@ -38969,7 +39124,8 @@
               ],
               "openHelp": [
                 "Ctrl+F4"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "goBack": [
@@ -39041,7 +39197,8 @@
               ],
               "openHelp": [
                 "Ctrl+F4"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [
               "renameSelection"
@@ -39135,7 +39292,8 @@
               ],
               "openHelp": [
                 "Ctrl+F4"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goBack": [
@@ -39210,7 +39368,8 @@
               ],
               "openHelp": [
                 "Ctrl+F4"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "goBack": [
@@ -39285,7 +39444,8 @@
               ],
               "openHelp": [
                 "Ctrl+F4"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -39374,7 +39534,8 @@
               ],
               "openHelp": [
                 "Ctrl+F4"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goBack": [
@@ -39449,7 +39610,8 @@
               ],
               "openHelp": [
                 "Ctrl+F4"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "goBack": [
@@ -39524,7 +39686,8 @@
               ],
               "openHelp": [
                 "Ctrl+F4"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Ctrl+Cmd+V"
@@ -39617,7 +39780,8 @@
               ],
               "openHelp": [
                 "Ctrl+F4"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goBack": [
@@ -39692,7 +39856,8 @@
               ],
               "openHelp": [
                 "Ctrl+F4"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "goBack": [
@@ -39767,7 +39932,8 @@
               ],
               "openHelp": [
                 "Ctrl+F4"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+N"
@@ -41346,6 +41512,10 @@
             [
               "Ctrl+Cmd+S",
               "toggleFolderTree"
+            ],
+            [
+              "Ctrl+Cmd+T",
+              "toggleFavorite"
             ]
           ],
           "$insert": [
@@ -43273,12 +43443,17 @@
             [
               "Cmd+Shift+I",
               "toggleInfoRow"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ]
         },
         "sanitized": {
           "goBack": [],
-          "toggleInfoRow": []
+          "toggleInfoRow": [],
+          "editSelection": []
         },
         "probes": [
           {
@@ -43313,15 +43488,18 @@
                 "Cmd+X"
               ],
               "toggleInfoRow": [],
-              "cut": []
+              "cut": [],
+              "editSelection": []
             },
             "removed": {
               "goBack": [],
-              "toggleInfoRow": []
+              "toggleInfoRow": [],
+              "editSelection": []
             },
             "reset": {
               "goBack": [],
-              "toggleInfoRow": []
+              "toggleInfoRow": [],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Down"
@@ -44508,6 +44686,10 @@
             [
               "Cmd+Shift+I",
               "toggleInfoRow"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -44587,7 +44769,8 @@
           "toggleFolderTree": [],
           "toggleInfoRow": [
             "Ctrl+Cmd+Option+Shift+K"
-          ]
+          ],
+          "editSelection": []
         },
         "probes": [
           {
@@ -44668,7 +44851,8 @@
               "toggleFolderTree": [],
               "toggleInfoRow": [
                 "Ctrl+Cmd+Option+Shift+K"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goLibrary": [
@@ -44687,7 +44871,8 @@
               "toggleFolderTree": [],
               "toggleInfoRow": [
                 "Ctrl+Cmd+Option+Shift+K"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "goLibrary": [
@@ -44706,7 +44891,8 @@
               "toggleFolderTree": [],
               "toggleInfoRow": [
                 "Ctrl+Cmd+Option+Shift+K"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -45482,6 +45668,10 @@
             [
               "Cmd+Shift+.",
               "toggleHiddenFiles"
+            ],
+            [
+              "Ctrl+Cmd+T",
+              "toggleFavorite"
             ]
           ],
           "$insert": [
@@ -46854,7 +47044,7 @@
             "id": "sortByModified",
             "shortcut": "Cmd+Shift+E",
             "slot": 2,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
             "customized": false,
             "assigned": {
@@ -46901,7 +47091,8 @@
               ],
               "toggleHiddenFiles": [],
               "toggleFolderTree": [],
-              "toggleInfoRow": []
+              "toggleInfoRow": [],
+              "editSelection": []
             },
             "removed": {
               "goLibrary": [
@@ -46990,7 +47181,8 @@
               "toggleInfoRow": []
             },
             "takenFrom": [],
-            "menuShortcut": null
+            "menuShortcut": null,
+            "command": "editSelection"
           }
         ],
         "events": [
@@ -49483,6 +49675,7 @@
               "newTab": [],
               "copyToOtherPane": [],
               "toggleFavorite": [
+                "Ctrl+Cmd+T",
                 "Cmd+Shift+F"
               ],
               "showLastSearchResults": [],
@@ -49505,7 +49698,7 @@
               ]
             },
             "takenFrom": [],
-            "menuShortcut": null
+            "menuShortcut": "Ctrl+Cmd+T"
           },
           {
             "id": "openKeyboardShortcuts",
@@ -49903,6 +50096,10 @@
             [
               "Cmd+Shift+I",
               "toggleInfoRow"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -50089,7 +50286,8 @@
           "toggleInfoPanel": [],
           "toggleInfoRow": [
             "Ctrl+Shift+K"
-          ]
+          ],
+          "editSelection": []
         },
         "probes": [
           {
@@ -50214,7 +50412,8 @@
               "toggleInfoPanel": [],
               "toggleInfoRow": [
                 "Ctrl+Shift+K"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goBack": [],
@@ -50260,7 +50459,8 @@
               "toggleInfoPanel": [],
               "toggleInfoRow": [
                 "Ctrl+Shift+K"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "goBack": [],
@@ -50305,7 +50505,8 @@
               "toggleInfoPanel": [],
               "toggleInfoRow": [
                 "Ctrl+Shift+K"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -50365,7 +50566,8 @@
               "toggleInfoPanel": [],
               "toggleInfoRow": [
                 "Ctrl+Shift+K"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goBack": [],
@@ -50411,7 +50613,8 @@
               "toggleInfoPanel": [],
               "toggleInfoRow": [
                 "Ctrl+Shift+K"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "goBack": [],
@@ -50457,7 +50660,8 @@
               "toggleInfoPanel": [],
               "toggleInfoRow": [
                 "Ctrl+Shift+K"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Y"
@@ -50574,6 +50778,7 @@
             "assigned": {
               "openLocationSheet": [],
               "toggleFavorite": [
+                "Ctrl+Cmd+T",
                 "Cmd+Pageup"
               ]
             },
@@ -50584,7 +50789,7 @@
               "openLocationSheet": []
             },
             "takenFrom": [],
-            "menuShortcut": null
+            "menuShortcut": "Ctrl+Cmd+T"
           },
           {
             "id": "openSelectionInNewTab",
@@ -52053,7 +52258,7 @@
             "id": "showInFinder",
             "shortcut": "Cmd+Shift+E",
             "slot": 2,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
             "customized": false,
             "assigned": {
@@ -52069,7 +52274,8 @@
               ],
               "sortBySize": [
                 "Ctrl+Shift+Tab"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "closePane": [],
@@ -52096,7 +52302,8 @@
               ]
             },
             "takenFrom": [],
-            "menuShortcut": null
+            "menuShortcut": null,
+            "command": "editSelection"
           }
         ],
         "events": [
@@ -52552,6 +52759,10 @@
             [
               "Cmd+Shift+I",
               "toggleInfoRow"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -52673,7 +52884,8 @@
           "openKeyboardShortcuts": [
             "Cmd+Esc",
             "Cmd+K"
-          ]
+          ],
+          "editSelection": []
         },
         "probes": [
           {
@@ -52727,7 +52939,8 @@
               "openKeyboardShortcuts": [
                 "Cmd+Esc",
                 "Cmd+K"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goForward": [
@@ -52757,7 +52970,8 @@
               "openKeyboardShortcuts": [
                 "Cmd+Esc",
                 "Cmd+K"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "goForward": [
@@ -52784,7 +52998,8 @@
               "openKeyboardShortcuts": [
                 "Cmd+Esc",
                 "Cmd+K"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Shift+I"
@@ -52969,6 +53184,10 @@
             [
               "Cmd+Shift+I",
               "toggleInfoRow"
+            ],
+            [
+              "Ctrl+Cmd+T",
+              "toggleFavorite"
             ]
           ],
           "$insert": [
@@ -54735,6 +54954,10 @@
             [
               "?",
               "openHelp"
+            ],
+            [
+              "Ctrl+Cmd+T",
+              "toggleFavorite"
             ]
           ],
           "$insert": [
@@ -56860,6 +57083,10 @@
             [
               "?",
               "openHelp"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -58191,6 +58418,7 @@
                 "Cmd+Shift+["
               ],
               "editSelection": [
+                "Cmd+Shift+E",
                 "Cmd+Shift+."
               ],
               "toggleHiddenFiles": []
@@ -58211,7 +58439,8 @@
                 "Cmd+Shift+["
               ]
             },
-            "takenFrom": []
+            "takenFrom": [],
+            "menuShortcut": "Cmd+Shift+E"
           },
           {
             "id": "showClipboard",
@@ -59901,6 +60130,10 @@
             [
               "?",
               "openHelp"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -60461,7 +60694,7 @@
             "id": "selectPreviousTab",
             "shortcut": "Cmd+Shift+E",
             "slot": 2,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
             "customized": false,
             "assigned": {
@@ -60475,7 +60708,8 @@
                 "Cmd+Esc",
                 "Ctrl+K"
               ],
-              "closePane": []
+              "closePane": [],
+              "editSelection": []
             },
             "removed": {
               "goHomeRootTree": [
@@ -60504,7 +60738,8 @@
               "closePane": []
             },
             "takenFrom": [],
-            "menuShortcut": "Ctrl+Shift+Tab"
+            "menuShortcut": "Ctrl+Shift+Tab",
+            "command": "editSelection"
           }
         ],
         "events": [
@@ -60837,6 +61072,10 @@
             [
               "Cmd+I",
               "toggleInfoPanel"
+            ],
+            [
+              "Ctrl+Cmd+T",
+              "toggleFavorite"
             ]
           ],
           "$insert": [
@@ -63454,6 +63693,10 @@
             [
               "Cmd+Plus",
               "increaseSize"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -63689,7 +63932,8 @@
           ],
           "sortBySize": [
             "Cmd+/"
-          ]
+          ],
+          "editSelection": []
         },
         "probes": [
           {
@@ -63813,7 +64057,8 @@
               ],
               "sortBySize": [
                 "Cmd+/"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goBack": [
@@ -63878,7 +64123,8 @@
               ],
               "sortBySize": [
                 "Cmd+/"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "goBack": [
@@ -63943,7 +64189,8 @@
               ],
               "sortBySize": [
                 "Cmd+/"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -67016,6 +67263,10 @@
             [
               "Cmd+-",
               "decreaseSize"
+            ],
+            [
+              "Ctrl+Cmd+T",
+              "toggleFavorite"
             ]
           ],
           "$insert": [
@@ -71796,6 +72047,10 @@
             [
               "Cmd+Shift+.",
               "toggleHiddenFiles"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -71916,7 +72171,8 @@
           "toggleHiddenFiles": [
             "F2",
             "Ctrl+A"
-          ]
+          ],
+          "editSelection": []
         },
         "probes": [
           {
@@ -71969,7 +72225,8 @@
               "toggleHiddenFiles": [
                 "F2",
                 "Ctrl+A"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goLibrary": [
@@ -71999,7 +72256,8 @@
               "toggleHiddenFiles": [
                 "F2",
                 "Ctrl+A"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "goLibrary": [
@@ -72029,7 +72287,8 @@
               "toggleHiddenFiles": [
                 "F2",
                 "Ctrl+A"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -72323,6 +72582,10 @@
             [
               "?",
               "openHelp"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -72515,7 +72778,8 @@
             "Cmd+Option+C"
           ],
           "openHelp": [],
-          "viewFile": []
+          "viewFile": [],
+          "editSelection": []
         },
         "probes": [
           {
@@ -72669,7 +72933,8 @@
                 "Cmd+Q",
                 "Cmd+Option+Space"
               ],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "removed": {
               "goBack": [],
@@ -72721,7 +72986,8 @@
                 "Cmd+Option+C"
               ],
               "openHelp": [],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "reset": {
               "goBack": [],
@@ -72773,7 +73039,8 @@
                 "Cmd+Option+C"
               ],
               "openHelp": [],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Q"
@@ -72838,7 +73105,8 @@
                 "Cmd+Option+C"
               ],
               "openHelp": [],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "removed": {
               "goBack": [],
@@ -72890,7 +73158,8 @@
                 "Cmd+Option+C"
               ],
               "openHelp": [],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "reset": {
               "goBack": [],
@@ -72939,7 +73208,8 @@
                 "Cmd+Option+C"
               ],
               "openHelp": [],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "takenFrom": [
               "selectPreviousTab"
@@ -73010,7 +73280,8 @@
                 "Cmd+Option+C"
               ],
               "openHelp": [],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "removed": {
               "goBack": [],
@@ -73062,7 +73333,8 @@
                 "Cmd+Option+C"
               ],
               "openHelp": [],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "reset": {
               "goBack": [],
@@ -73114,7 +73386,8 @@
                 "Cmd+Option+C"
               ],
               "openHelp": [],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -73183,7 +73456,8 @@
                 "Cmd+Option+C"
               ],
               "openHelp": [],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "removed": {
               "goBack": [],
@@ -73235,7 +73509,8 @@
                 "Cmd+Option+C"
               ],
               "openHelp": [],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "reset": {
               "goBack": [],
@@ -73287,7 +73562,8 @@
                 "Cmd+Option+C"
               ],
               "openHelp": [],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -75142,13 +75418,15 @@
             "customized": false,
             "assigned": {
               "editSelection": [
+                "Cmd+Shift+E",
                 "?"
               ],
               "openHelp": []
             },
             "removed": {},
             "reset": {},
-            "takenFrom": []
+            "takenFrom": [],
+            "menuShortcut": "Cmd+Shift+E"
           },
           {
             "id": "focusFileSearch",
@@ -76960,7 +77238,8 @@
           "openHelp": [],
           "openLocationSheet": [],
           "rootTreeAtSelection": [],
-          "selectPreviousTab": []
+          "selectPreviousTab": [],
+          "toggleFavorite": []
         },
         "commandByShortcut": {
           "$remove": [
@@ -77031,6 +77310,10 @@
             [
               "?",
               "openHelp"
+            ],
+            [
+              "Ctrl+Cmd+T",
+              "toggleFavorite"
             ]
           ],
           "$insert": [
@@ -77168,7 +77451,8 @@
           "toggleInfoRow": [
             "Cmd+Shift+G"
           ],
-          "openHelp": []
+          "openHelp": [],
+          "toggleFavorite": []
         },
         "probes": [
           {
@@ -77276,7 +77560,8 @@
               "toggleInfoRow": [
                 "Cmd+Shift+G"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "toggleFavorite": []
             },
             "removed": {
               "goForward": [
@@ -77313,7 +77598,8 @@
               "toggleInfoRow": [
                 "Cmd+Shift+G"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "toggleFavorite": []
             },
             "reset": {
               "goForward": [
@@ -77350,7 +77636,8 @@
               "toggleInfoRow": [
                 "Cmd+Shift+G"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "toggleFavorite": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+1"
@@ -77404,7 +77691,8 @@
               "customizeToolbar": [
                 "Cmd+."
               ],
-              "openHelp": []
+              "openHelp": [],
+              "toggleFavorite": []
             },
             "removed": {
               "goForward": [
@@ -77441,7 +77729,8 @@
               "toggleInfoRow": [
                 "Cmd+Shift+G"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "toggleFavorite": []
             },
             "reset": {
               "goForward": [
@@ -77478,7 +77767,8 @@
               "toggleInfoRow": [
                 "Cmd+Shift+G"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "toggleFavorite": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -77529,7 +77819,8 @@
               "toggleInfoRow": [
                 "Cmd+Shift+G"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "toggleFavorite": []
             },
             "removed": {
               "goForward": [
@@ -77566,7 +77857,8 @@
               "toggleInfoRow": [
                 "Cmd+Shift+G"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "toggleFavorite": []
             },
             "reset": {
               "goForward": [
@@ -77603,7 +77895,8 @@
               "toggleInfoRow": [
                 "Cmd+Shift+G"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "toggleFavorite": []
             },
             "takenFrom": [],
             "menuShortcut": "Ctrl+Cmd+S"
@@ -77655,7 +77948,8 @@
                 "Cmd+Shift+G"
               ],
               "openHelp": [],
-              "fullScreen": []
+              "fullScreen": [],
+              "toggleFavorite": []
             },
             "removed": {
               "goForward": [
@@ -77692,7 +77986,8 @@
               "toggleInfoRow": [
                 "Cmd+Shift+G"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "toggleFavorite": []
             },
             "reset": {
               "goForward": [
@@ -77729,7 +78024,8 @@
               "toggleInfoRow": [
                 "Cmd+Shift+G"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "toggleFavorite": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+N"
@@ -78290,7 +78586,8 @@
           "customizeToolbar": [
             "Cmd+Shift+I",
             "Cmd+D"
-          ]
+          ],
+          "toggleFavorite": []
         },
         "commandByShortcut": {
           "$remove": [
@@ -78361,6 +78658,10 @@
             [
               "Cmd+Shift+I",
               "toggleInfoRow"
+            ],
+            [
+              "Ctrl+Cmd+T",
+              "toggleFavorite"
             ]
           ],
           "$insert": [
@@ -78551,7 +78852,8 @@
             "Cmd+Shift+I",
             "Cmd+D"
           ],
-          "showClipboard": []
+          "showClipboard": [],
+          "toggleFavorite": []
         },
         "probes": [
           {
@@ -78672,7 +78974,8 @@
               "customizeToolbar": [
                 "Cmd+Shift+I",
                 "Cmd+D"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "removed": {
               "goDocuments": [
@@ -78722,7 +79025,8 @@
               "customizeToolbar": [
                 "Cmd+Shift+I",
                 "Cmd+D"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "reset": {
               "goDocuments": [
@@ -78772,7 +79076,8 @@
               "customizeToolbar": [
                 "Cmd+Shift+I",
                 "Cmd+D"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -78836,7 +79141,8 @@
               "customizeToolbar": [
                 "Cmd+Shift+I",
                 "Cmd+D"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "removed": {
               "goDocuments": [
@@ -78886,7 +79192,8 @@
               "customizeToolbar": [
                 "Cmd+Shift+I",
                 "Cmd+D"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "reset": {
               "goDocuments": [
@@ -78929,7 +79236,8 @@
               "customizeToolbar": [
                 "Cmd+Shift+I",
                 "Cmd+D"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "takenFrom": [
               "focusContentPane",
@@ -78999,7 +79307,8 @@
               ],
               "openKeyboardShortcuts": [
                 "+"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "removed": {
               "goDocuments": [
@@ -79049,7 +79358,8 @@
               "customizeToolbar": [
                 "Cmd+Shift+I",
                 "Cmd+D"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "reset": {
               "goDocuments": [
@@ -79099,7 +79409,8 @@
               "customizeToolbar": [
                 "Cmd+Shift+I",
                 "Cmd+D"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -79166,7 +79477,8 @@
               ],
               "copy": [
                 "Cmd+constructor+K"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "removed": {
               "goDocuments": [
@@ -79217,7 +79529,8 @@
                 "Cmd+Shift+I",
                 "Cmd+D"
               ],
-              "copy": []
+              "copy": [],
+              "toggleFavorite": []
             },
             "reset": {
               "goDocuments": [
@@ -79267,7 +79580,8 @@
               "customizeToolbar": [
                 "Cmd+Shift+I",
                 "Cmd+D"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+C"
@@ -80061,6 +80375,10 @@
             [
               "Cmd+I",
               "toggleInfoPanel"
+            ],
+            [
+              "Ctrl+Cmd+T",
+              "toggleFavorite"
             ]
           ],
           "$insert": [
@@ -82650,6 +82968,10 @@
             [
               "Cmd+Shift+I",
               "toggleInfoRow"
+            ],
+            [
+              "Ctrl+Cmd+T",
+              "toggleFavorite"
             ]
           ],
           "$insert": [
@@ -83659,7 +83981,8 @@
           "newFolder": [],
           "focusFileSearch": [],
           "viewAsDetails": [],
-          "toggleFolderTree": []
+          "toggleFolderTree": [],
+          "toggleFavorite": []
         },
         "commandByShortcut": {
           "$remove": [
@@ -83758,6 +84081,14 @@
             [
               "Cmd+Shift+I",
               "toggleInfoRow"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
+            ],
+            [
+              "Ctrl+Cmd+T",
+              "toggleFavorite"
             ]
           ],
           "$insert": [
@@ -84101,7 +84432,8 @@
           "openKeyboardShortcuts": [
             "Ctrl+Shift+K",
             "Cmd+Return"
-          ]
+          ],
+          "toggleFavorite": []
         },
         "probes": [
           {
@@ -86131,7 +86463,8 @@
           "toggleFolderTree": [],
           "toggleInfoRow": [
             "Cmd+Option+T"
-          ]
+          ],
+          "toggleFavorite": []
         },
         "commandByShortcut": {
           "$remove": [
@@ -86194,6 +86527,10 @@
             [
               "Cmd+Shift+I",
               "toggleInfoRow"
+            ],
+            [
+              "Ctrl+Cmd+T",
+              "toggleFavorite"
             ]
           ],
           "$insert": [
@@ -86334,7 +86671,8 @@
           "toggleInfoRow": [
             "Cmd+Option+T"
           ],
-          "showClipboard": []
+          "showClipboard": [],
+          "toggleFavorite": []
         },
         "probes": [
           {
@@ -87363,6 +87701,7 @@
             "customized": false,
             "assigned": {
               "editSelection": [
+                "Cmd+Shift+E",
                 "Cmd+pagedown"
               ],
               "showLastSearchResults": [],
@@ -87391,7 +87730,8 @@
                 "Cmd+="
               ]
             },
-            "takenFrom": []
+            "takenFrom": [],
+            "menuShortcut": "Cmd+Shift+E"
           },
           {
             "id": "showClipboard",
@@ -87691,6 +88031,10 @@
             [
               "?",
               "openHelp"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -87771,7 +88115,8 @@
           ],
           "openHelp": [
             "Cmd+N"
-          ]
+          ],
+          "editSelection": []
         },
         "probes": [
           {
@@ -87883,7 +88228,8 @@
               ],
               "openHelp": [
                 "Cmd+N"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goMacintoshHD": [
@@ -87904,7 +88250,8 @@
               ],
               "openHelp": [
                 "Cmd+N"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "goMacintoshHD": [
@@ -87924,7 +88271,8 @@
               ],
               "openHelp": [
                 "Cmd+N"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+2"
@@ -87959,7 +88307,8 @@
               ],
               "openHelp": [
                 "Cmd+N"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goMacintoshHD": [
@@ -87980,7 +88329,8 @@
               ],
               "openHelp": [
                 "Cmd+N"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "goMacintoshHD": [
@@ -88000,7 +88350,8 @@
               ],
               "openHelp": [
                 "Cmd+N"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Option+T"
@@ -88034,7 +88385,8 @@
               ],
               "openHelp": [
                 "Cmd+N"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goMacintoshHD": [
@@ -88054,7 +88406,8 @@
               ],
               "openHelp": [
                 "Cmd+N"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "goMacintoshHD": [
@@ -88074,7 +88427,8 @@
               ],
               "openHelp": [
                 "Cmd+N"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+K"
@@ -88108,7 +88462,8 @@
               ],
               "openHelp": [
                 "Cmd+N"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goMacintoshHD": [
@@ -88128,7 +88483,8 @@
               ],
               "openHelp": [
                 "Cmd+N"
-              ]
+              ],
+              "editSelection": []
             },
             "reset": {
               "goMacintoshHD": [
@@ -88148,7 +88504,8 @@
               ],
               "openHelp": [
                 "Cmd+N"
-              ]
+              ],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Shift+H"
@@ -88365,7 +88722,7 @@
             "id": "newWindow",
             "shortcut": "Cmd+Shift+E",
             "slot": 1,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
             "customized": false,
             "assigned": {
@@ -88373,7 +88730,8 @@
               "newWindow": [
                 "Cmd+N",
                 "Cmd+Shift+E"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "goBack": []
@@ -88382,7 +88740,8 @@
               "goBack": []
             },
             "takenFrom": [],
-            "menuShortcut": "Cmd+N"
+            "menuShortcut": "Cmd+N",
+            "command": "editSelection"
           },
           {
             "id": "halfPageUp",
@@ -90115,7 +90474,8 @@
           "halfPageUp": [],
           "halfPageDown": [],
           "newFolder": [],
-          "toggleHiddenFiles": []
+          "toggleHiddenFiles": [],
+          "toggleFavorite": []
         },
         "commandByShortcut": {
           "$remove": [
@@ -90154,6 +90514,10 @@
             [
               "Cmd+Shift+.",
               "toggleHiddenFiles"
+            ],
+            [
+              "Ctrl+Cmd+T",
+              "toggleFavorite"
             ]
           ],
           "$insert": [
@@ -90249,7 +90613,8 @@
           "viewAsList": [
             "Cmd+Right"
           ],
-          "toggleHiddenFiles": []
+          "toggleHiddenFiles": [],
+          "toggleFavorite": []
         },
         "probes": [
           {
@@ -90374,7 +90739,8 @@
               "viewAsList": [
                 "Cmd+Right"
               ],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "toggleFavorite": []
             },
             "removed": {
               "goForward": [
@@ -90399,7 +90765,8 @@
               "viewAsList": [
                 "Cmd+Right"
               ],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "toggleFavorite": []
             },
             "reset": {
               "goForward": [
@@ -90424,7 +90791,8 @@
               "viewAsList": [
                 "Cmd+Right"
               ],
-              "toggleHiddenFiles": []
+              "toggleHiddenFiles": [],
+              "toggleFavorite": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+1"
@@ -91259,13 +91627,14 @@
             "assigned": {
               "openSelectedItem": [],
               "toggleFavorite": [
+                "Ctrl+Cmd+T",
                 "Cmd+Down"
               ]
             },
             "removed": {},
             "reset": {},
             "takenFrom": [],
-            "menuShortcut": null
+            "menuShortcut": "Ctrl+Cmd+T"
           },
           {
             "id": "toggleInfoRow",
@@ -92463,7 +92832,8 @@
           "resetSize": [],
           "toggleFolderTree": [],
           "toggleInfoPanel": [],
-          "viewFile": []
+          "viewFile": [],
+          "toggleFavorite": []
         },
         "commandByShortcut": {
           "$remove": [
@@ -92546,6 +92916,10 @@
             [
               "?",
               "openHelp"
+            ],
+            [
+              "Ctrl+Cmd+T",
+              "toggleFavorite"
             ]
           ],
           "$insert": [
@@ -92799,7 +93173,8 @@
             "F11",
             "Cmd+Shift+N"
           ],
-          "viewFile": []
+          "viewFile": [],
+          "toggleFavorite": []
         },
         "probes": [
           {
@@ -92832,7 +93207,7 @@
             "id": "emptyTrash",
             "shortcut": "Cmd+Shift+E",
             "slot": 1,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
             "customized": false,
             "assigned": {
@@ -92900,7 +93275,9 @@
                 "F11",
                 "Cmd+Shift+N"
               ],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": [],
+              "toggleFavorite": []
             },
             "removed": {
               "goForward": [
@@ -92963,7 +93340,8 @@
                 "F11",
                 "Cmd+Shift+N"
               ],
-              "viewFile": []
+              "viewFile": [],
+              "toggleFavorite": []
             },
             "reset": {
               "goForward": [
@@ -93026,10 +93404,12 @@
                 "F11",
                 "Cmd+Shift+N"
               ],
-              "viewFile": []
+              "viewFile": [],
+              "toggleFavorite": []
             },
             "takenFrom": [],
-            "menuShortcut": "Cmd+Shift+Backspace"
+            "menuShortcut": "Cmd+Shift+Backspace",
+            "command": "editSelection"
           },
           {
             "id": "goDocuments",
@@ -93106,7 +93486,8 @@
                 "F11",
                 "Cmd+Shift+N"
               ],
-              "viewFile": []
+              "viewFile": [],
+              "toggleFavorite": []
             },
             "removed": {
               "goForward": [
@@ -93169,7 +93550,8 @@
                 "F11",
                 "Cmd+Shift+N"
               ],
-              "viewFile": []
+              "viewFile": [],
+              "toggleFavorite": []
             },
             "reset": {
               "goForward": [
@@ -93232,7 +93614,8 @@
                 "F11",
                 "Cmd+Shift+N"
               ],
-              "viewFile": []
+              "viewFile": [],
+              "toggleFavorite": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -96164,6 +96547,10 @@
             [
               "Cmd+I",
               "toggleInfoPanel"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -96423,7 +96810,8 @@
           "customizeToolbar": [
             "F20"
           ],
-          "showClipboard": []
+          "showClipboard": [],
+          "editSelection": []
         },
         "probes": [
           {
@@ -96822,6 +97210,10 @@
             [
               "Cmd+Shift+.",
               "toggleHiddenFiles"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -97150,7 +97542,8 @@
           ],
           "toggleHiddenFiles": [
             "Cmd+O"
-          ]
+          ],
+          "editSelection": []
         },
         "probes": [
           {
@@ -97478,6 +97871,10 @@
             [
               "Cmd+Shift+I",
               "toggleInfoRow"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -97994,6 +98391,12 @@
           ]
         },
         "commandByShortcut": {
+          "$remove": [
+            [
+              "Cmd+Shift+E",
+              "editSelection"
+            ]
+          ],
           "$insert": [
             [
               null,
@@ -98138,7 +98541,8 @@
             "removed": {
               "editSelection": [
                 "Cmd+Delete"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "reset": {
               "editSelection": [
@@ -98146,7 +98550,7 @@
               ]
             },
             "takenFrom": [],
-            "menuShortcut": null
+            "menuShortcut": "Ctrl+Cmd+T"
           }
         ],
         "events": [
@@ -99101,6 +99505,10 @@
             [
               "Cmd+D",
               "duplicateSelection"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -99118,7 +99526,8 @@
           "quickLookSelection": [
             "Cmd+Shift+E"
           ],
-          "duplicateSelection": []
+          "duplicateSelection": [],
+          "editSelection": []
         },
         "probes": [
           {
@@ -100648,7 +101057,7 @@
             "id": "openSelection",
             "shortcut": "Cmd+Shift+E",
             "slot": 1,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
             "customized": false,
             "assigned": {
@@ -100662,7 +101071,8 @@
               ],
               "quickLookSelection": [],
               "decreaseSize": [],
-              "toggleInfoPanel": []
+              "toggleInfoPanel": [],
+              "editSelection": []
             },
             "removed": {
               "goDownloads": [
@@ -100683,7 +101093,8 @@
               "toggleInfoPanel": []
             },
             "takenFrom": [],
-            "menuShortcut": "Cmd+O"
+            "menuShortcut": "Cmd+O",
+            "command": "editSelection"
           }
         ],
         "events": [
@@ -101921,6 +102332,10 @@
             [
               "Cmd+E",
               "viewFile"
+            ],
+            [
+              "Cmd+Shift+E",
+              "editSelection"
             ]
           ],
           "$insert": [
@@ -102173,7 +102588,8 @@
           "sortByName": [
             "Ctrl+Left"
           ],
-          "viewFile": []
+          "viewFile": [],
+          "editSelection": []
         },
         "probes": [
           {
@@ -102279,7 +102695,8 @@
               "sortByName": [
                 "Ctrl+Left"
               ],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "removed": {
               "goEnclosingFolder": [
@@ -102341,7 +102758,8 @@
               "sortByName": [
                 "Ctrl+Left"
               ],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "reset": {
               "goEnclosingFolder": [
@@ -102403,7 +102821,8 @@
               "sortByName": [
                 "Ctrl+Left"
               ],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+]"
@@ -102479,7 +102898,8 @@
               "sortByName": [
                 "Ctrl+Left"
               ],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "removed": {
               "goEnclosingFolder": [
@@ -102540,7 +102960,8 @@
               "sortByName": [
                 "Ctrl+Left"
               ],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "reset": {
               "goEnclosingFolder": [
@@ -102598,7 +103019,8 @@
               "sortByName": [
                 "Ctrl+Left"
               ],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+K"
@@ -102675,7 +103097,8 @@
               "sortByName": [
                 "Ctrl+Left"
               ],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "removed": {
               "goEnclosingFolder": [
@@ -102737,7 +103160,8 @@
               "sortByName": [
                 "Ctrl+Left"
               ],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "reset": {
               "goEnclosingFolder": [
@@ -102796,7 +103220,8 @@
               "sortByName": [
                 "Ctrl+Left"
               ],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+E"
@@ -102872,7 +103297,8 @@
               "sortByName": [
                 "Ctrl+Left"
               ],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "removed": {
               "goEnclosingFolder": [
@@ -102935,7 +103361,8 @@
               "sortByName": [
                 "Ctrl+Left"
               ],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "reset": {
               "goEnclosingFolder": [
@@ -102997,7 +103424,8 @@
               "sortByName": [
                 "Ctrl+Left"
               ],
-              "viewFile": []
+              "viewFile": [],
+              "editSelection": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Shift+T"
@@ -106739,20 +107167,22 @@
             "id": "viewAsDetails",
             "shortcut": "Cmd+Shift+E",
             "slot": 0,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
             "customized": false,
             "assigned": {
               "viewAsDetails": [
                 "Cmd+Shift+E"
-              ]
+              ],
+              "editSelection": []
             },
             "removed": {
               "viewAsDetails": []
             },
             "reset": {},
             "takenFrom": [],
-            "menuShortcut": "Cmd+2"
+            "menuShortcut": "Cmd+2",
+            "command": "editSelection"
           },
           {
             "id": "copy",
@@ -108404,7 +108834,8 @@
           "goForward": [
             "Cmd+Right"
           ],
-          "refreshOrApplySearchSort": []
+          "refreshOrApplySearchSort": [],
+          "toggleFavorite": []
         },
         "commandByShortcut": {
           "$remove": [
@@ -108427,6 +108858,10 @@
             [
               "?",
               "openHelp"
+            ],
+            [
+              "Ctrl+Cmd+T",
+              "toggleFavorite"
             ]
           ],
           "$insert": [
@@ -108460,7 +108895,8 @@
           "newWindow": [
             "Cmd+R"
           ],
-          "openHelp": []
+          "openHelp": [],
+          "toggleFavorite": []
         },
         "probes": [
           {
@@ -108565,7 +109001,8 @@
               "newWindow": [
                 "Cmd+R"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "toggleFavorite": []
             },
             "removed": {
               "goForward": [
@@ -108578,7 +109015,8 @@
               "newWindow": [
                 "Cmd+R"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "toggleFavorite": []
             },
             "reset": {
               "goForward": [
@@ -108591,7 +109029,8 @@
               "newWindow": [
                 "Cmd+R"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "toggleFavorite": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -108613,7 +109052,8 @@
               ],
               "refreshOrApplySearchSort": [],
               "newWindow": [],
-              "openHelp": []
+              "openHelp": [],
+              "toggleFavorite": []
             },
             "removed": {
               "goForward": [
@@ -108626,7 +109066,8 @@
               "newWindow": [
                 "Cmd+R"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "toggleFavorite": []
             },
             "reset": {
               "goForward": [
@@ -108639,7 +109080,8 @@
               "newWindow": [
                 "Cmd+R"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "toggleFavorite": []
             },
             "takenFrom": [],
             "menuShortcut": null
@@ -108666,7 +109108,8 @@
               "openHelp": [],
               "hideOthers": [
                 "Cmd+F11"
-              ]
+              ],
+              "toggleFavorite": []
             },
             "removed": {
               "goForward": [
@@ -108680,7 +109123,8 @@
                 "Cmd+R"
               ],
               "openHelp": [],
-              "hideOthers": []
+              "hideOthers": [],
+              "toggleFavorite": []
             },
             "reset": {
               "goForward": [
@@ -108693,7 +109137,8 @@
               "newWindow": [
                 "Cmd+R"
               ],
-              "openHelp": []
+              "openHelp": [],
+              "toggleFavorite": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Option+H"
@@ -110677,6 +111122,7 @@
                 "Cmd+Shift+G"
               ],
               "toggleFavorite": [
+                "Ctrl+Cmd+T",
                 "++"
               ]
             },
@@ -110697,7 +111143,7 @@
               ]
             },
             "takenFrom": [],
-            "menuShortcut": null
+            "menuShortcut": "Ctrl+Cmd+T"
           },
           {
             "id": "closeTab",

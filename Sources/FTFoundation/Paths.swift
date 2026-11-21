@@ -38,6 +38,10 @@ public enum Paths {
     /// (which holds one Trash per user). Nothing is pasted, dropped or made there, and only what is in
     /// it may be deleted for good. The disks ignore letter case by default, so case is ignored here too.
     public static func isInsideTrash(_ path: String, homePath: String) -> Bool {
+        // Only a path with "/.trash" in it, in any case, can be in a Trash (".Trash", ".Trashes"): a letter that
+        // decomposes to one of these leaves a combining mark after it, which no Trash's name has. Looked at first, as
+        // ⌘A in a big folder asks this of every item for several commands.
+        guard containsTrashMarker(path) else { return false }
         let key = comparable(path)
         let home = trimmingAllTrailingSlashes(comparable(homePath))
         if !home.isEmpty {
@@ -124,6 +128,30 @@ public enum Paths {
     }
 
     /// NFD, then lowercased (with the final-sigma rule, which Swift's own `lowercased()` leaves out).
+    /// Whether "/.trash" is in `path`, its ASCII letters in any case.
+    private static func containsTrashMarker(_ path: String) -> Bool {
+        let marker = Array("/.trash".utf8)
+        let bytes = path.utf8
+        guard bytes.count >= marker.count else { return false }
+        var matched = 0
+        var index = bytes.startIndex
+        while index != bytes.endIndex {
+            let byte = bytes[index]
+            let lower = byte >= 0x41 && byte <= 0x5A ? byte + 0x20 : byte
+            if lower == marker[matched] {
+                matched += 1
+                if matched == marker.count { return true }
+                index = bytes.index(after: index)
+            } else if matched > 0 {
+                // "/" starts the marker again: begin the match at this byte.
+                matched = 0
+            } else {
+                index = bytes.index(after: index)
+            }
+        }
+        return false
+    }
+
     private static func comparable(_ path: String) -> Scalars {
         scalars(JSText.lowercased(path.decomposedStringWithCanonicalMapping))
     }

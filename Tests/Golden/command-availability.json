@@ -39,6 +39,7 @@
           "copySelection",
           "copyToOtherPane",
           "cutSelection",
+          "deleteImmediately",
           "deselectAll",
           "duplicateSelection",
           "editSelection",
@@ -173,6 +174,7 @@
           "copyToOtherPane",
           "customizeToolbar",
           "cutSelection",
+          "deleteImmediately",
           "deselectAll",
           "duplicatePane",
           "duplicateSelection",
@@ -351,6 +353,7 @@
           "copySelection",
           "copyToOtherPane",
           "cutSelection",
+          "deleteImmediately",
           "deselectAll",
           "duplicateSelection",
           "editSelection",
@@ -486,6 +489,7 @@
           "copyToOtherPane",
           "customizeToolbar",
           "cutSelection",
+          "deleteImmediately",
           "deselectAll",
           "duplicatePane",
           "duplicateSelection",
@@ -667,6 +671,7 @@
           "copySelection",
           "copyToOtherPane",
           "cutSelection",
+          "deleteImmediately",
           "deselectAll",
           "duplicateSelection",
           "editSelection",
@@ -758,6 +763,7 @@
           "clearClipboard",
           "convertImages",
           "copyContents",
+          "deleteImmediately",
           "editSelection",
           "extractSelection",
           "extractSelectionTo",
@@ -847,6 +853,7 @@
           "calculateSize",
           "clearClipboard",
           "convertImages",
+          "deleteImmediately",
           "ejectVolume",
           "extractSelection",
           "extractSelectionTo",
@@ -4177,6 +4184,7 @@
           "calculateSize",
           "convertImages",
           "copyContents",
+          "deleteImmediately",
           "editSelection",
           "ejectVolume",
           "emptyTrash",
@@ -5386,7 +5394,8 @@
             "renameSelection",
             "revealInFolder",
             "showClipboard",
-            "undo"
+            "undo",
+            "deleteImmediately"
           ]
         },
         "showInFinder": [
@@ -8336,7 +8345,8 @@
             "moveToOtherPane",
             "newFolder",
             "openInTerminal",
-            "renameSelection"
+            "renameSelection",
+            "deleteImmediately"
           ],
           "$insert": [
             [
@@ -8417,7 +8427,8 @@
             "deselectAll",
             "moveSelection",
             "moveToOtherPane",
-            "renameSelection"
+            "renameSelection",
+            "deleteImmediately"
           ],
           "$insert": [
             [
@@ -11475,7 +11486,7 @@
           ],
           "$insert": [
             [
-              "convertImages",
+              "deleteImmediately",
               "ejectVolume"
             ]
           ]
@@ -12352,7 +12363,8 @@
             "renameSelection",
             "revealInFolder",
             "showClipboard",
-            "undo"
+            "undo",
+            "deleteImmediately"
           ],
           "$insert": [
             [
@@ -14056,7 +14068,8 @@
             "invertSelection",
             "moveTabToNewWindow",
             "selectNextTab",
-            "selectPreviousTab"
+            "selectPreviousTab",
+            "deleteImmediately"
           ],
           "$insert": [
             [
@@ -14328,6 +14341,7 @@
           "clearClipboard",
           "convertImages",
           "copyContents",
+          "deleteImmediately",
           "editSelection",
           "ejectVolume",
           "emptyTrash",
@@ -15167,7 +15181,8 @@
             "redo",
             "renameSelection",
             "revealInFolder",
-            "undo"
+            "undo",
+            "deleteImmediately"
           ],
           "$insert": [
             [
@@ -17760,7 +17775,8 @@
             "goBack",
             "moveItemsHere",
             "pasteSelection",
-            "showClipboard"
+            "showClipboard",
+            "deleteImmediately"
           ],
           "$insert": [
             [
@@ -18274,6 +18290,7 @@
         "disabled": [
           "convertImages",
           "copyContents",
+          "deleteImmediately",
           "editSelection",
           "ejectVolume",
           "extractSelection",
@@ -18717,6 +18734,7 @@
           "clearClipboard",
           "convertImages",
           "copyContents",
+          "deleteImmediately",
           "editSelection",
           "ejectVolume",
           "extractSelection",
@@ -19281,7 +19299,8 @@
             "redo",
             "renameSelection",
             "revealInFolder",
-            "undo"
+            "undo",
+            "deleteImmediately"
           ]
         },
         "showInFinder": [
@@ -21360,7 +21379,8 @@
             "goLibrary",
             "goTrash",
             "invertSelection",
-            "quickLookSelection"
+            "quickLookSelection",
+            "deleteImmediately"
           ],
           "$insert": [
             [
@@ -21791,7 +21811,8 @@
             "moveSelection",
             "moveToOtherPane",
             "quickLookSelection",
-            "renameSelection"
+            "renameSelection",
+            "deleteImmediately"
           ],
           "$insert": [
             [
@@ -22352,6 +22373,7 @@
           "calculateSize",
           "clearClipboard",
           "convertImages",
+          "deleteImmediately",
           "ejectVolume",
           "extractSelection",
           "extractSelectionTo",

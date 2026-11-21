@@ -843,6 +843,9 @@ extension HelpContent {
             group: .files, .command(.newFolderWithSelection),
             "Put the selected items in a new folder beside them, and name it"),
         HelpShortcutItem(group: .files, .command(.trashSelection), "Move the selected items to the Trash"),
+        HelpShortcutItem(
+            group: .files, .command(.deleteImmediately), "Delete the items selected in the Trash for good, asking first"
+        ),
         HelpShortcutItem(group: .files, .command(.emptyTrash), "Empty the Trash (asks first)"),
         HelpShortcutItem(group: .files, .command(.ejectVolume), "Eject the disk selected in the sidebar"),
         HelpShortcutItem(group: .files, .command(.selectAll), "Select everything in the list"),

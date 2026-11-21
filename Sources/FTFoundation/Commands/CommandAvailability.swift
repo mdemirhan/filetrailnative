@@ -150,7 +150,8 @@ public enum CommandAvailability {
     /// a clipboard, so they stay available. A held key runs them once per press (`WriteStartingShortcuts`).
     static let writeLockedCommands: Set<AppCommand> = [
         .undo, .redo, .pasteSelection, .pasteAsFile, .moveSelection, .renameSelection, .duplicateSelection,
-        .newFolder, .newFolderWithSelection, .newTextFile, .saveAsTemplate, .trashSelection, .emptyTrash,
+        .newFolder, .newFolderWithSelection, .newTextFile, .saveAsTemplate, .trashSelection, .deleteImmediately,
+        .emptyTrash,
         .copyToOtherPane,
         .moveToOtherPane,
         .compressSelection, .extractSelection, .extractSelectionTo, .convertImages,
@@ -420,8 +421,11 @@ public enum CommandAvailability {
         case .moveSelection:
             return selectedCount > 0
         case .trashSelection:
-            // What is in the Trash is already there; it can only be deleted for good, from its menu.
+            // What is in the Trash is already there; it can only be deleted for good.
             return selectedCount > 0 && !selectionIsInTrash(context)
+        case .deleteImmediately:
+            // Only what is in the Trash, as its menu has it; it asks first.
+            return focusedPane != .tree && selectedCount > 0 && selectionIsInTrash(context)
         case .duplicateSelection:
             // A duplicate goes next to its original: search results from several folders have no one folder for
             // theirs. Nothing is made in the Trash.

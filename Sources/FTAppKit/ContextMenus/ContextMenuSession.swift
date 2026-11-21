@@ -224,6 +224,11 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
                 item.target = self
                 item.representedObject = mode.rawValue
                 item.state = request.viewMode == mode ? .on : .off
+                // ⌘1 to ⌘4, as View has them.
+                showKey(
+                    of: AppCommand(
+                        rawValue: "viewAs" + mode.rawValue.prefix(1).uppercased() + mode.rawValue.dropFirst()), on: item
+                )
                 submenu.addItem(item)
             }
             entry.submenu = submenu
@@ -235,6 +240,7 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
                 item.target = self
                 item.representedObject = field.rawValue
                 item.state = request.sortBy == field ? .on : .off
+                showKey(of: ExplorerToolbar.sortCommand(field), on: item)
                 submenu.addItem(item)
             }
             entry.submenu = submenu
@@ -282,6 +288,15 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
         default:
             break
         }
+    }
+
+    /// The command's key beside a submenu's item, as the menu bar shows it.
+    private func showKey(of command: AppCommand?, on item: NSMenuItem) {
+        guard let command, let id = ShortcutCommandID(rawValue: command.rawValue),
+            let written = request.shortcuts.written(id), let key = MenuKeyEquivalent.parse(written)
+        else { return }
+        item.keyEquivalent = key.key
+        item.keyEquivalentModifierMask = key.modifiers
     }
 
     @objc private func chooseNewFile(_ item: NSMenuItem) {

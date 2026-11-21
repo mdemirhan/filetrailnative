@@ -496,6 +496,16 @@ struct CommandAvailabilityTests {
         #expect(!Self.run(.duplicateSelection, inTrash))
         #expect(Self.run(.renameSelection, inTrash))
         #expect(Self.run(.trashSelection, Self.context { $0.homePath = "/Users/demo" }))
+        // Delete Immediately is the other way round: only what is in the Trash, from the list, while no file operation
+        // runs.
+        #expect(Self.run(.deleteImmediately, inTrash))
+        #expect(!Self.run(.deleteImmediately, Self.context { $0.homePath = "/Users/demo" }))
+        var fromTree = inTrash
+        fromTree.shortcutContext = Self.shortcutContext(focusedPane: .tree, selectedTreeTargetKind: .filesystemFolder)
+        #expect(!Self.run(.deleteImmediately, fromTree))
+        var locked = inTrash
+        locked.writeOperationLocked = true
+        #expect(!Self.run(.deleteImmediately, locked))
         #expect(
             !Self.run(
                 .newFolder,

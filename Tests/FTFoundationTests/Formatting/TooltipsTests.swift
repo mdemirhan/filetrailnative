@@ -65,7 +65,7 @@ struct TooltipsTests {
             "back": "Back (⌘[)", "forward": "Forward (⌘])", "up": "Enclosing Folder (⌘↑)",
             "refresh": "Refresh (⌘R)", "goToFolder": "Go To (⌘K)", "newTab": "New Tab (⌘T)",
             "openSelection": "Open (⌘O)", "quickLook": "Quick Look (⌘Y)",
-            "editSelection": "Edit in Text Editor", "moveSelection": "Move To (⇧⌘M)",
+            "editSelection": "Edit in Text Editor (⇧⌘E)", "moveSelection": "Move To (⇧⌘M)",
             "renameSelection": "Rename (↩)", "duplicateSelection": "Duplicate (⌘D)",
             "newFolder": "New Folder (⇧⌘N)", "trashSelection": "Move to Trash (⌘⌫)", "copySelection": "Copy (⌘C)",
             "cutSelection": "Cut (⌘X)", "pasteSelection": "Paste (⌘V)", "openInTerminal": "Open in Terminal (⌥⌘T)",

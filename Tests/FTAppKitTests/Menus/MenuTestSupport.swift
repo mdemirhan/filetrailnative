@@ -97,7 +97,11 @@ func accelerator(_ item: NSMenuItem) -> String? {
         "\u{8}": "Backspace", "\t": "Tab", "\r": "Return", " ": "Space",
     ]
     let key = item.keyEquivalent
-    parts.append(names[key] ?? key.uppercased())
+    let functionKeys = Dictionary(
+        uniqueKeysWithValues: (1...20).map {
+            (String(Character(UnicodeScalar(UInt32(NSF1FunctionKey + $0 - 1))!)), "F\($0)")
+        })
+    parts.append(names[key] ?? functionKeys[key] ?? key.uppercased())
     return parts.joined(separator: "+")
 }
 

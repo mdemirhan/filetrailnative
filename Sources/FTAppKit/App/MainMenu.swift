@@ -15,6 +15,7 @@ public final class MainMenu {
     /// The keys chosen in Settings → Shortcuts, and the text editor Settings → Files names. Read at every build.
     var shortcuts: () -> ShortcutBindings = { ShortcutCommands.defaultBindings }
     var textEditorName: () -> String? = { nil }
+    var returnKeyAction: () -> ReturnKeyAction = { .rename }
     /// What the startup disk is called, which Go names; the menu is built again when it is renamed.
     var startupDiskName: () -> String = { StartupDisk.shared.name }
     /// The workspaces Window ▸ Workspaces lists; the menu is built again when they change.
@@ -144,7 +145,8 @@ public final class MainMenu {
         let result = ApplicationMenuBuilder.build(
             target: router,
             options: ApplicationMenuOptions(
-                shortcuts: shortcuts(), textEditorName: textEditorName(), startupDiskName: startupDiskName(),
+                shortcuts: shortcuts(), textEditorName: textEditorName(), returnKeyAction: returnKeyAction(),
+                startupDiskName: startupDiskName(),
                 workspaces: workspaces(), templates: templates()))
         built = result
         index = MenuItemIndex(result, router: router)

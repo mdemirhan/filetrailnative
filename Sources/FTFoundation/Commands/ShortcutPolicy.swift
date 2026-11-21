@@ -134,7 +134,8 @@ public enum ShortcutPolicy {
         "newFolderWithSelection": .newFolderWithSelection, "saveAsTemplate": .saveAsTemplate,
         "pasteAsFile": .pasteAsFile, "terminal": .openInTerminal, "copyPath": .copyPath,
         "copyContents": .copyContents, "share": .shareSelection, "convertImages": .convertImages,
-        "rootTreeHere": .rootTreeAtSelection, "trash": .trashSelection, "addToCopied": .addToCopied,
+        "rootTreeHere": .rootTreeAtSelection, "trash": .trashSelection, "deleteImmediately": .deleteImmediately,
+        "toggleFavorite": .toggleFavorite, "addToCopied": .addToCopied,
         "addToCut": .addToCut, "removeFromClipboard": .removeFromClipboard,
     ]
 
@@ -207,6 +208,11 @@ public enum ShortcutPolicy {
             return canHandle(.rootTreeAtSelection, context)
         case "trash":
             return canHandleRaw(.trashSelection, context)
+        case "deleteImmediately":
+            return context.focusedPane != .tree && canHandle(.deleteImmediately, context)
+        case "toggleFavorite":
+            // As with Paste: a tree or favorite menu acts on the right-clicked folder, the key on the selected one.
+            return context.focusedPane != .tree && canHandle(.toggleFavorite, context)
         case "addToCopied":
             return canHandleRaw(.copySelection, context)
         case "addToCut":

@@ -146,9 +146,10 @@ struct ContextMenuRulesTests {
                 "Show Info",
                 "Cut", "Copy",
                 "Copy Path",
-                "Copy Text", "Share…", "Rename", "Duplicate", "Move to…", "Save as Template",
+                "Copy Text", "Rename", "Duplicate", "Move to…",
                 "Compress \u{201C}b.txt\u{201D}",
-                "Open in Terminal", "Show in Finder", "Move to Trash",
+                // What hands the file to something else, leaving it as it is.
+                "Share…", "Save as Template", "Open in Terminal", "Show in Finder", "Move to Trash",
             ])
         let folder = labels(
             subject(.content, [("/a/F", .directory)]), world(favorites: ["/a/F"], pasteDestination: true))
@@ -156,9 +157,9 @@ struct ContextMenuRulesTests {
             folder == [
                 "Open", "Open With", "Open in New Tab", "Open in New Window", "Open in Other Pane", "Quick Look",
                 "Show Info",
-                "Calculate Size", "Cut", "Copy", "Paste into Folder", "Copy Path", "Share…", "Rename", "Duplicate",
+                "Calculate Size", "Cut", "Copy", "Paste into Folder", "Copy Path", "Rename", "Duplicate",
                 "Move to…",
-                "New Folder", "Compress \u{201C}F\u{201D}", "Remove from Favorites", "Open in Terminal",
+                "New Folder", "Compress \u{201C}F\u{201D}", "Share…", "Remove from Favorites", "Open in Terminal",
                 "Show in Finder",
                 "Move to Trash",
             ])
@@ -186,7 +187,8 @@ struct ContextMenuRulesTests {
             ).split { $0.actionID == nil }.map { $0.compactMap(\.label) }
         }
         let archive = groups(subject(.content, [("/a/Photos.zip", .file)]))
-        #expect(archive.contains(["Rename", "Duplicate", "Move to…", "Save as Template"]))
+        #expect(archive.contains(["Rename", "Duplicate", "Move to…"]))
+        #expect(archive.contains(["Share…", "Save as Template", "Open in Terminal", "Show in Finder"]))
         #expect(archive.contains(["Compress \u{201C}Photos.zip\u{201D}", "Extract", "Extract To…"]))
         let image = groups(subject(.content, [("/a/p.png", .file)]))
         #expect(image.contains(["Compress \u{201C}p.png\u{201D}", "Convert Image…"]))

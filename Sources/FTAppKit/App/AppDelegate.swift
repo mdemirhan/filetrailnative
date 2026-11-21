@@ -288,6 +288,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
                 ?? ShortcutCommands.defaultBindings
         }
         menu.textEditorName = { [weak self] in self?.store?.preferences().defaultTextEditor.appName }
+        menu.returnKeyAction = { [weak self] in self?.store?.preferences().returnKeyAction ?? .rename }
         menu.workspaces = { [weak self] in
             (self?.store?.preferences().workspaces ?? []).map { WorkspaceMenuEntry(id: $0.id, name: $0.name) }
         }
@@ -324,7 +325,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         explorerWindows.preferencesChanged(preferences, change)
         pageWindows.preferencesChanged(preferences, change)
         if change.keys.contains(.shortcutOverrides) || change.keys.contains(.defaultTextEditor)
-            || change.keys.contains(.workspaces)
+            || change.keys.contains(.workspaces) || change.keys.contains(.returnKeyAction)
         {
             mainMenu?.build()
         }

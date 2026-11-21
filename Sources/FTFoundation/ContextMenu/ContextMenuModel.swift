@@ -140,7 +140,7 @@ public enum ContextMenuItems {
                 line("separator-tree-clipboard"),
                 item(.rename, "Rename", .rename), item(.duplicate, "Duplicate", .duplicate),
                 item(.move, "Move to…", .move), line("separator-tree-organize"),
-                item(.toggleFavorite, favoriteToggleLabel, .favorite), line("separator-tree-favorite"),
+                item(.toggleFavorite, favoriteToggleLabel, .favorite),
                 item(.terminal, "Open in Terminal", .terminal), item(.showInFinder, "Show in Finder", .showInFinder),
                 line("separator-tree-apps"),
                 item(.trash, "Move to Trash", .trash, destructive: true),
@@ -211,14 +211,10 @@ public enum ContextMenuItems {
                 item(.paste, "Paste into Folder", .paste), item(.copyPath, "Copy Path", .copyPath),
                 // For one image or text file (hidden by the caller otherwise).
                 item(.copyContents, options.copyContentsLabel ?? CopyContents.commandLabel, .copyContents),
-                // Right after the copies, as Finder has Share… after Copy. Not for what is in the Trash.
-                item(.share, "Share…", .share),
                 line("separator-clipboard"),
                 item(.rename, options.renameLabel ?? "Rename", .rename), item(.duplicate, "Duplicate", .duplicate),
                 item(.move, "Move to…", .move), item(.newFolder, "New Folder", .newFolder),
                 item(.newFolderWithSelection, "New Folder with Selection", .newFolder),
-                // For files only (hidden by the caller otherwise).
-                item(.saveAsTemplate, "Save as Template", .newFile),
                 line("separator-rename"),
                 // What makes new files from the items. Compress for any items of one folder; Extract and Extract To
                 // for archives; Convert Images for images only, every one of them (hidden by the caller otherwise).
@@ -226,7 +222,11 @@ public enum ContextMenuItems {
                 item(.extract, "Extract", .extract), item(.extractTo, "Extract To…", .extract),
                 item(.convertImages, options.convertImagesLabel ?? ConvertImagesText.commandLabel, .convertImages),
                 line("separator-organize"),
-                item(.toggleFavorite, favoriteToggleLabel, .favorite), line("separator-favorite"),
+                // What hands the items to something else, leaving them as they are, as the File menu has it. Share is
+                // not for what is in the Trash; Save as Template for files only (hidden by the caller otherwise).
+                item(.share, "Share…", .share),
+                item(.saveAsTemplate, "Save as Template", .newFile),
+                item(.toggleFavorite, favoriteToggleLabel, .favorite),
                 item(.terminal, "Open in Terminal", .terminal), item(.showInFinder, "Show in Finder", .showInFinder),
                 line("separator-apps"),
                 item(.trash, "Move to Trash", .trash, destructive: true),

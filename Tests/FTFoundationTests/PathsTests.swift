@@ -26,6 +26,20 @@ struct PathsTests {
 
     @Test func ignoresLetterCaseAsTheDiskDoes() {
         #expect(Paths.isInsideTrash("/users/DEMO/.trash/a.txt", homePath: "/Users/demo"))
+        #expect(Paths.isInsideTrash("/Users/demo/.TRASH/a.txt", homePath: "/Users/demo"))
+        #expect(Paths.isInsideTrash("/volumes/usb/.TRASHES/501", homePath: "/Users/demo"))
+    }
+
+    // What only looks like a Trash is not one: a name that begins as one, a letter with an accent that decomposes to
+    // one of its letters, a Trash's name without its dot.
+    @Test func isNotFooledByNamesLikeATrashs() {
+        #expect(!Paths.isInsideTrash("/Users/demo/.Trashy/a.txt", homePath: "/Users/demo"))
+        #expect(!Paths.isInsideTrash("/Users/demo/.Tras\u{0125}/a.txt", homePath: "/Users/demo"))
+        #expect(!Paths.isInsideTrash("/Users/demo/.Tras\u{0068}\u{0302}/a.txt", homePath: "/Users/demo"))
+        #expect(!Paths.isInsideTrash("/Users/demo/Trash/a.txt", homePath: "/Users/demo"))
+        #expect(!Paths.isInsideTrash("/Users/demo/x/.Trash/a.txt", homePath: "/Users/demo"))
+        #expect(!Paths.isInsideTrash("/Volumes/USB/x/.Trashes/a.txt", homePath: "/Users/demo"))
+        #expect(!Paths.isInsideTrash("/./trash", homePath: "/Users/demo"))
     }
 
     @Test func isntFooledByNamesThatOnlyBeginLikeTheTrash() {

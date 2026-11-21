@@ -36,7 +36,8 @@ extension ShortcutPolicy {
             .focusContentPane, .openHelp, .openKeyboardShortcuts:
             .globalExplorer
         case .openSelection, .editSelection, .openInTerminal, .moveSelection, .renameSelection, .duplicateSelection,
-            .convertImages, .newFolder, .newFolderWithSelection, .saveAsTemplate, .trashSelection, .copySelection,
+            .convertImages, .newFolder, .newFolderWithSelection, .saveAsTemplate, .trashSelection, .deleteImmediately,
+            .copySelection,
             .cutSelection,
             .pasteSelection, .copyPath,
             .copyContents, .shareSelection,

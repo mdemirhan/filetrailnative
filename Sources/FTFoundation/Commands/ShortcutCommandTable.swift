@@ -101,6 +101,7 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case saveAsTemplate
     case pasteAsFile
     case trashSelection
+    case deleteImmediately
     case ejectVolume
     case emptyTrash
     case copyPath
@@ -336,7 +337,7 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .openSelectedItem, label: "Open Selected Item", group: .files, defaults: ["Cmd+Down"]),
         ShortcutCommandDefinition(
-            id: .editSelection, label: "Edit in Text Editor", group: .files, defaults: [],
+            id: .editSelection, label: "Edit in Text Editor", group: .files, defaults: ["Cmd+Shift+E"],
             menuPath: "File > Edit in Text Editor"),
         ShortcutCommandDefinition(
             id: .quickLookSelection, label: "Quick Look", group: .files, defaults: ["Cmd+Y", "Space"],
@@ -392,6 +393,10 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .trashSelection, label: "Move to Trash", group: .files, defaults: ["Cmd+Backspace"],
             menuPath: "File > Move to Trash"),
+        // Finder's key and place: the item ⌥ shows in Move to Trash's, for what is in the Trash. It always asks first.
+        ShortcutCommandDefinition(
+            id: .deleteImmediately, label: "Delete Immediately…", group: .files, defaults: ["Cmd+Option+Backspace"],
+            menuPath: "File > Delete Immediately…"),
         ShortcutCommandDefinition(
             id: .ejectVolume, label: "Eject", group: .files, defaults: [], menuPath: "File > Eject"),
         ShortcutCommandDefinition(
@@ -428,7 +433,7 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .showInFinder, label: "Show in Finder", group: .files, defaults: [], menuPath: "File > Show in Finder"),
         ShortcutCommandDefinition(
-            id: .toggleFavorite, label: "Add to Favorites", group: .files, defaults: [],
+            id: .toggleFavorite, label: "Add to Favorites", group: .files, defaults: ["Ctrl+Cmd+T"],
             menuPath: "File > Add to Favorites"),
         ShortcutCommandDefinition(
             id: .focusFileSearch, label: "Find Files…", group: .search, defaults: ["Cmd+F"],

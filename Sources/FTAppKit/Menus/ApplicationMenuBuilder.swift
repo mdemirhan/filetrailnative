@@ -7,6 +7,8 @@ struct ApplicationMenuOptions {
     var shortcuts: ShortcutBindings = ShortcutCommands.defaultBindings
     /// The text editor chosen in Settings → Files, which File names.
     var textEditorName: String?
+    /// What Return does in the list, chosen in Settings → Files: while it renames, Rename shows ↩.
+    var returnKeyAction: ReturnKeyAction = .rename
     /// What the startup disk is called, which Go names.
     var startupDiskName = VolumePaths.defaultStartupDiskName
     /// The workspaces Window ▸ Workspaces lists, in order.
@@ -44,7 +46,7 @@ enum ApplicationMenuBuilder {
 
     static func build(target: MenuCommandRouter, options: ApplicationMenuOptions = .init()) -> BuiltApplicationMenu {
         let context = Context(target: target, options: options)
-        let main = NSMenu(title: "")
+        let main = ApplicationMainMenu(title: "")
         main.autoenablesItems = true
 
         let servicesMenu = NSMenu(title: "Services")
@@ -79,7 +81,12 @@ enum ApplicationMenuBuilder {
             menu.addItem(newFile)
             menu.addItem(context.command(.saveAsTemplate, "Save as Template"))
             menu.addItem(.separator())
+            // Opening and looking: what changes nothing of the items.
             menu.addItem(context.command(.openSelection, "Open"))
+            // The apps that can open the selected items, as Finder's File menu and the right-click menu have it.
+            let openWith = NSMenuItem(title: "Open With", action: nil, keyEquivalent: "")
+            openWith.submenu = MenuBarOpenWith.shared.makeMenu()
+            menu.addItem(openWith)
             // The file's text in this pane, to read or edit: the viewer holds the rest of what it does.
             menu.addItem(context.command(.viewFile, "Open in Viewer"))
             menu.addItem(context.command(.openSelectionInNewTab, "Open in New Tab"))
@@ -87,34 +94,36 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.openSelectionInOtherPane, "Open in Other Pane"))
             let editor = MenuName.shortened(options.textEditorName ?? "Text Editor")
             menu.addItem(context.command(.editSelection, "Edit in \(editor)"))
+            menu.addItem(context.command(.quickLookSelection, "Quick Look"))
+            menu.addItem(context.command(.calculateSize, "Calculate Size"))
             // Search results only, as Finder's Show in Enclosing Folder.
             menu.addItem(context.command(.revealInFolder, "Reveal in Folder"))
             menu.addItem(.separator())
-            // From here down in Finder's order: Get Info and Rename, Compress, Duplicate and Quick Look, Add to
-            // Sidebar. What Finder doesn't have sits with the item of Finder's it is most like.
-            menu.addItem(context.command(.calculateSize, "Calculate Size"))
+            // What changes the items, then makes or reads archives and images, in the order of the right-click menu.
             menu.addItem(context.command(.renameSelection, "Rename"))
+            menu.addItem(context.command(.duplicateSelection, "Duplicate"))
+            menu.addItem(context.command(.moveSelection, "Move to…"))
             menu.addItem(.separator())
             // Names what it makes a zip of once the menu is synced: Compress “Photos”, Compress 3 Items.
             menu.addItem(context.command(.compressSelection, "Compress"))
             menu.addItem(context.command(.extractSelection, "Extract"))
             menu.addItem(context.command(.extractSelectionTo, "Extract To…"))
-            menu.addItem(.separator())
-            menu.addItem(context.command(.duplicateSelection, "Duplicate"))
-            menu.addItem(context.command(.moveSelection, "Move to…"))
             // "Convert 3 Images…" for the images selected.
             menu.addItem(context.command(.convertImages, ConvertImagesText.commandLabel))
-            menu.addItem(context.command(.quickLookSelection, "Quick Look"))
             menu.addItem(.separator())
-            // On its own, as in Finder's File menu.
+            // What hands the items to something else.
             menu.addItem(context.command(.shareSelection, "Share…"))
-            menu.addItem(.separator())
             // "Remove from Favorites" while the folder is one.
             menu.addItem(context.command(.toggleFavorite, "Add to Favorites"))
             menu.addItem(context.command(.openInTerminal, "Open in Terminal"))
             menu.addItem(context.command(.showInFinder, "Show in Finder"))
             menu.addItem(.separator())
-            menu.addItem(context.command(.trashSelection, "Move to Trash"))
+            // Delete Immediately, for what is in the Trash, is the item ⌥ shows in Move to Trash's place, as in Finder.
+            for item in context.alternatePair(
+                .trashSelection, "Move to Trash", .deleteImmediately, "Delete Immediately…")
+            {
+                menu.addItem(item)
+            }
             // The disk selected in the sidebar, as Finder's File ▸ Eject.
             menu.addItem(context.command(.ejectVolume, "Eject"))
             menu.addItem(.separator())
@@ -354,6 +363,19 @@ enum ApplicationMenuBuilder {
             Shortcuts.menuShortcut(options.shortcuts[id] ?? []).flatMap(MenuKeyEquivalent.parse)
         }
 
+        /// A command's key without ⌘ or ⌃ (F2 for Rename, F5 and F6 for the other pane), which the window handles:
+        /// the item shows it, and the menu bar never takes it (`ApplicationMainMenu`), so a text field keeps it.
+        private func windowKey(_ id: ShortcutCommandID) -> MenuKeyEquivalent? {
+            // Return before Rename's own keys while it renames, as Help, Settings and the right-click menu show it.
+            if id == .renameSelection, options.returnKeyAction == .rename {
+                return MenuKeyEquivalent(key: "\r", modifiers: [])
+            }
+            guard let first = options.shortcuts[id]?.first, !first.contains("Cmd"), !first.contains("Ctrl") else {
+                return nil
+            }
+            return MenuKeyEquivalent.parse(first)
+        }
+
         private func apply(_ key: MenuKeyEquivalent?, to item: NSMenuItem) {
             guard let key else { return }
             item.keyEquivalent = key.key
@@ -372,7 +394,7 @@ enum ApplicationMenuBuilder {
             if let fixed {
                 apply(fixedKey(fixed), to: item)
             } else if let shortcutID = ShortcutCommandID(rawValue: type.rawValue) {
-                apply(chosenKey(shortcutID), to: item)
+                apply(chosenKey(shortcutID) ?? windowKey(shortcutID), to: item)
             }
             register(item, id: type.rawValue)
             return item
@@ -380,16 +402,25 @@ enum ApplicationMenuBuilder {
 
         /// File ▸ Close Pane, and Close Tab in its place while ⌥ is held, when their keys differ by ⌥ alone.
         func closeItems() -> [NSMenuItem] {
-            let pane = command(.closePane, "Close Tab")
-            let tab = command(.closeTab, "Close Tab")
-            if ApplicationMenuBuilder.pairs(chosenKey(.closePane), chosenKey(.closeTab)) {
-                if chosenKey(.closePane) == nil {
-                    pane.keyEquivalentModifierMask = []
-                    tab.keyEquivalentModifierMask = .option
+            alternatePair(.closePane, "Close Tab", .closeTab, "Close Tab")
+        }
+
+        /// An item and the one ⌥ shows in its place, while their keys differ by ⌥ alone; both show otherwise.
+        func alternatePair(
+            _ first: AppCommand, _ firstTitle: String, _ second: AppCommand, _ secondTitle: String
+        ) -> [NSMenuItem] {
+            let shown = command(first, firstTitle)
+            let alternate = command(second, secondTitle)
+            let firstKey = ShortcutCommandID(rawValue: first.rawValue).flatMap(chosenKey)
+            let secondKey = ShortcutCommandID(rawValue: second.rawValue).flatMap(chosenKey)
+            if ApplicationMenuBuilder.pairs(firstKey, secondKey) {
+                if firstKey == nil {
+                    shown.keyEquivalentModifierMask = []
+                    alternate.keyEquivalentModifierMask = .option
                 }
-                tab.isAlternate = true
+                alternate.isAlternate = true
             }
-            return [pane, tab]
+            return [shown, alternate]
         }
 
         /// Window ▸ Workspaces: saving, the workspaces, the first five with their keys, and Manage. Each
@@ -479,5 +510,14 @@ enum ApplicationMenuBuilder {
             precondition(itemsByID[id] == nil, "duplicate menu item id \(id)")
             itemsByID[id] = item
         }
+    }
+}
+
+/// The menu bar. It takes only keys with ⌘ or ⌃: an item may show a key without them (F2, F5) that the window handles,
+/// as the menu would take it from a text field or a dialog before they see it.
+final class ApplicationMainMenu: NSMenu {
+    override func performKeyEquivalent(with event: NSEvent) -> Bool {
+        guard !event.modifierFlags.intersection([.command, .control]).isEmpty else { return false }
+        return super.performKeyEquivalent(with: event)
     }
 }

@@ -125,7 +125,8 @@ struct HelpContentTests {
         let trash = HelpContent.search("TRASH")
         // Searching's row on results after changes says what moving to the Trash does to them.
         #expect(trash.map(\.topic.id) == [.files, .search])
-        #expect(trash.first?.shortcuts.map(\.shortcut) == ["Cmd+Backspace", "Cmd+Shift+Backspace"])
+        #expect(
+            trash.first?.shortcuts.map(\.shortcut) == ["Cmd+Backspace", "Cmd+Option+Backspace", "Cmd+Shift+Backspace"])
         #expect(
             HelpContent.search("cmd+k").first?.shortcuts.first?.description
                 == "Go to a folder by name or path, or pick one of those you use most (Cmd+Shift+G also works)")

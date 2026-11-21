@@ -27,13 +27,13 @@ import Testing
             titles(submenu(main, "File")) == [
                 "New Window", "New Tab", "Duplicate Tab", "New Folder", "New Folder with Selection", "New File",
                 "Save as Template", "-",
-                "Open", "Open in Viewer",
-                "Open in New Tab",
-                "Open in New Window", "Open in Other Pane", "Edit in Text Editor", "Reveal in Folder", "-",
-                "Calculate Size", "Rename", "-", "Compress", "Extract", "Extract To…", "-",
-                "Duplicate", "Move to…", "Convert Images…", "Quick Look", "-",
-                "Share…", "-",
-                "Add to Favorites", "Open in Terminal", "Show in Finder", "-", "Move to Trash", "Eject", "-",
+                "Open", "Open With", "Open in Viewer", "Open in New Tab", "Open in New Window", "Open in Other Pane",
+                "Edit in Text Editor", "Quick Look", "Calculate Size", "Reveal in Folder", "-",
+                "Rename", "Duplicate", "Move to…", "-",
+                "Compress", "Extract", "Extract To…", "Convert Images…", "-",
+                "Share…", "Add to Favorites", "Open in Terminal", "Show in Finder", "-",
+                // Delete Immediately…, the item ⌥ shows in Move to Trash's place.
+                "Move to Trash", "Delete Immediately…", "Eject", "-",
                 "Reopen Closed Tab",
                 // Close Pane until synced, then Close Tab, the item ⌥ shows in its place.
                 "Close Tab", "Close Tab", "Close Window",
@@ -150,6 +150,34 @@ import Testing
         #expect(here.keyEquivalentModifierMask == [.option, .shift, .command])
     }
 
+    // Rename shows Return while Return renames, as Help and the right-click menu do, and F2 while Return opens; F5 and
+    // F6 show beside Copy and Move to Other Pane. The menu bar never takes a key without ⌘ or ⌃: the window does, so a
+    // text field or a dialog keeps it.
+    @Test func showsTheWindowsOwnKeysAndNeverTakesThem() throws {
+        let file = { (action: ReturnKeyAction) in submenu(self.build(.init(returnKeyAction: action)).0.menu, "File") }
+        #expect(accelerator(item(file(.rename), "Rename")) == "Return")
+        #expect(accelerator(item(file(.open), "Rename")) == "F2")
+        let (built, _) = build()
+        #expect(accelerator(item(submenu(built.menu, "Edit"), "Copy to Other Pane")) == "F5")
+        for (key, code) in [("\r", UInt16(36)), (String(UnicodeScalar(UInt16(NSF5FunctionKey))!), UInt16(96))] {
+            let event = try #require(
+                NSEvent.keyEvent(
+                    with: .keyDown, location: .zero, modifierFlags: [], timestamp: 0, windowNumber: 0, context: nil,
+                    characters: key, charactersIgnoringModifiers: key, isARepeat: false, keyCode: code))
+            #expect(!built.menu.performKeyEquivalent(with: event))
+        }
+    }
+
+    // Delete Immediately is the item ⌥ shows in Move to Trash's place, as in Finder.
+    @Test func deleteImmediatelyIsTheItemOptionShowsInMoveToTrashsPlace() {
+        let file = submenu(build().0.menu, "File")
+        let trash = item(file, "Move to Trash")
+        let delete = item(file, "Delete Immediately…")
+        #expect(!trash.isAlternate && delete.isAlternate)
+        #expect(file.index(of: delete) == file.index(of: trash) + 1)
+        #expect(accelerator(delete) == "Command+Alt+Backspace")
+    }
+
     @Test func closeTabIsTheItemOptionShowsInClosePanesPlace() {
         let (built, _) = build()
         let file = submenu(built.menu, "File")
@@ -231,15 +259,17 @@ import Testing
             ("File", "Quick Look", "Command+Y", .quickLookSelection),
             ("File", "Reveal in Folder", nil, .revealInFolder),
             ("File", "Calculate Size", nil, .calculateSize),
-            // Space and F2 work from the window itself: as menu shortcuts they would be taken from text fields and
-            // dialogs.
-            ("File", "Rename", nil, .renameSelection),
+            // Return, while it renames, and F2 work from the window itself: the menu shows Return and never takes
+            // it, so text fields and dialogs keep it.
+            ("File", "Rename", "Return", .renameSelection),
+            ("File", "Edit in Text Editor", "Command+Shift+E", .editSelection),
             ("File", "Duplicate", "Command+D", .duplicateSelection),
             ("File", "Move to…", "Command+Shift+M", .moveSelection),
-            ("File", "Add to Favorites", nil, .toggleFavorite),
+            ("File", "Add to Favorites", "Control+Command+T", .toggleFavorite),
             ("File", "Open in Terminal", "Command+Alt+T", .openInTerminal),
             ("File", "Show in Finder", nil, .showInFinder),
             ("File", "Move to Trash", "Command+Backspace", .trashSelection),
+            ("File", "Delete Immediately…", "Command+Alt+Backspace", .deleteImmediately),
             ("File", "Reopen Closed Tab", "Command+Shift+T", .reopenClosedTab),
             // Close Pane, named Close Tab until the menu is synced with a tab of two panes.
             ("File", "Close Tab", "Command+W", .closePane),
@@ -248,6 +278,9 @@ import Testing
             ("Edit", "Copy", "Command+C", .editCopy),
             ("Edit", "Paste", "Command+V", .editPaste),
             ("Edit", "Paste as File", "Command+Shift+V", .pasteAsFile),
+            // The window's keys, shown and never taken by the menu.
+            ("Edit", "Copy to Other Pane", "F5", .copyToOtherPane),
+            ("Edit", "Move to Other Pane", "F6", .moveToOtherPane),
             ("Edit", "Copy Path", "Command+Alt+C", .copyPath),
             ("Edit", "Copy Contents", "Command+Shift+C", .copyContents),
             ("Edit", "Select All", "Command+A", .editSelectAll),

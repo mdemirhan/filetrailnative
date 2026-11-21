@@ -2187,7 +2187,8 @@ extension MainWindowController: ExplorerWindowHandle {
         case .shareSelection:
             shareSelection()
         case .undo, .redo, .editCut, .editCopy, .editPaste, .moveSelection, .duplicateSelection, .newFolder,
-            .newFolderWithSelection, .newTextFile, .saveAsTemplate, .pasteAsFile, .trashSelection, .emptyTrash,
+            .newFolderWithSelection, .newTextFile, .saveAsTemplate, .pasteAsFile, .trashSelection, .deleteImmediately,
+            .emptyTrash,
             .copySelection,
             .cutSelection,
             .pasteSelection, .addToCopied, .addToCut, .moveItemsHere, .removeFromClipboard,
