@@ -14,6 +14,14 @@ public struct WindowView: Codable, Equatable, Sendable, NamedSavedView {
         }
     }
 
+    /// A window that fills the screen, in place of a size.
+    public enum Sizing: String, Codable, Sendable {
+        /// Zoomed to the screen's room, as the window's green button with ⌥ does: the menu bar and the Dock stay.
+        case maximized
+        /// In full screen, a space of its own, as View ▸ Enter Full Screen puts it.
+        case fullScreen
+    }
+
     public var id: String
     public var name: String
     /// A tab view's id for each tab, in order; nil: a plain new tab, as New Tab opens it.
@@ -21,14 +29,16 @@ public struct WindowView: Codable, Equatable, Sendable, NamedSavedView {
     public var frontTab: Int
     /// Nil: a new window's size, as a new window has.
     public var size: Size?
+    /// Maximized or full screen, in place of `size`; nil: neither.
+    public var sizing: Sizing?
     /// Nil: as in the window it is opened from.
     public var folderTreeOpen: Bool?
     public var propertiesOpen: Bool?
 
     /// What makes sense is kept: at least one tab and at most the tab limit, the front tab one of them, a size of a
-    /// window at least `minimumSize`.
+    /// window at least `minimumSize`, and no size with `sizing`.
     public init(
-        id: String, name: String, tabs: [String?], frontTab: Int = 0, size: Size? = nil,
+        id: String, name: String, tabs: [String?], frontTab: Int = 0, size: Size? = nil, sizing: Sizing? = nil,
         folderTreeOpen: Bool? = nil, propertiesOpen: Bool? = nil
     ) {
         self.id = id
@@ -37,14 +47,20 @@ public struct WindowView: Codable, Equatable, Sendable, NamedSavedView {
         if tabs.isEmpty { tabs = [nil] }
         self.tabs = tabs
         self.frontTab = tabs.indices.contains(frontTab) ? frontTab : 0
-        self.size = size.map {
-            Size(width: max($0.width, Self.minimumSize.width), height: max($0.height, Self.minimumSize.height))
-        }
+        self.sizing = sizing
+        self.size =
+            sizing != nil
+            ? nil
+            : size.map {
+                Size(width: max($0.width, Self.minimumSize.width), height: max($0.height, Self.minimumSize.height))
+            }
         self.folderTreeOpen = folderTreeOpen
         self.propertiesOpen = propertiesOpen
     }
 
-    /// The smallest size kept: the smallest an explorer window can be made.
+    /// The smallest size kept: the smallest an explorer window can be made with one pane, which the window's own
+    /// smallest size (`MainWindowController.minimumSize`) is made from. Two panes need more room; the window holds
+    /// that itself.
     public static let minimumSize = Size(width: 760, height: 480)
 
     public init(from decoder: any Decoder) throws {
@@ -56,6 +72,7 @@ public struct WindowView: Codable, Equatable, Sendable, NamedSavedView {
             tabs: tabs,
             frontTab: (try? container.decode(Int.self, forKey: .frontTab)) ?? 0,
             size: try? container.decode(Size.self, forKey: .size),
+            sizing: try? container.decode(Sizing.self, forKey: .sizing),
             folderTreeOpen: try? container.decode(Bool.self, forKey: .folderTreeOpen),
             propertiesOpen: try? container.decode(Bool.self, forKey: .propertiesOpen))
     }
@@ -65,11 +82,13 @@ public struct WindowView: Codable, Equatable, Sendable, NamedSavedView {
         tabs.map { id in id.flatMap { id in SavedViewNames.index(id: id, in: tabViews).map { tabViews[$0] } } }
     }
 
-    /// A size kept, held to `visible` (the screen's room a window can have), and no smaller than `minimumSize`.
-    public static func held(_ size: Size, within visible: Size) -> Size {
-        Size(
-            width: max(minimumSize.width, min(size.width, visible.width)),
-            height: max(minimumSize.height, min(size.height, visible.height)))
+    /// A size held between `minimumSize` and `visible`, the room the screen gives a window (no upper limit when
+    /// nil). A screen smaller than `minimumSize` still gives `minimumSize`, as a window can't be made smaller.
+    public static func held(_ size: Size, within visible: Size?) -> Size {
+        let high = visible ?? Size(width: Int.max, height: Int.max)
+        return Size(
+            width: min(max(size.width, minimumSize.width), max(minimumSize.width, high.width)),
+            height: min(max(size.height, minimumSize.height), max(minimumSize.height, high.height)))
     }
 }
 

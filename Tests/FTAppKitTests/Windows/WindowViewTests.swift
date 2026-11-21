@@ -303,5 +303,92 @@ extension ExplorerWindowlessTests {
             #expect(pane.rows.map(\.key) == ["⌃⌘1"])
             #expect(pane.rows[0].keeps == "2 tabs \u{00B7} 1: Compare \u{00B7} 2: New tab \u{00B7} Tab 2 in front")
         }
+
+        // A click on a tab view's name selects its row, so Edit… and Apply can act on it; its name is edited only
+        // once double-clicked, and Edit… opens the sheet over the window.
+        @Test func aNameInTheListIsEditedOnlyOnceDoubleClicked() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            tab.updatePreferences { $0.tabViews = [TabView(id: "a", name: "A", keeps: TabViewKeeps(panes: 1))] }
+            let views = ViewsWindowController(views: SharedFolderViews(), open: { _ in })
+            defer { views.close() }
+            views.present(.tabViews, explorer: tab)
+            let pane: SavedViewsPane = views.tabViewsPane
+            pane.reload()
+            let table = pane.tableView
+            let column = table.column(withIdentifier: NSUserInterfaceItemIdentifier("name"))
+            let name = try #require(table.view(atColumn: column, row: 0, makeIfNecessary: true) as? NSTextField)
+            #expect(!name.isEditable)
+            pane.startRenaming(row: 0)
+            #expect(name.isEditable && table.selectedRow == 0)
+            views.window?.makeFirstResponder(table)
+            #expect(!name.isEditable)
+            let edit = try #require(SheetInput.control("tabViews.edit", in: pane, as: NSButton.self))
+            #expect(edit.isEnabled)
+            edit.performClick(nil)
+            #expect(try SheetInput.tabSheet(tab).draft.editingID == "a")
+        }
+
+        // Window views are reordered, renamed, duplicated and removed in their pane as tab views are, and Edit…
+        // opens Window View Options on the one selected.
+        @Test func windowViewsAreReorderedRenamedDuplicatedRemovedAndEditedThere() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            tab.updatePreferences {
+                $0.windowViews = ["Work", "Home", "Play"].map {
+                    WindowView(id: $0.lowercased(), name: $0, tabs: [nil])
+                }
+            }
+            let views = ViewsWindowController(views: SharedFolderViews(), open: { _ in })
+            defer { views.close() }
+            views.present(.windowViews, explorer: tab)
+            let pane: SavedViewsPane = views.windowViewsPane
+            pane.reload()
+            #expect(pane.rows.map(\.key) == ["\u{2303}\u{2318}1", "\u{2303}\u{2318}2", "\u{2303}\u{2318}3"])
+            pane.move(from: 2, to: 0)
+            #expect(tab.preferences.windowViews.map(\.id) == ["play", "work", "home"])
+            pane.rename("work", to: "home")
+            #expect(tab.preferences.windowViews.map(\.name) == ["Play", "Work", "Home"])
+            pane.rename("work", to: " Office ")
+            #expect(tab.preferences.windowViews.map(\.name) == ["Play", "Office", "Home"])
+            pane.tableView.selectRowIndexes([1], byExtendingSelection: false)
+            try SheetInput.click("windowViews.duplicate", in: pane)
+            #expect(tab.preferences.windowViews.map(\.name) == ["Play", "Office", "Office copy", "Home"])
+            pane.tableView.selectRowIndexes([0], byExtendingSelection: false)
+            try SheetInput.click("windowViews.edit", in: pane)
+            #expect(try SheetInput.windowSheet(tab).draft.editingID == "play")
+            try SheetInput.windowSheet(tab).onCancel()
+            pane.tableView.selectRowIndexes([3], byExtendingSelection: false)
+            try SheetInput.click("windowViews.remove", in: pane)
+            #expect(tab.preferences.windowViews.map(\.name) == ["Play", "Office", "Office copy"])
+        }
+
+        // Maximized holds in place of a window too; a window view with a size of its own opened in place of a zoomed
+        // window isn't zoomed; a size kept on a larger screen is held to the room this one gives.
+        @Test func maximizedInPlaceAndASizeHeldToTheScreen() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            tab.updatePreferences {
+                $0.windowViews = [
+                    WindowView(id: "m", name: "Max", tabs: [nil], sizing: .maximized),
+                    WindowView(id: "big", name: "Big", tabs: [nil], size: .init(width: 9000, height: 9000)),
+                ]
+            }
+            harness.windows.openWindowView(id: "m", inPlaceOf: tab)
+            #expect(await waitUntil { harness.windows.count == 1 && harness.windows.newestGroup?.tabs.first !== tab })
+            let maximized = try #require(harness.windows.newestGroup)
+            #expect(maximized.isMaximized)
+            let front = try #require(maximized.selected)
+            harness.windows.openWindowView(id: "big", inPlaceOf: front)
+            #expect(await waitUntil { harness.windows.count == 1 && harness.windows.newestGroup !== maximized })
+            let sized = try #require(harness.windows.newestGroup)
+            #expect(!sized.isMaximized)
+            let room = try #require(WindowView.room(on: sized.selected?.window))
+            let frame = try #require(sized.selected?.window?.frame)
+            #expect(Int(frame.width) <= room.width && Int(frame.height) <= room.height)
+        }
     }
 }

@@ -113,22 +113,23 @@ final class SavedViewsPane: NSView, NSTableViewDataSource, NSTableViewDelegate, 
             labelWithString: "Drag to reorder. The first five can be given keys in Settings \u{203A} Shortcuts.")
         keysNote.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
         keysNote.textColor = .secondaryLabelColor
-        var barViews: [NSView] = [remove, removeAll, duplicate, NSView(), edit, apply]
-        var footer: [NSView] = [keysNote]
+        let bar = NSStackView()
+        bar.orientation = .horizontal
+        bar.spacing = 8
+        bar.setViews([remove, removeAll, duplicate], in: .leading)
+        bar.setViews([edit, apply], in: .trailing)
+        let foot = NSStackView()
+        foot.orientation = .horizontal
+        foot.spacing = 8
         if kind == .tab {
             let label = NSTextField(labelWithString: "New tabs open with")
             newTabs.target = self
             newTabs.action = #selector(newTabViewChosen)
             newTabs.setAccessibilityIdentifier("tabViews.newTabs")
-            footer = [label, newTabs, NSView(), keysNote]
+            newTabs.setAccessibilityLabel("New tabs open with")
+            foot.setViews([label, newTabs], in: .leading)
         }
-        let bar = NSStackView(views: barViews)
-        bar.orientation = .horizontal
-        bar.spacing = 8
-        let foot = NSStackView(views: footer)
-        foot.orientation = .horizontal
-        foot.spacing = 8
-        barViews = []
+        foot.setViews([keysNote], in: .trailing)
         for view in [scroll, empty, bar, foot] {
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
@@ -236,7 +237,8 @@ final class SavedViewsPane: NSView, NSTableViewDataSource, NSTableViewDelegate, 
     /// A double-click on a row: its name is edited in place.
     @objc private func doubleClicked() {
         let row = table.clickedRow
-        guard rows.indices.contains(row), table.clickedColumn >= 0 else { return }
+        let name = table.column(withIdentifier: NSUserInterfaceItemIdentifier("name"))
+        guard rows.indices.contains(row), table.clickedColumn == name else { return }
         startRenaming(row: row)
     }
 
@@ -358,8 +360,14 @@ final class SavedViewsPane: NSView, NSTableViewDataSource, NSTableViewDelegate, 
         }
     }
 
+    /// Duplicate: a copy after the row, its name the first "… copy" no other has. At the limit, a notice says so and
+    /// nothing is added.
     @objc func duplicateSelected() {
         guard let row = selectedRow else { return }
+        guard ids.count < SavedViewNames.limit else {
+            if let window { say(SavedViewNames.limitTitle(kind: kind.words), in: window) }
+            return
+        }
         update { preferences in
             switch kind {
             case .tab:

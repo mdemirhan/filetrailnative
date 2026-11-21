@@ -58,20 +58,30 @@ extension MainWindowController {
 
     // MARK: Tab View Options
 
+    /// The window a saved view's sheet goes over; nil, with a beep, while a sheet, a dialog or a name being edited
+    /// holds the tab, as nothing else opens over those.
+    private var canPresentSavedViewSheet: NSWindow? {
+        guard let window, group?.isBlocked != true, dialogs.isEmpty else {
+            NSSound.beep()
+            return nil
+        }
+        return window
+    }
+
     /// Save Tab View… (`editing` nil) or Edit… in the Views window: Tab View Options over this tab, filled in from it,
     /// and from the tab view being edited. Save keeps it in the list: in its place when edited, at the end when new, or
     /// in place of the one whose name it takes.
     func presentTabViewOptions(editing: TabView? = nil) {
-        guard let window, group?.isBlocked != true,
-            !dialogs.contains(where: { $0.panel is TabViewOptionsSheet || $0.panel is WindowViewOptionsSheet })
-        else { return }
+        guard let window = canPresentSavedViewSheet else { return }
         AppMenuPresenter.shared.close()
         let label = tabDescription.label
-        let draft = TabViewDraft(
-            tab: tabViewState, columnWidth: workspace.paneColumnWidth, editing: editing, name: label)
+        let tab = tabViewState
+        let columnWidth = workspace.paneColumnWidth
+        let draft = TabViewDraft(tab: tab, columnWidth: columnWidth, editing: editing, name: label)
         let sheet = TabViewOptionsSheet(
             draft: draft, saved: tabViews, density: preferences.density, subtitle: label,
-            startsOn: showsTwoPanes && activePaneIndex == 1 ? .right : .left)
+            startsOn: showsTwoPanes && activePaneIndex == 1 ? .right : .left,
+            load: { view in TabViewDraft(tab: tab, columnWidth: columnWidth, editing: view) })
         let scrim = DialogScrim(panel: sheet, placement: .sheet)
         scrim.setAccessibilityIdentifier("tabViewOptions.scrim")
         sheet.onCancel = { [weak scrim] in scrim?.dismiss() }
@@ -81,10 +91,7 @@ extension MainWindowController {
         }
         sheet.chooseFolder = { [weak self, weak window] done in
             let start = self?.shownFolderPath
-            Task { @MainActor in
-                let choice = await SystemPickers.pickDirectory(defaultPath: start, window: window)
-                done(choice.canceled ? nil : choice.path)
-            }
+            Task { @MainActor in done(await Self.pickDirectory(start, window)) }
         }
         sheet.onSave = { [weak self, weak scrim] draft in
             scrim?.dismiss()
@@ -129,11 +136,17 @@ extension MainWindowController {
     /// Save Window View… (a new one, from this window) or Edit… in the Views window: Window View Options over this
     /// window.
     func presentWindowViewOptions(_ draft: WindowViewDraft, saved: [WindowView], tabViews: [TabView]) {
-        guard let window, group?.isBlocked != true,
-            !dialogs.contains(where: { $0.panel is TabViewOptionsSheet || $0.panel is WindowViewOptionsSheet })
-        else { return }
+        guard let window = canPresentSavedViewSheet else { return }
         AppMenuPresenter.shared.close()
-        let sheet = WindowViewOptionsSheet(draft: draft, saved: saved, tabViews: tabViews)
+        let folderTreeOpen = preferences.folderTreeOpen
+        let propertiesOpen = preferences.propertiesOpen
+        let sheet = WindowViewOptionsSheet(
+            draft: draft, saved: saved, tabViews: tabViews,
+            load: { [weak window] view in
+                WindowViewDraft(
+                    editing: view, sizeNow: draft.sizeNow, folderTreeOpen: folderTreeOpen,
+                    propertiesOpen: propertiesOpen, largestSize: WindowView.room(on: window))
+            })
         let scrim = DialogScrim(panel: sheet, placement: .sheet)
         scrim.setAccessibilityIdentifier("windowViewOptions.scrim")
         sheet.onCancel = { [weak scrim] in scrim?.dismiss() }
@@ -154,7 +167,7 @@ extension MainWindowController {
         let draft = WindowViewDraft(
             editing: view, sizeNow: WindowView.Size(width: Int(window.frame.width), height: Int(window.frame.height)),
             folderTreeOpen: preferences.folderTreeOpen, propertiesOpen: preferences.propertiesOpen,
-            largestSize: WindowViewOptionsSheet.screenRoom(of: window))
+            largestSize: WindowView.room(on: window))
         presentWindowViewOptions(draft, saved: preferences.windowViews, tabViews: tabViews)
     }
 
@@ -211,22 +224,19 @@ extension MainWindowController {
         if keeps.divider != nil, showsTwoPanes { workspace.setPaneSplit(applied.tab.split) }
         if applied.tab.includeHidden != includeHidden { perform(.toggleHiddenFiles) }
         let given = keeps.paneKeeps(active: activePaneIndex)
+        tabViewApplyNumber += 1
+        // Viewers that give way: a pane's that gets a view of a folder, and the other pane's of one that gets the
+        // viewer. Each asks about its edits; what waits on one goes on only once it has closed.
+        var closing: [Int: Task<Bool, Never>] = [:]
         for index in applied.viewersClosed where panes.indices.contains(index) {
             let pane = panes[index]
-            Task { [weak self] in await self?.closeViewer(in: pane) }
+            closing[index] = Task { [weak self] in await self?.closeViewer(in: pane) ?? false }
         }
+        var viewers: [(index: Int, setting: PaneViewer)] = []
         for (index, paneKeeps) in given where panes.indices.contains(index) {
             let pane = panes[index]
             if let viewer = paneKeeps.viewer {
-                // A viewer is applied once the other pane has taken its folder and settings: it shows what that
-                // list selects there.
-                let list = panes[index == 0 ? 1 : 0]
-                DispatchQueue.main.async { [weak self, weak pane, weak list] in
-                    guard let self, let pane, let list else { return }
-                    list.whenFirstReadFinished { [weak self] _ in
-                        self?.showTabViewViewer(viewer, in: pane, beside: list)
-                    }
-                }
+                viewers.append((index, viewer))
                 continue
             }
             let before = pane.shownOrder
@@ -251,7 +261,43 @@ extension MainWindowController {
                 pane.showTabViewSettings(orderBefore: before)
             }
         }
+        // A viewer goes in once the list beside it has taken its folder and settings: it shows what that list selects
+        // there. Each list's navigation is under way by now.
+        for (index, setting) in viewers {
+            showViewerWhenListSettles(
+                setting, in: panes[index], beside: panes[index == 0 ? 1 : 0],
+                after: closing[index == 0 ? 1 : 0])
+        }
         group?.tabChanged(self)
+    }
+
+    /// `setting` shown in `pane` once `list` has settled in its folder and its own viewer, if it had one, has closed
+    /// (`closing` true). Nothing happens if either pane has gone from the tab, or another tab view was applied
+    /// meanwhile.
+    private func showViewerWhenListSettles(
+        _ setting: PaneViewer, in pane: BrowserPane, beside list: BrowserPane, after closing: Task<Bool, Never>?
+    ) {
+        let number = tabViewApplyNumber
+        let stillApplies = { [weak self, weak pane, weak list] () -> (BrowserPane, BrowserPane)? in
+            guard let self, let pane, let list, number == tabViewApplyNumber,
+                panes.contains(where: { $0 === pane }), panes.contains(where: { $0 === list })
+            else { return nil }
+            return (pane, list)
+        }
+        let show = { [weak self, weak list] in
+            list?.whenNavigationSettles {
+                guard let (pane, list) = stillApplies() else { return }
+                self?.showTabViewViewer(setting, in: pane, beside: list)
+            }
+        }
+        guard let closing else {
+            show()
+            return
+        }
+        Task {
+            guard await closing.value, stillApplies() != nil else { return }
+            show()
+        }
     }
 
     /// The tab view with each folder that is gone shown as the nearest folder above it that is there (Home when none

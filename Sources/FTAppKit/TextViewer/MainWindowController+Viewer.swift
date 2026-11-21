@@ -143,32 +143,51 @@ extension MainWindowController {
     }
 
     /// A tab view's viewer: `pane` shows the file `list` selects, following its selection or staying on that file,
-    /// read or edited. A viewer there already takes it on, after asking about its edits when it would show another
-    /// file. The keyboard stays in the list.
+    /// read or edited. The keyboard stays in the list.
+    ///
+    /// A viewer there already takes this on. Shown the same file the same way, it keeps it, edits and all: only how
+    /// it follows changes. Another file, or the same one read rather than edited, asks about edits not saved first,
+    /// and Cancel leaves the viewer as it was. A file shown in place of the pane's folder gives way first, as Back
+    /// would.
     func showTabViewViewer(_ setting: PaneViewer, in pane: BrowserPane, beside list: BrowserPane) {
-        let path = leadPath(of: list)
         let mode: TextViewerController.Mode = setting.follows ? .following : .pinned
         guard let viewer = pane.viewer else {
             let viewer = makeViewer(in: pane, mode: mode)
             viewer.folderPath = list.shownFolderPath
-            viewer.show(path, editing: setting.editing)
+            viewer.show(leadPath(of: list), editing: setting.editing)
             focusPane(list)
             notify(.panels)
             return
         }
+        if viewer.mode == .inPlace {
+            Task { [weak self] in
+                guard let self, await closeViewer(in: pane), pane.viewer == nil else { return }
+                showTabViewViewer(setting, in: pane, beside: list)
+            }
+            return
+        }
+        if Self.isShown(leadPath(of: list), in: viewer), viewer.isEditing == setting.editing {
+            follow(with: viewer, mode: mode, beside: list)
+            return
+        }
         Task { [weak self] in
-            let sameFile = Self.isShown(path, in: viewer)
-            if !sameFile || viewer.isEditing != setting.editing {
+            if viewer.isDirty {
                 guard await viewer.confirmLeave() else { return }
             }
-            guard let self else { return }
-            viewer.mode = mode
-            viewer.position = nil
-            viewer.folderPath = list.shownFolderPath
-            viewer.show(path, editing: setting.editing)
-            self.focusPane(list)
-            self.commandsChanged()
+            // The question may have been open a while: the viewer may be gone, and the list may select another file.
+            guard let self, pane.viewer === viewer else { return }
+            follow(with: viewer, mode: mode, beside: list)
+            viewer.show(leadPath(of: list), editing: setting.editing)
         }
+    }
+
+    /// `viewer` follows `list` as `mode` says, the keyboard in the list.
+    private func follow(with viewer: TextViewerController, mode: TextViewerController.Mode, beside list: BrowserPane) {
+        viewer.mode = mode
+        viewer.position = nil
+        viewer.folderPath = list.shownFolderPath
+        focusPane(list)
+        commandsChanged()
     }
 
     /// The selection of `pane` changed: the viewer beside it shows its lead item a moment after the last change, as

@@ -275,6 +275,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// The tab view applied to this tab last, if any: what Save Window View offers for it. Never shown, and never a
     /// link: the tab is not kept like the tab view.
     var lastTabViewID: String?
+    /// Counts tab views applied to this tab: a step that waits (a viewer for its list) goes on only if no other was
+    /// applied meanwhile.
+    var tabViewApplyNumber = 0
     /// The folder watch of a second pane just closed, for the window's watches to let go of.
     var closedPaneWatchID: Int?
     /// Counts the viewer pane's following, so only the last selection of a run is read.

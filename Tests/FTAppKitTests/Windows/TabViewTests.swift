@@ -396,5 +396,135 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { opened.loaded && !opened.isNavigating })
             #expect(opened.activePane.viewMode == .icons)
         }
+
+        // MARK: The viewer
+
+        private func viewerView(_ id: String, _ keeps: TabViewKeeps) -> TabView {
+            TabView(id: id, name: "View \(id)", keeps: keeps)
+        }
+
+        // A pane of two can show the viewer: the sheet offers Viewer in either pane's View, with Follow and Read or
+        // Edit, and the tab view applied opens the viewer beside the other's list, showing what it selects, the
+        // keyboard left in the list. Saved again from the tab, the viewer is what that pane keeps; a tab view giving
+        // the pane a view of a folder closes it.
+        @Test func aTabViewOpensTheViewerBesideTheOtherPane() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            let note = harness.folder.appending("note.txt").path
+            tab.perform(.saveTabView)
+            var sheet = try SheetInput.tabSheet(tab)
+            let view = try #require(SheetInput.control("tabViewOptions.view", in: sheet, as: NSPopUpButton.self))
+            #expect(!view.itemTitles.contains("Viewer"))
+            try SheetInput.choose("Two", in: "tabViewOptions.panes", of: sheet)
+            #expect(view.itemTitles.last == "Viewer")
+            sheet.onCancel()
+
+            tab.updatePreferences {
+                $0.tabViews = [
+                    viewerView("v", TabViewKeeps(panes: 2, right: PaneKeeps(viewer: PaneViewer(editing: true)))),
+                    viewerView("l", TabViewKeeps(panes: 2, right: PaneKeeps(view: FolderViewKeeps(view: .details)))),
+                ]
+            }
+            tab.panes[0].content.select(paths: [note])
+            tab.applyTabView(id: "v")
+            #expect(
+                await waitUntil {
+                    tab.panes.count == 2 && tab.panes[1].viewer?.path.map { samePath($0, note) } == true
+                })
+            let viewer = try #require(tab.panes[1].viewer)
+            #expect(viewer.mode == .following)
+            #expect(await waitUntil { viewer.isEditing })
+            #expect(tab.activePane === tab.panes[0])
+            tab.perform(.saveTabView)
+            sheet = try SheetInput.tabSheet(tab)
+            #expect(sheet.draft.keeps.right?.viewer == PaneViewer(follows: true, editing: true))
+            sheet.onCancel()
+
+            tab.applyTabView(id: "l")
+            #expect(await waitUntil { tab.panes.count == 2 && tab.panes[1].viewer == nil })
+            #expect(tab.panes[1].viewMode == .details)
+        }
+
+        // Edits not saved in a viewer are never dropped unasked: the same tab view again keeps them; one that closes
+        // the viewer asks, Cancel keeping the viewer as it was and Don't Save closing it.
+        @Test func aViewersEditsAreAskedAboutBeforeATabViewTakesItsPlace() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            let note = harness.folder.appending("note.txt").path
+            tab.updatePreferences {
+                $0.tabViews = [
+                    viewerView("v", TabViewKeeps(panes: 2, right: PaneKeeps(viewer: PaneViewer(editing: true)))),
+                    viewerView("l", TabViewKeeps(panes: 2, right: PaneKeeps(view: FolderViewKeeps(view: .details)))),
+                ]
+            }
+            tab.panes[0].content.select(paths: [note])
+            tab.applyTabView(id: "v")
+            #expect(await waitUntil { tab.panes.count == 2 && tab.panes[1].viewer?.isEditing == true })
+            let viewer = try #require(tab.panes[1].viewer)
+            #expect(await waitUntil { viewer.textView.string == "x" })
+            viewer.textView.insertText("y", replacementRange: NSRange(location: 1, length: 0))
+            #expect(await waitUntil { viewer.isDirty })
+
+            tab.applyTabView(id: "v")
+            await settle()
+            #expect(tab.frontAlert == nil)
+            #expect(tab.panes[1].viewer === viewer && viewer.isDirty && viewer.textView.string == "xy")
+
+            tab.applyTabView(id: "l")
+            #expect(
+                await waitUntil {
+                    tab.frontAlert?.titleLabel.stringValue == "Save changes to \u{201C}note.txt\u{201D}?"
+                })
+            try SheetInput.press(["Escape"], in: tab.window)
+            #expect(await waitUntil { tab.frontAlert == nil })
+            #expect(tab.panes[1].viewer === viewer && viewer.isDirty)
+
+            tab.applyTabView(id: "l")
+            #expect(await waitUntil { tab.frontAlert != nil })
+            let alert = try #require(tab.frontAlert)
+            let discard = try #require(alert.buttons.first { $0.title == "Don\u{2019}t Save" })
+            discard.performClick(nil)
+            #expect(await waitUntil { tab.panes[1].viewer == nil })
+            #expect(try String(contentsOfFile: note, encoding: .utf8) == "x")
+        }
+
+        // A viewer beside a list the tab view sends to another folder follows that list there, once it has arrived.
+        @Test func aViewerWaitsForItsListsFolder() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            tab.openSecondPane()
+            await settled(tab)
+            let beta = real(harness, "Beta")
+            tab.updatePreferences {
+                $0.tabViews = [
+                    viewerView(
+                        "v",
+                        TabViewKeeps(
+                            panes: 2, left: PaneKeeps(viewer: PaneViewer()), right: PaneKeeps(folder: beta)))
+                ]
+            }
+            tab.applyTabView(id: "v")
+            #expect(await waitUntil { tab.panes[0].viewer != nil })
+            #expect(samePath(tab.panes[1].folderPath, beta))
+            #expect(samePath(tab.panes[0].viewer?.folderPath ?? "", beta))
+        }
+
+        // One list and one viewer: a tab view giving one pane the viewer closes the other pane's.
+        @Test func aViewerInTheOtherPaneGivesWay() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            let note = harness.folder.appending("note.txt").path
+            tab.openFileInOtherPane(note)
+            #expect(await waitUntil { tab.panes.count == 2 && tab.panes[1].viewer != nil })
+            tab.updatePreferences {
+                $0.tabViews = [viewerView("v", TabViewKeeps(panes: 2, left: PaneKeeps(viewer: PaneViewer())))]
+            }
+            tab.applyTabView(id: "v")
+            #expect(await waitUntil { tab.panes[1].viewer == nil && tab.panes[0].viewer != nil })
+        }
     }
 }

@@ -20,9 +20,12 @@ Where the build differs from this plan, each for the reason beside it:
 - **The window's size is typed between 760 × 480, the smallest an explorer window can be, and the screen's room**, held as each field is left.
 - **The sheet's pane rows are headed by the pane**, Left Pane and Right Pane as a chooser, The Pane, or The Active Pane, with a line saying the rows are what the tab view sets there; "Keep for the Left Pane" read as unclear. Folder View Options' fifth row in the List is now "Column Visibility, Order and Sizes", as it keeps the widths too.
 - **The menu is Layout**, renamed from Saved Views by the owner.
+- **A window view's size can be Maximized or Full Screen** (the owner, 2026-11-21), in place of a size.
+- **A saved view is chosen by name in the sheet's Name combo box**, and loaded into the sheet or saved over, as asked (the owner, 2026-11-21).
+- **The viewer of a tab view waits for the list beside it to settle in its folder**, and asks about edits not saved before anything takes its place; the same tab view applied again keeps them.
 - **A background tab that follows a renamed folder loses its override**: the pane takes its new place without knowing whether the folder moved or its disk went.
 
-Left: the fuzz test of section E, the tests of real windows of section D, the hand check of section F, and in C: Choose Folder…, a held tab beeping, the gone-folder notice on screen, and Back after a tab view's folders in two panes. The full `scripts/ci.sh` runs once more at the end.
+Left: the fuzz test of section E; the tests of real windows of section D (full screen opening, the name list opened with the mouse and moved through with the keys, a single click in the Views window's list); and in C: a held tab beeping, the gone-folder notice on screen, and Back after a tab view's folders in two panes. The hand check of section F was done in a debug build driven by key presses and clicks (`tools/capture`).
 
 ## What changes
 

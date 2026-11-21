@@ -361,8 +361,10 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         if let replaced {
             bounds = Self.stored(replaced.window)
             if let size {
+                // A size of its own: not the zoom of the window it takes the place of.
                 bounds.width = size.width
                 bounds.height = size.height
+                bounds.maximized = size.maximized
             }
         } else if let size {
             bounds = savedWindowBounds(size)

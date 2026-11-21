@@ -29,7 +29,9 @@ extension ExplorerWindows {
         session.lastVisitedFavoritePath = nil
         if let tree = view.folderTreeOpen { session.folderTreeOpen = tree }
         if let info = view.propertiesOpen { session.propertiesOpen = info }
-        let size = view.size.map {
+        // A size kept on a larger screen is held to the room this one gives a window.
+        let room = WindowView.room(on: source?.window)
+        let size = view.size.map { WindowView.held($0, within: room) }.map {
             StoredWindowState(width: Double($0.width), height: Double($0.height), maximized: false)
         }
         let tabViews = view.resolvedTabs(in: preferences.tabViews)
@@ -41,9 +43,19 @@ extension ExplorerWindows {
                 tab.applyTabViewWhenReady(tabView)
             }
         }
+        let fullScreen = view.sizing == .fullScreen
+        // `opened` is set before the window can be shown: `readyToShow` waits for the first folder's read.
+        let shownAndSized: () -> Void = {
+            shown()
+            // Full screen once shown: a window not yet on screen has no space to take.
+            if fullScreen, let window = opened?.selected?.window, !window.styleMask.contains(.fullScreen) {
+                window.toggleFullScreen(nil)
+            }
+        }
         let held: () -> Void = { [weak self] in self?.beep() }
         opened = controller.openSavedWindow(
-            session: session, size: size, replacing: tab?.group?.windowID, shown: shown, held: held)
+            session: session, size: size, replacing: tab?.group?.windowID, shown: shownAndSized, held: held)
+        if view.sizing == .maximized { opened?.maximize() }
     }
 
     /// Window View 1 to 5: the window view at `slot` in the list, in a window of its own or in place of `tab`'s.
@@ -78,7 +90,7 @@ extension ExplorerWindows {
             front: group.tabs.firstIndex { $0 === group.selected } ?? 0,
             size: WindowView.Size(width: Int(window.frame.width), height: Int(window.frame.height)),
             folderTreeOpen: tab.preferences.folderTreeOpen, propertiesOpen: tab.preferences.propertiesOpen,
-            largestSize: WindowViewOptionsSheet.screenRoom(of: window))
+            largestSize: WindowView.room(on: window))
         tab.presentWindowViewOptions(draft, saved: windowViews, tabViews: tabViews)
     }
 }
@@ -92,5 +104,14 @@ extension ExplorerWindows {
         } else {
             ViewsWindowController.show(pane, folderViews: ExplorerServices.current.folderViews, explorer: nil)
         }
+    }
+}
+
+extension WindowView {
+    /// The room the screen of `window` (the main screen without one) gives a window: the largest size kept.
+    @MainActor
+    static func room(on window: NSWindow?) -> Size? {
+        guard let room = (window?.screen ?? NSScreen.main)?.visibleFrame.size else { return nil }
+        return Size(width: Int(room.width), height: Int(room.height))
     }
 }

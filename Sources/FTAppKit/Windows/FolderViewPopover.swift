@@ -598,7 +598,8 @@ final class ClosureSwitch: NSSwitch {
 
 /// A button that runs a closure, for the popovers built in code.
 final class ClosureButton: NSButton {
-    private var run: (ClosureButton) -> Void = { _ in }
+    /// What a press does.
+    var run: (ClosureButton) -> Void = { _ in }
 
     convenience init(title: String, action: @escaping () -> Void) {
         self.init(frame: .zero)

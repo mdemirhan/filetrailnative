@@ -141,6 +141,11 @@ final class BrowserPane {
     private var firstRead = FirstRead.notStarted
     /// Who waits for the first read to finish.
     private var afterFirstRead: [(Bool) -> Void] = []
+    /// The folders `go(to:)` was asked for that haven't been taken or given up yet: counted when asked, before the
+    /// task that reads them starts.
+    private var navigationsAsked = 0
+    /// Who waits for the pane's navigations to settle (`whenNavigationSettles`).
+    private var afterNavigation: [() -> Void] = []
     /// Whether the pane's folder has been, or is being, read.
     var loaded: Bool {
         if case .notStarted = firstRead { return false }
@@ -733,7 +738,33 @@ final class BrowserPane {
     /// Opens the folder at `path` (`navigate`). The path may spell the folder any way that leads to it (through a link,
     /// with an accent encoded either way): the pane knows the folder by the path its listing gives.
     func go(to path: String, history: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false) {
-        holdingTab { await $0.navigate(to: path, history: history, open: open, keepingSearch: keepingSearch) }
+        navigationsAsked += 1
+        holdingTab { pane in
+            await pane.navigate(to: path, history: history, open: open, keepingSearch: keepingSearch)
+            pane.navigationsAsked -= 1
+            pane.navigationSettledIfSo()
+        }
+    }
+
+    /// Runs `action` once the pane has read its first folder and taken, or given up, every folder it was sent to: at
+    /// once when nothing is under way. What it shows and selects is then the folder's it ends on.
+    func whenNavigationSettles(_ action: @escaping () -> Void) {
+        whenFirstReadFinished { [weak self] _ in
+            guard let self else { return }
+            if navigationsAsked == 0, !isNavigating {
+                action()
+            } else {
+                afterNavigation.append(action)
+            }
+        }
+    }
+
+    /// Nothing is under way any more: who waited for that goes on.
+    private func navigationSettledIfSo() {
+        guard navigationsAsked == 0, !isNavigating, !afterNavigation.isEmpty else { return }
+        let waiting = afterNavigation
+        afterNavigation = []
+        for action in waiting { action() }
     }
 
     /// Reads a folder through the directory service: in the order the pane keeps, with hidden files and folders first
@@ -855,7 +886,12 @@ final class BrowserPane {
         let token = navigationToken
         isNavigating = true
         navigationTarget = path
-        defer { if token == navigationToken { isNavigating = false } }
+        defer {
+            if token == navigationToken {
+                isNavigating = false
+                navigationSettledIfSo()
+            }
+        }
         let move = open.pushesHistory ? move : HistoryMove.none
         // A Back, Forward or jump still under way moved the history ahead of the folder on screen. Another of them
         // goes on from where the history is, so two quick Backs go two folders back; anything else (a folder

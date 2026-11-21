@@ -303,7 +303,8 @@ public struct TabViewApplied: Equatable, Sendable {
     public var overrides: [Int: TabViewOverride]
     /// The panes (after) that show the viewer beside the other pane, with how.
     public var viewers: [Int: PaneViewer] = [:]
-    /// The panes (after) whose viewer closes: the tab view keeps a view of a folder for them.
+    /// The panes (after) whose viewer closes: the tab view keeps a view of a folder for them, or shows the viewer in
+    /// the other pane.
     public var viewersClosed: [Int] = []
 }
 
@@ -353,10 +354,15 @@ public enum TabViews {
         for (index, paneKeeps) in keeps.paneKeeps(active: tab.active) where tab.panes.indices.contains(index) {
             given.append(index)
             if let viewer = paneKeeps.viewer {
-                // The viewer shows what the other pane selects, in the other pane's folder: nothing else is the
-                // tab view's in it.
+                // The viewer shows what the other pane's list selects, so nothing else of the tab view's is in it,
+                // and a viewer in the other pane closes: one list and one viewer.
                 tab.panes[index].viewer = viewer
                 viewers[index] = viewer
+                let other = index == 0 ? 1 : 0
+                if tab.panes.indices.contains(other), tab.panes[other].viewer != nil {
+                    tab.panes[other].viewer = nil
+                    viewersClosed.append(other)
+                }
                 continue
             }
             if paneKeeps.view.view != nil, tab.panes[index].viewer != nil {

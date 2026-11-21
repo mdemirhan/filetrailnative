@@ -11,6 +11,10 @@ public struct WindowViewDraft: Equatable, Sendable {
         case saved
         /// A width and height typed in.
         case custom
+        /// Zoomed to the screen's room.
+        case maximized
+        /// In full screen.
+        case fullScreen
     }
 
     public var name: String
@@ -51,7 +55,7 @@ public struct WindowViewDraft: Equatable, Sendable {
         sizeNow = size
         savedSize = nil
         self.largestSize = largestSize
-        customSize = Self.held(size, largest: largestSize)
+        customSize = WindowView.held(size, within: largestSize)
         keepsFolderTree = false
         self.folderTreeOpen = folderTreeOpen
         keepsInfoPanel = false
@@ -67,12 +71,16 @@ public struct WindowViewDraft: Equatable, Sendable {
         editingID = view.id
         tabs = view.tabs
         front = view.frontTab
-        keepsSize = view.size != nil
-        sizeChoice = view.size == nil ? .now : .saved
+        keepsSize = view.size != nil || view.sizing != nil
+        switch view.sizing {
+        case .maximized?: sizeChoice = .maximized
+        case .fullScreen?: sizeChoice = .fullScreen
+        case nil: sizeChoice = view.size == nil ? .now : .saved
+        }
         self.sizeNow = sizeNow
         savedSize = view.size
         self.largestSize = largestSize
-        customSize = Self.held(view.size ?? sizeNow, largest: largestSize)
+        customSize = WindowView.held(view.size ?? sizeNow, within: largestSize)
         keepsFolderTree = view.folderTreeOpen != nil
         self.folderTreeOpen = view.folderTreeOpen ?? folderTreeOpen
         keepsInfoPanel = view.propertiesOpen != nil
@@ -83,15 +91,7 @@ public struct WindowViewDraft: Equatable, Sendable {
     public static var smallestSize: WindowView.Size { WindowView.minimumSize }
 
     /// `size` held between `smallestSize` and `largestSize`.
-    public func held(_ size: WindowView.Size) -> WindowView.Size { Self.held(size, largest: largestSize) }
-
-    private static func held(_ size: WindowView.Size, largest: WindowView.Size?) -> WindowView.Size {
-        let low = smallestSize
-        let high = largest ?? WindowView.Size(width: Int.max, height: Int.max)
-        return WindowView.Size(
-            width: min(max(size.width, low.width), max(low.width, high.width)),
-            height: min(max(size.height, low.height), max(low.height, high.height)))
-    }
+    public func held(_ size: WindowView.Size) -> WindowView.Size { WindowView.held(size, within: largestSize) }
 
     /// As many tabs as `count` (1 to the tab limit): the first ones keep their tab views, new ones are plain tabs.
     public mutating func setTabCount(_ count: Int) {
@@ -117,13 +117,24 @@ public struct WindowViewDraft: Equatable, Sendable {
         case .now: return sizeNow
         case .saved: return savedSize ?? sizeNow
         case .custom: return customSize
+        case .maximized, .fullScreen: return nil
+        }
+    }
+
+    /// Maximized or full screen, as Save keeps it; nil while Size isn't checked or is a size.
+    public var sizingKept: WindowView.Sizing? {
+        guard keepsSize else { return nil }
+        switch sizeChoice {
+        case .maximized: return .maximized
+        case .fullScreen: return .fullScreen
+        case .now, .saved, .custom: return nil
         }
     }
 
     /// What Save saves, under `id`.
     public func windowView(id: String) -> WindowView {
         WindowView(
-            id: id, name: SavedViewNames.clean(name), tabs: tabs, frontTab: front, size: sizeKept,
+            id: id, name: SavedViewNames.clean(name), tabs: tabs, frontTab: front, size: sizeKept, sizing: sizingKept,
             folderTreeOpen: keepsFolderTree ? folderTreeOpen : nil,
             propertiesOpen: keepsInfoPanel ? propertiesOpen : nil)
     }
@@ -138,6 +149,11 @@ extension SavedViewText {
         }
         if view.frontTab > 0 { parts.append("Tab \(view.frontTab + 1) in front") }
         if let size = view.size { parts.append("Size \(size.width) \u{00D7} \(size.height)") }
+        switch view.sizing {
+        case .maximized?: parts.append("Maximized")
+        case .fullScreen?: parts.append("Full screen")
+        case nil: break
+        }
         if let tree = view.folderTreeOpen { parts.append(tree ? "Folder tree shown" : "Folder tree hidden") }
         if let info = view.propertiesOpen { parts.append(info ? "Info panel shown" : "Info panel hidden") }
         return parts

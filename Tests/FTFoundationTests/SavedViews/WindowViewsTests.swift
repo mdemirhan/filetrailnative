@@ -106,6 +106,29 @@ struct WindowViewsTests {
         #expect(tiny.customSize == WindowView.minimumSize)
     }
 
+    // Maximized or full screen is kept in place of a size, read back as written, and said in the list.
+    @Test func maximizedAndFullScreenAreKeptInPlaceOfASize() throws {
+        let full = WindowView(
+            id: "w", name: "W", tabs: [nil], size: .init(width: 1000, height: 700), sizing: .fullScreen)
+        #expect(full.size == nil && full.sizing == .fullScreen)
+        let data = try JSONEncoder().encode(full)
+        #expect(try JSONDecoder().decode(WindowView.self, from: data) == full)
+        let unknown = Data(#"{"id": "w", "name": "W", "tabs": [null], "sizing": "huge"}"#.utf8)
+        #expect(try JSONDecoder().decode(WindowView.self, from: unknown).sizing == nil)
+        #expect(SavedViewText.parts(full, tabViews: []).contains("Full screen"))
+
+        var draft = WindowViewDraft(
+            editing: full, sizeNow: .init(width: 900, height: 600), folderTreeOpen: true,
+            propertiesOpen: false)
+        #expect(draft.keepsSize && draft.sizeChoice == .fullScreen)
+        draft.sizeChoice = .maximized
+        #expect(draft.windowView(id: "w").sizing == .maximized && draft.windowView(id: "w").size == nil)
+        draft.sizeChoice = .custom
+        #expect(draft.windowView(id: "w").sizing == nil && draft.windowView(id: "w").size == draft.customSize)
+        draft.keepsSize = false
+        #expect(draft.windowView(id: "w").sizing == nil && draft.windowView(id: "w").size == nil)
+    }
+
     // MARK: Names
 
     @Test func namesAreUniqueIgnoringCaseAndHowAnAccentIsStored() {
