@@ -106,7 +106,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
 - **At 1 preview at a time** the file on screen is the selected one, so Space, the Info panel and Move to Trash act on what you see.
 - **Quick Look** on Space and ⌘Y, in every view.
 <p align="center">
-  <img src="screenshots/markdown-pane.png" alt="A project folder with README.md selected, and the pane beside it showing the Markdown as it reads, with headings, lists, a link and a code block" width="900">
+  <img src="screenshots/markdown-pane.png" alt="A project folder with README.md selected, and the pane beside it showing the Markdown as it reads, with headings, a list, a table and numbered steps" width="900">
 </p>
 
 - **Open in Viewer (⌘E)** shows a file's text in place of the folder, with colors for about 60 languages and formats, to read or to edit and save, in Read or Edit as you last chose. It's a step of Back and Forward, so Back returns to the folder with the file selected, and the viewer's bar steps to the next and previous file.

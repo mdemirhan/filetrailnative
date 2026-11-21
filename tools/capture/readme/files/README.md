@@ -8,6 +8,14 @@ Plan a trip with friends: *where* you are going, *when*, and **who** is coming a
 - **Shared plans**: everyone on the trip sees changes as they are made
 - **Offline first**: edits are kept on the device until it is back online
 
+## What's inside
+
+| Part | Built with | Folder |
+|:---|:---|:---|
+| Web app | React and Vite | `app/` |
+| Mobile app | React Native | `mobile/` |
+| API | Bun and SQLite | `infra/api/` |
+
 ## Getting started
 
 1. Install [Bun](https://bun.sh) 1.2 or later.

@@ -126,5 +126,4 @@ If this is picked up: the disk says whether it keeps attributes this way (`getat
 - **Over 50 MB a file isn't shown**, and over 10 MB its text has no colors. Reading a large file a page at a time is for later.
 - **Line endings are made one kind on Save**: a file that mixes them is written with the kind most of its lines have.
 - **Markdown has Source and Preview, not both side by side**, and HTML, CSV and SVG have no preview of their own.
-- **The Markdown preview draws no tables** (2026-11-21, seen taking the README's pictures): a table's cells come out one under another, each a paragraph of its own, header and pipes gone.
 - **The colors come from the app's own lexer**, which knows keywords, strings, comments and numbers, not the grammar: a regular expression in JavaScript or a here-document in a shell script is colored as the code around it.

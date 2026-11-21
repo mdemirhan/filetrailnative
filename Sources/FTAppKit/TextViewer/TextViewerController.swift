@@ -70,7 +70,8 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     private var ruler: LineNumberRuler!
     private var coloring: SyntaxColoring!
     private let previewScroll = NSScrollView()
-    private let previewView = NSTextView()
+    /// TextKit 1, as a Markdown table is drawn with `NSTextTable`, which TextKit 2 doesn't lay out.
+    private let previewView = NSTextView(usingTextLayoutManager: false)
     let quickLook = QuickLookHost()
     private let message = ViewerMessageView()
     /// A picture is drawn by the viewer itself; other files that aren't text by Quick Look's view.
