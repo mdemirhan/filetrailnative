@@ -53,6 +53,25 @@ final class TabViewOptionsSheet: SavedViewSheet {
     }
     private lazy var panesRow = keepRow("Panes", panesPopUp) { [weak self] on in self?.change { $0.keepsPanes = on } }
 
+    /// With one pane: whether the second pane the tab keeps closed is forgotten, so Two Panes opens a new one.
+    private lazy var forgetBox: ClosureButton = {
+        let box = ClosureButton(checkboxWithTitle: "Forget the Second Pane") { [weak self] box in
+            self?.change { $0.forgetsSecondPane = box.state == .on }
+        }
+        box.setAccessibilityIdentifier("tabViewOptions.forgetSecondPane")
+        return box
+    }()
+    private lazy var forgetRow: NSView = {
+        let detail = note(
+            "The tab forgets the second pane it had, so Two Panes opens a new one rather than bringing it back.")
+        let lines = NSStackView(views: [forgetBox, indented(detail)])
+        lines.orientation = .vertical
+        lines.alignment = .leading
+        lines.spacing = 2
+        return row(indented(lines), nil, height: 50)
+    }()
+    private lazy var tabCard = card([panesRow.view, forgetRow, dividerRow.view, hiddenRow.view])
+
     private lazy var dividerPopUp = popUp(label: "Divider", id: "divider") { [weak self] index in
         guard let self, dividerChoices.indices.contains(index) else { return }
         let choice = dividerChoices[index]
@@ -278,7 +297,7 @@ final class TabViewOptionsSheet: SavedViewSheet {
                 subtitle: NSTextField(labelWithString: subtitle)))
         addName()
         add(sectionTitle("Keep for This Tab"), after: 2)
-        add(card([panesRow.view, dividerRow.view, hiddenRow.view]), after: 10)
+        add(tabCard, after: 10)
         add(paneChooser, fullWidth: false, after: 4)
         add(paneTitle, after: 4)
         add(paneNote, after: 6)
@@ -401,6 +420,9 @@ final class TabViewOptionsSheet: SavedViewSheet {
     private func refreshTabRows() {
         panesPopUp.selectItem(at: draft.panes == 2 ? 1 : 0)
         panesRow.show(kept: draft.keepsPanes)
+        tabCard.set(forgetRow, shown: draft.keepsPanes && draft.panes == 1)
+        let forgets: NSControl.StateValue = draft.forgetsSecondPane ? .on : .off
+        if forgetBox.state != forgets { forgetBox.state = forgets }
         // The divider's choices: what the tab has now, and what the tab view being edited keeps.
         var choices: [(TabViewDraft.Divider, String)] = [
             (.even, "Even"),

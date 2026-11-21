@@ -221,6 +221,7 @@ extension MainWindowController {
         case .closed?: closeOtherPane()
         case nil: break
         }
+        if keeps.forgetsSecondPane == true { forgetClosedSecondPane() }
         if keeps.divider != nil, showsTwoPanes { workspace.setPaneSplit(applied.tab.split) }
         if applied.tab.includeHidden != includeHidden { perform(.toggleHiddenFiles) }
         let given = keeps.paneKeeps(active: activePaneIndex)

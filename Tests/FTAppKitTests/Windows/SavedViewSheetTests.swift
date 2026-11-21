@@ -105,6 +105,31 @@ extension ExplorerWindowlessTests {
             #expect(field.stringValue == "\(Int(PaneSplit.minimum * 100))")
         }
 
+        // Forget the Second Pane shows only with one pane kept, and is what Save keeps.
+        @Test func forgetTheSecondPaneIsOfferedWithOnePane() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            tab.perform(.saveTabView)
+            let sheet = try SheetInput.tabSheet(tab)
+            let forget = try #require(SheetInput.control("tabViewOptions.forgetSecondPane", in: sheet))
+            #expect(!forget.isHiddenOrHasHiddenAncestor)
+            #expect(SheetInput.tabOrder(sheet).prefix(4).last == "tabViewOptions.forgetSecondPane")
+            // Space checks the box Tab has reached.
+            SheetInput.focus(sheet.nameBox, in: tab.window)
+            try SheetInput.press(["Tab", "Tab", "Tab"], in: tab.window)
+            #expect(sheet.focusedControl?.accessibilityIdentifier() == "tabViewOptions.forgetSecondPane")
+            try SheetInput.press(["Space"], in: tab.window)
+            #expect(sheet.draft.keeps.forgetsSecondPane == true)
+            try SheetInput.choose("Two", in: "tabViewOptions.panes", of: sheet)
+            #expect(forget.isHiddenOrHasHiddenAncestor && sheet.draft.keeps.forgetsSecondPane == nil)
+            try SheetInput.choose("One", in: "tabViewOptions.panes", of: sheet)
+            SheetInput.focus(sheet.nameBox, in: tab.window)
+            try SheetInput.type("Alone", in: tab.window)
+            try SheetInput.press(["Return"], in: tab.window)
+            #expect(await waitUntil { tab.preferences.tabViews.first?.keeps.forgetsSecondPane == true })
+        }
+
         // MARK: Tab, Return and Escape
 
         // Tab goes along each row, then down, through what can be used: dimmed and hidden controls are passed by.
@@ -348,9 +373,12 @@ extension ExplorerWindowlessTests {
             defer { Task { await harness.close() } }
             let tab = try await harness.open()
             let beta = harness.folder.appending("Beta").path
-            var answer: String? = beta
+            // What the system's picker answers, changed between the two choices.
+            final class Answer: @unchecked Sendable { var path: String? }
+            let answer = Answer()
+            answer.path = beta
             let picker = MainWindowController.pickDirectory
-            MainWindowController.pickDirectory = { _, _ in answer }
+            MainWindowController.pickDirectory = { _, _ in answer.path }
             defer { MainWindowController.pickDirectory = picker }
             tab.perform(.saveTabView)
             let sheet = try SheetInput.tabSheet(tab)
@@ -359,7 +387,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { sheet.draft.keeps.pane?.folder == beta })
             let folder = try #require(SheetInput.control("tabViewOptions.folder", in: sheet, as: NSPopUpButton.self))
             #expect(folder.titleOfSelectedItem == "Beta")
-            answer = nil
+            answer.path = nil
             try SheetInput.choose("Choose Folder\u{2026}", in: "tabViewOptions.folder", of: sheet)
             #expect(await waitUntil { folder.titleOfSelectedItem == "Beta" })
             #expect(sheet.draft.keeps.pane?.folder == beta)

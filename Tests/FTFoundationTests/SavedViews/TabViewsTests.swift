@@ -187,6 +187,21 @@ struct TabViewsTests {
         #expect(applied.panesGiven.isEmpty)
     }
 
+    // Forgetting the second pane is kept only with one pane, read back as written, and leaves the tab no pane closed
+    // to bring back, whether it closes one or the tab had one closed already.
+    @Test func onePaneCanForgetTheSecond() throws {
+        #expect(TabViewKeeps(panes: 2, forgetsSecondPane: true).forgetsSecondPane == nil)
+        #expect(TabViewKeeps(forgetsSecondPane: true).forgetsSecondPane == nil)
+        #expect(TabViewKeeps(panes: 1).forgetsSecondPane == nil)
+        let forgets = TabViewKeeps(panes: 1, forgetsSecondPane: true)
+        #expect(forgets.forgetsSecondPane == true)
+        #expect(try JSONDecoder().decode(TabViewKeeps.self, from: JSONEncoder().encode(forgets)) == forgets)
+        #expect(Self.apply(forgets, Self.tab(["/a", "/b"])).tab.closedPane == nil)
+        #expect(Self.apply(TabViewKeeps(panes: 1), Self.tab(["/a", "/b"])).tab.closedPane?.folder == "/b")
+        #expect(Self.apply(forgets, Self.tab(["/a"], closed: "/c")).tab.closedPane == nil)
+        #expect(SavedViewText.parts(forgets).prefix(2) == ["One pane", "Second pane forgotten"])
+    }
+
     @Test func aCopiedPaneIsTheActivePanesSettings() {
         var tab = Self.tab(["/a"])
         tab.panes[0].settings.sort = FolderViewSort(by: .size, direction: .desc)

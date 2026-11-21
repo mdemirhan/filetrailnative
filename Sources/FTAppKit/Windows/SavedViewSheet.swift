@@ -111,7 +111,9 @@ class SavedViewSheet: DialogPanelView {
 
     // MARK: The keyboard
 
-    /// Escape and ⌘. cancel; Return saves. Both are the name list's own while it is open.
+    /// Escape and ⌘. cancel; Return saves; Space presses the focused button, checks the focused checkbox or opens
+    /// the focused pop-up, as in the app's alerts (the window keeps Space for itself otherwise). Return and Escape are
+    /// the name list's own while it is open.
     override func handleKey(_ event: NSEvent) -> Bool {
         guard !nameBox.isListOpen else { return false }
         if KeyCode.isCancel(event) {
@@ -121,6 +123,12 @@ class SavedViewSheet: DialogPanelView {
             return true
         }
         let plain = event.modifierFlags.intersection([.command, .control, .option]).isEmpty
+        if plain, event.charactersIgnoringModifiers == " ", let button = window?.firstResponder as? NSButton,
+            button.isDescendant(of: self)
+        {
+            if button.isEnabled { button.performClick(nil) }
+            return true
+        }
         guard KeyCode.isReturn(event), plain else { return false }
         guard canSave else {
             NSSound.beep()

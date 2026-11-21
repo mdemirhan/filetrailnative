@@ -123,6 +123,12 @@ extension MainWindowController {
         panesChanged()
     }
 
+    /// The second pane kept closed is forgotten: Two Panes opens a new one, a copy of the active pane.
+    func forgetClosedSecondPane() {
+        closedSecondPane = nil
+        closedSecondViewer = nil
+    }
+
     /// Closes the pane that isn't active; the active one takes the whole width. Where the closed one was is kept, for
     /// ⌘\ to open it there again as it was: its history, filter mode, selection, filters and scroll.
     func closeOtherPane() {

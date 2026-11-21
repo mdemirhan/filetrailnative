@@ -87,6 +87,8 @@ public struct TabViewDraft: Equatable, Sendable {
 
     public var keepsPanes: Bool
     public var panes: Int
+    /// With one pane kept: the second pane the tab keeps closed is forgotten.
+    public var forgetsSecondPane: Bool
     public var keepsDivider: Bool
     public var divider: Divider
     /// The left pane's share typed in, within what a drag of the divider allows.
@@ -110,7 +112,8 @@ public struct TabViewDraft: Equatable, Sendable {
 
     public static func == (lhs: TabViewDraft, rhs: TabViewDraft) -> Bool {
         lhs.name == rhs.name && lhs.editingID == rhs.editingID && lhs.keepsPanes == rhs.keepsPanes
-            && lhs.panes == rhs.panes && lhs.keepsDivider == rhs.keepsDivider && lhs.divider == rhs.divider
+            && lhs.panes == rhs.panes && lhs.forgetsSecondPane == rhs.forgetsSecondPane
+            && lhs.keepsDivider == rhs.keepsDivider && lhs.divider == rhs.divider
             && lhs.customShare == rhs.customShare && lhs.keepsHidden == rhs.keepsHidden && lhs.hidden == rhs.hidden
             && lhs.left == rhs.left && lhs.right == rhs.right && lhs.active == rhs.active
             && lhs.shareNow == rhs.shareNow && lhs.widthNow == rhs.widthNow && lhs.savedDivider == rhs.savedDivider
@@ -128,6 +131,7 @@ public struct TabViewDraft: Equatable, Sendable {
         if let keeps {
             keepsPanes = keeps.panes != nil
             panes = keeps.panes ?? tab.panes.count
+            forgetsSecondPane = keeps.forgetsSecondPane == true
             left = Pane(state: leftState, keeps: keeps.left)
             right = Pane(state: rightState, keeps: keeps.right)
             active = Pane(state: activeState, keeps: keeps.pane)
@@ -144,6 +148,7 @@ public struct TabViewDraft: Equatable, Sendable {
             // A new tab view keeps the panes and each pane's view to begin with; the rest is checked by hand.
             keepsPanes = true
             panes = tab.panes.count
+            forgetsSecondPane = false
             let viewOnly = { (state: PaneState) in
                 state.viewer.map { PaneKeeps(viewer: $0) }
                     ?? PaneKeeps(view: FolderViewKeeps(view: state.settings.view))
@@ -227,7 +232,8 @@ public struct TabViewDraft: Equatable, Sendable {
     public var keeps: TabViewKeeps {
         let two = keepsPanes && panes == 2
         return TabViewKeeps(
-            panes: keepsPanes ? panes : nil, divider: two && keepsDivider ? dividerKept : nil,
+            panes: keepsPanes ? panes : nil, forgetsSecondPane: keepsPanes && panes == 1 && forgetsSecondPane,
+            divider: two && keepsDivider ? dividerKept : nil,
             includeHidden: keepsHidden ? hidden : nil, left: two ? left.keeps(viewerAllowed: true) : nil,
             right: two ? right.keeps(viewerAllowed: true) : nil, pane: two ? nil : active.keeps(viewerAllowed: false))
     }
@@ -235,6 +241,7 @@ public struct TabViewDraft: Equatable, Sendable {
     /// Reset: nothing kept, each value left as it shows.
     public mutating func reset() {
         keepsPanes = false
+        forgetsSecondPane = false
         keepsDivider = false
         keepsHidden = false
         for group in [PaneGroup.left, .right, .activePane] {
@@ -254,6 +261,7 @@ public enum SavedViewText {
     public static func parts(_ keeps: TabViewKeeps) -> [String] {
         var parts: [String] = []
         if let panes = keeps.panes { parts.append(panes == 2 ? "Two panes" : "One pane") }
+        if keeps.forgetsSecondPane == true { parts.append("Second pane forgotten") }
         if let divider = keeps.divider { parts.append("Divider " + dividerText(divider)) }
         if let hidden = keeps.includeHidden { parts.append(hidden ? "Hidden files shown" : "Hidden files hidden") }
         parts += paneParts(keeps.left, "Left: ") + paneParts(keeps.right, "Right: ")

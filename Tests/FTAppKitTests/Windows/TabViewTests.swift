@@ -111,6 +111,29 @@ extension ExplorerWindowlessTests {
             #expect(tab.activePaneIndex == 0)
         }
 
+        // One pane that forgets the second: the pane closed isn't kept, so Two Panes then opens a new second pane, a
+        // copy of the active one, whether the tab had two panes or one with another closed before.
+        @Test func onePaneThatForgetsTheSecondLeavesTwoPanesANewOne() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            await go(tab, harness, "Alpha")
+            tab.openSecondPane(at: real(harness, "Gamma"))
+            await settled(tab)
+            await apply(TabViewKeeps(panes: 1, forgetsSecondPane: true), to: tab)
+            #expect(!tab.showsTwoPanes && tab.closedSecondPane == nil)
+            tab.perform(.toggleTwoPanes)
+            await settled(tab)
+            #expect(tab.panes.count == 2 && tab.panes[1].folderPath == real(harness, "Alpha"))
+
+            await go(tab, harness, "Beta")
+            tab.focusPane(tab.panes[1])
+            await go(tab, harness, "Gamma")
+            tab.perform(.toggleTwoPanes)
+            #expect(tab.closedSecondPane != nil)
+            await apply(TabViewKeeps(panes: 1, forgetsSecondPane: true), to: tab)
+            #expect(tab.closedSecondPane == nil)
+        }
+
         @Test func eachPaneTakesItsOwnSettingsAndFolder() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

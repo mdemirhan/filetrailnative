@@ -87,6 +87,9 @@ public struct TabViewKeeps: Codable, Equatable, Sendable {
 
     /// One pane or two; nil: the panes are left as they are, and `pane` goes to the active one.
     public var panes: Int?
+    /// With one pane: the second pane the tab keeps, closed, for Two Panes to bring back as it was, is forgotten, so
+    /// Two Panes opens a new one. Nil (not written) otherwise.
+    public var forgetsSecondPane: Bool?
     /// Only with two panes.
     public var divider: Divider?
     public var includeHidden: Bool?
@@ -96,15 +99,16 @@ public struct TabViewKeeps: Codable, Equatable, Sendable {
     /// The pane's, with one pane; or the active pane's, when `panes` is nil.
     public var pane: PaneKeeps?
 
-    /// What makes sense of the parts is kept: a divider only with two panes, `left` and `right` only with two, `pane`
+    /// What makes sense of the parts is kept: forgetting the second pane only with one pane, a divider only with two, `left` and `right` only with two, `pane`
     /// only without; a share within the divider's limits; the viewer only in one of two panes, the left's when both
     /// ask, as it shows what the other's list selects; a pane that keeps nothing is not kept.
     public init(
-        panes: Int? = nil, divider: Divider? = nil, includeHidden: Bool? = nil, left: PaneKeeps? = nil,
-        right: PaneKeeps? = nil, pane: PaneKeeps? = nil
+        panes: Int? = nil, forgetsSecondPane: Bool = false, divider: Divider? = nil, includeHidden: Bool? = nil,
+        left: PaneKeeps? = nil, right: PaneKeeps? = nil, pane: PaneKeeps? = nil
     ) {
         let panes = panes == 1 || panes == 2 ? panes : nil
         self.panes = panes
+        self.forgetsSecondPane = panes == 1 && forgetsSecondPane ? true : nil
         self.includeHidden = includeHidden
         let two = panes == 2
         self.divider = two ? divider.flatMap(Self.valid) : nil
@@ -128,6 +132,7 @@ public struct TabViewKeeps: Codable, Equatable, Sendable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.init(
             panes: try? container.decode(Int.self, forKey: .panes),
+            forgetsSecondPane: (try? container.decode(Bool.self, forKey: .forgetsSecondPane)) ?? false,
             divider: try? container.decode(Divider.self, forKey: .divider),
             includeHidden: try? container.decode(Bool.self, forKey: .includeHidden),
             left: try? container.decode(PaneKeeps.self, forKey: .left),
@@ -342,6 +347,7 @@ public enum TabViews {
             tab.active = 0
             secondPane = .closed(other)
         }
+        if keeps.forgetsSecondPane == true { tab.closedPane = nil }
         if tab.panes.count == 2, let divider = keeps.divider {
             tab.split = share(divider, columnWidth: columnWidth)
         }
