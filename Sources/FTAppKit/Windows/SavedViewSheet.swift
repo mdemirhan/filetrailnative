@@ -5,10 +5,14 @@ import FTFoundation
 /// A sheet of rows laid out as Folder View Options lays out its own: a header with a symbol, a title and what it is
 /// for; groups titled as Settings titles them, each a card of rows with a hairline between each two; each row a
 /// checkbox titled with its setting (or a name) and its control in a column that starts at the same place in every
-/// row. Built again whole whenever something in it changes.
+/// row. Built again whole whenever something in it changes. A sheet taller than the window it is in scrolls, its
+/// buttons staying at its foot, so it is never cut by the window's size.
 @MainActor
 class SavedViewSheet: DialogPanelView {
     let stack = NSStackView()
+    private let scroll = NSScrollView()
+    private let document = SheetDocumentView()
+    private var footerView: NSView?
     static var width: Double { FolderViewPopover.width + 40 }
     static let margin = 20.0
     var contentWidth: Double { Self.width - 2 * Self.margin }
@@ -23,19 +27,49 @@ class SavedViewSheet: DialogPanelView {
         stack.alignment = .leading
         stack.spacing = 12
         stack.edgeInsets = NSEdgeInsets(top: Self.margin, left: Self.margin, bottom: Self.margin, right: Self.margin)
-        addSubview(stack)
+        document.addSubview(stack)
+        scroll.documentView = document
+        scroll.hasVerticalScroller = true
+        scroll.autohidesScrollers = true
+        scroll.drawsBackground = false
+        scroll.borderType = .noBorder
+        addSubview(scroll)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
+    /// The buttons along the sheet's foot, outside what scrolls.
+    func setFooter(_ view: NSView) {
+        footerView?.removeFromSuperview()
+        footerView = view
+        addSubview(view)
+        needsLayout = true
+    }
+
+    /// The footer's room: its height with a margin above and below.
+    private var footerRoom: Double {
+        guard let footerView else { return 0 }
+        return ceil(footerView.fittingSize.height) + 2 * Self.margin
+    }
+
     override func panelSize(in size: NSSize) -> NSSize {
         stack.layoutSubtreeIfNeeded()
-        return NSSize(width: Self.width, height: min(size.height - 40, ceil(stack.fittingSize.height)))
+        let whole = ceil(stack.fittingSize.height) + footerRoom
+        return NSSize(width: Self.width, height: min(max(160, size.height - 40), whole))
     }
 
     override func layout() {
         super.layout()
-        stack.frame = NSRect(x: 0, y: 0, width: Self.width, height: max(bounds.height, stack.fittingSize.height))
+        let rows = ceil(stack.fittingSize.height)
+        let footer = footerRoom
+        if let footerView {
+            footerView.frame = NSRect(
+                x: Self.margin, y: bounds.height - footer + Self.margin, width: contentWidth,
+                height: footer - 2 * Self.margin)
+        }
+        scroll.frame = NSRect(x: 0, y: 0, width: Self.width, height: max(0, bounds.height - footer))
+        document.frame = NSRect(x: 0, y: 0, width: Self.width, height: rows)
+        stack.frame = document.bounds
     }
 
     /// Takes everything off, to be built again.
@@ -188,4 +222,9 @@ class SavedViewSheet: DialogPanelView {
         return row
     }
 
+}
+
+/// What the sheet's rows scroll in: top down, as the panel is.
+private final class SheetDocumentView: NSView {
+    override var isFlipped: Bool { true }
 }

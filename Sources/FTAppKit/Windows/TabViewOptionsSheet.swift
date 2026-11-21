@@ -134,7 +134,7 @@ final class TabViewOptionsSheet: SavedViewSheet {
         add(folderViewsRow(group), after: 8)
         add(separator())
         add(note(SavedViewText.parts(draft.keeps).joined(separator: " \u{00B7} ")), after: 8)
-        add(footer())
+        setFooter(footer())
         needsLayout = true
         superview?.needsLayout = true
     }

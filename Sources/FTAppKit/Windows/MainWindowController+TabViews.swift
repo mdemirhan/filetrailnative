@@ -221,6 +221,10 @@ extension MainWindowController {
                 pane.arrivingTabViewOverride = override.map {
                     TabViewOverride(folder: folder, choice: $0.choice, kept: Set($0.view.kept))
                 }
+                // The view and columns now carried show as the folder arrives: arriving in a folder with no view of
+                // its own shows nothing new by itself.
+                pane.refreshColumns()
+                pane.content.setMode(pane.shownViewMode)
                 pane.go(to: folder)
             } else {
                 pane.tabViewOverride = override.map {

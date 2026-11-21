@@ -99,7 +99,7 @@ final class WindowViewOptionsSheet: SavedViewSheet {
         add(separator())
         let view = draft.windowView(id: draft.editingID ?? "")
         add(note(SavedViewText.parts(view, tabViews: tabViews).joined(separator: " \u{00B7} ")), after: 8)
-        add(footer())
+        setFooter(footer())
         needsLayout = true
         superview?.needsLayout = true
     }
