@@ -124,7 +124,8 @@ public struct DisplayNameParts: Equatable, Sendable {
 
 public enum DisplayName {
     /// Splits the visible filename into stem + extension suffix without assuming the stored
-    /// `extension` is always trustworthy or even present in the display name.
+    /// `extension` is always trustworthy or even present in the display name. Both parts are the name's own
+    /// letters: the stored extension is lowercased, and `IMG.JPG` is drawn as it is spelled.
     public static func split(_ name: String, extension fileExtension: String) -> DisplayNameParts {
         let whole = DisplayNameParts(stem: name, extensionSuffix: "")
         if fileExtension.isEmpty {
@@ -136,7 +137,7 @@ public enum DisplayName {
         if !JSString.hasSuffix(JSString.lowercased(name), JSString.lowercased(suffix)) || units.count <= suffixLength {
             return whole
         }
-        return DisplayNameParts(
-            stem: JSString.string(units[..<(units.count - suffixLength)]), extensionSuffix: suffix)
+        let cut = units.count - suffixLength
+        return DisplayNameParts(stem: JSString.string(units[..<cut]), extensionSuffix: JSString.string(units[cut...]))
     }
 }

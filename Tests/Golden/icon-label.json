@@ -871,7 +871,7 @@
         "extension": "txt",
         "limit": 18
       },
-      "output": "UP….txt"
+      "output": "UPPER.TXT"
     },
     {
       "name": "97: UPPER.TXT | txt | 35",
@@ -880,7 +880,7 @@
         "extension": "txt",
         "limit": 35
       },
-      "output": "UP…ER.txt"
+      "output": "U…ER.TXT"
     },
     {
       "name": "98: UPPER.TXT | txt | 36",
@@ -1267,7 +1267,7 @@
         "extension": "txt",
         "limit": 50
       },
-      "output": "copy…𝔘𝔫𝔦 _.txt"
+      "output": "co…𝔘𝔫𝔦 _.TXT"
     },
     {
       "name": "141: .txt | txt | 2",
@@ -1735,7 +1735,7 @@
         "extension": "é",
         "limit": 12
       },
-      "output": "Monte.É"
+      "output": "M….É"
     },
     {
       "name": "193: 日本語 copy é Ünï.PDF | PDF | 14",
@@ -1996,7 +1996,7 @@
         "extension": "j",
         "limit": 11
       },
-      "output": "x….j"
+      "output": "x y Monte Final.J"
     },
     {
       "name": "222: é Résumé Résumé 2026 Ünï Panorama.txt | txt | 115",
@@ -2536,7 +2536,7 @@
         "extension": "jpeg",
         "limit": 46
       },
-      "output": "20…eport.jpeg"
+      "output": "2…eport.JPEG"
     },
     {
       "name": "282: 2026_copy_  _scan_..swift | swift | 61",

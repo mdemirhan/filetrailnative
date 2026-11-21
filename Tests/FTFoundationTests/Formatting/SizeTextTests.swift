@@ -74,7 +74,10 @@ struct SizeTextTests {
             DisplayName.split("long filename.txt", extension: "txt")
                 == DisplayNameParts(stem: "long filename", extensionSuffix: ".txt"))
         #expect(
-            DisplayName.split("LONG.TXT", extension: "txt") == DisplayNameParts(stem: "LONG", extensionSuffix: ".txt"))
+            DisplayName.split("LONG.TXT", extension: "txt") == DisplayNameParts(stem: "LONG", extensionSuffix: ".TXT"))
+        #expect(
+            DisplayName.split("Symbols.dSYM", extension: "dsym")
+                == DisplayNameParts(stem: "Symbols", extensionSuffix: ".dSYM"))
         #expect(DisplayName.split(".txt", extension: "txt") == DisplayNameParts(stem: ".txt", extensionSuffix: ""))
         #expect(DisplayName.split("name", extension: "txt") == DisplayNameParts(stem: "name", extensionSuffix: ""))
         #expect(DisplayName.split("name.txt", extension: "") == DisplayNameParts(stem: "name.txt", extensionSuffix: ""))
