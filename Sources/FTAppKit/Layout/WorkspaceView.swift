@@ -688,32 +688,6 @@ final class WorkspaceBandLine: NSView {
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
 }
 
-/// How the room of the content column is shared between two panes.
-enum PaneSplit {
-    /// The left pane's share when they share it evenly.
-    static let even = 0.5
-    static let minimum = 0.2
-    static let maximum = 0.8
-    /// The narrowest a pane gets; the window is kept wide enough for two.
-    static let minimumPaneWidth = 280.0
-    /// The divider's room: a hairline in the middle of a band the pointer can take.
-    static let dividerWidth = 9.0
-
-    static func clamp(_ split: Double) -> Double {
-        guard split.isFinite else { return even }
-        return min(maximum, max(minimum, split))
-    }
-
-    /// The left pane's width in a column `columnWidth` wide, kept so that neither pane is narrower than the minimum
-    /// while there is room for both.
-    static func leftWidth(_ split: Double, columnWidth: Double) -> Double {
-        let room = max(0, columnWidth - dividerWidth)
-        let wanted = (room * clamp(split)).rounded()
-        guard room >= minimumPaneWidth * 2 else { return (room / 2).rounded() }
-        return min(room - minimumPaneWidth, max(minimumPaneWidth, wanted))
-    }
-}
-
 /// The divider between two panes: a hairline the pointer can take over its whole band. A drag moves it; a double-click
 /// shares the room evenly.
 final class PaneDividerView: NSView {
