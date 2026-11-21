@@ -8,7 +8,7 @@
       "output": {
         "preferences": {
           "theme": "auto",
-          "accent": "#007aff",
+          "accent": "system",
           "viewMode": "icons",
           "searchViewMode": "details",
           "sortBy": "name",
@@ -255,7 +255,7 @@
       "output": {
         "preferences": {
           "theme": "auto",
-          "accent": "#007aff",
+          "accent": "system",
           "viewMode": "icons",
           "searchViewMode": "details",
           "sortBy": "name",
@@ -5040,6 +5040,7 @@
       "changes": {
         "preferences": {
           "theme": "dark",
+          "accent": "#007aff",
           "searchViewMode": "icons",
           "detailColumnWidths": {
             "size": 80,
@@ -5787,6 +5788,7 @@
       "changes": {
         "preferences": {
           "theme": "light",
+          "accent": "#007aff",
           "viewMode": "list",
           "sortBy": "size",
           "detailColumnOrder": {
@@ -7911,6 +7913,7 @@
       },
       "changes": {
         "preferences": {
+          "accent": "#007aff",
           "viewMode": "details",
           "searchViewMode": "icons",
           "sortDirection": "desc",
@@ -8063,6 +8066,7 @@
       },
       "changes": {
         "preferences": {
+          "accent": "#007aff",
           "searchViewMode": "icons",
           "detailColumns": {
             "modified": false,
@@ -8605,6 +8609,7 @@
       "changes": {
         "preferences": {
           "theme": "dark",
+          "accent": "#007aff",
           "viewMode": "details",
           "sortBy": "size",
           "sortDirection": "desc",
@@ -8772,6 +8777,7 @@
       },
       "changes": {
         "preferences": {
+          "accent": "#007aff",
           "sortBy": "kind",
           "foldersFirst": false,
           "detailColumns": {
@@ -10174,6 +10180,7 @@
       },
       "changes": {
         "preferences": {
+          "accent": "#007aff",
           "viewMode": "details",
           "sortBy": "kind",
           "sortDirection": "desc",
@@ -11141,6 +11148,7 @@
       },
       "changes": {
         "preferences": {
+          "accent": "#007aff",
           "sortDirection": "desc",
           "detailColumns": {
             "modified": false,
@@ -14547,6 +14555,7 @@
       "changes": {
         "preferences": {
           "theme": "light",
+          "accent": "#007aff",
           "viewMode": "list",
           "searchViewMode": "list",
           "detailColumnOrder": [
@@ -14761,6 +14770,7 @@
       },
       "changes": {
         "preferences": {
+          "accent": "#007aff",
           "viewMode": "list",
           "detailColumns": {
             "kind": false,
@@ -15299,6 +15309,7 @@
       "changes": {
         "preferences": {
           "theme": "light",
+          "accent": "#007aff",
           "searchViewMode": "icons",
           "sortBy": "kind",
           "sortDirection": "desc",
@@ -16853,6 +16864,7 @@
       "changes": {
         "preferences": {
           "theme": "light",
+          "accent": "#007aff",
           "viewMode": "list",
           "searchViewMode": "list",
           "detailColumnOrder": [
@@ -17628,6 +17640,7 @@
       },
       "changes": {
         "preferences": {
+          "accent": "#007aff",
           "viewMode": "list",
           "searchViewMode": "list",
           "sortBy": "size",
@@ -18413,6 +18426,7 @@
       "changes": {
         "preferences": {
           "theme": "light",
+          "accent": "#007aff",
           "viewMode": "list",
           "searchViewMode": "list",
           "sortDirection": "desc",
@@ -19516,6 +19530,7 @@
       "changes": {
         "preferences": {
           "theme": "dark",
+          "accent": "#007aff",
           "searchViewMode": "list",
           "detailColumns": {
             "kind": false,
@@ -19930,6 +19945,7 @@
       "changes": {
         "preferences": {
           "theme": "dark",
+          "accent": "#007aff",
           "viewMode": "list",
           "searchViewMode": "icons",
           "sortBy": "size",
@@ -20089,6 +20105,7 @@
       },
       "changes": {
         "preferences": {
+          "accent": "#007aff",
           "sortBy": "kind",
           "sortDirection": "desc",
           "detailColumns": {
@@ -21252,6 +21269,7 @@
       "changes": {
         "preferences": {
           "theme": "dark",
+          "accent": "#007aff",
           "sortBy": "kind",
           "sortDirection": "desc",
           "foldersFirst": false,
@@ -22056,6 +22074,7 @@
       "changes": {
         "preferences": {
           "theme": "light",
+          "accent": "#007aff",
           "searchViewMode": "icons",
           "sortBy": "kind",
           "sortDirection": "desc",
@@ -23259,6 +23278,7 @@
       "changes": {
         "preferences": {
           "theme": "light",
+          "accent": "#007aff",
           "viewMode": "details",
           "searchViewMode": "list",
           "sortBy": "size",
@@ -24074,6 +24094,7 @@
       "changes": {
         "preferences": {
           "theme": "light",
+          "accent": "#007aff",
           "sortBy": "size",
           "detailColumns": {
             "kind": false,
@@ -24583,6 +24604,7 @@
       "changes": {
         "preferences": {
           "theme": "dark",
+          "accent": "#007aff",
           "viewMode": "details",
           "searchViewMode": "icons",
           "sortBy": "size",
@@ -28316,6 +28338,7 @@
       "changes": {
         "preferences": {
           "theme": "dark",
+          "accent": "#007aff",
           "viewMode": "details",
           "searchViewMode": "list",
           "sortBy": "kind",
@@ -28915,6 +28938,7 @@
       "changes": {
         "preferences": {
           "theme": "dark",
+          "accent": "#007aff",
           "viewMode": "details",
           "foldersFirst": false,
           "detailColumns": {
@@ -30832,6 +30856,7 @@
       "changes": {
         "preferences": {
           "theme": "dark",
+          "accent": "#007aff",
           "searchViewMode": "list",
           "sortBy": "size",
           "detailColumns": {
@@ -30972,6 +30997,7 @@
       "changes": {
         "preferences": {
           "theme": "dark",
+          "accent": "#007aff",
           "sortBy": "modified",
           "foldersFirst": false,
           "detailColumns": {
@@ -32396,6 +32422,7 @@
       },
       "changes": {
         "preferences": {
+          "accent": "#007aff",
           "viewMode": "list",
           "searchViewMode": "list",
           "detailColumnOrder": [
@@ -32673,6 +32700,7 @@
       "changes": {
         "preferences": {
           "theme": "dark",
+          "accent": "#007aff",
           "viewMode": "list",
           "searchViewMode": "list",
           "sortBy": "modified",
@@ -33484,6 +33512,7 @@
       },
       "changes": {
         "preferences": {
+          "accent": "#007aff",
           "viewMode": "details",
           "sortDirection": "desc",
           "foldersFirst": false,
@@ -37501,6 +37530,7 @@
       },
       "changes": {
         "preferences": {
+          "accent": "#007aff",
           "searchViewMode": "icons",
           "sortBy": "modified",
           "sortDirection": "desc",
@@ -42419,6 +42449,7 @@
       "changes": {
         "preferences": {
           "theme": "light",
+          "accent": "#007aff",
           "viewMode": "details",
           "searchViewMode": "list",
           "sortBy": "kind",
@@ -42679,6 +42710,7 @@
       "changes": {
         "preferences": {
           "theme": "dark",
+          "accent": "#007aff",
           "viewMode": "details",
           "sortBy": "kind",
           "sortDirection": "desc",
@@ -44004,6 +44036,7 @@
       },
       "changes": {
         "preferences": {
+          "accent": "#007aff",
           "sortDirection": "desc",
           "foldersFirst": false,
           "detailColumnOrder": [
@@ -46397,6 +46430,7 @@
       "changes": {
         "preferences": {
           "theme": "dark",
+          "accent": "#007aff",
           "viewMode": "list",
           "searchViewMode": "icons",
           "sortBy": "kind",
@@ -46582,6 +46616,7 @@
       "changes": {
         "preferences": {
           "theme": "dark",
+          "accent": "#007aff",
           "sortBy": "size",
           "sortDirection": "desc",
           "detailColumnOrder": [
@@ -46787,6 +46822,7 @@
       "changes": {
         "preferences": {
           "theme": "light",
+          "accent": "#007aff",
           "searchViewMode": "icons",
           "sortBy": "size",
           "foldersFirst": false,
@@ -47253,6 +47289,7 @@
       "changes": {
         "preferences": {
           "theme": "light",
+          "accent": "#007aff",
           "viewMode": "details",
           "foldersFirst": false,
           "detailColumnOrder": [
@@ -47489,6 +47526,7 @@
       "changes": {
         "preferences": {
           "theme": "light",
+          "accent": "#007aff",
           "sortDirection": "desc",
           "detailColumns": {
             "modified": false,
@@ -48507,6 +48545,7 @@
       "changes": {
         "preferences": {
           "theme": "dark",
+          "accent": "#007aff",
           "viewMode": "list",
           "sortDirection": "desc",
           "detailColumns": {
@@ -49289,6 +49328,7 @@
       "changes": {
         "preferences": {
           "theme": "light",
+          "accent": "#007aff",
           "viewMode": "details",
           "searchViewMode": "list",
           "sortBy": "kind",
@@ -52922,6 +52962,7 @@
       "changes": {
         "preferences": {
           "theme": "light",
+          "accent": "#007aff",
           "searchViewMode": "icons",
           "sortBy": "modified",
           "detailColumns": {
@@ -53415,6 +53456,7 @@
       "changes": {
         "preferences": {
           "theme": "dark",
+          "accent": "#007aff",
           "viewMode": "details",
           "foldersFirst": false,
           "detailColumns": {
@@ -55041,6 +55083,7 @@
       },
       "changes": {
         "preferences": {
+          "accent": "#007aff",
           "searchViewMode": "list",
           "sortDirection": "desc",
           "detailColumnOrder": {
@@ -55180,6 +55223,7 @@
       "changes": {
         "preferences": {
           "theme": "light",
+          "accent": "#007aff",
           "viewMode": "list",
           "searchViewMode": "icons",
           "detailColumnOrder": {
@@ -56150,6 +56194,7 @@
       },
       "changes": {
         "preferences": {
+          "accent": "#007aff",
           "viewMode": "details",
           "sortBy": "size",
           "detailColumns": {
@@ -59089,6 +59134,7 @@
       },
       "changes": {
         "preferences": {
+          "accent": "#007aff",
           "sortBy": "size",
           "sortDirection": "desc",
           "foldersFirst": false,
@@ -59765,6 +59811,37 @@
       "input": {
         "defaultTheme": null,
         "text": "{\"preferences\":{\"listFilterMatch\": \"regex\"}}"
+      },
+      "changes": {}
+    },
+    {
+      "name": "302: the system accent is kept",
+      "base": "0: empty object",
+      "input": {
+        "defaultTheme": null,
+        "text": "{\"preferences\":{\"accent\":\" System \"}}"
+      },
+      "changes": {}
+    },
+    {
+      "name": "303: a saved blue stays blue",
+      "base": "0: empty object",
+      "input": {
+        "defaultTheme": null,
+        "text": "{\"preferences\":{\"accent\":\"#007AFF\"}}"
+      },
+      "changes": {
+        "preferences": {
+          "accent": "#007aff"
+        }
+      }
+    },
+    {
+      "name": "304: an accent that is neither system nor a color falls back to system",
+      "base": "0: empty object",
+      "input": {
+        "defaultTheme": null,
+        "text": "{\"preferences\":{\"accent\":\"systemblue\"}}"
       },
       "changes": {}
     }

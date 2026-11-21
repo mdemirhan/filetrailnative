@@ -65,38 +65,51 @@ extension Theme {
 }
 
 /// Holds the current theme for the whole app and tells everything that draws with it when it changes. The theme is
-/// the preference (Auto, Light or Dark), or for Auto the macOS appearance, followed live; the accent is any hex color.
-/// Nothing here uses `controlAccentColor` or the system selection highlight.
+/// the preference (Auto, Light or Dark), or for Auto the macOS appearance, followed live; the accent is any hex color,
+/// or System, the accent of System Settings, followed live once `followSystemAccent` is called. Every color drawn is
+/// made from that one hex color: nothing else here uses `controlAccentColor` or the system selection highlight.
 @MainActor
 public final class AppearanceModel {
     /// The one the app's windows use.
     public static let shared = AppearanceModel()
 
     public private(set) var preference: ThemePreference
+    /// The accent preference: `system`, or a `#rrggbb` color.
+    public private(set) var accent: String
+    /// The accent painted: the color chosen, or for System the color System Settings has.
     public private(set) var accentHex: String
     public private(set) var theme: Theme
 
     /// Whether macOS is in its dark appearance: asked again each time Auto needs it.
     private let systemPrefersDark: @MainActor () -> Bool
+    /// The accent of System Settings as `#rrggbb`: asked again each time System needs it.
+    private var systemAccent: @MainActor () -> String
     /// Applies Light, Dark or Auto to the app's native parts (title bars, scroll bars, pickers).
     private let setNativeAppearance: @MainActor (ThemePreference) -> Void
     private var observers: [UUID: @MainActor (Theme) -> Void] = [:]
     private var pageWindows: [WeakWindow] = []
     private var systemObservation: NSKeyValueObservation?
+    private var systemColorsObserver: (observer: any NSObjectProtocol, center: NotificationCenter)?
 
     private struct WeakWindow {
         weak var window: NSWindow?
     }
 
+    /// `systemAccent` is the app's blue until the app calls `followSystemAccent` at launch, so tests and scripted runs
+    /// paint the same on every Mac.
     public init(
         theme: ThemePreference = .auto, accent: String = AppPreferenceLimits.defaultAccent,
         systemPrefersDark: @escaping @MainActor () -> Bool = AppearanceModel.macOSIsDark,
+        systemAccent: @escaping @MainActor () -> String = { AppPreferenceLimits.blueAccent },
         setNativeAppearance: @escaping @MainActor (ThemePreference) -> Void = AppearanceModel.setAppAppearance
     ) {
         self.systemPrefersDark = systemPrefersDark
+        self.systemAccent = systemAccent
         self.setNativeAppearance = setNativeAppearance
         preference = theme
-        let hex = AppPreferenceLimits.normalizeAccentColor(accent) ?? AppPreferenceLimits.defaultAccent
+        let chosen = AppPreferenceLimits.normalizeAccent(accent) ?? AppPreferenceLimits.defaultAccent
+        self.accent = chosen
+        let hex = Self.resolve(chosen, system: systemAccent)
         accentHex = hex
         self.theme = Theme(
             appearance: Self.effective(theme, systemDark: systemPrefersDark()), accentHex: hex)
@@ -108,12 +121,41 @@ public final class AppearanceModel {
     /// windows get their background, and everything that observes is told once, only when the look changed.
     public func apply(theme newTheme: ThemePreference? = nil, accent newAccent: String? = nil) {
         let nextPreference = newTheme ?? preference
-        let nextAccent = newAccent.flatMap(AppPreferenceLimits.normalizeAccentColor) ?? accentHex
         if nextPreference != preference {
             preference = nextPreference
             setNativeAppearance(nextPreference)
         }
-        accentHex = nextAccent
+        accent = newAccent.flatMap(AppPreferenceLimits.normalizeAccent) ?? accent
+        refresh()
+    }
+
+    /// The accent System Settings has now, as `#rrggbb`: what the System swatch shows, and what System paints.
+    public var systemAccentHex: String { Self.resolve(AppPreferenceLimits.systemAccent, system: systemAccent) }
+
+    /// Follows the accent of System Settings while the app runs: asked of `lookup`, again each time macOS says its
+    /// colors changed.
+    public func followSystemAccent(
+        _ lookup: @escaping @MainActor () -> String = AppearanceModel.macOSAccentHex,
+        center: NotificationCenter = .default
+    ) {
+        systemAccent = lookup
+        if systemColorsObserver == nil {
+            let observer = center.addObserver(
+                forName: NSColor.systemColorsDidChangeNotification, object: nil, queue: .main
+            ) { [weak self] _ in
+                MainActor.assumeIsolated { self?.systemAccentChanged() }
+            }
+            systemColorsObserver = (observer, center)
+        }
+        refresh()
+    }
+
+    isolated deinit {
+        if let systemColorsObserver { systemColorsObserver.center.removeObserver(systemColorsObserver.observer) }
+    }
+
+    /// System Settings changed its accent: while the accent is System the look follows.
+    public func systemAccentChanged() {
         refresh()
     }
 
@@ -142,6 +184,7 @@ public final class AppearanceModel {
     }
 
     private func refresh() {
+        accentHex = Self.resolve(accent, system: systemAccent)
         let next = Theme(
             appearance: Self.effective(preference, systemDark: systemPrefersDark()), accentHex: accentHex)
         applyBackground(next)
@@ -205,6 +248,28 @@ public final class AppearanceModel {
         case .light: NSApplication.shared.appearance = NSAppearance(named: .aqua)
         case .dark: NSApplication.shared.appearance = NSAppearance(named: .darkAqua)
         }
+    }
+
+    /// The hex color an accent preference paints: System is what `system` gives, or the app's blue when that isn't a
+    /// `#rrggbb` color.
+    static func resolve(_ accent: String, system: @MainActor () -> String) -> String {
+        guard accent == AppPreferenceLimits.systemAccent else { return accent }
+        return AppPreferenceLimits.normalizeAccentColor(system()) ?? AppPreferenceLimits.blueAccent
+    }
+
+    /// The accent of System Settings in sRGB, as `#rrggbb`. It is read in the light appearance, as the app makes the
+    /// dark theme's shades from the one color; with Multicolor chosen it is the app's blue.
+    public static func macOSAccentHex() -> String {
+        var hex = AppPreferenceLimits.blueAccent
+        NSAppearance(named: .aqua)?.performAsCurrentDrawingAppearance {
+            guard let color = NSColor.controlAccentColor.usingColorSpace(.sRGB) else { return }
+            hex =
+                RGBA(
+                    red: Double(color.redComponent), green: Double(color.greenComponent),
+                    blue: Double(color.blueComponent)
+                ).hexString
+        }
+        return hex
     }
 
     /// Whether macOS is in dark mode, whatever the app pins its own windows to.

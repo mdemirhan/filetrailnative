@@ -685,7 +685,9 @@ extension HelpContent {
                             description: "⌃⌘F, or the green button of the window. The same key leaves it."),
                         HelpRow(
                             label: "Light, Dark, accent",
-                            description: "Settings → General → Appearance. Auto follows macOS. Help follows them too."),
+                            description:
+                                "Settings → General → Appearance. Auto follows macOS, and the System accent follows the accent color of System Settings. Help follows them too."
+                        ),
                         HelpRow(
                             label: "Toolbar",
                             description:

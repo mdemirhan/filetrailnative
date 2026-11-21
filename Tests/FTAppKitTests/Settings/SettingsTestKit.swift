@@ -18,6 +18,8 @@ final class SettingsRecorder {
     var directoryRequests: [String?] = []
     var missing: Set<String> = []
     var pickedColor: String?
+    /// The color the color picker was opened on, each time.
+    var colorPickerStarts: [String] = []
 
     /// Every change so far, merged.
     var saved: [String: JSONNode] { patches.reduce(into: [:]) { $0.merge($1) { _, new in new } } }
@@ -40,7 +42,7 @@ enum SettingsTestKit {
     /// A Settings window on `tab`, laid out at its size and never put on screen.
     static func make(
         tab: SettingsTab = .general, preferences: AppPreferences = .defaults(theme: .light), loads: Bool = true,
-        homePath: String = "/Users/demo"
+        homePath: String = "/Users/demo", model: AppearanceModel = AppearanceModel()
     ) -> (SettingsWindowController, SettingsRecorder) {
         _ = NSApplication.shared
         let recorder = SettingsRecorder()
@@ -61,8 +63,9 @@ enum SettingsTestKit {
             load: {
                 guard loads else { throw PickerFailed() }
                 return recorder.current
-            }, homePath: homePath, update: { recorder.update($0) }, services: services, model: AppearanceModel())
-        controller.openColorPicker = { _, picked in
+            }, homePath: homePath, update: { recorder.update($0) }, services: services, model: model)
+        controller.openColorPicker = { start, picked in
+            recorder.colorPickerStarts.append(start)
             if let color = recorder.pickedColor { picked(color) }
         }
         layout(controller)

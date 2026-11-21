@@ -61,7 +61,7 @@
             // The accent is stored with the other preferences, as Settings stores it: a theme set afterwards takes the
             // look from the stored preferences, accent included.
             AutomationPrefs.register(.accent) { value, context in
-                guard let accent = value.string.flatMap(AppPreferenceLimits.normalizeAccentColor) else {
+                guard let accent = value.string.flatMap(AppPreferenceLimits.normalizeAccent) else {
                     return .failed("accent \(value.string ?? "?")")
                 }
                 AppearanceModel.shared.apply(accent: accent)

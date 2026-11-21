@@ -146,7 +146,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
   <img src="screenshots/dark-mode.png" alt="File Trail in Dark, showing a project folder sorted by size" width="900">
 </p>
 
-- **Light and Dark**, following macOS or staying in the one you pick, with an accent color you choose.
+- **Light and Dark**, following macOS or staying in the one you pick, with the accent color of System Settings or one you choose.
 - **The toolbar** is customized the way Finder's is: choose View ▸ Customize Toolbar, or right-click it, and drag buttons in, along or out.
 - **A long name in a menu** loses its middle, as in Finder's menus, so the menu keeps its width.
 - **Settings** cover the everyday choices: which app edits text files and which terminal opens, what Return does, whether disk images open in a new window or a new tab, and whether your tabs and last folder come back at launch.

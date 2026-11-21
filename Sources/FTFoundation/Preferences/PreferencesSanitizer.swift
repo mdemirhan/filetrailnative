@@ -246,7 +246,7 @@ public enum PreferencesSanitizer {
         let searchWidths = searchColumnWidths(record["searchColumnWidths"], defaults.searchColumnWidths)
         return AppPreferences(
             theme: choice(record, "theme", defaults.theme),
-            accent: record["accent"]?.string.map { AppPreferenceLimits.normalizeAccentColor($0) ?? defaults.accent }
+            accent: record["accent"]?.string.map { AppPreferenceLimits.normalizeAccent($0) ?? defaults.accent }
                 ?? defaults.accent,
             viewMode: viewMode(record["viewMode"]),
             searchViewMode: viewMode(record["searchViewMode"], global.searchViewMode),

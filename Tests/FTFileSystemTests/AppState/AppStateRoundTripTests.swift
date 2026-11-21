@@ -127,6 +127,23 @@ struct AppStateRoundTripTests {
         }
     }
 
+    // System is written back as System, and a saved Blue as Blue: a color picked before System was the default is
+    // not taken for it.
+    @Test func theSystemAccentAndASavedBlueAreWrittenBackAsTheyWere() throws {
+        for (saved, expected) in [("system", "system"), ("#007AFF", "#007aff"), ("teal", "system")] {
+            try Kit.withFolder { folder in
+                let path = Kit.statePath(folder)
+                try #"{"preferences": {"accent": "\#(saved)"}}"#.write(toFile: path, atomically: true, encoding: .utf8)
+                let store = Kit.store(path)
+                #expect(store.preferences().accent == expected, "\(saved)")
+                store.update { $0.propertiesOpen = !$0.propertiesOpen }
+                store.flush()
+                #expect(Kit.readFile(path)["preferences"]?["accent"] == .string(expected), "\(saved)")
+                #expect(Kit.store(path).preferences().accent == expected, "\(saved)")
+            }
+        }
+    }
+
     // The keys come out in a fixed order.
     @Test func writesKeysInAFixedOrder() throws {
         let state = try AppStateReader.read(data: Data(Self.everyKey.utf8), defaults: .defaults(theme: .auto))

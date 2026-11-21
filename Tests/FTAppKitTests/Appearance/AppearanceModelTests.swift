@@ -11,6 +11,8 @@ import Testing
     final class System {
         var dark = false
         var native: [ThemePreference] = []
+        /// The accent of System Settings, as the lookup tells it.
+        var accent = "#007aff"
     }
 
     private func make(
@@ -18,7 +20,7 @@ import Testing
     ) -> (AppearanceModel, System) {
         _ = NSApplication.shared
         let model = AppearanceModel(
-            theme: theme, accent: accent, systemPrefersDark: { system.dark },
+            theme: theme, accent: accent, systemPrefersDark: { system.dark }, systemAccent: { system.accent },
             setNativeAppearance: { system.native.append($0) })
         return (model, system)
     }
@@ -82,7 +84,7 @@ import Testing
             AppPreferenceLimits.accentOptions.map(\.label) == [
                 "Blue", "Purple", "Pink", "Red", "Orange", "Yellow", "Green", "Graphite", "Copper",
             ])
-        #expect(AppPreferenceLimits.accentOptions.first?.value == AppPreferenceLimits.defaultAccent)
+        #expect(AppPreferenceLimits.accentOptions.first?.value == AppPreferenceLimits.blueAccent)
         for option in AppPreferenceLimits.accentOptions {
             #expect(Theme(appearance: .light, accentHex: option.value).accent.solid.hexString == option.value)
         }
@@ -97,9 +99,75 @@ import Testing
             model.apply(accent: rejected)
             #expect(model.accentHex == "#d84a4a", "\(rejected)")
         }
-        // A model started with a bad accent has the default one.
-        let (other, _) = make(accent: "nonsense")
-        #expect(other.accentHex == AppPreferenceLimits.defaultAccent)
+        // A model started with a bad accent has the default one, System.
+        let system = System()
+        system.accent = "#f7821b"
+        let (other, _) = make(accent: "nonsense", system)
+        #expect(other.accent == AppPreferenceLimits.defaultAccent)
+        #expect(other.accentHex == "#f7821b")
+    }
+
+    // System paints the accent of System Settings, follows it when it changes, and leaves a chosen color alone
+    @Test func paintsTheSystemAccentAndFollowsItsChanges() {
+        let system = System()
+        system.accent = "#a550a7"
+        let (model, _) = make(accent: " System ", system)
+        #expect(model.accent == "system")
+        #expect(model.accentHex == "#a550a7")
+        #expect(model.theme.accentHex == "#a550a7")
+        #expect(model.theme.accent == AccentPalette(hex: "#a550a7", appearance: .light))
+        var told: [Theme] = []
+        let observation = model.observe { told.append($0) }
+        system.accent = "#62ba46"
+        model.systemAccentChanged()
+        #expect(model.accentHex == "#62ba46")
+        #expect(told.map(\.accentHex) == ["#62ba46"])
+        // Nothing changed: no one is told.
+        model.systemAccentChanged()
+        #expect(told.count == 1)
+        // A chosen color stays as it is when System Settings changes; System shows what it would paint.
+        model.apply(accent: "#e0383e")
+        system.accent = "#ffc600"
+        model.systemAccentChanged()
+        #expect(model.accentHex == "#e0383e")
+        #expect(model.systemAccentHex == "#ffc600")
+        // Back to System, it is the accent System Settings has now.
+        model.apply(accent: "system")
+        #expect(model.accentHex == "#ffc600")
+        // A lookup that gives no color paints the app's blue.
+        system.accent = "nonsense"
+        model.systemAccentChanged()
+        #expect(model.accentHex == "#007aff")
+        observation.cancel()
+    }
+
+    // The system's accent is looked up only once the app asks for it, and then followed when macOS says its colors
+    // changed; until then System is the app's blue, so tests and scripted runs paint the same on every Mac
+    @Test func followsTheSystemAccentOnlyOnceAskedAndOnMacOSNotice() {
+        _ = NSApplication.shared
+        let unasked = AppearanceModel(
+            theme: .light, accent: "system", systemPrefersDark: { false }, setNativeAppearance: { _ in })
+        #expect(unasked.accentHex == "#007aff")
+        #expect(unasked.systemAccentHex == "#007aff")
+
+        let system = System()
+        system.accent = "#e0383e"
+        let center = NotificationCenter()
+        unasked.followSystemAccent({ system.accent }, center: center)
+        #expect(unasked.accentHex == "#e0383e")
+        system.accent = "#8c8c8c"
+        center.post(name: NSColor.systemColorsDidChangeNotification, object: nil)
+        #expect(unasked.accentHex == "#8c8c8c")
+    }
+
+    // The accent of System Settings is read as #rrggbb, whatever the app's theme
+    @Test func readsTheMacOSAccentAsAHexColor() {
+        _ = NSApplication.shared
+        let hex = AppearanceModel.macOSAccentHex()
+        #expect(AppPreferenceLimits.normalizeAccentColor(hex) == hex)
+        var dark = ""
+        NSAppearance(named: .darkAqua)?.performAsCurrentDrawingAppearance { dark = AppearanceModel.macOSAccentHex() }
+        #expect(dark == hex)
     }
 
     // The tokens derived from the accent: pill text in a deep shade 18% darker in the light theme, a 30% border,
@@ -137,12 +205,15 @@ import Testing
     }
 
     @Test func putsEveryAppearanceSettingBackAsANewInstallHasIt() {
-        let (model, _) = make(theme: .dark, accent: "#d84a4a")
+        let system = System()
+        system.accent = "#f74f9e"
+        let (model, _) = make(theme: .dark, accent: "#d84a4a", system)
         model.apply(.defaults())
         #expect(model.preference == AppPreferences.defaults().theme)
-        #expect(model.accentHex == AppPreferences.defaults().accent)
+        #expect(model.accent == AppPreferences.defaults().accent)
         #expect(model.preference == .auto)
-        #expect(model.accentHex == "#007aff")
+        #expect(model.accent == "system")
+        #expect(model.accentHex == "#f74f9e")
     }
 
     // The preference channel's change reaches the appearance only for the theme and the accent

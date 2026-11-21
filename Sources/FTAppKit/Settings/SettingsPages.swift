@@ -12,6 +12,8 @@ protocol SettingsPageHost: AnyObject {
     func pageLayoutChanged()
     /// The color picker for the custom accent.
     var openColorPicker: ColorPicker { get }
+    /// The accent of System Settings as `#rrggbb`, as the window's appearance has it.
+    var systemAccentHex: String { get }
 }
 
 /// One tab's page: its groups, top to bottom, each told when the preferences change.
@@ -125,7 +127,9 @@ final class SettingsPageView: NSView {
         let picker = AppearancePicker(theme: preferences.theme, appTheme: theme)
         picker.onChange = { [weak self] value in self?.update { $0.theme = value } }
         appearance.card.add(row("Theme", nil, picker))
-        let accent = AccentSelector(accent: preferences.accent, theme: theme)
+        let accent = AccentSelector(accent: preferences.accent, theme: theme) { [weak self] in
+            self?.host?.systemAccentHex ?? AppPreferenceLimits.blueAccent
+        }
         accent.onChange = { [weak self] value in self?.update { $0.accent = value } }
         accent.openColorPicker = { [weak self] start, picked in self?.host?.openColorPicker(start, picked) }
         appearance.card.add(row("Accent color", nil, accent))

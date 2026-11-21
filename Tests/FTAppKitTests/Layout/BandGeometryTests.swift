@@ -99,7 +99,7 @@ extension ExplorerWindowlessTests {
             let tab = try await harness.open()
             let window = try #require(tab.window)
             let appearance = AppearanceModel.shared
-            let before = appearance.accentHex
+            let before = appearance.accent
             // Synchronous on the main actor: no other suite draws while the accent is changed.
             let prefs: [String: Scenario.PrefValue] = ["accent": .string("#a550a7")]
             _ = AutomationPrefs.apply(prefs, context: .init(controller: tab, window: window, prefs: prefs))

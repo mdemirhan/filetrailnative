@@ -731,7 +731,14 @@ public enum AppPreferenceLimits {
         ("#007aff", "Blue"), ("#a550a7", "Purple"), ("#f74f9e", "Pink"), ("#e0383e", "Red"), ("#f7821b", "Orange"),
         ("#ffc600", "Yellow"), ("#62ba46", "Green"), ("#8c8c8c", "Graphite"), ("#d4845a", "Copper"),
     ]
-    public static let defaultAccent = "#007aff"
+    /// The accent that follows the one chosen in System Settings, whatever it is at the time.
+    public static let systemAccent = "system"
+    /// The app's blue: the first of the colors offered, and the color System gives while System Settings has
+    /// Multicolor.
+    public static let blueAccent = "#007aff"
+    /// A new install, and Restore Defaults, follow System Settings. A color saved before stays as it is: a saved Blue
+    /// can't be told from one picked.
+    public static let defaultAccent = systemAccent
 
     /// Auto, Light and Dark, in the order Settings shows them.
     public static let themeOptions: [(value: ThemePreference, label: String)] = [
@@ -789,6 +796,12 @@ public enum AppPreferenceLimits {
         case .dark: .dark
         case .auto: systemPrefersDark ? .dark : .light
         }
+    }
+
+    /// A saved accent: `system`, or a six-digit hex color in lower case; nil for anything else.
+    public static func normalizeAccent(_ value: String) -> String? {
+        if JSString.trimmed(value).lowercased() == systemAccent { return systemAccent }
+        return normalizeAccentColor(value)
     }
 
     /// `normalizeAccentColor`: a six-digit hex color in lower case, or nil.

@@ -4,6 +4,7 @@ import Foundation
 /// its default.
 public struct AppPreferences: Codable, Equatable, Sendable {
     public var theme: ThemePreference
+    /// `system` to follow the accent of System Settings, or a `#rrggbb` color.
     public var accent: String
     public var viewMode: ExplorerViewMode
     /// The view search results are shown in, for the tab on screen; List to begin with.

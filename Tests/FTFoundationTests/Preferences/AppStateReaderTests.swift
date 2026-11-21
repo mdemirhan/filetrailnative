@@ -146,7 +146,8 @@ struct AppStateReaderTests {
         let reloaded =
             (try? AppStateReader.read(data: JSONEncoder().encode(state), defaults: defaults))?.preferences ?? defaults
 
-        #expect(reloaded.accent == "#007aff")
+        // An accent that is not a color falls back to the default, System.
+        #expect(reloaded.accent == "system")
         #expect(reloaded.sortBy == .name)
         #expect(reloaded.sortDirection == .asc)
         #expect(reloaded.topToolbarItems == [.back, .search, .title])

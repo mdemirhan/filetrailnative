@@ -1,7 +1,7 @@
 import Foundation
 
-/// Every colour derived from the user's accent. The accent can be any hex colour, so nothing here uses
-/// `NSColor.controlAccentColor`.
+/// Every colour derived from the user's accent, from one hex colour: the one picked, or the one System Settings has
+/// when the accent follows it. Every shade here is made from that colour, not asked of the system.
 public struct AccentPalette: Equatable, Sendable {
     /// The default accent (Blue), used when a saved value is not a `#rrggbb` colour.
     public static let defaultHex = "#007aff"

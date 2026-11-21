@@ -71,6 +71,8 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
 
         startLogger(arguments)
         let preferences = store?.preferences() ?? AppPreferences.defaults(theme: .auto)
+        // A run driven by a script keeps the app's blue for System, so its pictures are the same on every Mac.
+        if !Self.isDrivenRun(arguments) { appearance.followSystemAccent() }
         appearance.apply(theme: preferences.theme, accent: preferences.accent)
         appearance.startFollowingSystem()
         startServices()

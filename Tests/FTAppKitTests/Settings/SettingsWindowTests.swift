@@ -210,15 +210,19 @@ import Testing
         let swatches = views("settings.accent", in: controller.settingsView).compactMap { $0 as? AccentSwatch }
         #expect(
             swatches.map { $0.accessibilityLabel() ?? "" } == [
-                "Accent color Blue", "Accent color Purple", "Accent color Pink", "Accent color Red",
-                "Accent color Orange", "Accent color Yellow", "Accent color Green", "Accent color Graphite",
-                "Accent color Copper", "Accent color Custom",
+                "Accent color System, follows System Settings", "Accent color Blue", "Accent color Purple",
+                "Accent color Pink", "Accent color Red", "Accent color Orange", "Accent color Yellow",
+                "Accent color Green", "Accent color Graphite", "Accent color Copper", "Accent color Custom",
             ])
         #expect(swatches.filter(\.isSelected).map(\.toolTip) == ["Purple"])
+        #expect(swatches.first?.toolTip == "System: follows System Settings")
         #expect(swatches.last?.toolTip == "Custom Color")
-        // 15 across, 7 apart.
+        // 15 across, 7 apart: eleven of them.
         #expect(swatches[1].frame.minX - swatches[0].frame.minX == 22)
-        Kit.click(swatches[6])
+        let selector = try #require(swatches.first?.superview as? AccentSelector)
+        #expect(selector.preferredSize == NSSize(width: 11 * 15 + 10 * 7, height: 15))
+        #expect(swatches.last?.frame.maxX == 235)
+        Kit.click(swatches[7])
         #expect(recorder.saved["accent"] == .string("#62ba46"))
 
         // A color that is no preset: the custom swatch is pressed and shows it.
@@ -231,6 +235,62 @@ import Testing
         recorder.pickedColor = "red"
         Kit.click(swatches.last)
         #expect(recorder.saved["accent"] == .string("#123abc"))
+        // The picker opened on the accent each time.
+        #expect(recorder.colorPickerStarts == ["#62ba46", "#123abc"])
+    }
+
+    // System comes first and is the accent of a new install: it shows the accent of System Settings with a mark of its
+    // own, and the custom color opens on that accent
+    @Test func offersTheSystemAccentFirstAndOpensTheCustomColorOnIt() throws {
+        let model = AppearanceModel(
+            theme: .light, accent: "system", systemPrefersDark: { false }, systemAccent: { "#f7821b" },
+            setNativeAppearance: { _ in })
+        let (controller, recorder) = Kit.make(model: model)
+        let swatches = views("settings.accent", in: controller.settingsView).compactMap { $0 as? AccentSwatch }
+        let system = try #require(swatches.first)
+        #expect(system.isSystem)
+        #expect(system.color == nil)
+        #expect(system.systemAccent() == "#f7821b")
+        #expect(swatches.filter(\.isSelected) == [system])
+        #expect(swatches.last?.customFill == nil)
+
+        // Drawn in the accent of System Settings, with a mark at its center in the color that reads on it.
+        func drawn(_ swatch: AccentSwatch) throws -> (CGFloat, CGFloat) -> RGBA? {
+            let image = try #require(swatch.bitmapImageRepForCachingDisplay(in: swatch.bounds))
+            swatch.cacheDisplay(in: swatch.bounds, to: image)
+            let scale = CGFloat(image.pixelsWide) / swatch.bounds.width
+            return { x, y in
+                image.colorAt(x: Int(x * scale), y: Int(y * scale))?.usingColorSpace(.sRGB).map {
+                    RGBA(red: Double($0.redComponent), green: Double($0.greenComponent), blue: Double($0.blueComponent))
+                }
+            }
+        }
+        // The cached bitmap goes through the screen's color profile: near, not exact.
+        func near(_ a: RGBA?, _ b: RGBA?) -> Bool {
+            guard let a, let b else { return false }
+            return abs(a.red - b.red) < 0.03 && abs(a.green - b.green) < 0.03 && abs(a.blue - b.blue) < 0.03
+        }
+        let pixel = try drawn(system)
+        // Off the mark it is the color the Orange swatch is drawn in.
+        let orange = try #require(swatches.first { $0.value == "#f7821b" })
+        let edge = pixel(7.5, 2.5)
+        let preset = try drawn(orange)(7.5, 2.5)
+        #expect(near(edge, preset), "\(edge?.hexString ?? "none") \(preset?.hexString ?? "none")")
+        let mark = AccentPalette(hex: "#f7821b", appearance: .light).onSolid
+        let inner = stride(from: 4.0, through: 11, by: 0.5).flatMap { x in
+            stride(from: 4.0, through: 11, by: 0.5).compactMap { y in pixel(x, y) }
+        }
+        #expect(inner.contains { near($0, mark) }, "\(Set(inner.map(\.hexString)).sorted())")
+
+        recorder.pickedColor = nil
+        Kit.click(swatches.last)
+        #expect(recorder.colorPickerStarts == ["#f7821b"])
+        Kit.click(swatches[1])
+        #expect(recorder.saved["accent"] == .string("#007aff"))
+        #expect(system.isSelected == false)
+        Kit.click(system)
+        #expect(recorder.saved["accent"] == .string("system"))
+        #expect(system.isSelected)
     }
 
     // Restore Defaults puts back the theme and the accent only
@@ -244,7 +304,7 @@ import Testing
             Kit.button("Restore the default appearance", in: controller.settingsView) as? SystemButton)
         #expect(restore.title == "Restore Defaults")
         Kit.click(restore)
-        #expect(recorder.patches == [["theme": .string("auto"), "accent": .string("#007aff")]])
+        #expect(recorder.patches == [["theme": .string("auto"), "accent": .string("system")]])
     }
 
     @Test func changesTheBehaviorWithOneSwitchEach() throws {

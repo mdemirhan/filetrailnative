@@ -154,8 +154,10 @@
                 }
             },
             .accent: { value, _ in
-                // Only the system accent color applies here.
-                value.string?.lowercased() == "#007aff" ? .applied : .unsupported("accent \(describe(value))")
+                // Only the app's blue applies here, which is also what System paints in a scripted run.
+                let painted = [AppPreferenceLimits.blueAccent, AppPreferenceLimits.systemAccent]
+                return value.string.map { painted.contains($0.lowercased()) } == true
+                    ? .applied : .unsupported("accent \(describe(value))")
             },
             .favoritesPlacement: { value, _ in
                 // Only the separate layout applies here: Favorites and Locations lists.

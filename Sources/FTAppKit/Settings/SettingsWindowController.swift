@@ -138,6 +138,8 @@ public final class SettingsWindowController: PageWindowController, SettingsPageH
         settingsView.needsLayout = true
     }
 
+    var systemAccentHex: String { model.systemAccentHex }
+
     // MARK: Pinned apps
 
     /// Pinned apps that aren't where they were are flagged; checked when the list changes and when the window comes
@@ -200,4 +202,5 @@ private final class EmptyPageHost: SettingsPageHost {
     func showNotice(_ text: String) {}
     func pageLayoutChanged() {}
     var openColorPicker: ColorPicker { { _, _ in } }
+    var systemAccentHex: String { AppPreferenceLimits.blueAccent }
 }

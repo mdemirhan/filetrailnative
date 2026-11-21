@@ -145,6 +145,9 @@ enum SettingsMetrics {
     ]
     static let customSwatchStartDegrees: CGFloat = 210
     static let customFillInset: CGFloat = 3.5
+    /// The System swatch's mark: System Settings' gear, 3 in from the swatch's edge.
+    static let systemSwatchSymbol = "gearshape.fill"
+    static let systemSwatchMarkInset: CGFloat = 3
 
     // MARK: Lists
 

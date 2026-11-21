@@ -162,10 +162,12 @@ final class AppearancePicker: NSView, SettingsSized {
     }
 }
 
-/// A swatch of an accent: a 15 pt circle, ringed when it is the accent.
+/// A swatch of an accent: a 15 pt circle, ringed when it is the accent. The System swatch is filled with the accent
+/// of System Settings and carries a small gear; the custom one is a wheel of colors.
 final class AccentSwatch: SettingsControlView {
-    /// The preset's color, or nil for the custom swatch.
+    /// The preset's color, or nil for the System and custom swatches.
     let color: RGBA?
+    /// The accent it sets: `system`, a preset's color, or nil for the custom swatch.
     let value: String?
     var isSelected = false {
         didSet {
@@ -175,19 +177,39 @@ final class AccentSwatch: SettingsControlView {
     }
     /// The custom color shown inside the custom swatch while the accent is one.
     var customFill: RGBA? { didSet { needsDisplay = true } }
+    /// The accent of System Settings as `#rrggbb`, asked each time the System swatch is drawn.
+    var systemAccent: () -> String = { AppPreferenceLimits.blueAccent } { didSet { needsDisplay = true } }
+    private var systemColorsObserver: (any NSObjectProtocol)?
+
+    var isSystem: Bool { value == AppPreferenceLimits.systemAccent }
 
     init(value: String?, label: String, theme: Theme) {
         self.value = value
         color = value.flatMap(RGBA.init(hex:))
         super.init(theme: theme)
-        toolTip = value == nil ? "Custom Color" : label
         setAccessibilityElement(true)
         setAccessibilityRole(.radioButton)
-        setAccessibilityLabel("Accent color \(label)")
         setAccessibilityIdentifier("settings.accent")
+        if isSystem {
+            toolTip = "System: follows System Settings"
+            setAccessibilityLabel("Accent color \(label), follows System Settings")
+            // The swatch shows the accent System Settings has now.
+            systemColorsObserver = NotificationCenter.default.addObserver(
+                forName: NSColor.systemColorsDidChangeNotification, object: nil, queue: .main
+            ) { [weak self] _ in
+                MainActor.assumeIsolated { self?.needsDisplay = true }
+            }
+        } else {
+            toolTip = value == nil ? "Custom Color" : label
+            setAccessibilityLabel("Accent color \(label)")
+        }
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    isolated deinit {
+        if let systemColorsObserver { NotificationCenter.default.removeObserver(systemColorsObserver) }
+    }
 
     override func draw(_ dirtyRect: NSRect) {
         let circle = NSRect(
@@ -207,6 +229,16 @@ final class AccentSwatch: SettingsControlView {
         if let color {
             NSColor(color).setFill()
             shape.fill()
+        } else if isSystem {
+            let hex = AppPreferenceLimits.normalizeAccentColor(systemAccent()) ?? AppPreferenceLimits.blueAccent
+            let accent = AccentPalette(hex: hex, appearance: theme.appearance)
+            NSColor(accent.solid).setFill()
+            shape.fill()
+            // The gear of System Settings, in white or black, whichever reads on the color.
+            let inset = SettingsMetrics.systemSwatchMarkInset
+            SymbolGlyph.draw(
+                SettingsMetrics.systemSwatchSymbol, in: circle.insetBy(dx: inset, dy: inset),
+                color: NSColor(accent.onSolid), weight: .semibold)
         } else {
             drawConic(in: circle)
             if let customFill {
@@ -258,18 +290,27 @@ final class AccentSwatch: SettingsControlView {
 /// Opens the system's color picker on a color, and tells each color picked.
 typealias ColorPicker = @MainActor (String, @escaping @MainActor (String) -> Void) -> Void
 
-/// `AccentSelector`: the accent colors as a row of swatches, with a custom color at the end that opens the system's
-/// color picker.
+/// `AccentSelector`: the accent colors as a row of swatches: System first, which follows System Settings, then the
+/// colors, then a custom color at the end that opens the system's color picker.
 final class AccentSelector: NSView, SettingsSized {
     private(set) var swatches: [AccentSwatch] = []
     var onChange: (String) -> Void = { _ in }
     private(set) var accent: String
     /// Opens the color picker on a color: NSColorPanel, which tests replace.
     var openColorPicker: ColorPicker = AccentSelector.openColorPanel
+    /// The accent of System Settings as `#rrggbb`: what the System swatch shows, and where the picker opens while
+    /// the accent is System.
+    private let systemAccent: () -> String
 
-    init(accent: String, theme: Theme) {
+    init(accent: String, theme: Theme, systemAccent: @escaping () -> String) {
         self.accent = accent
+        self.systemAccent = systemAccent
         super.init(frame: .zero)
+        let system = AccentSwatch(value: AppPreferenceLimits.systemAccent, label: "System", theme: theme)
+        system.systemAccent = systemAccent
+        system.onPress = { [weak self] in self?.onChange(AppPreferenceLimits.systemAccent) }
+        swatches.append(system)
+        addSubview(system)
         for option in AppPreferenceLimits.accentOptions {
             let swatch = AccentSwatch(value: option.value, label: option.label, theme: theme)
             swatch.onPress = { [weak self] in self?.onChange(option.value) }
@@ -294,17 +335,20 @@ final class AccentSelector: NSView, SettingsSized {
 
     func update(_ accent: String) {
         self.accent = accent
-        let isPreset = AppPreferenceLimits.accentOptions.contains { $0.value == accent }
+        let isPreset =
+            accent == AppPreferenceLimits.systemAccent
+            || AppPreferenceLimits.accentOptions.contains { $0.value == accent }
         for swatch in swatches {
             swatch.isSelected = swatch.value == nil ? !isPreset : swatch.value == accent
         }
         customSwatch?.customFill = isPreset ? nil : RGBA(hex: accent)
     }
 
-    /// The custom swatch: the picker opens on the accent if it is a color, else on the default; a picked value is
-    /// taken only as `#rrggbb`.
+    /// The custom swatch: the picker opens on the color painted (for System, the one System Settings has; for a value
+    /// that is no color, the app's blue); a picked value is taken only as `#rrggbb`.
     func openCustom() {
-        let start = AppPreferenceLimits.normalizeAccentColor(accent) ?? AppPreferenceLimits.defaultAccent
+        let painted = accent == AppPreferenceLimits.systemAccent ? systemAccent() : accent
+        let start = AppPreferenceLimits.normalizeAccentColor(painted) ?? AppPreferenceLimits.blueAccent
         openColorPicker(start) { [weak self] picked in
             if let next = AppPreferenceLimits.normalizeAccentColor(picked) { self?.onChange(next) }
         }

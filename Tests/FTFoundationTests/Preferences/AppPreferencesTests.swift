@@ -21,12 +21,15 @@ struct AppPreferencesTests {
         #expect(AppPreferenceLimits.clampSearchColumnWidth(.folder, 4000) == 1000)
     }
 
-    @Test func defaultsToBlueTheFirstAccentOffered() {
+    // A new install follows the accent of System Settings; Blue, the app's own, is the first color offered
+    @Test func defaultsToTheSystemAccentAndOffersBlueFirst() {
         let options = AppPreferenceLimits.accentOptions
         #expect(options[0].value == "#007aff")
         #expect(options[0].label == "Blue")
-        #expect(AppPreferenceLimits.defaultAccent == "#007aff")
+        #expect(AppPreferenceLimits.blueAccent == "#007aff")
+        #expect(AppPreferenceLimits.defaultAccent == "system")
         #expect(AppPreferences.defaults().accent == AppPreferenceLimits.defaultAccent)
+        #expect(!options.map(\.value).contains(AppPreferenceLimits.systemAccent))
         #expect(Set(options.map(\.value)).count == options.count)
         #expect(options.count == 9)
     }
@@ -34,7 +37,7 @@ struct AppPreferencesTests {
     @Test func shipsExpectedDefaultsForThePersistedPreferenceShape() {
         let defaults = AppPreferences.defaults()
         #expect(defaults.theme == .auto)
-        #expect(defaults.accent == "#007aff")
+        #expect(defaults.accent == "system")
         #expect(defaults.viewMode == .icons)
         #expect(defaults.searchViewMode == .details)
         #expect(defaults.sortBy == .name)
@@ -127,6 +130,18 @@ struct AppPreferencesTests {
         #expect(AppPreferenceLimits.normalizeAccentColor("#1234567") == nil)
         #expect(AppPreferenceLimits.normalizeAccentColor("123456") == nil)
         #expect(AppPreferenceLimits.normalizeAccentColor("#12345g") == nil)
+        #expect(AppPreferenceLimits.normalizeAccentColor("system") == nil)
+    }
+
+    // A saved accent is System or a color; a saved color is kept as it is, Blue included
+    @Test func acceptsTheSystemAccentOrAColor() {
+        #expect(AppPreferenceLimits.normalizeAccent("system") == "system")
+        #expect(AppPreferenceLimits.normalizeAccent(" System ") == "system")
+        #expect(AppPreferenceLimits.normalizeAccent("#007AFF") == "#007aff")
+        #expect(AppPreferenceLimits.normalizeAccent(" #ABCDEF ") == "#abcdef")
+        for rejected in ["", "systemblue", "sys tem", "auto", "#12345", "blue"] {
+            #expect(AppPreferenceLimits.normalizeAccent(rejected) == nil, "\(rejected)")
+        }
     }
 
     @Test func aWindowKeepsTwentySessionKeysOfItsOwn() {
