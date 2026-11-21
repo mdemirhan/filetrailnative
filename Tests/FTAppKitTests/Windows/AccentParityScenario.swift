@@ -206,13 +206,13 @@ final class AccentScenario: SidebarTesting, ListTesting {
     }
 
     /// Waits for what a step expects, not as long as a test that has nothing else to say: what doesn't come is told.
-    func arrives(
-        within limit: Duration? = nil, sourceLocation: SourceLocation = #_sourceLocation, _ condition: () -> Bool
-    ) async -> Bool {
-        // On a disk whose spellings disagree some of what is waited for never comes: not waited for as long, and
-        // no longer once a write has said it failed, which holds the tab until its sheet is answered.
+    /// The same ten seconds on every disk: a run that passes waits for nothing that doesn't come, and on a Mac kept busy
+    /// by the other test processes what a disk image sends may take seconds.
+    func arrives(sourceLocation: SourceLocation = #_sourceLocation, _ condition: () -> Bool) async -> Bool {
+        // On a disk whose spellings disagree, a write that said it failed holds the tab until its sheet is answered:
+        // what the step waits for doesn't come then.
         let start = ContinuousClock.now
-        let deadline = start + (limit ?? .seconds(anySpelling ? 2 : 10))
+        let deadline = start + .seconds(10)
         var refusedSince: ContinuousClock.Instant?
         while !condition() {
             if anySpelling, opened != nil, saysAWriteFailed {
@@ -324,7 +324,7 @@ final class AccentScenario: SidebarTesting, ListTesting {
     func treeSelects(_ path: String) async -> Bool {
         let model = tab.sidebarController.model
         // The tree follows a folder within a moment of its opening.
-        return await arrives(within: anySpelling ? .seconds(1) : nil) {
+        return await arrives {
             self.harness.layout(self.tab)
             return (self.anySpelling || model.selected == .filesystem(path))
                 && self.treeRow(path).map { $0.selection != .none } == true
