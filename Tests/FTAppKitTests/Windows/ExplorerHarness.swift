@@ -31,18 +31,21 @@ final class ExplorerHarness {
     let quit = QuitCoordinator()
     let windows: ExplorerWindows
     let channel: WindowPreferenceChannel
-    let services: ExplorerServices
+    /// What its windows work with; a test that wants another service in them changes it before it opens one.
+    var services: ExplorerServices
     /// Whether its windows go on screen. Off, the tab groups are never shown: no window is ordered front and the app
     /// isn't activated, while the tabs keep their windows, read their folders and lay out.
     let onScreen: Bool
     /// Stands in for the clipboard, which stays the user's.
     let pasteboard = NSPasteboard.withUniqueName()
 
-    init(onScreen: Bool = true) throws {
+    /// `kept` is the folder of a harness before this one: the app started again on what that one saved there, its
+    /// state file included.
+    init(onScreen: Bool = true, startingAgainOn kept: TemporaryDirectory? = nil) throws {
         _ = NSApplication.shared
         TestServices.install()
         self.onScreen = onScreen
-        folder = try TemporaryDirectory.shallow(prefix: onScreen ? "filetrail-gui" : "filetrail-windowless")
+        folder = try kept ?? TemporaryDirectory.shallow(prefix: onScreen ? "filetrail-gui" : "filetrail-windowless")
         for name in ["Alpha", "Beta", "Gamma"] {
             try FileManager.default.createDirectory(
                 at: folder.appending("\(name)/Inner"), withIntermediateDirectories: true)
@@ -80,6 +83,17 @@ final class ExplorerHarness {
 
     func open(_ path: String? = nil) async throws -> MainWindowController {
         windows.openStartupWindows(folder: path ?? folder.path)
+        return try await ready()
+    }
+
+    /// The windows the state file kept, opened as a launch with no folder to open brings them back; the tab in front.
+    func openWhatWasKept() async throws -> MainWindowController {
+        windows.openStartupWindows(folder: nil)
+        return try await ready()
+    }
+
+    /// The tab in front once its first folder is read, with this harness's services.
+    private func ready() async throws -> MainWindowController {
         let tab = try #require(windows.front as? MainWindowController)
         // The window's services are this harness's: other suites' windows keep the app's.
         tab.servicesOverride = services
