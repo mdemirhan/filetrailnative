@@ -85,7 +85,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
     }
 
     static func commandEntry(_ entry: DirectoryEntry) -> CommandEntry {
-        CommandEntry(path: entry.path, kind: FTFoundation.EntryKind(rawValue: entry.kind.rawValue) ?? .other)
+        CommandEntry(path: entry.path, kind: AliasOriginals.shared.commandKind(entry))
     }
 
     func menu(for subject: ContextMenuSubject) -> NSMenu? {
@@ -314,6 +314,8 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         switch action {
         case .revealInFolder:
             if let first = subject.paths.first { revealSearchResult(first) }
+        case .showOriginal:
+            if let first = subject.paths.first { tab.showOriginal(of: first) }
         case .copyPath:
             copyPath(subject.paths)
         case .copyContents:
@@ -354,8 +356,9 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             if !subject.paths.isEmpty { holdingTheTab { [self] in await showInFinder(subject.paths) } }
         case .eject:
             if let target = subject.targetPath ?? subject.paths.first { tab.sidebarController.eject(target) }
-        case .cut, .copy, .paste, .pasteAsFile, .move, .rename, .duplicate, .newFolder, .newFolderWithSelection, .trash,
-            .deleteImmediately, .emptyTrash, .compress, .extract, .extractTo, .saveAsTemplate:
+        case .cut, .copy, .paste, .pasteAsFile, .move, .rename, .duplicate, .makeAlias, .newFolder,
+            .newFolderWithSelection, .trash, .deleteImmediately, .emptyTrash, .compress, .extract, .extractTo,
+            .saveAsTemplate:
             fileOperation(action, subject)
         case .addToCopied, .addToCut, .switchClipboardMode, .removeFromClipboard:
             tab.contextMenuClipboardAction(action, subject)
@@ -373,6 +376,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         case .move: return .operation(.moveTo)
         case .rename: return .operation(.rename)
         case .duplicate: return .operation(.duplicate)
+        case .makeAlias: return .operation(.makeAlias)
         case .convertImages: return .operation(.convertImages)
         case .newFolder: return .operation(.newFolder)
         case .newFolderWithSelection: return .operation(.newFolderWithSelection)
@@ -453,18 +457,23 @@ final class ContextMenuCoordinator: ContextMenuResponder {
     }
 
     private func openFolder(_ path: String, subject: ContextMenuSubject, inWindow: Bool) {
-        // An alias of a folder opens the folder it points to, as it does when it is opened in place.
-        let isAlias = subject.entries.first { $0.path == path }?.kind == .symlinkDirectory
-        let open = { [tab] (folder: String) -> Void in
+        // A symbolic link or an alias of a folder opens the folder it leads to, as it does when it is opened in place.
+        let kind = subject.entries.first { DiskPath($0.path) == DiskPath(path) }?.kind
+        let open: (String) -> Void = { [tab] folder in
             if inWindow {
                 tab.group?.openNewWindow(from: tab, path: folder)
             } else {
                 tab.group?.openTab(path: folder, from: tab)
             }
         }
-        guard isAlias else { return open(path) }
-        // Where the alias leads, as the disk spells it, asked off the main thread: it may lead into a slow disk.
-        holdingTheTab { open(await BlockingWork.run { DiskPath(path).asOnDisk().string }) }
+        guard kind?.isLink == true else { return open(path) }
+        // Where it leads, as the disk spells it, asked off the main thread: it may lead into a slow disk.
+        holdingTheTab { [tab] in
+            guard let original = await MainWindowController.original(of: path) else {
+                return tab.showOriginalMissing(path)
+            }
+            if original.isFolder { open(original.path) }
+        }
     }
 
     // MARK: Open, Edit, Open With
@@ -496,16 +505,18 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         tab.extractToOpen(archives)
     }
 
-    /// Opens one item: a folder, or a symbolic link to one, opens in the tab; anything else is handed to the system, a
-    /// link as the item it points to.
+    /// Opens one item: a folder, or a symbolic link or an alias of one, opens in the tab; anything else is handed to
+    /// the system, a link or an alias as the item it leads to.
     private func openEntry(_ entry: DirectoryEntry) async {
         switch OpenItems.step(for: Self.commandEntry(entry)) {
-        case .navigate, .resolveThenNavigate:
+        case .navigate, .resolveThenNavigate, .resolveThenFollow:
             // A folder is never edited, so the tab's own opening goes where this one does.
             tab.open([entry])
         case .resolveThenOpen(let path):
-            let target = await BlockingWork.run { try? NativeFileSystem().realpath(path) }
-            if let target { await openExternally(target) }
+            guard let original = await MainWindowController.original(of: path) else {
+                return tab.showOriginalMissing(path)
+            }
+            await openExternally(original.path)
         case .openExternally(let path):
             await openExternally(path)
         case .handToSystem(let path):

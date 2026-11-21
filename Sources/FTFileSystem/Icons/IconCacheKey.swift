@@ -3,7 +3,7 @@ import Foundation
 
 /// The kinds of listing entry an icon is asked for.
 public enum IconEntryKind: Sendable, Equatable {
-    case file, directory, symlinkFile, symlinkDirectory, bundle, other
+    case file, directory, symlinkFile, symlinkDirectory, alias, bundle, other
 }
 
 /// What the icon cache key depends on in a listing entry.
@@ -63,11 +63,14 @@ public struct IconRequest: Sendable, Equatable {
     public var isEmptyFolder: Bool
     /// A folder asked for by its path, with the picture of its own that Finder draws.
     public var isFolder: Bool
+    /// A Finder alias: drawn as its original is, with the arrow on it, as Finder draws one.
+    public var isAlias: Bool
 
     public init(
         cacheKey: String, path: String, generic: GenericIconKind? = nil, tint: FinderTagColor? = nil,
-        isEmptyFolder: Bool = false, isFolder: Bool = false
+        isEmptyFolder: Bool = false, isFolder: Bool = false, isAlias: Bool = false
     ) {
+        self.isAlias = isAlias
         self.cacheKey = cacheKey
         self.path = path
         self.generic = generic
@@ -93,7 +96,8 @@ public struct IconRequest: Sendable, Equatable {
             cacheKey: key, path: entry.path, generic: generic, tint: tint,
             isEmptyFolder: tint != nil && entry.isEmptyFolder,
             isFolder: entry.kind == .directory && generic == nil && tint == nil
-                && !IconCacheKey.isDrawnBySystem(entry))
+                && !IconCacheKey.isDrawnBySystem(entry),
+            isAlias: entry.kind == .alias)
     }
 
     /// An application's own icon, for the app pop-ups and lists in Settings.
@@ -136,7 +140,8 @@ public enum IconCacheKey {
 
     public static func key(for entry: IconEntry) -> String {
         switch entry.kind {
-        case .bundle, .other, .symlinkFile, .symlinkDirectory:
+        // An alias is drawn as its original is, with the system's arrow.
+        case .bundle, .other, .symlinkFile, .symlinkDirectory, .alias:
             return "path:\(entry.path)"
         case .directory:
             let isEmpty = entry.isEmptyFolder

@@ -21,6 +21,8 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case extractSelectionTo
     case renameSelection
     case duplicateSelection
+    case makeAlias
+    case showOriginal
     case convertImages
     case newFolder
     case newFolderWithSelection

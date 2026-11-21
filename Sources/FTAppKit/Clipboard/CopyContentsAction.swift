@@ -23,6 +23,10 @@ final class CopyContentsAction {
     var resolve: (_ path: String) async -> String = { path in
         await BlockingWork.run { DiskPath(path).asOnDisk().string }
     }
+    /// An alias's original, or the path itself when it isn't an alias; nil for an alias whose original can't be found.
+    var aliasOriginal: (_ path: String) async -> String? = { path in
+        await Links.originalsOfAliases([path]).first ?? path
+    }
     /// How long a read runs before "Copying…" is shown.
     var slowDelay: Duration = .milliseconds(500)
 
@@ -48,11 +52,20 @@ final class CopyContentsAction {
     /// Copies the file at `path`; true once it is on the clipboard. `announce` off leaves out the toast that says so,
     /// for the Info panel, whose button says "Copied" instead.
     @discardableResult
-    func copy(_ path: String, announce: Bool = true) async -> Bool {
+    func copy(_ shownPath: String, announce: Bool = true) async -> Bool {
         generation += 1
         let mine = generation
-        let name = NodePath.basename(path)
-        let guess = CopyContents.guess(forName: name)
+        let name = NodePath.basename(shownPath)
+        // An alias copies what its original holds, as a symbolic link does.
+        guard let path = await aliasOriginal(shownPath) else {
+            guard mine == generation else { return false }
+            notices.show(
+                title: "The Original Can\u{2019}t Be Found",
+                message: MainWindowController.originalMissingMessage(shownPath), in: window())
+            return false
+        }
+        guard mine == generation else { return false }
+        let guess = CopyContents.guess(forName: NodePath.basename(path))
         // A link copies what it points to, so it is asked about for its own name or for that file's.
         var concealed = CopyContents.looksSecret(path: path)
         if !concealed, guess != .image {

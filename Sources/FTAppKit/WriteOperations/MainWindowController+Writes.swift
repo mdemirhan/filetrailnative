@@ -7,7 +7,8 @@ import FTOperations
 extension MainWindowController {
     /// The commands that write, the clipboard's among them: each goes to the file operations.
     static let writeCommands: Set<AppCommand> = [
-        .undo, .redo, .renameSelection, .duplicateSelection, .newFolder, .newFolderWithSelection, .newTextFile,
+        .undo, .redo, .renameSelection, .duplicateSelection, .makeAlias, .newFolder, .newFolderWithSelection,
+        .newTextFile,
         .saveAsTemplate, .pasteAsFile,
         .trashSelection, .deleteImmediately, .emptyTrash, .cutSelection, .copySelection, .pasteSelection,
         .moveSelection, .editCut,
@@ -89,6 +90,12 @@ extension MainWindowController {
             else { return true }
             actions.session.pendingTreeSelectionPath = nil
             Task { actions.reviewIfAsked(await actions.duplicate(paths, in: destination), action: .duplicate) }
+        case .makeAlias:
+            // Beside each item, as Duplicate puts its copies; its item is dimmed in the Trash and for results from
+            // several folders, and a dimmed item's key still comes here.
+            let paths = selectedPaths
+            guard !paths.isEmpty, canPerform(.makeAlias) else { return true }
+            Task { _ = await actions.makeAliases(paths) }
         case .moveSelection:
             // Move To says so as soon as pressed, not after a folder was chosen.
             let paths = selectedPaths
@@ -302,6 +309,10 @@ extension MainWindowController {
             openMoveDialog(paths, actions)
         case .duplicate:
             duplicateFromMenu(subject, actions)
+        case .makeAlias:
+            // Beside each item, as Duplicate's copies; the menu offers it where Duplicate is offered.
+            guard !paths.isEmpty else { return }
+            Task { _ = await actions.makeAliases(paths) }
         case .compress:
             guard !paths.isEmpty else { return }
             Task { _ = await actions.compress(paths) }

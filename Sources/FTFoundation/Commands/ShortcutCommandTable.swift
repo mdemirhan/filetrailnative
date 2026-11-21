@@ -89,6 +89,8 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case calculateSize
     case renameSelection
     case duplicateSelection
+    case makeAlias
+    case showOriginal
     case convertImages
     case moveSelection
     case compressSelection
@@ -358,6 +360,11 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .duplicateSelection, label: "Duplicate", group: .files, defaults: ["Cmd+D"],
             menuPath: "File > Duplicate"),
+        // No keys of their own: Finder's ⌃⌘A is free, and its ⌘R is Refresh here. One can be given in Settings.
+        ShortcutCommandDefinition(
+            id: .makeAlias, label: "Make Alias", group: .files, defaults: [], menuPath: "File > Make Alias"),
+        ShortcutCommandDefinition(
+            id: .showOriginal, label: "Show Original", group: .files, defaults: [], menuPath: "File > Show Original"),
         ShortcutCommandDefinition(
             id: .convertImages, label: "Convert Images\u{2026}", group: .files, defaults: [],
             menuPath: "File > Convert Images\u{2026}"),

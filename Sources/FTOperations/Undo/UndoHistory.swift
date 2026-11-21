@@ -295,6 +295,9 @@ public final class UndoHistory {
         case .convertImages:
             let count = itemStepCount(units)
             return count == 1 ? "Convert Image" : "Convert \(count) Images"
+        case .makeAlias:
+            let count = itemStepCount(units)
+            return count == 1 ? "Make Alias" : "Make \(count) Aliases"
         case .trash:
             return "Move to Trash of \(itemsName(units, inMenu: inMenu))"
         case .duplicate:

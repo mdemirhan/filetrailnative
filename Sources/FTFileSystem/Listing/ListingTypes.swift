@@ -6,6 +6,9 @@ public enum EntryKind: String, Sendable, Hashable, Codable, CaseIterable {
     case file
     case symlinkDirectory = "symlink_directory"
     case symlinkFile = "symlink_file"
+    /// A Finder alias: a file holding where its original is. Whether that is a folder isn't known until it is looked
+    /// up, so it is listed as a file.
+    case alias
     case bundle
     case other
 
@@ -152,6 +155,12 @@ public struct ItemProperties: Sendable, Hashable, Codable {
     public var addedAt: Date? = nil
     /// When the item was last opened; nil for one never opened.
     public var lastOpenedAt: Date? = nil
+    /// For a symbolic link or an alias, where it leads (`Links.original`); nil when its original can't be found, and
+    /// for anything else.
+    public var originalPath: String? = nil
+
+    /// A symbolic link or an alias: what Show Info says the original of.
+    public var isLink: Bool { isSymlink || kind == .alias }
 }
 
 public struct PathSuggestion: Sendable, Hashable, Codable {

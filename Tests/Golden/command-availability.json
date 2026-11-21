@@ -53,6 +53,7 @@
           "goTrash",
           "groupByFolder",
           "invertSelection",
+          "makeAlias",
           "moveItemsHere",
           "moveSelection",
           "moveToOtherPane",
@@ -70,6 +71,7 @@
           "saveAsTemplate",
           "shareSelection",
           "showClipboard",
+          "showOriginal",
           "trashSelection",
           "viewFile"
         ],
@@ -211,6 +213,7 @@
           "groupBySize",
           "groupByTags",
           "invertSelection",
+          "makeAlias",
           "manageFolderViews",
           "mergeAllWindows",
           "moveItemsHere",
@@ -257,6 +260,7 @@
           "showLastOpenedColumn",
           "showLastSearchResults",
           "showModifiedColumn",
+          "showOriginal",
           "showPermissionsColumn",
           "showPreviews1",
           "showPreviews2",
@@ -370,6 +374,7 @@
           "goLibrary",
           "goTrash",
           "invertSelection",
+          "makeAlias",
           "moveItemsHere",
           "moveSelection",
           "moveToOtherPane",
@@ -401,6 +406,7 @@
           "showLastOpenedColumn",
           "showLastSearchResults",
           "showModifiedColumn",
+          "showOriginal",
           "showPermissionsColumn",
           "showSizeColumn",
           "sortByAdded",
@@ -526,6 +532,7 @@
           "groupBySize",
           "groupByTags",
           "invertSelection",
+          "makeAlias",
           "manageFolderViews",
           "mergeAllWindows",
           "moveItemsHere",
@@ -575,6 +582,7 @@
           "showLastOpenedColumn",
           "showLastSearchResults",
           "showModifiedColumn",
+          "showOriginal",
           "showPermissionsColumn",
           "showPreviews1",
           "showPreviews2",
@@ -681,6 +689,7 @@
           "extractSelectionTo",
           "groupByFolder",
           "invertSelection",
+          "makeAlias",
           "moveItemsHere",
           "moveSelection",
           "moveTabToNewWindow",
@@ -702,6 +711,7 @@
           "selectNextTab",
           "selectPreviousTab",
           "shareSelection",
+          "showOriginal",
           "toggleFavorite",
           "trashSelection",
           "viewFile"
@@ -792,6 +802,7 @@
           "selectPreviousTab",
           "showClipboard",
           "showLastSearchResults",
+          "showOriginal",
           "toggleFavorite",
           "viewFile"
         ],
@@ -866,6 +877,7 @@
           "removeFromClipboard",
           "revealInFolder",
           "showClipboard",
+          "showOriginal",
           "toggleFavorite"
         ],
         "showInFinder": [
@@ -985,6 +997,7 @@
           "extractSelection",
           "extractSelectionTo",
           "groupByFolder",
+          "makeAlias",
           "moveItemsHere",
           "newFolder",
           "newFolderWithSelection",
@@ -997,6 +1010,7 @@
           "saveAsTemplate",
           "shareSelection",
           "showClipboard",
+          "showOriginal",
           "trashSelection",
           "viewFile"
         ],
@@ -3223,7 +3237,7 @@
               "openInTerminal"
             ],
             [
-              "shareSelection",
+              "showOriginal",
               "toggleFavorite"
             ]
           ]
@@ -4118,7 +4132,7 @@
               "openInTerminal"
             ],
             [
-              "showClipboard",
+              "showOriginal",
               "toggleFavorite"
             ]
           ]
@@ -4199,6 +4213,7 @@
           "revealInFolder",
           "saveAsTemplate",
           "showLastSearchResults",
+          "showOriginal",
           "toggleFavorite",
           "viewFile"
         ],
@@ -6989,7 +7004,7 @@
               "redo"
             ],
             [
-              "showClipboard",
+              "showOriginal",
               "toggleFavorite"
             ],
             [
@@ -7670,7 +7685,7 @@
               "redo"
             ],
             [
-              "showClipboard",
+              "showOriginal",
               "toggleFavorite"
             ],
             [
@@ -8436,7 +8451,7 @@
               "calculateSize"
             ],
             [
-              "showClipboard",
+              "showOriginal",
               "toggleFavorite"
             ]
           ]
@@ -10231,7 +10246,8 @@
             "revealInFolder",
             "shareSelection",
             "trashSelection",
-            "undo"
+            "undo",
+            "makeAlias"
           ]
         },
         "showInFinder": [
@@ -11597,7 +11613,7 @@
               "redo"
             ],
             [
-              "saveAsTemplate",
+              "showOriginal",
               "toggleFavorite"
             ],
             [
@@ -12011,7 +12027,7 @@
               "openInTerminal"
             ],
             [
-              "showClipboard",
+              "showOriginal",
               "toggleFavorite"
             ]
           ]
@@ -12271,7 +12287,7 @@
               "openInTerminal"
             ],
             [
-              "showClipboard",
+              "showOriginal",
               "toggleFavorite"
             ]
           ]
@@ -13073,7 +13089,8 @@
             "revealInFolder",
             "shareSelection",
             "trashSelection",
-            "undo"
+            "undo",
+            "makeAlias"
           ]
         },
         "showInFinder": [
@@ -14081,6 +14098,10 @@
               "duplicateSelection"
             ],
             [
+              "groupByFolder",
+              "makeAlias"
+            ],
+            [
               "moveItemsHere",
               "newFolder"
             ],
@@ -14360,6 +14381,7 @@
           "selectNextTab",
           "selectPreviousTab",
           "showClipboard",
+          "showOriginal",
           "viewFile"
         ],
         "newTab": "relative/Folder2",
@@ -17198,7 +17220,7 @@
               "showLastSearchResults"
             ],
             [
-              "showLastSearchResults",
+              "showOriginal",
               "toggleFavorite"
             ]
           ]
@@ -17796,6 +17818,10 @@
               "emptyTrash"
             ],
             [
+              "invertSelection",
+              "makeAlias"
+            ],
+            [
               "selectPreviousTab",
               "shareSelection"
             ],
@@ -18310,6 +18336,7 @@
           "saveAsTemplate",
           "selectNextTab",
           "selectPreviousTab",
+          "showOriginal",
           "viewFile"
         ],
         "newTab": "/Users/me",
@@ -18614,7 +18641,7 @@
               "showLastSearchResults"
             ],
             [
-              "showLastSearchResults",
+              "showOriginal",
               "toggleFavorite"
             ]
           ]
@@ -19508,7 +19535,7 @@
               "openInTerminal"
             ],
             [
-              "showClipboard",
+              "showOriginal",
               "toggleFavorite"
             ]
           ]
@@ -20236,7 +20263,7 @@
               "redo"
             ],
             [
-              "showClipboard",
+              "showOriginal",
               "toggleFavorite"
             ],
             [
@@ -21392,6 +21419,10 @@
               "duplicateSelection"
             ],
             [
+              "groupByFolder",
+              "makeAlias"
+            ],
+            [
               "newFolderWithSelection",
               "openSelection"
             ],
@@ -21828,7 +21859,7 @@
               "showLastSearchResults"
             ],
             [
-              "showLastSearchResults",
+              "showOriginal",
               "toggleFavorite"
             ]
           ]
@@ -22387,6 +22418,7 @@
           "revealInFolder",
           "saveAsTemplate",
           "showClipboard",
+          "showOriginal",
           "toggleFavorite"
         ],
         "showInFinder": [

@@ -6,6 +6,9 @@ public enum EntryKind: String, Codable, CaseIterable, Sendable, Hashable {
     case file
     case symlinkDirectory = "symlink_directory"
     case symlinkFile = "symlink_file"
+    /// A Finder alias whose original isn't known yet. Once it is, the alias is taken as a link to a folder or to a
+    /// file is.
+    case alias
     case bundle
     case other
 
@@ -17,6 +20,9 @@ public enum EntryKind: String, Codable, CaseIterable, Sendable, Hashable {
 
     /// A link to a folder is not measured, and the folder it points to is not counted twice.
     public var isFolderSizeEligible: Bool { self == .directory || self == .bundle }
+
+    /// A symbolic link or an alias: what Show Original goes to the original of.
+    public var isLink: Bool { self == .symlinkDirectory || self == .symlinkFile || self == .alias }
 }
 
 /// The parts of a listing row the command rules look at.
@@ -150,8 +156,8 @@ public enum CommandAvailability {
     /// a clipboard, so they stay available. A held key runs them once per press (`WriteStartingShortcuts`).
     static let writeLockedCommands: Set<AppCommand> = [
         .undo, .redo, .pasteSelection, .pasteAsFile, .moveSelection, .renameSelection, .duplicateSelection,
-        .newFolder, .newFolderWithSelection, .newTextFile, .saveAsTemplate, .trashSelection, .deleteImmediately,
-        .emptyTrash,
+        .makeAlias, .newFolder, .newFolderWithSelection, .newTextFile, .saveAsTemplate, .trashSelection,
+        .deleteImmediately, .emptyTrash,
         .copyToOtherPane,
         .moveToOtherPane,
         .compressSelection, .extractSelection, .extractSelectionTo, .convertImages,
@@ -433,6 +439,14 @@ public enum CommandAvailability {
                 && (!context.isSearchMode
                     || Set(context.selectedPathsInViewOrder.map { parentDirectoryPath($0).map { Array($0.utf8) } })
                         .count == 1)
+        case .makeAlias:
+            // Beside each item, where Duplicate puts its copies.
+            return focusedPane != .tree && canRun(.duplicateSelection, context)
+        case .showOriginal:
+            // One symbolic link or alias of the list.
+            guard focusedPane != .tree, selectedCount == 1 else { return false }
+            return entry(at: context.selectedPathsInViewOrder.first, in: context.activeContentEntries)?.kind.isLink
+                ?? false
         case .convertImages:
             // Every item chosen an image, or none is converted; nothing is made in the Trash.
             guard focusedPane != .tree, selectedCount > 0, !selectionIsInTrash(context) else { return false }

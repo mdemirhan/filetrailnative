@@ -15,6 +15,8 @@ public enum OpenItems {
         case resolveThenNavigate(String)
         /// A link to a file: its target opens in its app.
         case resolveThenOpen(String)
+        /// An alias whose original isn't known yet: it is looked up, then opened as a link to a folder or to a file is.
+        case resolveThenFollow(String)
         /// An app or package, a file, or anything else: the system opens it.
         case openExternally(String)
         /// A folder or a package named as an archive is ("backup.tar", "site.zip"): the system opens it, as it opens
@@ -72,6 +74,7 @@ public enum OpenItems {
         case .directory: return .navigate(item.path)
         case .symlinkDirectory: return .resolveThenNavigate(item.path)
         case .symlinkFile: return .resolveThenOpen(item.path)
+        case .alias: return .resolveThenFollow(item.path)
         case .bundle: return isFolderNamedAsArchive(item) ? .handToSystem(item.path) : .openExternally(item.path)
         case .file, .other: return .openExternally(item.path)
         }
@@ -81,7 +84,7 @@ public enum OpenItems {
     public static func isFolderNamedAsArchive(_ item: CommandEntry) -> Bool {
         switch item.kind {
         case .directory, .symlinkDirectory, .bundle: ArchiveNames.isArchive(NodePath.basename(item.path))
-        case .file, .symlinkFile, .other: false
+        case .file, .symlinkFile, .alias, .other: false
         }
     }
 

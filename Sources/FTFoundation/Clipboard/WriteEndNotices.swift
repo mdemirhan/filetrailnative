@@ -162,11 +162,13 @@ public enum WriteEndNotices {
         .contains(write.action) {
             return nil
         }
-        if write.action == .convertImages {
+        if write.action == .convertImages || write.action == .makeAlias {
             // The new files are selected in the folder on screen; elsewhere, or from search results, it is said.
             let onScreen = !isSearchMode && write.targetPath.map { JSString.equals($0, currentPath) } == true
             guard write.status == .completed, !onScreen else { return nil }
-            return WriteEndToast(kind: .success, title: "Converted", message: itemSummary(write))
+            return WriteEndToast(
+                kind: .success, title: write.action == .makeAlias ? "Aliases made" : "Converted",
+                message: itemSummary(write))
         }
         let summary = itemSummary(write)
         let target = write.targetPath.map(PathText.leafName)

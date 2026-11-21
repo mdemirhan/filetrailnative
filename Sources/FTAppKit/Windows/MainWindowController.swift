@@ -914,21 +914,21 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     /// What the plan of the items to open needs of the entries on screen.
     private func commandEntries(_ entries: [DirectoryEntry]) -> [CommandEntry] {
-        entries.map { CommandEntry(path: $0.path, kind: FTFoundation.EntryKind(rawValue: $0.kind.rawValue) ?? .other) }
+        entries.map { CommandEntry(path: $0.path, kind: AliasOriginals.shared.commandKind($0)) }
     }
 
     /// Double-click, Return (set to Open) and ⌘↓: opens the items, archives extracted. ⌘-double-click on a folder
     /// opens it in a new tab, as in Finder.
     func open(_ entries: [DirectoryEntry], inNewTab: Bool = false) {
-        if inNewTab, entries.count == 1, entries[0].isDirectoryLike {
+        if inNewTab, entries.count == 1, AliasOriginals.shared.commandKind(entries[0]).isDirectoryLike {
             openFolderInNewTab(entries[0])
             return
         }
         perform(OpenItems.openPlan(commandEntries(entries), limit: preferences.openItemLimit))
     }
 
-    /// A selected folder opens in a new tab or window; a symbolic link to a folder opens the folder it points to, as it
-    /// does when opened in place.
+    /// A selected folder opens in a new tab or window; a symbolic link or an alias of a folder opens the folder it leads
+    /// to, as it does when opened in place.
     private func openSelectedFolder(_ folder: String, place: SelectedFolderPlace) {
         let open: (String) -> Void = { [weak self] path in
             guard let self else { return }
@@ -939,33 +939,46 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             }
         }
         let asked = DiskPath(folder)
-        guard content.entries.first(where: { DiskPath($0.path) == asked })?.kind == .symlinkDirectory else {
+        let kind = content.entries.first(where: { DiskPath($0.path) == asked }).map(AliasOriginals.shared.commandKind)
+        guard kind?.isLink == true else {
             open(folder)
             return
         }
         Task {
-            if let target = await Self.resolved(folder) { open(target) }
+            guard let original = await Self.original(of: folder) else { return showOriginalMissing(folder) }
+            if original.isFolder { open(original.path) }
         }
     }
 
     private enum SelectedFolderPlace { case tab, window, otherPane }
 
     private func openFolderInNewTab(_ entry: DirectoryEntry) {
-        if entry.kind == .symlinkDirectory {
+        if AliasOriginals.shared.commandKind(entry).isLink {
             Task {
-                guard let target = await Self.resolved(entry.path) else { return }
-                group?.openTab(path: target, from: self)
+                guard let original = await Self.original(of: entry.path) else { return showOriginalMissing(entry.path) }
+                if original.isFolder { group?.openTab(path: original.path, from: self) }
             }
         } else {
             group?.openTab(path: entry.path, from: self)
         }
     }
 
-    /// Where a link points.
+    /// Where a symbolic link or an alias leads, and whether that is a folder to open in place (`Links.originalItem`).
     /// Looked up as `BlockingWork`: a link into a slow volume must not freeze the window, nor hold up the app's
     /// other work.
-    private static func resolved(_ path: String) async -> String? {
-        await BlockingWork.run { try? NativeFileSystem().realpath(path) }
+    static func original(of path: String) async -> (path: String, isFolder: Bool)? {
+        await BlockingWork.run { Links.originalItem(of: path) }
+    }
+
+    /// A link or an alias was opened, or its original asked for, and what it leads to isn't there.
+    func showOriginalMissing(_ linkPath: String) {
+        showNotice(
+            title: "The Original Can\u{2019}t Be Found",
+            message: Self.originalMissingMessage(linkPath))
+    }
+
+    static func originalMissingMessage(_ linkPath: String) -> String {
+        "The original of \u{201C}\(NodePath.basename(linkPath))\u{201D} can\u{2019}t be found. It may have been deleted, or be on a disk or a server that isn\u{2019}t connected."
     }
 
     func perform(_ plan: OpenItems.Plan) {
@@ -1014,31 +1027,31 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                 switch step {
                 case .navigate(let path):
                     go(to: path)
-                case .resolveThenNavigate(let path):
+                case .resolveThenNavigate(let path), .resolveThenOpen(let path), .resolveThenFollow(let path):
                     // Another tab may have come to the front while the link was looked up.
                     let pane = activePane
                     let token = pane.navigationCount
                     Task {
-                        guard let target = await Self.resolved(path), token == pane.navigationCount, isKeyOrOnly else {
+                        guard let original = await Self.original(of: path) else {
+                            if firstPress { showOriginalMissing(path) }
                             return
                         }
-                        pane.go(to: target)
-                    }
-                case .resolveThenOpen(let path):
-                    Task {
-                        guard let target = await Self.resolved(path) else { return }
-                        // A link to an archive, itself named as one: what it holds comes out beside the link,
-                        // where it was opened, not beside the archive it leads to.
-                        if ArchiveNames.isArchive(NodePath.basename(target)),
-                            ArchiveNames.isArchive(NodePath.basename(path)), !DiskImageNames.isDiskImagePath(target)
+                        if original.isFolder {
+                            guard token == pane.navigationCount, isKeyOrOnly else { return }
+                            pane.go(to: original.path)
+                        } else if ArchiveNames.isArchive(NodePath.basename(original.path)),
+                            ArchiveNames.isArchive(NodePath.basename(path)),
+                            !DiskImageNames.isDiskImagePath(original.path)
                         {
+                            // A link to an archive, itself named as one: what it holds comes out beside the link,
+                            // where it was opened, not beside the archive it leads to.
                             if firstPress {
                                 // Unless another press came while the link was looked up.
                                 if press == Self.openPresses { Self.heldKeyTookApart = true }
                                 extractToOpen([path])
                             }
-                        } else if opensOnThisPress(target) {
-                            openExternally(target)
+                        } else if opensOnThisPress(original.path) {
+                            openExternally(original.path)
                         }
                     }
                 case .openExternally(let path):
@@ -1918,6 +1931,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         observers.removeAll { $0.token.value?.isValid != true }
         for observer in observers { observer.handler(change) }
         reportMenuStateSoon()
+        if change == .selection || folderChanged || searchChanged { lookUpSelectedAliases() }
+    }
+
+    /// What the selected aliases lead to, for the menus (`AliasOriginals`).
+    private func lookUpSelectedAliases() {
+        AliasOriginals.shared.lookUp(content.selectedEntries, filesMayBeAliases: searchRootPath != nil) {
+            [weak self] in self?.reportMenuStateSoon()
+        }
     }
 
     /// What Copy or Cut put on the app's clipboard changed (every window hears it from the shared clipboard): the
@@ -2184,9 +2205,13 @@ extension MainWindowController: ExplorerWindowHandle {
             }
         case .convertImages:
             openConvertImagesSheet(selectedPaths)
+        case .showOriginal:
+            // One link or alias selected; its item is dimmed otherwise, and a dimmed item's key still comes here.
+            if canPerform(.showOriginal), let path = selectedPaths.first { showOriginal(of: path) }
         case .shareSelection:
             shareSelection()
-        case .undo, .redo, .editCut, .editCopy, .editPaste, .moveSelection, .duplicateSelection, .newFolder,
+        case .undo, .redo, .editCut, .editCopy, .editPaste, .moveSelection, .duplicateSelection, .makeAlias,
+            .newFolder,
             .newFolderWithSelection, .newTextFile, .saveAsTemplate, .pasteAsFile, .trashSelection, .deleteImmediately,
             .emptyTrash,
             .copySelection,

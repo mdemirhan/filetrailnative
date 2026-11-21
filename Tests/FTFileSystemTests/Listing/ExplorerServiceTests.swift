@@ -591,7 +591,7 @@ struct ExplorerServiceTests {
             item
                 == ItemProperties(
                     path: "/Users/demo/Alias", name: "Alias", fileExtension: "", kind: .symlinkDirectory,
-                    kindLabel: "Alias Folder", isHidden: false, isSymlink: true, createdAt: nil, modifiedAt: nil,
+                    kindLabel: "Symbolic Link", isHidden: false, isSymlink: true, createdAt: nil, modifiedAt: nil,
                     // The link itself, as measuring the folder it is in counts it.
                     sizeBytes: 16, sizeStatus: .ready, permissionMode: 0o755))
     }
@@ -659,7 +659,7 @@ struct ExplorerServiceTests {
         }
         let response = try await service(fake).metadata(
             directoryPath: "/workspace", paths: ["/workspace/Alias", "/workspace/Folder"])
-        #expect(response.items.map(\.kindLabel) == ["Alias Folder", "Folder"])
+        #expect(response.items.map(\.kindLabel) == ["Symbolic Link", "Folder"])
         #expect(response.items.map(\.sizeBytes) == [16, nil])
         #expect(response.items.map(\.sizeStatus) == [.ready, .deferred])
     }

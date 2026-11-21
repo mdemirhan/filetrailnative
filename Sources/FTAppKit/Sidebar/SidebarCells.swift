@@ -267,11 +267,11 @@ final class SidebarItemCell: NSTableCellView {
         paneMark.isHidden = state.paneMark == nil
         paneMark.color = selectedFocused ? onSelection : ChromeColors.color(accent.solidButton)
 
-        // The Alias badge
+        // The Symlink badge, after a symbolic link's name
         badge.isHidden = !item.isSymlink
         badge.fill = ChromeColors.color(palette.bgHover)
         badge.textColor = ChromeColors.color(palette.textSecondary)
-        badge.apply(title: "Alias", font: ChromeColors.font(size: layout.badgeFontSize))
+        badge.apply(title: "Symlink", font: ChromeColors.font(size: layout.badgeFontSize))
 
         // The eject button
         let showsEject = item.kind == .location && item.canEject && item.path != nil

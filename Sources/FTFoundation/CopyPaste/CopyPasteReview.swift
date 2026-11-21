@@ -567,7 +567,7 @@ public enum CopyPasteReview {
         let existing = node.destinationFingerprint
         let size = existing.size.map { " \(SizeText.size($0))" } ?? ""
         let date = existing.mtimeMs.map { " from \(dates.format($0, now: now))" } ?? ""
-        let kind = node.destinationKind == .symlink ? "alias" : "file"
+        let kind = node.destinationKind == .symlink ? "symbolic link" : "file"
         return "Replaces the existing\(size) \(kind)\(date)"
     }
 

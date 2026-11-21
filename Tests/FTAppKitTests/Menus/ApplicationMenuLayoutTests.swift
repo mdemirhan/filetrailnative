@@ -28,8 +28,8 @@ import Testing
                 "New Window", "New Tab", "Duplicate Tab", "New Folder", "New Folder with Selection", "New File",
                 "Save as Template", "-",
                 "Open", "Open With", "Open in Viewer", "Open in New Tab", "Open in New Window", "Open in Other Pane",
-                "Edit in Text Editor", "Quick Look", "Calculate Size", "Reveal in Folder", "-",
-                "Rename", "Duplicate", "Move to…", "-",
+                "Edit in Text Editor", "Quick Look", "Calculate Size", "Reveal in Folder", "Show Original", "-",
+                "Rename", "Duplicate", "Make Alias", "Move to…", "-",
                 "Compress", "Extract", "Extract To…", "Convert Images…", "-",
                 "Share…", "Add to Favorites", "Open in Terminal", "Show in Finder", "-",
                 // Delete Immediately…, the item ⌥ shows in Move to Trash's place.
@@ -258,12 +258,14 @@ import Testing
             ("File", "Open in New Window", nil, .openSelectionInNewWindow),
             ("File", "Quick Look", "Command+Y", .quickLookSelection),
             ("File", "Reveal in Folder", nil, .revealInFolder),
+            ("File", "Show Original", nil, .showOriginal),
             ("File", "Calculate Size", nil, .calculateSize),
             // Return, while it renames, and F2 work from the window itself: the menu shows Return and never takes
             // it, so text fields and dialogs keep it.
             ("File", "Rename", "Return", .renameSelection),
             ("File", "Edit in Text Editor", "Command+Shift+E", .editSelection),
             ("File", "Duplicate", "Command+D", .duplicateSelection),
+            ("File", "Make Alias", nil, .makeAlias),
             ("File", "Move to…", "Command+Shift+M", .moveSelection),
             ("File", "Add to Favorites", "Control+Command+T", .toggleFavorite),
             ("File", "Open in Terminal", "Command+Alt+T", .openInTerminal),

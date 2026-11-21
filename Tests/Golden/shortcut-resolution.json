@@ -197,6 +197,8 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "makeAlias": [],
+          "showOriginal": [],
           "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"

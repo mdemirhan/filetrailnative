@@ -10,12 +10,12 @@ public enum CommandIcon: String, CaseIterable, Sendable, Hashable {
     case folderTree, twoPanes, duplicatePane, infoPanel, infoRow
     // Opening and looking
     case open, openFile, openInNewTab, openInNewWindow, openWith, quickLook, showPackageContents, edit, showInfo
-    case calculateSize, revealInFolder, revealInTree, rootTreeHere, showInFinder, terminal
+    case calculateSize, revealInFolder, revealInTree, rootTreeHere, showInFinder, terminal, showOriginal
     // Clipboard and organizing
     case cut, copy, paste, pasteAsFile, copyPath, copyContents, share, move, rename, duplicate, newFolder, newFile
     case removeFromClipboard
     case favorite
-    case convertImages
+    case convertImages, makeAlias
     // Archives
     case compress, extract
     // Removing

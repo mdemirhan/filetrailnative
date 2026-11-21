@@ -50,6 +50,11 @@
           "icon": "quickLook"
         },
         {
+          "id": "showOriginal",
+          "label": "Show Original",
+          "icon": "showOriginal"
+        },
+        {
           "id": "edit",
           "label": "Edit in Text Editor",
           "icon": "edit"
@@ -135,6 +140,11 @@
           "id": "duplicate",
           "label": "Duplicate",
           "icon": "duplicate"
+        },
+        {
+          "id": "makeAlias",
+          "label": "Make Alias",
+          "icon": "makeAlias"
         },
         {
           "id": "move",
@@ -275,6 +285,11 @@
           "icon": "quickLook"
         },
         {
+          "id": "showOriginal",
+          "label": "Show Original",
+          "icon": "showOriginal"
+        },
+        {
           "id": "edit",
           "label": "Edit in Text Editor",
           "icon": "edit"
@@ -360,6 +375,11 @@
           "id": "duplicate",
           "label": "Duplicate",
           "icon": "duplicate"
+        },
+        {
+          "id": "makeAlias",
+          "label": "Make Alias",
+          "icon": "makeAlias"
         },
         {
           "id": "move",
@@ -548,6 +568,11 @@
           "id": "duplicate",
           "label": "Duplicate",
           "icon": "duplicate"
+        },
+        {
+          "id": "makeAlias",
+          "label": "Make Alias",
+          "icon": "makeAlias"
         },
         {
           "id": "move",
@@ -754,6 +779,11 @@
           "icon": "quickLook"
         },
         {
+          "id": "showOriginal",
+          "label": "Show Original",
+          "icon": "showOriginal"
+        },
+        {
           "id": "edit",
           "label": "Edit in Text Editor",
           "icon": "edit"
@@ -839,6 +869,11 @@
           "id": "duplicate",
           "label": "Duplicate",
           "icon": "duplicate"
+        },
+        {
+          "id": "makeAlias",
+          "label": "Make Alias",
+          "icon": "makeAlias"
         },
         {
           "id": "move",
@@ -1094,9 +1129,9 @@
         "$insert": [
           [
             {
-              "id": "quickLook",
-              "label": "Quick Look",
-              "icon": "quickLook"
+              "id": "showOriginal",
+              "label": "Show Original",
+              "icon": "showOriginal"
             },
             {
               "id": "edit",
@@ -1252,9 +1287,9 @@
         "$insert": [
           [
             {
-              "id": "quickLook",
-              "label": "Quick Look",
-              "icon": "quickLook"
+              "id": "showOriginal",
+              "label": "Show Original",
+              "icon": "showOriginal"
             },
             {
               "id": "edit",
@@ -1626,9 +1661,9 @@
         "$insert": [
           [
             {
-              "id": "quickLook",
-              "label": "Quick Look",
-              "icon": "quickLook"
+              "id": "showOriginal",
+              "label": "Show Original",
+              "icon": "showOriginal"
             },
             {
               "id": "edit",

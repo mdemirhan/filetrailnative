@@ -815,10 +815,9 @@
             "path": "names/links/alias to file",
             "name": "alias to file",
             "extension": "",
-            "kind": "file",
+            "kind": "alias",
             "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false
+            "isSymlink": false
           },
           {
             "path": "names/links/broken link",
@@ -868,10 +867,9 @@
             "path": "names/links/alias to file",
             "name": "alias to file",
             "extension": "",
-            "kind": "file",
+            "kind": "alias",
             "isHidden": false,
             "isSymlink": false,
-            "isExecutable": false,
             "sizeBytes": 1060
           },
           {
@@ -924,7 +922,7 @@
             "name": "link to folder",
             "extension": "",
             "kind": "symlink_directory",
-            "kindLabel": "Alias Folder",
+            "kindLabel": "Symbolic Link",
             "isHidden": false,
             "isSymlink": true,
             "sizeBytes": 13,
@@ -945,8 +943,8 @@
             "path": "names/links/alias to file",
             "name": "alias to file",
             "extension": "",
-            "kind": "file",
-            "kindLabel": "File",
+            "kind": "alias",
+            "kindLabel": "Alias",
             "isHidden": false,
             "isSymlink": false,
             "sizeBytes": 1060,
@@ -968,7 +966,7 @@
             "name": "link to file",
             "extension": "",
             "kind": "symlink_file",
-            "kindLabel": "Alias File",
+            "kindLabel": "Symbolic Link",
             "isHidden": false,
             "isSymlink": true,
             "sizeBytes": 2,

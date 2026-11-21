@@ -305,7 +305,7 @@ final class SidebarEjectView: SidebarPlainView {
     }
 }
 
-/// A pill of text in a row: the "Alias" badge after a link's name.
+/// A pill of text in a row: the "Symlink" badge after a symbolic link's name.
 final class SidebarBadgeView: SidebarPlainView {
     private let label = TextBoxField(labelWithString: "")
     var fill = NSColor.clear

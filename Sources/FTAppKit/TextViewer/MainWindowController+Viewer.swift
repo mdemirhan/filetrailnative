@@ -26,7 +26,8 @@ extension MainWindowController {
     var selectedViewableFile: String? {
         let pane = activePane
         guard pane.viewer == nil, pane.content.selection.paths.count == 1, let path = leadPath(of: pane),
-            pane.content.listedEntry(at: path)?.kind.isViewableFile == true
+            let entry = pane.content.listedEntry(at: path),
+            AliasOriginals.shared.commandKind(entry).isEditableFile
         else { return nil }
         return path
     }
@@ -69,7 +70,8 @@ extension MainWindowController {
     }
 
     private func viewableFiles(of pane: BrowserPane) -> [String] {
-        pane.content.listed.filter { $0.kind.isViewableFile }.map(\.path)
+        // An alias not looked up yet is stepped to as well: the viewer says so if it leads to a folder.
+        pane.content.listed.filter { $0.kind.isViewableFile || $0.kind == .alias }.map(\.path)
     }
 
     private func updatePosition(of viewer: TextViewerController, in pane: BrowserPane) {

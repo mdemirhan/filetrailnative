@@ -311,6 +311,11 @@ extension HelpContent {
                                 "{renameSelection} renames the selected item. With several selected it opens the Rename sheet: replace or add text, number or date them, or change their case, with every new name shown before anything is renamed, and settings saved as presets. Settings → Files chooses whether Return renames or opens."
                         ),
                         HelpRow(
+                            label: "Aliases and symbolic links",
+                            description:
+                                "File ▸ Make Alias makes an alias of each selected item beside it, named as Finder names one (“Report.pdf alias”), and {undo} moves them to the Trash. Opening an alias or a symbolic link opens its original, and so do Open With, Open in Viewer, Quick Look and Copy Contents; Rename, Copy, Compress, Move to Trash and Show Info act on the alias or the link itself. File ▸ Show Original selects the original in its folder, and Show Info says where it is."
+                        ),
+                        HelpRow(
                             label: "Move to Trash",
                             description:
                                 "{trashSelection} moves the selected items to the Trash, and {undo} puts them back. File Trail has no Put Back: to bring back something older, drag it out of the Trash."
@@ -583,7 +588,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Limits",
                             description:
-                                "Search stops at \(ContextMenuRules.groupedCount(SearchLimits.resultLimit)) results. Aliases are not searched for. What you have no permission to read is passed over, and the status bar says so, beside the count."
+                                "Search stops at \(ContextMenuRules.groupedCount(SearchLimits.resultLimit)) results. Symbolic links are not searched for; aliases are. What you have no permission to read is passed over, and the status bar says so, beside the count."
                         ),
                     ]),
             ]),
@@ -820,6 +825,9 @@ extension HelpContent {
         HelpShortcutItem(
             group: .files, .command(.pasteAsFile), "Save the image or text copied in another app as a file"),
         HelpShortcutItem(group: .files, .command(.duplicateSelection), "Make a copy of each selected item beside it"),
+        HelpShortcutItem(group: .files, .command(.makeAlias), "Make an alias of each selected item beside it"),
+        HelpShortcutItem(
+            group: .files, .command(.showOriginal), "Select the original of the selected alias or symbolic link"),
         HelpShortcutItem(
             group: .files, .command(.convertImages), "Convert the selected images to another format or size"),
         HelpShortcutItem(group: .files, .command(.compressSelection), "Compress the selected items into a zip"),

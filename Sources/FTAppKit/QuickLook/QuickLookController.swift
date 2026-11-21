@@ -46,8 +46,10 @@ final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSou
 {
     static let shared = QuickLookController()
 
-    /// The item the panel previews: its URL for the panel, made of the path's own bytes.
+    /// The item the panel previews: its URL for the panel, made of the path's own bytes. For an alias, its original's
+    /// once looked up; a symbolic link Quick Look follows itself.
     private(set) var url: URL?
+    private var showNumber = 0
     /// The item's path, as its row has it.
     private(set) var path: String?
     /// Where the picture of the item at a path is on screen and what it is, for the zoom transition (nil: no
@@ -79,6 +81,17 @@ final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSou
             panel.refresh()
         } else {
             panel.present(self)
+        }
+        showNumber += 1
+        let number = showNumber
+        Task {
+            // An alias is looked up away from the main thread, and the panel then shows its original.
+            let original = await BlockingWork.run { Links.isFinderAlias(path) ? Links.original(of: path) : nil }
+            guard let original, number == showNumber, let shown = self.path, DiskPath(shown) == DiskPath(path) else {
+                return
+            }
+            url = DiskPath(original).fileURL()
+            panel.refresh()
         }
     }
 

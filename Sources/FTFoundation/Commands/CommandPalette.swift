@@ -422,6 +422,8 @@ public enum CommandPalette {
         case .calculateSize: .calculateSize
         case .renameSelection: .rename
         case .duplicateSelection: .duplicate
+        case .makeAlias: .makeAlias
+        case .showOriginal: .showOriginal
         case .convertImages: .convertImages
         case .moveSelection, .moveToOtherPane: .move
         case .compressSelection: .compress

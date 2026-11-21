@@ -194,6 +194,9 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     // MARK: Showing a file
 
     var fileName: String? { path.map { ($0 as NSString).lastPathComponent } }
+
+    /// What is read, saved and watched: the file shown, or the original of a symbolic link or an alias shown.
+    private var filePath: String? { file?.path ?? path }
     var isText: Bool {
         if case .text = file?.content { return true }
         return false
@@ -253,7 +256,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
             let file = await ViewerFile.read(path)
             guard let self, number == self.loadNumber else { return }
             self.apply(file, keepingPlace: false)
-            self.watch(path)
+            self.watch(file.path)
             // The text, or the viewer itself for a file that isn't text, so Esc and Tab reach it.
             if focus { self.view.window?.makeFirstResponder(self.keyboardView) }
             guard case .text = file.content else { return }
@@ -264,7 +267,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
 
     /// The file read again after another app changed it, keeping the place in it.
     private func reload() {
-        guard let path else { return }
+        guard let path = filePath else { return }
         let number = loadNumber
         Task { [weak self] in
             let file = await ViewerFile.read(path)
@@ -336,7 +339,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         imageView.isHidden = shown != .image
         if shown != .image { imageView.image = nil }
         if shown == .preview { renderPreview() }
-        let quickLookItem = shown == .quickLook ? path.map { URL(fileURLWithPath: $0) } : nil
+        let quickLookItem = shown == .quickLook ? filePath.map { URL(fileURLWithPath: $0) } : nil
         quickLook.item = quickLookItem
         quickLook.isHidden = quickLookItem == nil
         // The keyboard follows what is shown, between the text and the viewer itself.
@@ -405,7 +408,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     /// Writes the text over the file. A failure says why and keeps the edits.
     @discardableResult
     func save() -> Bool {
-        guard let path, isText else { return false }
+        guard let path = filePath, isText else { return false }
         do {
             knownModified = try ViewerFile.write(textView.string, as: format, to: path)
             savedText = NSString(string: textView.string)
@@ -526,7 +529,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     }
 
     private func changedOnDisk() {
-        guard let path else { return }
+        guard let path = filePath else { return }
         let modified = (try? URL(fileURLWithPath: path).resourceValues(forKeys: [.contentModificationDateKey]))?
             .contentModificationDate
         guard modified != knownModified else { return }
@@ -548,7 +551,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     private func useFileOnDisk() {
         conflictBar.isHidden = true
         view.needsLayout = true
-        guard let path else { return }
+        guard let path = filePath else { return }
         let number = loadNumber
         Task { [weak self] in
             let file = await ViewerFile.read(path)

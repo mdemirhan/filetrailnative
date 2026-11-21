@@ -15,6 +15,7 @@ public enum WriteOperationAction: String, Sendable, CaseIterable, Equatable {
     case compress, extract
     case batchRename = "batch_rename"
     case convertImages = "convert_images"
+    case makeAlias = "make_alias"
     case undo, redo
 }
 
@@ -83,6 +84,7 @@ public struct ProgressCardText: Equatable, Sendable {
         case .compress: pair = ("Compressing…", "Compress")
         case .extract: pair = ("Extracting…", "Extract")
         case .convertImages: pair = ("Converting…", "Convert Images")
+        case .makeAlias: pair = ("Making Aliases…", "Make Alias")
         case .undo: pair = ("Undoing…", "Undo")
         case .redo: pair = ("Redoing…", "Redo")
         case .paste: pair = ("Pasting…", "Paste")

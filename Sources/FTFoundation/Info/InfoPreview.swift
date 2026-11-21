@@ -45,6 +45,13 @@ public struct InfoMetadata: Equatable, Sendable {
 }
 
 /// An item's properties (`ItemProperties`), or the preview made from the list.
+/// Where a symbolic link or an alias leads, as Show Info says.
+public enum InfoOriginal: Equatable, Sendable {
+    case found(String)
+    /// Deleted, or on a disk or a server not connected.
+    case missing
+}
+
 public struct InfoItem: Equatable, Sendable {
     public var path: String
     public var name: String
@@ -58,12 +65,16 @@ public struct InfoItem: Equatable, Sendable {
     public var sizeBytes: Int64?
     public var sizeStatus: SizeStatus
     public var permissionMode: Int?
+    /// For a symbolic link or an alias, where it leads; nil for anything else.
+    public var original: InfoOriginal?
 
     public init(
         path: String, name: String, fileExtension: String = "", kind: EntryKind, kindLabel: String,
         isHidden: Bool = false, isSymlink: Bool = false, createdAt: Date? = nil, modifiedAt: Date? = nil,
-        sizeBytes: Int64? = nil, sizeStatus: SizeStatus = .deferred, permissionMode: Int? = nil
+        sizeBytes: Int64? = nil, sizeStatus: SizeStatus = .deferred, permissionMode: Int? = nil,
+        original: InfoOriginal? = nil
     ) {
+        self.original = original
         self.path = path
         self.name = name
         self.fileExtension = fileExtension
@@ -121,9 +132,8 @@ public enum InfoPreview {
     public static func fallbackKindLabel(kind: EntryKind, fileExtension: String) -> String {
         switch kind {
         case .directory: "Folder"
-        case .symlinkDirectory: "Alias Folder"
         case .bundle: fileExtension == "app" ? "Application" : "Package"
-        case .symlinkFile: "Alias"
+        case .symlinkDirectory, .symlinkFile: "Symbolic Link"
         default: fileExtension.isEmpty ? "File" : "\(fileExtension.uppercased()) File"
         }
     }

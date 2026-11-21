@@ -146,7 +146,7 @@ struct ContextMenuRulesTests {
                 "Show Info",
                 "Cut", "Copy",
                 "Copy Path",
-                "Copy Text", "Rename", "Duplicate", "Move to…",
+                "Copy Text", "Rename", "Duplicate", "Make Alias", "Move to…",
                 "Compress \u{201C}b.txt\u{201D}",
                 // What hands the file to something else, leaving it as it is.
                 "Share…", "Save as Template", "Open in Terminal", "Show in Finder", "Move to Trash",
@@ -158,11 +158,31 @@ struct ContextMenuRulesTests {
                 "Open", "Open With", "Open in New Tab", "Open in New Window", "Open in Other Pane", "Quick Look",
                 "Show Info",
                 "Calculate Size", "Cut", "Copy", "Paste into Folder", "Copy Path", "Rename", "Duplicate",
-                "Move to…",
+                "Make Alias", "Move to…",
                 "New Folder", "Compress \u{201C}F\u{201D}", "Share…", "Remove from Favorites", "Open in Terminal",
                 "Show in Finder",
                 "Move to Trash",
             ])
+    }
+
+    /// Show Original is for one symbolic link or alias, of the list, of search results or of the Trash, after Quick Look;
+    /// Make Alias is where Duplicate is, and not in the Trash.
+    @Test func showOriginalIsForOneLinkAndMakeAliasWhereDuplicateIs() {
+        let link = labels(subject(.content, [("/a/b alias", .alias)]), world())
+        #expect(link.prefix(4) == ["Open", "Open With", "Quick Look", "Show Original"])
+        let linkToFile = labels(subject(.content, [("/a/b link", .symlinkFile)]), world(), editor: "TextEdit")
+        #expect(linkToFile.contains("Show Original"))
+        #expect(linkToFile.contains("Make Alias"))
+        let found = subject(.search, [("/a/b alias", .alias)])
+        #expect(!hidden(found, world(search: true)).contains(.showOriginal))
+        #expect(hidden(subject(.content, [("/a/b.txt", .file)]), world()).contains(.showOriginal))
+        let two = subject(.content, [("/a/b alias", .alias), ("/a/c alias", .alias)])
+        #expect(hidden(two, world()).contains(.showOriginal))
+        let inTrash = subject(.trash, [("\(Self.trash)/b.txt", .file)])
+        #expect(hidden(inTrash, world(current: Self.trash)).contains(.makeAlias))
+        let apart = subject(.search, [("/a/b.txt", .file), ("/c/d.txt", .file)])
+        #expect(hidden(apart, world(search: true)).contains(.makeAlias))
+        #expect(hidden(subject(.content, [("/a/b.txt", .file)]), world(locked: true)).contains(.makeAlias))
     }
 
     /// Share… is for items of the list and of search results, one or several, files or folders, and never for what
@@ -187,7 +207,7 @@ struct ContextMenuRulesTests {
             ).split { $0.actionID == nil }.map { $0.compactMap(\.label) }
         }
         let archive = groups(subject(.content, [("/a/Photos.zip", .file)]))
-        #expect(archive.contains(["Rename", "Duplicate", "Move to…"]))
+        #expect(archive.contains(["Rename", "Duplicate", "Make Alias", "Move to…"]))
         #expect(archive.contains(["Share…", "Save as Template", "Open in Terminal", "Show in Finder"]))
         #expect(archive.contains(["Compress \u{201C}Photos.zip\u{201D}", "Extract", "Extract To…"]))
         let image = groups(subject(.content, [("/a/p.png", .file)]))

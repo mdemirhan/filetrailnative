@@ -37,6 +37,8 @@ public enum InfoValue: Equatable, Sendable {
     case permissions(words: String, octal: String, symbolic: String)
     /// A folder as a link; nil path is not shown as one.
     case whereLink(label: String, path: String)
+    /// A link's or an alias's original: clicked, Show Original.
+    case originalLink(label: String, path: String)
     /// The app the file opens in, as a pop-up.
     case opensWith
 }
@@ -221,6 +223,20 @@ public enum InfoPanelModel {
                     muted: false))
         } else {
             rows.append(InfoRow(label: "Where", value: .text("—"), muted: true))
+        }
+        // A symbolic link or an alias says where it leads, as Finder's Get Info does.
+        switch item.original {
+        case .found(let path):
+            rows.append(
+                InfoRow(
+                    label: "Original",
+                    value: .originalLink(
+                        label: PathBarModel.label(path, startupDiskName: startupDiskName), path: path),
+                    muted: false))
+        case .missing:
+            rows.append(InfoRow(label: "Original", value: .text("Can\u{2019}t be found"), muted: true))
+        case nil:
+            break
         }
 
         let summary: String?

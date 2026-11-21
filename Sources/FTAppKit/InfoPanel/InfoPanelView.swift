@@ -66,6 +66,8 @@ final class InfoPanelView: NSView {
     }
     var onClose: () -> Void = {}
     var onNavigate: (String) -> Void = { _ in }
+    /// The Original row of a symbolic link or an alias was clicked: Show Original.
+    var onShowOriginal: (String) -> Void = { _ in }
     var onOpen: () -> Void = {}
     var onAction: (InfoPanelModel.QuickAction.ID) -> Void = { _ in }
     var onOpenWithMenu: (NSView) -> Void = { _ in }
@@ -625,6 +627,7 @@ final class InfoPanelContentView: NSView {
         case .file: kind = .file
         case .symlinkDirectory: kind = .symlinkDirectory
         case .symlinkFile: kind = .symlinkFile
+        case .alias: kind = .alias
         case .bundle: kind = .bundle
         case .other: kind = .other
         }
@@ -703,6 +706,16 @@ final class InfoPanelContentView: NSView {
                 link.toolTip = path
                 link.font = ThemeFonts.sans(DesignTokens.typeScale.callout)
                 link.onClick = { [weak self] in self?.owner?.onNavigate(path) }
+                addSubview(link)
+                value = link
+            case .originalLink(let text, let path):
+                let link = TextLinkView(identifier: "infoPanel.original")
+                box = RowValueBox()
+                box?.sample.stringValue = text
+                link.text = text
+                link.toolTip = path
+                link.font = ThemeFonts.sans(DesignTokens.typeScale.callout)
+                link.onClick = { [weak self] in self?.owner?.onShowOriginal(path) }
                 addSubview(link)
                 value = link
             case .opensWith:

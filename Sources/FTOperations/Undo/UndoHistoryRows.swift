@@ -307,6 +307,7 @@ public enum UndoHistoryRows {
         case .deleteImmediately: .deleteImmediately
         case .duplicate: .duplicate
         case .convertImages: .convertImages
+        case .makeAlias: .makeAlias
         case .moveTo: .move
         case .copyTo: .copy
         case .paste, .undo, .redo: moves ? .move : .copy
@@ -344,6 +345,7 @@ public enum UndoHistoryRows {
             case .compress: return "Compress"
             case .extract: return "Extract"
             case .convertImages: return ConvertImagesText.actionName
+            case .makeAlias: return MakeAlias.commandLabel
             case .undo: return "Undo"
             case .redo: return "Redo"
             }

@@ -1,4 +1,5 @@
 import AppKit
+import FTFileSystem
 import FTFoundation
 import UniformTypeIdentifiers
 
@@ -35,7 +36,16 @@ struct ViewerFile: @unchecked Sendable {
         await Task.detached(priority: .userInitiated) { readNow(path) }.value
     }
 
-    static func readNow(_ path: String) -> ViewerFile {
+    /// A symbolic link or an alias is read as its original, which its `path` is then: what is saved goes there, not
+    /// over the link.
+    static func readNow(_ shownPath: String) -> ViewerFile {
+        guard let path = Links.original(of: shownPath) else {
+            return ViewerFile(
+                path: shownPath,
+                content: .unreadable(
+                    "The original of \u{201C}\(NodePath.basename(shownPath))\u{201D} can\u{2019}t be found."),
+                modified: nil, size: 0)
+        }
         let url = URL(fileURLWithPath: path)
         let values = try? url.resourceValues(forKeys: [
             .isDirectoryKey, .isPackageKey, .fileSizeKey, .contentModificationDateKey, .contentTypeKey,

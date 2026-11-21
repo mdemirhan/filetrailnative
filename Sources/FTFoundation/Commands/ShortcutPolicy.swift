@@ -131,6 +131,7 @@ public enum ShortcutPolicy {
         "calculateSize": .calculateSize,
         "revealInFolder": .revealInFolder, "edit": .editSelection, "cut": .cut, "copy": .copy, "paste": .paste,
         "move": .moveSelection, "rename": .renameSelection, "duplicate": .duplicateSelection, "newFolder": .newFolder,
+        "makeAlias": .makeAlias, "showOriginal": .showOriginal,
         "newFolderWithSelection": .newFolderWithSelection, "saveAsTemplate": .saveAsTemplate,
         "pasteAsFile": .pasteAsFile, "terminal": .openInTerminal, "copyPath": .copyPath,
         "copyContents": .copyContents, "share": .shareSelection, "convertImages": .convertImages,
@@ -186,6 +187,11 @@ public enum ShortcutPolicy {
             return canHandleRaw(.renameSelection, context)
         case "duplicate":
             return canHandleRaw(.duplicateSelection, context)
+        case "makeAlias":
+            // As with Paste: a tree menu acts on the right-clicked folder, the key on the selected items.
+            return context.focusedPane != .tree && canHandle(.makeAlias, context)
+        case "showOriginal":
+            return canHandle(.showOriginal, context)
         case "newFolder":
             return canHandleRaw(.newFolder, context)
         case "newFolderWithSelection":

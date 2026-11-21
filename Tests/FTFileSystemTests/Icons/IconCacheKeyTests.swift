@@ -30,6 +30,15 @@ import Testing
         #expect(key("/dev/null", kind: .other) == "path:/dev/null")
     }
 
+    /// An alias has an icon of its own, its original's with the arrow: asked for by its path, and drawn as an alias.
+    @Test func anAliasIsAskedForByPathAndDrawnAsOne() {
+        #expect(key("/a/report.txt alias", extension: "txt alias", kind: .alias) == "path:/a/report.txt alias")
+        let alias = IconRequest(entry: IconEntry(path: "/a/Folder alias", name: "Folder alias", kind: .alias))
+        #expect(alias.isAlias)
+        #expect(!alias.isFolder)
+        #expect(!IconRequest(entry: IconEntry(path: "/a/link", name: "link", kind: .symlinkDirectory)).isAlias)
+    }
+
     @Test func ordinaryFoldersShareOneIconAndSpecialOnesHaveTheirOwn() {
         let home = NSHomeDirectory()
         #expect(key("/a/Projects", name: "Projects", kind: .directory) == "kind:directory")

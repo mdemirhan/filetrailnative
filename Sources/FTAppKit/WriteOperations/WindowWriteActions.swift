@@ -877,6 +877,23 @@ final class WindowWriteActions {
         }
     }
 
+    // MARK: Make Alias
+
+    /// Make Alias: an alias of each item beside it, selected once made.
+    func makeAliases(_ paths: [String]) async -> CopyLikeOutcome {
+        guard let first = paths.first else { return .cancelled }
+        if refuseWhileBusy(.operation(.makeAlias)) { return .cancelled }
+        let folders = Set(paths.map(NodePath.dirname))
+        return await startLocal(
+            .makeAlias,
+            card: WriteOperationCardState(
+                action: .makeAlias, stage: .starting, targetPath: folders.count == 1 ? folders.first : nil,
+                totalItemCount: paths.count, currentSourcePath: first),
+            showsRefusal: true,
+            beforeAdopting: { [weak self] _ in self?.session.pendingTreeSelectionPath = nil },
+            start: { [coordinator, session] in try await coordinator.makeAliases(paths: paths, window: session) })
+    }
+
     // MARK: Helpers
 
     /// A start the coordinator refused: busy says so as every write does, anything else names its reason.

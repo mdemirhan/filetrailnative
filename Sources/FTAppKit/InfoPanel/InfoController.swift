@@ -111,6 +111,7 @@ final class InfoController {
             guard let self else { return }
             self.host.go(to: path, history: path == self.folderPath ? .replace : .push)
         }
+        panel.onShowOriginal = { [weak self] original in self?.host.revealOriginal(original) }
         panel.onOpen = { [weak self] in
             guard let self, let path = self.resolved?.item.path else { return }
             self.actions.openExternally(path)
@@ -237,7 +238,8 @@ final class InfoController {
                 isHidden: item.isHidden, isSymlink: item.isSymlink, createdAt: item.createdAt,
                 modifiedAt: item.modifiedAt, sizeBytes: item.sizeBytes,
                 sizeStatus: FTFoundation.SizeStatus(rawValue: item.sizeStatus.rawValue) ?? .deferred,
-                permissionMode: item.permissionMode)
+                permissionMode: item.permissionMode,
+                original: item.isLink ? item.originalPath.map(InfoOriginal.found) ?? .missing : nil)
             // A response for another item than the one now asked for is kept, not shown; one older than what is kept for
             // its item is dropped.
             guard self.propertiesLoad.answered(path, mapped, request: request) else { return }

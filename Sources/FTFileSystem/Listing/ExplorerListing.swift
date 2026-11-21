@@ -47,8 +47,8 @@ public final class KindLabeler: @unchecked Sendable {
         // Human-readable labels are used directly in details/info UI and intentionally stay simple.
         switch kind {
         case .directory: return "Folder"
-        case .symlinkDirectory: return "Alias Folder"
-        case .symlinkFile: return "Alias File"
+        case .symlinkDirectory, .symlinkFile: return "Symbolic Link"
+        case .alias: return "Alias"
         case .bundle:
             switch fileExtension {
             case "app": return "Application"
@@ -114,7 +114,8 @@ enum ExplorerListing {
 
     /// The folder's real path; it must be a folder.
     static func resolveDirectoryPath(_ path: String, _ fileSystem: any ExplorerFileSystem) throws -> String {
-        // Normalize through realpath when possible so aliased directories do not fork history/tree state.
+        // Normalize through realpath when possible so folders reached through symbolic links do not fork
+        // history/tree state.
         let resolved = resolve(path)
         let stats = try fileSystem.stat(resolved)
         guard stats.isDirectory else { throw ExplorerError.notADirectory(resolved) }
@@ -140,7 +141,7 @@ enum ExplorerListing {
         case .directory:
             return ItemNames.isMacOSPackageName(record.name) ? .bundle : .directory
         case .file:
-            return .file
+            return record.isAlias ? .alias : .file
         case .symlink:
             guard let stats = try? fileSystem.stat(path) else { return .other }
             return kind(from: stats, isSymlink: true, path: path)
@@ -322,7 +323,8 @@ enum ExplorerListing {
         _ fileSystem: any ExplorerFileSystem
     ) -> Int64? {
         if kind == .symlinkDirectory { return (record.lstat ?? safeLstat(path, fileSystem))?.size }
-        if let stats, kind == .file || kind == .symlinkFile { return stats.size }
+        // An alias has its own size, as Finder shows it: the file that says where its original is.
+        if let stats, kind == .file || kind == .symlinkFile || kind == .alias { return stats.size }
         return nil
     }
 
@@ -471,7 +473,8 @@ enum ExplorerListing {
         let stats = safeStat(path, fileSystem)
         let metadataStats = stats ?? symlinkStats
         let isSymlink = symlinkStats?.isSymbolicLink ?? false
-        let kind = stats.map { self.kind(from: $0, isSymlink: isSymlink, path: path) } ?? .other
+        var kind = stats.map { self.kind(from: $0, isSymlink: isSymlink, path: path) } ?? .other
+        if kind == .file, fileSystem.isFinderAlias(path) { kind = .alias }
         let size = readEntrySize(kind: kind, stats: stats, symlinkStats: symlinkStats)
         let addedMs: Int64? =
             switch added {
@@ -517,7 +520,8 @@ enum ExplorerListing {
             isHidden: isHidden(name) || safeLstat(resolvedPath, fileSystem)?.hasHiddenFlag == true,
             isSymlink: details.isSymlink, createdAt: details.createdAt,
             modifiedAt: details.modifiedAt, sizeBytes: details.sizeBytes, sizeStatus: details.sizeStatus,
-            permissionMode: details.permissionMode, addedAt: details.addedAt, lastOpenedAt: details.lastOpenedAt)
+            permissionMode: details.permissionMode, addedAt: details.addedAt, lastOpenedAt: details.lastOpenedAt,
+            originalPath: details.isSymlink || details.kind == .alias ? Links.original(of: resolvedPath) : nil)
     }
 
     // MARK: Suggestions

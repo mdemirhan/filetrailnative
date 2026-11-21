@@ -74,16 +74,17 @@ public enum ContextMenuRules {
     /// What a running file operation blocks, in every tab: anything that would start another. Copy, Cut and Copy Path
     /// only fill a clipboard, so they stay available.
     public static let writeLockedActions: [ContextMenuActionID] = [
-        .paste, .pasteAsFile, .move, .rename, .duplicate, .convertImages, .newFolder, .newFolderWithSelection, .newFile,
-        .saveAsTemplate, .trash, .deleteImmediately, .emptyTrash, .compress, .extract, .extractTo,
+        .paste, .pasteAsFile, .move, .rename, .duplicate, .makeAlias, .convertImages, .newFolder,
+        .newFolderWithSelection, .newFile, .saveAsTemplate, .trash, .deleteImmediately, .emptyTrash, .compress,
+        .extract, .extractTo,
     ]
 
     /// What the menus leave out in the Trash: nothing is pasted, made, duplicated, converted, compressed or extracted
     /// there, and what is in it is in the Trash already (Delete Immediately is offered instead). Extract To takes an
     /// archive's items elsewhere.
     public static let trashHiddenActions: [ContextMenuActionID] = [
-        .paste, .newFolder, .newFolderWithSelection, .newFile, .saveAsTemplate, .duplicate, .convertImages, .trash,
-        .compress, .extract,
+        .paste, .newFolder, .newFolderWithSelection, .newFile, .saveAsTemplate, .duplicate, .makeAlias,
+        .convertImages, .trash, .compress, .extract,
     ]
 
     /// Background-menu actions that act on the folder on screen rather than on a selection.
@@ -258,6 +259,10 @@ public enum ContextMenuRules {
         {
             hidden.insert(.openInViewer)
         }
+        // Show Original is for one symbolic link or alias, of the list or of search results.
+        if subject.scope != .selection || entries.count != 1 || subject.paths.count != 1 || !entries[0].kind.isLink {
+            hidden.insert(.showOriginal)
+        }
         // Edit is for text files.
         if entries.isEmpty || entries.count != subject.paths.count || !entries.allSatisfy({ $0.kind.isEditableFile }) {
             hidden.insert(.edit)
@@ -315,6 +320,7 @@ public enum ContextMenuRules {
             // folders have no one folder for theirs.
             if duplicateFolder(of: subject.paths) == nil {
                 hidden.insert(.duplicate)
+                hidden.insert(.makeAlias)
                 hidden.insert(.compress)
             }
         case .content:

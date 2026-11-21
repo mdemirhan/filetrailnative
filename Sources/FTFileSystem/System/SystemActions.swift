@@ -109,7 +109,14 @@ public enum SystemActions {
             if ApplicationPaths.normalize(ApplicationPaths.trimmed(applicationPath)) == ApplicationPaths.finderAppPath {
                 try await opener.reveal(paths)
             } else {
-                try await opener.openWithApplication(applicationPath, paths)
+                // An alias is opened as its original, which the app is given: an app given the alias itself would
+                // read where the original is.
+                let originals = await Links.originalsOfAliases(paths)
+                if let missing = zip(paths, originals).first(where: { $0.1 == nil })?.0 {
+                    return .failure(
+                        "The original of \u{201C}\(NodePath.basename(missing))\u{201D} can\u{2019}t be found.")
+                }
+                try await opener.openWithApplication(applicationPath, originals.compactMap { $0 })
             }
             return .success
         } catch {
@@ -122,7 +129,11 @@ public enum SystemActions {
     public static func openWithApplications(
         paths: [String], pinnedAppPaths: [String],
         lookUp: @Sendable ([String], [String]) async throws -> LaunchServicesAnswer = { paths, appPaths in
-            await BlockingWork.run { OpenWithCatalog.shared.lookup(paths: paths, appPaths: appPaths) }
+            // The apps that open an alias's original, as that is what they are given.
+            await BlockingWork.run {
+                let originals = paths.map { Links.isFinderAlias($0) ? Links.original(of: $0) ?? $0 : $0 }
+                return OpenWithCatalog.shared.lookup(paths: originals, appPaths: appPaths)
+            }
         },
         exists: @escaping @Sendable (String) -> Bool = { FileManager.default.fileExists(atPath: $0) }
     ) async -> OpenWithLookup {
@@ -207,6 +218,10 @@ public enum SystemActions {
         var isDirectory: ObjCBool = false
         if FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory), isDirectory.boolValue {
             return path
+        }
+        // An alias of a folder opens there, as a symbolic link to one does.
+        if Links.isFinderAlias(path), let original = Links.originalItem(of: path), original.isFolder {
+            return original.path
         }
         return ApplicationPaths.dirname(path)
     }

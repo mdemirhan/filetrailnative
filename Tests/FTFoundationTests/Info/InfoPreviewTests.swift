@@ -63,8 +63,8 @@ struct InfoPreviewTests {
         #expect(InfoPreview.fallbackKindLabel(kind: .bundle, fileExtension: "key") == "Package")
         #expect(InfoPreview.fallbackKindLabel(kind: .file, fileExtension: "md") == "MD File")
         #expect(InfoPreview.fallbackKindLabel(kind: .file, fileExtension: "") == "File")
-        #expect(InfoPreview.fallbackKindLabel(kind: .symlinkDirectory, fileExtension: "") == "Alias Folder")
-        #expect(InfoPreview.fallbackKindLabel(kind: .symlinkFile, fileExtension: "") == "Alias")
+        #expect(InfoPreview.fallbackKindLabel(kind: .symlinkDirectory, fileExtension: "") == "Symbolic Link")
+        #expect(InfoPreview.fallbackKindLabel(kind: .symlinkFile, fileExtension: "") == "Symbolic Link")
     }
 
     @Test func theRootFolderIsMacintoshHD() {

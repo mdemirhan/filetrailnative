@@ -98,10 +98,13 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.calculateSize, "Calculate Size"))
             // Search results only, as Finder's Show in Enclosing Folder.
             menu.addItem(context.command(.revealInFolder, "Reveal in Folder"))
+            // A symbolic link's or an alias's original, selected in its folder, as Finder's.
+            menu.addItem(context.command(.showOriginal, MakeAlias.showOriginalLabel))
             menu.addItem(.separator())
             // What changes the items, then makes or reads archives and images, in the order of the right-click menu.
             menu.addItem(context.command(.renameSelection, "Rename"))
             menu.addItem(context.command(.duplicateSelection, "Duplicate"))
+            menu.addItem(context.command(.makeAlias, MakeAlias.commandLabel))
             menu.addItem(context.command(.moveSelection, "Move to…"))
             menu.addItem(.separator())
             // Names what it makes a zip of once the menu is synced: Compress “Photos”, Compress 3 Items.

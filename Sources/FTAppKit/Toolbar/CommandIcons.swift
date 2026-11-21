@@ -39,6 +39,7 @@ extension CommandIcon {
         case .showInfo: "info.circle"
         case .calculateSize: "chart.pie"
         case .revealInFolder: "arrow.up.folder"
+        case .showOriginal: "arrow.uturn.backward.circle"
         case .rootTreeHere: "list.bullet.indent"
         case .showInFinder: "finder"
         case .terminal: "apple.terminal"
@@ -56,6 +57,8 @@ extension CommandIcon {
         case .rename: "pencil"
         case .duplicate: "plus.square.on.square"
         case .convertImages: "photo.on.rectangle.angled"
+        // The curved arrow Finder draws on an alias.
+        case .makeAlias: "arrowshape.turn.up.right"
         case .newFolder: "folder.badge.plus"
         // Paste as File has the page with a plus.
         case .newFile: "square.and.pencil"

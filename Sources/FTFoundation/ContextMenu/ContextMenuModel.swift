@@ -15,6 +15,8 @@ public enum ContextMenuActionID: String, Sendable, CaseIterable, Hashable, Codab
     /// One file's text in its pane (Open in Viewer).
     case openInViewer
     case showPackageContents, edit, showInfo, calculateSize, cut, copy, paste, pasteAsFile, move, rename, duplicate
+    /// An alias of each item beside it; and a symbolic link's or an alias's original, selected in its folder.
+    case makeAlias, showOriginal
     case newFolder, newFolderWithSelection, saveAsTemplate, compress, extract, extractTo
     /// File ▸ New File's submenu, on the folder's background: Text File, the templates, the Templates folder.
     case newFile
@@ -139,6 +141,7 @@ public enum ContextMenuItems {
                 item(.paste, "Paste into Folder", .paste), item(.copyPath, "Copy Path", .copyPath),
                 line("separator-tree-clipboard"),
                 item(.rename, "Rename", .rename), item(.duplicate, "Duplicate", .duplicate),
+                item(.makeAlias, MakeAlias.commandLabel, .makeAlias),
                 item(.move, "Move to…", .move), line("separator-tree-organize"),
                 item(.toggleFavorite, favoriteToggleLabel, .favorite),
                 item(.terminal, "Open in Terminal", .terminal), item(.showInFinder, "Show in Finder", .showInFinder),
@@ -200,6 +203,8 @@ public enum ContextMenuItems {
                 item(.otherPane, "Other Pane", .twoPanes, submenu: true),
                 item(.openInOtherPane, "Open in Other Pane", .twoPanes),
                 item(.quickLook, "Quick Look", .quickLook),
+                // For one symbolic link or alias (hidden by the caller otherwise).
+                item(.showOriginal, MakeAlias.showOriginalLabel, .showOriginal),
                 item(.edit, "Edit in \(MenuName.shortened(textEditorName))", .edit),
                 item(.showPackageContents, "Show Package Contents", .showPackageContents),
                 line("separator-open"),
@@ -213,6 +218,7 @@ public enum ContextMenuItems {
                 item(.copyContents, options.copyContentsLabel ?? CopyContents.commandLabel, .copyContents),
                 line("separator-clipboard"),
                 item(.rename, options.renameLabel ?? "Rename", .rename), item(.duplicate, "Duplicate", .duplicate),
+                item(.makeAlias, MakeAlias.commandLabel, .makeAlias),
                 item(.move, "Move to…", .move), item(.newFolder, "New Folder", .newFolder),
                 item(.newFolderWithSelection, "New Folder with Selection", .newFolder),
                 line("separator-rename"),

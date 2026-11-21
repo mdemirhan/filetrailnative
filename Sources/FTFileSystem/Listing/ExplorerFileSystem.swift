@@ -51,6 +51,8 @@ public struct DirectoryRecord: Sendable, Hashable {
     public var isEmptyFolder: Bool
     /// The flag that hides an item whatever its name, as Finder goes by. Folders, files and links can all have it.
     public var hasHiddenFlag: Bool
+    /// Finder's flags say it is an alias: a file that holds where its original is, as Make Alias makes.
+    public var isAlias: Bool
     /// When the item was put in the folder (Date Added), in milliseconds since 1970; nil on a disk that doesn't keep
     /// it.
     public var addedMs: Int64?
@@ -58,8 +60,9 @@ public struct DirectoryRecord: Sendable, Hashable {
     public init(
         name: String, type: FileType, lstat: FileStats? = nil, hasCustomIcon: Bool = false,
         tagColor: FinderTagColor? = nil, isEmptyFolder: Bool = false, hasHiddenFlag: Bool = false,
-        addedMs: Int64? = nil
+        addedMs: Int64? = nil, isAlias: Bool = false
     ) {
+        self.isAlias = isAlias
         self.addedMs = addedMs
         self.hasHiddenFlag = hasHiddenFlag
         self.name = name
@@ -89,6 +92,8 @@ public protocol ExplorerFileSystem: Sendable {
     /// `lastOpenedMs` for every item of one folder read, asked for once before its items are gone through: what each
     /// item's read needs and no item changes (the home folder's path) is taken once, not once for each item.
     func lastOpenedReader() -> @Sendable (String) -> Int64?
+    /// Whether the file at `path` is a Finder alias (`Links.isFinderAlias`).
+    func isFinderAlias(_ path: String) -> Bool
 }
 
 extension ExplorerFileSystem {
@@ -98,6 +103,7 @@ extension ExplorerFileSystem {
     public func lastOpenedMs(_ path: String) -> Int64? { FileTimes.lastOpenedMs(path) }
     /// Whatever `lastOpenedMs` is: a stand-in for the disk that answers it itself is asked item by item.
     public func lastOpenedReader() -> @Sendable (String) -> Int64? { { lastOpenedMs($0) } }
+    public func isFinderAlias(_ path: String) -> Bool { Links.isFinderAlias(path) }
 }
 
 public struct NativeFileSystem: ExplorerFileSystem {
@@ -133,7 +139,8 @@ public struct NativeFileSystem: ExplorerFileSystem {
                     hasCustomIcon: entry.has_custom_icon != 0,
                     tagColor: FinderTagColor(rawValue: Int(entry.finder_label)),
                     isEmptyFolder: entry.is_empty_folder != 0, hasHiddenFlag: entry.has_hidden_flag != 0,
-                    addedMs: entry.added_valid != 0 ? Self.milliseconds(entry.added_sec, entry.added_nsec) : nil))
+                    addedMs: entry.added_valid != 0 ? Self.milliseconds(entry.added_sec, entry.added_nsec) : nil,
+                    isAlias: entry.is_alias != 0))
         }
         return records
     }
