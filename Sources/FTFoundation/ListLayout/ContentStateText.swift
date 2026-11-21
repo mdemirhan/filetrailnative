@@ -18,7 +18,8 @@ public enum ContentStateText {
     public static func empty(path: String, hiddenItemCount: Int) -> String {
         if path.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return noFolder }
         if hiddenItemCount > 0 {
-            return "Empty folder · \(hiddenItemCount) hidden \(hiddenItemCount == 1 ? "item" : "items")"
+            let count = FormatLocale.count(hiddenItemCount)
+            return "Empty folder · \(count) hidden \(hiddenItemCount == 1 ? "item" : "items")"
         }
         return "Empty folder"
     }

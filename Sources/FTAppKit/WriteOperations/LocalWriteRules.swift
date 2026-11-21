@@ -104,7 +104,7 @@ enum LocalWriteRules {
     /// "notes.md", or "notes.md and 2 more".
     static func itemSummary(_ paths: [String]) -> String {
         let firstName = NodePath.basename(paths.first ?? "item")
-        return paths.count <= 1 ? firstName : "\(firstName) and \(paths.count - 1) more"
+        return paths.count <= 1 ? firstName : "\(firstName) and \(FormatLocale.count(paths.count - 1)) more"
     }
 
     /// One item's name in quotes; "notes.md and 2 more" as it is.

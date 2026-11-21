@@ -256,7 +256,10 @@ final class CommandPaletteBox: DialogPanelView, NSTextFieldDelegate {
         emptyLabel.isHidden = !rowViews.isEmpty
         scroll.isHidden = rowViews.isEmpty
         let count = rowViews.count
-        countLabel.stringValue = typed ? "\(count) \(count == 1 ? "command" : "commands")" : "\(entries.count) commands"
+        countLabel.stringValue =
+            typed
+            ? "\(FormatLocale.count(count)) \(count == 1 ? "command" : "commands")"
+            : "\(FormatLocale.count(entries.count)) commands"
         markSelection()
         shell.needsLayout = true
         needsLayout = true

@@ -221,7 +221,7 @@ struct UndoHistoryRowsTests {
         #expect(told.placePaths == "from ~/d0")
         #expect(told.items.count == UndoHistoryRows.maxItemLines)
         #expect(told.items.first == "f0")
-        #expect(told.items.last == "and \(count - 9) more")
+        #expect(told.items.last == "and 99,991 more")
         #expect(seconds < 1)
         // The items of a batch rename are counted the same way.
         let renamed = (0..<5_000).map {
@@ -229,7 +229,7 @@ struct UndoHistoryRowsTests {
         }
         let batch = row(entry(.batchRename, [[.batchRenamed(items: renamed)]]))
         #expect(batch.place == "in d0")
-        #expect(batch.items.last == "and 4991 more")
+        #expect(batch.items.last == "and 4,991 more")
     }
 
     // The 1,000th item's folder is read and the 1,001st's is not, one item to a unit or all in one batch rename.

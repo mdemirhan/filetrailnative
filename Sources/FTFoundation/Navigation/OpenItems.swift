@@ -39,7 +39,7 @@ public enum OpenItems {
     public static func limitMessage(action: Action, selected: Int, limit: Int) -> String {
         let verb = action == .open ? "opens" : "edits"
         return
-            "File Trail \(verb) up to \(limit) item\(limit == 1 ? "" : "s") at a time, and \(selected) are selected. You can change this in Settings."
+            "File Trail \(verb) up to \(FormatLocale.count(limit)) item\(limit == 1 ? "" : "s") at a time, and \(FormatLocale.count(selected)) are selected. You can change this in Settings."
     }
 
     /// The notice's title.

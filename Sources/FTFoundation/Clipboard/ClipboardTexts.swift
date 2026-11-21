@@ -9,7 +9,8 @@ public enum ClipboardTexts {
         if names.count <= maxShown {
             return "\(names.dropLast().joined(separator: ", ")) and \(names[names.count - 1])"
         }
-        return "\(names.prefix(maxShown).joined(separator: ", ")) and \(names.count - maxShown) more"
+        let more = FormatLocale.count(names.count - maxShown)
+        return "\(names.prefix(maxShown).joined(separator: ", ")) and \(more) more"
     }
 
     /// Why items on the clipboard were left out of a paste. A cut is "moved"; in a paste of both (`mixed`) an item
@@ -25,7 +26,8 @@ public enum ClipboardTexts {
         if paths.count <= 3 {
             return "\(quotedNames(paths)) couldn\u{2019}t be \(verb) because \(why)."
         }
-        return "\(paths.count) items couldn\u{2019}t be \(verb) because \(why): \(quotedNames(paths))."
+        let count = FormatLocale.count(paths.count)
+        return "\(count) items couldn\u{2019}t be \(verb) because \(why): \(quotedNames(paths))."
     }
 
     /// The title of the notice that tells which clipboard items were left out. Nil when

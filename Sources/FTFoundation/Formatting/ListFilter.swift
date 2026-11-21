@@ -91,6 +91,7 @@ public enum ListFilter {
     /// "240 items", or "3 of 240 items" while a filter hides some of them.
     public static func formatItemCount(shown: Int, total: Int) -> String {
         let noun = total == 1 ? "item" : "items"
-        return shown == total ? "\(total) \(noun)" : "\(shown) of \(total) \(noun)"
+        let totalText = FormatLocale.count(total)
+        return shown == total ? "\(totalText) \(noun)" : "\(FormatLocale.count(shown)) of \(totalText) \(noun)"
     }
 }

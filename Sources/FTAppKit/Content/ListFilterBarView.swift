@@ -103,7 +103,7 @@ final class ListFilterBarView: NSView, TextStyleSource {
         clear.toolTip = pinned ? "Remove Filter" : "Clear Filter (Esc)"
         nothingMatches = shown == 0 && total > 0
         value.stringValue = query
-        count.stringValue = "\(shown) of \(total)"
+        count.stringValue = "\(FormatLocale.count(shown)) of \(FormatLocale.count(total))"
         clear.applyTheme(theme)
         modes.applyTheme(theme)
         applyColors()

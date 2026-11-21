@@ -19,7 +19,7 @@ public enum FormatLocale {
     }
 
     /// A count with its digits grouped as the region groups them: "1,234", "1.234" in Germany.
-    public static func count(_ value: Int, locale: Locale = current) -> String {
-        value.formatted(IntegerFormatStyle<Int>(locale: locale))
+    public static func count<Value: BinaryInteger>(_ value: Value, locale: Locale = current) -> String {
+        value.formatted(IntegerFormatStyle<Value>(locale: locale))
     }
 }

@@ -296,7 +296,7 @@ extension WriteCoordinator {
     nonisolated static func skippedNote(_ count: Int64) -> String {
         count == 1
             ? "1 item was left out: its name reached outside the folder, it was already there, or it can\u{2019}t be kept here."
-            : "\(count) items were left out: their names reached outside the folder, they were already there, or they can\u{2019}t be kept here."
+            : "\(FormatLocale.count(count)) items were left out: their names reached outside the folder, they were already there, or they can\u{2019}t be kept here."
     }
 
     nonisolated static func describeArchiveError(_ error: any Error) -> String {

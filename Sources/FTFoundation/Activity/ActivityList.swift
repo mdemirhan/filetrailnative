@@ -58,7 +58,7 @@ public struct ActivityIndicator: Equatable, Sendable {
     }
 
     /// The pill's text.
-    public var countLabel: String? { moreCount > 0 ? "+\(moreCount)" : nil }
+    public var countLabel: String? { moreCount > 0 ? "+\(FormatLocale.count(moreCount))" : nil }
 }
 
 /// One row of the Activity list.
@@ -195,6 +195,6 @@ public enum ActivityList {
     public static func summary(_ items: [ActivityItem]) -> String {
         guard let first = items.first else { return "Activity" }
         let rest = items.count - 1
-        return rest == 0 ? "\(first.title): \(first.detail)" : "\(first.title) and \(rest) more"
+        return rest == 0 ? "\(first.title): \(first.detail)" : "\(first.title) and \(FormatLocale.count(rest)) more"
     }
 }

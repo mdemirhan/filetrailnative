@@ -212,7 +212,7 @@ public enum PathBarModel {
 
     /// "Show 2 More Folders".
     public static func showHiddenLabel(_ count: Int) -> String {
-        "Show \(count) More \(count == 1 ? "Folder" : "Folders")"
+        "Show \(FormatLocale.count(count)) More \(count == 1 ? "Folder" : "Folders")"
     }
 
     /// The path bar's and the status text's widths in the row: the path bar takes what the status text leaves, but
@@ -260,7 +260,9 @@ public enum PathbarFolderMenuModel {
             shown: Array(folders[start..<(start + max)]), hiddenBefore: start, hiddenAfter: folders.count - start - max)
     }
 
-    public static func hiddenLabel(_ count: Int) -> String { "\(count) more \(count == 1 ? "folder" : "folders")" }
+    public static func hiddenLabel(_ count: Int) -> String {
+        "\(FormatLocale.count(count)) more \(count == 1 ? "folder" : "folders")"
+    }
 }
 
 /// The path editor's draft and suggestions.

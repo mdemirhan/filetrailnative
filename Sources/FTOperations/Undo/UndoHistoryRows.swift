@@ -180,7 +180,7 @@ public enum UndoHistoryRows {
         var lines = first.prefix(shown).map { item in
             line(item.change, replacing: item.replacing, withFolders: place.paths == nil, homePath: homePath)
         }
-        if count > shown { lines.append("and \(count - shown) more") }
+        if count > shown { lines.append("and \(FormatLocale.count(count - shown)) more") }
         return UndoHistoryRow(
             id: entry.id, icon: icon(entry), title: UndoHistory.labelOf(entry.action, entry.units, moves: entry.moves),
             place: place.names, placePaths: place.paths, items: lines, date: entry.date)
@@ -259,9 +259,9 @@ public enum UndoHistoryRows {
         if folders.count == 1 { return both("in", folders.list[0]) }
         let word = allTrashed ? "from" : "in"
         if sources.isOver || destinations.isOver || folders.isOver {
-            return ("\(word) over \(maxFolders) folders", nil)
+            return ("\(word) over \(FormatLocale.count(maxFolders)) folders", nil)
         }
-        return ("\(word) \(folders.count) folders", nil)
+        return ("\(word) \(FormatLocale.count(folders.count)) folders", nil)
     }
 
     /// An item's line: its name, or its old and new names when it has a new one; with its folders when the row's

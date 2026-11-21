@@ -226,7 +226,7 @@ public enum WriteEndNotices {
         guard let path = representativePath(write) else { return nil }
         let count = write.topLevelItemCount
         let name = "\u{201C}\(PathText.leafName(path))\u{201D}"
-        return count <= 1 ? name : "\(name) and \(count - 1) more"
+        return count <= 1 ? name : "\(name) and \(FormatLocale.count(count - 1)) more"
     }
 
     static func plannedSkipTitle(_ action: WriteOperationAction, completed: Int) -> String {

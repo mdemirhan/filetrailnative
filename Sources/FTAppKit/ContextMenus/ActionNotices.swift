@@ -1,5 +1,6 @@
 import AppKit
 import FTFileSystem
+import FTFoundation
 
 /// Where the notices and questions about an action are shown: in the window (`InWindowNoticePresenter`); a test puts
 /// a stand-in of its own that records them.
@@ -15,7 +16,7 @@ enum ActionNoticeText {
     static func openItemLimit(_ action: String, selected: Int, limit: Int) -> String {
         let verb = action == "Open" ? "opens" : "edits"
         return
-            "File Trail \(verb) up to \(limit) item\(limit == 1 ? "" : "s") at a time, and \(selected) are selected. You can change this in Settings."
+            "File Trail \(verb) up to \(FormatLocale.count(limit)) item\(limit == 1 ? "" : "s") at a time, and \(FormatLocale.count(selected)) are selected. You can change this in Settings."
     }
 
     static func alwaysOpenWithTitle(appName: String) -> String {

@@ -259,7 +259,7 @@ final class FolderViewsWindowController: NSWindowController, NSWindowDelegate, N
         guard let window, count > 0 else { return }
         let alert = NSAlert()
         alert.messageText =
-            count == 1 ? "Remove the folder view?" : "Remove all \(count) folder views?"
+            count == 1 ? "Remove the folder view?" : "Remove all \(FormatLocale.count(count)) folder views?"
         alert.informativeText = "These folders will look as the window shows any folder. This can\u{2019}t be undone."
         alert.addButton(withTitle: "Remove All")
         alert.addButton(withTitle: "Cancel")

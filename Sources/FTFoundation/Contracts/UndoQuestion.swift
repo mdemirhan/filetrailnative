@@ -80,7 +80,7 @@ public struct UndoQuestionText: Equatable, Sendable {
             let one = names.count == 1 ? names[0] : nil
             return UndoQuestionText(
                 title: one.map { "An item named \u{201C}\($0)\u{201D} is already where it would go back." }
-                    ?? "\(names.count) items have names that other items have taken where they would go back.",
+                    ?? "\(FormatLocale.count(names.count)) items have names that other items have taken where they would go back.",
                 message: one != nil
                     ? "\(verb) puts it back with a number added to its name."
                     : "\(verb) puts them back with a number added to their names.",
@@ -105,7 +105,7 @@ public struct UndoQuestionText: Equatable, Sendable {
                     "\(verb) moves it to the Trash again, along with your changes.")
             }
                 ?? text(
-                    "\(count) items were changed after they were put back.",
+                    "\(FormatLocale.count(count)) items were changed after they were put back.",
                     "\(verb) moves them to the Trash again, along with your changes.")
         }
         if items.allSatisfy(\.replaced) {
@@ -116,7 +116,7 @@ public struct UndoQuestionText: Equatable, Sendable {
                 )
             }
                 ?? text(
-                    "\(count) items were changed after they replaced the old ones.",
+                    "\(FormatLocale.count(count)) items were changed after they replaced the old ones.",
                     "Undoing moves them to the Trash, along with your changes, and puts the old ones back.")
         }
         let made = items.allSatisfy { !$0.putBack && !$0.replaced }
@@ -128,7 +128,7 @@ public struct UndoQuestionText: Equatable, Sendable {
                 )
             }
                 ?? text(
-                    "\(count) copies were changed after they were duplicated.",
+                    "\(FormatLocale.count(count)) copies were changed after they were duplicated.",
                     "Undoing the duplicate moves these copies to the Trash, along with your changes. The originals aren\u{2019}t affected."
                 )
         }
@@ -140,7 +140,7 @@ public struct UndoQuestionText: Equatable, Sendable {
                 )
             }
                 ?? text(
-                    "\(count) copies were changed after they were copied.",
+                    "\(FormatLocale.count(count)) copies were changed after they were copied.",
                     "Undoing the copy moves them to the Trash, along with your changes. The originals aren\u{2019}t affected."
                 )
         }
@@ -161,7 +161,7 @@ public struct UndoQuestionText: Equatable, Sendable {
                 "\(verb) moves it to the Trash, along with your changes.")
         }
             ?? text(
-                "\(count) items were changed after this was done.",
+                "\(FormatLocale.count(count)) items were changed after this was done.",
                 "\(verb) moves them to the Trash, along with your changes.")
     }
 }

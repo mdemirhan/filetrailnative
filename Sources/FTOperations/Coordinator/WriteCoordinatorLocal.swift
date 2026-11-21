@@ -159,7 +159,7 @@ public enum LocalWriteResults {
         if doneCount == 0 {
             return "Operation cancelled."
         }
-        return "Stopped after \(doneCount == 1 ? "1 item was" : "\(doneCount) items were") \(done)."
+        return "Stopped after \(doneCount == 1 ? "1 item was" : "\(FormatLocale.count(doneCount)) items were") \(done)."
     }
 
     /// `notStartedItems`: the items a stopped Trash or delete never reached, each listed, so the result counts

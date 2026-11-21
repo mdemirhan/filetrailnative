@@ -230,7 +230,10 @@ final class PreviewsViewController: IconViewController {
         }
         let group = groups[number]
         // At 1 at a time, which of the group's files this is.
-        let place = count == 1 ? "\(first - group.range.lowerBound + 1) of \(group.range.count)" : nil
+        let place =
+            count == 1
+            ? "\(FormatLocale.count(first - group.range.lowerBound + 1)) of \(FormatLocale.count(group.range.count))"
+            : nil
         groupLabel.show(title: group.group.title, place: place, theme: host.theme)
         groupLabel.isHidden = false
         let size = groupLabel.fittingSize

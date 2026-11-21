@@ -127,7 +127,7 @@ final class UndoHistoryView: NSView {
         if !content.redo.isEmpty {
             add(UndoHistoryHeading("Redo", key: redoKey), height: Self.headingHeight)
             if content.redoMore > 0 {
-                add(UndoHistoryNote("and \(content.redoMore) more"), height: Self.noteHeight)
+                add(UndoHistoryNote("and \(FormatLocale.count(content.redoMore)) more"), height: Self.noteHeight)
             }
             for row in content.redo { add(UndoHistoryRowView(row, undone: true, now: date), height: Self.rowHeight) }
         }

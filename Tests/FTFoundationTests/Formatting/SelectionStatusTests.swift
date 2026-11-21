@@ -142,6 +142,21 @@ struct SelectionStatusTests {
                 == "Searching… 3 results · 1 selected · 1.2 MB · Some folders couldn’t be read")
     }
 
+    // Counts are grouped as the region groups digits, as Finder writes "1,234 items" (US English in a test process).
+    @Test func countsAreGrouped() {
+        #expect(StatusSummary.content(itemCount: 1234, selectedCount: 0, size: nil) == "1,234 items")
+        #expect(
+            StatusSummary.content(itemCount: 12_345, shownCount: 1500, selectedCount: 0, size: nil)
+                == "1,500 of 12,345 items")
+        #expect(StatusSummary.content(itemCount: 12_345, selectedCount: 1001, size: nil) == "1,001 of 12,345 selected")
+        #expect(
+            StatusSummary.search(isSearching: true, shown: 2000, totalCount: 10_000, selectedCount: 1500)
+                == "Searching… 2,000 of 10,000 results · 1,500 selected")
+        #expect(
+            StatusSummary.search(isSearching: false, shown: 1234, totalCount: 1234, selectedCount: 0)
+                == "1,234 results")
+    }
+
     private func selection(
         totalBytes: Int64? = nil, folderSizeEntry: FolderSizeEntry? = .idle
     ) -> SelectionSize {

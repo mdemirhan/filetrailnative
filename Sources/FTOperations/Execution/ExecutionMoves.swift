@@ -353,7 +353,9 @@ private func describeLeftInMovedFolder(
         return nil
     }
     let folder = basenameOf(sourcePath)
-    let named = newItems.count == 1 ? "\u{201C}\(newItems[0])\u{201D} was" : "\(newItems.count) items were"
+    let named =
+        newItems.count == 1
+        ? "\u{201C}\(newItems[0])\u{201D} was" : "\(FormatLocale.count(newItems.count)) items were"
     let left = newItems.count == 1 ? "it was" : "they were"
     return
         "\(named) added to \u{201C}\(folder)\u{201D} while it was being moved, so \(left) left in the original \u{201C}\(folder)\u{201D}."
@@ -367,7 +369,9 @@ func describeAddedDuringCopy(_ node: ResolvedCopyPasteNode, _ fileSystem: some W
         return nil
     }
     let folder = basenameOf(node.node.sourcePath)
-    let named = newItems.count == 1 ? "\u{201C}\(newItems[0])\u{201D} was" : "\(newItems.count) items were"
+    let named =
+        newItems.count == 1
+        ? "\u{201C}\(newItems[0])\u{201D} was" : "\(FormatLocale.count(newItems.count)) items were"
     let copied = newItems.count == 1 ? "it wasn't" : "they weren't"
     return "\(named) added to \u{201C}\(folder)\u{201D} after the copy began, so \(copied) copied."
 }

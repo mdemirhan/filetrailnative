@@ -55,7 +55,7 @@ struct GoToBoxOptions {
     /// "Move “Report.pdf” To", "Move 3 Items To".
     static func title(_ verb: String, _ paths: [String], items: String) -> String {
         if paths.count == 1 { return "\(verb) \u{201C}\(NodePath.basename(paths[0]))\u{201D} To" }
-        return "\(verb) \(paths.count) \(items) To"
+        return "\(verb) \(FormatLocale.count(paths.count)) \(items) To"
     }
 }
 

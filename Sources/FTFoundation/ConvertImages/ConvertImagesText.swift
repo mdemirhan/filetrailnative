@@ -9,7 +9,8 @@ public enum ConvertImagesText {
 
     /// "Convert Image…" for one, "Convert 3 Images…" for several, as the menus name what it would convert.
     public static func menuTitle(count: Int) -> String {
-        count == 1 ? "Convert Image\u{2026}" : count > 1 ? "Convert \(count) Images\u{2026}" : commandLabel
+        count == 1
+            ? "Convert Image\u{2026}" : count > 1 ? "Convert \(FormatLocale.count(count)) Images\u{2026}" : commandLabel
     }
 
     // MARK: Why one wasn't converted

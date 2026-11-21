@@ -158,7 +158,7 @@ extension ClipboardRules {
     }
 
     private static func pluralize(_ count: Int, _ singular: String) -> String {
-        "\(count) \(singular)\(count == 1 ? "" : "s")"
+        "\(FormatLocale.count(count)) \(singular)\(count == 1 ? "" : "s")"
     }
 
     private static func nameExtension(_ name: String) -> String {

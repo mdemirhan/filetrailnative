@@ -279,7 +279,7 @@ public final class UndoHistory {
             return "Rename"
         case .batchRename:
             let count = itemStepCount(units)
-            return count == 1 ? "Rename" : "Rename of \(count) Items"
+            return count == 1 ? "Rename" : "Rename of \(FormatLocale.count(count)) Items"
         case .newFolder:
             return "New Folder"
         case .newFolderWithSelection:
@@ -294,10 +294,10 @@ public final class UndoHistory {
             return "Extract"
         case .convertImages:
             let count = itemStepCount(units)
-            return count == 1 ? "Convert Image" : "Convert \(count) Images"
+            return count == 1 ? "Convert Image" : "Convert \(FormatLocale.count(count)) Images"
         case .makeAlias:
             let count = itemStepCount(units)
-            return count == 1 ? "Make Alias" : "Make \(count) Aliases"
+            return count == 1 ? "Make Alias" : "Make \(FormatLocale.count(count)) Aliases"
         case .trash:
             return "Move to Trash of \(itemsName(units, inMenu: inMenu))"
         case .duplicate:
@@ -339,7 +339,7 @@ public final class UndoHistory {
     /// “a.txt” for one item, "3 Items" for more.
     /// `inMenu`: a long name is shortened, as the menus show names (`MenuName`).
     private nonisolated static func itemsName(_ units: [UndoUnit], inMenu: Bool) -> String {
-        guard units.count == 1 else { return "\(units.count) Items" }
+        guard units.count == 1 else { return "\(FormatLocale.count(units.count)) Items" }
         guard let path = mainPathOf(units[0].steps) else { return "1 Item" }
         let name = NodePath.basename(path)
         return inMenu ? MenuName.quoted(name) : "\u{201C}\(name)\u{201D}"

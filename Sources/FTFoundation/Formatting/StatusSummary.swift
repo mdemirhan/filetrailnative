@@ -47,7 +47,7 @@ public enum StatusSummary {
         var parts = [
             selectedCount == 0
                 ? ListFilter.formatItemCount(shown: shownCount ?? itemCount, total: itemCount)
-                : "\(selectedCount) of \(itemCount) selected"
+                : "\(FormatLocale.count(selectedCount)) of \(FormatLocale.count(itemCount)) selected"
         ]
         if let text = sizeText(size) {
             parts.append(text)
@@ -65,10 +65,11 @@ public enum StatusSummary {
         unreadableFolders: Bool = false
     ) -> String {
         let noun = totalCount == 1 ? "result" : "results"
-        let count = shown == totalCount ? "\(totalCount) \(noun)" : "\(shown) of \(totalCount) \(noun)"
+        let total = FormatLocale.count(totalCount)
+        let count = shown == totalCount ? "\(total) \(noun)" : "\(FormatLocale.count(shown)) of \(total) \(noun)"
         var parts = [isSearching ? "Searching… \(count)" : count]
         if selectedCount > 0 {
-            parts.append("\(selectedCount) selected")
+            parts.append("\(FormatLocale.count(selectedCount)) selected")
             if let text = sizeText(selectionSize) {
                 parts.append(text)
             }

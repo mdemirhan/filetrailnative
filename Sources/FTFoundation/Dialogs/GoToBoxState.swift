@@ -131,7 +131,7 @@ public struct GoToBoxState: Equatable, Sendable {
     /// The list's heading, while it lists something.
     public var label: String {
         guard isPathMode || hasQuery else { return "Recent and favorite folders" }
-        return "\(rows.count) match\(rows.count == 1 ? "" : "es")"
+        return "\(FormatLocale.count(rows.count)) match\(rows.count == 1 ? "" : "es")"
     }
 
     /// The keys easy to miss: Tab completes, ⌘⌫ forgets a folder.

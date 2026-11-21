@@ -146,7 +146,8 @@ func describePutBack(_ restored: [BatchRenameRecovery.Restored]) -> String {
             : "\u{201C}\(basenameOf(item.originalPath))\u{201D} is named \u{201C}\(basenameOf(item.path))\u{201D}"
     }
     let more = restored.count - said.count
-    let rest = more > 0 ? "; and \(more) more \(more == 1 ? "item was" : "items were") put back" : ""
+    let rest =
+        more > 0 ? "; and \(FormatLocale.count(more)) more \(more == 1 ? "item was" : "items were") put back" : ""
     return "A rename of several items was cut short when File Trail stopped. \(said.joined(separator: "; "))\(rest)."
 }
 

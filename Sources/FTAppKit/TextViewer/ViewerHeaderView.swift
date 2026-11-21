@@ -149,7 +149,10 @@ final class ViewerHeaderView: NSView {
         previousButton.isHidden = !inPlace || next.position == nil
         nextButton.isHidden = previousButton.isHidden
         positionLabel.isHidden = previousButton.isHidden
-        if let position = next.position { positionLabel.stringValue = "\(position.index + 1) of \(position.count)" }
+        if let position = next.position {
+            positionLabel.stringValue =
+                "\(FormatLocale.count(position.index + 1)) of \(FormatLocale.count(position.count))"
+        }
         followButton.isHidden = inPlace
         followButton.state = next.mode == .following ? .on : .off
         saveButton.isHidden = !next.isDirty

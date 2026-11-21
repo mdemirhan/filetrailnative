@@ -295,7 +295,8 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             notices.show(
                 title: "Couldn’t Change the Tag",
                 message: "\(ClipboardSummary.leafName(first.path)): \(first.message)"
-                    + (failures.count > 1 ? " \(failures.count - 1) more couldn’t be changed." : ""),
+                    + (failures.count > 1
+                        ? " \(FormatLocale.count(failures.count - 1)) more couldn’t be changed." : ""),
                 in: tab.window)
         }
     }
@@ -654,7 +655,7 @@ enum ClipboardSummary {
     static func summary(_ paths: [String]) -> String {
         guard let first = paths.first else { return "item" }
         let name = leafName(first)
-        return paths.count <= 1 ? name : "\(name) and \(paths.count - 1) more"
+        return paths.count <= 1 ? name : "\(name) and \(FormatLocale.count(paths.count - 1)) more"
     }
 
     static func leafName(_ path: String) -> String {

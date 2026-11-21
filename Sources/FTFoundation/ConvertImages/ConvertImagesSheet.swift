@@ -253,7 +253,7 @@ public struct ConvertImagesSheet: Equatable, Sendable {
 
     // MARK: What it says
 
-    public var title: String { count == 1 ? "Convert Image" : "Convert \(count) Images" }
+    public var title: String { count == 1 ? "Convert Image" : "Convert \(FormatLocale.count(count)) Images" }
 
     public var outcome: ImageConversion.SizeOutcome { ImageConversion.outcome(sizes, settings.size) }
 
@@ -269,14 +269,16 @@ public struct ConvertImagesSheet: Equatable, Sendable {
             return target == single ? "\(single.text), kept at its size" : "\(single.text) \u{2192} \(target.text)"
         }
         let outcome = outcome
-        let read = sizes.count
+        let read = FormatLocale.count(sizes.count)
         if settings.sizeMode == .actual || outcome.smaller == 0, outcome.tooSmall == 0 {
             return settings.sizeMode == .actual
                 ? "\(read) images, each kept at its size" : "\(read) images, all already fit and keep their size"
         }
         if outcome.unchanged == 0, outcome.tooSmall == 0 { return "\(read) images, each made smaller" }
-        var parts = ["\(outcome.smaller) made smaller"]
-        if outcome.unchanged > 0 { parts.append("\(outcome.unchanged) already fit and keep their size") }
+        var parts = ["\(FormatLocale.count(outcome.smaller)) made smaller"]
+        if outcome.unchanged > 0 {
+            parts.append("\(FormatLocale.count(outcome.unchanged)) already fit and keep their size")
+        }
         return "\(read) images: " + parts.joined(separator: ", ")
     }
 
@@ -289,7 +291,8 @@ public struct ConvertImagesSheet: Equatable, Sendable {
             lines.append(
                 outcome.tooSmall == 1
                     ? "1 of the images is smaller than \(box), and images are never made larger"
-                    : "\(outcome.tooSmall) of the images are smaller than \(box), and images are never made larger")
+                    : "\(FormatLocale.count(outcome.tooSmall)) of the images are smaller than \(box), and images are never "
+                        + "made larger")
         }
         if case .custom(_, _, .pixels, false) = settings.size, count > 1, ImageConversion.shapesDiffer(sizes) {
             lines.append("The images aren\u{2019}t all the same shape, so one exact size stretches them differently")
@@ -298,7 +301,7 @@ public struct ConvertImagesSheet: Equatable, Sendable {
             lines.append(
                 unreadableCount == 1
                     ? "1 of them can\u{2019}t be opened as an image"
-                    : "\(unreadableCount) of them can\u{2019}t be opened as images")
+                    : "\(FormatLocale.count(unreadableCount)) of them can\u{2019}t be opened as images")
         }
         return lines
     }
