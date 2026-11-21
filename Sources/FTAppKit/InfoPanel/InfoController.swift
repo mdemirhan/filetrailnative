@@ -327,8 +327,6 @@ final class InfoController {
             propertiesLoad.stop()
             volumeRequested = nil
             auto.setPath(nil)
-            // The status text sums the selected files' sizes from the details asked for here.
-            if content.selection.paths.count > 1 { requestFileDetails(shownSelectedEntries) }
             return
         }
         let preferences = host.preferences

@@ -79,8 +79,15 @@ public struct DirectoryEntry: Sendable, Hashable, Codable {
     /// Only for a file without an extension: whether it can be run. macOS draws such files with one of
     /// two icons, and this says which.
     public var isExecutable: Bool?
-    /// Only when listed sorted or grouped by size, and only for files (nil for the rest).
+    /// A file's size, as the folder read gave it, or as it was asked for when listed sorted or grouped by size (a
+    /// link's is its target's). Nil for a folder, and where neither gave it.
     public var sizeBytes: Int64?
+    /// When the item was last modified and created, in milliseconds since 1970, and its permission bits, as the folder
+    /// read gave them: shown until the item's own details are read. Nil for a link, whose are its target's, and where
+    /// the read didn't give them.
+    public var modifiedMs: Int64?
+    public var createdMs: Int64?
+    public var permissionMode: Int?
     /// Only for a folder Finder has given its own icon (Customize Folder, or a pasted picture).
     public var hasCustomIcon: Bool?
     /// Only for a folder with a colored tag: the color Finder draws it in, its last tag's.

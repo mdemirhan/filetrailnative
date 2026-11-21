@@ -281,6 +281,62 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // The Icons and Compact views show no file's size and read none for what is on screen: the status text has the
+        // size of a selected file, and of several, all the same. A file's comes with the folder read; a link's is its
+        // target's, which is read for it.
+        @Test func theStatusTextShowsSelectedFilesSizesInIconsAndCompact() async throws {
+            let harness = try ExplorerHarness.windowless()
+            try files(["aaa.txt": 100, "aab.txt": 200, "aac.txt": 400], in: harness)
+            try FileManager.default.createSymbolicLink(
+                at: harness.folder.appending("link.txt"), withDestinationURL: harness.folder.appending("aac.txt"))
+            let tab = try await harness.open()
+            tab.perform(.viewAsIcons)
+            #expect(await waitUntil { tab.content.mode == .icons && !tab.content.entries.isEmpty })
+            // What the folder read gave is kept whatever the view and order; a link's are its target's, not read.
+            let aaa = try #require(tab.content.listed.first { $0.name == "aaa.txt" })
+            let stats = try FileManager.default.attributesOfItem(atPath: aaa.path)
+            #expect(aaa.sizeBytes == 100)
+            let modified = try #require(stats[.modificationDate] as? Date)
+            // The listing keeps milliseconds.
+            #expect(abs((aaa.listedModifiedAt ?? .distantPast).timeIntervalSince(modified)) < 0.001)
+            #expect(aaa.permissionMode == (stats[.posixPermissions] as? Int))
+            let link = try #require(tab.content.listed.first { $0.name == "link.txt" })
+            #expect(link.sizeBytes == nil && link.modifiedMs == nil && link.permissionMode == nil)
+            let listed = tab.content.listed.count
+            tab.content.select(paths: [try path("aaa.txt", in: tab)])
+            #expect(await waitUntil { status(tab) == "1 of \(listed) selected · \(SizeText.size(100))" })
+            tab.content.select(paths: try ["aaa.txt", "aab.txt"].map { try path($0, in: tab) })
+            #expect(await waitUntil { status(tab) == "2 of \(listed) selected · \(SizeText.size(300))" })
+            tab.content.select(paths: [try path("link.txt", in: tab)])
+            #expect(await waitUntil { status(tab) == "1 of \(listed) selected · \(SizeText.size(400))" })
+
+            tab.perform(.viewAsList)
+            #expect(await waitUntil { tab.content.mode == .list })
+            tab.content.select(paths: [try path("aac.txt", in: tab)])
+            #expect(await waitUntil { status(tab) == "1 of \(listed) selected · \(SizeText.size(400))" })
+            await harness.close()
+        }
+
+        // The List reads the details of the rows on screen: a selection reaching past them has its total too.
+        @Test func theStatusTextSumsSelectedFilesOffScreenInTheList() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let names = (0..<400).map { String(format: "file-%03d.txt", $0) }
+            try files(Dictionary(uniqueKeysWithValues: names.map { ($0, 10) }), in: harness)
+            let tab = try await harness.open()
+            tab.perform(.viewAsDetails)
+            #expect(await waitUntil { tab.content.listed.count >= names.count })
+            harness.layout(tab)
+            let selected = try names.map { try path($0, in: tab) }
+            tab.content.select(paths: selected)
+            let listed = tab.content.listed.count
+            #expect(
+                await waitUntil {
+                    status(tab) == "\(FormatLocale.count(names.count)) of \(FormatLocale.count(listed)) selected · "
+                        + SizeText.size(Int64(names.count * 10))
+                })
+            await harness.close()
+        }
+
         // One folder is measured afresh, even with its size known.
         @Test func calculateSizeOnOneFolderMeasuresItAgain() async throws {
             let harness = try ExplorerHarness.windowless()

@@ -150,8 +150,21 @@ struct ContentModelTests {
         let metadata = try! ISODateForTests.decoder.decode(
             EntryMetadata.self, from: JSONSerialization.data(withJSONObject: metadataJSON))
         #expect(ListCellText.size(entry: file, metadata: metadata, folderSize: .idle).text == "999 B")
-        #expect(ListCellText.permissions(metadata) == ListCellContent(text: "644", tooltip: "rw-r--r--"))
-        #expect(ListCellText.permissions(nil).text == "")
+        #expect(
+            ListCellText.permissions(entry: file, metadata: metadata)
+                == ListCellContent(text: "644", tooltip: "rw-r--r--"))
+        #expect(ListCellText.permissions(entry: file, metadata: nil).text == "")
+        // Until its details are read, a row shows what its folder read gave; the details win once read.
+        var listed = file
+        listed.sizeBytes = 120
+        listed.modifiedMs = 1_760_366_220_000
+        listed.permissionMode = 0o600
+        #expect(ListCellText.size(entry: listed, metadata: nil, folderSize: .idle).text == "120 B")
+        #expect(ListCellText.permissions(entry: listed, metadata: nil).text == "600")
+        #expect(ListCellText.modifiedAt(listed, nil) == Date(timeIntervalSince1970: 1_760_366_220))
+        #expect(ListCellText.size(entry: listed, metadata: metadata, folderSize: .idle).text == "999 B")
+        #expect(ListCellText.permissions(entry: listed, metadata: metadata).text == "644")
+        #expect(ListCellText.modifiedAt(listed, metadata) == metadata.modifiedAt)
         let now = ISODateForTests.date("2026-10-13T14:38:00.000Z")
         let date = ListCellText.date(metadata.modifiedAt, now: now)
         #expect(date.text == "Just now" || date.text == "1 min ago")
@@ -207,8 +220,9 @@ struct ContentModelTests {
             #expect(cell(.lastOpened, metadata) == ListCellText.date(lastOpened, now: now))
             #expect(!cell(.lastOpened, metadata).text.isEmpty)
             #expect(cell(.lastOpened, metadata).tooltip?.isEmpty == false)
-            // Details not read yet, and a file never opened.
-            #expect(cell(.added, nil).text == "")
+            // Details not read yet: Date Added is the folder read's; Date Last Opened isn't in it. A file never opened.
+            #expect(cell(.added, nil) == ListCellText.date(entry.listedAddedAt, now: now))
+            #expect(!cell(.added, nil).text.isEmpty)
             #expect(cell(.lastOpened, nil).text == "")
             #expect(cell(.lastOpened, items.first).text == "")
         }

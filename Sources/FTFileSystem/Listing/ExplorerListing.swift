@@ -347,6 +347,15 @@ enum ExplorerListing {
                 case .name:
                     break
                 }
+                // What the folder read gave (getattrlistbulk gives it with each item) is kept, in every view and order:
+                // the status text has a selected file's size, and the List its dates and permissions, with nothing
+                // more to read. A link's are its target's, asked for only when the order needs them.
+                if record.type != .symlink, let known = record.lstat {
+                    if entry.sizeBytes == nil, kind == .file || kind.isAlias { entry.sizeBytes = known.size }
+                    entry.modifiedMs = known.mtimeMs
+                    entry.createdMs = known.birthtimeMs
+                    entry.permissionMode = Int(known.mode & 0o777)
+                }
                 entries.append(entry)
                 keys.append(record.name)
             }
@@ -655,6 +664,13 @@ enum ExplorerListing {
         }
         return nil
     }
+}
+
+extension DirectoryEntry {
+    /// The dates the folder read gave, as the details give them: shown until the item's own details are read.
+    public var listedModifiedAt: Date? { modifiedMs.flatMap(FileTime.date(milliseconds:)) }
+    public var listedCreatedAt: Date? { createdMs.flatMap(FileTime.date(milliseconds:)) }
+    public var listedAddedAt: Date? { addedMs.flatMap(FileTime.date(milliseconds:)) }
 }
 
 /// A file's time, from milliseconds since 1970, as the details show it. A time past the year 9999 (or before

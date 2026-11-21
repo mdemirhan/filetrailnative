@@ -52,14 +52,15 @@ extension ExplorerWindowlessTests {
             let before = item.thumbnail.image
             #expect(!isBlue(before))
 
-            // Its name, kind and place are as they were: nothing about its entry changed.
+            // Its name, kind and place are as they were; its size, which the listing keeps, is not, so its item may be
+            // drawn anew: it is looked up again.
             try png(red: 0, blue: 1).write(to: file)
             tab.services.directoryService.cache.clear()
             let path = tab.content.entries[0].path
             harness.windows.folderChanged(
                 windowID: tab.windowID, FolderChange(path: tab.folderPath, changedPaths: [path]))
-            #expect(await waitUntil { isBlue(item.thumbnail.image) })
-            #expect(item.thumbnail.image !== before)
+            #expect(await waitUntil { isBlue(probe.iconItems["picture.png"]?.thumbnail.image) })
+            #expect(probe.iconItems["picture.png"]?.thumbnail.image !== before)
             await harness.close()
         }
     }

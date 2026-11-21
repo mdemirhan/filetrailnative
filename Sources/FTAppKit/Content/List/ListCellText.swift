@@ -13,11 +13,12 @@ enum ListCellText {
     /// A folder or bundle shows this until its size is calculated.
     static let folderSizePlaceholder = "--"
 
-    /// Folders and bundles show "--", as in Finder, until their size is calculated. An empty
-    /// string is kept for metadata that is still loading.
+    /// Folders and bundles show "--", as in Finder, until their size is calculated. A file shows the size its folder
+    /// read gave until its details are read; an empty string is kept while neither has it.
     static func detailSize(entry: DirectoryEntry, metadata: EntryMetadata?) -> String {
         if entry.isFolderSizeEligible { return folderSizePlaceholder }
-        guard let metadata, metadata.sizeStatus != .deferred else { return "" }
+        guard let metadata else { return entry.sizeBytes.map { SizeText.size($0, status: .ready) } ?? "" }
+        guard metadata.sizeStatus != .deferred else { return "" }
         return SizeText.size(
             metadata.sizeBytes, status: FTFoundation.SizeStatus(rawValue: metadata.sizeStatus.rawValue) ?? .unavailable)
     }
@@ -51,8 +52,9 @@ enum ListCellText {
     }
 
     /// The octal code, with the letters as the tooltip.
-    static func permissions(_ metadata: EntryMetadata?) -> ListCellContent {
-        guard let parts = PermissionText.split(metadata?.permissionMode) else { return ListCellContent(text: "") }
+    static func permissions(entry: DirectoryEntry, metadata: EntryMetadata?) -> ListCellContent {
+        let mode = metadata.map(\.permissionMode) ?? entry.permissionMode
+        guard let parts = PermissionText.split(mode) else { return ListCellContent(text: "") }
         return ListCellContent(text: parts.octal, tooltip: parts.symbolic)
     }
 
@@ -65,11 +67,24 @@ enum ListCellText {
         case .folder: return ListCellContent(text: "")
         case .size: return size(entry: entry, metadata: metadata, folderSize: folderSize)
         case .kind: return ListCellContent(text: metadata?.kindLabel ?? "")
-        case .permissions: return permissions(metadata)
-        case .modified: return date(metadata?.modifiedAt, now: now)
-        case .created: return date(metadata?.createdAt, now: now)
-        case .added: return date(metadata?.addedAt, now: now)
+        case .permissions: return permissions(entry: entry, metadata: metadata)
+        case .modified: return date(modifiedAt(entry, metadata), now: now)
+        case .created: return date(createdAt(entry, metadata), now: now)
+        case .added: return date(addedAt(entry, metadata), now: now)
         case .lastOpened: return date(metadata?.lastOpenedAt, now: now)
         }
+    }
+
+    // The row's details once read, and what its folder read gave until then.
+    static func modifiedAt(_ entry: DirectoryEntry, _ metadata: EntryMetadata?) -> Date? {
+        metadata.map(\.modifiedAt) ?? entry.listedModifiedAt
+    }
+
+    static func createdAt(_ entry: DirectoryEntry, _ metadata: EntryMetadata?) -> Date? {
+        metadata.map(\.createdAt) ?? entry.listedCreatedAt
+    }
+
+    static func addedAt(_ entry: DirectoryEntry, _ metadata: EntryMetadata?) -> Date? {
+        metadata.map(\.addedAt) ?? entry.listedAddedAt
     }
 }

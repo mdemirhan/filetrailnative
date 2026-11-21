@@ -356,9 +356,9 @@ final class DetailsBarView: NSView {
         let now = RelativeClock.shared.relativeNow
         return columnSet.columns.contains { column in
             switch column {
-            case .modified: ListCellText.readsInMinutes(metadata?.modifiedAt, now: now)
-            case .created: ListCellText.readsInMinutes(metadata?.createdAt, now: now)
-            case .added: ListCellText.readsInMinutes(metadata?.addedAt, now: now)
+            case .modified: ListCellText.readsInMinutes(ListCellText.modifiedAt(entry, metadata), now: now)
+            case .created: ListCellText.readsInMinutes(ListCellText.createdAt(entry, metadata), now: now)
+            case .added: ListCellText.readsInMinutes(ListCellText.addedAt(entry, metadata), now: now)
             case .lastOpened: ListCellText.readsInMinutes(metadata?.lastOpenedAt, now: now)
             default: false
             }

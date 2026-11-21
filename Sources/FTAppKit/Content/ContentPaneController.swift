@@ -1840,14 +1840,20 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             let items = selectedEntries.map {
                 SelectionItem(path: $0.path, isFolderSizeEligible: $0.isFolderSizeEligible)
             }
+            // Only the List reads the details of what is on screen: a selected file whose size no read gave yet, in
+            // another view or off screen, is read for the status text.
+            var unread: [String] = []
             let summary = SelectionSizing.summarize(
                 items,
                 fileSize: { [weak self] path in
                     guard let self else { return nil }
-                    return self.details[path]?.sizeBytes ?? self.rowsByPath[DiskPath(path)]?.sizeBytes
+                    let size = self.details[path]?.sizeBytes ?? self.rowsByPath[DiskPath(path)]?.sizeBytes
+                    if size == nil { unread.append(path) }
+                    return size
                 },
                 folderSize: { [folderSizes] in folderSizes.entry($0) })
             size = StatusSummary.selectionSize(summary)
+            if !unread.isEmpty { requestMetadata(for: unread) }
         }
         if let searchDisplay {
             status.stringValue = StatusSummary.search(
