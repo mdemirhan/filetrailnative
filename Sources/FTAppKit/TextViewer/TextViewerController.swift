@@ -70,8 +70,9 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     private var ruler: LineNumberRuler!
     private var coloring: SyntaxColoring!
     private let previewScroll = NSScrollView()
-    /// TextKit 1, as a Markdown table is drawn with `NSTextTable`, which TextKit 2 doesn't lay out.
-    private let previewView = NSTextView(usingTextLayoutManager: false)
+    /// TextKit 1, as a Markdown table is drawn with `NSTextTable`, which TextKit 2 doesn't lay out. It takes the keys
+    /// of the text in Read: Return is Edit, and the page keys move it.
+    let previewView = ViewerTextView(usingTextLayoutManager: false)
     /// The pictures the Markdown names, read from the disk as the Preview finds them: the text shows first, and the
     /// Preview is drawn again with them.
     private var previewImages = MarkdownImages()
@@ -160,6 +161,12 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
 
         previewView.isEditable = false
         previewView.isSelectable = true
+        previewView.setAccessibilityIdentifier("textViewer.previewText")
+        previewView.onCancel = { [weak self] in self?.cancel() ?? false }
+        previewView.onTab = { [weak self] in self?.onTab() }
+        previewView.onEdit = { [weak self] in self?.setEditing(true) }
+        previewView.commandForKey = { [weak self] event in self?.commandForKey(event) }
+        previewView.onFocusChange = { [weak self] in self?.onFocusChange() }
         previewView.textContainerInset = NSSize(width: 24, height: 18)
         previewView.isVerticallyResizable = true
         previewView.minSize = .zero
@@ -212,8 +219,11 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         if case .text = file?.content { return true }
         return false
     }
-    /// Whether the text has the keyboard.
-    var textHasKeyboard: Bool { view.window?.firstResponder === textView }
+    /// Whether the file's text has the keyboard, as its source or as Markdown's Preview.
+    var textHasKeyboard: Bool {
+        guard let responder = view.window?.firstResponder else { return false }
+        return responder === textView || responder === previewView
+    }
     /// Whether the keyboard is anywhere in the viewer: its text, its preview, its find bar, or the viewer itself.
     var hasKeyboard: Bool {
         guard let responder = view.window?.firstResponder as? NSView else { return false }
@@ -226,9 +236,27 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
             || responder.isDescendant(of: message)
     }
 
-    /// What takes the keyboard when the pane is focused: the text while it shows, else the viewer itself, so Esc and
-    /// Tab still reach it over a picture, Quick Look's preview or a message.
-    var keyboardView: NSView { scrollView.isHidden ? view : textView }
+    /// What takes the keyboard when the pane is focused: the text or its Preview while it shows, else the viewer itself,
+    /// so Esc and Tab still reach it over a picture, Quick Look's preview or a message.
+    var keyboardView: NSView {
+        if !scrollView.isHidden { return textView }
+        if !previewScroll.isHidden { return previewView }
+        return view
+    }
+
+    /// A page or part of one in the text shown, the source or the Preview: in Edit the caret moves with it. False when
+    /// no text shows.
+    @discardableResult
+    func page(_ pages: CGFloat) -> Bool {
+        if !scrollView.isHidden {
+            textView.page(pages)
+        } else if !previewScroll.isHidden {
+            previewView.page(pages)
+        } else {
+            return false
+        }
+        return true
+    }
 
     /// Esc. In Edit it goes to Read, keeping the keyboard. In Read it closes the viewer, in place and beside the list:
     /// the pane shows its folder again.
@@ -346,8 +374,11 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     private enum Body { case text, preview, quickLook, image, message }
 
     private func showBody(_ shown: Body) {
-        // Hiding the text takes the keyboard from it: the viewer keeps it.
-        let keyboard = view.window.map { $0.firstResponder === textView || $0.firstResponder === view } ?? false
+        // Hiding the text or the Preview takes the keyboard from it: the viewer keeps it.
+        let keyboard =
+            view.window.map {
+                $0.firstResponder === textView || $0.firstResponder === previewView || $0.firstResponder === view
+            } ?? false
         scrollView.isHidden = shown != .text
         previewScroll.isHidden = shown != .preview
         message.isHidden = shown != .message

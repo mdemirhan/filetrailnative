@@ -1207,13 +1207,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             default: nil
             }
         guard let page else { return runKeyCommand(id, isRepeat: false) }
-        // A file shown in the pane: its text moves, and in Edit its caret with it.
+        // A file shown in the pane: its text or its Preview moves, and in Edit the caret with it.
         if let viewer = panes.first(where: { $0.viewer?.hasKeyboard == true })?.viewer
             ?? (focusedPane == .content ? activePane.viewer : nil)
         {
-            guard viewer.isText else { return false }
-            viewer.textView.page((page.forward ? 1 : -1) * (page.half ? 0.5 : 1))
-            return true
+            return viewer.page((page.forward ? 1 : -1) * (page.half ? 0.5 : 1))
         }
         guard ShortcutPolicy.canHandleExplorerKeyboardShortcuts(shortcutContext) else { return false }
         switch focusedPane {

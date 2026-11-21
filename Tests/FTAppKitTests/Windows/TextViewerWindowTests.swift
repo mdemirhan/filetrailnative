@@ -381,6 +381,78 @@ extension ExplorerWindowlessTests {
             #expect(viewer.isEditing)
         }
 
+        // Markdown's Preview takes the keys of the text in Read: it has the keyboard, the page keys and the arrows move
+        // it, Return is Edit in the source, and Esc there is the Preview again, with the keyboard.
+        @Test func theMarkdownPreviewTakesTheKeysOfTheTextInRead() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let paragraphs = (0..<300).map { "Paragraph \($0) of the notes." }
+            try ("# Notes\n\n" + paragraphs.joined(separator: "\n\n") + "\n").write(
+                to: harness.folder.appending("notes.md"), atomically: true, encoding: .utf8)
+            let tab = try await tabWithFiles(harness)
+            let pane = tab.activePane
+            let notes = real(harness, "notes.md")
+            #expect(await waitUntil { pane.content.listedEntry(at: notes) != nil })
+            select(notes, in: tab)
+            tab.perform(.viewFile)
+            let viewer = try #require(pane.viewer)
+            #expect(await waitUntil { viewer.isText && viewer.previewText.length > 0 })
+            tab.focusPane(pane)
+            let window = try #require(tab.window)
+            #expect(window.firstResponder === viewer.previewView)
+            #expect(viewer.textHasKeyboard)
+            #expect(tab.isTextFieldEditing)
+            func press(_ characters: String, _ ignoring: String, _ keyCode: UInt16, _ flags: NSEvent.ModifierFlags = [])
+                throws
+            {
+                let event = try #require(
+                    NSEvent.keyEvent(
+                        with: .keyDown, location: .zero, modifierFlags: flags, timestamp: 0,
+                        windowNumber: window.windowNumber, context: nil, characters: characters,
+                        charactersIgnoringModifiers: ignoring, isARepeat: false, keyCode: keyCode))
+                (window.firstResponder as? NSView)?.keyDown(with: event)
+            }
+            let clip = try #require(viewer.previewView.enclosingScrollView).contentView
+            func top() -> CGFloat { clip.bounds.origin.y }
+            let pageDown = String(UnicodeScalar(UInt16(NSPageDownFunctionKey))!)
+            let pageUp = String(UnicodeScalar(UInt16(NSPageUpFunctionKey))!)
+            let down = String(UnicodeScalar(UInt16(NSDownArrowFunctionKey))!)
+
+            let start = top()
+            try press("\u{4}", "d", 2, [.control])
+            let half = top() - start
+            #expect(half > 0)
+            try press(pageDown, pageDown, 121)
+            #expect(top() - start > half * 2.5)
+            try press(pageUp, pageUp, 116)
+            #expect(abs(top() - start - half) < 1)
+            try press("\u{15}", "u", 32, [.control])
+            #expect(abs(top() - start) < 1)
+            try press(down, down, 125)
+            #expect(top() > start)
+            try press(" ", " ", 49)
+            #expect(top() - start > half)
+            // From the command palette, the same.
+            let beforePalette = top()
+            #expect(tab.runPaletteKeyCommand(.halfPageDown))
+            #expect(top() > beforePalette)
+
+            // Return: Edit, in the source, with the keyboard; the next file still opens in Read.
+            try press("\r", "\r", 36)
+            #expect(viewer.isEditing)
+            #expect(window.firstResponder === viewer.textView)
+            #expect(viewer.previewView.enclosingScrollView?.isHidden == true)
+            #expect(!viewer.scrollView.isHidden)
+            #expect(!tab.preferences.textViewerSettings.opensForEditing)
+            // Esc: the Preview again, and the keyboard with it.
+            viewer.textView.cancelOperation(nil)
+            #expect(!viewer.isEditing)
+            #expect(window.firstResponder === viewer.previewView)
+            // Esc in the Preview closes the file, as in Read.
+            viewer.previewView.cancelOperation(nil)
+            #expect(await waitUntil { pane.viewer == nil })
+        }
+
         // A Markdown file's Preview shows the pictures beside it from the first, and one added in Edit once it is
         // read, back in Read.
         @Test func theMarkdownPreviewShowsPicturesOnTheDiskAndOneAddedInEdit() async throws {

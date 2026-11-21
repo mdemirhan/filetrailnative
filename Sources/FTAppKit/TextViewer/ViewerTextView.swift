@@ -1,8 +1,8 @@
 import AppKit
 import FTFoundation
 
-/// The viewer's text: the window treats it as a text field while it has the keyboard, so ⌘C, ⌘V, ⌘A and ⌘Z act on
-/// the text and not on files.
+/// The viewer's text, and Markdown's Preview, which is always in Read: the window treats it as a text field while it
+/// has the keyboard, so ⌘C, ⌘V, ⌘A and ⌘Z act on the text and not on files.
 final class ViewerTextView: NSTextView {
     /// Esc: Read from Edit, and from Read the viewer closes.
     var onCancel: (() -> Bool)?
