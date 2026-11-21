@@ -147,6 +147,8 @@ extension ExplorerWindowlessTests {
             harness.layout(tab)
             tab.content.select(paths: [try path("note.txt", in: tab)])
             let info = try #require(tab.infoController)
+            // Not the keyboard's: Option held by someone typing would open the menu as Always Open With.
+            info.optionHeld = { false }
             #expect(await waitUntil { info.openWithLookup != nil })
             return (harness, tab, info, try #require(info.openWithLookup))
         }

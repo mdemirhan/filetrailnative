@@ -37,6 +37,9 @@ final class InfoController {
     private var relativeRelease: RelativeClock.Release?
     private var refreshQueued = false
     let actions: InfoActions
+    /// Whether Option is held as the Open With menu opens, which opens it as Always Open With: the keyboard's own
+    /// state, replaceable so a test doesn't go by the keys someone is holding.
+    var optionHeld: @MainActor () -> Bool = { NSEvent.modifierFlags.contains(.option) }
 
     init(host: MainWindowController, panel: InfoPanelView, row: InfoRowView) {
         self.host = host
@@ -664,7 +667,7 @@ final class InfoController {
         let setOpen: (Bool) -> Void = { [weak self] open in
             if changeDefault { self?.panel.setOpensWithMenuOpen(open) } else { self?.panel.setOpenMenuOpen(open) }
         }
-        let held = NSEvent.modifierFlags.contains(.option)
+        let held = optionHeld()
         let menu = AppMenu(
             items: build(optionHeld: held), identifier: "contextMenu.submenu",
             rowIdentifier: "infoPanel.openWithMenu.item", minWidth: 200)
