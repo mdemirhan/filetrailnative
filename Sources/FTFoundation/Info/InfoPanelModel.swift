@@ -49,31 +49,13 @@ public struct InfoRow: Equatable, Sendable {
     public var muted: Bool
 }
 
-/// The locale numbers and dates are formatted in: the app's language alone, not the system's region, so
-/// "48,611 files" and "Sep 17, 2026, 2:08 PM" on a machine set to a European region.
-public enum InfoLocale {
-    public static let appLanguage: Locale = {
-        let language =
-            Locale.preferredLanguages.first.flatMap { Locale(identifier: $0).language.languageCode?.identifier } ?? "en"
-        return Locale(identifier: language)
-    }()
-}
-
 public enum InfoPanelModel {
     public static let pending = "—"
-
-    /// With thousands separators.
-    static func integer(_ value: Int, locale: Locale = InfoLocale.appLanguage) -> String {
-        let formatter = NumberFormatter()
-        formatter.locale = locale
-        formatter.numberStyle = .decimal
-        return formatter.string(from: NSNumber(value: value)) ?? String(value)
-    }
 
     /// "3 folders and 2 files", "4 files".
     public static func describeSelectionKinds(_ selection: InfoSelection) -> String {
         func count(_ value: Int, _ one: String, _ many: String) -> String {
-            "\(Self.integer(value)) \(value == 1 ? one : many)"
+            "\(FormatLocale.count(value)) \(value == 1 ? one : many)"
         }
         var parts: [String] = []
         if selection.folderCount > 0 { parts.append(count(selection.folderCount, "folder", "folders")) }
@@ -87,7 +69,9 @@ public enum InfoPanelModel {
         return "\(kinds) · \(SizeText.size(total))"
     }
 
-    public static func selectionName(_ selection: InfoSelection) -> String { "\(Self.integer(selection.count)) items" }
+    public static func selectionName(_ selection: InfoSelection) -> String {
+        "\(FormatLocale.count(selection.count)) items"
+    }
 
     /// "folders", "files" or "mixed": which two icons the stack shows.
     public static func selectionContains(_ selection: InfoSelection) -> String {
@@ -318,7 +302,7 @@ public enum InfoPanelModel {
 
     /// "<size> (<disk> on disk)" and "N files, M folders".
     public static func folderSizeLines(
-        sizeBytes: Int64, diskBytes: Int64, fileCount: Int, folderCount: Int, locale: Locale = InfoLocale.appLanguage
+        sizeBytes: Int64, diskBytes: Int64, fileCount: Int, folderCount: Int, locale: Locale = FormatLocale.current
     ) -> (top: String, items: String) {
         let detail = SizeText.folderDetail(
             sizeBytes: sizeBytes, diskBytes: diskBytes, fileCount: fileCount, folderCount: folderCount, locale: locale)

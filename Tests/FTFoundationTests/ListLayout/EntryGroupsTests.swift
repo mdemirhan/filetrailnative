@@ -50,6 +50,17 @@ struct EntryGroupsTests {
         #expect(Self.dates.key(milliseconds: Self.ms("2026-11-20T10:00"), missing: "").group.detail == nil)
     }
 
+    // Where the region puts the day before the month, so do the days of the two groups; the names stay English.
+    @Test func theRelativeGroupsDaysFollowTheRegionsOrder() {
+        for region in ["en_GB", "en_DE"] {
+            let dates = DateGroups(now: Self.now, calendar: Self.calendar(), locale: Locale(identifier: region))
+            #expect(dates.key(milliseconds: Self.ms("2026-11-15T10:00"), missing: "").group.detail == "13–18 Nov")
+            #expect(dates.key(milliseconds: Self.ms("2026-11-01T10:00"), missing: "").group.detail == "21 Oct – 12 Nov")
+        }
+        let us = DateGroups(now: Self.now, calendar: Self.calendar(), locale: Locale(identifier: "en_US"))
+        #expect(us.key(milliseconds: Self.ms("2026-11-15T10:00"), missing: "").group.detail == "Nov 13–18")
+    }
+
     @Test func anItemWithoutTheDateIsInTheMissingGroupLast() {
         let key = Self.dates.key(milliseconds: nil, missing: "Never Opened")
         #expect(key.group.title == "Never Opened")

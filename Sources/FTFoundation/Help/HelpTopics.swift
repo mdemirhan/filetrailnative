@@ -588,7 +588,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Limits",
                             description:
-                                "Search stops at \(ContextMenuRules.groupedCount(SearchLimits.resultLimit)) results. Symbolic links are not searched for; aliases are. What you have no permission to read is passed over, and the status bar says so, beside the count."
+                                "Search stops at \(FormatLocale.count(SearchLimits.resultLimit)) results. Symbolic links are not searched for; aliases are. What you have no permission to read is passed over, and the status bar says so, beside the count."
                         ),
                     ]),
             ]),

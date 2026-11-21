@@ -107,4 +107,31 @@ struct SizeTextTests {
         #expect(empty.disk == nil)
         #expect(empty.items == "Empty")
     }
+
+    // A size and a count are written with the region's decimal mark and digit grouping, as Finder writes them.
+    @Test func sizesAndCountsFollowTheRegion() {
+        let germany = Locale(identifier: "en_DE")
+        #expect(SizeText.size(1_500_000, locale: germany) == "1,5 MB")
+        #expect(SizeText.size(2_000_000_000_000, locale: germany) == "2,0 TB")
+        #expect(SizeText.size(99_433_647_655, locale: germany) == "99 GB")
+        #expect(SizeText.size(999, locale: germany) == "999 B")
+        let detail = SizeText.folderDetail(
+            sizeBytes: 1_000_000, diskBytes: 1_500_000, fileCount: 48611, folderCount: 2765, locale: germany)
+        #expect(detail.size == "1,0 MB")
+        #expect(detail.disk == "1,5 MB on disk")
+        #expect(detail.items == "48.611 files, 2.765 folders")
+        let uk = Locale(identifier: "en_GB")
+        #expect(SizeText.size(1_500_000, locale: uk) == "1.5 MB")
+        #expect(FormatLocale.count(1_234_567, locale: uk) == "1,234,567")
+        #expect(FormatLocale.count(1_234_567, locale: germany) == "1.234.567")
+        #expect(FormatLocale.count(999, locale: germany) == "999")
+    }
+
+    // A test process writes in US English whatever the Mac is set to, so the expected texts hold on any Mac.
+    @Test func aTestProcessWritesInUSEnglish() {
+        #expect(FormatLocale.isTestProcess)
+        #expect(FormatLocale.current == Locale(identifier: "en_US"))
+        #expect(FormatLocale.count(1234) == "1,234")
+        #expect(SizeText.size(1_500_000) == "1.5 MB")
+    }
 }

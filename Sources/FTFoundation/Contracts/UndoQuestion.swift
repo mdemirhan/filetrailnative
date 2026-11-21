@@ -48,9 +48,7 @@ public enum UndoQuestion: Equatable, Sendable {
         let listed = Array(names.prefix(Self.listedNameLimit))
         let unlisted = names.count - listed.count
         guard unlisted > 0 else { return listed }
-        // Thousands grouped as in US English, whatever the app's language: "1,234".
-        let count = unlisted.formatted(.number.grouping(.automatic).locale(Locale(identifier: "en_US")))
-        return listed + ["and \(count) more"]
+        return listed + ["and \(FormatLocale.count(unlisted)) more"]
     }
 }
 

@@ -126,11 +126,12 @@ PY
     fi
     # By `open`, so that macOS asks about Screen Recording for this app, not for whatever started the script.
     # Launch Services can refuse while the scene before is still going away.
+    # Dates and numbers follow the region; the pictures show US English's formats whatever this Mac is set to.
     for attempt in 1 2 3 4 5; do
         open -W -n --env "CFFIXED_USER_HOME=$home" --env "FILETRAIL_NOW=2026-10-13T14:46:00" \
             --stdout "$PWD/$out/$scene/app.log" --stderr "$PWD/$out/$scene/app.log" "$app" --args \
             --automation "$PWD/tools/capture/readme/$scene.json" --out "$PWD/$out/$scene" \
-            --elements "$PWD/tools/capture/elements.json" --user-data-dir "$data" && break
+            --elements "$PWD/tools/capture/elements.json" --user-data-dir "$data" -AppleLocale en_US && break
         sleep 2
     done
     if [ "$scene" = two-panes ]; then

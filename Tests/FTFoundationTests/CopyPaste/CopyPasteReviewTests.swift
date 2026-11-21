@@ -413,6 +413,16 @@ private struct Triple: Equatable {
         #expect(dates.format(local(2025, 5, 3), now: now) == "Jun 3, 2025")
     }
 
+    // The region's order of day and month and its clock, around the app's English words.
+    @Test func formatsDatesInTheRegionsFormats() {
+        let uk = ReviewDateText(locale: Locale(identifier: "en_GB"), timeZone: zone)
+        #expect(uk.format(now - 60_000, now: now) == "today, 13:59")
+        #expect(uk.format(jan1, now: now) == "1 Jan")
+        #expect(uk.format(local(2025, 5, 3), now: now) == "3 Jun 2025")
+        #expect(uk.format(now + 2 * 86_400_000, now: now) == "1 Oct 2026, 14:00")
+        #expect(ReviewCount.pluralize(1500, "item") == "1,500 items")
+    }
+
     // Built from local dates, so they hold in any time zone; in one with daylight saving the days around the change
     // are 23 and 25 hours long.
     @Test func countsYesterdayInCalendarDaysAcrossDaylightSavingChanges() {

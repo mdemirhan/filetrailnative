@@ -151,9 +151,9 @@ public enum ActivityList {
             items.append(folderSizeItem(size))
         }
         for run in runs {
-            let count = ContextMenuRules.groupedCount(run.folderCount)
+            let count = FormatLocale.count(run.folderCount)
             let doneCount = min(run.doneCount, run.folderCount)
-            let done = ContextMenuRules.groupedCount(doneCount)
+            let done = FormatLocale.count(doneCount)
             items.append(
                 ActivityItem(
                     id: run.id, kind: .folderSizeRun, title: "\(count) folders",
@@ -172,7 +172,7 @@ public enum ActivityList {
         if !size.isRunning {
             detail = "Waiting to calculate its size"
         } else if size.measuredFolderCount > 0 {
-            let count = ContextMenuRules.groupedCount(size.measuredFolderCount)
+            let count = FormatLocale.count(size.measuredFolderCount)
             detail = "Calculating size · \(count) \(size.measuredFolderCount == 1 ? "folder" : "folders") so far"
         } else {
             detail = "Calculating size"

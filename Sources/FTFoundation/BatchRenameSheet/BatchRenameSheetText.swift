@@ -19,18 +19,18 @@ public enum BatchRenameSheetText {
 
     /// "Rename 1,234 Items"; one item comes here only to be tried again after a rename of several.
     public static func title(count: Int) -> String {
-        "Rename \(ContextMenuRules.groupedCount(count)) \(count == 1 ? "Item" : "Items")"
+        "Rename \(FormatLocale.count(count)) \(count == 1 ? "Item" : "Items")"
     }
 
     /// The default button: "Rename N Items" once something will be renamed and it may be, else "Rename".
     public static func renameButton(renameCount: Int, canRename: Bool) -> String {
         guard renameCount > 0, canRename else { return "Rename" }
-        return "Rename \(ContextMenuRules.groupedCount(renameCount)) \(renameCount == 1 ? "Item" : "Items")"
+        return "Rename \(FormatLocale.count(renameCount)) \(renameCount == 1 ? "Item" : "Items")"
     }
 
     /// The line under the last row drawn: "and 5 more".
     public static func moreRows(_ count: Int) -> String {
-        "and \(ContextMenuRules.groupedCount(count)) more"
+        "and \(FormatLocale.count(count)) more"
     }
 
     // MARK: Choices
@@ -226,23 +226,23 @@ public enum BatchRenameSheetText {
             return Summary(text: "Checking names\u{2026}", danger: false)
         }
         if plan.blockingCount > 0 {
-            let count = ContextMenuRules.groupedCount(plan.blockingCount)
+            let count = FormatLocale.count(plan.blockingCount)
             return Summary(
                 text: "\(count) \(plan.blockingCount == 1 ? "name" : "names") to fix before renaming", danger: true)
         }
         if plan.renameCount == 0 {
             return Summary(text: "Nothing to rename yet", danger: false)
         }
-        var parts = ["\(ContextMenuRules.groupedCount(plan.renameCount)) will be renamed"]
+        var parts = ["\(FormatLocale.count(plan.renameCount)) will be renamed"]
         let numbered = plan.items.filter {
             if case .rename(_, _, let added, _, _, _) = $0 { return added != nil }
             return false
         }.count
-        if numbered > 0 { parts.append("\(ContextMenuRules.groupedCount(numbered)) get a number") }
+        if numbered > 0 { parts.append("\(FormatLocale.count(numbered)) get a number") }
         if plan.skippedCount > 0 {
-            parts.append("\(ContextMenuRules.groupedCount(plan.skippedCount)) left as they are")
+            parts.append("\(FormatLocale.count(plan.skippedCount)) left as they are")
         }
-        if plan.unchangedCount > 0 { parts.append("\(ContextMenuRules.groupedCount(plan.unchangedCount)) unchanged") }
+        if plan.unchangedCount > 0 { parts.append("\(FormatLocale.count(plan.unchangedCount)) unchanged") }
         return Summary(text: parts.joined(separator: " \u{00B7} "), danger: false)
     }
 }

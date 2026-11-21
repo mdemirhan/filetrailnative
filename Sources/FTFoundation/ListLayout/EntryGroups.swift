@@ -130,7 +130,8 @@ public struct DateGroups: Sendable {
     ]
     static let shortMonthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
-    public init(now: Date, calendar: Calendar = .autoupdatingCurrent) {
+    /// `locale`: whether the ranges of days put the day or the month first (`FormatLocale`).
+    public init(now: Date, calendar: Calendar = .autoupdatingCurrent, locale: Locale = FormatLocale.current) {
         self.calendar = calendar
         let startOfToday = calendar.startOfDay(for: now)
         // Calendar days, not 24-hour steps: days around a daylight saving change are 23 or 25 hours.
@@ -151,8 +152,19 @@ public struct DateGroups: Sendable {
         yearStarts = (1...100).compactMap { back in
             calendar.date(from: DateComponents(year: thisYear - back)).map { (thisYear - back, $0.epochMilliseconds64) }
         }
-        weekDetail = Self.range(daysFromToday(-7), daysFromToday(-2), calendar: calendar)
-        monthDetail = Self.range(daysFromToday(-30), daysFromToday(-8), calendar: calendar)
+        let dayFirst = locale == FormatLocale.current ? Self.currentWritesDayFirst : Self.writesDayFirst(locale)
+        weekDetail = Self.range(daysFromToday(-7), daysFromToday(-2), calendar: calendar, dayFirst: dayFirst)
+        monthDetail = Self.range(daysFromToday(-30), daysFromToday(-8), calendar: calendar, dayFirst: dayFirst)
+    }
+
+    /// The same for `FormatLocale.current`, looked up once: the groups are made again for every grouping.
+    private static let currentWritesDayFirst = writesDayFirst(FormatLocale.current)
+
+    /// Whether the region writes a day of a month as "13 Nov" rather than "Nov 13".
+    static func writesDayFirst(_ locale: Locale) -> Bool {
+        let pattern = DateFormatter.dateFormat(fromTemplate: "MMMd", options: 0, locale: locale) ?? "MMM d"
+        guard let day = pattern.firstIndex(of: "d"), let month = pattern.firstIndex(of: "M") else { return false }
+        return day < month
     }
 
     /// The group of a date in milliseconds since 1970; nil goes in the group of items without it, named `missing`
@@ -196,14 +208,21 @@ public struct DateGroups: Sendable {
             rank: .number(start.epochMilliseconds64))
     }
 
-    /// "Nov 13–18", or "Oct 21 – Nov 12" across two months.
-    static func range(_ first: Date, _ last: Date, calendar: Calendar) -> String {
+    /// "Nov 13–18", or "Oct 21 – Nov 12" across two months; "13–18 Nov" and "21 Oct – 12 Nov" where the region puts
+    /// the day first.
+    static func range(_ first: Date, _ last: Date, calendar: Calendar, dayFirst: Bool = false) -> String {
         let a = calendar.dateComponents([.month, .day], from: first)
         let b = calendar.dateComponents([.month, .day], from: last)
         let firstMonth = shortMonthNames[max(1, min(12, a.month ?? 1)) - 1]
         let lastMonth = shortMonthNames[max(1, min(12, b.month ?? 1)) - 1]
-        if a.month == b.month { return "\(firstMonth) \(a.day ?? 1)–\(b.day ?? 1)" }
-        return "\(firstMonth) \(a.day ?? 1) – \(lastMonth) \(b.day ?? 1)"
+        let firstDay = a.day ?? 1
+        let lastDay = b.day ?? 1
+        if dayFirst {
+            if a.month == b.month { return "\(firstDay)–\(lastDay) \(firstMonth)" }
+            return "\(firstDay) \(firstMonth) – \(lastDay) \(lastMonth)"
+        }
+        if a.month == b.month { return "\(firstMonth) \(firstDay)–\(lastDay)" }
+        return "\(firstMonth) \(firstDay) – \(lastMonth) \(lastDay)"
     }
 }
 

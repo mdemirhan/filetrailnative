@@ -697,14 +697,14 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
                 parts.append("Ln \(line + 1), Col \(column)")
             }
             let lines = coloring.lineStarts.count
-            parts.append(lines == 1 ? "1 line" : "\(lines.formatted()) lines")
+            parts.append(lines == 1 ? "1 line" : "\(FormatLocale.count(lines)) lines")
             parts.append(language.name)
             parts.append(format.encodingName)
             parts.append(format.lineEnding.rawValue)
             if let indentation { parts.append(indentation.label) }
             if !coloring.colorsOn, language.grammar.colors { parts.append("Colors off for a file this large") }
         } else if let file, case .other = file.content {
-            parts.append(ByteCountFormatter.string(fromByteCount: file.size, countStyle: .file))
+            parts.append(SizeText.size(file.size))
         }
         let status = parts.joined(separator: " · ")
         if status != lastStatus {

@@ -1,3 +1,4 @@
+import FTFoundation
 import Foundation
 
 /// What Eject does with a disk: eject it at once, or first ask whether to eject the other volumes on the same
@@ -61,19 +62,11 @@ public enum EjectPlanning {
 
     private static let listedNames = 3
 
-    /// A count with its thousands grouped as in US English, whatever the app's language: "1,234".
-    private static func countText(_ count: Int) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.locale = Locale(identifier: "en_US")
-        return formatter.string(from: NSNumber(value: count)) ?? String(count)
-    }
-
     private static func listNames(_ names: [String]) -> String {
         let quoted = names.prefix(listedNames).map { "\u{201C}\($0)\u{201D}" }
         let unlisted = names.count - quoted.count
         if unlisted > 0 {
-            return "\(quoted.joined(separator: ", ")) and \(countText(unlisted)) more"
+            return "\(quoted.joined(separator: ", ")) and \(FormatLocale.count(unlisted)) more"
         }
         if quoted.count <= 1 { return quoted.joined() }
         return "\(quoted.dropLast().joined(separator: ", ")) and \(quoted[quoted.count - 1])"
@@ -84,7 +77,7 @@ public enum EjectPlanning {
         let total = otherNames.count + 1
         return EjectNotice(
             title:
-                "Do you want to eject \u{201C}\(name)\u{201D} only, or all \(countText(total)) volumes on its disk?",
+                "Do you want to eject \u{201C}\(name)\u{201D} only, or all \(FormatLocale.count(total)) volumes on its disk?",
             message:
                 "The disk also holds \(listNames(otherNames)). Eject All lets you disconnect it; Eject leaves the others mounted."
         )

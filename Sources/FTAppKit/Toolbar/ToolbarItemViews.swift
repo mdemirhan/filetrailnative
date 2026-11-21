@@ -250,13 +250,6 @@ final class ToolbarClipboardButton: ToolbarButton, TextStyleSource {
     static let copiedIconSize = 20.0
     private static let countFont = NSFont.monospacedDigitSystemFont(
         ofSize: DesignTokens.typeScale.small, weight: .semibold)
-    /// The count with its digits grouped as in US English ("1,234"), made once: every refresh of the toolbar sets it.
-    private static let countFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.locale = Locale(identifier: "en_US")
-        return formatter
-    }()
     /// With a count: 12 at each side, 2 between the icon and the count, as the system lays out an icon and a title.
     static let countPadding = 12.0
     static let countGap = 2.0
@@ -297,8 +290,8 @@ final class ToolbarClipboardButton: ToolbarButton, TextStyleSource {
         // The scissors are wider than the copy icon and read as larger at the toolbar's size: they are drawn a scale
         // down, so the two weigh the same on their own and side by side.
         symbolConfiguration = iconName == .cut ? NSImage.SymbolConfiguration(scale: .medium) : nil
-        let text = Self.countFormatter.string(from: NSNumber(value: value)) ?? String(value)
-        let copiedText = copied.map { Self.countFormatter.string(from: NSNumber(value: $0)) ?? String($0) } ?? ""
+        let text = FormatLocale.count(value)
+        let copiedText = copied.map { FormatLocale.count($0) } ?? ""
         let changed =
             count.stringValue != text || count.isHidden != (value == 0) || copiedCount.stringValue != copiedText
             || copiedCount.isHidden != (copied == nil)

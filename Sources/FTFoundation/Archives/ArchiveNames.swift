@@ -55,7 +55,7 @@ public enum ArchiveNames {
     public static func compressTitle(count: Int, firstName: String?) -> String? {
         guard count > 0 else { return nil }
         if count == 1, let firstName { return "Compress \(MenuName.quoted(firstName))" }
-        return "Compress \(count.formatted(.number.grouping(.automatic).locale(Locale(identifier: "en_US")))) Items"
+        return "Compress \(FormatLocale.count(count)) Items"
     }
 
     /// The suffix of `name` among `suffixes`, ignoring case, when something comes before it.

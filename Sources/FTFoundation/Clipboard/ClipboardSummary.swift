@@ -59,7 +59,7 @@ public struct ClipboardSummary: Equatable, Sendable {
     public var intentLabel: String? {
         guard mode == nil else { return nil }
         return
-            "\(ContextMenuRules.groupedCount(cutCount)) to move, \(ContextMenuRules.groupedCount(copiedCount)) to copy"
+            "\(FormatLocale.count(cutCount)) to move, \(FormatLocale.count(copiedCount)) to copy"
     }
 
     /// The button's accessible name.

@@ -1,7 +1,7 @@
 import Foundation
 
-/// The dates of the review rows and the conflict cards, in the system's time zone and the app's language alone
-/// (`InfoLocale.appLanguage`), with a comma and a plain space where macOS writes "at" and a narrow no-break space.
+/// The dates of the review rows and the conflict cards, in the system's time zone and its region's formats
+/// (`FormatLocale`), with a comma and a plain space where macOS writes "at" and a narrow no-break space.
 /// Tests pass their own locale and zone.
 public final class ReviewDateText: @unchecked Sendable {
     public static let shared = ReviewDateText()
@@ -15,7 +15,7 @@ public final class ReviewDateText: @unchecked Sendable {
     private let day: DateFormatter
     private let dayYear: DateFormatter
 
-    public init(locale: Locale = InfoLocale.appLanguage, timeZone: TimeZone = .autoupdatingCurrent) {
+    public init(locale: Locale = FormatLocale.current, timeZone: TimeZone = .autoupdatingCurrent) {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = timeZone
         calendar.locale = locale
@@ -59,9 +59,9 @@ public final class ReviewDateText: @unchecked Sendable {
 
 /// The counts the copy and paste dialogs write.
 public enum ReviewCount {
-    /// "1,200": thousands grouped as in US English, whatever the app's language.
+    /// "1,200", its digits grouped as the region groups them (`FormatLocale`).
     public static func format(_ count: Int) -> String {
-        ContextMenuRules.groupedCount(count)
+        FormatLocale.count(count)
     }
 
     /// `pluralize`: "1 item", "1,500 items".

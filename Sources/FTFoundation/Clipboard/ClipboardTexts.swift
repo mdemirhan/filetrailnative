@@ -214,7 +214,7 @@ public enum PasteDestination {
 extension ClipboardTexts {
     /// The title of a part of the clipboard's list: "Cut · 4", "Copied · 3".
     public static func sectionTitle(_ mode: ClipboardMode, count: Int) -> String {
-        "\(mode == .cut ? "Cut" : "Copied") \u{B7} \(ContextMenuRules.groupedCount(count))"
+        "\(mode == .cut ? "Cut" : "Copied") \u{B7} \(FormatLocale.count(count))"
     }
 
     /// What ⌘V does with the items of a part.
@@ -236,7 +236,7 @@ extension ClipboardTexts {
 
     /// Put Back's row: "Put Back the 7 Items Before".
     public static func putBackTitle(_ count: Int) -> String {
-        count == 1 ? "Put Back the Item Before" : "Put Back the \(ContextMenuRules.groupedCount(count)) Items Before"
+        count == 1 ? "Put Back the Item Before" : "Put Back the \(FormatLocale.count(count)) Items Before"
     }
 
     /// A row as VoiceOver and the tests read it.
@@ -247,7 +247,7 @@ extension ClipboardTexts {
     }
 
     private static func count(_ count: Int, _ noun: String = "item") -> String {
-        "\(ContextMenuRules.groupedCount(count)) \(noun)\(count == 1 ? "" : "s")"
+        "\(FormatLocale.count(count)) \(noun)\(count == 1 ? "" : "s")"
     }
 
     private static func named(_ paths: [String]) -> String {
@@ -317,7 +317,7 @@ extension ClipboardTexts {
             return
                 "Another item named \u{201C}\(PathText.leafName(clashes.first?.path ?? ""))\u{201D} is on the clipboard"
         }
-        return "\(ContextMenuRules.groupedCount(clashes.count)) items have the same names as items on the clipboard"
+        return "\(FormatLocale.count(clashes.count)) items have the same names as items on the clipboard"
     }
 
     public static func clashMessage(_ clashes: [ClipboardNameClash]) -> String {
@@ -371,14 +371,14 @@ extension ClipboardTexts {
 extension ClipboardTexts {
     /// Paste's title while the files have the keyboard: "Paste Item", "Paste 7 Items", as Finder's.
     public static func pasteTitle(count: Int) -> String {
-        count == 1 ? "Paste Item" : count > 1 ? "Paste \(ContextMenuRules.groupedCount(count)) Items" : "Paste"
+        count == 1 ? "Paste Item" : count > 1 ? "Paste \(FormatLocale.count(count)) Items" : "Paste"
     }
 
     /// The line under Paste: what it does with what is on the clipboard ("Moves 4, copies 3"); "" with nothing on it.
     public static func pasteSubtitle(cut: Int, copied: Int) -> String {
         var parts: [String] = []
-        if cut > 0 { parts.append("moves \(ContextMenuRules.groupedCount(cut))") }
-        if copied > 0 { parts.append("copies \(ContextMenuRules.groupedCount(copied))") }
+        if cut > 0 { parts.append("moves \(FormatLocale.count(cut))") }
+        if copied > 0 { parts.append("copies \(FormatLocale.count(copied))") }
         guard let first = parts.first else { return "" }
         return ([first.prefix(1).uppercased() + first.dropFirst()] + parts.dropFirst()).joined(separator: ", ")
     }
@@ -387,6 +387,6 @@ extension ClipboardTexts {
     public static func moveItemsHereTitle(count: Int) -> String {
         count == 1
             ? "Move Item Here"
-            : count > 1 ? "Move \(ContextMenuRules.groupedCount(count)) Items Here" : "Move Items Here"
+            : count > 1 ? "Move \(FormatLocale.count(count)) Items Here" : "Move Items Here"
     }
 }

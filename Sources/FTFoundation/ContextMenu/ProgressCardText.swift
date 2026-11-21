@@ -120,7 +120,7 @@ public struct ProgressCardText: Equatable, Sendable {
         title = Self.title(state.action)
         percent = Self.percent(state)
         let total = ReviewCount.pluralize(max(state.totalItemCount, 0), "item")
-        metaStart = "\(ContextMenuRules.groupedCount(state.completedItemCount)) of \(total)"
+        metaStart = "\(FormatLocale.count(state.completedItemCount)) of \(total)"
         metaEnd = Self.byteLabel(state)
         detailLabel =
             [.newFolder, .pasteAsFile, .newFile].contains(state.action) ? "Destination" : "Current item"

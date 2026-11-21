@@ -127,7 +127,7 @@ public enum ContextMenuRules {
             favoriteToggleLabel: favoriteToggleLabel(subject, world), textEditorName: textEditorName,
             targetsFolder: !subject.entries.isEmpty && subject.entries.allSatisfy { $0.kind.opensAsFolder },
             // Several items are renamed in the Rename sheet, as Finder's Rename does.
-            renameLabel: subject.entries.count > 1 ? "Rename \(groupedCount(subject.entries.count)) Items…" : nil,
+            renameLabel: subject.entries.count > 1 ? "Rename \(FormatLocale.count(subject.entries.count)) Items…" : nil,
             ejectLabel: subject.ejectableDiskName.map { "Eject \(MenuName.quoted($0))" } ?? ejectLabel,
             pasteAsFileLabel: PasteAsFile.menuTitle(world.pasteAsFileKind),
             copyContentsLabel: CopyContents.menuTitle(copyContentsGuess(subject)),
@@ -160,11 +160,6 @@ public enum ContextMenuRules {
             let entry = subject.entries.first, entry.kind.isEditableFile
         else { return nil }
         return CopyContents.guess(forName: NodePath.basename(entry.path))
-    }
-
-    /// A count with its thousands grouped as in US English, whatever the app's language: "1,234".
-    static func groupedCount(_ count: Int) -> String {
-        count.formatted(.number.grouping(.automatic).locale(Locale(identifier: "en_US")))
     }
 
     /// The one folder the paths are in, nil when they are in several.

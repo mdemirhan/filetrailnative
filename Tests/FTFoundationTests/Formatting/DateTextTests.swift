@@ -32,17 +32,27 @@ struct DateTextTests {
             ?? .distantPast
     }
 
-    // The list writes its dates in the locale the Info panel uses, the app's language alone, not the machine's region.
-    @Test func listDatesUseTheAppsLocale() {
-        #expect(DateText.shared.locale == InfoLocale.appLanguage)
-        #expect(DateText().locale == InfoLocale.appLanguage)
+    // The list writes its dates in the locale the Info panel uses, the region's (US English in a test process).
+    @Test func listDatesUseTheRegionsFormats() {
+        #expect(DateText.shared.locale == FormatLocale.current)
+        #expect(DateText().locale == FormatLocale.current)
         let now = Self.local(2026, 10, 19, 12)
         let date = Self.local(2026, 10, 5, 16, 12)
-        let language = DateText(locale: Locale(identifier: "en"), timeZone: Self.zone)
-        #expect(language.relative(date, now: now) == "Oct 5, 4:12 PM")
-        // A region's own patterns are what the list showed before: day first, 24-hour.
-        let region = DateText(locale: Locale(identifier: "en_GB"), timeZone: Self.zone)
-        #expect(region.relative(date, now: now) != language.relative(date, now: now))
+        #expect(DateText.shared.locale == Locale(identifier: "en_US"))
+        let us = DateText(locale: Locale(identifier: "en_US"), timeZone: Self.zone)
+        #expect(us.relative(date, now: now) == "Oct 5, 4:12 PM")
+        // English words, the United Kingdom's order of day and month, and its 24-hour clock.
+        let uk = DateText(locale: Locale(identifier: "en_GB"), timeZone: Self.zone)
+        #expect(uk.relative(date, now: now) == "5 Oct, 16:12")
+        #expect(uk.relative(Self.local(2026, 10, 19, 9, 5), now: now) == "Today, 09:05")
+        #expect(uk.relative(Self.local(2026, 10, 15, 9, 5), now: now) == "Thu, 09:05")
+        #expect(uk.relative(Self.local(2025, 3, 3, 11, 15), now: now) == "3 Mar 2025")
+        #expect(uk.dateTime(date) == "5 Oct 2026, 16:12")
+        #expect(uk.exactDateTime(Self.local(2026, 10, 1, 14, 44, 7)) == "Thursday, 1 October 2026 at 14:44:07")
+        // Germany's, in English: the day with a dot.
+        let germany = DateText(locale: Locale(identifier: "en_DE"), timeZone: Self.zone)
+        #expect(germany.relative(date, now: now) == "5. Oct, 16:12")
+        #expect(germany.dateTime(date) == "5. Oct 2026, 16:12")
     }
 
     @Test func aMissingDateIsNotAvailable() {

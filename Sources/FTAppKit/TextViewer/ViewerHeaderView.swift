@@ -456,9 +456,9 @@ final class ViewerMessageView: NSView {
         case .tooLarge(let name, let size):
             icon.image = NSImage(systemSymbolName: "doc.text", accessibilityDescription: nil)
             title.stringValue = "“\(name)” is too large to view here"
-            let limit = ByteCountFormatter.string(fromByteCount: ViewerFile.viewLimit, countStyle: .file)
+            let limit = SizeText.size(ViewerFile.viewLimit)
             detail.stringValue =
-                "It is \(ByteCountFormatter.string(fromByteCount: size, countStyle: .file)). Files up to \(limit) are shown."
+                "It is \(SizeText.size(size)). Files up to \(limit) are shown."
             button.isHidden = false
         case .unreadable(let text):
             icon.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: nil)

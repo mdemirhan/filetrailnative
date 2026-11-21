@@ -44,7 +44,7 @@ public enum SearchBarText {
     public static let doneTitle = "Close Search Results (Esc)"
     public static let doneName = "Close search results"
     public static let truncatedBanner =
-        "Showing the first \(ContextMenuRules.groupedCount(SearchLimits.resultLimit)) matches."
+        "Showing the first \(FormatLocale.count(SearchLimits.resultLimit)) matches."
     /// A write put items inside the folder searched, which the results don't list.
     public static let mayBeMissingBanner = "Items added since this search may not be listed."
     public static let searchAgain = "Search Again"

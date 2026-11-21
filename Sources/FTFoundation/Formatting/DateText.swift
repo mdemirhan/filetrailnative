@@ -1,10 +1,11 @@
 import Foundation
 
-/// Dates as the lists and tooltips write them, in the system's time zone and the app's language alone, not the
-/// system's region (`InfoLocale.appLanguage`), so the list, the Info Row and the Info panel agree. Tests pass their own.
+/// Dates as the lists and tooltips write them, in the system's time zone and its region's formats (`FormatLocale`):
+/// the order of day and month, and 24-hour time where it is set. The list, the Info Row and the Info panel agree.
+/// The words around them ("Today", "min ago") are the app's own. Tests pass their own locale.
 ///
-/// A medium date and a time are joined with a comma and a plain space ("Oct 5, 2026, 4:45 PM") where macOS
-/// writes "at" and a narrow no-break space.
+/// A medium date and a time are joined with a comma and a plain space ("Oct 5, 2026, 4:45 PM", "5 Oct 2026, 16:45")
+/// where macOS writes "at" and a narrow no-break space.
 public final class DateText: @unchecked Sendable {
     public static let shared = DateText()
 
@@ -24,7 +25,7 @@ public final class DateText: @unchecked Sendable {
     private let exact: DateFormatter
     private let short: DateFormatter
 
-    public init(locale: Locale = InfoLocale.appLanguage, timeZone: TimeZone = .autoupdatingCurrent) {
+    public init(locale: Locale = FormatLocale.current, timeZone: TimeZone = .autoupdatingCurrent) {
         self.locale = locale
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = timeZone

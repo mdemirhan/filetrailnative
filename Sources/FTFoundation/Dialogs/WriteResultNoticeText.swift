@@ -59,7 +59,7 @@ public enum WriteResultNoticeText {
         guard let result else { return [] }
         var lines: [String] = []
         if result.totalItemCount > 1 {
-            let done = ContextMenuRules.groupedCount(result.completedItemCount)
+            let done = FormatLocale.count(result.completedItemCount)
             lines.append("\(done) of \(ReviewCount.pluralize(result.totalItemCount, "item")) done")
             if result.failedItemCount > 0 {
                 lines.append("\(ReviewCount.pluralize(result.failedItemCount, "item")) failed")
