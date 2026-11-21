@@ -106,6 +106,9 @@ public final class ThumbnailStore {
 
     private let provider: any ThumbnailProviding
     private let queue: ThumbnailLoadQueue
+    /// An alias of a file shows its original's preview, as the Previews view's large pictures do in Finder; elsewhere
+    /// an alias keeps its icon, as Finder's icons and lists show one.
+    public let previewsAliasesOriginals: Bool
     private var cache: LRUCache<DiskPath, Cached>
     /// The bytes the previews kept may take at most (nil: only the count is limited), and what they take now.
     private let memoryLimit: Int?
@@ -119,8 +122,9 @@ public final class ThumbnailStore {
     public init(
         provider: any ThumbnailProviding = FileThumbnailService(),
         queue: ThumbnailLoadQueue = ThumbnailLoadQueue(), maxEntries: Int = ThumbnailStore.maxEntries,
-        memoryLimit: Int? = nil
+        memoryLimit: Int? = nil, previewsAliasesOriginals: Bool = false
     ) {
+        self.previewsAliasesOriginals = previewsAliasesOriginals
         self.provider = provider
         self.queue = queue
         self.cache = LRUCache(capacity: maxEntries)
@@ -157,6 +161,12 @@ public final class ThumbnailStore {
     /// draws for them.
     public static func canHaveThumbnail(_ kind: IconEntryKind) -> Bool {
         kind == .file || kind == .symlinkFile
+    }
+
+    /// Whether this store makes a preview of an item of `kind`: a file's, and an alias's of a file where its original's
+    /// is shown.
+    public func mayHaveThumbnail(_ kind: IconEntryKind) -> Bool {
+        Self.canHaveThumbnail(kind) || (previewsAliasesOriginals && kind == .alias)
     }
 
     /// The preview already loaded for the file, if any; a drag shows it instead of the icon.
@@ -240,10 +250,11 @@ public final class ThumbnailStore {
         path: String, kind: IconEntryKind, size: Int, listing: AnyObject, ahead: Bool,
         completion: @escaping @MainActor (ThumbnailPicture?) -> Void
     ) -> LoadHandle {
-        guard Self.canHaveThumbnail(kind) else {
+        guard mayHaveThumbnail(kind) else {
             completion(nil)
             return LoadHandle()
         }
+        let followsAlias = kind == .alias
         // The file's key, made once for the request: what is kept and what is under way are both looked up by it.
         let key = DiskPath(path)
         let cached = cache.read(key)
@@ -284,8 +295,10 @@ public final class ThumbnailStore {
         load.waiters = [waiter]
         started(load, path: key)
         load.job = queue.add(ahead: ahead) { [weak self] in
+            // An alias's original, as the disk spells it; the alias itself when the original can't be found.
+            let source = followsAlias ? await BlockingWork.run { Links.original(of: path) } ?? path : path
             let response = await provider.response(
-                path: path, size: wanted, knownVersion: knownVersion)
+                path: source, size: wanted, knownVersion: knownVersion)
             guard let self else { return }
             self.finished(load, path: key)
             // Stopped part way, scrolled past: no picture says nothing of the file, and nothing is kept.

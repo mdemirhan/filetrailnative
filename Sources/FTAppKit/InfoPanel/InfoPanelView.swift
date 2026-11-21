@@ -525,6 +525,7 @@ final class InfoPanelContentView: NSView {
     override init(frame: NSRect) {
         super.init(frame: frame)
         heroIcon.setAccessibilityIdentifier("infoPanel.heroIcon")
+        heroIcon.pixelSide = NativeIconPixels.heroSide
         name.setAccessibilityIdentifier("infoPanel.name")
         subtitle.setAccessibilityIdentifier("infoPanel.subtitle")
         emptyLabel.setAccessibilityIdentifier("infoPanel.empty")
@@ -628,6 +629,7 @@ final class InfoPanelContentView: NSView {
         case .symlinkDirectory: kind = .symlinkDirectory
         case .symlinkFile: kind = .symlinkFile
         case .alias: kind = .alias
+        case .aliasDirectory: kind = .aliasDirectory
         case .bundle: kind = .bundle
         case .other: kind = .other
         }

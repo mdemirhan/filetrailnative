@@ -372,7 +372,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
         let store = pane.thumbnailStore
         let kind = entry.iconEntry.kind
         // Not known yet: the store is asking for it, and answers again once it has it.
-        let unknown = ThumbnailStore.canHaveThumbnail(kind) && !store.isKept(path: entry.path)
+        let unknown = store.mayHaveThumbnail(kind) && !store.isKept(path: entry.path)
         let keepsPicture = unknown && hasThumbnail && thumbnailPath == key
         let wait = unknown ? pane.iconWait : 0
         let atOnce = Flag(true)

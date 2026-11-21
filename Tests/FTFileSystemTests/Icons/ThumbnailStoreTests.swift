@@ -1,4 +1,5 @@
 import AppKit
+import FTFoundation
 import FTTestSupport
 import Foundation
 import Testing
@@ -97,6 +98,29 @@ private func request(
 }
 
 @MainActor @Suite struct ThumbnailStoreTests {
+    /// The Previews view's store shows an alias's original, looked up off the main thread; any other store keeps an
+    /// alias's icon, as Finder's icons and lists do.
+    @Test func onlyThePreviewsStoreShowsAnAliassOriginal() async throws {
+        let folder = try TemporaryDirectory(prefix: "filetrail-alias-preview")
+        defer { folder.remove() }
+        let original = folder.path + "/photo.png"
+        try Data([1]).write(to: URL(fileURLWithPath: original))
+        try Links.writeAlias(of: original, at: folder.path + "/photo.png alias")
+        let provider = ScriptedProvider { _ in ThumbnailResponse(version: "1", unchanged: false, picture: nil) }
+        let previews = ThumbnailStore(provider: provider, previewsAliasesOriginals: true)
+        let icons = ThumbnailStore(provider: provider)
+        #expect(previews.mayHaveThumbnail(.alias))
+        #expect(!icons.mayHaveThumbnail(.alias))
+        #expect(!previews.mayHaveThumbnail(.aliasDirectory))
+        let listing = Listing()
+        let receiver = Receiver()
+        _ = request(icons, folder.path + "/photo.png alias", kind: .alias, listing: listing, into: receiver)
+        _ = request(previews, folder.path + "/photo.png alias", kind: .alias, listing: listing, into: receiver)
+        await pollUntil { provider.calls.count == 1 }
+        let asked = try #require(provider.calls.first?.path)
+        #expect(NodePath.basename(asked) == "photo.png")
+    }
+
     // Icons up to 64 points take 128-pixel previews; larger ones 256.
     @Test func largerIconsAskForLargerPreviews() {
         #expect(ThumbnailStore.pixelSize(forIconSize: 32) == 128)

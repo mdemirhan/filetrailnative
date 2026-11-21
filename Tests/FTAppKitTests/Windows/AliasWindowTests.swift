@@ -32,7 +32,7 @@ extension ExplorerWindowlessTests {
         /// An alias of `original` named `name`, as Finder's Make Alias writes one, listed.
         private func alias(_ window: WritingWindow, of original: String, named name: String) async throws {
             try Links.writeAlias(of: path(window, original), at: path(window, name))
-            #expect(await listed(window, name)?.kind == .alias)
+            #expect(await listed(window, name)?.kind.isAlias == true)
         }
 
         /// The alias Make Alias wrote is Finder's, beside its item and named as Finder names it, then numbered; it

@@ -48,7 +48,7 @@ public final class KindLabeler: @unchecked Sendable {
         switch kind {
         case .directory: return "Folder"
         case .symlinkDirectory, .symlinkFile: return "Symbolic Link"
-        case .alias: return "Alias"
+        case .alias, .aliasDirectory: return "Alias"
         case .bundle:
             switch fileExtension {
             case "app": return "Application"
@@ -259,6 +259,9 @@ enum ExplorerListing {
                 {
                     kind = .alias
                 }
+                // An alias of a folder is listed with the folders, as Finder lists it: its original is looked up,
+                // without mounting a disk or asking for a server's password.
+                if kind == .alias, fileSystem.aliasLeadsToFolder(entryPath) { kind = .aliasDirectory }
                 let fileExtension = extensionName(ofName: record.name)
                 // A file without an extension is drawn as a document or as an executable, which only its
                 // permissions tell apart. Other entries are not looked at unless the sort needs it.
@@ -342,7 +345,7 @@ enum ExplorerListing {
     ) -> Int64? {
         if kind == .symlinkDirectory { return (record.lstat ?? safeLstat(path, fileSystem))?.size }
         // An alias has its own size, as Finder shows it: the file that says where its original is.
-        if let stats, kind == .file || kind == .symlinkFile || kind == .alias { return stats.size }
+        if let stats, kind == .file || kind == .symlinkFile || kind.isAlias { return stats.size }
         return nil
     }
 
@@ -492,7 +495,9 @@ enum ExplorerListing {
         let metadataStats = stats ?? symlinkStats
         let isSymlink = symlinkStats?.isSymbolicLink ?? false
         var kind = stats.map { self.kind(from: $0, isSymlink: isSymlink, path: path) } ?? .other
-        if kind == .file, fileSystem.isFinderAlias(path) { kind = .alias }
+        if kind == .file, fileSystem.isFinderAlias(path) {
+            kind = fileSystem.aliasLeadsToFolder(path) ? .aliasDirectory : .alias
+        }
         let size = readEntrySize(kind: kind, stats: stats, symlinkStats: symlinkStats)
         let addedMs: Int64? =
             switch added {

@@ -1,3 +1,4 @@
+import FTFoundation
 import Foundation
 import Testing
 
@@ -192,6 +193,26 @@ import Testing
         #expect(red != plain)
         #expect(red != redEmpty)
         #expect(red != blue)
+    }
+
+    /// An alias is drawn from a symbolic link of ours, which macOS draws with the arrow Finder puts on an alias: to a
+    /// plain folder for a folder's (no color of its tags), to an empty file with the same extension for a file's (no
+    /// preview of it), and to the item itself for an app, whose picture the alias shows.
+    @Test func anAliasIsDrawnFromALinkToAPlainItemOfItsOriginalsKind() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let samples = IconSamples(root: root)
+        func target(_ link: String) throws -> String {
+            try FileManager.default.destinationOfSymbolicLink(atPath: link)
+        }
+        let folder = try samples.aliasLink(to: "/Users/someone/Projects", isFolder: true)
+        #expect(try target(folder) == (try samples.path(for: .folder)))
+        let picture = try samples.aliasLink(to: "/Users/someone/Photo.PNG", isFolder: false)
+        #expect(NodePath.basename(try target(picture)) == "sample.png")
+        #expect(try samples.aliasLink(to: "/elsewhere/Other.png", isFolder: false) == picture)
+        let app = try samples.aliasLink(to: "/Applications/Safari.app", isFolder: false)
+        #expect(try target(app) == "/Applications/Safari.app")
+        #expect(IconRequest(entry: IconEntry(path: "/a/Projects alias", name: "", kind: .aliasDirectory)).isAlias)
     }
 
     @Test func theDiskReadSaysWhichFoldersHoldNothing() throws {

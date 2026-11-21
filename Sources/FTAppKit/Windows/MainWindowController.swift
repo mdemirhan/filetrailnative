@@ -920,7 +920,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// Double-click, Return (set to Open) and ⌘↓: opens the items, archives extracted. ⌘-double-click on a folder
     /// opens it in a new tab, as in Finder.
     func open(_ entries: [DirectoryEntry], inNewTab: Bool = false) {
-        if inNewTab, entries.count == 1, AliasOriginals.shared.commandKind(entries[0]).isDirectoryLike {
+        if inNewTab, entries.count == 1, AliasOriginals.shared.commandKind(entries[0]).opensAsFolder {
             openFolderInNewTab(entries[0])
             return
         }
@@ -1574,7 +1574,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// The folder selected in the file list, if it is the one item selected and a folder: its row's path.
     private var selectedContentFolder: String? {
         let items = content.selectedEntries
-        guard items.count == 1, items[0].isDirectoryLike else { return nil }
+        // An alias of a folder is a file: nothing is rooted or made in it.
+        guard items.count == 1, items[0].isDirectoryLike, !items[0].kind.isAlias else { return nil }
         return items[0].path
     }
 

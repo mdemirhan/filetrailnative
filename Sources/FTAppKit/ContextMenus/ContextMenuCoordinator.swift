@@ -210,7 +210,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             // One folder shows there; one file shows there in the viewer.
             let oneFolder =
                 subject.entries.count == 1
-                && (subject.entries[0].kind.isDirectoryLike || subject.entries[0].kind.isEditableFile)
+                && (subject.entries[0].kind.opensAsFolder || subject.entries[0].kind.isEditableFile)
             // Into the folder the other pane shows: not when it shows none, search results, the Trash, or this list's
             // folder.
             let destination = other.flatMap(tab.otherPaneDestination) ?? ""

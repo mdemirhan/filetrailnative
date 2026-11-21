@@ -13,7 +13,8 @@ enum PreviewThumbnails {
     static let memoryLimit = ThumbnailStore.previewMemoryLimit(
         physicalMemory: ProcessInfo.processInfo.physicalMemory)
     static let store: ThumbnailStore = {
-        let store = ThumbnailStore(maxEntries: ThumbnailStore.maxEntries, memoryLimit: memoryLimit)
+        let store = ThumbnailStore(
+            maxEntries: ThumbnailStore.maxEntries, memoryLimit: memoryLimit, previewsAliasesOriginals: true)
         let source = DispatchSource.makeMemoryPressureSource(eventMask: [.warning, .critical], queue: .main)
         source.setEventHandler {
             MainActor.assumeIsolated { store.dropCached() }

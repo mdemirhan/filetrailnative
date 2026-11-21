@@ -25,6 +25,7 @@ extension DirectoryEntry {
         case .symlinkDirectory: iconKind = .symlinkDirectory
         case .symlinkFile: iconKind = .symlinkFile
         case .alias: iconKind = .alias
+        case .aliasDirectory: iconKind = .aliasDirectory
         case .bundle: iconKind = .bundle
         case .other: iconKind = .other
         }

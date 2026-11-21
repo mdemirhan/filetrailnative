@@ -49,49 +49,6 @@ public struct WorkspaceIconSource: IconSource {
     }
 }
 
-/// The arrow on an alias: a white disc with a curved arrow at the icon's lower left, drawn as the system draws the one
-/// on a symbolic link, at its size. The system's own alias badge (`AliasBadgeIcon.icns`) is a thin arrow, hard to see
-/// at a list's row size, and the link's badge isn't a file to draw from.
-enum AliasBadge {
-    /// The disc's width, of the icon's.
-    static let discShare = 0.36
-    /// The arrow's size, of the disc's.
-    static let arrowShare = 0.6
-
-    static func badged(_ icon: NSImage) -> NSImage {
-        NSImage(size: icon.size, flipped: false) { rect in
-            icon.draw(in: rect)
-            let side = rect.width * discShare
-            let disc = NSRect(x: rect.minX, y: rect.minY, width: side, height: side)
-            NSGraphicsContext.saveGraphicsState()
-            let shadow = NSShadow()
-            shadow.shadowColor = NSColor.black.withAlphaComponent(0.35)
-            shadow.shadowBlurRadius = side * 0.08
-            shadow.shadowOffset = NSSize(width: 0, height: -side * 0.03)
-            shadow.set()
-            NSColor.white.setFill()
-            NSBezierPath(ovalIn: disc).fill()
-            NSGraphicsContext.restoreGraphicsState()
-            let edge = NSBezierPath(ovalIn: disc.insetBy(dx: side * 0.02, dy: side * 0.02))
-            edge.lineWidth = side * 0.04
-            NSColor.black.withAlphaComponent(0.18).setStroke()
-            edge.stroke()
-            let configuration = NSImage.SymbolConfiguration(pointSize: side * arrowShare, weight: .black)
-                .applying(NSImage.SymbolConfiguration(paletteColors: [.black]))
-            if let arrow = NSImage(systemSymbolName: "arrow.turn.up.right", accessibilityDescription: nil)?
-                .withSymbolConfiguration(configuration)
-            {
-                let size = arrow.size
-                arrow.draw(
-                    in: NSRect(
-                        x: disc.midX - size.width / 2, y: disc.midY - size.height / 2, width: size.width,
-                        height: size.height))
-            }
-            return true
-        }
-    }
-}
-
 /// What the cache holds for an icon.
 public enum IconLookup {
     /// Never asked for (or dropped from the cache).
@@ -250,14 +207,15 @@ public final class FileIconStore {
         enum Drawing: Sendable {
             case drawn(NSImage?)
             case folder(String)
-            /// An alias's original: a folder's icon or a file's, then the arrow on it.
-            case alias(original: String, isFolder: Bool)
         }
         let drawing = await BlockingWork.run { () -> Drawing in
-            // macOS draws an alias file as a plain document: Finder draws its original's icon with the arrow. One
-            // whose original can't be found keeps the plain one.
-            if request.isAlias, let original = Links.originalItem(of: request.path) {
-                return .alias(original: original.path, isFolder: original.isFolder)
+            // macOS draws an alias file as a plain document: Finder draws it by its original's kind, with the arrow a
+            // symbolic link has, which a link of ours to an item of that kind is drawn with. One whose original can't
+            // be found keeps the plain one.
+            if request.isAlias, let original = Links.originalItem(of: request.path),
+                let link = try? samples.aliasLink(to: original.path, isFolder: original.isFolder)
+            {
+                return .drawn(source.icon(atPath: link))
             }
             if let tint = request.tint {
                 let plain: GenericIconKind = request.isEmptyFolder ? .emptyFolder : .folder
@@ -279,11 +237,6 @@ public final class FileIconStore {
         switch drawing {
         case .drawn(let image): return image
         case .folder(let path): return await source.folderIcon(atPath: path)
-        case .alias(let original, let isFolder):
-            let icon =
-                isFolder
-                ? await source.folderIcon(atPath: original) : await BlockingWork.run { source.icon(atPath: original) }
-            return icon.map(AliasBadge.badged)
         }
     }
 }

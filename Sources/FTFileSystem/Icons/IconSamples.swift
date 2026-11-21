@@ -12,6 +12,7 @@ public final class IconSamples: @unchecked Sendable {
     private let lock = NSLock()
     private var made: [GenericIconKind: String]?
     private var madeTints: [String: String] = [:]
+    private var madeAliasLinks: [String: String] = [:]
 
     public init(root: URL = IconSamples.defaultRoot) {
         self.root = root
@@ -45,6 +46,64 @@ public final class IconSamples: @unchecked Sendable {
         try FinderTags.write([FinderTag(name: String(describing: color), color: color)], to: sample)
         madeTints[name] = sample
         return sample
+    }
+
+    /// A symbolic link of ours that macOS draws as Finder draws an alias of `original`: the icon of its kind with the
+    /// link's arrow, which is the arrow Finder puts on an alias. The link leads to a plain item of ours of the same kind
+    /// (a folder, or an empty file with the same extension), so the alias shows no preview of the original and no color
+    /// of its tags, as in Finder; an app, a package, a disk or a folder macOS draws with its own picture is led to
+    /// itself, whose picture the alias shows.
+    public func aliasLink(to original: String, isFolder: Bool) throws -> String {
+        let name: String
+        let target: String
+        if isFolder && !IconCacheKey.isDrawnBySystem(path: original) {
+            name = "alias-folder"
+            target = try path(for: .folder)
+        } else if isFolder || ItemNames.isMacOSPackageName(NodePath.basename(original))
+            || IconCacheKey.isDrawnBySystem(path: original)
+        {
+            name = "alias-item-\(Self.stableHash(original))"
+            target = original
+        } else {
+            let fileExtension = NodePath.extname(NodePath.basename(original)).dropFirst().lowercased()
+            if fileExtension.isEmpty {
+                let mode = (try? FileManager.default.attributesOfItem(atPath: original))?[.posixPermissions] as? Int
+                let executable = (mode ?? 0) & 0o111 != 0
+                name = executable ? "alias-executable" : "alias-file"
+                target = try path(for: executable ? .executable : .file)
+            } else {
+                name = "alias-ext-\(fileExtension)"
+                target = try sampleFile(withExtension: String(fileExtension))
+            }
+        }
+        lock.lock()
+        defer { lock.unlock() }
+        if let made = madeAliasLinks[name] { return made }
+        let link = folder.appending(name).string
+        try? FileManager.default.removeItem(atPath: link)
+        try FileManager.default.createSymbolicLink(atPath: link, withDestinationPath: target)
+        madeAliasLinks[name] = link
+        return link
+    }
+
+    /// An empty file of ours named with `fileExtension`, drawn with the icon of the files of that extension.
+    private func sampleFile(withExtension fileExtension: String) throws -> String {
+        let sample = folder.appending("sample.\(fileExtension)").string
+        if !FileManager.default.fileExists(atPath: sample) {
+            try FileManager.default.createDirectory(atPath: folder.string, withIntermediateDirectories: true)
+            try Data().write(to: DiskPath(sample).url(isDirectory: false))
+        }
+        return sample
+    }
+
+    /// A name for a path that stays the same from launch to launch, unlike `hashValue`: FNV-1a over its bytes.
+    private static func stableHash(_ text: String) -> String {
+        var hash: UInt64 = 0xcbf2_9ce4_8422_2325
+        for byte in text.utf8 {
+            hash ^= UInt64(byte)
+            hash = hash &* 0x100_0000_01b3
+        }
+        return String(hash, radix: 16)
     }
 
     private func create() throws -> [GenericIconKind: String] {

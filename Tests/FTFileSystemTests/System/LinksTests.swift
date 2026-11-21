@@ -95,4 +95,20 @@ import Testing
         #expect(Links.originalItem(of: folder.path + "/gone alias") == nil)
         #expect(Links.original(of: folder.path + "/broken") == nil)
     }
+
+    /// A folder's listing marks its aliases, and lists an alias of a folder with the folders, as Finder does with
+    /// Folders First; an alias of a file stays with the files.
+    @Test func aListingKnowsAliasesAndPutsThoseOfFoldersWithTheFolders() async throws {
+        let folder = try TemporaryDirectory(prefix: "filetrail-links")
+        defer { folder.remove() }
+        let base = real(folder)
+        try FileManager.default.createDirectory(atPath: base + "/Zeta", withIntermediateDirectories: true)
+        _ = try file(folder, "a.txt")
+        try Links.writeAlias(of: base + "/Zeta", at: base + "/Zeta alias")
+        try Links.writeAlias(of: base + "/a.txt", at: base + "/a.txt alias")
+
+        let snapshot = try await DirectoryService().snapshot(path: base, foldersFirst: true)
+        #expect(snapshot.entries.map(\.name) == ["Zeta", "Zeta alias", "a.txt", "a.txt alias"])
+        #expect(snapshot.entries.map(\.kind) == [.directory, .aliasDirectory, .file, .alias])
+    }
 }

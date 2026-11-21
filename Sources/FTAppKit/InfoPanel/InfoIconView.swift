@@ -7,8 +7,13 @@ import FTFoundation
 @MainActor
 enum NativeIconPixels {
     static let side = 64
+    /// The Info panel's large icon: 88 points, 176 pixels on a Retina screen, drawn from macOS's art for that size
+    /// rather than scaled up from 64 pixels.
+    static let heroSide = 256
 
-    static func image(_ icon: NSImage) -> NSImage {
+    static func image(_ icon: NSImage) -> NSImage { image(icon, side: side) }
+
+    static func image(_ icon: NSImage, side: Int) -> NSImage {
         guard
             let rep = NSBitmapImageRep(
                 bitmapDataPlanes: nil, pixelsWide: side, pixelsHigh: side, bitsPerSample: 8, samplesPerPixel: 4,
@@ -30,6 +35,8 @@ enum NativeIconPixels {
 @MainActor
 final class InfoIconView: NSView {
     private var image: NSImage?
+    /// The pixels the icon is drawn into (`NativeIconPixels`).
+    var pixelSide = NativeIconPixels.side
     /// Room between the box and the icon drawn in it (the hero's 104 box holds a 96 icon).
     var inset = 0.0
     private var isFolder = false
@@ -109,7 +116,7 @@ final class InfoIconView: NSView {
         let key = request.cacheKey
         handle = store.load(request, deferLoad: deferLoad) { [weak self] loaded in
             guard let self, self.shown == key else { return }
-            self.image = loaded.map(NativeIconPixels.image)
+            self.image = loaded.map { NativeIconPixels.image($0, side: self.pixelSide) }
             self.needsDisplay = true
         }
     }

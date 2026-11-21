@@ -94,6 +94,8 @@ public protocol ExplorerFileSystem: Sendable {
     func lastOpenedReader() -> @Sendable (String) -> Int64?
     /// Whether the file at `path` is a Finder alias (`Links.isFinderAlias`).
     func isFinderAlias(_ path: String) -> Bool
+    /// Whether the alias at `path` leads to a folder to open in place (`Links.originalItem`).
+    func aliasLeadsToFolder(_ path: String) -> Bool
 }
 
 extension ExplorerFileSystem {
@@ -104,6 +106,7 @@ extension ExplorerFileSystem {
     /// Whatever `lastOpenedMs` is: a stand-in for the disk that answers it itself is asked item by item.
     public func lastOpenedReader() -> @Sendable (String) -> Int64? { { lastOpenedMs($0) } }
     public func isFinderAlias(_ path: String) -> Bool { Links.isFinderAlias(path) }
+    public func aliasLeadsToFolder(_ path: String) -> Bool { Links.originalItem(of: path)?.isFolder ?? false }
 }
 
 public struct NativeFileSystem: ExplorerFileSystem {

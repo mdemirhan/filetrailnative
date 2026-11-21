@@ -185,6 +185,20 @@ struct ContextMenuRulesTests {
         #expect(hidden(subject(.content, [("/a/b.txt", .file)]), world(locked: true)).contains(.makeAlias))
     }
 
+    /// An alias of a folder opens as a folder (Open in New Tab, New Window, Other Pane) but is a file: nothing is pasted
+    /// or made in it, and it isn't a favorite.
+    @Test func anAliasOfAFolderOpensAsOneButHoldsNothing() {
+        let alias = subject(.content, [("/a/F alias", .aliasDirectory)])
+        let shown = hidden(alias, world(pasteDestination: true))
+        for action: ContextMenuActionID in [.openInNewTab, .openInNewWindow, .openInOtherPane, .showOriginal] {
+            #expect(!shown.contains(action), "\(action)")
+        }
+        for action: ContextMenuActionID in [.paste, .newFolder, .toggleFavorite] {
+            #expect(shown.contains(action), "\(action)")
+        }
+        #expect(ContextMenuRules.options(alias, world(), textEditorName: nil).targetsFolder)
+    }
+
     /// Share… is for items of the list and of search results, one or several, files or folders, and never for what
     /// is in the Trash; it only reads, so a running operation leaves it in.
     @Test func shareIsForItemsOutsideTheTrash() {

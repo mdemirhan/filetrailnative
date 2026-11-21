@@ -902,6 +902,7 @@ enum ClipboardIcons {
             case .symlinkDirectory: .symlinkDirectory
             case .symlinkFile: .symlinkFile
             case .alias: .alias
+            case .aliasDirectory: .aliasDirectory
             case .bundle: .bundle
             case .other: .other
             }

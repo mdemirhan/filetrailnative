@@ -3,7 +3,7 @@ import Foundation
 
 /// The kinds of listing entry an icon is asked for.
 public enum IconEntryKind: Sendable, Equatable {
-    case file, directory, symlinkFile, symlinkDirectory, alias, bundle, other
+    case file, directory, symlinkFile, symlinkDirectory, alias, aliasDirectory, bundle, other
 }
 
 /// What the icon cache key depends on in a listing entry.
@@ -97,7 +97,7 @@ public struct IconRequest: Sendable, Equatable {
             isEmptyFolder: tint != nil && entry.isEmptyFolder,
             isFolder: entry.kind == .directory && generic == nil && tint == nil
                 && !IconCacheKey.isDrawnBySystem(entry),
-            isAlias: entry.kind == .alias)
+            isAlias: entry.kind == .alias || entry.kind == .aliasDirectory)
     }
 
     /// An application's own icon, for the app pop-ups and lists in Settings.
@@ -134,14 +134,18 @@ public enum IconCacheKey {
 
     /// A special folder or a disk's top folder, which is drawn as the disk: a drive, a disk image, a network share.
     static func isDrawnBySystem(_ entry: IconEntry) -> Bool {
-        let path = entry.path.count > 1 && entry.path.hasSuffix("/") ? String(entry.path.dropLast()) : entry.path
-        return VolumePaths.isVolumeRootPath(entry.path) || specialFolders.contains(DiskPath(path))
+        isDrawnBySystem(path: entry.path)
+    }
+
+    static func isDrawnBySystem(path: String) -> Bool {
+        let trimmed = path.count > 1 && path.hasSuffix("/") ? String(path.dropLast()) : path
+        return VolumePaths.isVolumeRootPath(path) || specialFolders.contains(DiskPath(trimmed))
     }
 
     public static func key(for entry: IconEntry) -> String {
         switch entry.kind {
-        // An alias is drawn as its original is, with the system's arrow.
-        case .bundle, .other, .symlinkFile, .symlinkDirectory, .alias:
+        // An alias is drawn as Finder draws it, by what its original is (`IconSamples.aliasLink`).
+        case .bundle, .other, .symlinkFile, .symlinkDirectory, .alias, .aliasDirectory:
             return "path:\(entry.path)"
         case .directory:
             let isEmpty = entry.isEmptyFolder

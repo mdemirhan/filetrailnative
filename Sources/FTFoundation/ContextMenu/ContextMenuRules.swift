@@ -125,7 +125,7 @@ public enum ContextMenuRules {
     ) -> ContextMenuOptions {
         ContextMenuOptions(
             favoriteToggleLabel: favoriteToggleLabel(subject, world), textEditorName: textEditorName,
-            targetsFolder: !subject.entries.isEmpty && subject.entries.allSatisfy { $0.kind.isDirectoryLike },
+            targetsFolder: !subject.entries.isEmpty && subject.entries.allSatisfy { $0.kind.opensAsFolder },
             // Several items are renamed in the Rename sheet, as Finder's Rename does.
             renameLabel: subject.entries.count > 1 ? "Rename \(groupedCount(subject.entries.count)) Items…" : nil,
             ejectLabel: subject.ejectableDiskName.map { "Eject \(MenuName.quoted($0))" } ?? ejectLabel,
@@ -196,7 +196,7 @@ public enum ContextMenuRules {
         }
         // From a list, one folder opens there and one file shows there in the viewer.
         if isItemListSurface,
-            !(entries.count == 1 && (entries[0].kind.isDirectoryLike || entries[0].kind.isEditableFile))
+            !(entries.count == 1 && (entries[0].kind.opensAsFolder || entries[0].kind.isEditableFile))
         {
             hidden.insert(.openInOtherPane)
         }
@@ -223,8 +223,9 @@ public enum ContextMenuRules {
         if subject.ejectableDiskName == nil { hidden.insert(.eject) }
         let isTreeSurface = surface == .treeFolder || surface == .favorite
         let isSingleFolder = entries.count == 1 && (entries.first?.kind.isDirectoryLike ?? false)
-        // In the file list and search results a new tab opens on one folder.
-        if !isTreeSurface && (surface == .trash || !isSingleFolder) {
+        // In the file list and search results a new tab opens on one folder, or on the folder an alias leads to.
+        let opensOneFolder = entries.count == 1 && (entries.first?.kind.opensAsFolder ?? false)
+        if !isTreeSurface && (surface == .trash || !opensOneFolder) {
             hidden.insert(.openInNewTab)
             hidden.insert(.openInNewWindow)
         }

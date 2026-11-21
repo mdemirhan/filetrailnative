@@ -6,14 +6,18 @@ public enum EntryKind: String, Sendable, Hashable, Codable, CaseIterable {
     case file
     case symlinkDirectory = "symlink_directory"
     case symlinkFile = "symlink_file"
-    /// A Finder alias: a file holding where its original is. Whether that is a folder isn't known until it is looked
-    /// up, so it is listed as a file.
+    /// A Finder alias: a file holding where its original is. Of a file, or of an original that couldn't be found.
     case alias
+    /// A Finder alias of a folder: still a file, listed with the folders as Finder lists it.
+    case aliasDirectory = "alias_directory"
     case bundle
     case other
 
-    /// Folders and links to folders: what "folders first" puts ahead. A bundle counts as a file.
-    public var isDirectoryKind: Bool { self == .directory || self == .symlinkDirectory }
+    /// Folders, links and aliases of folders: what "folders first" puts ahead. A bundle counts as a file.
+    public var isDirectoryKind: Bool { self == .directory || self == .symlinkDirectory || self == .aliasDirectory }
+
+    /// A Finder alias, of a folder or not.
+    public var isAlias: Bool { self == .alias || self == .aliasDirectory }
 }
 
 public enum DirectorySortKey: String, Sendable, Hashable, Codable, CaseIterable {

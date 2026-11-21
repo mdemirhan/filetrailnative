@@ -72,7 +72,7 @@ public enum OpenItems {
         if isArchive(item) { return .extract([item.path]) }
         switch item.kind {
         case .directory: return .navigate(item.path)
-        case .symlinkDirectory: return .resolveThenNavigate(item.path)
+        case .symlinkDirectory, .aliasDirectory: return .resolveThenNavigate(item.path)
         case .symlinkFile: return .resolveThenOpen(item.path)
         case .alias: return .resolveThenFollow(item.path)
         case .bundle: return isFolderNamedAsArchive(item) ? .handToSystem(item.path) : .openExternally(item.path)
@@ -84,7 +84,7 @@ public enum OpenItems {
     public static func isFolderNamedAsArchive(_ item: CommandEntry) -> Bool {
         switch item.kind {
         case .directory, .symlinkDirectory, .bundle: ArchiveNames.isArchive(NodePath.basename(item.path))
-        case .file, .symlinkFile, .alias, .other: false
+        case .file, .symlinkFile, .alias, .aliasDirectory, .other: false
         }
     }
 

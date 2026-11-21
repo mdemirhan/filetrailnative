@@ -6,14 +6,19 @@ public enum EntryKind: String, Codable, CaseIterable, Sendable, Hashable {
     case file
     case symlinkDirectory = "symlink_directory"
     case symlinkFile = "symlink_file"
-    /// A Finder alias whose original isn't known yet. Once it is, the alias is taken as a link to a folder or to a
-    /// file is.
+    /// A Finder alias of a file, or one whose original isn't known yet; once known to lead to a file, it is taken as a
+    /// link to a file is.
     case alias
+    /// A Finder alias of a folder: it opens as a folder does, and being a file, nothing is put in it.
+    case aliasDirectory = "alias_directory"
     case bundle
     case other
 
-    /// A folder, or a link to one.
+    /// A folder, or a link to one: what can hold what is pasted, made or dropped in it.
     public var isDirectoryLike: Bool { self == .directory || self == .symlinkDirectory }
+
+    /// What opens as a folder: a folder, a link to one, or an alias of one (Open in New Tab, Open in Other Pane).
+    public var opensAsFolder: Bool { isDirectoryLike || self == .aliasDirectory }
 
     /// A file, or a link to one.
     public var isEditableFile: Bool { self == .file || self == .symlinkFile }
@@ -22,7 +27,9 @@ public enum EntryKind: String, Codable, CaseIterable, Sendable, Hashable {
     public var isFolderSizeEligible: Bool { self == .directory || self == .bundle }
 
     /// A symbolic link or an alias: what Show Original goes to the original of.
-    public var isLink: Bool { self == .symlinkDirectory || self == .symlinkFile || self == .alias }
+    public var isLink: Bool {
+        self == .symlinkDirectory || self == .symlinkFile || self == .alias || self == .aliasDirectory
+    }
 }
 
 /// The parts of a listing row the command rules look at.
@@ -280,10 +287,11 @@ public enum CommandAvailability {
         }
     }
 
-    private static func singleSelectedFolderPath(_ context: TargetContext) -> String? {
+    /// The one folder selected in the list; with `opening`, also an alias of one, which opens as a folder does.
+    private static func singleSelectedFolderPath(_ context: TargetContext, opening: Bool = false) -> String? {
         guard context.selectedPathsInViewOrder.count == 1,
             let entry = entry(at: context.selectedPathsInViewOrder[0], in: context.activeContentEntries),
-            entry.kind.isDirectoryLike
+            opening ? entry.kind.opensAsFolder : entry.kind.isDirectoryLike
         else { return nil }
         return entry.path
     }
@@ -294,7 +302,7 @@ public enum CommandAvailability {
         if context.focusedPane == .tree {
             return context.selectedTreeTargetPath
         }
-        return singleSelectedFolderPath(context)
+        return singleSelectedFolderPath(context, opening: true)
     }
 
     /// The folder File > Add to Favorites acts on: the tree's folder when the tree has the
