@@ -15,6 +15,10 @@ public enum PreferenceKey: String, CaseIterable, Sendable, Hashable {
     case batchRenamePresets, listFilterMatch, convertImagesSettings, textViewerSettings
     case tabViews, windowViews, newTabViewID
 
+    /// Preferences this app had and took away: a file's are dropped at the next write, not kept as a newer version's
+    /// settings would be (`AppState.unknownPreferences`).
+    public static let retired: Set<String> = ["workspaces", "fileActivationAction", "previewSizes"]
+
     /// The field of `AppPreferences` this key names. Every key has one: the switch is the one place that pairs them.
     fileprivate var makeField: PreferenceField {
         switch self {

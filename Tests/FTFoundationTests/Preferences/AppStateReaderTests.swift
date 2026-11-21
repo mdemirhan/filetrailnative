@@ -60,6 +60,34 @@ struct AppStateReaderTests {
     }
 
     // With no file the store holds the defaults of the platform's first-launch theme and no windows.
+    // What this version doesn't know, a newer version's settings, is kept as it was read, beside the preferences and
+    // among them; what it knows is read as ever, and a preference it retired is not kept.
+    @Test func keepsWhatANewerVersionWroteAndDropsWhatThisOneRetired() {
+        let state = Self.read(
+            """
+            {
+              "preferences": {
+                "theme": "light",
+                "laterSetting": {"kept": [1, "two", null], "on": true},
+                "workspaces": [{"id": "w"}],
+                "fileActivationAction": "open",
+                "previewSizes": {"standard": 3}
+              },
+              "windows": [],
+              "laterFile": "kept as it is",
+              "window": {"width": 900, "height": 600, "maximized": false}
+            }
+            """)
+        #expect(state.preferences?.theme == .light)
+        #expect(state.unknownPreferences == ["laterSetting": Self.node(#"{"kept": [1, "two", null], "on": true}"#)])
+        #expect(state.unknown == ["laterFile": .string("kept as it is")])
+        // Nothing of a file without anything unknown.
+        #expect(Self.read(#"{"preferences": {"theme": "dark"}}"#).unknownPreferences.isEmpty)
+        #expect(Self.read(#"{"preferences": {"theme": "dark"}}"#).unknown.isEmpty)
+        // Every preference this version names is its own, and none it retired is one of them.
+        #expect(PreferenceKey.retired.allSatisfy { PreferenceKey(rawValue: $0) == nil })
+    }
+
     @Test func returnsDefaultsWhenNoStateFileExists() {
         let defaults = AppPreferences.defaults(theme: .dark)
         #expect(defaults.theme == .dark)

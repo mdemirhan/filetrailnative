@@ -165,6 +165,59 @@ struct AppStateRoundTripTests {
         #expect(text.hasSuffix("}\n"))
     }
 
+    // A file a newer version wrote keeps that version's settings when this one saves over it: they are written back
+    // as they were read, beside and among the preferences this version writes, never in place of one. A preference
+    // this version retired goes at the next write.
+    @Test func aNewerVersionsSettingsSurviveASaveByThisOne() throws {
+        try Kit.withFolder { folder in
+            let path = Kit.statePath(folder)
+            try """
+            {
+              "preferences": {
+                "theme": "light",
+                "laterViews": [{"id": "v1", "name": "Later", "keeps": {"panes": 2, "somethingNew": true}}],
+                "workspaces": [{"id": "w", "name": "Old"}]
+              },
+              "laterFile": {"version": 3}
+            }
+            """.write(toFile: path, atomically: true, encoding: .utf8)
+            let store = Kit.store(path)
+            store.update { $0.foldersFirst = false }
+            store.flush()
+            let written = Kit.readFile(path)
+            let preferences = try #require(written["preferences"]?.object)
+            #expect(
+                preferences["laterViews"]
+                    == Kit.json(#"[{"id": "v1", "name": "Later", "keeps": {"panes": 2, "somethingNew": true}}]"#))
+            #expect(preferences["workspaces"] == nil)
+            #expect(preferences["theme"] == .string("light") && preferences["foldersFirst"] == .bool(false))
+            #expect(written["laterFile"] == Kit.json(#"{"version": 3}"#))
+
+            // Read and written again, they are still there, and the text doesn't change.
+            let text = try String(contentsOfFile: path, encoding: .utf8)
+            let again = Kit.store(path)
+            again.update { $0.foldersFirst = true }
+            again.update { $0.foldersFirst = false }
+            again.flush()
+            #expect(try String(contentsOfFile: path, encoding: .utf8) == text)
+        }
+    }
+
+    // What this version writes comes first; a newer version's settings follow, in the order of their names.
+    @Test func aNewerVersionsSettingsAreWrittenAfterThisOnesOwn() throws {
+        var state = try AppStateReader.read(data: Data(Self.everyKey.utf8), defaults: .defaults(theme: .auto))
+        state.unknownPreferences = ["zLater": .bool(true), "aLater": .number(1), "theme": .string("not this")]
+        state.unknown = ["laterFile": .string("x")]
+        let text = try AppStateJSON.serialize(state)
+        let preferences = try #require(Kit.json(text)["preferences"]?.object)
+        // A setting this version writes is never replaced by one kept from the file.
+        #expect(preferences["theme"] == .string("light"))
+        let order = ["\"batchRenamePresets\"", "\"aLater\"", "\"zLater\""]
+        let positions = order.compactMap { key in text.range(of: "    \(key):")?.lowerBound }
+        #expect(positions.count == 3 && positions == positions.sorted())
+        #expect(Kit.json(text)["laterFile"] == .string("x"))
+    }
+
     // The tolerant reading: a file that is not JSON gives the defaults, and is replaced at the next write.
     @Test func aDamagedFileGivesTheDefaultsAndIsReplacedAtTheNextWrite() throws {
         try Kit.withFolder { folder in

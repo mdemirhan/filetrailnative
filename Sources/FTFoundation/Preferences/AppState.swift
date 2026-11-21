@@ -42,14 +42,51 @@ public struct AppState: Codable, Equatable, Sendable {
     /// The window closed last, with only the tab that was in front: where a window opened with none open starts (and
     /// the app, when it quit with no window open).
     public var lastClosedWindow: StoredExplorerWindow?
+    /// What the file held that this version of the app doesn't know, beside the preferences and among them: a newer
+    /// version's settings. They are written back as they were read, so opening the file in an older version (a
+    /// release, after a build of a newer one) doesn't lose them. Not settings this app has retired.
+    public var unknown: [String: JSONNode]
+    public var unknownPreferences: [String: JSONNode]
 
     public init(
         preferences: AppPreferences? = nil, windows: [StoredExplorerWindow]? = nil,
-        lastClosedWindow: StoredExplorerWindow? = nil
+        lastClosedWindow: StoredExplorerWindow? = nil, unknown: [String: JSONNode] = [:],
+        unknownPreferences: [String: JSONNode] = [:]
     ) {
         self.preferences = preferences
         self.windows = windows
         self.lastClosedWindow = lastClosedWindow
+        self.unknown = unknown
+        self.unknownPreferences = unknownPreferences
+    }
+
+    /// The settings the app writes under its own names; what it doesn't know is added to them by the file's writer.
+    private enum CodingKeys: String, CodingKey {
+        case preferences, windows, lastClosedWindow
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            preferences: try container.decodeIfPresent(AppPreferences.self, forKey: .preferences),
+            windows: try container.decodeIfPresent([StoredExplorerWindow].self, forKey: .windows),
+            lastClosedWindow: try container.decodeIfPresent(StoredExplorerWindow.self, forKey: .lastClosedWindow))
+    }
+
+    /// The names the file's top level has had: what is read, and `window`, the one window's place before there
+    /// could be several, which is read once and written as `windows`.
+    static let knownKeys: Set<String> = ["preferences", "windows", "lastClosedWindow", "window"]
+
+    /// `node`, the state as JSON, with what this version doesn't know added back where the file had it: never in
+    /// place of a setting the app wrote.
+    public func addingUnknown(to node: JSONNode) -> JSONNode {
+        guard case .object(var top) = node else { return node }
+        for (key, value) in unknown where top[key] == nil { top[key] = value }
+        if !unknownPreferences.isEmpty, case .object(var preferences)? = top["preferences"] {
+            for (key, value) in unknownPreferences where preferences[key] == nil { preferences[key] = value }
+            top["preferences"] = .object(preferences)
+        }
+        return .object(top)
     }
 }
 
@@ -83,7 +120,12 @@ public enum AppStateReader {
                     id: legacyWindowID, bounds: windowState(file["window"]), session: preferences.windowSession)
             ]
         }
-        return AppState(preferences: preferences, windows: windows, lastClosedWindow: lastClosedWindow)
+        return AppState(
+            preferences: preferences, windows: windows, lastClosedWindow: lastClosedWindow,
+            unknown: file.filter { !AppState.knownKeys.contains($0.key) },
+            unknownPreferences: (file["preferences"]?.object ?? [:]).filter { key, _ in
+                PreferenceKey(rawValue: key) == nil && !PreferenceKey.retired.contains(key)
+            })
     }
 
     /// The saved state from the file's bytes: throws when they are not JSON.

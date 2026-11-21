@@ -179,10 +179,16 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         userDataDirectory = userData
         let logger = AppLogger(filePath: AppStatePaths.appLog(in: userData).path)
         self.logger = logger
+        // Which build ran, and from where: a setting lost or changed can be traced to the version that wrote the file.
+        // The full version says how far past a release a build is (macOS's own number shows only the release before).
+        let info = Bundle.main.infoDictionary
         logger.info(
             "[filetrail] app start",
             .context([
                 "pid": .number(Double(ProcessInfo.processInfo.processIdentifier)),
+                "version": .string(BuildInfo.version(from: info) ?? BuildInfo.fallbackVersion),
+                "commit": .string(BuildInfo.commit(from: info) ?? "unknown"),
+                "appPath": .string(Bundle.main.bundlePath),
                 "userDataPath": .string(userData.path),
                 "debugEnabled": .bool(logger.isDebugEnabled),
             ]))

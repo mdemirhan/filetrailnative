@@ -4,8 +4,9 @@ import Foundation
 /// The text of `app-state.json`: two-space indent, `"key": value`, a newline at the end, keys in a fixed order
 /// where one is set (everything else is sorted).
 enum AppStateJSON {
+    /// The state as the file's text, with the settings this version doesn't know written back as they were read.
     static func serialize(_ state: AppState) throws -> String {
-        stringify(try JSONNode.of(state), context: "", indent: "") + "\n"
+        stringify(state.addingUnknown(to: try JSONNode.of(state)), context: "", indent: "") + "\n"
     }
 
     // MARK: Key order
