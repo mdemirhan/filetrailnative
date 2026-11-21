@@ -85,6 +85,12 @@ final class BrowserPane {
     /// The view of the folder on screen, if a folder's view covers it (View ▸ Folder View), with what is changed of it
     /// on screen and not saved yet.
     var folderView: FolderViewOnScreen?
+    /// What a tab view applied with "Tab View First" or "Not Used" left on the pane: it decides what it covers while
+    /// the pane stays in its folder, and ends once the pane opens another (`BrowserPane+TabView.swift`).
+    var tabViewOverride: TabViewOverride?
+    /// An override waiting for the folder the pane is on its way to: the tab view's folder, or the new name of the
+    /// folder on screen, followed. It takes the place of `tabViewOverride` once that folder arrives.
+    var arrivingTabViewOverride: TabViewOverride?
     /// What the pane carried as it came into the folder on screen: what a setting goes back to in the pane once the
     /// folder keeps it, so a change made here before the folder was customized stays with the folder alone.
     var settingsOnArrival: PaneSettingsOnArrival?
@@ -227,16 +233,18 @@ final class BrowserPane {
     var shownViewMode: ExplorerViewMode { searchStore?.showsResults == true ? searchViewMode : shownMode }
 
     /// The folder's view, order and Folders First as on screen: its view's where it keeps them, else the pane's.
-    var shownMode: ExplorerViewMode { folderView?.shown.view ?? viewMode }
-    var shownSortBy: SortByPreference { folderView?.shown.sort?.by ?? sortBy }
-    var shownSortDirection: SortDirectionPreference { folderView?.shown.sort?.direction ?? sortDirection }
-    var shownFoldersFirst: Bool { folderView?.shown.foldersFirst ?? foldersFirst }
-    var shownGroupBy: GroupByPreference { folderView?.shown.groupBy ?? groupBy }
+    /// A tab view's override, where it holds, gives the pane's own in place of the view's (`folderViewShown`).
+    var shownMode: ExplorerViewMode { folderViewShown(.view)?.view ?? viewMode }
+    var shownSortBy: SortByPreference { folderViewShown(.sort)?.sort?.by ?? sortBy }
+    var shownSortDirection: SortDirectionPreference { folderViewShown(.sort)?.sort?.direction ?? sortDirection }
+    var shownFoldersFirst: Bool { folderViewShown(.foldersFirst)?.foldersFirst ?? foldersFirst }
+    var shownGroupBy: GroupByPreference { folderViewShown(.groupBy)?.groupBy ?? groupBy }
     /// A folder's view that keeps its grouping keeps its direction with it.
     var shownGroupReversed: Bool {
         // No groups have no order: a Reverse left on from the last grouping waits for the next.
         guard shownGroupBy != .none else { return false }
-        return folderView?.shown.groupBy != nil ? folderView?.shown.groupReversed == true : groupReversed
+        let view = folderViewShown(.groupBy)
+        return view?.groupBy != nil ? view?.groupReversed == true : groupReversed
     }
     /// What Reverse Group Order shows checked: search results' own while they show.
     var activeGroupReversed: Bool {
@@ -439,6 +447,7 @@ final class BrowserPane {
         let path = shownFolderPath
         let followed = ExplorerTabs.followMovedPath(path, moves)
         guard !path.isEmpty, followed != path else { return }
+        followTabViewOverride(to: followed)
         if loaded {
             go(to: followed, history: .replace)
         } else {
@@ -731,7 +740,7 @@ final class BrowserPane {
     /// as the pane has them.
     private func readFolder(_ path: String, view: FolderViewOnScreen?) async -> Result<DirectorySnapshot, any Error> {
         let service = tab.services.directoryService
-        let order = readOrder(view)
+        let order = readOrder(view, at: path)
         let key = DirectorySortKey(rawValue: order.by.rawValue) ?? .name
         let direction: SortDirection = order.direction == .asc ? .ascending : .descending
         let hidden = includeHidden
@@ -744,13 +753,19 @@ final class BrowserPane {
         }
     }
 
-    /// The order a folder shown with `view` is read in: the view's where it keeps one, else the pane's.
-    private func readOrder(_ view: FolderViewOnScreen?) -> (
+    /// The order `path` is read in with `view` laid over the pane: where a tab view's override holds there (the one on
+    /// the pane, or one waiting for the folder the pane goes to), what it covers is the pane's.
+    private func readOrder(_ view: FolderViewOnScreen?, at path: String) -> (
         by: SortByPreference, direction: SortDirectionPreference, foldersFirst: Bool, groupBy: GroupByPreference
     ) {
-        (
-            view?.shown.sort?.by ?? sortBy, view?.shown.sort?.direction ?? sortDirection,
-            view?.shown.foldersFirst ?? foldersFirst, view?.shown.groupBy ?? groupBy
+        let override = arrivingTabViewOverride ?? tabViewOverride
+        func shown(_ setting: FolderViewSetting) -> FolderViewKeeps? {
+            PaneViewResolution.folderViewDecides(setting, onScreen: view, override: override, folder: path)
+                ? view?.shown : nil
+        }
+        return (
+            shown(.sort)?.sort?.by ?? sortBy, shown(.sort)?.sort?.direction ?? sortDirection,
+            shown(.foldersFirst)?.foldersFirst ?? foldersFirst, shown(.groupBy)?.groupBy ?? groupBy
         )
     }
 
@@ -906,7 +921,7 @@ final class BrowserPane {
             if isOnScreen { opensAnotherFolder = false }
             let real = isOnScreen ? folderView : folderViewUse(for: snapshot.path).map(FolderViewOnScreen.init)
             if real != view {
-                let sameOrder = readOrder(real) == readOrder(view)
+                let sameOrder = readOrder(real, at: snapshot.path) == readOrder(view, at: snapshot.path)
                 view = real
                 if !sameOrder {
                     read = await readFolder(snapshot.path, view: real)
@@ -991,6 +1006,7 @@ final class BrowserPane {
         folderPath = shownPath
         folderLetGo = false
         placeTaken = false
+        if opensAnotherFolder { arriveWithTabViewOverride(in: shownPath) }
         if opensAnotherFolder { settingsOnArrival = PaneSettingsOnArrival(self) }
         // Nothing to show where neither the folder left nor this one has a view: the common case does no more work.
         if opensAnotherFolder, folderView != nil || view != nil {
@@ -1111,7 +1127,7 @@ final class BrowserPane {
         // Search results have a view of their own in each pane (`searchViewMode`).
         if let search = searchStore, search.showsResults {
             searchViewMode = mode
-        } else if folderView?.shown.keeps(.view) == true {
+        } else if changedByHand(.view), folderView?.shown.keeps(.view) == true {
             // A folder's view that keeps the view: changed on screen only, until Save.
             folderView?.shown.view = mode
         } else {
@@ -1132,7 +1148,7 @@ final class BrowserPane {
 
     /// Puts the folder in this order: it is read again ("replace"), and the selection is not kept.
     func setSort(_ field: SortByPreference, _ direction: SortDirectionPreference) {
-        if folderView?.shown.keeps(.sort) == true {
+        if changedByHand(.sort), folderView?.shown.keeps(.sort) == true {
             folderView?.shown.sort = FolderViewSort(by: field, direction: direction)
         } else {
             sortBy = field
@@ -1154,7 +1170,7 @@ final class BrowserPane {
             return
         }
         guard field.isForFolders, field != shownGroupBy else { return }
-        if folderView?.shown.keeps(.groupBy) == true {
+        if changedByHand(.groupBy), folderView?.shown.keeps(.groupBy) == true {
             folderView?.shown.groupBy = field
         } else {
             groupBy = field
@@ -1169,13 +1185,14 @@ final class BrowserPane {
         if let search = searchStore, search.showsResults {
             searchGroupReversed.toggle()
             content.setSearchGroupReversed(searchGroupReversed)
-        } else if folderView?.shown.keeps(.groupBy) == true {
-            // Read before the view is written: the two can't overlap.
-            let reversed = !shownGroupReversed
-            folderView?.shown.groupReversed = reversed ? true : nil
-            showFolderView()
         } else {
-            groupReversed.toggle()
+            // Read before the view is written, and before a tab view's override lets go of it.
+            let reversed = !shownGroupReversed
+            if changedByHand(.groupBy), folderView?.shown.keeps(.groupBy) == true {
+                folderView?.shown.groupReversed = reversed ? true : nil
+            } else {
+                groupReversed.toggle()
+            }
             showFolderView()
         }
         tab.paneChanged(.view, in: self)
@@ -1184,10 +1201,12 @@ final class BrowserPane {
 
     /// Folders First on or off, for the folder's view where it keeps it.
     func toggleFoldersFirst() {
-        if folderView?.shown.keeps(.foldersFirst) == true {
-            folderView?.shown.foldersFirst = !shownFoldersFirst
+        // The other way from what is on screen, before a tab view's override lets go of it.
+        let turned = !shownFoldersFirst
+        if changedByHand(.foldersFirst), folderView?.shown.keeps(.foldersFirst) == true {
+            folderView?.shown.foldersFirst = turned
         } else {
-            foldersFirst.toggle()
+            foldersFirst = turned
         }
         viewChanged()
         folderViewChanged()

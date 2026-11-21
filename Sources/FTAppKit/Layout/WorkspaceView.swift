@@ -245,6 +245,9 @@ final class WorkspaceView: NSView {
         needsLayout = true
     }
 
+    /// The room the panes share, the divider's included: what a tab view's divider kept as a width is measured against.
+    var paneColumnWidth: Double { contentColumn.bounds.width }
+
     /// Where the divider sits: the left pane's share of the room.
     func setPaneSplit(_ split: Double) {
         let clamped = PaneSplit.clamp(split)

@@ -153,7 +153,9 @@ public enum Workspaces {
         guard let candidates = value?.array, !candidates.isEmpty else { return [] }
         // The preferences the sessions are read over, without the workspaces themselves.
         var base = (try? JSONNode.of(defaults))?.object ?? [:]
-        base[PreferenceKey.workspaces.rawValue] = nil
+        for key in [PreferenceKey.workspaces, .tabViews, .windowViews, .newTabViewID] {
+            base[key.rawValue] = nil
+        }
         var workspaces: [Workspace] = []
         for candidate in candidates {
             guard let record = candidate.object, let id = record["id"]?.string, !id.isEmpty,

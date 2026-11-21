@@ -66,7 +66,7 @@ extension PreferenceKey {
             .treeWidth, .inspectorWidth, .restoreSessionOnStartup, .openTabs, .activeTabIndex, .treeRootPath,
             .lastVisitedPath, .lastVisitedFavoritePath, .favoritesExpanded, .locationsExpanded,
             .batchRenameSettings, .batchRenamePresets, .listFilterMatch, .workspaces, .convertImagesSettings,
-            .textViewerSettings:
+            .textViewerSettings, .tabViews, .windowViews, .newTabViewID:
             .commands
         }
     }

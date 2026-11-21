@@ -163,7 +163,7 @@ extension BrowserPane {
         } else if let view = folderView {
             bar.folderViewMark = PathBarRowView.FolderViewMark(
                 whose: view.isDraft ? .noView : view.use.own ? .own : .above, changed: view.hasUnsavedChanges,
-                tooltip: FolderViewText.tooltip(view))
+                tooltip: FolderViewText.tooltip(view, tabView: tabViewOverrideHolds ? tabViewOverride?.choice : nil))
         } else {
             // Always there, so Folder View Options opens from it, and anything opened from the menu comes from it.
             bar.folderViewMark = PathBarRowView.FolderViewMark(
@@ -196,12 +196,12 @@ extension BrowserPane {
     /// The preferences with the pane's sizes and the folder's view laid over them: what the List and the sizes show.
     func shownPreferences(_ preferences: AppPreferences) -> AppPreferences {
         var shown = viewSizes?.applied(to: preferences) ?? preferences
-        if let columns = folderView?.shown.columns {
+        if let columns = folderViewShown(.columns)?.columns {
             shown.detailColumns = columns.visibility
             shown.detailColumnOrder = columns.order
             shown.detailColumnWidths = columns.widths
         }
-        if let sizes = folderView?.shown.size {
+        if let sizes = folderViewShown(.size)?.size {
             shown.iconSizes = sizes.iconSizes
             shown.compactListWidths = sizes.compactListWidths
             shown.previewCounts = sizes.previewCounts
@@ -494,8 +494,13 @@ enum FolderViewText {
         return name.isEmpty || name == "/" ? path : name
     }
 
-    static func tooltip(_ view: FolderViewOnScreen) -> String {
+    static func tooltip(_ view: FolderViewOnScreen, tabView: FolderViewsChoice? = nil) -> String {
         if view.isDraft { return "No view of its own \u{00B7} Unsaved changes" }
+        switch tabView {
+        case .tabViewFirst?: return tooltip(view) + " \u{00B7} The tab view comes first here"
+        case .notUsed?: return tooltip(view) + " \u{00B7} Not used by the tab view here"
+        case .folderFirst?, nil: break
+        }
         let whose =
             view.use.own ? "This folder's view" : "Folder view from “\(name(view.use.view.path))”"
         let keeps = view.saved.isEmpty ? " (keeps nothing)" : ""

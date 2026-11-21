@@ -73,6 +73,8 @@ enum WindowNotice: Equatable {
     case tabLimit
     /// A workspace opened with tabs whose folders are gone.
     case workspaceFoldersGone(tabs: Int)
+    /// A tab view applied with folders that are gone.
+    case tabViewFoldersGone(panes: Int)
 
     var title: String {
         switch self {
@@ -81,6 +83,10 @@ enum WindowNotice: Equatable {
             tabs == 1
                 ? "A tab\u{2019}s folder is gone: it shows the folder above it"
                 : "\(tabs) tabs\u{2019} folders are gone: they show the folders above them"
+        case .tabViewFoldersGone(let panes):
+            panes == 1
+                ? "The tab view\u{2019}s folder is gone: the pane shows the folder above it"
+                : "The tab view\u{2019}s folders are gone: the panes show the folders above them"
         }
     }
 }

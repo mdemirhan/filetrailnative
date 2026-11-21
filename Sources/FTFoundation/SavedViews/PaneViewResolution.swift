@@ -32,19 +32,34 @@ public enum PaneViewResolution {
     public static func shown(
         carried: FolderViewKeeps, onScreen: FolderViewOnScreen?, override: TabViewOverride?, folder: String?
     ) -> Shown {
-        let holding = override.flatMap { $0.holds(in: folder) ? $0 : nil }
         var keeps = carried
         var sources: [FolderViewSetting: Source] = [:]
         for setting in FolderViewSetting.allCases {
-            if let holding, holding.covers(setting) {
-                sources[setting] = holding.choice == .tabViewFirst ? .tabView : .pane
-            } else if let onScreen, onScreen.shown.keeps(setting) {
+            let source = source(of: setting, onScreen: onScreen, override: override, folder: folder)
+            if source == .folderView || source == .changeOnScreen, let onScreen {
                 keeps.take(setting, from: onScreen.shown)
-                sources[setting] = onScreen.unsaved.contains(setting) ? .changeOnScreen : .folderView
-            } else {
-                sources[setting] = .pane
             }
+            sources[setting] = source
         }
         return Shown(keeps: keeps, sources: sources)
+    }
+
+    /// Where `setting` comes from, by the rules of `shown`.
+    public static func source(
+        of setting: FolderViewSetting, onScreen: FolderViewOnScreen?, override: TabViewOverride?, folder: String?
+    ) -> Source {
+        if let override, override.holds(in: folder), override.covers(setting) {
+            return override.choice == .tabViewFirst ? .tabView : .pane
+        }
+        guard let onScreen, onScreen.shown.keeps(setting) else { return .pane }
+        return onScreen.unsaved.contains(setting) ? .changeOnScreen : .folderView
+    }
+
+    /// Whether the folder's view (with what is changed of it on screen) decides `setting`.
+    public static func folderViewDecides(
+        _ setting: FolderViewSetting, onScreen: FolderViewOnScreen?, override: TabViewOverride?, folder: String?
+    ) -> Bool {
+        let source = source(of: setting, onScreen: onScreen, override: override, folder: folder)
+        return source == .folderView || source == .changeOnScreen
     }
 }

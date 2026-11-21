@@ -190,7 +190,10 @@
             "wrapLines": true,
             "lineNumbers": true,
             "opensForEditing": false
-          }
+          },
+          "tabViews": [],
+          "windowViews": [],
+          "newTabViewID": null
         },
         "windows": [
           {
@@ -437,7 +440,10 @@
             "wrapLines": true,
             "lineNumbers": true,
             "opensForEditing": false
-          }
+          },
+          "tabViews": [],
+          "windowViews": [],
+          "newTabViewID": null
         },
         "lastClosedWindow": {
           "id": "window-9",

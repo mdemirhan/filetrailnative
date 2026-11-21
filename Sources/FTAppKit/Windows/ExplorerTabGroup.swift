@@ -336,7 +336,9 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     func openNewTab(from tab: MainWindowController) {
         guard !isBlocked, hasRoomForTab() else { return }
         let snapshot = ExplorerTabs.newTab(from: tab.snapshot)
-        insert(MainWindowController(snapshot: snapshot, frame: tabFrame), after: tab, select: true)
+        let opened = MainWindowController(snapshot: snapshot, frame: tabFrame)
+        insert(opened, after: tab, select: true)
+        opened.applyNewTabView()
     }
 
     /// `path` in a new tab after `tab`, with that tab's view and tree. `openedItem`: it opens for an
@@ -534,8 +536,12 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         }
         guard preference.path?.isEmpty == false, let host else { return }
         guard host.controller.openWindowFrom(windowID, tabs: [preference], activeTabIndex: 0) else { return }
-        if let openedItem, let opened = host.newestGroup, opened !== self {
+        guard let opened = host.newestGroup, opened !== self else { return }
+        if let openedItem {
             opened.selected?.showOpenedItem(openedItem)
+        } else if path == nil {
+            // New Window, not a folder opened in one: its tab is a new tab.
+            opened.selected?.applyNewTabView()
         }
     }
 

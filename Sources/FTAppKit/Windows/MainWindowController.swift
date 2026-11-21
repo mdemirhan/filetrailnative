@@ -271,6 +271,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// Where the second pane was when it was last closed, for ⌘\ to open it there again, with what it had on screen.
     /// It is the tab's while it is open: Reopen Closed Tab and Duplicate Tab don't bring it.
     var closedSecondPane: (start: StartupTab, history: NavigationHistory, view: TabViewState?)?
+    /// The tab view applied to this tab last, if any: what Save Window View offers for it. Never shown, and never a
+    /// link: the tab is not kept like the tab view.
+    var lastTabViewID: String?
     /// The folder watch of a second pane just closed, for the window's watches to let go of.
     var closedPaneWatchID: Int?
     /// Counts the viewer pane's following, so only the last selection of a run is read.
@@ -1441,7 +1444,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         // In a folder whose view keeps the size, a size set is a change of that view, unsaved until Update.
         content.onCompactListWidthChanged = { [weak self, weak pane] density, width in
             guard let pane else { return }
-            if pane.folderViewKeeps(.size) {
+            if pane.changedByHand(.size), pane.folderViewKeeps(.size) {
                 pane.changeShownFolderView { $0.size?.compactListWidths[density] = width }
                 return
             }
@@ -1451,7 +1454,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
         content.onIconSizeChanged = { [weak self, weak pane] density, size in
             guard let pane else { return }
-            if pane.folderViewKeeps(.size) {
+            if pane.changedByHand(.size), pane.folderViewKeeps(.size) {
                 pane.changeShownFolderView { $0.size?.iconSizes[density] = size }
                 return
             }
@@ -1461,7 +1464,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
         content.onPreviewCountChanged = { [weak self, weak pane] density, count in
             guard let pane else { return }
-            if pane.folderViewKeeps(.size) {
+            if pane.changedByHand(.size), pane.folderViewKeeps(.size) {
                 pane.changeShownFolderView { $0.size?.previewCounts[density] = count }
                 return
             }
@@ -1515,7 +1518,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                 kept[key] = AppPreferenceLimits.clampDetailColumnWidth(key, width(column))
             }
             // A folder's view that keeps its columns keeps their widths: a change of the view, unsaved until Update.
-            if pane.folderViewKeeps(.columns) {
+            if pane.changedByHand(.columns), pane.folderViewKeeps(.columns) {
                 pane.changeShownFolderView { $0.columns?.widths = kept }
                 return
             }

@@ -80,6 +80,12 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     public var convertImagesSettings: ConvertImagesSettings
     /// The text viewer's own look: its appearance, themes, font size, wrapping and line numbers.
     public var textViewerSettings: TextViewerSettings
+    /// Tabs' settings saved by name (Saved Views ▸ Tab Views), in the order the menu lists them.
+    public var tabViews: [TabView]
+    /// Windows made of tab views, saved by name (Saved Views ▸ Window Views), in the order the menu lists them.
+    public var windowViews: [WindowView]
+    /// The tab view New Tab and New Window open with; nil for none, and a new tab has one pane as before.
+    @NullEncoded public var newTabViewID: String?
 
     /// What a new install starts with, given the theme it starts in.
     public static func defaults(theme: ThemePreference = .auto) -> AppPreferences {
@@ -104,7 +110,8 @@ public struct AppPreferences: Codable, Equatable, Sendable {
             lastVisitedFavoritePath: nil, favorites: [], favoritesPlacement: .integrated, favoritesExpanded: true,
             locationsExpanded: true, favoritesInitialized: false,
             batchRenameSettings: .defaults, batchRenamePresets: [], listFilterMatch: .fuzzy, workspaces: [],
-            convertImagesSettings: .defaults, textViewerSettings: .defaults)
+            convertImagesSettings: .defaults, textViewerSettings: .defaults, tabViews: [], windowViews: [],
+            newTabViewID: nil)
     }
 }
 

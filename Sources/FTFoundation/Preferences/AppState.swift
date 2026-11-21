@@ -106,7 +106,9 @@ public enum AppStateReader {
             let saved = record["session"]?.object ?? [:]
             var merged = (try? JSONNode.of(preferences))?.object ?? [:]
             // The workspaces are the app's, not read again for each window.
-            merged[PreferenceKey.workspaces.rawValue] = nil
+            for key in [PreferenceKey.workspaces, .tabViews, .windowViews, .newTabViewID] {
+                merged[key.rawValue] = nil
+            }
             for key in WindowSession.readKeys {
                 if let value = saved[key.rawValue] { merged[key.rawValue] = value }
             }
