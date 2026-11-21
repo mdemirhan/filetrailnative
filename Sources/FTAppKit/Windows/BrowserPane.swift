@@ -470,16 +470,22 @@ final class BrowserPane {
         var folder: String
         /// What the write made there, selected once it is listed; nil to keep the selection.
         var selecting: [String]?
-        /// Told once: true with the listing on screen, false when the pane left the folder or couldn't read it.
-        var finish: ((Bool) -> Void)?
+        /// The item the write made whose name is to open in its row once it is listed, if there is one.
+        var naming: String?
+        /// Told once: true with the listing on screen, false when the pane left the folder or couldn't read it. With
+        /// it, what the disk names the items of `selecting` and `naming` that no row is spelled as (`writeEndShown`).
+        var finish: ((Bool, [DiskPath: DiskPath]) -> Void)?
     }
+
+    /// What the disk names the item at a path, for one a write made that no row is spelled as; tests give their own.
+    var nameOnDisk: @Sendable (DiskPath) -> DiskPath = { $0.namedAsOnDisk() }
 
     /// A write that ended is yet to show in this pane: it waits for the pane's own read of its folder, whichever
     /// other pane's read lands first.
     private var writeEndRead: WriteEndRead?
 
-    /// The pane's next read of `waiting.folder` shows a write's end: what the write made is selected then. One still
-    /// waiting gives way.
+    /// The pane's next read of `waiting.folder` shows a write's end: what the write made is selected then, and the
+    /// one it is to name has its name opened. One still waiting gives way.
     func showWriteEnd(_ waiting: WriteEndRead) {
         dropWriteEndRead()
         writeEndRead = waiting
@@ -497,11 +503,17 @@ final class BrowserPane {
     private func dropWriteEndRead() {
         guard let waiting = writeEndRead else { return }
         writeEndRead = nil
-        waiting.finish?(false)
+        waiting.finish?(false, [:])
     }
 
     /// A listing of `path` is on screen: what waited for the write's end is done, unless this read began before the
     /// write ended and the one asked for is still waiting. Another folder's listing ends the wait.
+    ///
+    /// A write names what it made as it was asked to, and a disk may store the name otherwise: HFS+ keeps an accent
+    /// in two parts whatever was typed, so the row of a file renamed to "café" is spelled another way than the
+    /// rename's own path. A path that has no row spelled as it is has the disk asked what it names the item, once
+    /// and off the main thread, and is selected by that name. The disk is not asked when every path has its row, as
+    /// on a disk that keeps names as given and for every name without an accent.
     private func writeEndShown(in path: String) {
         guard let waiting = writeEndRead else { return }
         guard samePath(path, waiting.folder) else {
@@ -510,8 +522,29 @@ final class BrowserPane {
         }
         if let pending = folderChanges.pending, samePath(pending.path, path) { return }
         writeEndRead = nil
-        if let selecting = waiting.selecting { content.select(paths: selecting) }
-        waiting.finish?(true)
+        let made = (waiting.selecting ?? []) + (waiting.naming.map { [$0] } ?? [])
+        let unlisted = Array(Set(made.lazy.map(DiskPath.init)).filter { content.listedEntry(at: $0.string) == nil })
+        guard !unlisted.isEmpty else {
+            if let selecting = waiting.selecting { content.select(paths: selecting) }
+            waiting.finish?(true, [:])
+            return
+        }
+        let selection = content.selection
+        let nameOnDisk = nameOnDisk
+        Task { [weak self] in
+            let named = await BlockingWork.run { unlisted.map(nameOnDisk) }
+            // The pane left the folder while the disk was asked: its write's end won't show.
+            guard let self, !self.folderLetGo, samePath(self.shownFolderPath, waiting.folder) else {
+                waiting.finish?(false, [:])
+                return
+            }
+            let onDisk = Dictionary(uniqueKeysWithValues: zip(unlisted, named))
+            // Something picked meanwhile stays picked.
+            if let selecting = waiting.selecting, self.content.selection == selection {
+                self.content.select(paths: selecting.map { onDisk[DiskPath($0)]?.string ?? $0 })
+            }
+            waiting.finish?(true, onDisk)
+        }
     }
 
     /// A folder didn't open, and the one on screen stays: with no read of it on its way, the write's end won't show.

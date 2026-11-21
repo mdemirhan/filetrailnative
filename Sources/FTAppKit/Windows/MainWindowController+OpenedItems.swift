@@ -31,12 +31,15 @@ extension MainWindowController {
     /// Each by its name in the folder opened, if not by its path: the listing gives its rows the folder's real path,
     /// which may be spelled otherwise than the one the other app sent (/private/tmp for /tmp). One item with no row
     /// (a hidden item, hidden items off) is selected all the same: the selection asks nothing of the listing, and the
-    /// Info panel describes it. Of several, those with rows are.
+    /// Info panel describes it. Of several, those with rows are. The row spelled exactly as the item comes first,
+    /// where the folder holds the name with its accent spelled both ways; one spelled the other way only when no row
+    /// is spelled so.
     private func selectOpenedItems(_ paths: [String]) {
         let rows = paths.compactMap { path in
             let name = NodePath.basename(path)
-            return content.listed.first { $0.path == path }
+            return content.listedEntry(at: path)
                 ?? content.listed.first { $0.name.utf16.elementsEqual(name.utf16) }
+                ?? content.listed.first { $0.path == path }
         }
         if !rows.isEmpty {
             content.select(paths: rows.map(\.path))

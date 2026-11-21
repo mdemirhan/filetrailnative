@@ -594,11 +594,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             let move: HistoryMove = !folderLetGo && samePath(target, folderPath) ? .replace : .push
             guard await navigate(to: target, history: move) else { return }
             // By its name in the folder opened: the listing gives its rows the folder's real path, which may be spelled
-            // otherwise than the one the search ran from (/private/var for /var).
+            // otherwise than the one the search ran from (/private/var for /var). The row spelled exactly so comes
+            // first, where the folder holds the name with its accent spelled both ways; one spelled the other way only
+            // when no row is spelled so.
             let name = NodePath.basename(path)
             let row =
-                content.listed.first { $0.path == path }
+                content.listedEntry(at: path)
                 ?? content.listed.first { $0.name.utf16.elementsEqual(name.utf16) }
+                ?? content.listed.first { $0.path == path }
             content.select(paths: [row?.path ?? path])
             content.focusList()
         }

@@ -217,15 +217,18 @@ extension MainWindowController {
 
     /// The folder just made in `pane`'s folder is renamed in its row, now that the pane's own read has listed it (and
     /// selected it, see `AfterWrite.selection`). A pane that left the folder forgets it, and so does one whose
-    /// listing doesn't have it: it is asked for once.
-    func renamePendingFolder(_ session: ExplorerWriteSession, in pane: BrowserPane) {
+    /// listing doesn't have it: it is asked for once. `onDisk` has what the disk names it, when no row is spelled as
+    /// the write named it (`BrowserPane.writeEndShown`): a disk may store a name's accent its own way.
+    func renamePendingFolder(
+        _ session: ExplorerWriteSession, in pane: BrowserPane, onDisk: [DiskPath: DiskPath] = [:]
+    ) {
         guard let path = session.pendingInlineRenamePath else { return }
         session.pendingInlineRenamePath = nil
         // The one folder, however each spells an accent: New Folder with Selection's folder is spelled as its rows.
         guard NameKeys.pathsMatchIgnoringEncoding(NodePath.dirname(path), pane.shownFolderPath) else { return }
         // By its name in the folder on screen: the listing gives its rows the folder's real path, which may be spelled
         // otherwise than the one the tab was opened on (/private/var for /var).
-        let name = NodePath.basename(path)
+        let name = (onDisk[DiskPath(path)] ?? DiskPath(path)).name
         guard let row = pane.content.listed.first(where: { $0.name.utf16.elementsEqual(name.utf16) }) else { return }
         if let actions = writeActions, actions.refuseWhileBusy(.operation(.rename)) { return }
         pane.content.beginRename(path: row.path)
@@ -395,12 +398,12 @@ extension MainWindowController {
         let renaming = session?.pendingInlineRenamePath
         if refresh.selecting != nil || renaming != nil {
             acting.showWriteEnd(
-                BrowserPane.WriteEndRead(folder: refresh.path, selecting: refresh.selecting) {
-                    [weak self, weak acting] shown in
+                BrowserPane.WriteEndRead(folder: refresh.path, selecting: refresh.selecting, naming: renaming) {
+                    [weak self, weak acting] shown, onDisk in
                     // A folder made since has a name field of its own to wait for.
                     guard let session, session.pendingInlineRenamePath == renaming else { return }
                     if shown, let self, let acting {
-                        self.renamePendingFolder(session, in: acting)
+                        self.renamePendingFolder(session, in: acting, onDisk: onDisk)
                     } else {
                         session.pendingInlineRenamePath = nil
                     }

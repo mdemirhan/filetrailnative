@@ -157,7 +157,9 @@ enum AfterWrite {
     ///
     /// The folder on screen may encode an accent otherwise than the folder the write names, which is spelled as
     /// the rows it was started on (`NameKeys.pathsMatchIgnoringEncoding`): they are the one folder, and what was
-    /// made is selected by the write's own spelling, which is the rows'.
+    /// made is given by the write's own spelling. That is the rows' on a disk that keeps a name as it was asked for; on
+    /// one that respells it (HFS+ stores an accent decomposed), the pane asks the disk for the name of what found no
+    /// row (`BrowserPane.writeEndShown`).
     static func selection(
         _ result: WriteOperationResult, currentPath: String, isSearching: Bool, selectionChanged: Bool
     ) -> [String]? {

@@ -424,6 +424,23 @@ extension ExplorerWindowlessTests {
             await window.harness.close()
         }
 
+        // An item shown from outside the list (one another app opened, a search result revealed in its folder) is
+        // the row spelled as it is, not the first of the two.
+        @Test func anItemShownFromOutsideTheListIsTheRowSpelledAsItIs() async throws {
+            let window = try await TwoSpellingsWindow.open(.list)
+            let content = window.content
+            let order = try window.inOrder()
+            for path in [order.second, order.first] {
+                content.deselectAllEntries()
+                window.tab.showOpenedItem(.selecting([path]))
+                #expect(bytes(content.selection.paths) == bytes([path]))
+                content.deselectAllEntries()
+                window.tab.revealSearchResult(path)
+                #expect(await waitUntil { bytes(content.selection.paths) == bytes([path]) && !window.tab.isNavigating })
+            }
+            await window.harness.close()
+        }
+
         // Quick Look zooms out of the row of the item it shows, and the status counts each spelling selected.
         @Test func whatIsShownOfTheSelectionIsTheSpellingSelected() async throws {
             let window = try await TwoSpellingsWindow.open(.list)
