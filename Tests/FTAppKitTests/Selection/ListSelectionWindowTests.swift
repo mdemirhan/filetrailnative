@@ -1,5 +1,5 @@
 // A List selection made from outside reaches the window, Edit › Select All selects the list, Deselect All and Invert
-// Selection act on what the list shows, Space is the filter's text while typing, the filter bar's ✕ clears it, and a filter nothing matches is said in place of the whole view
+// Selection act on what the list shows, Space is the filter's text while there is one, the filter bar's ✕ clears it, and a filter nothing matches is said in place of the whole view
 import AppKit
 import FTFoundation
 import Foundation
@@ -204,9 +204,9 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // Space sent through the window is the
-        // filter's text just after typing, not Quick Look; nothing matching hides the column header and says so in
-        // place of the view; the ✕ brings the list back and leaves it the keyboard; Space after a pause is Quick Look.
+        // Space sent through the window is the filter's text while there is one, not Quick Look; nothing matching hides
+        // the column header and says so in place of the view; the ✕ brings the list back and leaves it the keyboard;
+        // with the filter gone Space is Quick Look.
         @Test func spaceIsTheFiltersAndTheClearButtonClearsIt() async throws {
             let harness = try ExplorerHarness.windowless()
             let folder = try harness.makeFolder(named: "Files", files: 0)

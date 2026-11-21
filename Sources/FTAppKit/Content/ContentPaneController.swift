@@ -648,7 +648,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     func setFilter(_ text: String, mode: NameMatchMode? = nil) {
         guard text != filter || (mode != nil && mode != filterMode) else { return }
         startFilter(mode, ifEmpty: false)
-        listFilter.set(text, at: ProcessInfo.processInfo.systemUptime)
+        listFilter.set(text)
         filterChanged(.kept(previousPaths: entryPaths))
     }
 
@@ -696,7 +696,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         typedToSelect.clear()
         if searchDisplay == nil {
             typedFilterMode = pin.mode
-            listFilter.set(pin.query, at: ProcessInfo.processInfo.systemUptime)
+            listFilter.set(pin.query)
         }
         filterChanged(.keptWhereShown(previousPaths: previous))
     }
@@ -795,18 +795,17 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// A key typed into the list: the text narrows it and selects the first name that starts with it, otherwise the
     /// first match; Backspace takes a character back; Esc brings the list back.
     func applyFilterKey(_ key: ListFilterKey) {
-        let now = ProcessInfo.processInfo.systemUptime
         switch key {
         case .clear:
             clearFilter()
             return
         case .type(let text):
             startFilter()
-            listFilter.type(text, at: now)
+            listFilter.type(text)
         case .erase:
-            listFilter.eraseCharacter(at: now)
+            listFilter.eraseCharacter()
         case .eraseWord:
-            listFilter.eraseWord(at: now)
+            listFilter.eraseWord()
         }
         filterChanged(.bestMatch)
     }
@@ -1389,7 +1388,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     func setSearchFilter(_ text: String) {
         guard text != filter else { return }
         startFilter()
-        listFilter.set(text, at: ProcessInfo.processInfo.systemUptime)
+        listFilter.set(text)
         filterChanged(.bestMatch)
     }
 
@@ -1401,7 +1400,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         viewFilterMode = mode
         if text != filter || (!text.isEmpty && mode != filterMode) {
             startFilter(mode, ifEmpty: false)
-            listFilter.set(text, at: ProcessInfo.processInfo.systemUptime)
+            listFilter.set(text)
             filterChanged(.untouched)
         }
         guard let scroll else { return }

@@ -107,8 +107,7 @@ final class ContentKeyboard {
         guard
             let action = ContentKeys.action(
                 for: Self.shortcutEvent(event), shortcuts: host.shortcuts, filter: host.listFilter,
-                now: ProcessInfo.processInfo.systemUptime, hasEntries: !paths.isEmpty,
-                hasSelection: !host.selection.isEmpty, pinned: host.pinnedFilter != nil)
+                hasEntries: !paths.isEmpty, hasSelection: !host.selection.isEmpty, pinned: host.pinnedFilter != nil)
         else { return false }
         switch action {
         case .filter(let key):

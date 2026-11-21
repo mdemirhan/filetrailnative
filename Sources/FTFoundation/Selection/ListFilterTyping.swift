@@ -1,56 +1,38 @@
 import Foundation
 
-/// Typing in the file list narrows it: the text typed so far, and when the last character went in (Space is part of the
-/// text for a moment after each one, and Quick Look otherwise).
+/// Typing in the file list narrows it: the text typed so far. While there is any, Space is part of it ("my doc"),
+/// and Quick Look is ⌘Y until Esc ends the filter.
 public struct ListFilterTyping: Equatable, Sendable {
     public private(set) var query = ""
-    /// When the last character was typed, erased or the text set; nil for a filter restored with a tab, whose Space is
-    /// Quick Look at once.
-    public private(set) var lastInputAt: TimeInterval?
 
     public init() {}
 
-    public init(restoring query: String) {
-        self.query = query
-    }
-
     public var isActive: Bool { !query.isEmpty }
 
-    public mutating func type(_ text: String, at now: TimeInterval) {
-        lastInputAt = now
+    public mutating func type(_ text: String) {
         query += text
     }
 
     /// Backspace takes the last character back, the whole of it: an emoji is never left half there.
-    public mutating func eraseCharacter(at now: TimeInterval) {
-        lastInputAt = now
+    public mutating func eraseCharacter() {
         if !query.isEmpty { query.removeLast() }
     }
 
     /// ⌥⌫ takes the last word back: what ends the text that is no letter or digit, then the letters and digits
     /// before it.
-    public mutating func eraseWord(at now: TimeInterval) {
-        lastInputAt = now
+    public mutating func eraseWord() {
         while let last = query.last, !last.isLetter, !last.isNumber { query.removeLast() }
         while let last = query.last, last.isLetter || last.isNumber { query.removeLast() }
     }
 
     /// The filter field of the search results sets the whole text at once.
-    public mutating func set(_ text: String, at now: TimeInterval) {
-        lastInputAt = now
+    public mutating func set(_ text: String) {
         query = text
     }
 
     /// Esc, the ✕, or leaving the folder.
     public mutating func clear() {
         query = ""
-    }
-
-    /// Space is part of the text while typing is under way ("my doc"); after a pause it is Quick
-    /// Look again.
-    public func takesSpace(at now: TimeInterval) -> Bool {
-        guard !query.isEmpty, let lastInputAt else { return false }
-        return now - lastInputAt < ListFilter.spaceWindow
     }
 }
 
@@ -97,11 +79,11 @@ public enum ListFilterKey: Equatable, Sendable {
 
     /// The key as the file list reads it, or nil when it is none of the filter's: `key` is the key's name
     /// ("Backspace", "Escape") or the character it types (" " for Space). No ⌘, ⌃ or ⌥ may be held.
-    public static func from(key: String, filter: ListFilterTyping, now: TimeInterval) -> ListFilterKey? {
+    public static func from(key: String, filter: ListFilterTyping) -> ListFilterKey? {
         if filter.isActive {
             if key == "Backspace" { return .erase }
             if key == "Escape" { return .clear }
-            if key == " ", filter.takesSpace(at: now) { return .type(" ") }
+            if key == " " { return .type(" ") }
         }
         if Typeahead.isCharacterKey(key) { return .type(key) }
         return nil

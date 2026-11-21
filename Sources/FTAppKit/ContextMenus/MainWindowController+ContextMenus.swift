@@ -32,8 +32,9 @@ extension MainWindowController {
     // MARK: Quick Look
 
     /// Space, while it is Quick Look's key, previews the selected item while the file list has the keyboard (`quickLook`
-    /// in the key table), unless a filter is being typed: then Space is part of its text for a moment ("my doc"), and
-    /// the list takes it. Any other key chosen for it goes through the list's keys.
+    /// in the key table), unless a filter is being typed: then Space is part of its text ("my doc") until Esc ends it,
+    /// and the list takes it. A pinned filter leaves Space to Quick Look. Any other key chosen for it goes through the
+    /// list's keys.
     private func handleQuickLookKey(_ event: NSEvent) -> Bool {
         guard event.type == .keyDown, event.keyCode == 49,
             event.modifierFlags.intersection([.command, .control, .option, .shift]).isEmpty,
@@ -41,7 +42,7 @@ extension MainWindowController {
             window?.attachedSheet == nil, DialogScrim.front(in: window) == nil, !(window?.firstResponder is NSText),
             focusedPane == .content,
             !content.selection.isEmpty,
-            !content.listFilter.takesSpace(at: ProcessInfo.processInfo.systemUptime)
+            !content.listFilter.isActive || content.pinnedFilter != nil
         else { return false }
         quickLookSelection()
         return true

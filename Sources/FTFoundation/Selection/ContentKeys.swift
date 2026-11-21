@@ -54,19 +54,17 @@ public enum ContentKeys {
     ///   - pinned: the list's filter is pinned: typing selects names, Esc lets go of the letters typed, and Space,
     ///     Backspace and ⌥⌫ are not the filter's, also over search results whose own field holds a filter.
     public static func action(
-        for event: ShortcutKeyEvent, shortcuts: ResolvedShortcuts, filter: ListFilterTyping, now: TimeInterval,
-        hasEntries: Bool, hasSelection: Bool, pinned: Bool = false
+        for event: ShortcutKeyEvent, shortcuts: ResolvedShortcuts, filter: ListFilterTyping, hasEntries: Bool,
+        hasSelection: Bool, pinned: Bool = false
     ) -> ContentKeyAction? {
         let pressed = Shortcuts.fromKeyboardEvent(event)
         let command = pressed.flatMap { shortcuts.command(pressed: $0) }
         // ? opens Help from anywhere.
         if command == .openHelp { return .command(.openHelp) }
         if let move = pageMove(command) { return .page(forward: move.forward, size: move.size, extend: false) }
-        // Space never starts a filter. While one is typed it is the filter's for a moment after each key, and then Quick
-        // Look's; taken off Quick Look in Settings (no other command can have it), it is always the filter's.
-        if event.key == " ", !event.metaKey, !event.ctrlKey, !event.altKey, !event.shiftKey, filter.isActive, !pinned,
-            command == nil || filter.takesSpace(at: now)
-        {
+        // Space never starts a filter. While one is typed Space is always the filter's and ⌘Y is Quick Look; once Esc
+        // ends it, Space is Quick Look again. A pinned filter leaves Space to Quick Look.
+        if event.key == " ", !event.metaKey, !event.ctrlKey, !event.altKey, !event.shiftKey, filter.isActive, !pinned {
             return .filter(.type(" "))
         }
         // Quick Look is the last of the raw bindings, so a filter's keys come before it.
@@ -85,7 +83,7 @@ public enum ContentKeys {
             if event.key == "Backspace", event.altKey, !event.metaKey, !event.ctrlKey, filter.isActive {
                 return .filter(.eraseWord)
             }
-            if plain, let key = ListFilterKey.from(key: event.key, filter: filter, now: now) { return .filter(key) }
+            if plain, let key = ListFilterKey.from(key: event.key, filter: filter) { return .filter(key) }
         }
         if plain, hasEntries, let key = arrow(event.key) { return .move(key, extend: event.shiftKey) }
         if command == .quickLookSelection, hasSelection { return .command(.quickLookSelection) }

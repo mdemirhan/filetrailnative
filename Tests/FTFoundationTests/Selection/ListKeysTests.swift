@@ -7,10 +7,10 @@ struct ListFilterTypingTests {
     @Test func typingAppendsTheTextAsTyped() {
         var filter = ListFilterTyping()
         #expect(!filter.isActive)
-        filter.type("M", at: 0)
-        filter.type("y", at: 0.1)
-        filter.type(" ", at: 0.2)
-        filter.type("d", at: 0.3)
+        filter.type("M")
+        filter.type("y")
+        filter.type(" ")
+        filter.type("d")
         // The text is not trimmed and keeps its case.
         #expect(filter.query == "My d")
         #expect(filter.isActive)
@@ -19,41 +19,38 @@ struct ListFilterTypingTests {
     // An emoji set from the search field's filter goes whole: half of it would match nothing.
     @Test func backspaceTakesAnEmojiBackWhole() {
         var filter = ListFilterTyping()
-        filter.set("a\u{1F600}", at: 0)
-        filter.eraseCharacter(at: 1)
+        filter.set("a\u{1F600}")
+        filter.eraseCharacter()
         #expect(filter.query == "a")
     }
 
     @Test func backspaceTakesACharacterBackAndEscClears() {
         var filter = ListFilterTyping()
-        filter.type("tr", at: 0)
-        filter.eraseCharacter(at: 1)
+        filter.type("tr")
+        filter.eraseCharacter()
         #expect(filter.query == "t")
-        filter.eraseCharacter(at: 2)
+        filter.eraseCharacter()
         #expect(filter.query == "")
-        filter.eraseCharacter(at: 3)
+        filter.eraseCharacter()
         #expect(filter.query == "")
-        filter.type("abc", at: 4)
+        filter.type("abc")
         filter.clear()
         #expect(filter.query == "")
     }
 
-    // Space is part of the text for a second after the last input.
-    @Test func spaceBelongsToTheTextForASecond() {
+    // While there is a filter Space is its text, however long ago the last key was; without one Space is no key of
+    // the filter's.
+    @Test func spaceBelongsToTheTextWhileThereIsAFilter() {
         var filter = ListFilterTyping()
-        #expect(!filter.takesSpace(at: 0))
-        filter.type("my", at: 10)
-        #expect(filter.takesSpace(at: 10.5))
-        #expect(filter.takesSpace(at: 10.999))
-        #expect(!filter.takesSpace(at: 11))
-        // Each input renews it.
-        filter.eraseCharacter(at: 11.5)
-        #expect(filter.takesSpace(at: 12.4))
-        // A filter brought back with a tab treats Space as Quick Look at once.
-        #expect(!ListFilterTyping(restoring: "abc").takesSpace(at: 0))
-        // Without a filter Space is always Quick Look.
+        #expect(ListFilterKey.from(key: " ", filter: filter) == nil)
+        filter.type("my")
+        #expect(ListFilterKey.from(key: " ", filter: filter) == .type(" "))
+        // A filter set at once, as the results' field and a tab brought back set it, takes Space too.
+        var set = ListFilterTyping()
+        set.set("abc")
+        #expect(ListFilterKey.from(key: " ", filter: set) == .type(" "))
         filter.clear()
-        #expect(!filter.takesSpace(at: 12))
+        #expect(ListFilterKey.from(key: " ", filter: filter) == nil)
     }
 
     @Test func onlyPrintableNonWhitespaceCharactersAreTypeahead() {
@@ -72,12 +69,12 @@ struct ContentKeysTests {
 
     private func action(
         _ key: String, code: String = "", meta: Bool = false, ctrl: Bool = false, alt: Bool = false,
-        shift: Bool = false, filter: ListFilterTyping = ListFilterTyping(), now: Double = 0, entries: Bool = true,
-        selected: Bool = true, pinned: Bool = false
+        shift: Bool = false, filter: ListFilterTyping = ListFilterTyping(), entries: Bool = true, selected: Bool = true,
+        pinned: Bool = false
     ) -> ContentKeyAction? {
         ContentKeys.action(
             for: ShortcutKeyEvent(key: key, code: code, metaKey: meta, ctrlKey: ctrl, altKey: alt, shiftKey: shift),
-            shortcuts: shortcuts, filter: filter, now: now, hasEntries: entries, hasSelection: selected, pinned: pinned)
+            shortcuts: shortcuts, filter: filter, hasEntries: entries, hasSelection: selected, pinned: pinned)
     }
 
     @Test func withThePinTypingSelectsNamesAndLeavesTheFilterAlone() {
@@ -96,17 +93,16 @@ struct ContentKeysTests {
     // Over search results the results' own field may hold a filter while one is pinned: the list's keys leave that
     // text alone too.
     @Test func withThePinTheKeysLeaveTheResultsFilterAlone() {
-        let typed = ListFilterTyping(restoring: "rep")
+        var typed = ListFilterTyping()
+        typed.set("rep")
         #expect(action("Backspace", code: "Backspace", filter: typed) == .filter(.erase))
         #expect(action("Backspace", code: "Backspace", filter: typed, pinned: true) == nil)
         #expect(action("Backspace", code: "Backspace", alt: true, filter: typed, pinned: true) == nil)
         #expect(action("Escape", code: "Escape", filter: typed, pinned: true) == .typeToSelect(nil))
         #expect(action("s", code: "KeyS", filter: typed, pinned: true) == .typeToSelect("s"))
-        // Space is Quick Look, also just after the field's text was typed.
-        var fresh = ListFilterTyping()
-        fresh.type("rep", at: 10)
-        #expect(action(" ", code: "Space", filter: fresh, now: 10.2) == .filter(.type(" ")))
-        #expect(action(" ", code: "Space", filter: fresh, now: 10.2, pinned: true) == .command(.quickLookSelection))
+        // Space types into the field's text, and with the pin it is Quick Look.
+        #expect(action(" ", code: "Space", filter: typed) == .filter(.type(" ")))
+        #expect(action(" ", code: "Space", filter: typed, pinned: true) == .command(.quickLookSelection))
     }
 
     @Test func arrowsHomeAndEndMoveTheSelectionAndShiftExtendsIt() {
@@ -135,7 +131,7 @@ struct ContentKeysTests {
         let custom = ShortcutCommands.resolve(overrides)
         let event = ShortcutKeyEvent(key: "PageDown", code: "PageDown", shiftKey: true)
         let result = ContentKeys.action(
-            for: event, shortcuts: custom, filter: ListFilterTyping(), now: 0, hasEntries: true, hasSelection: true)
+            for: event, shortcuts: custom, filter: ListFilterTyping(), hasEntries: true, hasSelection: true)
         #expect(result == .command(.focusTreePane))
     }
 
@@ -152,17 +148,17 @@ struct ContentKeysTests {
     @Test func optionBackspaceTakesTheFiltersLastWordBack() {
         var filter = ListFilterTyping()
         #expect(action("Backspace", code: "Backspace", alt: true, filter: filter) == nil)
-        filter.type("annual rep", at: 1)
+        filter.type("annual rep")
         #expect(action("Backspace", code: "Backspace", alt: true, filter: filter) == .filter(.eraseWord))
         // ⌘⌫ stays Move to Trash.
         #expect(action("Backspace", code: "Backspace", meta: true, filter: filter) == .command(.trashSelection))
-        filter.eraseWord(at: 2)
+        filter.eraseWord()
         #expect(filter.query == "annual ")
-        filter.eraseWord(at: 3)
+        filter.eraseWord()
         #expect(filter.query == "")
-        filter.type("c++ notes", at: 4)
-        filter.eraseWord(at: 5)
-        filter.eraseWord(at: 6)
+        filter.type("c++ notes")
+        filter.eraseWord()
+        filter.eraseWord()
         #expect(filter.query == "")
     }
 
@@ -170,32 +166,33 @@ struct ContentKeysTests {
         var filter = ListFilterTyping()
         #expect(action("Backspace", code: "Backspace", filter: filter) == nil)
         #expect(action("Escape", code: "Escape", filter: filter) == nil)
-        filter.type("my", at: 5)
-        #expect(action("Backspace", code: "Backspace", filter: filter, now: 9) == .filter(.erase))
-        #expect(action("Escape", code: "Escape", filter: filter, now: 9) == .filter(.clear))
-        #expect(action(" ", code: "Space", filter: filter, now: 5.5) == .filter(.type(" ")))
-        // After the pause Space is Quick Look.
-        #expect(action(" ", code: "Space", filter: filter, now: 7) == .command(.quickLookSelection))
-        // With no filter it is Quick Look at once.
-        #expect(action(" ", code: "Space") == .command(.quickLookSelection))
+        filter.type("my")
+        #expect(action("Backspace", code: "Backspace", filter: filter) == .filter(.erase))
+        #expect(action("Escape", code: "Escape", filter: filter) == .filter(.clear))
+        #expect(action(" ", code: "Space", filter: filter) == .filter(.type(" ")))
+        // ⌘Y is Quick Look while the filter is there.
+        #expect(action("y", code: "KeyY", meta: true, filter: filter) == .command(.quickLookSelection))
+        // With no filter (Esc ended it) Space is Quick Look.
+        filter.clear()
+        #expect(action(" ", code: "Space", filter: filter) == .command(.quickLookSelection))
     }
 
-    // Space never starts a filter. While one is typed it types a space for a moment after each key and then is Quick
-    // Look; taken off Quick Look in Settings (no other command can have it), it always types a space.
-    @Test func spaceTypesIntoAFilterAlwaysWhenQuickLookDoesntHaveIt() {
-        func action(_ overrides: ShortcutOverrides, filter: ListFilterTyping, now: Double) -> ContentKeyAction? {
+    // Space never starts a filter. While one is typed it always types a space, whether Quick Look has it or Settings
+    // took it off (no other command can have it).
+    @Test func spaceTypesIntoAFilterWhetherQuickLookHasItOrNot() {
+        func action(_ overrides: ShortcutOverrides, filter: ListFilterTyping) -> ContentKeyAction? {
             ContentKeys.action(
                 for: ShortcutKeyEvent(key: " ", code: "Space"), shortcuts: ShortcutCommands.resolve(overrides),
-                filter: filter, now: now, hasEntries: true, hasSelection: true)
+                filter: filter, hasEntries: true, hasSelection: true)
         }
         var typed = ListFilterTyping()
-        typed.type("my", at: 5)
+        typed.type("my")
         var unassigned = ShortcutOverrides()
         unassigned["quickLookSelection"] = []
-        #expect(action(unassigned, filter: ListFilterTyping(), now: 0) == nil)
-        #expect(action(unassigned, filter: typed, now: 5.5) == .filter(.type(" ")))
-        #expect(action(unassigned, filter: typed, now: 60) == .filter(.type(" ")))
-        #expect(action([:], filter: typed, now: 60) == .command(.quickLookSelection))
+        #expect(action(unassigned, filter: ListFilterTyping()) == nil)
+        #expect(action(unassigned, filter: typed) == .filter(.type(" ")))
+        #expect(action([:], filter: typed) == .filter(.type(" ")))
+        #expect(action([:], filter: ListFilterTyping()) == .command(.quickLookSelection))
     }
 
     @Test func returnWithAnItemSelectedAndTabSwitchesPanes() {

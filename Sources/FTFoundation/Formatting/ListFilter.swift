@@ -23,10 +23,6 @@ public struct PinnedListFilter: Equatable, Sendable {
 /// Typing in the file list (or the search results) narrows it to the names that match the text (`NameMatcher`).
 /// The filter stays until it is cleared; there is no timer.
 public enum ListFilter {
-    /// How long after the last typed character Space still counts as part of the text. After that it
-    /// is Quick Look again, so a filtered item can be previewed.
-    public static let spaceWindow: TimeInterval = 1
-
     /// The names that match `query` in `mode`, in the list's order; names beyond ASCII are folded through `cache`.
     public static func filterByName<T: ListFilterEntry>(
         _ entries: [T], query: String, mode: NameMatchMode, cache: FoldedNameCache? = nil
