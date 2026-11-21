@@ -433,10 +433,12 @@ extension ExplorerWindowlessTests {
             #expect(!tree.isOn && !tree.isHighlighted && tree.state == .off)
             #expect(tree.tooltip.hasPrefix("Show Folder Tree"))
 
+            // Hidden Files keeps one symbol, never Quick Look's eye; it is highlighted while hidden files show.
             let hidden = try #require(button(tab, .hidden))
             #expect(hidden.tooltip.hasPrefix("Show Hidden Files"))
+            #expect(!hidden.isOn && !hidden.isHighlighted && hidden.iconName == .hidden)
             _ = hidden.accessibilityPerformPress()
-            #expect(hidden.isOn && hidden.iconName == .hiddenShown)
+            #expect(hidden.isOn && hidden.isHighlighted && hidden.iconName == .hidden)
             #expect(hidden.tooltip.hasPrefix("Hide Hidden Files"))
 
             // A content-only command is off with nothing selected. (The window opens with the sidebar holding the

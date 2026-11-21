@@ -26,6 +26,8 @@ struct CommandIconTests {
             [.edit, .rename], [.folderTree, .twoPanes, .duplicatePane, .infoPanel, .infoRow],
             [.trash, .deleteImmediately],
             [.open, .openInNewTab, .openInNewWindow, .openWith], [.move, .newFolder, .duplicate],
+            // Both can be in the toolbar at once, and Hidden Files keeps its symbol when on.
+            [.hidden, .quickLook],
         ]
         for group in groups {
             #expect(Set(group.map(\.symbolName)).count == group.count, "\(group)")

@@ -360,9 +360,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
             case .forward: button.isEnabled = context.canGoForward
             case .up: button.isEnabled = ExplorerTabs.parentDirectoryPath(context.shownFolderPath) != nil
             case .foldersFirst: button.isOn = view.foldersFirst
-            case .hidden:
-                button.isOn = view.includeHidden
-                button.iconName = view.includeHidden ? .hiddenShown : .hidden
+            case .hidden: button.isOn = view.includeHidden
             case .folderTree: button.isOn = panels.folderTreeOpen
             case .infoPanel: button.isOn = panels.propertiesOpen
             case .twoPanes: button.isOn = (context as? MainWindowController)?.showsTwoPanes == true

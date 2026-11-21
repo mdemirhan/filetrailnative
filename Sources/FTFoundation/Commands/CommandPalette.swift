@@ -453,7 +453,7 @@ public enum CommandPalette {
             .groupBy
         case .toggleFoldersFirst: .foldersFirst
         case .folderViewOptions: .folderView
-        case .toggleHiddenFiles: .hiddenShown
+        case .toggleHiddenFiles: .hidden
         case .toggleFolderTree: .folderTree
         case .toggleInfoPanel: .infoPanel
         case .toggleInfoRow: .infoRow

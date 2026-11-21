@@ -20,8 +20,8 @@ extension CommandIcon {
         case .groupBy: "square.grid.3x1.below.line.grid.1x2"
         case .folderView: "folder.badge.gearshape"
         case .foldersFirst: "text.below.folder"
+        // One symbol, shown or not: the button is highlighted while hidden files show. Quick Look has the open eye.
         case .hidden: "eye.slash"
-        case .hiddenShown: "eye"
         case .viewOptions: "ellipsis.circle"
         case .search: "magnifyingglass"
         case .folderTree, .revealInTree: "sidebar.leading"
