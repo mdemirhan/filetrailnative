@@ -89,21 +89,28 @@ import Testing
         #expect(built.servicesMenu === item(submenu(main, "File Trail"), "Services").submenu)
     }
 
-    @Test func listsTheTabViewsTheFirstFiveWithTheirKeys() {
-        let entries = (1...6).map { SavedViewMenuEntry(id: "t\($0)", name: "Compare \($0)") }
+    // The first five tab views, the ones that can have keys, are in the menu; the rest in More Tab Views.
+    @Test func listsTheTabViewsTheFirstFiveWithTheirKeysAndTheRestInMore() {
+        let entries = (1...7).map { SavedViewMenuEntry(id: "t\($0)", name: "Compare \($0)") }
         let (built, router) = build(.init(tabViews: entries))
         let menu = submenu(built.menu, "Layout")
-        let titles = titles(menu)
-        let start = titles.firstIndex(of: "Save Tab View…") ?? 0
-        #expect(
-            Array(titles[start...(start + 7)]) == ["Save Tab View…"] + entries.map(\.name) + ["Manage Tab Views…"])
+        let shown = titles(menu)
+        let start = shown.firstIndex(of: "Save Tab View…") ?? 0
+        let expected: [String] =
+            ["Save Tab View…"] + entries.prefix(5).map(\.name) + ["More Tab Views", "Manage Tab Views…"]
+        #expect(Array(shown[start...(start + 7)]) == expected)
+        let more = submenu(menu, "More Tab Views")
+        #expect(titles(more) == ["Compare 6", "Compare 7"])
+        #expect(item(more, "Compare 6").keyEquivalent == "")
+        // Chosen there as in the menu: by the same item ids.
+        #expect(item(more, "Compare 7").identifier?.rawValue == ApplicationMenu.tabViewItemID("t7"))
+        #expect(item(more, "Compare 7").action == #selector(MenuCommandRouter.chooseMenuItem(_:)))
         // A tab isn't linked to the tab view it came from: none is checked.
         #expect(menu.items.allSatisfy { $0.state == .off })
         let first = item(menu, "Compare 1")
         #expect(first.keyEquivalent == "1")
         #expect(first.keyEquivalentModifierMask == [.option, .command])
         #expect(item(menu, "Compare 5").keyEquivalent == "5")
-        #expect(item(menu, "Compare 6").keyEquivalent == "")
         var managed: [ViewsWindowPane] = []
         router.onManageViews = { managed.append($0) }
         router.choose(itemID: ApplicationMenu.manageTabViewsItemID)
@@ -115,12 +122,13 @@ import Testing
         let entries = (1...6).map { SavedViewMenuEntry(id: "w\($0)", name: "Work \($0)") }
         let (built, router) = build(.init(windowViews: entries))
         let menu = submenu(built.menu, "Layout")
-        let titles = titles(menu)
-        let start = titles.firstIndex(of: "Save Window View…") ?? 0
-        #expect(
-            Array(titles[start...])
-                == ["Save Window View…"] + entries.flatMap { [$0.name, "\($0.name) in This Window"] }
-                + ["Manage Window Views…"])
+        let shown = titles(menu)
+        let start = shown.firstIndex(of: "Save Window View…") ?? 0
+        let pairs: [String] = entries.prefix(5).flatMap { [$0.name, "\($0.name) in This Window"] }
+        let expected: [String] = ["Save Window View…"] + pairs + ["More Window Views", "Manage Window Views…"]
+        #expect(Array(shown[start...]) == expected)
+        let more = submenu(menu, "More Window Views")
+        #expect(titles(more) == ["Work 6", "Work 6 in This Window"])
         let first = item(menu, "Work 1")
         #expect(first.keyEquivalent == "1")
         #expect(first.keyEquivalentModifierMask == [.control, .command])
@@ -131,14 +139,22 @@ import Testing
         #expect(here.keyEquivalent == "")
         #expect(item(menu, "Work 5").keyEquivalent == "5")
         // With no key either, ⌥ shows it in the item's place.
-        #expect(item(menu, "Work 6").keyEquivalent == "")
-        #expect(item(menu, "Work 6 in This Window").isAlternate)
-        #expect(item(menu, "Work 6 in This Window").keyEquivalentModifierMask == [.option])
+        #expect(item(more, "Work 6").keyEquivalent == "")
+        #expect(item(more, "Work 6 in This Window").isAlternate)
+        #expect(item(more, "Work 6 in This Window").keyEquivalentModifierMask == [.option])
 
         var opened: [String] = []
         router.onOpenWindowView = { id, _ in opened.append(id) }
         router.choose(itemID: ApplicationMenu.windowViewItemID("w2"))
         #expect(opened == ["w2"])
+    }
+
+    // Five or fewer: no More submenu.
+    @Test func fiveSavedViewsNeedNoMore() {
+        let entries = (1...5).map { SavedViewMenuEntry(id: "v\($0)", name: "View \($0)") }
+        let (built, _) = build(.init(tabViews: entries, windowViews: entries))
+        let shown = titles(submenu(built.menu, "Layout"))
+        #expect(!shown.contains("More Tab Views") && !shown.contains("More Window Views"))
     }
 
     @Test func keysThatDontDifferByOptionAloneShowBothItemsEachWithItsKey() {

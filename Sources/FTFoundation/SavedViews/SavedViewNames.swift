@@ -10,7 +10,7 @@ public protocol NamedSavedView: Sendable {
 /// letter is stored, up to `nameLimit` long, at most `limit` of each kind.
 public enum SavedViewNames {
     /// How many of each kind are kept.
-    public static let limit = 50
+    public static let limit = 20
     /// How long a name can be, in UTF-16 units.
     public static let nameLimit = 80
 

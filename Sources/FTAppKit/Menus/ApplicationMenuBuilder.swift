@@ -425,26 +425,27 @@ enum ApplicationMenuBuilder {
             return [shown, alternate]
         }
 
-        /// Layout' Tab Views: Save, each tab view with the key of the first five, and Manage.
+        /// Layout's Tab Views: Save, the first five tab views with their keys, the rest in More Tab Views, and Manage.
         func addTabViews(to menu: NSMenu) {
             menu.addItem(.sectionHeader(title: "Tab Views"))
-            menu.addItem(command(.saveTabView, "Save Tab View…"))
-            for (index, entry) in options.tabViews.enumerated() {
+            menu.addItem(command(.saveTabView, "Save Tab View\u{2026}"))
+            addSavedViews(options.tabViews, more: "More Tab Views", to: menu) { entry, index, menu in
                 let item = savedViewItem(ApplicationMenu.tabViewItemID(entry.id), MenuName.shortened(entry.name))
                 if TabViews.slotCommands.indices.contains(index) {
                     apply(chosenKey(TabViews.slotCommands[index]), to: item)
                 }
                 menu.addItem(item)
             }
-            menu.addItem(plain("Manage Tab Views…", id: ApplicationMenu.manageTabViewsItemID))
+            menu.addItem(plain("Manage Tab Views\u{2026}", id: ApplicationMenu.manageTabViewsItemID))
         }
 
-        /// Layout' Window Views: Save, each window view with the key of the first five, and Manage. Each window
-        /// view has an item ⌥ shows in its place, which opens it in place of this window.
+        /// Layout's Window Views: Save, the first five window views with their keys, the rest in More Window Views,
+        /// and Manage. Each window view has an item for opening it in place of this window, which ⌥ shows in its
+        /// place while their keys differ by ⌥ alone.
         func addWindowViews(to menu: NSMenu) {
             menu.addItem(.sectionHeader(title: "Window Views"))
-            menu.addItem(command(.saveWindowView, "Save Window View…"))
-            for (index, entry) in options.windowViews.enumerated() {
+            menu.addItem(command(.saveWindowView, "Save Window View\u{2026}"))
+            addSavedViews(options.windowViews, more: "More Window Views", to: menu) { entry, index, menu in
                 let keyed = WindowViews.slotCommands.indices.contains(index)
                 let key = keyed ? chosenKey(WindowViews.slotCommands[index]) : nil
                 let hereKey = keyed ? chosenKey(WindowViews.inThisWindowSlotCommands[index]) : nil
@@ -464,7 +465,21 @@ enum ApplicationMenuBuilder {
                 menu.addItem(open)
                 menu.addItem(here)
             }
-            menu.addItem(plain("Manage Window Views…", id: ApplicationMenu.manageWindowViewsItemID))
+            menu.addItem(plain("Manage Window Views\u{2026}", id: ApplicationMenu.manageWindowViewsItemID))
+        }
+
+        /// The saved views in the list's order: the first `ApplicationMenu.savedViewsShown`, the ones that can have
+        /// keys, in `menu`; the rest in a submenu titled `more`, so the menu keeps its length however many are kept.
+        private func addSavedViews(
+            _ entries: [SavedViewMenuEntry], more: String, to menu: NSMenu,
+            _ add: (SavedViewMenuEntry, Int, NSMenu) -> Void
+        ) {
+            let shown = ApplicationMenu.savedViewsShown
+            for (index, entry) in entries.prefix(shown).enumerated() { add(entry, index, menu) }
+            guard entries.count > shown else { return }
+            _ = addSubmenu(to: menu, title: more) { submenu in
+                for (index, entry) in entries.enumerated().dropFirst(shown) { add(entry, index, submenu) }
+            }
         }
 
         /// File ▸ New File: an empty text file, a copy of each file of the Templates folder, and the folder itself.

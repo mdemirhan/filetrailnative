@@ -102,7 +102,7 @@ public struct WindowView: Codable, Equatable, Sendable {
 ```
 
 - `PaneKeeps.view` is `FolderViewKeeps` unchanged, so its reading, its cleaning of a damaged file, its "a missing part takes its default", and `differences(from:)` are reused, not written again.
-- Names follow the workspace rules they replace: unique ignoring case and how an accented letter is stored, up to 80 characters, at most 50 of each kind (`TabViews.limit`, `WindowViews.limit`).
+- Names follow the workspace rules they replace: unique ignoring case and how an accented letter is stored, up to 80 characters, at most 20 of each kind (`SavedViewNames.limit`; the owner set 20 on 2026-11-22).
 - A window view refers to tab views by id. Renaming a tab view changes nothing in a window view; removing one makes its tabs plain new tabs (see "The Views window").
 - Kept in `app-state.json` as `tabViews`, `windowViews` and `newTabViewID`. A file with `workspaces` loads without them, and the key is dropped at the next write.
 - Reading is as `Workspaces.sanitize` does today: an entry with no id, a name another has, or nothing that can be applied is left out. Beyond that: `panes` other than 1 or 2 is dropped; `left`/`right` without `panes == 2`, and `pane` with `panes == 2`, are dropped; a share outside 0.10–0.90 is clamped; a width under 1 is dropped; a window view with no tabs is left out, with more than 25 is cut at 25 (the tab limit), and a `frontTab` past its tabs becomes 0; an id that names no tab view reads as nil.

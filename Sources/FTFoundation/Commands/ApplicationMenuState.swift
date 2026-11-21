@@ -312,6 +312,10 @@ public enum ApplicationMenu {
 
     // MARK: Saved views
 
+    /// How many tab views, and how many window views, Layout lists in itself: the ones that can be given keys (Tab
+    /// View 1 to 5, Window View 1 to 5). The rest are in its More Tab Views and More Window Views.
+    public static let savedViewsShown = TabViews.slotCommands.count
+
     /// The id of the Layout item that applies a tab view to the tab the menu acts on.
     public static func tabViewItemID(_ tabViewID: String) -> String {
         tabViewPrefix + tabViewID
