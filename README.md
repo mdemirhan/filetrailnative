@@ -1,6 +1,6 @@
 # File Trail
 
-A Mac file browser with fast search, a real folder tree, two panes and true cut and paste. Most of the rest works the way it does in Finder.
+A Mac file browser with fast search, a real folder tree, two panes and true cut and paste, gathered from as many folders as you like. Most of the rest works the way it does in Finder.
 
 <p align="center">
   <img src="docs/screenshots/search.png" alt="Search results for the word trip under a project folder, with the folder tree beside them" width="900">
@@ -10,11 +10,13 @@ A Mac file browser with fast search, a real folder tree, two panes and true cut 
 
 - **Search that works, and is fast.** Results appear as you type, from the folder you are in, by name or full path, in plain text, glob or regex. There is no index to wait for, and nothing left out for not being indexed.
 - **A folder tree beside your files.** See where you are and what is around it, and open any folder's arrow to look inside without leaving.
-- **Two folders side by side.** ⌘\\ splits a tab into two panes, and F5 and F6 copy or move what is selected from one to the other. No second window to line up.
+- **Two folders side by side.** ⌘\\ splits a tab into two panes, and F5 and F6 copy or move what is selected from one to the other. No second window to line up, and a window's tabs and panes can be saved as a workspace and opened again with a key.
 - **Read and edit files where they are.** ⌘E shows a file's code or text in color, ready to edit, and the other pane can show each file as you move through the list.
-- **Cut and paste files.** ⌘X and ⌘V move files. What you cut or copied stays marked until you paste it, and a paste never destroys anything: what it replaces goes to the Trash.
+- **Cut and paste files, from many folders at once.** ⌘X and ⌘V move files. The clipboard is a shelf you can keep adding to: ⌃⌘C and ⌃⌘X put more on it from folder after folder, and one ⌘V copies the copied ones and moves the cut ones together. What is on it stays marked until you paste, and a paste never destroys anything: what it replaces goes to the Trash.
+- **Folder sizes when you ask.** A folder and every folder inside it are measured in one pass, and sorted by size each row gets a bar, so the heavy ones stand out.
+- **Small jobs without another app.** Save a copied screenshot as a file, extract zip, 7z and RAR archives, and convert images, all where the files are.
 - **Any folder, any command, in a few keystrokes.** ⌘K finds a folder you have used from a few letters, typing in a folder narrows it to the names that match, and ⇧⌘P finds any command by name. Every command can have a shortcut that you choose.
-- **Free, open source and private.** MIT licensed, with no accounts, no analytics and nothing sent anywhere.
+- **Fast, free, open source and private.** Smooth with thousands of files. MIT licensed, with no accounts, no analytics and nothing sent anywhere.
 
 Switching is easy. File Trail keeps most of Finder's shortcuts, Quick Look on Space and ⌘Y, drag and drop with other apps, tabs, and the sidebar's Locations. This page is about what is different; [everything File Trail does](docs/features.md) is on a page of its own.
 
@@ -63,7 +65,7 @@ Quick Look shows a file but doesn't let you change it, and opening an editor tak
 - **Part of browsing.** Back returns to the folder with the file selected, ⌥⌘] and ⌥⌘[ step to the next and previous file, and the file asks before unsaved edits are lost.
 - **Your way to read.** Light and dark themes of its own, the text size, line numbers, wrapped lines and Find are in the viewer's ⋯ menu.
 
-## Cut, copy and paste, with a clipboard you can see
+## Cut, copy and paste, gathered from many folders
 
 <p align="center">
   <img src="docs/screenshots/cut-paste.png" alt="Four files cut with Command-X, dimmed and marked with scissors, and the toolbar's clipboard list open" width="900">
@@ -71,7 +73,7 @@ Quick Look shows a file but doesn't let you change it, and opening an editor tak
 
 In Finder, moving files with the keyboard means ⌘C and then ⌥⌘V, and that works here too. In File Trail, ⌘X cuts and ⌘V moves, in the same window or another of File Trail's. Cut and copied items stay marked until they are pasted, and a button in the toolbar counts them and lists them, so you can jump to one, take one off or clear the lot.
 
-**Gather files from several folders, then paste them in one go.** ⌃⌘C and ⌃⌘X add the selected items to what is on the clipboard, to be copied or moved, instead of starting over. Walk from folder to folder adding what you need; ⌘V then copies the copied ones and moves the cut ones together, and one Undo takes it all back. The clipboard's list shows what will move apart from what will be copied, and an item can be switched with a click.
+**Gather files from several folders, then paste them in one go.** The clipboard is a shelf you keep adding to: ⌃⌘C and ⌃⌘X add the selected items to what is on it, to be copied or moved, instead of starting over. Walk from folder to folder adding what you need; ⌘V then copies the copied ones and moves the cut ones together, ⌥⌘V moves them all, and one Undo takes it all back. The clipboard's list (⌃⌘V) shows what will move apart from what will be copied, and an item can be switched with a click. Two files of one name are asked about when the second is added, not in the middle of the paste, and a gathered list that a plain ⌘C or ⌘X replaced can be put back.
 
 **Pasting is built not to lose your files.**
 
@@ -96,6 +98,7 @@ The files you cut or copy are on File Trail's own clipboard, the one the toolbar
 - **Paste as File (⇧⌘V)** saves a screenshot or text you copied in another app as a new file in the folder you are in, with its name selected for you to change.
 - **Copy Contents (⇧⌘C)** puts a file's image or text on the clipboard, ready to paste into a message or a document, without opening the file.
 - **Convert Images** makes copies of the selected images as JPEG, HEIC, PNG, TIFF or AVIF, at their size or smaller, with or without their metadata and location. One Undo takes the copies back.
+- **Extract** takes zip, tar, 7z, RAR and xar archives apart next to themselves, or into a folder you choose, with no other app opening. Archives with a password are not extracted yet.
 
 ## Any folder in a few keystrokes
 
@@ -157,7 +160,7 @@ Previews view (⌘4) fills the pane with 9, 4, 2 or 1 large previews of pictures
 
 ## Everything else
 
-Renaming many files at once, archives, converting images, four views, Dark and Light, the toolbar and the settings: [docs/features.md](docs/features.md) lists everything File Trail does, by area.
+Renaming many files at once, Compress, four views, Dark and Light, the toolbar and the settings: [docs/features.md](docs/features.md) lists everything File Trail does, by area.
 
 ## Install
 
