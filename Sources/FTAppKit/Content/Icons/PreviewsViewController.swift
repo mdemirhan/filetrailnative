@@ -302,7 +302,7 @@ final class PreviewsViewController: IconViewController {
     override var scrollPosition: (top: Double, left: Double) {
         get { super.scrollPosition }
         set {
-            guard NSEvent.pressedMouseButtons & 1 == 0 else {
+            guard !Self.mouseButtonHeld() else {
                 super.scrollPosition = newValue
                 return
             }
@@ -390,7 +390,7 @@ final class PreviewsViewController: IconViewController {
         guard count == 1, let host, host.selection.isEmpty, let gap = host.selection.gapIndex,
             listedBefore.indices.contains(gap), indexByPath[DiskPath(listedBefore[gap])] == nil
         else { return }
-        selectFileOnScreen(unlessDragged: NSEvent.pressedMouseButtons & 1 != 0)
+        selectFileOnScreen(unlessDragged: Self.mouseButtonHeld())
     }
 
     private var observers: [any NSObjectProtocol] = []
@@ -424,6 +424,11 @@ final class PreviewsViewController: IconViewController {
     /// Whether the pane is waiting to settle on a row, or moving to it.
     var isSettling: Bool { settle != nil || isSnapping }
 
+    /// Whether the mouse's main button is held now: a drag-to-select or a drag of files that scrolls the pane, whose
+    /// scroll is taken as it is and whose listing selects nothing. The mouse's own state, replaceable so a test doesn't
+    /// go by a button someone is holding while it runs.
+    static var mouseButtonHeld: @MainActor @Sendable () -> Bool = { NSEvent.pressedMouseButtons & 1 != 0 }
+
     /// The pane scrolled. A swipe says when it ends, and its end settles the pane; a mouse wheel turned a notch at a
     /// time and a drag-to-select that scrolls say nothing, so the pane settles once they rest.
     private func scrolled() {
@@ -435,7 +440,7 @@ final class PreviewsViewController: IconViewController {
         }
         guard placingDepth == 0, !isLiveScrolling, !isSnapping, top != lastTop else { return }
         if scrollStart == nil { scrollStart = lastTop }
-        if NSEvent.pressedMouseButtons & 1 != 0 { scrolledByDrag = true }
+        if Self.mouseButtonHeld() { scrolledByDrag = true }
         settleAfterRest()
     }
 
@@ -452,7 +457,7 @@ final class PreviewsViewController: IconViewController {
         settle = nil
         guard !isLiveScrolling else { return }
         // A drag-to-select still holds the button: it may scroll on.
-        guard NSEvent.pressedMouseButtons & 1 == 0 else {
+        guard !Self.mouseButtonHeld() else {
             settleAfterRest()
             return
         }

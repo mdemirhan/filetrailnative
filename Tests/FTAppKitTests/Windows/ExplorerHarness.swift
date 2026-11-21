@@ -187,7 +187,8 @@ struct ExplorerWindowGUITests {}
 struct ExplorerWindowlessTests {}
 
 /// A windowless test: the main loop held, and a menu presenter of its own, as a process run by `swift test` has other
-/// suites beside it.
+/// suites beside it. The mouse's button is up whatever someone at the Mac holds: with it held, the Previews pane takes
+/// a scroll for a drag's and its listings select nothing, which failed a run of these tests now and then.
 struct WindowlessScope: TestTrait, SuiteTrait, TestScoping {
     var isRecursive: Bool { true }
 
@@ -200,7 +201,18 @@ struct WindowlessScope: TestTrait, SuiteTrait, TestScoping {
     ) async throws {
         await MainLoopHold.begin()
         let presenter = await MainActor.run { AppMenuPresenter() }
-        try await AppMenuPresenter.withOwn(presenter) { try await function() }
+        let mouse = await MainActor.run {
+            defer { PreviewsViewController.mouseButtonHeld = { false } }
+            return PreviewsViewController.mouseButtonHeld
+        }
+        var failure: (any Error)?
+        do {
+            try await AppMenuPresenter.withOwn(presenter) { try await function() }
+        } catch {
+            failure = error
+        }
+        await MainActor.run { PreviewsViewController.mouseButtonHeld = mouse }
+        if let failure { throw failure }
     }
 }
 

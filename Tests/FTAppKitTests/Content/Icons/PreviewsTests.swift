@@ -456,6 +456,8 @@ extension ExplorerWindowlessTests {
             PreparingSheet.isEnabled = false
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
+            let notices = DialogRecorder()
+            writes.dialogs = notices.dialogs
             defer { withExtendedLifetime(writes) {} }
             let (tab, probe) = try await harness.openGrid(.viewAsPreviews, files: 4)
             tab.perform(.showPreviews1)
@@ -466,13 +468,55 @@ extension ExplorerWindowlessTests {
             for index in 0..<2 {
                 #expect(tab.canPerform(.trashSelection))
                 tab.perform(.trashSelection)
+                let done = await waitUntil {
+                    !FileManager.default.fileExists(atPath: paths[index]) && !tab.isWriteLocked
+                        && tab.content.selection.paths == [paths[index + 1]]
+                }
+                let selection = tab.content.selection
                 #expect(
-                    await waitUntil {
-                        !FileManager.default.fileExists(atPath: paths[index]) && !tab.isWriteLocked
-                            && tab.content.selection.paths == [paths[index + 1]]
-                    }, "file \(index) trashed, the next one selected")
+                    done,
+                    """
+                    file \(index) trashed, the next one selected: still there \
+                    \(FileManager.default.fileExists(atPath: paths[index])), write locked \(tab.isWriteLocked), \
+                    selected \(selection.paths.map(NodePath.basename)), gap \(String(describing: selection.gapIndex)), \
+                    listed \(tab.content.entries.map(\.name)), notices \(notices.shown.map(\.title))
+                    """)
             }
             #expect(tab.content.entries.map(\.path) == [paths[2], paths[3]])
+            await harness.close()
+        }
+
+        // A listing that takes the selected file away while the mouse's button is held is a drag's, and selects
+        // nothing; once the button is up the next one does as above. Windowless tests have the button up whatever
+        // someone at the Mac holds (`WindowlessScope`): the one above failed in a release's run while it was held.
+        @Test func aListingWhileTheButtonIsHeldSelectsNothingInPlaceOfTheRemovedFile() async throws {
+            PreparingSheet.isEnabled = false
+            #expect(!PreviewsViewController.mouseButtonHeld(), "windowless tests have the button up")
+            let harness = try ExplorerHarness.windowless()
+            let writes = try harness.writeOperations()
+            defer { withExtendedLifetime(writes) {} }
+            let (tab, probe) = try await harness.openGrid(.viewAsPreviews, files: 4)
+            tab.perform(.showPreviews1)
+            probe.layout()
+            let paths = tab.content.entries.map(\.path)
+            tab.content.select(paths: [paths[0]])
+            tab.content.focusList()
+            PreviewsViewController.mouseButtonHeld = { true }
+            tab.perform(.trashSelection)
+            #expect(
+                await waitUntil {
+                    !FileManager.default.fileExists(atPath: paths[0]) && !tab.isWriteLocked
+                        && tab.content.entries.map(\.path) == Array(paths[1...])
+                }, "file 0 trashed and listed without it")
+            #expect(tab.content.selection.paths.isEmpty, "held: nothing selected in its place")
+            PreviewsViewController.mouseButtonHeld = { false }
+            tab.content.select(paths: [paths[1]])
+            tab.perform(.trashSelection)
+            #expect(
+                await waitUntil {
+                    !FileManager.default.fileExists(atPath: paths[1]) && !tab.isWriteLocked
+                        && tab.content.selection.paths == [paths[2]]
+                }, "up: the file in its place selected")
             await harness.close()
         }
 
