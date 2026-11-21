@@ -257,10 +257,8 @@ struct NativeCopyStopFlagTests {
                     try NativeFS.copyFile(source, destination, control: control)
                 }
                 #expect(error?.code == .errno(fullCode), "\(control.trace)")
-                // The copy got as far as the fork: it left the file it made, for the caller to remove, without the
-                // whole fork.
-                #expect(Files.exists(destination))
-                #expect(Files.read(destination + "/..namedfork/rsrc") != fork)
+                // The copy got as far as the fork: the file it made is gone with it, as after any copy that failed.
+                #expect(!Files.exists(destination))
             }
         }
     }
@@ -287,9 +285,8 @@ struct NativeCopyStopFlagTests {
                     try NativeFS.copyFile(source, destination, control: control)
                 }
                 #expect(error?.code == .errno(fullCode), "\(control.trace)")
-                // The copy got as far as the tag: it left the file it made, for the caller to remove, without it.
-                #expect(Files.exists(destination))
-                #expect(!Files.xattrNames(destination).contains(tags))
+                // The copy got as far as the tag: the file it made is gone with it, as after any copy that failed.
+                #expect(!Files.exists(destination))
             }
         }
     }

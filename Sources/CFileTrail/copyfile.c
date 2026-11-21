@@ -21,6 +21,7 @@
 #include <string.h>
 #include <sys/mount.h>
 #include <sys/xattr.h>
+#include <unistd.h>
 
 struct ft_copy_control {
     _Atomic int32_t stop;
@@ -234,8 +235,11 @@ int ft_copyfile(const char *source, const char *destination, ft_copy_control *co
            asked for is a stop. */
         result = ECANCELED;
     } else if (work.errnum != 0) {
-        /* copy_status ended it over an extended attribute and kept that write's errno. */
+        /* copy_status ended it over an extended attribute and kept that write's errno. The copy made the
+           destination (EXCL) and nothing is in it yet: copyfile removes what a failed write leaves but not
+           this, so it is removed here, and a copy that failed leaves no empty file under the item's name. */
         result = work.errnum;
+        unlink(destination);
     } else if (saved != 0) {
         result = saved;
     } else {
