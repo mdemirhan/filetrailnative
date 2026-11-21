@@ -2,7 +2,8 @@ import AppKit
 import FTFoundation
 
 /// The bar over a file in a pane. It holds only what applies now: the file's name and whether it has unsaved edits;
-/// for a file in place, its place among the folder's files and the steps to the next and previous; for a file beside
+/// for a file in place, the steps to the previous and next file and its place among the folder's files, first, so the
+/// steps stay where they are whatever the name or the count is, and a click after click goes on; for a file beside
 /// the list, Follow; Save while there are edits; Source or Preview for Markdown; Read or Edit; and the viewer's own
 /// menu (⋯), which holds the rest with its keys. The system's controls at the regular size, as the panes' bars have
 /// them.
@@ -82,10 +83,13 @@ final class ViewerHeaderView: NSView {
         nameLabel.setAccessibilityIdentifier("textViewer.name")
         editedLabel.font = ThemeFonts.sans(DesignTokens.typeScale.callout)
         positionLabel.font = ThemeFonts.sans(DesignTokens.typeScale.callout)
+        positionLabel.setAccessibilityIdentifier("textViewer.position")
         for label in [nameLabel, editedLabel, positionLabel] { addSubview(label) }
 
         configure(previousButton, symbol: "chevron.up", tip: "Previous File (⌥⌘[)", action: #selector(previous))
         configure(nextButton, symbol: "chevron.down", tip: "Next File (⌥⌘])", action: #selector(next))
+        previousButton.setAccessibilityIdentifier("textViewer.previous")
+        nextButton.setAccessibilityIdentifier("textViewer.next")
         followButton.target = self
         followButton.action = #selector(followChanged)
         followButton.toolTip = "Show the file selected in the other pane as the selection moves"
@@ -266,13 +270,18 @@ final class ViewerHeaderView: NSView {
         // the place among the folder's files. The ⋯ menu holds all of it.
         let nameMinimum = 90.0
         let rightViews: [NSView] = [menuButton, editSwitch, saveButton, previewSwitch]
-        let afterName: [NSView] = [editedLabel, previousButton, positionLabel, nextButton, followButton]
+        // The steps to the previous and next file come first, at a place that doesn't move: after them the count and
+        // the name, whose widths change from file to file.
+        let beforeName: [NSView] = [previousButton, nextButton, positionLabel]
+        let afterName: [NSView] = [editedLabel, followButton]
         var shown = stateShown
         func total(_ views: [NSView]) -> Double {
             views.filter { shown.contains(ObjectIdentifier($0)) }.reduce(0) { $0 + width(of: $1) + gap }
         }
         for view in [previewSwitch, positionLabel, previousButton, nextButton] as [NSView] {
-            if 24 + total(rightViews) + total(afterName) + nameMinimum <= Double(bounds.width) { break }
+            if 24 + total(rightViews) + total(beforeName) + total(afterName) + nameMinimum <= Double(bounds.width) {
+                break
+            }
             shown.remove(ObjectIdentifier(view))
         }
         for view in managed { view.isHidden = !shown.contains(ObjectIdentifier(view)) }
@@ -285,6 +294,11 @@ final class ViewerHeaderView: NSView {
             right -= gap
         }
         var left = 14.0
+        for view in beforeName where shown.contains(ObjectIdentifier(view)) {
+            let size = width(of: view)
+            place(view, x: left, width: size)
+            left += size + gap
+        }
         let available = max(40, right - left - total(afterName))
         let nameWidth = min(fitting(nameLabel), available)
         place(nameLabel, x: left, width: nameWidth)
