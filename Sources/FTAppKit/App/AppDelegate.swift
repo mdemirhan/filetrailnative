@@ -282,18 +282,21 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
                 self?.host.openDefaultWindow(initialCommand: command)
             },
             openNewWindowFromFront: { [weak self] in self?.host.openNewWindowFromFront() },
-            openWorkspace: { [weak self] id, window in
-                self?.explorerWindows.openWorkspace(id: id, inPlaceOf: window as? MainWindowController)
+            openWindowView: { [weak self] id, window in
+                self?.explorerWindows.openWindowView(id: id, inPlaceOf: window as? MainWindowController)
             },
-            manageWorkspaces: { [weak self] in self?.pageWindows.openSettings(section: .workspaces) })
+            manageViews: { [weak self] pane in self?.explorerWindows.manageViews(pane) })
         menu.shortcuts = { [weak self] in
             self?.store.map { ShortcutCommands.resolve($0.preferences().shortcutOverrides).bindings }
                 ?? ShortcutCommands.defaultBindings
         }
         menu.textEditorName = { [weak self] in self?.store?.preferences().defaultTextEditor.appName }
         menu.returnKeyAction = { [weak self] in self?.store?.preferences().returnKeyAction ?? .rename }
-        menu.workspaces = { [weak self] in
-            (self?.store?.preferences().workspaces ?? []).map { WorkspaceMenuEntry(id: $0.id, name: $0.name) }
+        menu.tabViews = { [weak self] in
+            (self?.store?.preferences().tabViews ?? []).map { SavedViewMenuEntry(id: $0.id, name: $0.name) }
+        }
+        menu.windowViews = { [weak self] in
+            (self?.store?.preferences().windowViews ?? []).map { SavedViewMenuEntry(id: $0.id, name: $0.name) }
         }
         // File ▸ New File lists the Templates folder's files, and is built again when they change.
         let templatesPath = AppStatePaths.templates(in: userDataDirectory ?? AppStatePaths.userDataDirectory()).path
@@ -328,7 +331,8 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         explorerWindows.preferencesChanged(preferences, change)
         pageWindows.preferencesChanged(preferences, change)
         if change.keys.contains(.shortcutOverrides) || change.keys.contains(.defaultTextEditor)
-            || change.keys.contains(.workspaces) || change.keys.contains(.returnKeyAction)
+            || change.keys.contains(.tabViews) || change.keys.contains(.windowViews)
+            || change.keys.contains(.returnKeyAction)
         {
             mainMenu?.build()
         }

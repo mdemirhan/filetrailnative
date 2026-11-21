@@ -130,9 +130,19 @@ extension HelpContent {
                                 "Window > Move Tab to New Window, or the same item in a tab's right-click menu, gives the tab a window of its own; it keeps its folder and view, but not its Back and Forward history. Window > Merge All Windows brings the tabs of every other window into this one and closes the others; a window whose tabs would take this one past \(AppPreferenceLimits.openTabsLimit) stays open."
                         ),
                         HelpRow(
-                            label: "Workspaces",
+                            label: "Tab views",
                             description:
-                                "Window > Workspaces > Save Window as Workspace… keeps the window's tabs by name: each tab's folders and panes, the folder tree, the Info panel and the window's size. Choose the workspace in Window > Workspaces to open it as it was saved in a new window, or hold Option to open it in this one instead. The first five open with {openWorkspace1} to {openWorkspace5}, and in this window with {openWorkspace1InThisWindow} to {openWorkspace5InThisWindow}. A workspace changes only when you save a window under its name again; the button at the end of the name field lists the saved names. Settings → Browsing renames, removes and orders them."
+                                "Saved Views > Save Tab View… keeps what you check of this tab by name: one or two panes, the divider, hidden files, and for each pane its folder, view, grouping, order, Folders First and columns or size. What isn't checked comes from the tab you apply it to, its folders included. Choose the tab view in Saved Views to apply it to this tab; the first five can have keys, {applyTabView1} to {applyTabView5} to begin with. Folder Views in each pane says what happens in a folder with a view of its own: its view comes first as in any pane, the tab view comes first, or its view isn't used, until the pane leaves that folder. The Views window can set a tab view that every new tab and window opens with."
+                        ),
+                        HelpRow(
+                            label: "Window views",
+                            description:
+                                "Saved Views > Save Window View… keeps a window by name: how many tabs it opens, the tab view each one opens with, which tab is in front, and, if checked, its size, folder tree and Info panel. Choose it in Saved Views to open it in a new window, or hold Option to open it in place of this one; the first five can have keys, {openWindowView1} to {openWindowView5} to begin with. Each tab starts as a new tab from the folder you are in, then takes its tab view, so a change to a tab view shows in every window view that uses it."
+                        ),
+                        HelpRow(
+                            label: "The Views window",
+                            description:
+                                "Saved Views > Manage Folder Views…, Manage Tab Views… and Manage Window Views… open one window with a pane for each. Tab Views and Window Views list each by name with what it keeps: drag to reorder (the first five can be given keys in Settings > Shortcuts), double-click a name to rename it, and Edit, Duplicate, Remove or apply one."
                         ),
                         HelpRow(
                             label: "Between windows",
@@ -607,7 +617,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Icon size and column width",
                             description:
-                                "The slider at the right of the status bar sets the size of the icons in the Icons view and the width of the columns in the Compact List, and shows the size while it moves. The View menu, {increaseSize} and {decreaseSize} change them a step at a time, and {resetSize} brings back the default size. Each pane keeps its own sizes, and a workspace brings them back; a pane opened from another starts with that pane’s. With Settings → Browsing → Sizes set to Match Finder, these sizes are kept apart from File Trail’s own."
+                                "The slider at the right of the status bar sets the size of the icons in the Icons view and the width of the columns in the Compact List, and shows the size while it moves. The View menu, {increaseSize} and {decreaseSize} change them a step at a time, and {resetSize} brings back the default size. Each pane keeps its own sizes, and a tab view can bring them back; a pane opened from another starts with that pane’s. With Settings → Browsing → Sizes set to Match Finder, these sizes are kept apart from File Trail’s own."
                         ),
                         HelpRow(
                             label: "Previews",
@@ -622,7 +632,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Folder views",
                             description:
-                                "A folder can keep its own view, order, Folders First, columns and size. View → Folder View → Remember View for This Folder keeps what is on screen, and {folderViewOptions} chooses which of them the folder keeps; the rest follow the pane, as in any folder. With Apply to Subfolders, the folders inside use it too, unless they have one of their own. A symbol at the right end of the status bar opens them in any folder: in the accent color where the folder has its own view, gray where it uses one from a folder above, faint where it has none, with a dot while a change isn’t saved. Any change, there or in the folder, shows at once but is kept only with Save ({updateFolderView}); Revert ({revertFolderView}) or leaving the folder drops it. In a folder using a view from above, Save gives that folder a view of its own; the folder above is changed in it. View → Folder View → Manage Folder Views… lists every folder with a view of its own, each under the one it is inside: Remove forgets a folder’s view, and Remove with Subfolders those of the folders inside it too. A folder renamed or moved outside File Trail loses its view and stays in that list as Not Found; one renamed or moved in File Trail keeps it."
+                                "A folder can keep its own view, order, Folders First, columns and size. Saved Views → Remember View for This Folder keeps what is on screen, and {folderViewOptions} chooses which of them the folder keeps; the rest follow the pane, as in any folder. With Apply to Subfolders, the folders inside use it too, unless they have one of their own. A symbol at the right end of the status bar opens them in any folder: in the accent color where the folder has its own view, gray where it uses one from a folder above, faint where it has none, with a dot while a change isn’t saved. Any change, there or in the folder, shows at once but is kept only with Save ({updateFolderView}); Revert ({revertFolderView}) or leaving the folder drops it. In a folder using a view from above, Save gives that folder a view of its own; the folder above is changed in it. Saved Views → Manage Folder Views… lists every folder with a view of its own, each under the one it is inside: Remove forgets a folder’s view, and Remove with Subfolders those of the folders inside it too. A folder renamed or moved outside File Trail loses its view and stays in that list as Not Found; one renamed or moved in File Trail keeps it."
                         ),
                         HelpRow(
                             label: "Sort",
@@ -736,23 +746,29 @@ extension HelpContent {
         HelpShortcutItem(group: .navigation, .command(.moveTabToNewWindow), "Move the tab to a window of its own"),
         HelpShortcutItem(group: .navigation, .command(.mergeAllWindows), "Bring every window's tabs into this window"),
         HelpShortcutItem(
-            group: .navigation, .command(.saveWorkspace),
-            "Save this window's tabs and panes by name, to open again later"),
-        HelpShortcutItem(group: .navigation, .command(.openWorkspace1), "Open the first workspace in a new window"),
-        HelpShortcutItem(group: .navigation, .command(.openWorkspace2), "Open the second workspace in a new window"),
-        HelpShortcutItem(group: .navigation, .command(.openWorkspace3), "Open the third workspace in a new window"),
-        HelpShortcutItem(group: .navigation, .command(.openWorkspace4), "Open the fourth workspace in a new window"),
-        HelpShortcutItem(group: .navigation, .command(.openWorkspace5), "Open the fifth workspace in a new window"),
+            group: .navigation, .command(.saveTabView), "Save what you check of this tab by name, to apply to a tab"),
+        HelpShortcutItem(group: .navigation, .command(.applyTabView1), "Apply the first tab view to this tab"),
+        HelpShortcutItem(group: .navigation, .command(.applyTabView2), "Apply the second tab view to this tab"),
+        HelpShortcutItem(group: .navigation, .command(.applyTabView3), "Apply the third tab view to this tab"),
+        HelpShortcutItem(group: .navigation, .command(.applyTabView4), "Apply the fourth tab view to this tab"),
+        HelpShortcutItem(group: .navigation, .command(.applyTabView5), "Apply the fifth tab view to this tab"),
         HelpShortcutItem(
-            group: .navigation, .command(.openWorkspace1InThisWindow), "Open the first workspace in this window"),
+            group: .navigation, .command(.saveWindowView), "Save this window's tabs, by their tab views, by name"),
+        HelpShortcutItem(group: .navigation, .command(.openWindowView1), "Open the first window view in a new window"),
+        HelpShortcutItem(group: .navigation, .command(.openWindowView2), "Open the second window view in a new window"),
+        HelpShortcutItem(group: .navigation, .command(.openWindowView3), "Open the third window view in a new window"),
+        HelpShortcutItem(group: .navigation, .command(.openWindowView4), "Open the fourth window view in a new window"),
+        HelpShortcutItem(group: .navigation, .command(.openWindowView5), "Open the fifth window view in a new window"),
         HelpShortcutItem(
-            group: .navigation, .command(.openWorkspace2InThisWindow), "Open the second workspace in this window"),
+            group: .navigation, .command(.openWindowView1InThisWindow), "Open the first window view in this window"),
         HelpShortcutItem(
-            group: .navigation, .command(.openWorkspace3InThisWindow), "Open the third workspace in this window"),
+            group: .navigation, .command(.openWindowView2InThisWindow), "Open the second window view in this window"),
         HelpShortcutItem(
-            group: .navigation, .command(.openWorkspace4InThisWindow), "Open the fourth workspace in this window"),
+            group: .navigation, .command(.openWindowView3InThisWindow), "Open the third window view in this window"),
         HelpShortcutItem(
-            group: .navigation, .command(.openWorkspace5InThisWindow), "Open the fifth workspace in this window"),
+            group: .navigation, .command(.openWindowView4InThisWindow), "Open the fourth window view in this window"),
+        HelpShortcutItem(
+            group: .navigation, .command(.openWindowView5InThisWindow), "Open the fifth window view in this window"),
         HelpShortcutItem(
             group: .navigation, .command(.toggleTwoPanes),
             "Show a second pane beside this one, or close the pane you aren't in"),

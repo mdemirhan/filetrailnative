@@ -341,36 +341,35 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         return true
     }
 
-    // MARK: Workspaces
+    // MARK: Window views
 
-    /// What a workspace saved from the window `windowID` keeps: its size (its place too, which the workspace drops)
-    /// and its session as the store has it. Nil for a window not open.
-    public func workspaceSnapshot(of windowID: Int?) -> (bounds: StoredWindowState, session: WindowSession)? {
-        guard let entry = windows.byWindowID(windowID), isStayingOpen(entry.window) else { return nil }
-        return (Self.stored(entry.window), host.store.windowPreferences(entry.id).windowSession)
-    }
-
-    /// `openWorkspace`: a window with the workspace's tabs, panels and size, placed as New Window places one. It opens
-    /// anew even while a window opened from it is open, as that window may have changed since. With `replacing`, it
-    /// opens in that window's place and size, and the window closes once it is shown, as a merged one does: not
-    /// remembered as the window closed last, its running operation going on in the new one. A window that by then has
-    /// something open in it that closing would lose (what Merge All Windows asks of it) stays open beside the new one,
-    /// and `held` runs. `shown` runs once the new window is on screen. The window that shows it; nil when nothing
-    /// opened.
+    /// `openSavedWindow`: a window with `session`'s tabs and panels, placed as New Window places one, `size` large
+    /// (nil: as New Window makes one). With `replacingID` it takes the place of that window, which closes once the new
+    /// one shows; nothing opens while that window isn't staying open, and one that comes to hold a sheet, a rename or a
+    /// question meanwhile stays (`held`).
     @discardableResult
-    public func openWorkspace(
-        _ workspace: Workspace, replacing replacingID: Int? = nil, shown: @escaping () -> Void = {},
-        held: @escaping () -> Void = {}
-    )
-        -> W?
-    {
+    public func openSavedWindow(
+        session: WindowSession, size: StoredWindowState?, replacing replacingID: Int? = nil,
+        shown: @escaping () -> Void = {}, held: @escaping () -> Void = {}
+    ) -> W? {
         guard !shuttingDown else { return nil }
         let replaced = replacingID.flatMap { windows.byWindowID($0) }
         if replacingID != nil {
             guard let replaced, isStayingOpen(replaced.window) else { return nil }
         }
-        let bounds = replaced.map { Self.stored($0.window) } ?? workspaceBounds(workspace.bounds)
-        let record = createRecord(bounds) { $0 = workspace.session }
+        var bounds: StoredWindowState
+        if let replaced {
+            bounds = Self.stored(replaced.window)
+            if let size {
+                bounds.width = size.width
+                bounds.height = size.height
+            }
+        } else if let size {
+            bounds = savedWindowBounds(size)
+        } else {
+            bounds = newWindowBounds(openWindows().first?.window)
+        }
+        let record = createRecord(bounds) { $0 = session }
         host.store.addExplorerWindow(id: record.id, bounds: record.bounds, session: record.session)
         let window = open(record, launch: ExplorerLaunchContext(restoreTabs: true), place: .front)
         let show = window.events.readyToShow
@@ -392,9 +391,9 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         return window
     }
 
-    // A workspace's size, a step down and to the right of the window in front as New Window places one; centered
+    // A window view's size, a step down and to the right of the window in front as New Window places one; centered
     // with no window open.
-    private func workspaceBounds(_ size: StoredWindowState) -> StoredWindowState {
+    private func savedWindowBounds(_ size: StoredWindowState) -> StoredWindowState {
         guard let front = openWindows().first?.window, !front.isDestroyed else {
             return StoredWindowState(width: size.width, height: size.height, maximized: size.maximized)
         }

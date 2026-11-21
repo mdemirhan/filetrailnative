@@ -24,7 +24,7 @@ A finding blocks a release when:
 1. It loses or damages someone's files in a way that can't be undone, in a case a real person would meet. Acting on the wrong item counts, and so does telling of success for something that came out wrong. What Undo or the Trash brings back is not lost.
 2. It weakens security or privacy: a file escaping macOS's checks, a write outside the folder chosen, something the person asked to have removed being kept.
 3. It crashes or hangs the app in ordinary use, with no special disk and no contrived timing.
-4. Something that worked in the last release no longer does; saved tabs, settings and workspaces that fail to load are that.
+4. Something that worked in the last release no longer does; saved tabs, settings, tab views and window views that fail to load are that.
 5. A new feature's main path doesn't work: what the release notes would name has to do what they say.
 6. It comes from a fix made in the same review, until it is fixed or the fix taken back.
 

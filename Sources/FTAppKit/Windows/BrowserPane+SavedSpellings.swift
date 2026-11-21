@@ -69,7 +69,7 @@ extension BrowserPane {
             store?.destinationsRespelled(from: old, to: path)
         }
         var favorites: [FavoritePreference]?
-        var workspaces: [Workspace]?
+        var tabViews: [TabView]?
         let current = tab.preferences
         for spelling in same {
             if let next = SavedSpellings.favorites(
@@ -77,16 +77,14 @@ extension BrowserPane {
             {
                 favorites = next
             }
-            if let next = SavedSpellings.workspaces(
-                workspaces ?? current.workspaces, from: spelling.old, to: spelling.path)
-            {
-                workspaces = next
+            if let next = SavedSpellings.tabViews(tabViews ?? current.tabViews, from: spelling.old, to: spelling.path) {
+                tabViews = next
             }
         }
-        if favorites != nil || workspaces != nil {
+        if favorites != nil || tabViews != nil {
             tab.updatePreferences {
                 if let favorites { $0.favorites = favorites }
-                if let workspaces { $0.workspaces = workspaces }
+                if let tabViews { $0.tabViews = tabViews }
             }
         }
         if !rows.isEmpty { result.open = favoriteRowsFollowed(same, open: open, in: tab) }

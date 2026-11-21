@@ -1152,7 +1152,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// A command the list's keys ask for: the key is one the menu does not listen for (a command's second key, Space,
     /// F2, ⌘←). Whether the window ran it. Keys don't go by what dims the menu (only `ShortcutPolicy.canHandle` is
     /// asked): a command that can't start says why itself.
-    /// `isRepeat`: the key is held down. A workspace opens once per press, not a window for every repeat.
+    /// `isRepeat`: the key is held down. A window view opens once per press, not a window for every repeat.
     private func runKeyCommand(_ id: ShortcutCommandID, isRepeat: Bool) -> Bool {
         if id == .openSelectedItem { return openSelectedItem() }
         if id == .showCommandPalette {
@@ -1160,12 +1160,16 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             if !isRepeat { show() }
             return true
         }
-        if let slot = Workspaces.slot(of: id) {
-            if !isRepeat { group?.openWorkspace(slot: slot) }
+        if let slot = TabViews.slot(of: id) {
+            if !isRepeat { applyTabView(slot: slot) }
             return true
         }
-        if let slot = Workspaces.inThisWindowSlot(of: id) {
-            if !isRepeat { group?.openWorkspace(slot: slot, inPlaceOf: self) }
+        if let slot = WindowViews.slot(of: id) {
+            if !isRepeat { group?.openWindowView(slot: slot) }
+            return true
+        }
+        if let slot = WindowViews.inThisWindowSlot(of: id) {
+            if !isRepeat { group?.openWindowView(slot: slot, inPlaceOf: self) }
             return true
         }
         guard let command = AppCommand(rawValue: id.rawValue), ShortcutPolicy.canHandle(command, shortcutContext)
@@ -2123,7 +2127,8 @@ extension MainWindowController: ExplorerWindowHandle {
             if let target = selectedFolder { openSelectedFolder(target, place: .window) }
         case .moveTabToNewWindow: group?.moveTabToNewWindow(self)
         case .mergeAllWindows: group?.mergeAllWindows(into: self)
-        case .saveWorkspace: group?.saveWorkspace(from: self)
+        case .saveTabView: presentTabViewOptions()
+        case .saveWindowView: group?.saveWindowView(from: self)
         case .toggleTwoPanes: afterLeavingViewer(of: otherPane) { $0.toggleTwoPanes() }
         case .duplicatePane: afterLeavingViewer(of: otherPane) { $0.duplicatePane() }
         case .viewFile: viewFile()

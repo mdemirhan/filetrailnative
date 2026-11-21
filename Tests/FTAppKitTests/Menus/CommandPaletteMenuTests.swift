@@ -16,18 +16,20 @@ import Testing
     private func items(_ menu: NSMenu) -> [NSMenuItem] {
         menu.items.flatMap { item -> [NSMenuItem] in
             if let submenu = item.submenu { return item.title == "Services" ? [item] : items(submenu) }
-            return item.isSeparatorItem ? [] : [item]
+            // A section's heading names the items under it, and does nothing itself.
+            return item.isSeparatorItem || item.isSectionHeader ? [] : [item]
         }
     }
 
     // Every item the menu bar has is a command of the palette, or left out of it by name, so a menu item added later
     // can't be forgotten (docs/process/commands.md).
     @Test func everyMenuItemIsInThePaletteOrLeftOutByName() {
-        let workspaces = [WorkspaceMenuEntry(id: "w1", name: "Photos"), WorkspaceMenuEntry(id: "w2", name: "Work")]
-        let (built, _) = build(ApplicationMenuOptions(workspaces: workspaces))
+        let views = [SavedViewMenuEntry(id: "w1", name: "Photos"), SavedViewMenuEntry(id: "w2", name: "Work")]
+        let (built, _) = build(ApplicationMenuOptions(tabViews: views, windowViews: views))
         let entries = CommandPalette.entries(
             bindings: ShortcutCommands.defaultBindings, states: [:],
-            workspaces: workspaces.map { CommandPaletteWorkspace(id: $0.id, name: $0.name) })
+            tabViews: views.map { CommandPaletteSavedView(id: $0.id, name: $0.name) },
+            windowViews: views.map { CommandPaletteSavedView(id: $0.id, name: $0.name) })
         let runs = Set(entries.map(\.run))
         let systemTitles = Set(entries.filter { if case .system = $0.run { true } else { false } }.map(\.title))
         for item in items(built.menu) {

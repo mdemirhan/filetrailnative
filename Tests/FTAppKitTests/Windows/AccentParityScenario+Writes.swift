@@ -625,21 +625,15 @@ extension AccentScenario {
         note("the views kept", told: pane.folderViews.views.all.map(\.path))
         noteKept("remembered", in: tab)
 
-        // The window as a workspace.
-        if let window = tab.window {
-            harness.windows.saveWorkspace(from: tab)
-            if await arrives({ self.tab.frontAlert?.content.accessory is TextPromptAccessory }),
-                let prompt = tab.frontAlert?.content.accessory as? TextPromptAccessory
-            {
-                prompt.field.stringValue = "Parity"
-                prompt.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification))
-                DialogKeys.press(KeyCode.returnKey, "\r", in: window)
-            }
-            _ = await arrives { !(self.tab.frontAlert?.content.accessory is TextPromptAccessory) }
+        // A tab view that opens the folder.
+        tab.updatePreferences {
+            $0.tabViews = [
+                TabView(
+                    id: "tab-view-parity", name: "Parity", keeps: TabViewKeeps(pane: PaneKeeps(folder: tab.folderPath)))
+            ]
         }
-        note("the workspace is saved", await arrives { !self.store.preferences().workspaces.isEmpty })
-        let workspaces = store.preferences().workspaces
-        note("the workspace's folders", told: workspaces.flatMap { Workspaces.folders(of: $0.session) })
+        note("the tab view is saved", await arrives { !self.store.preferences().tabViews.isEmpty })
+        note("the tab view's folders", told: store.preferences().tabViews.flatMap(\.keeps.folders))
 
         // Left, and opened again by Go To, typed in the spelling the disk doesn't have.
         tab.go(to: names.parent)
@@ -679,22 +673,18 @@ extension AccentScenario {
             note("started again: the tab's favorite", told: restored.favoritePath)
             noteKept("started again", in: restored)
 
-            // The workspace, opened in place of the window.
-            if let workspace = again.store.preferences().workspaces.first, let group = restored.group {
-                again.windows.openWorkspace(id: workspace.id, inPlaceOf: restored)
-                let opened = await arrives {
-                    guard let front = again.windows.front as? MainWindowController else { return false }
-                    return front !== restored && front.group !== group && self.shows(front.activePane, self.folder)
-                }
-                note("started again: the workspace opens on the folder", opened)
-                // The window a workspace opens is the app's own, with none of this harness's services: only where
-                // it is says anything here.
-                if let front = again.windows.front as? MainWindowController {
-                    note("workspace: the folder on screen", told: front.folderPath)
-                    noteOnDisk("workspace: the folder is spelled as on disk", spelledAsOnDisk(front.folderPath))
-                }
+            // The tab view, applied to the tab opened again once it has gone to the folder above.
+            if let tabView = again.store.preferences().tabViews.first {
+                restored.go(to: names.parent)
+                _ = await arrives { self.shows(restored.activePane, self.names.parent) }
+                restored.applyTabView(id: tabView.id)
+                note(
+                    "started again: the tab view opens the folder",
+                    await arrives { self.shows(restored.activePane, self.folder) })
+                note("tab view: the folder on screen", told: restored.folderPath)
+                noteOnDisk("tab view: the folder is spelled as on disk", spelledAsOnDisk(restored.folderPath))
             } else {
-                note("started again: the workspace is kept", false)
+                note("started again: the tab view is kept", false)
             }
             for tab in again.windows.allTabs { tab.window?.close() }
             await settle()

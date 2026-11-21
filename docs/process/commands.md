@@ -27,10 +27,10 @@ That row is what puts the command in **Settings → Shortcuts** (every row is li
 The palette lists every row of the table and the menu items that aren't in it, so a new command is in it with nothing more to do. These cases need a line in `CommandPalette` (`Sources/FTFoundation/Commands/CommandPalette.swift`):
 
 - **The menu's title names what the command acts on** (Compress “Photos”, Edit in BBEdit, Show Folder Tree): add it to `menuTitledCommands`, and the palette shows the menu's title in place of the label.
-- **A menu item with no table row** (About, Manage Workspaces…): add it to `menuItems`, with its label, place and group.
+- **A menu item with no table row** (About, Manage Tab Views…): add it to `menuItems`, with its label, place and group.
 - **A `fixed` row with no `menuPath`** (Undo, Quit): add its menu to `standardPlaces`, so the palette says where it is.
 - **A symbol beside its name**: add it to `CommandPalette.icon`, where the toolbar or the right-click menus have one for it. Nothing fails without it; the row has no symbol.
-- **A command the palette shouldn't list**: add it to `excludedCommands` or `excludedMenuItems`, with the reason beside it. Today that is the palette itself, Services, and the five workspace keys, which the palette lists by the workspaces' names instead.
+- **A command the palette shouldn't list**: add it to `excludedCommands` or `excludedMenuItems`, with the reason beside it. Today that is the palette itself, Services, and the fifteen saved-view keys (Tab View 1 to 5, Window View 1 to 5 and their "in This Window"), which the palette lists by the views' names instead.
 
 `CommandPaletteTests` walks the table and fails on any command that is neither in the palette nor excluded; `CommandPaletteMenuTests` does the same for the items of the built menu.
 

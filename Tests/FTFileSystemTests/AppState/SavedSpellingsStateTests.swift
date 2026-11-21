@@ -24,11 +24,11 @@ struct SavedSpellingsStateTests {
                 store.updateFolderViews { $0.respell(from: Saved.decomposed, to: Saved.composed) }
                 let preferences = store.preferences()
                 let favorites = SavedSpellings.favorites(preferences.favorites, from: old, to: path)
-                let workspaces = SavedSpellings.workspaces(preferences.workspaces, from: old, to: path)
-                guard favorites != nil || workspaces != nil else { return }
+                let tabViews = SavedSpellings.tabViews(preferences.tabViews, from: old, to: path)
+                guard favorites != nil || tabViews != nil else { return }
                 store.update {
                     if let favorites { $0.favorites = favorites }
-                    if let workspaces { $0.workspaces = workspaces }
+                    if let tabViews { $0.tabViews = tabViews }
                 }
             }
 
@@ -53,7 +53,7 @@ struct SavedSpellingsStateTests {
             func bytes(_ paths: [String?]) -> [[UInt8]?] { paths.map { $0.map { Array($0.utf8) } } }
             #expect(bytes(reloaded.preferences().favorites.map(\.path)) == bytes(["/Applications", Saved.composed]))
             #expect(
-                bytes(reloaded.preferences().workspaces[0].session.openTabs.map(\.path))
+                bytes(reloaded.preferences().tabViews[0].keeps.folders)
                     == bytes([Saved.composed, "/Users/demo/Documents"]))
             #expect(reloaded.folderViews().own(Saved.decomposed) == nil)
             #expect(reloaded.folderViews().own(Saved.composed)?.subfolders == true)

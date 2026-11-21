@@ -16,7 +16,11 @@ extension MainWindowController {
             NSSound.beep()
             return
         }
-        let view = tabViews[index]
+        apply(tabViews[index])
+    }
+
+    /// Applies `view` to this tab: its folders that are gone open the nearest folder above, with a notice.
+    func apply(_ view: TabView) {
         let replaced = withGoneFoldersReplaced(view.keeps)
         apply(replaced.keeps)
         lastTabViewID = view.id
@@ -35,12 +39,150 @@ extension MainWindowController {
     /// A new tab or a new window's tab, once its first folder is read: the tab view new tabs open with, if one is set
     /// by then.
     func applyNewTabView() {
-        let ready = onReady
-        onReady = { [weak self] in
-            ready?()
-            guard let self, let id = preferences.newTabViewID else { return }
+        applyTabViewWhenReady { [weak self] in self?.preferences.newTabViewID }
+    }
+
+    /// `view`, applied once the tab's first folder is read (at once when it has been): each tab of a window view, as
+    /// it is first shown.
+    func applyTabViewWhenReady(_ view: TabView) {
+        panes.first?.whenFirstReadFinished { [weak self] _ in self?.apply(view) }
+    }
+
+    /// The tab view `id` names, applied once the tab's first folder is read (at once when it has been): a new tab's.
+    func applyTabViewWhenReady(_ id: @escaping @MainActor () -> String?) {
+        panes.first?.whenFirstReadFinished { [weak self] _ in
+            guard let self, let id = id() else { return }
             applyTabView(id: id)
         }
+    }
+
+    // MARK: Tab View Options
+
+    /// Save Tab View… (`editing` nil) or Edit… in the Views window: Tab View Options over this tab, filled in from it,
+    /// and from the tab view being edited. Save keeps it in the list: in its place when edited, at the end when new, or
+    /// in place of the one whose name it takes.
+    func presentTabViewOptions(editing: TabView? = nil) {
+        guard let window, group?.isBlocked != true,
+            !dialogs.contains(where: { $0.panel is TabViewOptionsSheet || $0.panel is WindowViewOptionsSheet })
+        else { return }
+        AppMenuPresenter.shared.close()
+        let label = tabDescription.label
+        let draft = TabViewDraft(
+            tab: tabViewState, columnWidth: workspace.paneColumnWidth, editing: editing, name: label)
+        let sheet = TabViewOptionsSheet(
+            draft: draft, saved: tabViews, density: preferences.density, subtitle: label)
+        let scrim = DialogScrim(panel: sheet, placement: .sheet)
+        scrim.setAccessibilityIdentifier("tabViewOptions.scrim")
+        sheet.onCancel = { [weak scrim] in scrim?.dismiss() }
+        sheet.onManage = { [weak self, weak scrim] in
+            scrim?.dismiss()
+            self?.manageViews(.tabViews)
+        }
+        sheet.chooseFolder = { [weak self, weak window] done in
+            let start = self?.shownFolderPath
+            Task { @MainActor in
+                let choice = await SystemPickers.pickDirectory(defaultPath: start, window: window)
+                done(choice.canceled ? nil : choice.path)
+            }
+        }
+        sheet.onSave = { [weak self, weak scrim] draft in
+            scrim?.dismiss()
+            self?.saveTabView(draft)
+        }
+        scrim.present(in: window)
+    }
+
+    /// Saves what the sheet settled.
+    private func saveTabView(_ draft: TabViewDraft) {
+        let name = SavedViewNames.clean(draft.name)
+        guard !name.isEmpty else { return }
+        let kept = tabViews
+        let taken = SavedViewNames.index(named: name, in: kept)
+        if draft.editingID == nil, taken == nil, kept.count >= SavedViewNames.limit {
+            showNotice(title: SavedViewNames.limitTitle(kind: "tab views"), message: SavedViewNames.limitMessage)
+            return
+        }
+        let id = draft.editingID ?? taken.map { kept[$0].id } ?? SavedViewNames.newID("tab-view")
+        let view = TabView(id: id, name: name, keeps: draft.keeps)
+        updatePreferences { preferences in
+            var list = preferences.tabViews
+            // A name another tab view has replaces that one; editing keeps its place in the list.
+            if let taken, list[taken].id != id {
+                let removed = list[taken].id
+                list.remove(at: taken)
+                preferences.windowViews = WindowViews.forgetting(removed, in: preferences.windowViews)
+                if preferences.newTabViewID == removed { preferences.newTabViewID = nil }
+            }
+            if let at = SavedViewNames.index(id: id, in: list) {
+                list[at] = view
+            } else {
+                list.append(view)
+            }
+            preferences.tabViews = list
+        }
+        lastTabViewID = id
+    }
+
+    // MARK: Window View Options
+
+    /// Save Window View… (a new one, from this window) or Edit… in the Views window: Window View Options over this
+    /// window.
+    func presentWindowViewOptions(_ draft: WindowViewDraft, saved: [WindowView], tabViews: [TabView]) {
+        guard let window, group?.isBlocked != true,
+            !dialogs.contains(where: { $0.panel is TabViewOptionsSheet || $0.panel is WindowViewOptionsSheet })
+        else { return }
+        AppMenuPresenter.shared.close()
+        let sheet = WindowViewOptionsSheet(draft: draft, saved: saved, tabViews: tabViews)
+        let scrim = DialogScrim(panel: sheet, placement: .sheet)
+        scrim.setAccessibilityIdentifier("windowViewOptions.scrim")
+        sheet.onCancel = { [weak scrim] in scrim?.dismiss() }
+        sheet.onManage = { [weak self, weak scrim] in
+            scrim?.dismiss()
+            self?.manageViews(.windowViews)
+        }
+        sheet.onSave = { [weak self, weak scrim] draft in
+            scrim?.dismiss()
+            self?.saveWindowView(draft)
+        }
+        scrim.present(in: window)
+    }
+
+    /// Edit… of a window view in the Views window: its sheet over this window.
+    func editWindowView(_ view: WindowView) {
+        guard let window else { return }
+        let draft = WindowViewDraft(
+            editing: view, sizeNow: WindowView.Size(width: Int(window.frame.width), height: Int(window.frame.height)),
+            folderTreeOpen: preferences.folderTreeOpen, propertiesOpen: preferences.propertiesOpen)
+        presentWindowViewOptions(draft, saved: preferences.windowViews, tabViews: tabViews)
+    }
+
+    private func saveWindowView(_ draft: WindowViewDraft) {
+        let name = SavedViewNames.clean(draft.name)
+        guard !name.isEmpty else { return }
+        let kept = preferences.windowViews
+        let taken = SavedViewNames.index(named: name, in: kept)
+        if draft.editingID == nil, taken == nil, kept.count >= SavedViewNames.limit {
+            showNotice(title: SavedViewNames.limitTitle(kind: "window views"), message: SavedViewNames.limitMessage)
+            return
+        }
+        let id = draft.editingID ?? taken.map { kept[$0].id } ?? SavedViewNames.newID("window-view")
+        let view = draft.windowView(id: id)
+        updatePreferences { preferences in
+            var list = preferences.windowViews
+            if let taken, list[taken].id != id { list.remove(at: taken) }
+            if let at = SavedViewNames.index(id: id, in: list) {
+                list[at] = view
+            } else {
+                list.append(view)
+            }
+            preferences.windowViews = list
+        }
+    }
+
+    /// Manage Folder Views…, Manage Tab Views… or Manage Window Views…: the Views window on that pane, acting on this
+    /// window.
+    func manageViews(_ pane: ViewsWindowPane) {
+        ViewsWindowController.show(pane, folderViews: services.folderViews, explorer: self)
     }
 
     /// The tab as a tab view sees it: its panes, the active one, the divider, hidden files and the pane ⌘\ would bring

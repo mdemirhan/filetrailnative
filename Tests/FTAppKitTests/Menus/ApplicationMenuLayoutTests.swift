@@ -17,7 +17,8 @@ import Testing
         let (built, _) = build()
         let main = built.menu
 
-        #expect(main.items.map(\.title) == ["File Trail", "File", "Edit", "View", "Go", "Window", "Help"])
+        #expect(
+            main.items.map(\.title) == ["File Trail", "File", "Edit", "View", "Saved Views", "Go", "Window", "Help"])
         #expect(
             titles(submenu(main, "File Trail")) == [
                 "About File Trail", "-", "Settings…", "-", "Empty Trash…", "-", "Services", "-", "Hide File Trail",
@@ -49,8 +50,7 @@ import Testing
             titles(submenu(main, "View")) == [
                 "as Icons", "as List", "as Compact List", "as Previews", "Show Previews", "-", "Make Bigger",
                 "Make Smaller",
-                "Default Size", "-", "Group By", "Sort By", "Folders First", "Hidden Files", "Columns", "Folder View",
-                "-",
+                "Default Size", "-", "Group By", "Sort By", "Folders First", "Hidden Files", "Columns", "-",
                 "Pin Filter", "Refresh",
                 "-", "Hide Folder Tree", "Info Panel", "Info Row", "-", "Two Panes", "Duplicate Pane", "Swap Panes",
                 "Make Panes Equal Width", "-", "Customize Toolbar…", "Command Palette…",
@@ -60,6 +60,16 @@ import Testing
                 "None", "-", "Name", "Date Modified", "Date Created", "Date Last Opened", "Date Added", "Size", "Kind",
                 "Tags", "Folder", "-", "Reverse Group Order",
             ])
+        // Each kind under a heading of its own; the tab views and window views come between Save and Manage.
+        #expect(
+            titles(submenu(main, "Saved Views")) == [
+                "Folder View", "Remember View for This Folder", "Update Folder View", "Revert to Saved View",
+                "Folder View Options…", "Reset Folder View", "Manage Folder Views…", "-",
+                "Tab Views", "Save Tab View…", "Manage Tab Views…", "-",
+                "Window Views", "Save Window View…", "Manage Window Views…",
+            ])
+        let headings = submenu(main, "Saved Views").items.filter(\.isSectionHeader).map(\.title)
+        #expect(headings == ["Folder View", "Tab Views", "Window Views"])
         #expect(
             titles(submenu(main, "Go")) == [
                 "Back", "Forward", "Enclosing Folder", "-", "Documents", "Desktop",
@@ -70,11 +80,7 @@ import Testing
         #expect(
             titles(submenu(main, "Window")) == [
                 "Minimize", "Zoom", "-", "Show Previous Tab", "Show Next Tab", "Move Tab to New Window",
-                "Merge All Windows", "-", "Switch to Other Pane", "-", "Workspaces", "-", "Bring All to Front",
-            ])
-        #expect(
-            titles(item(submenu(main, "Window"), "Workspaces").submenu!) == [
-                "Save Window as Workspace…", "-", "Manage Workspaces…",
+                "Merge All Windows", "-", "Switch to Other Pane", "-", "Bring All to Front",
             ])
         #expect(titles(submenu(main, "Help")) == ["File Trail Help", "Keyboard Shortcuts"])
         // The system's own menus are the ones AppKit adds the services, the windows and the search field to.
@@ -83,51 +89,70 @@ import Testing
         #expect(built.servicesMenu === item(submenu(main, "File Trail"), "Services").submenu)
     }
 
-    @Test func listsTheWorkspacesTheFirstFiveWithTheirKeysEachWithAnItemForThisWindow() {
-        let entries = (1...6).map { WorkspaceMenuEntry(id: "w\($0)", name: "Work \($0)") }
-        let (built, router) = build(.init(workspaces: entries))
-        let menu = item(submenu(built.menu, "Window"), "Workspaces").submenu ?? NSMenu()
+    @Test func listsTheTabViewsTheFirstFiveWithTheirKeys() {
+        let entries = (1...6).map { SavedViewMenuEntry(id: "t\($0)", name: "Compare \($0)") }
+        let (built, router) = build(.init(tabViews: entries))
+        let menu = submenu(built.menu, "Saved Views")
+        let titles = titles(menu)
+        let start = titles.firstIndex(of: "Save Tab View…") ?? 0
         #expect(
-            titles(menu)
-                == ["Save Window as Workspace…", "-"]
-                + entries.flatMap { [$0.name, "\($0.name) in This Window"] } + ["-", "Manage Workspaces…"])
-        // A window isn't linked to the workspace it came from: none is checked.
+            Array(titles[start...(start + 7)]) == ["Save Tab View…"] + entries.map(\.name) + ["Manage Tab Views…"])
+        // A tab isn't linked to the tab view it came from: none is checked.
         #expect(menu.items.allSatisfy { $0.state == .off })
+        let first = item(menu, "Compare 1")
+        #expect(first.keyEquivalent == "1")
+        #expect(first.keyEquivalentModifierMask == [.option, .command])
+        #expect(item(menu, "Compare 5").keyEquivalent == "5")
+        #expect(item(menu, "Compare 6").keyEquivalent == "")
+        var managed: [ViewsWindowPane] = []
+        router.onManageViews = { managed.append($0) }
+        router.choose(itemID: ApplicationMenu.manageTabViewsItemID)
+        router.choose(itemID: ApplicationMenu.manageWindowViewsItemID)
+        #expect(managed == [.tabViews, .windowViews])
+    }
+
+    @Test func listsTheWindowViewsTheFirstFiveWithTheirKeysEachWithAnItemForThisWindow() {
+        let entries = (1...6).map { SavedViewMenuEntry(id: "w\($0)", name: "Work \($0)") }
+        let (built, router) = build(.init(windowViews: entries))
+        let menu = submenu(built.menu, "Saved Views")
+        let titles = titles(menu)
+        let start = titles.firstIndex(of: "Save Window View…") ?? 0
+        #expect(
+            Array(titles[start...])
+                == ["Save Window View…"] + entries.flatMap { [$0.name, "\($0.name) in This Window"] }
+                + ["Manage Window Views…"])
         let first = item(menu, "Work 1")
         #expect(first.keyEquivalent == "1")
         #expect(first.keyEquivalentModifierMask == [.control, .command])
-        #expect(!first.isAlternate)
-        // ⌥ shows the item that opens it in this window in its place, on the same key with ⌥.
+        // "In This Window" has no key to begin with: it can't be the item ⌥ shows in place of one that has, so both
+        // show.
         let here = item(menu, "Work 1 in This Window")
-        #expect(here.isAlternate)
-        #expect(here.keyEquivalent == "1")
-        #expect(here.keyEquivalentModifierMask == [.control, .option, .command])
+        #expect(!here.isAlternate)
+        #expect(here.keyEquivalent == "")
         #expect(item(menu, "Work 5").keyEquivalent == "5")
+        // With no key either, ⌥ shows it in the item's place.
         #expect(item(menu, "Work 6").keyEquivalent == "")
+        #expect(item(menu, "Work 6 in This Window").isAlternate)
         #expect(item(menu, "Work 6 in This Window").keyEquivalentModifierMask == [.option])
 
         var opened: [String] = []
-        router.onOpenWorkspace = { id, _ in opened.append(id) }
-        router.choose(itemID: ApplicationMenu.workspaceItemID("w2"))
+        router.onOpenWindowView = { id, _ in opened.append(id) }
+        router.choose(itemID: ApplicationMenu.windowViewItemID("w2"))
         #expect(opened == ["w2"])
-        var managed = 0
-        router.onManageWorkspaces = { managed += 1 }
-        router.choose(itemID: ApplicationMenu.manageWorkspacesItemID)
-        #expect(managed == 1)
     }
 
     @Test func keysThatDontDifferByOptionAloneShowBothItemsEachWithItsKey() {
         let bindings = ShortcutCommands.resolve([
-            "openWorkspace1": ["Cmd+Option+1"], "openWorkspace2InThisWindow": ["Ctrl+Cmd+F1"],
-            "openWorkspace3InThisWindow": ["Ctrl+Cmd+Option+Shift+3"],
+            "openWindowView1": ["Cmd+Option+F1"], "openWindowView1InThisWindow": ["Ctrl+Cmd+Option+F1"],
+            "openWindowView2InThisWindow": ["Ctrl+Cmd+F1"],
+            "openWindowView3InThisWindow": ["Ctrl+Cmd+Option+Shift+3"],
         ]).bindings
-        let entries = (1...3).map { WorkspaceMenuEntry(id: "w\($0)", name: "Work \($0)") }
-        let (built, _) = build(.init(shortcuts: bindings, workspaces: entries))
-        let menu = item(submenu(built.menu, "Window"), "Workspaces").submenu ?? NSMenu()
+        let entries = (1...3).map { SavedViewMenuEntry(id: "w\($0)", name: "Work \($0)") }
+        let (built, _) = build(.init(shortcuts: bindings, windowViews: entries))
+        let menu = submenu(built.menu, "Saved Views")
         // Its key has ⌥ already: nothing can be ⌥ away from it.
         #expect(item(menu, "Work 1").keyEquivalentModifierMask == [.option, .command])
         #expect(!item(menu, "Work 1 in This Window").isAlternate)
-        #expect(item(menu, "Work 1 in This Window").keyEquivalentModifierMask == [.control, .option, .command])
         // Another key altogether.
         let second = item(menu, "Work 2 in This Window")
         #expect(!second.isAlternate)
@@ -137,17 +162,15 @@ import Testing
         #expect(!item(menu, "Work 3 in This Window").isAlternate)
     }
 
-    @Test func aKeyChangedForBothStillPairsWhileTheyDifferByOptionAlone() {
-        let bindings = ShortcutCommands.resolve([
-            "openWorkspace1": ["Cmd+Shift+F1"], "openWorkspace1InThisWindow": ["Cmd+Option+Shift+F1"],
-        ]).bindings
+    @Test func aKeyGivenToInThisWindowPairsWhileTheyDifferByOptionAlone() {
+        let bindings = ShortcutCommands.resolve(["openWindowView1InThisWindow": ["Ctrl+Cmd+Option+1"]]).bindings
         let (built, _) = build(
-            .init(shortcuts: bindings, workspaces: [WorkspaceMenuEntry(id: "w1", name: "Work 1")]))
-        let menu = item(submenu(built.menu, "Window"), "Workspaces").submenu ?? NSMenu()
+            .init(shortcuts: bindings, windowViews: [SavedViewMenuEntry(id: "w1", name: "Work 1")]))
+        let menu = submenu(built.menu, "Saved Views")
         let here = item(menu, "Work 1 in This Window")
         #expect(here.isAlternate)
         #expect(here.keyEquivalent == item(menu, "Work 1").keyEquivalent)
-        #expect(here.keyEquivalentModifierMask == [.option, .shift, .command])
+        #expect(here.keyEquivalentModifierMask == [.control, .option, .command])
     }
 
     // Rename shows Return while Return renames, as Help and the right-click menu do, and F2 while Return opens; F5 and
@@ -385,8 +408,9 @@ import Testing
         let stateIDs = Set(states.map(\.id))
         for found in flatten(built.menu) where found.action == #selector(MenuCommandRouter.chooseMenuItem(_:)) {
             guard let id = found.identifier?.rawValue, id != "about", id != "settings",
-                id != ApplicationMenu.manageWorkspacesItemID, id != ApplicationMenuBuilder.commandPaletteItemID,
-                ApplicationMenu.workspaceItem(id) == nil
+                id != ApplicationMenu.manageTabViewsItemID, id != ApplicationMenu.manageWindowViewsItemID,
+                id != ApplicationMenuBuilder.commandPaletteItemID, ApplicationMenu.windowViewItem(id) == nil,
+                ApplicationMenu.tabViewItem(id) == nil
             else { continue }
             #expect(stateIDs.contains(id), "\(found.title)")
         }

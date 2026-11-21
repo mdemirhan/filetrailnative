@@ -3,7 +3,7 @@
 The [README](../README.md) is about what is different from Finder. This page lists the rest, by area, a line or two each. How to do each thing is in the app's own Help, which also lists every shortcut, the ones you changed included.
 
 - [Getting around](#getting-around)
-- [Tabs, panes, windows and workspaces](#tabs-panes-windows-and-workspaces)
+- [Tabs, panes, windows and saved views](#tabs-panes-windows-and-saved-views)
 - [Search and filtering](#search-and-filtering)
 - [Copying, moving and undoing](#copying-moving-and-undoing)
 - [Renaming](#renaming)
@@ -25,7 +25,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
 - **The Go menu** has Home, Documents, Desktop, Downloads, Library, Macintosh HD, Applications and the Trash, like Finder's, each on a shortcut you choose.
 - **The folder on screen stays current**: what other apps add, rename or remove there shows up as it happens.
 
-## Tabs, panes, windows and workspaces
+## Tabs, panes, windows and saved views
 
 <p align="center">
   <img src="screenshots/icon-view-tabs.png" alt="A folder of photos in Icons view, with a selection box over ten of them, in a window with three tabs" width="900">
@@ -37,7 +37,8 @@ The [README](../README.md) is about what is different from Finder. This page lis
 - **A line along the top of the active pane** shows where the keyboard is: bright while the pane has it, dimmer while the sidebar or the search field does.
 - **⌘W closes the pane you are in** when a tab has two, and the tab when it has one; ⌥⌘W closes the tab with both. ⌘\\ brings a closed pane back as it was.
 - **Windows**, each with its own tabs. Move a tab into a window of its own, or merge every window back into one.
-- **Workspaces**: save a window's tabs with their panes, views and sizes, the folder tree and the Info panel under a name. Window ▸ Workspaces opens it again in a new window, or with ⌥ in place of the one you are in, and the first five open with ⌃⌘1 to ⌃⌘5. Settings → Browsing renames, removes and reorders them.
+- **Tab views**: save what you choose of a tab under a name, two panes with the left in List and the right in Previews, say, with or without their folders, and give any tab that setup with one choice from Saved Views, or ⌥⌘1 to ⌥⌘5. What you don't choose stays as the tab has it. A tab view can also be what every new tab opens with.
+- **Window views**: a window of tabs, each opened with a tab view, its size and panels if you like. Saved Views opens it in a new window, or with ⌥ in place of the one you are in, and the first five open with ⌃⌘1 to ⌃⌘5. The Views window lists folder views, tab views and window views, to reorder, rename, edit and remove.
 - **Back as you left it**: your windows, tabs and panes come back when you open File Trail again, if you want them.
 
 ## Search and filtering

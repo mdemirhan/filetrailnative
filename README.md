@@ -10,7 +10,7 @@ A Mac file browser with fast search, a real folder tree, two panes and true cut 
 
 - **Search that works, and is fast.** Results appear as you type, from the folder you are in, by name or full path, in plain text, glob or regex. There is no index to wait for, and nothing left out for not being indexed.
 - **A folder tree beside your files.** See where you are and what is around it, and open any folder's arrow to look inside without leaving.
-- **Two folders side by side.** ⌘\\ splits a tab into two panes, and F5 and F6 copy or move what is selected from one to the other. No second window to line up, and a window's tabs and panes can be saved as a workspace and opened again with a key.
+- **Two folders side by side.** ⌘\\ splits a tab into two panes, and F5 and F6 copy or move what is selected from one to the other. No second window to line up, and a tab's panes and views can be saved as a tab view and given to any tab with a key.
 - **Read and edit files where they are.** ⌘E shows a file's code or text in color, ready to edit, and the other pane can show each file as you move through the list.
 - **Cut and paste files, from many folders at once.** ⌘X and ⌘V move files. The clipboard is a shelf you can keep adding to: ⌃⌘C and ⌃⌘X put more on it from folder after folder, and one ⌘V copies the copied ones and moves the cut ones together. What is on it stays marked until you paste, and a paste never destroys anything: what it replaces goes to the Trash.
 - **Folder sizes when you ask.** A folder and every folder inside it are measured in one pass, and sorted by size each row gets a bar, so the heavy ones stand out.
@@ -51,7 +51,7 @@ In Finder, moving files between two folders means two windows, or a drag held ov
 - **Stay on the keyboard.** Tab moves between the tree and the two panes, ⌥⌘↓ opens the selected folder in the other pane, and ⌘U swaps the panes.
 - **One tree for both.** The folder tree follows the pane you are in and marks the folder each pane shows.
 
-A set of folders that is one piece of work can be saved as a workspace: the window's tabs with their panes, views and sizes. It opens again from Window ▸ Workspaces, and the first five with ⌃⌘1 to ⌃⌘5.
+A way of working can be saved and given back in one step. A tab view keeps what you choose of a tab, two panes in List and Previews, say, with or without their folders, and applies it to the tab you are in (⌥⌘1 to ⌥⌘5). A window view opens a window of such tabs (⌃⌘1 to ⌃⌘5). Both are in the Saved Views menu, beside each folder's own view.
 
 ## Read and edit a file beside its folder
 

@@ -74,8 +74,6 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     public var batchRenamePresets: [BatchRenamePreset]
     /// How typing in the file list, or over search results, finds names: letters in order, or the text as a run.
     public var listFilterMatch: NameMatchMode
-    /// Windows' tabs saved by name (Window ▸ Workspaces), in the order the menu lists them.
-    public var workspaces: [Workspace]
     /// The Convert Images sheet as last used.
     public var convertImagesSettings: ConvertImagesSettings
     /// The text viewer's own look: its appearance, themes, font size, wrapping and line numbers.
@@ -109,7 +107,7 @@ public struct AppPreferences: Codable, Equatable, Sendable {
             restoreSessionOnStartup: true, openTabs: [], activeTabIndex: 0, treeRootPath: nil, lastVisitedPath: nil,
             lastVisitedFavoritePath: nil, favorites: [], favoritesPlacement: .integrated, favoritesExpanded: true,
             locationsExpanded: true, favoritesInitialized: false,
-            batchRenameSettings: .defaults, batchRenamePresets: [], listFilterMatch: .fuzzy, workspaces: [],
+            batchRenameSettings: .defaults, batchRenamePresets: [], listFilterMatch: .fuzzy,
             convertImagesSettings: .defaults, textViewerSettings: .defaults, tabViews: [], windowViews: [],
             newTabViewID: nil)
     }

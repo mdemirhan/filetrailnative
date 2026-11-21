@@ -244,8 +244,6 @@ public enum PreferencesSanitizer {
         let global = AppPreferences.defaults()
         let detailWidths = detailColumnWidths(record["detailColumnWidths"], defaults.detailColumnWidths)
         let searchWidths = searchColumnWidths(record["searchColumnWidths"], defaults.searchColumnWidths)
-        // A record that doesn't hold them (a window's session read over the app's) keeps the ones it has.
-        let tabViews = record["tabViews"] == nil ? defaults.tabViews : TabViews.sanitize(record["tabViews"])
         return AppPreferences(
             theme: choice(record, "theme", defaults.theme),
             accent: record["accent"]?.string.map { AppPreferenceLimits.normalizeAccent($0) ?? defaults.accent }
@@ -322,18 +320,15 @@ public enum PreferencesSanitizer {
             batchRenameSettings: BatchRename.sanitizeSettings(record["batchRenameSettings"]),
             batchRenamePresets: BatchRename.sanitizePresets(record["batchRenamePresets"]),
             listFilterMatch: choice(record, "listFilterMatch", defaults.listFilterMatch),
-            // A record that doesn't hold them (a window's session read over the app's) keeps the ones it has.
-            workspaces: record["workspaces"] == nil
-                ? defaults.workspaces : Workspaces.sanitize(record["workspaces"], defaults: defaults),
             convertImagesSettings: ConvertImagesSettings.sanitize(record["convertImagesSettings"]),
             textViewerSettings: TextViewerSettings.sanitize(record["textViewerSettings"]),
-            tabViews: tabViews,
+            // A record that doesn't hold them (a window's session read over the app's) keeps the ones it has.
+            tabViews: record["tabViews"] == nil ? defaults.tabViews : TabViews.sanitize(record["tabViews"]),
             windowViews: record["windowViews"] == nil
                 ? defaults.windowViews : WindowViews.sanitize(record["windowViews"]),
-            // Only a tab view that is there: one removed since leaves new tabs as they were.
-            newTabViewID: (record["newTabViewID"] == nil
+            // Read on its own, as every key is: one that names no tab view does nothing (`applyNewTabView`).
+            newTabViewID: record["newTabViewID"] == nil
                 ? defaults.newTabViewID : nonEmptyString(record["newTabViewID"]))
-                .flatMap { SavedViewNames.index(id: $0, in: tabViews) == nil ? nil : $0 })
     }
 
     /// A whole number, zero or more; anything else is zero. A number past what a count can be stops at the largest.

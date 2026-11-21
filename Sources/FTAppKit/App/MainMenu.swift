@@ -18,8 +18,9 @@ public final class MainMenu {
     var returnKeyAction: () -> ReturnKeyAction = { .rename }
     /// What the startup disk is called, which Go names; the menu is built again when it is renamed.
     var startupDiskName: () -> String = { StartupDisk.shared.name }
-    /// The workspaces Window ▸ Workspaces lists; the menu is built again when they change.
-    var workspaces: () -> [WorkspaceMenuEntry] = { [] }
+    /// The tab views and window views Saved Views lists; the menu is built again when they change.
+    var tabViews: () -> [SavedViewMenuEntry] = { [] }
+    var windowViews: () -> [SavedViewMenuEntry] = { [] }
     /// The files of the Templates folder File ▸ New File lists; the menu is built again when they change.
     var templates: () -> [String] = { [] }
     /// The commands run from the command palette, the last first, and what to do when one is run (the app's state
@@ -90,7 +91,8 @@ public final class MainMenu {
         return CommandPalette.entries(
             bindings: bindings, states: Dictionary(states.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a }),
             menuTitles: titles,
-            workspaces: workspaces().map { CommandPaletteWorkspace(id: $0.id, name: $0.name) },
+            tabViews: tabViews().map { CommandPaletteSavedView(id: $0.id, name: $0.name) },
+            windowViews: windowViews().map { CommandPaletteSavedView(id: $0.id, name: $0.name) },
             templates: templates())
     }
 
@@ -124,10 +126,11 @@ public final class MainMenu {
     func connect(
         openAbout: (() -> Void)? = nil, openSettings: (() -> Void)? = nil, openHelp: ((HelpTopicID?) -> Void)? = nil,
         openWindowFor: @escaping (AppCommand) -> Void, openNewWindowFromFront: @escaping () -> Void,
-        openWorkspace: ((String, (any ExplorerWindowHandle)?) -> Void)? = nil, manageWorkspaces: (() -> Void)? = nil
+        openWindowView: ((String, (any ExplorerWindowHandle)?) -> Void)? = nil,
+        manageViews: ((ViewsWindowPane) -> Void)? = nil
     ) {
-        router.onOpenWorkspace = openWorkspace
-        router.onManageWorkspaces = manageWorkspaces
+        router.onOpenWindowView = openWindowView
+        router.onManageViews = manageViews
         router.onOpenAbout = openAbout
         router.onOpenSettings = openSettings
         router.onOpenHelp = openHelp
@@ -147,7 +150,7 @@ public final class MainMenu {
             options: ApplicationMenuOptions(
                 shortcuts: shortcuts(), textEditorName: textEditorName(), returnKeyAction: returnKeyAction(),
                 startupDiskName: startupDiskName(),
-                workspaces: workspaces(), templates: templates()))
+                tabViews: tabViews(), windowViews: windowViews(), templates: templates()))
         built = result
         index = MenuItemIndex(result, router: router)
         // The enabled flags belong to the old items; the new ones start on.

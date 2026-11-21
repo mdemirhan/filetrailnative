@@ -47,7 +47,6 @@ enum AppStateJSON {
         "terminalApp": ["appPath", "appName"],
         "defaultTextEditor": ["appPath", "appName"],
         "batchRenamePresets": ["name", "settings"],
-        "workspaces": ["id", "name", "bounds", "session"],
         "tabViews": ["id", "name", "keeps"],
         "windowViews": ["id", "name", "tabs", "frontTab", "size", "folderTreeOpen", "propertiesOpen"],
         "keeps": ["panes", "divider", "includeHidden", "left", "right", "pane"],

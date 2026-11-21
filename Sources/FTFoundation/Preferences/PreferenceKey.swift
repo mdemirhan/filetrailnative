@@ -12,7 +12,7 @@ public enum PreferenceKey: String, CaseIterable, Sendable, Hashable {
     case searchResultsSortDirection, treeWidth, inspectorWidth, restoreSessionOnStartup, openTabs, activeTabIndex
     case treeRootPath, lastVisitedPath, lastVisitedFavoritePath, favorites, favoritesPlacement, favoritesExpanded
     case locationsExpanded, favoritesInitialized, singleClickExpandTreeItems, batchRenameSettings
-    case batchRenamePresets, listFilterMatch, workspaces, convertImagesSettings, textViewerSettings
+    case batchRenamePresets, listFilterMatch, convertImagesSettings, textViewerSettings
     case tabViews, windowViews, newTabViewID
 
     /// The field of `AppPreferences` this key names. Every key has one: the switch is the one place that pairs them.
@@ -74,7 +74,6 @@ public enum PreferenceKey: String, CaseIterable, Sendable, Hashable {
         case .batchRenameSettings: .of(\.batchRenameSettings)
         case .batchRenamePresets: .of(\.batchRenamePresets)
         case .listFilterMatch: .of(\.listFilterMatch)
-        case .workspaces: .of(\.workspaces)
         case .convertImagesSettings: .of(\.convertImagesSettings)
         case .textViewerSettings: .of(\.textViewerSettings)
         case .tabViews: .of(\.tabViews)

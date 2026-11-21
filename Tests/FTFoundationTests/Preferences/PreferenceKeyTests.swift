@@ -39,7 +39,6 @@ struct PreferenceKeyTests {
                  "favoritesPlacement": "separate", "favoritesExpanded": false, "locationsExpanded": false,
                  "favoritesInitialized": true, "batchRenameSettings": {"mode": "format", "digits": "auto"},
                  "batchRenamePresets": [{"name": "Photos", "settings": {"mode": "add"}}], "listFilterMatch": "contains",
-                 "workspaces": [{"id": "workspace-1", "name": "Photos", "session": {"openTabs": [{"path": "/Users/demo"}]}}],
                  "convertImagesSettings": {"format": "heic"},
                  "textViewerSettings": {"appearance": "dark", "darkTheme": "ink"},
                  "tabViews": [{"id": "tab-1", "name": "Compare", "keeps": {"panes": 2}}],
@@ -51,7 +50,7 @@ struct PreferenceKeyTests {
     @Test func namesEveryFieldOfThePreferencesOnce() throws {
         let encoded = try #require(try JSONNode.of(AppPreferences.defaults()).object)
         #expect(Set(encoded.keys) == Set(PreferenceKey.allCases.map(\.rawValue)))
-        #expect(PreferenceKey.allCases.count == 62)
+        #expect(PreferenceKey.allCases.count == 61)
         #expect(PreferenceKey(\AppPreferences.theme) == .theme)
         #expect(PreferenceKey(\AppPreferences.terminalApp) == .terminalApp)
         #expect(PreferenceKey(\AppPreferences.detailColumnWidths.name) == nil)

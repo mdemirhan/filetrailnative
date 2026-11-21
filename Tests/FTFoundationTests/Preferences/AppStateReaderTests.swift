@@ -370,9 +370,9 @@ struct AppStateReaderTests {
         #expect(encoded["searchColumnWidths"] == nil)
     }
 
-    // A workspace and the window closed last, as 1.2 saved them, kept the List's column widths in their session too:
-    // each pane saved without widths takes those of the workspace or window it is in, not the app's nor another's.
-    @Test func aWorkspaceAndTheWindowClosedLastSavedWithoutPaneWidthsTakeTheirOwn() {
+    // A window and the window closed last, as 1.2 saved them, kept the List's column widths in their session too: each
+    // pane saved without widths takes those of the window it is in, not the app's nor another's.
+    @Test func aWindowAndTheWindowClosedLastSavedWithoutPaneWidthsTakeTheirOwn() {
         func session(_ name: Int, _ folder: Int, tabs: String) -> String {
             """
             {"detailColumnWidths": {"name": \(name)}, "searchColumnWidths": {"folder": \(folder)},
@@ -385,15 +385,12 @@ struct AppStateReaderTests {
             """
         let state = Self.read(
             """
-            {"preferences": {"detailColumnWidths": {"name": 300}, "searchColumnWidths": {"folder": 200},
-                             "workspaces": [{"id": "w1", "name": "Work", "bounds": {"width": 900, "height": 600},
-                                             "session": \(session(420, 160, tabs: panes))}]},
+            {"preferences": {"detailColumnWidths": {"name": 300}, "searchColumnWidths": {"folder": 200}},
              "windows": [{"id": "window-a", "session": \(session(410, 150, tabs: panes))}],
              "lastClosedWindow": {"id": "window-b", "session": \(session(430, 170, tabs: panes))}}
             """)
         let sessions = [
-            (state.windows?.first?.session, 410, 150), (state.preferences?.workspaces.first?.session, 420, 160),
-            (state.lastClosedWindow?.session, 430, 170),
+            (state.windows?.first?.session, 410, 150), (state.lastClosedWindow?.session, 430, 170),
         ]
         for (session, name, folder) in sessions {
             let tab = session?.openTabs.first

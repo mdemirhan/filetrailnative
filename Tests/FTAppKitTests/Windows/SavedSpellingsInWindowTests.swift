@@ -100,19 +100,11 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { shows(tab.activePane, shown ?? path) })
         }
 
-        private func tab(_ path: String) -> OpenTabPreference {
-            OpenTabPreference(
-                path: path, treeRootPath: nil, favoritePath: nil, viewMode: .list, searchViewMode: .details,
-                sortBy: .name, sortDirection: .asc, includeHidden: false, foldersFirst: true,
-                favoritesExpanded: true, locationsExpanded: true)
-        }
-
-        private func workspace(_ paths: [String]) -> Workspace {
-            var session = AppPreferences.defaults().windowSession
-            session.openTabs = paths.map(tab)
-            return Workspace(
-                id: "workspace-1", name: "Work", bounds: StoredWindowState(width: 900, height: 600, maximized: false),
-                session: session)
+        /// A tab view whose two panes open the two folders.
+        private func tabView(_ left: String, _ right: String) -> TabView {
+            TabView(
+                id: "tab-view-1", name: "Work",
+                keeps: TabViewKeeps(panes: 2, left: PaneKeeps(folder: left), right: PaneKeeps(folder: right)))
         }
 
         /// The harness's window, with the folders' views kept in its store and its visits recorded there, as the
@@ -163,7 +155,7 @@ extension ExplorerWindowlessTests {
                     FavoritePreference(path: made.decomposed, icon: .star),
                 ]
                 $0.favoritesInitialized = true
-                $0.workspaces = [workspace([made.decomposed, alpha])]
+                $0.tabViews = [tabView(made.decomposed, alpha)]
             }
             store.updateFolderViews { $0.set(FolderView(path: made.decomposed, keeps: Self.previews)) }
             store.recordFolderVisit(made.decomposed, kind: .goTo, now: 1_000)
@@ -186,9 +178,8 @@ extension ExplorerWindowlessTests {
             #expect(tab.preferences.favorites.map(\.icon) == [.folder, .star])
             #expect(tab.sidebarController.isFavorite(made.composed))
             #expect(bytes(tab.sidebarController.model.favorites.map(\.path)) == bytes([alpha, made.composed]))
-            // The workspace's tab is on it.
-            let saved = store.preferences().workspaces[0].session
-            #expect(bytes(Workspaces.folders(of: saved)) == bytes([made.composed, alpha]))
+            // The tab view's pane opens it.
+            #expect(bytes(store.preferences().tabViews[0].keeps.folders) == bytes([made.composed, alpha]))
             // Go To and Move To list it once.
             #expect(bytes(store.destinations().map(\.path)) == bytes([made.composed]))
             #expect(bytes(spellings(store.folders().map(\.path), of: made)) == bytes([made.composed]))
@@ -209,7 +200,7 @@ extension ExplorerWindowlessTests {
             #expect(bytes([state?["favorites"]?.array?.last?["path"]?.string]) == bytes([made.composed]))
             let numbers = names.map { fileNumber(made.harness, $0) }
             let favorites = store.preferences().favorites
-            let workspaces = store.preferences().workspaces
+            let tabViews = store.preferences().tabViews
             let kept = views.views
 
             // Opened again, nothing is left to take over: nothing changes, and no file of a folder's view or of the
@@ -219,7 +210,7 @@ extension ExplorerWindowlessTests {
             store.flush()
             #expect(pane.shownMode == .previews)
             #expect(store.preferences().favorites == favorites)
-            #expect(store.preferences().workspaces == workspaces)
+            #expect(store.preferences().tabViews == tabViews)
             #expect(views.views == kept)
             #expect(names.prefix(2).map { fileNumber(made.harness, $0) } == Array(numbers.prefix(2)))
             #expect(bytes(spellings(store.folders().map(\.path), of: made)) == bytes([made.composed]))
@@ -294,7 +285,7 @@ extension ExplorerWindowlessTests {
                     FavoritePreference(path: composed, icon: .folder),
                 ]
                 $0.favoritesInitialized = true
-                $0.workspaces = [workspace([decomposed, composed])]
+                $0.tabViews = [tabView(decomposed, composed)]
             }
             store.updateFolderViews {
                 $0.set(FolderView(path: decomposed, keeps: Self.previews))
@@ -312,9 +303,7 @@ extension ExplorerWindowlessTests {
             #expect(
                 bytes(FolderViewNode.tree(views.views.all).map(\.view.path)) == bytes([decomposed, composed]))
             #expect(bytes(store.preferences().favorites.map(\.path)) == bytes([decomposed, composed]))
-            #expect(
-                bytes(Workspaces.folders(of: store.preferences().workspaces[0].session))
-                    == bytes([decomposed, composed]))
+            #expect(bytes(store.preferences().tabViews[0].keeps.folders) == bytes([decomposed, composed]))
 
             await go(tab, to: decomposed)
             #expect(bytes([pane.folderView?.use.view.path]) == bytes([decomposed]))

@@ -80,7 +80,7 @@ public enum SavedSpellings {
         return next
     }
 
-    // MARK: Tabs and workspaces
+    // MARK: Tabs and tab views
 
     /// The tab with each of its paths that is `old` (its folder, its second pane's, its favorite, its tree's top)
     /// spelled `path`. Nil when none is.
@@ -120,14 +120,15 @@ public enum SavedSpellings {
         return changed ? next : nil
     }
 
-    /// The workspaces with every tab saved on `old` on `path`. Nil when no workspace has one.
-    public static func workspaces(_ workspaces: [Workspace], from old: DiskPath, to path: DiskPath) -> [Workspace]? {
+    /// The tab views with every folder saved as `old` spelled `path`. Nil when no tab view has one.
+    public static func tabViews(_ views: [TabView], from old: DiskPath, to path: DiskPath) -> [TabView]? {
         guard old != path else { return nil }
-        var next = workspaces
+        var next = views
         var changed = false
-        for index in workspaces.indices {
-            if let session = session(workspaces[index].session, from: old, to: path) {
-                next[index].session = session
+        for index in views.indices {
+            for pane in [\TabViewKeeps.left, \.right, \.pane] {
+                guard let folder = views[index].keeps[keyPath: pane]?.folder, DiskPath(folder) == old else { continue }
+                next[index].keeps[keyPath: pane]?.folder = path.string
                 changed = true
             }
         }
@@ -136,19 +137,10 @@ public enum SavedSpellings {
 
     // MARK: What is saved under a spelling
 
-    /// Whether a favorite or a workspace's tab is saved as `old`.
+    /// Whether a favorite or a tab view's folder is saved as `old`.
     public static func preferencesHold(_ old: DiskPath, _ preferences: AppPreferences) -> Bool {
         preferences.favorites.contains { DiskPath($0.path) == old }
-            || preferences.workspaces.contains { paths(of: $0.session).contains { DiskPath($0) == old } }
-    }
-
-    /// Every path a session holds: its own and its tabs'.
-    private static func paths(of session: WindowSession) -> [String] {
-        var paths = [session.treeRootPath, session.lastVisitedPath, session.lastVisitedFavoritePath]
-        for tab in session.openTabs {
-            paths += [tab.path, tab.treeRootPath, tab.favoritePath, tab.secondPane?.path]
-        }
-        return paths.compactMap { $0 }
+            || preferences.tabViews.contains { $0.keeps.folders.contains { DiskPath($0) == old } }
     }
 
     /// Whether a visit, or a folder chosen in Move To, is recorded as `old`.

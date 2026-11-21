@@ -12,11 +12,12 @@ struct CommandPaletteTests {
 
     static func entries(
         _ state: ApplicationMenuState = .initial, menuTitles: [String: String] = [:],
-        workspaces: [CommandPaletteWorkspace] = [], templates: [String] = []
+        tabViews: [CommandPaletteSavedView] = [], windowViews: [CommandPaletteSavedView] = [],
+        templates: [String] = []
     ) -> [CommandPaletteEntry] {
         CommandPalette.entries(
             bindings: ShortcutCommands.defaultBindings, states: states(state), menuTitles: menuTitles,
-            workspaces: workspaces, templates: templates)
+            tabViews: tabViews, windowViews: windowViews, templates: templates)
     }
 
     static func entry(_ id: String, in entries: [CommandPaletteEntry] = entries()) -> CommandPaletteEntry? {
@@ -59,7 +60,7 @@ struct CommandPaletteTests {
             guard case .menuItem(let id) = entry.run, entry.group != .standard || id != "about" else { continue }
             let known =
                 AppCommand(rawValue: id) != nil || id == "settings" || id == "about"
-                || id == ApplicationMenu.manageWorkspacesItemID
+                || id == ApplicationMenu.manageTabViewsItemID || id == ApplicationMenu.manageWindowViewsItemID
             #expect(known, "\(id)")
         }
     }
@@ -108,18 +109,33 @@ struct CommandPaletteTests {
         #expect(Self.entry("sortByName", in: entries)?.checked == false)
     }
 
-    // Every workspace by its name, in a new window and in this one, the first five with their keys.
-    @Test func listsEachWorkspaceByItsName() {
-        let workspaces = (1...6).map { CommandPaletteWorkspace(id: "w\($0)", name: "Work \($0)") }
-        let entries = Self.entries(workspaces: workspaces)
-        let first = Self.entry("workspace:w1", in: entries)
-        #expect(first?.title == "Workspace \u{201C}Work 1\u{201D}")
+    // Every window view by its name, in a new window and in this one, the first five with their keys; "in This Window"
+    // has none to begin with.
+    @Test func listsEachWindowViewByItsName() {
+        let views = (1...6).map { CommandPaletteSavedView(id: "w\($0)", name: "Work \($0)") }
+        let entries = Self.entries(windowViews: views)
+        let first = Self.entry("windowView:w1", in: entries)
+        #expect(first?.title == "Window View \u{201C}Work 1\u{201D}")
         #expect(first?.keys == ["⌃", "⌘", "1"])
-        #expect(first?.place == "Window > Workspaces")
-        #expect(Self.entry("workspaceHere:w1", in: entries)?.title == "Workspace \u{201C}Work 1\u{201D} in This Window")
-        #expect(Self.entry("workspaceHere:w1", in: entries)?.keys == ["⌃", "⌥", "⌘", "1"])
-        #expect(Self.entry("workspace:w6", in: entries)?.keys == [])
-        #expect(!entries.contains { $0.id == "openWorkspace1" })
+        #expect(first?.place == "Saved Views > Window Views")
+        let here = Self.entry("windowViewHere:w1", in: entries)
+        #expect(here?.title == "Window View \u{201C}Work 1\u{201D} in This Window")
+        #expect(here?.keys == [])
+        #expect(Self.entry("windowView:w6", in: entries)?.keys == [])
+        #expect(!entries.contains { $0.id == "openWindowView1" || $0.id == "openWindowView1InThisWindow" })
+    }
+
+    // Every tab view by its name, the first five with ⌥⌘1 to ⌥⌘5.
+    @Test func listsEachTabViewByItsName() {
+        let views = (1...6).map { CommandPaletteSavedView(id: "t\($0)", name: "Compare \($0)") }
+        let entries = Self.entries(tabViews: views)
+        let first = Self.entry("tabView:t1", in: entries)
+        #expect(first?.title == "Tab View \u{201C}Compare 1\u{201D}")
+        #expect(first?.keys == ["⌥", "⌘", "1"])
+        #expect(first?.place == "Saved Views > Tab Views")
+        #expect(Self.entry("tabView:t5", in: entries)?.keys == ["⌥", "⌘", "5"])
+        #expect(Self.entry("tabView:t6", in: entries)?.keys == [])
+        #expect(!entries.contains { $0.id == "applyTabView1" })
     }
 
     // Each template of File ▸ New File by its name, on where Text File is.
@@ -242,8 +258,8 @@ struct CommandPaletteTests {
         func words(_ text: String) -> Set<String> {
             Set(text.lowercased().split { !$0.isLetter }.map(String.init).filter { !stop.contains($0) })
         }
-        let workspaces = [CommandPaletteWorkspace(id: "w1", name: "Photos")]
-        for entry in Self.entries(workspaces: workspaces) {
+        let views = [CommandPaletteSavedView(id: "w1", name: "Photos")]
+        for entry in Self.entries(tabViews: views, windowViews: views) {
             #expect(!entry.help.isEmpty, "\(entry.id)")
             #expect(!words(entry.help).isSubset(of: words(entry.title)), "\(entry.id): \(entry.help)")
             #expect(entry.help.count <= 80, "\(entry.id): \(entry.help)")

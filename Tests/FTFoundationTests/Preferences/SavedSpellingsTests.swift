@@ -14,7 +14,9 @@ struct SavedSpellingsTests {
         SavedPathsTests.tab(path, second: second)
     }
 
-    private static func workspace(_ tabs: [OpenTabPreference]) -> Workspace { SavedPathsTests.workspace(tabs) }
+    private static func tabView(_ left: String, _ right: String? = nil, id: String = "tab-view-1") -> TabView {
+        SavedPathsTests.tabView(left, right, id: id)
+    }
 
     // MARK: The spellings an earlier launch may have saved
 
@@ -78,27 +80,22 @@ struct SavedSpellingsTests {
         let once = try #require(SavedSpellings.favorites(both, from: old, to: path))
         #expect(bytes(once.map(\.path)) == bytes(["/Applications", "/Users/demo/Documents", Self.composed]))
     }
-    @Test func aWorkspacesTabsSavedUnderTheOldSpellingGoToTheListings() throws {
-        var onFavorite = Self.tab(Self.decomposed, second: Self.decomposed)
-        onFavorite.favoritePath = Self.decomposed
-        onFavorite.treeRootPath = Self.decomposed
-        let workspaces = [Self.workspace([onFavorite, Self.tab("/Users/demo")]), Self.workspace([Self.tab("/tmp")])]
+    @Test func aTabViewsFoldersSavedUnderTheOldSpellingGoToTheListings() throws {
+        let views = [
+            Self.tabView(Self.decomposed, Self.decomposed), Self.tabView("/tmp", "/Users/demo", id: "tab-view-2"),
+        ]
         let (old, path) = (DiskPath(Self.decomposed), DiskPath(Self.composed))
         var preferences = AppPreferences.defaults()
-        preferences.workspaces = workspaces
+        preferences.tabViews = views
         #expect(SavedSpellings.preferencesHold(old, preferences))
         #expect(!SavedSpellings.preferencesHold(path, preferences))
 
-        let taken = try #require(SavedSpellings.workspaces(workspaces, from: old, to: path))
+        let taken = try #require(SavedSpellings.tabViews(views, from: old, to: path))
 
-        let tab = taken[0].session.openTabs[0]
-        #expect(
-            bytes([tab.path, tab.secondPane?.path, tab.favoritePath, tab.treeRootPath])
-                == bytes([Self.composed, Self.composed, Self.composed, Self.composed]))
-        #expect(taken[0].session.openTabs[1] == workspaces[0].session.openTabs[1])
-        #expect(taken[1] == workspaces[1])
-        #expect(SavedSpellings.workspaces(taken, from: old, to: path) == nil)
-        preferences.workspaces = taken
+        #expect(bytes(taken[0].keeps.folders) == bytes([Self.composed, Self.composed]))
+        #expect(taken[1] == views[1])
+        #expect(SavedSpellings.tabViews(taken, from: old, to: path) == nil)
+        preferences.tabViews = taken
         #expect(!SavedSpellings.preferencesHold(old, preferences))
     }
 }

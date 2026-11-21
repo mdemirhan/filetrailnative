@@ -75,8 +75,8 @@ public struct CommandPaletteSection: Equatable, Sendable {
     }
 }
 
-/// A saved workspace, as the palette names it.
-public struct CommandPaletteWorkspace: Equatable, Sendable {
+/// A tab view or a window view, as the palette names it.
+public struct CommandPaletteSavedView: Equatable, Sendable {
     public var id: String
     public var name: String
 
@@ -102,10 +102,12 @@ public enum CommandPalette {
     public static let excludedCommands: Set<ShortcutCommandID> = [
         // The palette itself.
         .showCommandPalette,
-        // Workspace 1 to 5, in and not in this window: the palette lists every workspace by its name instead.
-        .openWorkspace1, .openWorkspace2, .openWorkspace3, .openWorkspace4, .openWorkspace5,
-        .openWorkspace1InThisWindow, .openWorkspace2InThisWindow, .openWorkspace3InThisWindow,
-        .openWorkspace4InThisWindow, .openWorkspace5InThisWindow,
+        // Tab View 1 to 5 and Window View 1 to 5, in and not in this window: the palette lists every tab view and
+        // window view by its name instead.
+        .applyTabView1, .applyTabView2, .applyTabView3, .applyTabView4, .applyTabView5,
+        .openWindowView1, .openWindowView2, .openWindowView3, .openWindowView4, .openWindowView5,
+        .openWindowView1InThisWindow, .openWindowView2InThisWindow, .openWindowView3InThisWindow,
+        .openWindowView4InThisWindow, .openWindowView5InThisWindow,
     ]
 
     /// Menu items with no row in the table that the palette leaves out: Services is the system's own submenu of other
@@ -144,9 +146,13 @@ public enum CommandPalette {
             id: "Zoom", title: "Zoom", place: "Window", group: .standard, run: .system(.zoom),
             help: "Make the window as large as the screen allows, or as it was"),
         MenuItem(
-            id: ApplicationMenu.manageWorkspacesItemID, title: "Manage Workspaces…", place: "Window > Workspaces",
-            group: .tabs, run: .menuItem(ApplicationMenu.manageWorkspacesItemID),
-            help: "Rename, remove or reorder the saved workspaces, in Settings"),
+            id: ApplicationMenu.manageTabViewsItemID, title: "Manage Tab Views…", place: "Saved Views",
+            group: .tabs, run: .menuItem(ApplicationMenu.manageTabViewsItemID),
+            help: "Rename, edit, remove or reorder the tab views, in the Views window"),
+        MenuItem(
+            id: ApplicationMenu.manageWindowViewsItemID, title: "Manage Window Views…", place: "Saved Views",
+            group: .tabs, run: .menuItem(ApplicationMenu.manageWindowViewsItemID),
+            help: "Rename, edit, remove or reorder the window views, in the Views window"),
         MenuItem(
             id: "Bring All to Front", title: "Bring All to Front", place: "Window", group: .standard,
             run: .system(.bringAllToFront), help: "Bring every File Trail window in front of other apps' windows"),
@@ -180,7 +186,7 @@ public enum CommandPalette {
         guard let menuPath else { return nil }
         let parts = menuPath.components(separatedBy: " > ")
         guard parts.count > 1 else { return nil }
-        // "Window > Workspaces, with Option" names a variant, not a place.
+        // "Saved Views > Window Views, with Option" names a variant, not a place.
         return parts.dropLast().joined(separator: " > ").components(separatedBy: ",")[0]
     }
 
@@ -197,20 +203,22 @@ public enum CommandPalette {
         bindings[id]?.first.map(ShortcutLabels.parts) ?? []
     }
 
-    /// Every command of the palette, in the table's order with the other menu items after their group, and the
-    /// workspaces after Window's.
+    /// Every command of the palette, in the table's order with the other menu items after their group, and the tab
+    /// views and window views after them.
     ///
     /// - Parameters:
     ///   - bindings: the keys as Settings has them.
     ///   - states: what `ApplicationMenu.itemStates` says of each menu item, by id, for the window the palette opens
     ///     over: dimmed, checked, its title. A command it says nothing of can run.
     ///   - menuTitles: the menu items' titles as the menu shows them now, by id (the text editor, the startup disk, a
-    ///     workspace).
-    ///   - workspaces: the saved workspaces in their order.
+    ///     saved view).
+    ///   - tabViews: the tab views in their order.
+    ///   - windowViews: the window views in their order.
     ///   - templates: the files of the Templates folder File ▸ New File lists, in its order.
     public static func entries(
         bindings: ShortcutBindings, states: [String: ApplicationMenuItemState], menuTitles: [String: String] = [:],
-        workspaces: [CommandPaletteWorkspace] = [], templates: [String] = []
+        tabViews: [CommandPaletteSavedView] = [], windowViews: [CommandPaletteSavedView] = [],
+        templates: [String] = []
     ) -> [CommandPaletteEntry] {
         var result: [CommandPaletteEntry] = []
         // In a tab with one pane the menu names Close Pane "Close Tab", as that is what it closes: Close Tab, which
@@ -242,20 +250,30 @@ public enum CommandPalette {
                     enabled: newFileState?.enabled ?? true, group: .files, icon: .newFile, run: .menuItem(itemID),
                     help: "Make a copy of this template in the folder you are in, and name it"))
         }
-        for (index, workspace) in workspaces.enumerated() {
+        for (index, view) in tabViews.enumerated() {
+            let itemID = ApplicationMenu.tabViewItemID(view.id)
+            let slots = TabViews.slotCommands
+            result.append(
+                CommandPaletteEntry(
+                    id: itemID, title: "Tab View \u{201C}\(view.name)\u{201D}", place: "Saved Views > Tab Views",
+                    keys: slots.indices.contains(index) ? keys(bindings, slots[index]) : [],
+                    enabled: states[itemID]?.enabled ?? true, group: .tabs, run: .menuItem(itemID),
+                    help: "Give this tab what the tab view keeps"))
+        }
+        for (index, view) in windowViews.enumerated() {
             for inThisWindow in [false, true] {
-                let itemID = ApplicationMenu.workspaceItemID(workspace.id, inThisWindow: inThisWindow)
-                let slots = inThisWindow ? Workspaces.inThisWindowSlotCommands : Workspaces.slotCommands
-                let name = "Workspace \u{201C}\(workspace.name)\u{201D}"
+                let itemID = ApplicationMenu.windowViewItemID(view.id, inThisWindow: inThisWindow)
+                let slots = inThisWindow ? WindowViews.inThisWindowSlotCommands : WindowViews.slotCommands
+                let name = "Window View \u{201C}\(view.name)\u{201D}"
                 result.append(
                     CommandPaletteEntry(
                         id: itemID, title: inThisWindow ? "\(name) in This Window" : name,
-                        place: "Window > Workspaces",
+                        place: "Saved Views > Window Views",
                         keys: slots.indices.contains(index) ? keys(bindings, slots[index]) : [],
                         enabled: states[itemID]?.enabled ?? true, group: .tabs, run: .menuItem(itemID),
                         help: inThisWindow
-                            ? "Open the workspace as it was saved, in place of this window"
-                            : "Open the workspace as it was saved, in a new window"))
+                            ? "Open the window view's tabs in place of this window's"
+                            : "Open the window view's tabs in a new window"))
             }
         }
         for item in menuItems {

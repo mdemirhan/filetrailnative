@@ -22,12 +22,13 @@ struct SavedPathsTests {
             })
     }
 
-    static func workspace(_ tabs: [OpenTabPreference]) -> Workspace {
-        var preferences = AppPreferences.defaults()
-        preferences.openTabs = tabs
-        return Workspace(
-            id: "workspace-1", name: "Work", bounds: StoredWindowState(width: 900, height: 600, maximized: false),
-            session: preferences.windowSession)
+    /// A tab view whose two panes open `left` and `right`.
+    static func tabView(_ left: String, _ right: String? = nil, id: String = "tab-view-1") -> TabView {
+        TabView(
+            id: id, name: "Work \(id)",
+            keeps: TabViewKeeps(
+                panes: 2, left: PaneKeeps(folder: left),
+                right: right.map { PaneKeeps(folder: $0) } ?? PaneKeeps(view: FolderViewKeeps(view: .details))))
     }
 
     // MARK: Equal by bytes
@@ -49,7 +50,7 @@ struct SavedPathsTests {
         favorite.favoritePath = Self.composed
         other.favoritePath = Self.decomposed
         #expect(favorite != other)
-        #expect(Self.workspace([Self.tab(Self.composed)]) != Self.workspace([Self.tab(Self.decomposed)]))
+        #expect(Self.tabView(Self.composed) != Self.tabView(Self.decomposed))
         #expect(FavoritePreference(path: "/a", icon: .folder) == FavoritePreference(path: "/a", icon: .folder))
         #expect(Self.tab("/a", second: nil) == Self.tab("/a", second: nil))
     }
@@ -60,14 +61,14 @@ struct SavedPathsTests {
         saved.favorites = [FavoritePreference(path: Self.decomposed, icon: .folder)]
         saved.openTabs = [Self.tab(Self.decomposed)]
         saved.lastVisitedPath = Self.decomposed
-        saved.workspaces = [Self.workspace([Self.tab(Self.decomposed)])]
+        saved.tabViews = [Self.tabView(Self.decomposed)]
         var respelled = saved
         respelled.favorites[0].path = Self.composed
         respelled.openTabs[0].path = Self.composed
         respelled.lastVisitedPath = Self.composed
-        respelled.workspaces[0].session.openTabs[0].path = Self.composed
+        respelled.tabViews[0].keeps.left?.folder = Self.composed
 
-        #expect(respelled.keys(differingFrom: saved) == [.openTabs, .lastVisitedPath, .favorites, .workspaces])
+        #expect(respelled.keys(differingFrom: saved) == [.openTabs, .lastVisitedPath, .favorites, .tabViews])
         #expect(saved.keys(differingFrom: saved).isEmpty)
     }
 
@@ -118,18 +119,15 @@ struct SavedPathsTests {
         #expect(Favorites.contains(left, path: Self.decomposed))
         #expect(!Favorites.contains(left, path: Self.composed))
     }
-    // A workspace's folders are told apart by their bytes, and only the one that is gone gives way.
-    @Test func aWorkspacesFoldersThatDifferOnlyInEncodingAreTwo() {
-        let session = Self.workspace([Self.tab(Self.decomposed), Self.tab(Self.composed, second: Self.decomposed)])
-            .session
-        #expect(bytes(Workspaces.folders(of: session)) == bytes([Self.decomposed, Self.composed]))
+    // A tab view's folders are told apart by their bytes, and only the one that is gone gives way.
+    @Test func aTabViewsFoldersThatDifferOnlyInEncodingAreTwo() {
+        let keeps = Self.tabView(Self.decomposed, Self.composed).keeps
+        #expect(bytes(keeps.folders) == bytes([Self.decomposed, Self.composed]))
 
-        let replaced = Workspaces.replacingGoneFolders(session, gone: [DiskPath(Self.composed)]) { _ in "/Users/demo" }
+        let replaced = TabViews.replacingGoneFolders(keeps, gone: [DiskPath(Self.composed)]) { _ in "/Users/demo" }
 
-        #expect(replaced.tabs == 1)
-        #expect(
-            bytes(replaced.session.openTabs.map(\.path) + [replaced.session.openTabs[1].secondPane?.path])
-                == bytes([Self.decomposed, "/Users/demo", Self.decomposed]))
+        #expect(replaced.replaced == 1)
+        #expect(bytes(replaced.keeps.folders) == bytes([Self.decomposed, "/Users/demo"]))
     }
 
     // How a folder was left is kept for each spelling.

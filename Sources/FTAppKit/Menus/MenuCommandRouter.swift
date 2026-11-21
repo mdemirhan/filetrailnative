@@ -40,11 +40,11 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
     /// New Window chosen while another window (Settings) has the keyboard: the host opens it beside the explorer window
     /// in front, which may not be able to take the command.
     var onNewWindowFromOtherWindow: (() -> Void)?
-    /// A workspace chosen in Window ▸ Workspaces, by its id: in a window of its own, or in place of the explorer window
-    /// given (the item ⌥ shows), which has the keyboard. It opens with no explorer window open too.
-    var onOpenWorkspace: ((String, (any ExplorerWindowHandle)?) -> Void)?
-    /// Manage Workspaces…: the list in Settings.
-    var onManageWorkspaces: (() -> Void)?
+    /// A window view chosen in Saved Views, by its id: in a window of its own, or in place of the explorer window given
+    /// (the item ⌥ shows), which has the keyboard. It opens with no explorer window open too.
+    var onOpenWindowView: ((String, (any ExplorerWindowHandle)?) -> Void)?
+    /// Manage Folder Views…, Manage Tab Views… or Manage Window Views…: the Views window, on that pane.
+    var onManageViews: ((ViewsWindowPane) -> Void)?
     /// View ▸ Command Palette…: the menu opens it over the explorer window, or closes it when it is up.
     var onShowCommandPalette: (() -> Void)?
 
@@ -88,13 +88,26 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
             if let onOpenAbout { onOpenAbout() } else { NSApp.orderFrontStandardAboutPanel(nil) }
         case ApplicationMenuBuilder.settingsItemID:
             if let onOpenSettings { onOpenSettings() } else { send(.openSettings, focusedWindow: focusedWindow()) }
-        case ApplicationMenu.manageWorkspacesItemID:
-            onManageWorkspaces?()
+        case ApplicationMenu.manageTabViewsItemID:
+            onManageViews?(.tabViews)
+        case ApplicationMenu.manageWindowViewsItemID:
+            onManageViews?(.windowViews)
         case ApplicationMenuBuilder.commandPaletteItemID:
             onShowCommandPalette?()
         default:
-            if let workspace = ApplicationMenu.workspaceItem(itemID) {
-                openWorkspace(workspace.workspaceID, inThisWindow: workspace.inThisWindow)
+            if let view = ApplicationMenu.windowViewItem(itemID) {
+                openWindowView(view.windowViewID, inThisWindow: view.inThisWindow)
+                return
+            }
+            if let id = ApplicationMenu.tabViewItem(itemID) {
+                // To the tab of the explorer window that has the keyboard.
+                guard let target = explorerFor(focusedWindow()), target.focused,
+                    let controller = target.handle.window?.windowController as? MainWindowController
+                else {
+                    NSSound.beep()
+                    return
+                }
+                controller.applyTabView(id: id)
                 return
             }
             if let template = ApplicationMenu.templateItem(itemID) {
@@ -110,7 +123,7 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
         }
     }
 
-    private func openWorkspace(_ id: String, inThisWindow: Bool) {
+    private func openWindowView(_ id: String, inThisWindow: Bool) {
         // A held key opens it once.
         if let event = currentEvent(), event.type == .keyDown, event.isARepeat { return }
         // In this window only when an explorer window has the keyboard: not one behind Settings.
@@ -120,7 +133,7 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
             NSSound.beep()
             return
         }
-        onOpenWorkspace?(id, window)
+        onOpenWindowView?(id, window)
     }
 
     static func nativeEditSelector(_ command: AppCommand) -> Selector? {

@@ -11,14 +11,15 @@ struct ApplicationMenuOptions {
     var returnKeyAction: ReturnKeyAction = .rename
     /// What the startup disk is called, which Go names.
     var startupDiskName = VolumePaths.defaultStartupDiskName
-    /// The workspaces Window ▸ Workspaces lists, in order.
-    var workspaces: [WorkspaceMenuEntry] = []
+    /// The tab views and window views Saved Views lists, each in its order.
+    var tabViews: [SavedViewMenuEntry] = []
+    var windowViews: [SavedViewMenuEntry] = []
     /// The files of the Templates folder File ▸ New File lists, by name in order.
     var templates: [String] = []
 }
 
-/// A workspace as Window ▸ Workspaces lists it.
-struct WorkspaceMenuEntry: Equatable {
+/// A tab view or a window view as Saved Views lists it.
+struct SavedViewMenuEntry: Equatable {
     var id: String
     var name: String
 }
@@ -236,19 +237,6 @@ enum ApplicationMenuBuilder {
             }
             columns.submenu = columnsMenu
             menu.addItem(columns)
-            // A folder's own view (View ▸ Folder View); the list's right-click menu has the same items.
-            let folderView = NSMenuItem(title: "Folder View", action: nil, keyEquivalent: "")
-            let folderViewMenu = NSMenu(title: "Folder View")
-            folderViewMenu.addItem(context.command(.rememberFolderView, "Remember View for This Folder"))
-            folderViewMenu.addItem(context.command(.updateFolderView, "Update Folder View"))
-            folderViewMenu.addItem(context.command(.revertFolderView, "Revert to Saved View"))
-            folderViewMenu.addItem(.separator())
-            folderViewMenu.addItem(context.command(.folderViewOptions, "Folder View Options…"))
-            folderViewMenu.addItem(.separator())
-            folderViewMenu.addItem(context.command(.resetFolderView, "Reset Folder View"))
-            folderViewMenu.addItem(context.command(.manageFolderViews, "Manage Folder Views…"))
-            folderView.submenu = folderViewMenu
-            menu.addItem(folderView)
             menu.addItem(.separator())
             menu.addItem(context.command(.togglePinFilter, "Pin Filter"))
             menu.addItem(context.command(.refreshOrApplySearchSort, "Refresh"))
@@ -267,6 +255,21 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.plain("Command Palette…", id: commandPaletteItemID, chosen: .showCommandPalette))
             // No Zoom In, Zoom Out or Actual Size of the whole window, and no hidden full screen item: AppKit adds its
             // own Enter Full Screen to this menu, with ⌃⌘F.
+        }
+
+        // A folder's own view, a tab's and a window's, each saved by name; the list's right-click menu has the folder's.
+        context.addSubmenu(to: main, title: "Saved Views") { menu in
+            menu.addItem(.sectionHeader(title: "Folder View"))
+            menu.addItem(context.command(.rememberFolderView, "Remember View for This Folder"))
+            menu.addItem(context.command(.updateFolderView, "Update Folder View"))
+            menu.addItem(context.command(.revertFolderView, "Revert to Saved View"))
+            menu.addItem(context.command(.folderViewOptions, "Folder View Options…"))
+            menu.addItem(context.command(.resetFolderView, "Reset Folder View"))
+            menu.addItem(context.command(.manageFolderViews, "Manage Folder Views…"))
+            menu.addItem(.separator())
+            context.addTabViews(to: menu)
+            menu.addItem(.separator())
+            context.addWindowViews(to: menu)
         }
 
         context.addSubmenu(to: main, title: "Go") { menu in
@@ -304,10 +307,6 @@ enum ApplicationMenuBuilder {
             // Tab does it too, from a pane's list; the menu can't show Tab.
             menu.addItem(context.command(.switchToOtherPane, "Switch to Other Pane"))
             menu.addItem(.separator())
-            let workspaces = NSMenuItem(title: "Workspaces", action: nil, keyEquivalent: "")
-            workspaces.submenu = context.workspacesMenu()
-            menu.addItem(workspaces)
-            menu.addItem(.separator())
             menu.addItem(context.native("Bring All to Front", #selector(NSApplication.arrangeInFront(_:)), nil))
         }
 
@@ -321,7 +320,7 @@ enum ApplicationMenuBuilder {
             itemsByID: context.itemsByID)
     }
 
-    /// Whether a workspace's item for this window can be the one ⌥ shows in place of its item: macOS swaps two items
+    /// Whether a window view's item for this window can be the one ⌥ shows in place of its item: macOS swaps two items
     /// only when their keys differ by ⌥ alone, or neither has one. Otherwise both show, each with its own key.
     nonisolated static func pairs(_ key: MenuKeyEquivalent?, _ inThisWindow: MenuKeyEquivalent?) -> Bool {
         switch (key, inThisWindow) {
@@ -426,18 +425,33 @@ enum ApplicationMenuBuilder {
             return [shown, alternate]
         }
 
-        /// Window ▸ Workspaces: saving, the workspaces, the first five with their keys, and Manage. Each
-        /// workspace has an item ⌥ shows in its place, which opens it in this window, with ⌥ added to its key.
-        func workspacesMenu() -> NSMenu {
-            let menu = NSMenu(title: "Workspaces")
-            menu.addItem(command(.saveWorkspace, "Save Window as Workspace…"))
-            if !options.workspaces.isEmpty { menu.addItem(.separator()) }
-            for (index, entry) in options.workspaces.enumerated() {
-                let keyed = Workspaces.slotCommands.indices.contains(index)
-                let key = keyed ? chosenKey(Workspaces.slotCommands[index]) : nil
-                let hereKey = keyed ? chosenKey(Workspaces.inThisWindowSlotCommands[index]) : nil
-                let open = workspaceItem(entry, inThisWindow: false)
-                let here = workspaceItem(entry, inThisWindow: true)
+        /// Saved Views' Tab Views: Save, each tab view with the key of the first five, and Manage.
+        func addTabViews(to menu: NSMenu) {
+            menu.addItem(.sectionHeader(title: "Tab Views"))
+            menu.addItem(command(.saveTabView, "Save Tab View…"))
+            for (index, entry) in options.tabViews.enumerated() {
+                let item = savedViewItem(ApplicationMenu.tabViewItemID(entry.id), MenuName.shortened(entry.name))
+                if TabViews.slotCommands.indices.contains(index) {
+                    apply(chosenKey(TabViews.slotCommands[index]), to: item)
+                }
+                menu.addItem(item)
+            }
+            menu.addItem(plain("Manage Tab Views…", id: ApplicationMenu.manageTabViewsItemID))
+        }
+
+        /// Saved Views' Window Views: Save, each window view with the key of the first five, and Manage. Each window
+        /// view has an item ⌥ shows in its place, which opens it in place of this window.
+        func addWindowViews(to menu: NSMenu) {
+            menu.addItem(.sectionHeader(title: "Window Views"))
+            menu.addItem(command(.saveWindowView, "Save Window View…"))
+            for (index, entry) in options.windowViews.enumerated() {
+                let keyed = WindowViews.slotCommands.indices.contains(index)
+                let key = keyed ? chosenKey(WindowViews.slotCommands[index]) : nil
+                let hereKey = keyed ? chosenKey(WindowViews.inThisWindowSlotCommands[index]) : nil
+                let name = MenuName.shortened(entry.name)
+                let open = savedViewItem(ApplicationMenu.windowViewItemID(entry.id), name)
+                let here = savedViewItem(
+                    ApplicationMenu.windowViewItemID(entry.id, inThisWindow: true), "\(name) in This Window")
                 apply(key, to: open)
                 apply(hereKey, to: here)
                 if ApplicationMenuBuilder.pairs(key, hereKey) {
@@ -450,9 +464,7 @@ enum ApplicationMenuBuilder {
                 menu.addItem(open)
                 menu.addItem(here)
             }
-            menu.addItem(.separator())
-            menu.addItem(plain("Manage Workspaces…", id: ApplicationMenu.manageWorkspacesItemID))
-            return menu
+            menu.addItem(plain("Manage Window Views…", id: ApplicationMenu.manageWindowViewsItemID))
         }
 
         /// File ▸ New File: an empty text file, a copy of each file of the Templates folder, and the folder itself.
@@ -475,12 +487,9 @@ enum ApplicationMenuBuilder {
             return menu
         }
 
-        private func workspaceItem(_ entry: WorkspaceMenuEntry, inThisWindow: Bool) -> NSMenuItem {
-            let id = ApplicationMenu.workspaceItemID(entry.id, inThisWindow: inThisWindow)
-            let name = MenuName.shortened(entry.name)
+        private func savedViewItem(_ id: String, _ title: String) -> NSMenuItem {
             let item = NSMenuItem(
-                title: inThisWindow ? "\(name) in This Window" : name,
-                action: #selector(MenuCommandRouter.chooseMenuItem(_:)), keyEquivalent: "")
+                title: title, action: #selector(MenuCommandRouter.chooseMenuItem(_:)), keyEquivalent: "")
             item.target = target
             item.identifier = NSUserInterfaceItemIdentifier(id)
             register(item, id: id)

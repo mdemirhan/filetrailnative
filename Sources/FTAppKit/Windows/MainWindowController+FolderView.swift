@@ -41,11 +41,7 @@ extension MainWindowController {
         case .resetFolderView:
             pane.resetFolderView()
         case .manageFolderViews:
-            FolderViewsWindowController.show(services.folderViews) { [weak self] path in
-                guard let self else { return }
-                self.window?.makeKeyAndOrderFront(nil)
-                self.go(to: path)
-            }
+            manageViews(.folderViews)
         default:
             break
         }

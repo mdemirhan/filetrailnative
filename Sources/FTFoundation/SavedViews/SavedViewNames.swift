@@ -71,6 +71,12 @@ public enum SavedViewNames {
         return candidate
     }
 
+    /// What a window says when no more can be saved: "No more tab views can be saved".
+    public static func limitTitle(kind: String) -> String { "No more \(kind) can be saved" }
+
+    public static let limitMessage =
+        "Up to \(limit) are kept. Remove one in the Views window (Saved Views \u{203A} Manage) to save another."
+
     /// A new id, with the kind's prefix.
     public static func newID(_ prefix: String) -> String {
         "\(prefix)-\(UUID().uuidString.lowercased())"

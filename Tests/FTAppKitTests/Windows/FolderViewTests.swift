@@ -787,16 +787,16 @@ extension ExplorerWindowlessTests {
                 $0.set(FolderView(path: app, keeps: FolderViewKeeps(view: .list)))
             }
             var opened: [String] = []
-            let window = FolderViewsWindowController(views: shared, open: { opened.append($0) })
+            let window = ViewsWindowController(views: shared, open: { opened.append($0) })
             window.reload()
             // Each under the nearest customized folder above it; the home folder's first.
             #expect(window.shownRows.map(\.path) == [home, app, app + "/Sources", "/nowhere/Old Scans"])
             #expect(window.shownLevels == [0, 1, 2, 0])
             let tree = FolderViewNode.tree(shared.views.all)
             let summaries = [
-                FolderViewsWindowController.summary(tree[0].view),
-                FolderViewsWindowController.summary(tree[0].children[0].view),
-                FolderViewsWindowController.summary(tree[1].view),
+                ViewsWindowController.summary(tree[0].view),
+                ViewsWindowController.summary(tree[0].children[0].view),
+                ViewsWindowController.summary(tree[1].view),
             ]
             #expect(summaries[0].path == "~" && summaries[0].tags == ["View", "Sort"] && summaries[0].subfolders)
             #expect(summaries[0].missing == nil)
@@ -831,7 +831,7 @@ extension ExplorerWindowlessTests {
             shared.update(from: nil) { views in
                 for path in paths { views.set(FolderView(path: path, keeps: FolderViewKeeps(view: .list))) }
             }
-            let window = FolderViewsWindowController(views: shared, open: { _ in })
+            let window = ViewsWindowController(views: shared, open: { _ in })
             window.reload()
             func select(_ selected: [String]) {
                 let rows = window.shownRows.enumerated().filter { selected.contains($0.element.path) }.map(\.offset)
@@ -858,7 +858,7 @@ extension ExplorerWindowlessTests {
 
         @Test func escClosesTheFolderViewsWindow() throws {
             _ = NSApplication.shared
-            let window = FolderViewsWindowController(views: SharedFolderViews(), open: { _ in })
+            let window = ViewsWindowController(views: SharedFolderViews(), open: { _ in })
             window.window?.orderFront(nil)
             #expect(window.window?.isVisible == true)
             window.window?.cancelOperation(nil)

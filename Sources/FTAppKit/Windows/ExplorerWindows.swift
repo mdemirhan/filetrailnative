@@ -71,18 +71,12 @@ enum ScreenGeometry {
 enum WindowNotice: Equatable {
     /// "A window can have up to 25 tabs".
     case tabLimit
-    /// A workspace opened with tabs whose folders are gone.
-    case workspaceFoldersGone(tabs: Int)
     /// A tab view applied with folders that are gone.
     case tabViewFoldersGone(panes: Int)
 
     var title: String {
         switch self {
         case .tabLimit: "A window can have up to \(AppPreferenceLimits.openTabsLimit) tabs"
-        case .workspaceFoldersGone(let tabs):
-            tabs == 1
-                ? "A tab\u{2019}s folder is gone: it shows the folder above it"
-                : "\(tabs) tabs\u{2019} folders are gone: they show the folders above them"
         case .tabViewFoldersGone(let panes):
             panes == 1
                 ? "The tab view\u{2019}s folder is gone: the pane shows the folder above it"
@@ -117,7 +111,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     var showNotice: (WindowNotice, NSWindow?) -> Void = { notice, window in
         if !NotificationOverlay.push(.info, title: notice.title, in: window) { NSSound.beep() }
     }
-    /// A beep: a workspace's window isn't replaced while something is open in it.
+    /// A beep: a window view's window doesn't replace one while something is open in it.
     var beep: () -> Void = { NSSound.beep() }
     /// An explorer window closed, and a tab got the keyboard: the file operations follow (`AppWriteOperations`).
     var onExplorerWindowClosed: (ExplorerTabGroup) -> Void = { _ in }
@@ -298,9 +292,12 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         for tab in allTabs {
             tab.preferencesChanged(change)
         }
-        // Saved, renamed, removed or put in another order: the Window menu lists them again.
-        if change.keys.contains(.workspaces) {
+        // Saved, renamed, removed or put in another order: Saved Views lists them again, and the Views window.
+        if change.keys.contains(.tabViews) || change.keys.contains(.windowViews)
+            || change.keys.contains(.newTabViewID)
+        {
             for group in liveGroups { group.reportMenuStates() }
+            ViewsWindowController.savedViewsChanged()
         }
     }
 

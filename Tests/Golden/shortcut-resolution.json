@@ -120,37 +120,43 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
-          "saveWorkspace": [],
-          "openWorkspace1": [
+          "saveTabView": [],
+          "applyTabView1": [
+            "Cmd+Option+1"
+          ],
+          "applyTabView2": [
+            "Cmd+Option+2"
+          ],
+          "applyTabView3": [
+            "Cmd+Option+3"
+          ],
+          "applyTabView4": [
+            "Cmd+Option+4"
+          ],
+          "applyTabView5": [
+            "Cmd+Option+5"
+          ],
+          "saveWindowView": [],
+          "openWindowView1": [
             "Ctrl+Cmd+1"
           ],
-          "openWorkspace2": [
+          "openWindowView2": [
             "Ctrl+Cmd+2"
           ],
-          "openWorkspace3": [
+          "openWindowView3": [
             "Ctrl+Cmd+3"
           ],
-          "openWorkspace4": [
+          "openWindowView4": [
             "Ctrl+Cmd+4"
           ],
-          "openWorkspace5": [
+          "openWindowView5": [
             "Ctrl+Cmd+5"
           ],
-          "openWorkspace1InThisWindow": [
-            "Ctrl+Cmd+Option+1"
-          ],
-          "openWorkspace2InThisWindow": [
-            "Ctrl+Cmd+Option+2"
-          ],
-          "openWorkspace3InThisWindow": [
-            "Ctrl+Cmd+Option+3"
-          ],
-          "openWorkspace4InThisWindow": [
-            "Ctrl+Cmd+Option+4"
-          ],
-          "openWorkspace5InThisWindow": [
-            "Ctrl+Cmd+Option+5"
-          ],
+          "openWindowView1InThisWindow": [],
+          "openWindowView2InThisWindow": [],
+          "openWindowView3InThisWindow": [],
+          "openWindowView4InThisWindow": [],
+          "openWindowView5InThisWindow": [],
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
@@ -454,44 +460,44 @@
             "selectPreviousTab"
           ],
           [
+            "Cmd+Option+1",
+            "applyTabView1"
+          ],
+          [
+            "Cmd+Option+2",
+            "applyTabView2"
+          ],
+          [
+            "Cmd+Option+3",
+            "applyTabView3"
+          ],
+          [
+            "Cmd+Option+4",
+            "applyTabView4"
+          ],
+          [
+            "Cmd+Option+5",
+            "applyTabView5"
+          ],
+          [
             "Ctrl+Cmd+1",
-            "openWorkspace1"
+            "openWindowView1"
           ],
           [
             "Ctrl+Cmd+2",
-            "openWorkspace2"
+            "openWindowView2"
           ],
           [
             "Ctrl+Cmd+3",
-            "openWorkspace3"
+            "openWindowView3"
           ],
           [
             "Ctrl+Cmd+4",
-            "openWorkspace4"
+            "openWindowView4"
           ],
           [
             "Ctrl+Cmd+5",
-            "openWorkspace5"
-          ],
-          [
-            "Ctrl+Cmd+Option+1",
-            "openWorkspace1InThisWindow"
-          ],
-          [
-            "Ctrl+Cmd+Option+2",
-            "openWorkspace2InThisWindow"
-          ],
-          [
-            "Ctrl+Cmd+Option+3",
-            "openWorkspace3InThisWindow"
-          ],
-          [
-            "Ctrl+Cmd+Option+4",
-            "openWorkspace4InThisWindow"
-          ],
-          [
-            "Ctrl+Cmd+Option+5",
-            "openWorkspace5InThisWindow"
+            "openWindowView5"
           ],
           [
             "Cmd+\\",

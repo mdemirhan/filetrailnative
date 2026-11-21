@@ -1,8 +1,32 @@
-// The window that lists every customized folder (View ▸ Folder View ▸ Manage Folder Views…)
+// The Views window: every customized folder, every tab view and every window view (Saved Views ▸ Manage…)
 import AppKit
 import FTFileSystem
 import FTFoundation
 
+/// The panes of the Views window, each with its own toolbar item; the window's title is the pane's.
+enum ViewsWindowPane: String, CaseIterable, Sendable {
+    case folderViews, tabViews, windowViews
+
+    var title: String {
+        switch self {
+        case .folderViews: "Folder Views"
+        case .tabViews: "Tab Views"
+        case .windowViews: "Window Views"
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .folderViews: "folder.badge.gearshape"
+        case .tabViews: "rectangle.split.2x1"
+        case .windowViews: "macwindow"
+        }
+    }
+}
+
+/// The Views window, as Settings is laid out: a toolbar of three panes, its title the pane's. Folder Views is its
+/// first pane, below; Tab Views and Window Views are `SavedViewsPane`s.
+///
 /// Folder Views: every folder customized on its own, as a tree, a customized folder inside another listed
 /// under it. A row has the folder's icon, its name and where it is, and on the right what it keeps, whether it applies
 /// to subfolders, and whether its folder is still there. Remove forgets the selected folders' customizations (⌫ too),
@@ -10,11 +34,17 @@ import FTFoundation
 /// nothing outside the selected folders. Remove All… forgets every one after asking, and Open (Return, or a
 /// double-click) opens the folder in the window that asked. Esc closes the window.
 @MainActor
-final class FolderViewsWindowController: NSWindowController, NSWindowDelegate, NSOutlineViewDataSource,
-    NSOutlineViewDelegate
+final class ViewsWindowController: NSWindowController, NSWindowDelegate, NSOutlineViewDataSource,
+    NSOutlineViewDelegate, NSToolbarDelegate
 {
     /// The one window, opened from any explorer window.
-    private static var shared: FolderViewsWindowController?
+    private(set) static var shared: ViewsWindowController?
+    /// The explorer window that opened it last: a folder opens there, and a tab view is applied and edited there.
+    private(set) weak var explorer: MainWindowController?
+    private(set) var pane = ViewsWindowPane.folderViews
+    private let folderPane = NSView()
+    private(set) var tabViewsPane: SavedViewsPane!
+    private(set) var windowViewsPane: SavedViewsPane!
 
     private let views: SharedFolderViews
     /// Opens a folder in the explorer window that asked last.
@@ -30,15 +60,59 @@ final class FolderViewsWindowController: NSWindowController, NSWindowDelegate, N
     private var roots: [FolderViewNode] = []
     private var observer: (any NSObjectProtocol)?
 
-    /// Shows the window, front, listing `views`; a folder opened from it opens through `open`.
-    static func show(_ views: SharedFolderViews, open: @escaping (String) -> Void) {
-        let controller = shared?.views === views ? shared! : FolderViewsWindowController(views: views, open: open)
-        controller.open = open
+    /// Shows the window, front, on `pane`, listing `folderViews` and the saved views `explorer` sees; a folder opens,
+    /// and a tab view applies, in `explorer`.
+    @discardableResult
+    static func show(_ pane: ViewsWindowPane, folderViews: SharedFolderViews, explorer: MainWindowController?)
+        -> ViewsWindowController
+    {
+        let controller =
+            shared?.views === folderViews
+            ? shared! : ViewsWindowController(views: folderViews, open: { _ in })
         shared = controller
-        controller.reload()
-        controller.showWindow(nil)
-        controller.window?.makeKeyAndOrderFront(nil)
-        controller.window?.makeFirstResponder(controller.table)
+        controller.present(pane, explorer: explorer)
+        return controller
+    }
+
+    /// Shows this window, front, on `pane`, acting on `explorer`.
+    func present(_ pane: ViewsWindowPane, explorer: MainWindowController?) {
+        self.explorer = explorer
+        open = { [weak explorer] path in
+            guard let explorer else { return }
+            explorer.window?.makeKeyAndOrderFront(nil)
+            explorer.go(to: path)
+        }
+        reload()
+        savedViewsChanged()
+        select(pane)
+        showWindow(nil)
+        window?.makeKeyAndOrderFront(nil)
+    }
+
+    /// The saved views changed somewhere: the open window lists them as they are.
+    static func savedViewsChanged() {
+        shared?.savedViewsChanged()
+    }
+
+    /// The saved views changed: both lists show them as they are.
+    func savedViewsChanged() {
+        tabViewsPane.reload()
+        windowViewsPane.reload()
+    }
+
+    /// Shows `pane`, its toolbar item selected and its name the window's title.
+    func select(_ pane: ViewsWindowPane) {
+        self.pane = pane
+        window?.title = pane.title
+        window?.toolbar?.selectedItemIdentifier = NSToolbarItem.Identifier(pane.rawValue)
+        folderPane.isHidden = pane != .folderViews
+        tabViewsPane.isHidden = pane != .tabViews
+        windowViewsPane.isHidden = pane != .windowViews
+        switch pane {
+        case .folderViews: window?.makeFirstResponder(table)
+        case .tabViews: tabViewsPane.takeKeyboard()
+        case .windowViews: windowViewsPane.takeKeyboard()
+        }
     }
 
     init(views: SharedFolderViews, open: @escaping (String) -> Void) {
@@ -47,12 +121,19 @@ final class FolderViewsWindowController: NSWindowController, NSWindowDelegate, N
         let window = FolderViewsPanel(
             contentRect: NSRect(x: 0, y: 0, width: 640, height: 440),
             styleMask: [.titled, .closable, .resizable, .miniaturizable], backing: .buffered, defer: false)
-        window.title = "Folder Views"
-        window.minSize = NSSize(width: 520, height: 300)
+        window.title = ViewsWindowPane.folderViews.title
+        window.minSize = NSSize(width: 560, height: 320)
         window.isReleasedWhenClosed = false
         window.setFrameAutosaveName("FolderCustomizations")
         super.init(window: window)
         window.delegate = self
+        tabViewsPane = SavedViewsPane(kind: .tab, host: self)
+        windowViewsPane = SavedViewsPane(kind: .window, host: self)
+        let toolbar = NSToolbar(identifier: "views")
+        toolbar.delegate = self
+        toolbar.displayMode = .iconAndLabel
+        window.toolbar = toolbar
+        window.toolbarStyle = .preference
         build()
         observer = NotificationCenter.default.addObserver(
             forName: SharedFolderViews.didChange, object: views, queue: nil
@@ -69,7 +150,20 @@ final class FolderViewsWindowController: NSWindowController, NSWindowDelegate, N
     // MARK: Building
 
     private func build() {
-        guard let content = window?.contentView else { return }
+        guard let window = window?.contentView else { return }
+        for pane in [folderPane, tabViewsPane!, windowViewsPane!] as [NSView] {
+            pane.translatesAutoresizingMaskIntoConstraints = false
+            window.addSubview(pane)
+            NSLayoutConstraint.activate([
+                pane.topAnchor.constraint(equalTo: window.topAnchor),
+                pane.leadingAnchor.constraint(equalTo: window.leadingAnchor),
+                pane.trailingAnchor.constraint(equalTo: window.trailingAnchor),
+                pane.bottomAnchor.constraint(equalTo: window.bottomAnchor),
+            ])
+        }
+        tabViewsPane.isHidden = true
+        windowViewsPane.isHidden = true
+        let content = folderPane
         let column = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("folder"))
         column.resizingMask = .autoresizingMask
         table.addTableColumn(column)
@@ -103,7 +197,7 @@ final class FolderViewsWindowController: NSWindowController, NSWindowDelegate, N
         emptyTitle.textColor = .secondaryLabelColor
         let emptyText = NSTextField(
             wrappingLabelWithString:
-                "To give the folder you\u{2019}re in a view of its own, choose View \u{203A} Folder View \u{203A} Remember View for This Folder."
+                "To give the folder you\u{2019}re in a view of its own, choose Saved Views \u{203A} Remember View for This Folder."
         )
         emptyText.alignment = .center
         emptyText.textColor = .secondaryLabelColor
@@ -175,6 +269,38 @@ final class FolderViewsWindowController: NSWindowController, NSWindowDelegate, N
         removeTree.isEnabled = !Self.insideAny(selected.map(\.view.path), of: views.views).isEmpty
         removeAll.isEnabled = !roots.isEmpty
         openButton.isEnabled = selected.count == 1 && FolderIdentity.isFolder(selected[0].view.path)
+    }
+
+    // MARK: Toolbar
+
+    func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
+        ViewsWindowPane.allCases.map { NSToolbarItem.Identifier($0.rawValue) }
+    }
+
+    func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
+        toolbarAllowedItemIdentifiers(toolbar)
+    }
+
+    func toolbarSelectableItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
+        toolbarAllowedItemIdentifiers(toolbar)
+    }
+
+    func toolbar(
+        _ toolbar: NSToolbar, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier,
+        willBeInsertedIntoToolbar flag: Bool
+    ) -> NSToolbarItem? {
+        guard let pane = ViewsWindowPane(rawValue: itemIdentifier.rawValue) else { return nil }
+        let item = NSToolbarItem(itemIdentifier: itemIdentifier)
+        item.label = pane.title
+        item.image = NSImage(systemSymbolName: pane.symbol, accessibilityDescription: pane.title)
+        item.target = self
+        item.action = #selector(paneChosen(_:))
+        return item
+    }
+
+    @objc private func paneChosen(_ item: NSToolbarItem) {
+        guard let pane = ViewsWindowPane(rawValue: item.itemIdentifier.rawValue) else { return }
+        select(pane)
     }
 
     // MARK: Outline
@@ -405,7 +531,7 @@ final class FolderViewRowView: NSTableCellView {
         }
     }
 
-    init(_ summary: FolderViewsWindowController.Summary) {
+    init(_ summary: ViewsWindowController.Summary) {
         super.init(frame: .zero)
         let icon = NSImageView(
             image: summary.missing == nil

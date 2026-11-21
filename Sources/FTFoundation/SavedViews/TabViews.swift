@@ -271,6 +271,16 @@ public struct TabViewApplied: Equatable, Sendable {
 
 /// The rules of the tab views: applying one, and its folders that are gone.
 public enum TabViews {
+    /// The commands that apply the first tab views in the list (Tab View 1 to 5), in order.
+    public static let slotCommands: [ShortcutCommandID] = [
+        .applyTabView1, .applyTabView2, .applyTabView3, .applyTabView4, .applyTabView5,
+    ]
+
+    /// Which tab view in the list a command applies, from 0; nil for any other command.
+    public static func slot(of command: ShortcutCommandID) -> Int? {
+        slotCommands.firstIndex(of: command)
+    }
+
     /// The tab with `keeps` applied: in order, the panes, the divider, hidden files, each pane's settings and folder,
     /// and the overrides it leaves. The active pane stays the active pane. `columnWidth` is the room the two panes share,
     /// which a divider kept as a width is measured against.

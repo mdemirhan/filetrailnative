@@ -630,15 +630,20 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         for tab in tabs { host?.reportMenuState(tab) }
     }
 
-    /// Workspace 1 to 5, in a new window or in place of `tab`'s, by a key the menu doesn't listen for (a command's
+    /// Window View 1 to 5, in a new window or in place of `tab`'s, by a key the menu doesn't listen for (a command's
     /// second key).
-    func openWorkspace(slot: Int, inPlaceOf tab: MainWindowController? = nil) {
-        host?.openWorkspace(slot: slot, inPlaceOf: tab)
+    func openWindowView(slot: Int, inPlaceOf tab: MainWindowController? = nil) {
+        host?.openWindowView(slot: slot, inPlaceOf: tab)
     }
 
-    /// Save Window as Workspace…, from `tab`.
-    func saveWorkspace(from tab: MainWindowController) {
-        host?.saveWorkspace(from: tab)
+    /// A window view by its id, in a new window: the Views window's Open.
+    func openWindowView(id: String) {
+        host?.openWindowView(id: id)
+    }
+
+    /// Save Window View…, from `tab`.
+    func saveWindowView(from tab: MainWindowController) {
+        host?.saveWindowView(from: tab)
     }
 
     /// What the menu shows of `tab` changed.

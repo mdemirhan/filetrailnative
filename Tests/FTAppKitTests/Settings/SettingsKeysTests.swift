@@ -52,7 +52,8 @@ import Testing
     // ⇧ and ⌥ with a digit or punctuation are answers, and so are F13 to F20.
     @Test(arguments: [
         (UInt16(18), CGEventFlags([.maskCommand, .maskShift]), "⇧⌘1"),
-        (UInt16(18), CGEventFlags([.maskCommand, .maskAlternate]), "⌥⌘1"),
+        // ⌥⌘1 itself is Tab View 1's: with ⌃ too it is free.
+        (UInt16(18), CGEventFlags([.maskCommand, .maskAlternate, .maskControl]), "⌃⌥⌘1"),
         (UInt16(43), CGEventFlags([.maskCommand, .maskAlternate]), "⌥⌘,"),
         (UInt16(41), CGEventFlags([.maskCommand, .maskShift]), "⇧⌘;"),
         (UInt16(105), CGEventFlags([]), "F13"),

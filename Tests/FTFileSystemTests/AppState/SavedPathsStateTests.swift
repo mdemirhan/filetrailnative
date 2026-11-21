@@ -24,7 +24,7 @@ struct SavedPathsStateTests {
         text.split(separator: UInt8(ascii: "\"")).contains { $0.elementsEqual(path.utf8) }
     }
 
-    /// Every file with something saved under `path`: a favorite, a tab, a workspace's tab, a folder's view (among
+    /// Every file with something saved under `path`: a favorite, a tab, a tab view's folder, a folder's view (among
     /// others), a visit and a folder chosen in Move To.
     static func save(under path: String, in folder: String) {
         let store = Kit.store(Kit.statePath(folder))
@@ -39,7 +39,12 @@ struct SavedPathsStateTests {
             $0.favoritesInitialized = true
             $0.openTabs = tabs
             $0.lastVisitedPath = path
-            $0.workspaces = [Workspace(id: "workspace-1", name: "Work", bounds: Kit.bounds, session: session)]
+            $0.tabViews = [
+                TabView(
+                    id: "tab-view-1", name: "Work",
+                    keeps: TabViewKeeps(
+                        panes: 2, left: PaneKeeps(folder: path), right: PaneKeeps(folder: "/Users/demo/Documents")))
+            ]
         }
         store.addExplorerWindow(id: "window-1", bounds: Kit.bounds, session: session)
         store.updateFolderViews {

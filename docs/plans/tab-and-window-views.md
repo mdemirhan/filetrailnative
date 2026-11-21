@@ -2,6 +2,24 @@
 
 The plan for saved views of a tab and of a window, beside the folder's view File Trail already has. Workspaces are removed and rebuilt as window views. The design was worked out with the owner on 2026-11-21, with a mock of the menus, the sheets and the Views window; the decisions below are written into [decisions/windows-and-panes.md](../decisions/windows-and-panes.md) and [decisions/views.md](../decisions/views.md) in phase 0.
 
+## Status (2026-11-21)
+
+Built: the model and its rules (phase 1), tab views in the app with the override and the new-tab view (phase 2), window views with workspaces removed (phase 3), the Views window and the Saved Views menu (phase 4), Help, the palette, the goldens and the decisions (phase 5, but for what is left below). The decisions are in [decisions/windows-and-panes.md](../decisions/windows-and-panes.md) ("Saved views") and [decisions/views.md](../decisions/views.md).
+
+Where the build differs from this plan, each for the reason beside it:
+
+- **The divider's share is 20% to 80%**, typed or as now: the limits a drag of the divider has (`PaneSplit`), so the two agree.
+- **Column visibility and order are the app's**, as the List's header sets them; a tab view's columns set them as the header would, and its widths and sizes are the pane's. A pane has no columns of its own to keep.
+- **Tab View Options is a sheet**, not a popover that changes the tab as you go: a tab view has a name and is saved once. Its rows are Folder View Options'.
+- **Saving under a name another tab view has saves over that one**, which keeps its id, so window views and new tabs that use it use what was saved; the Save button reads Replace, with a line saying so, and no question follows.
+- **"Not Used" ends whole** when any setting is changed by hand in the folder; "Tab View First" lets go of the setting changed only.
+- **The new-tab view is read as it was saved**: an id that names no tab view does nothing. A preference is read on its own, never by the keys beside it, so it can't be checked against the tab views there.
+- **A window view's tab takes its tab view as it is first shown**, the tab view as it was when the window opened.
+- **"In This Window" with no key shows beside each of the first five window views**, not in their place with ⌥: AppKit pairs only items whose keys differ by ⌥ alone.
+- **A background tab that follows a renamed folder loses its override**: the pane takes its new place without knowing whether the folder moved or its disk went.
+
+Left: the fuzz test of section E, the tests of real windows of section D, the hand check of section F, and in C: Choose Folder…, a held tab beeping, the gone-folder notice on screen, and Back after a tab view's folders in two panes. The full `scripts/ci.sh` runs once more at the end.
+
 ## What changes
 
 - **Folder View** stays as it is: a folder's own settings, laid over the pane while the folder is shown ([decisions/views.md](../decisions/views.md), "A folder can keep its own view" and after).

@@ -384,9 +384,9 @@ extension ExplorerWindowlessTests {
         @Test func aNewTabViewThatIsGoneIsNone() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
-            // An id that names no tab view isn't kept.
+            // An id that names no tab view is kept as it was saved, and does nothing.
             tab.updatePreferences { $0.newTabViewID = "nothing" }
-            #expect(tab.preferences.newTabViewID == nil)
+            #expect(tab.preferences.newTabViewID == "nothing")
             tab.setMode(.icons)
             let group = try #require(tab.group)
             group.openNewTab(from: tab)
