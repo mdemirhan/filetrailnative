@@ -387,6 +387,49 @@
           "view": "compact"
         }
       ]
+    },
+    {
+      "version": "1.5.0",
+      "date": "2026-11-21",
+      "machine": "Mac16,5",
+      "macOS": "27.0.1",
+      "timings": [
+        {
+          "lateShare": 0.35,
+          "medianMs": 7.66,
+          "size": "default",
+          "slowestMs": 69.19,
+          "view": "list"
+        },
+        {
+          "lateShare": 0.194,
+          "medianMs": 6.67,
+          "size": "default",
+          "slowestMs": 15.82,
+          "view": "icons"
+        },
+        {
+          "lateShare": 0.117,
+          "medianMs": 3.92,
+          "size": "largest",
+          "slowestMs": 10.88,
+          "view": "icons"
+        },
+        {
+          "lateShare": 0.5,
+          "medianMs": 8.38,
+          "size": "default",
+          "slowestMs": 22.71,
+          "view": "compact"
+        },
+        {
+          "lateShare": 0.05,
+          "medianMs": 5.68,
+          "size": "largest",
+          "slowestMs": 19.79,
+          "view": "compact"
+        }
+      ]
     }
   ]
 }
