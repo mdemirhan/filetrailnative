@@ -216,9 +216,20 @@ extension MainWindowController {
     /// leaves.
     func apply(_ keeps: TabViewKeeps) {
         let applied = TabViews.applying(keeps, to: tabViewState, columnWidth: workspace.paneColumnWidth)
+        if case .closed(let index)? = applied.secondPane, panes.indices.contains(index),
+            panes[index].viewer?.isDirty == true
+        {
+            // A pane with a file's edits not saved closes only once they are saved or dropped; Cancel applies
+            // nothing.
+            afterLeavingViewer(of: panes[index]) { $0.apply(keeps) }
+            return
+        }
         switch applied.secondPane {
         case .opened?: openSecondPane()
-        case .closed?: closeOtherPane()
+        case .closed(let index)?:
+            // The pane kept is the one Two Panes leaves: the other is made the active one first when it is that one.
+            if index == activePaneIndex, panes.indices.contains(1 - index) { focusPane(panes[1 - index]) }
+            closeOtherPane()
         case nil: break
         }
         if keeps.forgetsSecondPane == true { forgetClosedSecondPane() }

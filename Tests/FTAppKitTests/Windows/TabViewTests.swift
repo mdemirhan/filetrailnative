@@ -119,11 +119,14 @@ extension ExplorerWindowlessTests {
             await go(tab, harness, "Alpha")
             tab.openSecondPane(at: real(harness, "Gamma"))
             await settled(tab)
+            tab.workspace.setPaneSplit(0.3)
             await apply(TabViewKeeps(panes: 1, forgetsSecondPane: true), to: tab)
             #expect(!tab.showsTwoPanes && tab.closedSecondPane == nil)
             tab.perform(.toggleTwoPanes)
             await settled(tab)
             #expect(tab.panes.count == 2 && tab.panes[1].folderPath == real(harness, "Alpha"))
+            // The room shared evenly, not where the divider was.
+            #expect(tab.workspace.paneSplit == PaneSplit.even)
 
             await go(tab, harness, "Beta")
             tab.focusPane(tab.panes[1])
@@ -533,6 +536,67 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { tab.panes[0].viewer != nil })
             #expect(samePath(tab.panes[1].folderPath, beta))
             #expect(samePath(tab.panes[0].viewer?.folderPath ?? "", beta))
+        }
+
+        // A one-pane tab view applied with the viewer active keeps the list, never the viewer alone; forgetting the
+        // second pane, Two Panes then opens a new list beside it, with no viewer.
+        @Test func onePaneOverAnActiveViewerKeepsTheList() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            let note = harness.folder.appending("note.txt").path
+            tab.openFileInOtherPane(note)
+            #expect(await waitUntil { tab.panes.count == 2 && tab.panes[1].viewer != nil })
+            tab.focusPane(tab.panes[1])
+            #expect(tab.activePaneIndex == 1)
+            tab.updatePreferences {
+                $0.tabViews = [viewerView("one", TabViewKeeps(panes: 1, forgetsSecondPane: true))]
+            }
+            tab.applyTabView(id: "one")
+            #expect(await waitUntil { tab.panes.count == 1 })
+            #expect(tab.panes[0].viewer == nil && tab.panes[0].folderPath == real(harness))
+            #expect(tab.closedSecondPane == nil && tab.closedSecondViewer == nil)
+            tab.perform(.toggleTwoPanes)
+            #expect(await waitUntil { tab.panes.count == 2 })
+            #expect(tab.panes.allSatisfy { $0.viewer == nil })
+            #expect(tab.workspace.paneSplit == PaneSplit.even)
+        }
+
+        // A pane a one-pane tab view closes with a file's edits not saved asks first: Cancel applies nothing, Don't
+        // Save closes it.
+        @Test func onePaneAsksAboutTheClosedViewersEdits() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            let note = harness.folder.appending("note.txt").path
+            tab.updatePreferences {
+                $0.tabViews = [
+                    viewerView("v", TabViewKeeps(panes: 2, right: PaneKeeps(viewer: PaneViewer(editing: true)))),
+                    viewerView("one", TabViewKeeps(panes: 1, forgetsSecondPane: true)),
+                ]
+            }
+            tab.panes[0].content.select(paths: [note])
+            tab.applyTabView(id: "v")
+            #expect(await waitUntil { tab.panes.count == 2 && tab.panes[1].viewer?.isEditing == true })
+            let viewer = try #require(tab.panes[1].viewer)
+            #expect(await waitUntil { viewer.textView.string == "x" })
+            viewer.textView.insertText("y", replacementRange: NSRange(location: 1, length: 0))
+            #expect(await waitUntil { viewer.isDirty })
+
+            tab.applyTabView(id: "one")
+            #expect(await waitUntil { tab.frontAlert != nil })
+            try SheetInput.press(["Escape"], in: tab.window)
+            #expect(await waitUntil { tab.frontAlert == nil })
+            #expect(tab.panes.count == 2 && tab.panes[1].viewer === viewer && viewer.isDirty)
+
+            tab.applyTabView(id: "one")
+            #expect(await waitUntil { tab.frontAlert != nil })
+            let alert = try #require(tab.frontAlert)
+            let discard = try #require(alert.buttons.first { $0.title == "Don\u{2019}t Save" })
+            discard.performClick(nil)
+            #expect(await waitUntil { tab.panes.count == 1 })
+            #expect(tab.closedSecondPane == nil)
+            #expect(try String(contentsOfFile: note, encoding: .utf8) == "x")
         }
 
         // One list and one viewer: a tab view giving one pane the viewer closes the other pane's.

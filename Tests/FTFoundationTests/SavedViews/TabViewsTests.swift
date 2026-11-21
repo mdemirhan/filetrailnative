@@ -196,10 +196,30 @@ struct TabViewsTests {
         let forgets = TabViewKeeps(panes: 1, forgetsSecondPane: true)
         #expect(forgets.forgetsSecondPane == true)
         #expect(try JSONDecoder().decode(TabViewKeeps.self, from: JSONEncoder().encode(forgets)) == forgets)
-        #expect(Self.apply(forgets, Self.tab(["/a", "/b"])).tab.closedPane == nil)
+        var shared = Self.tab(["/a", "/b"])
+        shared.split = 0.2
+        #expect(Self.apply(forgets, shared).tab.closedPane == nil)
+        #expect(Self.apply(forgets, shared).tab.split == PaneSplit.even)
+        #expect(Self.apply(TabViewKeeps(panes: 1), shared).tab.split == 0.2)
         #expect(Self.apply(TabViewKeeps(panes: 1), Self.tab(["/a", "/b"])).tab.closedPane?.folder == "/b")
         #expect(Self.apply(forgets, Self.tab(["/a"], closed: "/c")).tab.closedPane == nil)
         #expect(SavedViewText.parts(forgets).prefix(2) == ["One pane", "Second pane forgotten"])
+    }
+
+    // One pane keeps the active pane, but never a viewer on its own: with the viewer active, the viewer closes and the
+    // list stays.
+    @Test func onePaneKeepsTheListWhenTheViewerIsActive() {
+        var tab = Self.tab(["/a", "/b"], active: 1)
+        tab.panes[1].viewer = PaneViewer()
+        let applied = Self.apply(TabViewKeeps(panes: 1), tab)
+        #expect(applied.secondPane == .closed(1))
+        #expect(applied.tab.panes.map(\.folder) == ["/a"] && applied.tab.panes[0].viewer == nil)
+        #expect(applied.tab.closedPane?.viewer == PaneViewer())
+        // A list active beside a viewer stays as ever: the viewer closes.
+        tab.active = 0
+        #expect(Self.apply(TabViewKeeps(panes: 1), tab).secondPane == .closed(1))
+        // Two lists: the one not active closes.
+        #expect(Self.apply(TabViewKeeps(panes: 1), Self.tab(["/a", "/b"], active: 1)).secondPane == .closed(0))
     }
 
     @Test func aCopiedPaneIsTheActivePanesSettings() {

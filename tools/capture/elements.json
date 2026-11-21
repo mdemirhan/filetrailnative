@@ -408,6 +408,7 @@
     "tab view save": {"swift": "tabViewOptions.save"},
     "tab view cancel": {"swift": "tabViewOptions.cancel"},
     "tab view keep divider": {"swift": "tabViewOptions.keep.Divider"},
+    "tab view forget second pane": {"swift": "tabViewOptions.forgetSecondPane"},
     "window view keep size": {"swift": "windowViewOptions.keep.Size"},
     "window view name field": {"swift": "windowViewOptions.name"},
     "window view count": {"swift": "windowViewOptions.count"},

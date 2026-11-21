@@ -87,8 +87,8 @@ public struct TabViewKeeps: Codable, Equatable, Sendable {
 
     /// One pane or two; nil: the panes are left as they are, and `pane` goes to the active one.
     public var panes: Int?
-    /// With one pane: the second pane the tab keeps, closed, for Two Panes to bring back as it was, is forgotten, so
-    /// Two Panes opens a new one. Nil (not written) otherwise.
+    /// With one pane: the second pane the tab keeps, closed, for Two Panes to bring back as it was, is forgotten, and
+    /// where the divider was, so Two Panes opens a new one with the room shared evenly. Nil (not written) otherwise.
     public var forgetsSecondPane: Bool?
     /// Only with two panes.
     public var divider: Divider?
@@ -294,7 +294,8 @@ public struct TabViewApplied: Equatable, Sendable {
     public enum SecondPane: Equatable, Sendable {
         /// Opened as ⌘\ opens it: where it was last closed in the tab (`reopened`), or as a copy of the active pane.
         case opened(reopened: Bool)
-        /// The pane at this place (before) closed, as ⌘\ closes it; it is the tab's closed pane now.
+        /// The pane at this place (before) closed, as ⌘\ closes it: the one not active, or a viewer that is; it is the
+        /// tab's closed pane now.
         case closed(Int)
     }
 
@@ -342,12 +343,20 @@ public enum TabViews {
             }
             tab.closedPane = nil
         } else if keeps.panes == 1, tab.panes.count == 2 {
+            // The pane that isn't active closes, as Two Panes closes it; but a viewer is never the one pane left, as
+            // it shows what the other pane's list selects: with the viewer active, the viewer closes.
             let other = tab.active == 0 ? 1 : 0
-            tab.closedPane = tab.panes.remove(at: other)
+            let viewerActive = tab.panes[tab.active].viewer != nil && tab.panes[other].viewer == nil
+            let closing = viewerActive ? tab.active : other
+            tab.closedPane = tab.panes.remove(at: closing)
             tab.active = 0
-            secondPane = .closed(other)
+            secondPane = .closed(closing)
         }
-        if keeps.forgetsSecondPane == true { tab.closedPane = nil }
+        if keeps.forgetsSecondPane == true {
+            // Nothing of the second pane is kept: where the divider was goes with it.
+            tab.closedPane = nil
+            tab.split = PaneSplit.even
+        }
         if tab.panes.count == 2, let divider = keeps.divider {
             tab.split = share(divider, columnWidth: columnWidth)
         }

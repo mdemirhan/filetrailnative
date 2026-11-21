@@ -123,10 +123,13 @@ extension MainWindowController {
         panesChanged()
     }
 
-    /// The second pane kept closed is forgotten: Two Panes opens a new one, a copy of the active pane.
+    /// Everything the tab keeps of a second pane closed is forgotten: its folder, history and view, the file it
+    /// showed, and where the divider was. Two Panes then opens a new one, a copy of the active pane, the room shared
+    /// evenly.
     func forgetClosedSecondPane() {
         closedSecondPane = nil
         closedSecondViewer = nil
+        workspace.setPaneSplit(PaneSplit.even)
     }
 
     /// Closes the pane that isn't active; the active one takes the whole width. Where the closed one was is kept, for
