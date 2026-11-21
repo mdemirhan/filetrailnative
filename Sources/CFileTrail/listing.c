@@ -52,6 +52,58 @@ static int stores_folder_counts(int fd) {
     return fstatfs(fd, &disk) == 0 && (strcmp(disk.f_fstypename, "apfs") == 0 || strcmp(disk.f_fstypename, "hfs") == 0);
 }
 
+int ft_listing_respells_names(int fd) {
+    struct statfs disk;
+    return fstatfs(fd, &disk) == 0 &&
+           (strcmp(disk.f_fstypename, "msdos") == 0 || strcmp(disk.f_fstypename, "exfat") == 0);
+}
+
+int ft_held_name(int fd, const char *name, char *held, size_t size) {
+    struct stat folder;
+    if (fstat(fd, &folder) != 0) {
+        return errno;
+    }
+    return ft_held_name_on(fd, folder.st_dev, name, held, size);
+}
+
+int ft_held_name_on(int fd, dev_t device, const char *name, char *held, size_t size) {
+    struct attrlist request;
+    memset(&request, 0, sizeof(request));
+    request.bitmapcount = ATTR_BIT_MAP_COUNT;
+    request.commonattr = ATTR_CMN_NAME | ATTR_CMN_DEVID;
+    struct {
+        uint32_t length;
+        attrreference_t name;
+        dev_t device;
+        char bytes[FT_HELD_NAME_SIZE];
+    } __attribute__((aligned(4), packed)) reply;
+    memset(&reply, 0, sizeof(reply));
+    if (getattrlistat(fd, name, &request, &reply, sizeof(reply), FSOPT_NOFOLLOW) != 0) {
+        return errno;
+    }
+    // Another disk mounted on the folder is named after the disk, not as the folder lists it.
+    if (reply.device != device) {
+        return EXDEV;
+    }
+    const char *found = (const char *)&reply.name + reply.name.attr_dataoffset;
+    size_t length = reply.name.attr_length; // with its NUL
+    if (length < 2 || length > size || found < reply.bytes || found + length > (const char *)&reply + sizeof(reply) ||
+        found[length - 1] != '\0') {
+        return ERANGE;
+    }
+    memcpy(held, found, length);
+    return 0;
+}
+
+int ft_name_has_accent_bytes(const char *name, size_t length) {
+    for (size_t index = 0; index < length; index++) {
+        if ((unsigned char)name[index] >= 0x80) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 int ft_read_directory(const char *path, unsigned int attributes, FTDirListing *listing) {
     memset(listing, 0, sizeof(*listing));
     int fd = open(path, O_RDONLY | O_DIRECTORY);
@@ -92,6 +144,10 @@ int ft_read_directory(const char *path, unsigned int attributes, FTDirListing *l
         request.dirattr = ATTR_DIR_ENTRYCOUNT;
     }
 
+    // Asked once for the folder: on a disk that lists names otherwise than it answers to them, its device.
+    struct stat folder;
+    int respells = ft_listing_respells_names(fd) && fstat(fd, &folder) == 0;
+    char held[FT_HELD_NAME_SIZE];
     size_t entry_capacity = 0;
     size_t name_capacity = 0;
     int result = 0;
@@ -195,6 +251,12 @@ int ft_read_directory(const char *path, unsigned int attributes, FTDirListing *l
                 field += sizeof(off_t);
             }
 
+            // The name the disk holds for the item, which is how every other call names it.
+            if (respells && ft_name_has_accent_bytes(name, length) &&
+                ft_held_name_on(fd, folder.st_dev, name, held, sizeof(held)) == 0) {
+                name = held;
+                length = (uint32_t)strlen(held);
+            }
             if ((result = grow_entries(listing, &entry_capacity)) != 0 ||
                 (result = grow_names(listing, &name_capacity, length)) != 0) {
                 goto done;

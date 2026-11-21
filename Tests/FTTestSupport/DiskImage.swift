@@ -113,6 +113,22 @@ public enum DiskImage {
         return try result.get()
     }
 
+    /// Unmounts the volume a `withVolume(_:ownMountPoint: true)` gave and mounts it again in the same folder: the
+    /// disk as it is when it is plugged in, nothing on it looked at yet.
+    public static func remount(_ volume: URL) async throws {
+        try await offCallersActor {
+            guard let device = mountedFrom(volume.path) else {
+                throw Failure(description: "nothing is mounted at \(volume.path)")
+            }
+            _ = try run("/usr/sbin/diskutil", ["unmount", volume.path])
+            mkdir(volume.path, 0o755)
+            _ = try run("/usr/sbin/diskutil", ["mount", "-mountPoint", volume.path, device])
+            guard mountedFrom(volume.path) == device else {
+                throw Failure(description: "\(device) was not mounted again at \(volume.path)")
+            }
+        }
+    }
+
     /// Runs `body` with a fresh folder of its own on a volume of `kind` that the tests of this process
     /// share, and removes the folder afterwards. The first of them mounts the volume (in a folder of its
     /// own), and it stays mounted until the process exits, as `ExecDiskImages`' do: tests that don't

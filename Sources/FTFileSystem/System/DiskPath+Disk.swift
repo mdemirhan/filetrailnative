@@ -1,3 +1,4 @@
+import CFileTrail
 import Darwin
 import FTFoundation
 import Foundation
@@ -72,6 +73,17 @@ extension DiskPath {
             guard length > 0, start + length <= bytes.count else { return nil }
             return String(decoding: bytes[start..<(start + length)], as: UTF8.self)
         }
+    }
+
+    /// Whether the disk holding the folder at the path lists a name otherwise than it answers to it (FAT and exFAT:
+    /// `ft_listing_respells_names`). The app's own listings name each item there as the disk holds it; names read
+    /// from such a folder by anything else (a search) go through `namedAsOnDisk()`. False when the folder can't be
+    /// opened.
+    public var isListedRespelled: Bool {
+        let folder = open(string, O_RDONLY | O_CLOEXEC)
+        guard folder >= 0 else { return false }
+        defer { close(folder) }
+        return ft_listing_respells_names(folder) != 0
     }
 
     /// The home folder as the disk spells it, read once.

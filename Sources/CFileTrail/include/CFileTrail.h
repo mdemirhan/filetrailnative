@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <sys/types.h>
 #include "ft_archive.h"
 #include "ft_copyfile.h"
 #include "ft_foldersize.h"
@@ -62,6 +63,29 @@ enum {
 /// Reads a folder with getattrlistbulk(2): every name with its type, and the `attributes` asked for, in a
 /// few calls. Returns 0, or an errno. `.` and `..` are left out. Free the result with ft_free_listing.
 int ft_read_directory(const char *path, unsigned int attributes, FTDirListing *listing);
+
+/// Whether the disk of the open folder `fd` lists a name otherwise than it answers to it. FAT and exFAT list a name
+/// with its accents decomposed. Asked about the one item (getattrlist, realpath, what a watch reports) they answer
+/// with the spelling it was first looked up or made by since the disk was mounted, whichever that was, and some calls
+/// find it only by that spelling (rename on FAT, unlink on exFAT). Whatever reads a folder there asks for each such
+/// name with ft_held_name, so an item has one spelling in the app: the one its disk holds for it.
+int ft_listing_respells_names(int fd);
+
+/// Room for a name and its NUL.
+#define FT_HELD_NAME_SIZE 1024
+
+/// The name the disk holds for the item the open folder `fd` lists as `name`, a link not followed, into `held`
+/// (`size` bytes, FT_HELD_NAME_SIZE is enough). An item not looked up since the disk was mounted is held from then on
+/// by the spelling asked for here. Returns 0, or an errno: EXDEV for another disk mounted there, which is named after
+/// the disk.
+int ft_held_name(int fd, const char *name, char *held, size_t size);
+
+/// ft_held_name for a folder whose device (`st_dev`) is known, so many names of one folder are asked without
+/// reading it each time.
+int ft_held_name_on(int fd, dev_t device, const char *name, char *held, size_t size);
+
+/// Whether `name` (`length` bytes) has a byte outside ASCII: only such a name can be spelled two ways.
+int ft_name_has_accent_bytes(const char *name, size_t length);
 
 /// When the item at `path` (a link itself, not what it points to) was put in its folder. Returns 0, ENOATTR when the
 /// disk doesn't keep it, or an errno.

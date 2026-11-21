@@ -1,3 +1,4 @@
+import CFileTrail
 import Darwin
 import Foundation
 
@@ -96,7 +97,7 @@ public struct PosixFileSystem: IdentityFileSystem {
         return String(cString: resolved)
     }
 
-    /// The names in the folder, as the disk stores them, without "." and "..".
+    /// The names in the folder, as the disk holds them, without "." and "..".
     public func readdir(_ path: String) throws -> [String] {
         guard let directory = opendir(path) else {
             throw NativeError.errno(errno, syscall: "scandir", path: path)
@@ -107,6 +108,9 @@ public struct PosixFileSystem: IdentityFileSystem {
 
     /// The names the open folder `directory` lists from where it is, without "." and ".."; `path` is for the error.
     static func names(in directory: UnsafeMutablePointer<DIR>, path: String) throws -> [String] {
+        // A disk that lists a name otherwise than it answers to it (FAT, exFAT) is asked for each such name.
+        let folder = dirfd(directory)
+        let respells = ft_listing_respells_names(folder) != 0
         var names: [String] = []
         while true {
             errno = 0
@@ -122,9 +126,21 @@ public struct PosixFileSystem: IdentityFileSystem {
                 }
             }
             if name != "." && name != ".." {
-                names.append(name)
+                names.append(respells ? heldName(name, in: folder) : name)
             }
         }
+    }
+
+    /// `name` as the disk of the open folder holds it (`ft_held_name`); `name` itself when it has no accent or the
+    /// disk doesn't say.
+    private static func heldName(_ name: String, in folder: Int32) -> String {
+        guard name.utf8.contains(where: { $0 >= 0x80 }) else { return name }
+        var held = [UInt8](repeating: 0, count: Int(FT_HELD_NAME_SIZE))
+        let status = held.withUnsafeMutableBytes { bytes in
+            ft_held_name(folder, name, bytes.baseAddress, bytes.count)
+        }
+        guard status == 0 else { return name }
+        return String(decoding: held.prefix { $0 != 0 }, as: UTF8.self)
     }
 
     public func readlink(_ path: String) throws -> String {

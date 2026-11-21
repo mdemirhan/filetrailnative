@@ -65,10 +65,37 @@ public final class FdSearchRuntime: @unchecked Sendable {
         }
     }
 
+    /// What fd finds is spelled as its folder lists it, which on FAT and exFAT is not always the name the disk holds
+    /// for the item nor how the app's own listing names it (`DiskPath.isListedRespelled`). A result there whose name
+    /// has an accent is respelled as the disk has it, so it is the same item as its row; its folder is asked once
+    /// for the search.
+    struct HeldSpelling {
+        private let isNeeded: Bool
+        var folders: [DiskPath: DiskPath] = [:]
+
+        init(rootPath: String) {
+            isNeeded = DiskPath(rootPath).isListedRespelled
+        }
+
+        /// A path as fd wrote it (a folder's ends in a slash), as the disk holds it.
+        mutating func held(_ outputPath: String) -> String {
+            let bytes = outputPath.utf8
+            guard isNeeded, bytes.contains(where: { $0 >= 0x80 }) else { return outputPath }
+            let isFolder = bytes.count > 1 && bytes.last == UInt8(ascii: "/")
+            let entry = DiskPath(isFolder ? String(decoding: bytes.dropLast(), as: UTF8.self) : outputPath)
+            let parent = entry.parent
+            let folder = folders[parent] ?? parent.asOnDisk()
+            folders[parent] = folder
+            let named = folder.appending(entry.name).namedAsOnDisk().string
+            return isFolder ? named + "/" : named
+        }
+    }
+
     private struct Job {
         var rootPath: String
         var includeHidden: Bool
         var filter: HiddenFilter
+        var spelling: HeldSpelling
         /// For Plain Text, what decides which of fd's results count (fd's pattern finds at least those).
         var judge: Judge?
         var items: [SearchResultItem] = []
@@ -113,19 +140,21 @@ public final class FdSearchRuntime: @unchecked Sendable {
             if ended { stderr.append(UInt8(ascii: "\n")) }
         }
 
-        /// `records` with what reading them needs. The filter is lent with the folders it knows, so the reader adds to
-        /// them without copying them, and gives it back with the results.
+        /// `records` with what reading them needs. The filter and the spelling are lent with the folders they know, so
+        /// the reader adds to them without copying them, and gives them back with the results.
         mutating func lend(_ records: Data) -> Reading {
             let reading = Reading(
-                records: records, rootPath: rootPath, includeHidden: includeHidden, filter: filter, judge: judge,
-                room: SearchLimits.resultLimit - items.count)
+                records: records, rootPath: rootPath, includeHidden: includeHidden, filter: filter,
+                spelling: spelling, judge: judge, room: SearchLimits.resultLimit - items.count)
             filter.folders = [:]
+            spelling.folders = [:]
             return reading
         }
 
         /// Adds results read outside the lock; the process to stop when that makes the `SearchLimits.resultLimit`th.
         mutating func add(_ found: [SearchResultItem], from reading: Reading) -> SearchProcess? {
             filter = reading.filter
+            spelling = reading.spelling
             for item in found {
                 items.append(item)
                 guard items.count >= SearchLimits.resultLimit else { continue }
@@ -147,6 +176,7 @@ public final class FdSearchRuntime: @unchecked Sendable {
         var rootPath: String
         var includeHidden: Bool
         var filter: HiddenFilter
+        var spelling: HeldSpelling
         var judge: Judge?
         /// How many more results the job takes before it reaches `SearchLimits.resultLimit`.
         var room: Int
@@ -156,7 +186,8 @@ public final class FdSearchRuntime: @unchecked Sendable {
         mutating func results() -> [SearchResultItem] {
             var found: [SearchResultItem] = []
             for record in records.split(separator: 0) where found.count < room {
-                var item = SearchResults.item(rootPath: rootPath, outputPath: String(decoding: record, as: UTF8.self))
+                let written = String(decoding: record, as: UTF8.self)
+                var item = SearchResults.item(rootPath: rootPath, outputPath: spelling.held(written))
                 if includeHidden {
                     item.isHidden = item.isHidden || filter.hasHiddenFlag(item.path)
                 } else if filter.isInHiddenFolder(item.path) || filter.hasHiddenFlag(item.path) {
@@ -223,11 +254,13 @@ public final class FdSearchRuntime: @unchecked Sendable {
         // Looked up before the lock is taken: a disk slow to answer mustn't hold up the window's questions.
         let filter = HiddenFilter(
             rootPath: rootPath, realRootPath: try? realPath(rootPath), hasHiddenFlag: hasHiddenFlag)
+        let spelling = HeldSpelling(rootPath: rootPath)
         let jobId = lock.withLock {
             sequence += 1
             let id = "search-\(sequence)"
             jobs[id] = Job(
-                rootPath: rootPath, includeHidden: request.includeHidden, filter: filter, judge: Judge(request))
+                rootPath: rootPath, includeHidden: request.includeHidden, filter: filter, spelling: spelling,
+                judge: Judge(request))
             return id
         }
         let events = SearchProcessEvents(

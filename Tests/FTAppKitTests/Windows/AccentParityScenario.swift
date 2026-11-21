@@ -18,6 +18,7 @@ final class AccentScenario: SidebarTesting, ListTesting {
     let harness: ExplorerHarness
     private(set) var facts: [AccentFact] = []
     private var step = ""
+    private var noticesTold = 0
     private var opened: WritingWindow?
 
     /// The folder typed with every accent as one scalar, and with every accent apart.
@@ -26,14 +27,17 @@ final class AccentScenario: SidebarTesting, ListTesting {
     /// The folder typed in the spelling the disk doesn't keep it in (the same text, for a folder with no accent).
     var typedOtherwise: String { samePath(typedComposed, names.folder) ? typedDecomposed : typedComposed }
 
-    static func run(_ kind: AccentKind) async throws -> [AccentFact] {
-        let scenario = try AccentScenario(kind)
+    /// The run in a folder of `kind` under the harness's own folder, where every call of the disk spells a name as
+    /// it is stored; or under `top`, a folder of another disk, where the calls may not agree (`anySpelling`).
+    static func run(_ kind: AccentKind, under top: String? = nil) async throws -> [AccentFact] {
+        let scenario = try AccentScenario(kind, under: top)
         try await scenario.open()
         await scenario.looksAtTheRows()
         await scenario.seesChangesFromOutside()
         await scenario.renamesInARow()
         await scenario.makesNewItems()
         await scenario.copiesCutsAndDuplicates()
+        if scenario.anySpelling { await scenario.goesIntoTheSubfolder() }
         await scenario.movesToTheFolderTyped()
         await scenario.extractsToTheFolderTyped()
         await scenario.goesToTheFolderTyped()
@@ -49,10 +53,12 @@ final class AccentScenario: SidebarTesting, ListTesting {
         return scenario.facts
     }
 
-    private init(_ kind: AccentKind) throws {
+    private init(_ kind: AccentKind, under top: String?) throws {
         let harness = try ExplorerHarness.windowless()
         self.harness = harness
-        names = AccentNames(kind: kind, under: harness.folder.path)
+        names = AccentNames(kind: kind, under: top ?? harness.folder.path, anySpelling: top != nil)
+        // The tree starts at the folder the run is under.
+        if top != nil { harness.windows.home = names.root }
         if kind.nested { AccentDisk.makeFolder(names.parent) }
         AccentDisk.makeFolder(names.folder)
         AccentDisk.makeFolder(names.sub)
@@ -78,8 +84,97 @@ final class AccentScenario: SidebarTesting, ListTesting {
 
     var tab: MainWindowController { window.tab }
     var store: AppStateStore { harness.store }
+    var anySpelling: Bool { names.anySpelling }
 
-    func begin(_ step: String) { self.step = step }
+    /// Whether two paths are the one item: by their bytes, or, where the disk's calls don't agree on a spelling, by
+    /// their text, which takes an accent spelled either way for the same.
+    func same(_ left: String, _ right: String) -> Bool {
+        anySpelling ? left == right : samePath(left, right)
+    }
+
+    /// Whether `folder` holds `name`: under exactly that name as the folder is read, or, where the disk's calls
+    /// don't agree on a spelling, under it however it is spelled.
+    func holds(_ name: String, in folder: String) -> Bool {
+        anySpelling ? AccentDisk.has(name, in: folder) : AccentDisk.holds(name, in: folder)
+    }
+
+    func begin(_ step: String) {
+        if anySpelling, opened != nil { startsClean() }
+        self.step = step
+    }
+
+    /// Whether a sheet or an alert saying a write couldn't be done stands over the tab.
+    private var saysAWriteFailed: Bool {
+        if let sheet = CopyPasteResultPresenter.shared.sheet, sheet.window === tab.window { return true }
+        if let alert = tab.frontAlert, alert.content.accessory == nil,
+            CopyPasteReviewPresenter.shared.alert !== alert
+        {
+            return true
+        }
+        return false
+    }
+
+    /// What stands over the tab, as a person reads it: a refusal under a name being typed, a sheet of what a write
+    /// couldn't do, a question, a box left open.
+    var standing: [String] {
+        var standing: [String] = []
+        if let rename = tab.content.inlineRename {
+            standing.append("a name open in its row" + (rename.error.map { ": " + $0 } ?? ""))
+        }
+        if let sheet = CopyPasteResultPresenter.shared.sheet, sheet.window === tab.window {
+            let rows = sheet.text.sections.flatMap { section in
+                section.rows.map { section.label + ": " + NodePath.basename($0.path) + ": " + $0.detail }
+            }
+            standing.append(
+                "result sheet: " + ([sheet.text.title, sheet.text.message] + rows).joined(separator: " | "))
+        }
+        if let sheet = CopyPasteReviewPresenter.shared.sheet, sheet.window === tab.window {
+            standing.append("review sheet: " + sheet.titleLabel.stringValue)
+        }
+        if let alert = tab.frontAlert {
+            standing.append(
+                "alert: " + alert.titleLabel.stringValue + (alert.messageLabel.map { " | " + $0.stringValue } ?? ""))
+        }
+        if tab.goToBox != nil { standing.append("a box to type a folder into") }
+        if tab.batchRenameSheet != nil { standing.append("the Rename sheet") }
+        return standing
+    }
+
+    /// On a disk whose spellings disagree a step may leave something standing that holds the tab, and every step
+    /// after it would then say the same thing: what stands is told once, with the step that left it, and taken away,
+    /// and the folder is put back on screen.
+    private func startsClean() {
+        let left = standing + (window.recorder.shown.count > noticesTold ? ["a notice"] : [])
+        if !left.isEmpty { note("left standing", told: left) }
+        let shown = window.recorder.shown
+        if shown.count > noticesTold {
+            note("notices", told: shown[noticesTold...].map { $0.title + ": " + $0.message })
+            noticesTold = shown.count
+        }
+        if tab.content.inlineRename != nil { tab.content.renameCancelled() }
+        tab.batchRenameSheet?.onCancel()
+        for dialog in tab.dialogs.reversed() { dialog.dismiss() }
+        if tab.showsTwoPanes, step != "other pane" { tab.closeOtherPane() }
+        // A tab opened beside the scenario's own (an Extract that took the folder on screen for another) is told and
+        // closed, so the steps after it work in the tab they mean to.
+        if let group = tab.group, group.tabs.count > 1 {
+            let others = group.tabs.filter { $0 !== tab }
+            note("another tab was opened on", told: others.map(\.folderPath))
+            for other in others { group.closeTab(other) }
+            group.select(tab)
+        }
+    }
+
+    /// The folder on screen again, for a step that starts in it, when the step before left the pane elsewhere.
+    func backInTheFolder() async {
+        guard anySpelling else { return }
+        _ = await arrives { self.isIdle }
+        if !shows(names.folder) {
+            note("the pane was left on", told: tab.folderPath)
+            tab.go(to: names.folder)
+            _ = await arrives { self.shows(self.names.folder) && self.row(.plain) != nil }
+        }
+    }
 
     func note(_ name: String, _ value: String) {
         facts.append(AccentFact(step: step, name: name, value: value))
@@ -88,14 +183,43 @@ final class AccentScenario: SidebarTesting, ListTesting {
     func note(_ name: String, _ value: Bool) { note(name, value ? "true" : "false") }
 
     /// A path, or a text that may hold names, told by what its names are there for.
-    func note(_ name: String, told value: String?) { note(name, names.told(value)) }
+    func note(_ name: String, told value: String?) {
+        facts.append(
+            AccentFact(
+                step: step, name: name, value: names.told(value), spelled: names.spelled(value.map { [$0] } ?? [])))
+    }
 
-    func note(_ name: String, told values: [String]) { note(name, names.told(values)) }
+    func note(_ name: String, told values: [String]) {
+        facts.append(AccentFact(step: step, name: name, value: names.told(values), spelled: names.spelled(values)))
+    }
+
+    /// Several paths whose order isn't the point.
+    func note(_ name: String, toldSorted values: [String]) {
+        facts.append(
+            AccentFact(step: step, name: name, value: names.toldSorted(values), spelled: names.spelled(values)))
+    }
+
+    /// Whether a path is spelled as its folders are read: a fact where the disk has one spelling for a name, and left
+    /// to the spellings told beside each path where it hasn't.
+    func noteOnDisk(_ name: String, _ value: @autoclosure () -> Bool) {
+        if !anySpelling { note(name, value()) }
+    }
 
     /// Waits for what a step expects, not as long as a test that has nothing else to say: what doesn't come is told.
-    func arrives(sourceLocation: SourceLocation = #_sourceLocation, _ condition: () -> Bool) async -> Bool {
-        let deadline = ContinuousClock.now + .seconds(10)
+    func arrives(
+        within limit: Duration? = nil, sourceLocation: SourceLocation = #_sourceLocation, _ condition: () -> Bool
+    ) async -> Bool {
+        // On a disk whose spellings disagree some of what is waited for never comes: not waited for as long, and
+        // no longer once a write has said it failed, which holds the tab until its sheet is answered.
+        let start = ContinuousClock.now
+        let deadline = start + (limit ?? .seconds(anySpelling ? 2 : 10))
+        var refusedSince: ContinuousClock.Instant?
         while !condition() {
+            if anySpelling, opened != nil, saysAWriteFailed {
+                let since = refusedSince ?? ContinuousClock.now
+                refusedSince = since
+                if ContinuousClock.now - since > .milliseconds(300) { return false }
+            }
             guard ContinuousClock.now < deadline else {
                 let place = "\(sourceLocation.fileID):\(sourceLocation.line)"
                 FileHandle.standardError.write(Data("the scenario gave up waiting at \(place)\n".utf8))
@@ -118,9 +242,10 @@ final class AccentScenario: SidebarTesting, ListTesting {
         tab.perform(.focusContentPane)
     }
 
-    /// The row whose name is `name` byte for byte.
+    /// The row whose name is `name` byte for byte; where the disk's calls don't agree on a spelling, failing that,
+    /// the row of that name however it is spelled.
     func row(named name: String) -> DirectoryEntry? {
-        rows.first { $0.name.utf8.elementsEqual(name.utf8) }
+        rows.first { $0.name.utf8.elementsEqual(name.utf8) } ?? (anySpelling ? rows.first { $0.name == name } : nil)
     }
 
     func row(_ role: AccentRole) -> DirectoryEntry? { row(named: names.name(role)) }
@@ -139,14 +264,18 @@ final class AccentScenario: SidebarTesting, ListTesting {
     }
 
     func shows(_ pane: BrowserPane, _ path: String) -> Bool {
-        samePath(pane.shownFolderPath, path) && !pane.isNavigating
+        same(pane.shownFolderPath, path) && !pane.isNavigating
     }
 
     func shows(_ path: String) -> Bool { shows(tab.activePane, path) }
 
-    /// Whether the selection is exactly `paths`, byte for byte, in any order.
+    /// Whether the selection is exactly the rows of `paths`, in any order: each selected by its row's own path, byte
+    /// for byte, which is what draws the row selected.
     func selects(_ paths: [String]) -> Bool {
-        Set(selection.map(DiskPath.init)) == Set(paths.map(DiskPath.init)) && selection.count == paths.count
+        let all = rowPaths
+        let wanted = paths.compactMap { path in all.first { same($0, path) } }
+        return wanted.count == paths.count && selection.count == paths.count
+            && Set(selection.map(DiskPath.init)) == Set(wanted.map(DiskPath.init))
     }
 
     var isIdle: Bool { !tab.isWriteLocked && !tab.isNavigating }
@@ -155,10 +284,10 @@ final class AccentScenario: SidebarTesting, ListTesting {
     func noteState(_ name: String) {
         let folder = tab.folderPath
         let onDisk = Set(AccentDisk.names(in: folder).filter { $0.first != UInt8(ascii: ".") })
-        note("\(name): rows", names.toldSorted(rowPaths))
+        note("\(name): rows", toldSorted: rowPaths)
         note("\(name): the rows are the disk's names", Set(rows.map { Array($0.name.utf8) }) == onDisk)
-        note("\(name): the rows' paths are spelled as on disk", rows.allSatisfy { spelledAsOnDisk($0.path) })
-        note("\(name): selection", names.toldSorted(selection))
+        noteOnDisk("\(name): the rows' paths are spelled as on disk", rows.allSatisfy { spelledAsOnDisk($0.path) })
+        note("\(name): selection", toldSorted: selection)
     }
 
     func spelledAsOnDisk(_ path: String) -> Bool { AccentDisk.spells(path, below: names.root) }
@@ -183,7 +312,7 @@ final class AccentScenario: SidebarTesting, ListTesting {
     /// The tree's row of `path`, when it is drawn.
     func treeRow(_ path: String) -> SidebarRowState? {
         cells(sidebar(tab)).compactMap(\.state).first {
-            $0.item.kind == .filesystem && samePath($0.item.path ?? "", path)
+            $0.item.kind == .filesystem && same($0.item.path ?? "", path)
         }
     }
 
@@ -191,12 +320,14 @@ final class AccentScenario: SidebarTesting, ListTesting {
         tab.sidebarController.model.treePresentation.visibleItemIDs.compactMap(\.filesystemPath)
     }
 
-    /// Whether the tree's row of `path` comes to be the one selected.
+    /// Whether the tree's row of `path` comes to be the one drawn selected.
     func treeSelects(_ path: String) async -> Bool {
         let model = tab.sidebarController.model
-        return await arrives {
+        // The tree follows a folder within a moment of its opening.
+        return await arrives(within: anySpelling ? .seconds(1) : nil) {
             self.harness.layout(self.tab)
-            return model.selected == .filesystem(path) && self.treeRow(path).map { $0.selection != .none } == true
+            return (self.anySpelling || model.selected == .filesystem(path))
+                && self.treeRow(path).map { $0.selection != .none } == true
         }
     }
 
@@ -208,7 +339,7 @@ final class AccentScenario: SidebarTesting, ListTesting {
         MainWindowController.visitStore = { store }
         // The folders' views are kept in the store, as the app's are.
         harness.services.folderViews = SharedFolderViews(store: store)
-        opened = try await WritingWindow.open(names.folder, in: harness)
+        opened = anySpelling ? try await openOnItsDisk() : try await WritingWindow.open(names.folder, in: harness)
         tab.updatePreferences {
             $0.favorites = []
             $0.favoritesInitialized = true
@@ -216,21 +347,54 @@ final class AccentScenario: SidebarTesting, ListTesting {
             $0.diskImageOpensIn = .tab
         }
         tab.preferencesChanged(PreferencesChange(keys: [], senderID: nil))
-        await rooted(tab, harness)
+        let tree = tab.sidebarController
+        let root = names.root
+        _ = await arrives { samePath(tree.treeRootPath, root) && tree.model.nodes[root]?.loaded == true }
+        harness.layout(tab)
 
         note("the folder on screen", told: tab.folderPath)
-        note("the folder on screen is spelled as on disk", spelledAsOnDisk(tab.folderPath))
+        noteOnDisk("the folder on screen is spelled as on disk", spelledAsOnDisk(tab.folderPath))
         note("history", names.told(tab.historyPaths) + " at \(tab.historyIndex)")
         note("the tree's row is selected", await treeSelects(tab.folderPath))
         note("the tree's selection", told: tab.sidebarController.model.selected?.filesystemPath)
-        note("the tree's rows", names.toldSorted(treeRows))
-        note("the tree's rows are spelled as on disk", treeRows.allSatisfy { spelledAsOnDisk($0) })
+        note("the tree's rows", toldSorted: treeRows)
+        noteOnDisk("the tree's rows are spelled as on disk", treeRows.allSatisfy { spelledAsOnDisk($0) })
         let bar = tab.content.contentShell.pathBarRow
         note("the path bar's path", told: bar.path)
         note("the path bar's last part", told: bar.pathBar.segments.last.map { $0.label + " at " + $0.path })
         note("the window's title", told: tab.window?.title)
         let represented = tab.window?.representedURL.flatMap { DiskPath(urlSpelling: $0)?.string }
         note("the window's file", told: represented)
+    }
+
+    /// The window with the app's file operations, as `WritingWindow.open` makes it, but for the Trash: a folder of
+    /// the disk the run is on, as each disk has its own, where the tests' stand-in is on this Mac's disk.
+    private func openOnItsDisk() async throws -> WritingWindow {
+        PreparingSheet.isEnabled = false
+        let tab = try await harness.open(names.folder)
+        let trash = names.root + "/.parity-trash"
+        let fileSystem = PosixFileSystem()
+        let operations = AppWriteOperations(
+            userData: harness.folder.url, directoryService: harness.services.directoryService,
+            windows: harness.windows,
+            trash: TrashItem(
+                trash: { path in
+                    mkdir(trash, 0o755)
+                    let target = trash + "/" + NodePath.basename(path)
+                    guard rename(path, target) == 0 else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
+                    return target
+                },
+                lstat: { try fileSystem.lstat($0) }, getFlags: NativeFS.getFlags,
+                homePath: FileManager.default.homeDirectoryForCurrentUser.path),
+            emptyTrash: { (true, nil) }, log: { _ in })
+        let recorder = DialogRecorder()
+        operations.dialogs = recorder.dialogs
+        tab.perform(.viewAsDetails)
+        _ = await arrives { !tab.content.entries.isEmpty }
+        harness.layout(tab)
+        return WritingWindow(
+            harness: harness, tab: tab, operations: operations, recorder: recorder,
+            folder: DiskPath(names.folder).url(isDirectory: true))
     }
 
     private func close() async {
@@ -244,6 +408,7 @@ final class AccentScenario: SidebarTesting, ListTesting {
 
     private func looksAtTheRows() async {
         begin("rows")
+        await backInTheFolder()
         let content = tab.content
         let entries = rows
         noteState("listed")
@@ -353,6 +518,7 @@ final class AccentScenario: SidebarTesting, ListTesting {
     /// has it: the system's own events for the folder, not a stand-in for them.
     private func seesChangesFromOutside() async {
         begin("outside")
+        await backInTheFolder()
         let windows = harness.windows
         let watches = FolderWatches(
             .app(cache: harness.services.directoryService.cache) { [weak windows] windowID, change in
@@ -362,7 +528,10 @@ final class AccentScenario: SidebarTesting, ListTesting {
         windows.tabNavigated(tab)
         note("the folder watched", told: watches.watchedPaths[tab.activePane.watchID])
 
-        // A file made: listed once the watch has looked at the folder for the first time.
+        // A file made: listed once the watch has looked at the folder for the first time. On another disk the watch
+        // is left to start first, so the file too is heard of by the system's events: a disk that keeps a folder's
+        // time to two seconds says nothing of a change made in the moment the folder was read.
+        if anySpelling { try? await Task.sleep(for: .milliseconds(600)) }
         AccentDisk.write(Data(repeating: UInt8(ascii: "a"), count: AccentRole.appears.size), to: names.path(.appears))
         note("a file made outside is listed", await arrives { self.row(.appears) != nil })
 
@@ -391,6 +560,7 @@ final class AccentScenario: SidebarTesting, ListTesting {
 
     private func revealsAndRootsTheTree() async {
         begin("reveal")
+        await backInTheFolder()
         guard let item = row(.tagged) else {
             note("the row is listed", false)
             return
@@ -424,7 +594,7 @@ final class AccentScenario: SidebarTesting, ListTesting {
         let revealed = await arrives { self.shows(self.names.folder) && self.selects([item.path]) }
         note("from above: the folder opens with it selected", revealed)
         note("from above: the folder on screen", told: tab.folderPath)
-        note("from above: selection", names.toldSorted(selection))
+        note("from above: selection", toldSorted: selection)
         clipboard.set(.empty, from: nil)
         tab.clipboardChanged()
 
@@ -437,10 +607,10 @@ final class AccentScenario: SidebarTesting, ListTesting {
         }
         select([sub])
         tab.perform(.rootTreeAtSelection)
-        let rooted = await arrives { samePath(model.rootPath, sub.path) && self.shows(sub.path) }
+        let rooted = await arrives { self.same(model.rootPath, sub.path) && self.shows(sub.path) }
         note("Root Tree at Selection: the tree starts at the sub-folder", rooted)
         note("Root Tree at Selection: the tree's top", told: model.rootPath)
-        note("Root Tree at Selection: the top is spelled as on disk", spelledAsOnDisk(model.rootPath))
+        noteOnDisk("Root Tree at Selection: the top is spelled as on disk", spelledAsOnDisk(model.rootPath))
         note("Root Tree at Selection: the folder on screen", told: tab.folderPath)
         note("Root Tree at Selection: its row is selected", await treeSelects(sub.path))
 

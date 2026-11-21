@@ -46,6 +46,7 @@
 #include <sys/vnode.h>
 #include <unistd.h>
 
+#include "CFileTrail.h"
 #include "ft_foldersize.h"
 
 #define BULK_BUF_SIZE (256 * 1024)
@@ -173,6 +174,9 @@ typedef struct {
   pthread_cond_t cond;
   int finished;
   dev_t root_dev;
+  /* The disk lists a name otherwise than it answers to it (ft_listing_respells_names): a sub-folder's path is
+     then built from the name the disk holds for it, so it is the path the folder has everywhere else in the app. */
+  int respells;
   atomic_int *cancelled;
   atomic_int failed;     /* set on allocation failure; walk aborts with ENOMEM */
   atomic_int root_errno; /* why the folder walked couldn't be listed at all */
@@ -428,6 +432,11 @@ static process_dir_result_t process_dir(int dirfd, walk_dir_t *dir, thread_arg_t
            with thousands of sub-folders doesn't hold a descriptor for each. */
         int mounted_on = (mount_status & DIR_MNTSTATUS_MNTPOINT) != 0;
         if (!mounted_on) {
+          char held[FT_HELD_NAME_SIZE];
+          if (wq->respells && ft_name_has_accent_bytes(name, strlen(name)) &&
+              ft_held_name_on(dirfd, wq->root_dev, name, held, sizeof(held)) == 0) {
+            name = held;
+          }
           /* Build child path: dir_path + "/" + name, with no second "/" after "/". */
           size_t dir_len = strlen(dir_path);
           size_t sep_len = dir_len > 0 && dir_path[dir_len - 1] == '/' ? 0 : 1;
@@ -708,6 +717,7 @@ void ft_folder_walk_run(ft_folder_walk *w) {
   root->ino = root_stat.st_ino;
   work_queue_t wq;
   wq_init(&wq, root_stat.st_dev, &w->cancelled);
+  wq.respells = ft_listing_respells_names(root_fd);
   if (!wq_push(&wq, root_fd, root)) {
     result->errnum = ENOMEM;
     result->cancelled = atomic_load(&w->cancelled);

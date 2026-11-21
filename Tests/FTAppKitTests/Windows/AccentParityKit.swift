@@ -138,8 +138,18 @@ enum AccentRole: String, CaseIterable, Sendable {
 
 /// The disk asked directly, byte for byte, beside what the app says of it.
 enum AccentDisk {
-    /// The names in `folder` as `readdir(3)` gives them, without "." and "..".
+    /// The names in `folder` as the disk holds them, without "." and "..": what `readdir(3)` gives, each then asked
+    /// of the disk by itself, since FAT and exFAT list a name with its accents decomposed whatever it was made by
+    /// (`AccentSpellingSourcesTests`).
     static func names(in folder: String) -> [[UInt8]] {
+        listedNames(in: folder).map { listed in
+            let name = String(decoding: listed, as: UTF8.self)
+            return DiskPath.nameOnDisk(folder + "/" + name).map { Array($0.utf8) } ?? listed
+        }
+    }
+
+    /// The names in `folder` as `readdir(3)` gives them, without "." and "..".
+    static func listedNames(in folder: String) -> [[UInt8]] {
         guard let directory = opendir(folder) else { return [] }
         defer { closedir(directory) }
         var names: [[UInt8]] = []
@@ -155,6 +165,12 @@ enum AccentDisk {
     /// Whether `folder` holds an item whose name is `name` byte for byte.
     static func holds(_ name: String, in folder: String) -> Bool {
         names(in: folder).contains(Array(name.utf8))
+    }
+
+    /// Whether an item is there under `name`, however the disk spells it.
+    static func has(_ name: String, in folder: String) -> Bool {
+        var info = stat()
+        return lstat(folder + "/" + name, &info) == 0
     }
 
     /// Whether every part of `path` below `root` is spelled as the folder above it holds it.
@@ -182,8 +198,8 @@ enum AccentDisk {
         close(file)
     }
 
-    /// A zip at `path` holding one file, `inside`. It is made under a plain name and renamed, so the path keeps its
-    /// bytes whatever `zip` would do with them.
+    /// A zip at `path` holding one file, `inside`. It is made under a plain name and written where it goes, so the
+    /// path keeps its bytes whatever `zip` would do with them.
     static func makeZip(at path: String, holding inside: String) throws {
         let scratch = try TemporaryDirectory(prefix: "filetrail-parity-zips")
         defer { scratch.remove() }
@@ -195,7 +211,7 @@ enum AccentDisk {
         try process.run()
         process.waitUntilExit()
         #expect(process.terminationStatus == 0)
-        #expect(rename(scratch.path + "/made.zip", path) == 0, "rename to \(path)")
+        write(try Data(contentsOf: URL(fileURLWithPath: scratch.path + "/made.zip")), to: path)
     }
 
     /// A small picture, as PNG data.
@@ -219,19 +235,29 @@ enum AccentDisk {
 /// The names of one run, and what stands for each in a fact: a path or a text of the app is told with every stored
 /// name replaced by what the item is there for, byte for byte, so two runs say the same only when each spelled its
 /// names as its own disk has them. A name left in another spelling stays as it is, its scalars written out.
+///
+/// On a disk whose calls don't agree on how a name is spelled there is no one spelling to hold a path to. There
+/// (`anySpelling`) a name is told by what it is there for in whichever spelling it comes, and which spelling it came
+/// in is told beside it (`spelled`), so what a step saw can be held against the plain folder's and the spellings read
+/// on their own.
 struct AccentNames {
     let kind: AccentKind
-    /// The harness's folder by its real path.
+    /// The folder the run is under, by its real path: the harness's, or a folder of a disk image.
     let root: String
     /// The folder the scenario's folder is in.
     let parent: String
-    /// The scenario's folder, as the disk spells it.
+    /// The scenario's folder, as it was made.
     let folder: String
-    private let replacements: [(bytes: [UInt8], label: String)]
+    let anySpelling: Bool
+    /// The name a step types into a row: with its accents composed, as a keyboard types them. In the plain folder of
+    /// a disk whose calls don't agree on a spelling it has none, so that folder's run meets no accent at all.
+    let typed: String
+    private let replacements: [(bytes: [UInt8], label: String, spelling: AccentSpelling)]
 
     /// The names of `kind` under `top`, by the path a listing gives that folder.
-    init(kind: AccentKind, under top: String) {
+    init(kind: AccentKind, under top: String, anySpelling: Bool = false) {
         self.kind = kind
+        self.anySpelling = anySpelling
         let root: String = {
             guard let resolved = realpath(top, nil) else { return top }
             defer { free(resolved) }
@@ -240,11 +266,22 @@ struct AccentNames {
         self.root = root
         parent = kind.nested ? root + "/" + kind.folder : root
         folder = parent + "/" + kind.folder
-        var replacements: [(bytes: [UInt8], label: String)] = [(Array(root.utf8), "<root>")]
-        replacements.append((Array(kind.folder.utf8), "<folder>"))
-        for role in AccentRole.allCases {
-            replacements.append((Array(role.stem(kind.files).utf8), "<\(role.rawValue)>"))
+        var replacements: [(bytes: [UInt8], label: String, spelling: AccentSpelling)] = [
+            (Array(root.utf8), "<root>", .plain)
+        ]
+        func add(_ name: String, _ label: String) {
+            replacements.append((Array(name.utf8), label, AccentSpelling(of: name)))
+            guard anySpelling else { return }
+            for other in [name.precomposedStringWithCanonicalMapping, name.decomposedStringWithCanonicalMapping]
+            where !other.utf8.elementsEqual(name.utf8) {
+                replacements.append((Array(other.utf8), label, AccentSpelling(of: other)))
+            }
         }
+        add(kind.folder, "<folder>")
+        for role in AccentRole.allCases { add(role.stem(kind.files), "<\(role.rawValue)>") }
+        // On the harness's own disk the name typed is told as it is, scalar for scalar, in every folder.
+        typed = anySpelling && kind.files == .plain ? "ete.txt" : "\u{E9}t\u{E9}.txt"
+        if anySpelling { add(String(typed.dropLast(4)), "<typed>") }
         // The longest first, so a name isn't taken for a part of another.
         self.replacements = replacements.sorted { $0.bytes.count > $1.bytes.count }
     }
@@ -258,16 +295,19 @@ struct AccentNames {
 
     func name(_ role: AccentRole) -> String { role.name(kind.files) }
 
-    /// `text` with each stored name replaced by its role, and any other scalar outside ASCII written out.
-    func told(_ text: String) -> String {
+    /// `text` with each stored name replaced by its role and any other scalar outside ASCII written out; and, for
+    /// each name with an accent found in it, how it was spelled there ("<folder> composed").
+    func tell(_ text: String) -> (told: String, spelled: [String]) {
         let bytes = Array(text.utf8)
         var replaced: [UInt8] = []
         replaced.reserveCapacity(bytes.count)
+        var spelled: [String] = []
         var index = 0
         while index < bytes.count {
             let rest = bytes[index...]
             if let found = replacements.first(where: { rest.starts(with: $0.bytes) }) {
                 replaced += Array(found.label.utf8)
+                if found.spelling != .plain { spelled.append(found.label + " " + found.spelling.rawValue) }
                 index += found.bytes.count
             } else {
                 replaced.append(bytes[index])
@@ -282,8 +322,10 @@ struct AccentNames {
                 result += "\\u{" + String(scalar.value, radix: 16, uppercase: true) + "}"
             }
         }
-        return result
+        return (result, spelled)
     }
+
+    func told(_ text: String) -> String { tell(text).told }
 
     func told(_ text: String?) -> String { text.map { told($0) } ?? "nil" }
 
@@ -292,6 +334,15 @@ struct AccentNames {
 
     /// Several paths whose order isn't the point (a listing's rows, sorted by names that differ from run to run).
     func toldSorted(_ texts: [String]) -> String { "[" + texts.map { told($0) }.sorted().joined(separator: ", ") + "]" }
+
+    /// How the names with an accent in `texts` are spelled there, each once ("<folder> composed, <sub> decomposed").
+    func spelled(_ texts: [String]) -> String {
+        var seen: [String] = []
+        for text in texts {
+            for spelling in tell(text).spelled where !seen.contains(spelling) { seen.append(spelling) }
+        }
+        return seen.sorted().joined(separator: ", ")
+    }
 }
 
 /// One thing a step of the scenario saw.
@@ -299,6 +350,9 @@ struct AccentFact: Equatable, Sendable {
     var step: String
     var name: String
     var value: String
+    /// How the names with an accent in what was seen were spelled, where a run tells it; never held against another
+    /// run's, as the plain folder has none.
+    var spelled = ""
 
     var key: String { step + ": " + name }
 }
@@ -312,6 +366,24 @@ enum AccentParity {
         if let kept = plain[nested] { return kept }
         let facts = try await AccentScenario.run(.plain(nested: nested))
         plain[nested] = facts
+        return facts
+    }
+
+    private static var plainOnDisk: [DiskImage.Kind: [AccentFact]] = [:]
+
+    /// The scenario run in a folder of `kind` on a disk image of `disk`: in a folder of its own on the volume the
+    /// tests of this process share.
+    static func facts(of kind: AccentKind, on disk: DiskImage.Kind) async throws -> [AccentFact] {
+        try await DiskImage.withSharedVolume(disk) { volume in
+            try await AccentScenario.run(kind, under: volume.path)
+        }
+    }
+
+    /// The plain folder's facts on a disk image of `disk`, read once.
+    static func plainFacts(on disk: DiskImage.Kind) async throws -> [AccentFact] {
+        if let kept = plainOnDisk[disk] { return kept }
+        let facts = try await facts(of: .plain(nested: false), on: disk)
+        plainOnDisk[disk] = facts
         return facts
     }
 

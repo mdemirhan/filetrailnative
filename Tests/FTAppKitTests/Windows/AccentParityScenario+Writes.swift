@@ -48,12 +48,12 @@ extension AccentScenario {
 
     func renamesInARow() async {
         begin("rename")
+        await backInTheFolder()
         guard let item = row(.renamed) else {
             note("the row is listed", false)
             return
         }
-        // Typed with the accents composed, as a keyboard types them.
-        let typed = "\u{E9}t\u{E9}.txt"
+        let typed = names.typed
         select([item])
         tab.perform(.renameSelection)
         note("the name opens in its row", told: tab.content.inlineRename?.path)
@@ -62,15 +62,16 @@ extension AccentScenario {
             self.tab.content.inlineRename == nil && self.row(named: typed) != nil && self.isIdle
         }
         note("the row has the name typed", renamed)
-        note("the disk has the name as typed", AccentDisk.holds(typed, in: folder))
-        note("the old name is gone", !AccentDisk.holds(names.name(.renamed), in: folder))
+        if let refusal = tab.content.inlineRename?.error { note("the field says", told: refusal) }
+        note("the disk has the name as typed", holds(typed, in: folder))
+        note("the old name is gone", !holds(names.name(.renamed), in: folder))
         note("the renamed row is selected", await arrives { self.selects([self.folder + "/" + typed]) })
         noteState("renamed")
 
         note("Undo runs", await undo())
         let back = await arrives { self.row(.renamed) != nil && self.row(named: typed) == nil && self.isIdle }
         note("Undo puts the name back", back)
-        note("the disk has the old name again", AccentDisk.holds(names.name(.renamed), in: folder))
+        note("the disk has the old name again", holds(names.name(.renamed), in: folder))
         noteState("undone")
     }
 
@@ -78,19 +79,20 @@ extension AccentScenario {
 
     func makesNewItems() async {
         begin("new folder")
+        await backInTheFolder()
         let before = rowPaths
         select([])
         tab.perform(.newFolder)
         note("its name opens in its row", await arrives { self.tab.content.inlineRename != nil })
         note("the name being edited", told: tab.content.inlineRename?.path)
         note("the folder made", told: rowsNew(since: before))
-        note("it is made in the folder", AccentDisk.holds("untitled folder", in: folder))
+        note("it is made in the folder", holds("untitled folder", in: folder))
         note("it is selected", await arrives { self.selects(self.rowsNew(since: before)) })
         note("Undo's record", told: undoRecord.made)
         tab.content.renameCancelled()
         note("Undo runs", await undo())
         note("Undo takes it away", await arrives { self.rowsNew(since: before).isEmpty && self.isIdle })
-        note("it is gone from the disk", !AccentDisk.holds("untitled folder", in: folder))
+        note("it is gone from the disk", !holds("untitled folder", in: folder))
 
         begin("new folder with selection")
         if let items = rows([.zippedOne, .zippedTwo]) {
@@ -102,8 +104,9 @@ extension AccentScenario {
             note("it is selected", await arrives { self.selects(self.rowsNew(since: before)) })
             note(
                 "it holds the items",
-                names.toldSorted(
-                    AccentDisk.names(in: folder + "/untitled folder").map { String(decoding: $0, as: UTF8.self) }))
+                toldSorted: AccentDisk.names(in: folder + "/untitled folder").map {
+                    String(decoding: $0, as: UTF8.self)
+                })
             tab.content.renameCancelled()
             note("Undo runs", await undo())
             let back = await arrives {
@@ -130,6 +133,7 @@ extension AccentScenario {
 
     func copiesCutsAndDuplicates() async {
         begin("copy and paste")
+        await backInTheFolder()
         let before = rowPaths
         if let items = rows([.copied]) {
             select(items)
@@ -165,15 +169,15 @@ extension AccentScenario {
             tab.perform(.focusContentPane)
             tab.perform(.pasteSelection)
             note("the item is listed there", await arrives { self.row(named: name) != nil && self.isIdle })
-            note("the disk has it there", AccentDisk.holds(name, in: names.sub))
-            note("it left its folder", !AccentDisk.holds(name, in: folder))
+            note("the disk has it there", holds(name, in: names.sub))
+            note("it left its folder", !holds(name, in: folder))
             note("it is selected", await arrives { self.selects([self.names.sub + "/" + name]) })
             note("the clipboard after", clipboardTold)
             noteState("pasted")
             note("Undo runs", await undo())
-            let back = await arrives { AccentDisk.holds(name, in: self.folder) && self.isIdle }
+            let back = await arrives { self.holds(name, in: self.folder) && self.isIdle }
             note("Undo puts it back", back)
-            note("it left the sub-folder", !AccentDisk.holds(name, in: names.sub))
+            note("it left the sub-folder", !holds(name, in: names.sub))
             tab.goBack(nil)
             note("Back: the folder opens", await arrives { self.shows(self.folder) })
             _ = await arrives { self.row(.cut) != nil }
@@ -195,10 +199,75 @@ extension AccentScenario {
         }
     }
 
+    // MARK: Into the sub-folder
+
+    /// The sub-folder opened by its row and by its row in the tree, each of which names it as the folder above is
+    /// read, where the pane then knows it as the read of the sub-folder itself names it; a write there; and the way
+    /// back out.
+    func goesIntoTheSubfolder() async {
+        begin("into the sub-folder")
+        await backInTheFolder()
+        let model = tab.sidebarController.model
+        let step = tab.historyIndex
+        note("by its row: the path its row has", told: row(.sub)?.path)
+        note("by its row: it opens", await opensTheSubfolder())
+        note("by its row: the folder on screen", told: tab.folderPath)
+        note("by its row: one step further", tab.historyIndex == step + 1)
+        note(
+            "by its row: the step",
+            told: tab.historyPaths.indices.contains(tab.historyIndex) ? tab.historyPaths[tab.historyIndex] : nil)
+        note("by its row: the tree's row is selected", await treeSelects(names.sub))
+        note("by its row: the tree's selection", told: model.selected?.filesystemPath)
+        note("by its row: the path bar's path", told: tab.content.contentShell.pathBarRow.path)
+
+        // A write there: New Folder, selected with its name open.
+        let before = rowPaths
+        select([])
+        tab.perform(.newFolder)
+        note("a folder made there: its name opens in its row", await arrives { self.tab.content.inlineRename != nil })
+        note("a folder made there: the name being edited", told: tab.content.inlineRename?.path)
+        let made = rowPaths.filter { path in !before.contains { samePath($0, path) } }
+        note("a folder made there: it is listed", told: made)
+        note("a folder made there: it is selected", await arrives { !made.isEmpty && self.selects(made) })
+        tab.content.renameCancelled()
+        note("a folder made there: Undo runs", await undo())
+        _ = await arrives { self.rowPaths.count == before.count && self.isIdle }
+
+        tab.perform(.goEnclosingFolder)
+        note("Enclosing Folder: the folder opens", await arrives { self.shows(self.names.folder) })
+        note("Enclosing Folder: the folder on screen", told: tab.folderPath)
+        note("Enclosing Folder: the tree's row is selected", await treeSelects(names.folder))
+        tab.goBack(nil)
+        note("Back: the sub-folder opens", await arrives { self.shows(self.names.sub) })
+        note("Back: the tree's row is selected", await treeSelects(names.sub))
+        tab.goForward(nil)
+        note("Forward: the folder opens", await arrives { self.shows(self.names.folder) })
+        note("Forward: the tree's row is selected", await treeSelects(names.folder))
+
+        // By its row in the tree, which is named as the tree's read of the folder above names it.
+        let inTree = treeRows.first { same($0, names.sub) }
+        note("by the tree's row: the tree shows the sub-folder", inTree != nil)
+        guard let inTree else { return }
+        do {
+            note("by the tree's row: the path the row has", told: inTree)
+            model.selectItem(.filesystem(inTree))
+            note("by the tree's row: it opens", await arrives { self.shows(self.names.sub) })
+            note("by the tree's row: the folder on screen", told: tab.folderPath)
+            note("by the tree's row: the tree's row is selected", await treeSelects(names.sub))
+            note("by the tree's row: the tree's selection", told: model.selected?.filesystemPath)
+            note("by the tree's row: its rows", toldSorted: rowPaths)
+        }
+        tab.perform(.goEnclosingFolder)
+        note("and out again: the folder opens", await arrives { self.shows(self.names.folder) })
+        _ = await arrives { self.row(.sub) != nil }
+        note("and out again: the tree's row is selected", await treeSelects(names.folder))
+    }
+
     // MARK: Move To, Extract To and Go To with the folder typed
 
     func movesToTheFolderTyped() async {
         begin("move to")
+        await backInTheFolder()
         note("the sub-folder opens", await opensTheSubfolder())
         let group = tab.group
         for (role, typed, spelling) in [
@@ -210,10 +279,10 @@ extension AccentScenario {
             tab.perform(.moveSelection)
             note("\(spelling): the box takes the folder", await submit(typed))
             let moved = await arrives {
-                self.tab.goToBox == nil && AccentDisk.holds(name, in: self.folder) && self.isIdle
+                self.tab.goToBox == nil && self.holds(name, in: self.folder) && self.isIdle
             }
             note("\(spelling): the item is in the folder", moved)
-            note("\(spelling): it left the sub-folder", !AccentDisk.holds(name, in: names.sub))
+            note("\(spelling): it left the sub-folder", !holds(name, in: names.sub))
             note("\(spelling): its row left the sub-folder's list", await arrives { self.row(role) == nil })
             note("\(spelling): Undo's record", told: undoRecord.movedTo)
             note("\(spelling): tabs", "\(group?.tabs.count ?? 0)")
@@ -230,6 +299,7 @@ extension AccentScenario {
 
     func extractsToTheFolderTyped() async {
         begin("extract to")
+        await backInTheFolder()
         let group = tab.group
         for (role, inside, typed, spelling) in [
             (AccentRole.archiveOne, "inside-one.txt", typedComposed, "typed composed"),
@@ -242,7 +312,7 @@ extension AccentScenario {
             let out = await arrives { self.tab.goToBox == nil && self.row(named: inside) != nil && self.isIdle }
             note("\(spelling): what came out is listed", out)
             note("\(spelling): it is selected", await arrives { self.selects([self.folder + "/" + inside]) })
-            note("\(spelling): selection", names.toldSorted(selection))
+            note("\(spelling): selection", toldSorted: selection)
             note("\(spelling): tabs", "\(group?.tabs.count ?? 0) in \(harness.windows.count) window")
         }
         note("the folders chosen", told: store.destinations().map(\.path))
@@ -251,6 +321,7 @@ extension AccentScenario {
 
     func goesToTheFolderTyped() async {
         begin("go to")
+        await backInTheFolder()
         tab.go(to: names.parent)
         note("the folder above opens", await arrives { self.shows(self.names.parent) })
         let steps = tab.historyPaths.count
@@ -287,6 +358,7 @@ extension AccentScenario {
 
     func compressesAndExtracts() async {
         begin("compress")
+        await backInTheFolder()
         guard let items = rows([.zippedOne, .zippedTwo]) else { return }
         let before = rowPaths
         let group = tab.group
@@ -305,14 +377,20 @@ extension AccentScenario {
         tab.perform(.extractSelection)
         note("what came out is listed", await arrives { !self.rowsNew(since: withArchive).isEmpty && self.isIdle })
         let out = rowsNew(since: withArchive)
-        note("what came out", names.toldSorted(out))
+        note("what came out", toldSorted: out)
         note("it is selected", await arrives { self.selects(out) })
         note("tabs", "\(group?.tabs.count ?? 0) in \(harness.windows.count) window")
         // An archive's names come out composed, whichever way the items compressed were stored: the app's own rule
         // for what it extracts. So what came out is each item's name with its accents composed.
-        let inside = out.flatMap { AccentDisk.names(in: $0) }
-        let composed = items.map { Array($0.name.precomposedStringWithCanonicalMapping.utf8) }
-        note("what came out holds the items, their names composed", Set(inside) == Set(composed))
+        let inside = out.flatMap { AccentDisk.names(in: $0) }.filter { $0.first != UInt8(ascii: ".") }
+        if anySpelling {
+            // How the folder is read says nothing certain of how a name is kept: the items by their names alone.
+            let came = inside.map { String(decoding: $0, as: UTF8.self) }
+            note("what came out holds the items", Set(came) == Set(items.map(\.name)))
+        } else {
+            let composed = items.map { Array($0.name.precomposedStringWithCanonicalMapping.utf8) }
+            note("what came out holds the items, their names composed", Set(inside) == Set(composed))
+        }
         note("what came out holds", "\(inside.count) items")
         noteState("extracted")
     }
@@ -321,15 +399,16 @@ extension AccentScenario {
 
     func trashesAndUndoes() async {
         begin("trash")
+        await backInTheFolder()
         guard let items = rows([.trashed]) else { return }
         let name = names.name(.trashed)
         select(items)
         tab.perform(.trashSelection)
         note("the row goes", await arrives { self.row(.trashed) == nil && self.isIdle })
-        note("the disk no longer has it", !AccentDisk.holds(name, in: folder))
+        note("the disk no longer has it", !holds(name, in: folder))
         note("Undo runs", await undo())
         note("Undo lists it again", await arrives { self.row(.trashed) != nil && self.isIdle })
-        note("the disk has it under its name", AccentDisk.holds(name, in: folder))
+        note("the disk has it under its name", holds(name, in: folder))
         noteState("undone")
     }
 
@@ -337,6 +416,7 @@ extension AccentScenario {
 
     func renamesSeveral() async {
         begin("rename sheet")
+        await backInTheFolder()
         guard let items = rows([.sheetOne, .sheetTwo]) else { return }
         let before = rowPaths
         select(items)
@@ -345,18 +425,18 @@ extension AccentScenario {
         note("the sheet opens", up)
         guard let sheet = tab.batchRenameSheet else { return }
         tab.window?.contentView?.layoutSubtreeIfNeeded()
-        note("the sheet lists", names.toldSorted(sheet.preview.rows.map(\.oldName)))
+        note("the sheet lists", toldSorted: sheet.preview.rows.map(\.oldName))
         sheet.modeControl.choose(.add)
         batchRenameType(sheet.addTextField, "-x")
-        note("the names it will give", names.toldSorted(sheet.preview.rows.compactMap(\.newName)))
+        note("the names it will give", toldSorted: sheet.preview.rows.compactMap(\.newName))
         sheet.renameButton.perform()
         let renamed = await arrives {
             self.tab.batchRenameSheet == nil && self.rowsNew(since: before).count == 2 && self.isIdle
         }
         note("both are renamed", renamed)
         let made = rowsNew(since: before)
-        note("the new names", names.toldSorted(made))
-        note("the disk has them", made.allSatisfy { AccentDisk.holds(NodePath.basename($0), in: folder) })
+        note("the new names", toldSorted: made)
+        note("the disk has them", made.allSatisfy { holds(NodePath.basename($0), in: folder) })
         note("nothing else changed", rowPaths.count == before.count)
         note("they are selected", await arrives { self.selects(made) })
         noteState("renamed")
@@ -373,6 +453,7 @@ extension AccentScenario {
 
     func readsAWriteInTheOtherPane() async {
         begin("other pane")
+        await backInTheFolder()
         let left = tab.activePane
         let right = tab.openSecondPane()
         let open = await arrives { right.loaded && right.hasShownFolder && self.shows(right, self.folder) }
@@ -416,6 +497,7 @@ extension AccentScenario {
 
     func dragsOntoTheSubfolder() async {
         begin("drag")
+        await backInTheFolder()
         guard let items = rows([.dragged, .sub]) else { return }
         let name = names.name(.dragged)
         // No key held, whatever the Mac's keyboard says.
@@ -429,10 +511,10 @@ extension AccentScenario {
             "the sub-folder takes the drop",
             drags.automationDrop(dragged, entry: items[1], allowed: [.copy, .move, .generic]))
         let moved = await arrives {
-            AccentDisk.holds(name, in: self.names.sub) && self.row(.dragged) == nil && self.isIdle
+            self.holds(name, in: self.names.sub) && self.row(.dragged) == nil && self.isIdle
         }
         note("the item is in the sub-folder", moved)
-        note("it left the folder", !AccentDisk.holds(name, in: folder))
+        note("it left the folder", !holds(name, in: folder))
         note("the drag is over", TabDragDrop.ownDrag == nil)
         noteState("dropped")
 
@@ -447,14 +529,14 @@ extension AccentScenario {
         note("the folder on screen takes the drop", drags.contentPerformDrop(drag, entry: nil))
         let arrived = await arrives { self.row(.dragged) != nil && self.isIdle }
         note("the item is listed in the folder", arrived)
-        note("the disk has it there under its name", AccentDisk.holds(name, in: folder))
+        note("the disk has it there under its name", holds(name, in: folder))
         note("what arrived", told: rowsNew(since: before))
         note("where it was moved to", told: undoRecord.movedTo)
-        note("the sub-folder still has it", AccentDisk.holds(name, in: names.sub) ? "yes" : "no")
+        note("the sub-folder still has it", holds(name, in: names.sub) ? "yes" : "no")
         note("Undo runs", await undo())
         _ = await arrives { self.row(.dragged) == nil && self.isIdle }
-        note("after Undo the sub-folder has it under its name", AccentDisk.holds(name, in: names.sub))
-        note("after Undo the folder has it", AccentDisk.holds(name, in: folder) ? "yes" : "no")
+        note("after Undo the sub-folder has it under its name", holds(name, in: names.sub))
+        note("after Undo the folder has it", holds(name, in: folder) ? "yes" : "no")
         noteState("undone")
     }
 
@@ -464,6 +546,7 @@ extension AccentScenario {
     /// opens on its folder with the item selected.
     func opensAnItemFromAnotherApp() async {
         begin("opened from another app")
+        await backInTheFolder()
         guard let item = row(.tagged), let group = tab.group else {
             note("the row is listed", false)
             return
@@ -474,7 +557,7 @@ extension AccentScenario {
             return
         }
         note("the item asked for", told: request.path)
-        note("it is spelled as on disk", spelledAsOnDisk(request.path))
+        noteOnDisk("it is spelled as on disk", spelledAsOnDisk(request.path))
         note("a window takes it", harness.windows.openFromOtherApp(request))
         guard let opened = group.selected, opened !== tab else {
             note("a tab opens for it", false)
@@ -503,13 +586,14 @@ extension AccentScenario {
 
     func keepsWhatWasSaved() async {
         begin("kept")
+        await backInTheFolder()
         let sidebar = tab.sidebarController
         let pane = tab.activePane
         select([])
         note("the folder is offered as a favorite", told: tab.favoriteTargetPath)
         tab.perform(.toggleFavorite)
         note("the favorites", told: store.preferences().favorites.map(\.path))
-        note(
+        noteOnDisk(
             "the favorites are spelled as on disk",
             store.preferences().favorites.allSatisfy { spelledAsOnDisk($0.path) })
 
@@ -561,11 +645,12 @@ extension AccentScenario {
         store.flush()
         do {
             let again = try ExplorerHarness(onScreen: false, startingAgainOn: harness.folder)
+            again.windows.home = harness.windows.home
             again.services.folderViews = SharedFolderViews(store: again.store)
             let restored = try await again.openWhatWasKept()
             note(
                 "started again: the tab's folder opens", await arrives { self.shows(restored.activePane, self.folder) })
-            note("started again: the folder is spelled as on disk", spelledAsOnDisk(restored.folderPath))
+            noteOnDisk("started again: the folder is spelled as on disk", spelledAsOnDisk(restored.folderPath))
             note("started again: history", told: restored.historyPaths)
             note("started again: the tree's top", told: restored.treeRootPath)
             note("started again: the favorites", told: again.store.preferences().favorites.map(\.path))
@@ -584,7 +669,7 @@ extension AccentScenario {
                 // it is says anything here.
                 if let front = again.windows.front as? MainWindowController {
                     note("workspace: the folder on screen", told: front.folderPath)
-                    note("workspace: the folder is spelled as on disk", spelledAsOnDisk(front.folderPath))
+                    noteOnDisk("workspace: the folder is spelled as on disk", spelledAsOnDisk(front.folderPath))
                 }
             } else {
                 note("started again: the workspace is kept", false)

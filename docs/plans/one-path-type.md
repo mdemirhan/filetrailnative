@@ -109,7 +109,8 @@ Known entry points still to check or fix when their family converts:
 - **`ExplorerTabs.followMovedItems`**, `StartupTabs.persistedRoot`.
 - **`FolderChangeGate.Pending.changedPaths`** (`Set<String>`) and its `pending.path == path`; `ExplorerWindows.folderChanged`.
 - **`InfoIconView`** compares `request.cacheKey` as text; `IconRequest`'s synthesized `Equatable`.
-- **FSEvents** paths against the watched root: on this Mac's APFS they come as `realpath` spells them; not tried on network shares or FAT. A miss there means changes are only seen on window focus.
+- **FSEvents** paths against the watched root: on APFS, HFS+, FAT32 and exFAT they come as `realpath` spells them (measured: `AccentSpellingSourcesTests`); not tried on network shares. A miss there means changes are only seen on window focus.
+- **Anything that reads a folder on FAT or exFAT.** See "A disk whose listing and lookup disagree" below: a new reader of a folder (a walk, a tool's output) must name what it read as the disk stores it.
 - **The mount table and `/Volumes`**: macOS mounts a disk labelled with a composed accent at a decomposed folder name; the composed case arises only for a disk mounted at a folder of the user's own.
 
 ### Deliberately loose comparisons (keep them; each needs its comment)
@@ -137,6 +138,40 @@ When a step meets a loose comparison, it stays loose by an explicit call on `.st
 - `FileManager.createDirectory(atPath:)`, `createFile(atPath:)` and `String.write(toFile:)` create a composed name decomposed. Today they are used only for the app's own files (`StateIO`, `AppLogger`, `LogRotation`, `IconSamples`, two in `MainWindowController+Writes.swift`): leave those, and never use them for a person's item; use the engine or POSIX calls.
 - `FileManager.contentsOfDirectory` hides `._name` files on FAT and exFAT: tests there list with `readdir`.
 - On FAT32 the Trash refuses a decomposed URL for a name stored composed. Other system calls given a decomposed URL worked there (`Data(contentsOf:)`, resource values, tags, `CGImageSource`, thumbnails); `NSWorkspace.open` and reveal were not tried.
+
+### A disk whose listing and lookup disagree (FAT32 and exFAT, measured on macOS 27)
+
+"As the disk spells it" assumes the disk has one spelling for an item. APFS does (the stored bytes, from every call) and so does HFS+ (decomposed, from every call). FAT32 and exFAT do not:
+
+| Source | Says |
+|---|---|
+| `readdir`, `getattrlistbulk` (so a raw listing, a walk, `fd`'s output) | always decomposed |
+| `getattrlist` for the one item, `realpath`, FSEvents | the spelling the item was **made or first looked up by since the disk was mounted**, whichever spelling asks later |
+| `lstat`, `open` by either spelling | found |
+| `rename` on FAT32, `unlink` on exFAT, by the other spelling than the one held | `ENOENT` |
+| an item nothing has looked up yet, by either spelling | found, and held by that spelling from then on |
+
+So the disk does not tell what it stores. It holds each item by one spelling for as long as it knows the item, and that is the only spelling every call accepts. A name typed on a Mac (New Folder, a rename, a paste) is held composed for the rest of the mount; a stick written elsewhere and plugged in is held by whatever asks first, which is the app's own reading of the folder, so decomposed. `AccentSpellingSourcesTests` asserts the table for names made in the mount and `HeldNamesTests` for a disk mounted again, so a change in a later macOS is noticed.
+
+The app's one spelling there is **the one the disk holds**. So the rule has a second half: **whatever reads a folder on such a disk asks the disk for each name.** `ft_listing_respells_names(fd)` says whether the disk is one of these (by its `statfs` type: `msdos`, `exfat`), and `ft_held_name(fd, name, …)` asks (one `getattrlistat` per name with a non-ASCII byte; a name without one is never asked). Four readers do this today:
+
+- `ft_read_directory` (`Sources/CFileTrail/listing.c`): every listing's rows and the tree's children.
+- `PosixFileSystem.names(in:)` (`Sources/FTOperations/Identity/WriteServiceStats.swift`): every folder the write engine reads or walks, so what it then renames or unlinks is found.
+- `process_dir` (`Sources/CFileTrail/foldersize.c`): a sub-folder's path in the folder-size walk, so its size is kept under the path its row has.
+- `FdSearchRuntime.HeldSpelling`: `fd`'s results (`DiskPath.isListedRespelled`, then `asOnDisk()` for the folder once and `namedAsOnDisk()` for the name).
+
+Not respelled, on purpose: the archive walks (`archive.c`, `fts`; they only open what they read, which either spelling finds, and a member's name inside the archive is then the decomposed one), `TrashState` and `NewFileTemplates` (they compare a name with nothing from elsewhere).
+
+What it costs (disk images, this Mac): nothing on any other disk and nothing for plain names. On FAT32 the first asking of a folder's names is 100 to 260 µs a name and grows with the folder (10,000 names: about 2 s); on exFAT 40 to 60 µs (10,000 names: about half a second). Asked again while the disk still knows the items, 1 to 2 µs a name. Every name with a non-ASCII byte is asked, also one that has only one spelling (most CJK); telling those apart needs a table of what can be composed, which was not hand-rolled.
+
+Known limits:
+
+- The disk can forget an item (it lets go of what it has not used for long) and then hold it by the next spelling that asks. A path the app kept from before may then differ from a fresh listing's until the folder is read again; on FAT32 a rename by the kept path fails only if another app asked by the other spelling in between.
+- A search decides by its root whether results are respelled: one started above a FAT or exFAT disk (in `/Volumes`) leaves that disk's results as `fd` wrote them.
+- A name longer than 1,023 bytes decomposed is left as listed.
+- Unmeasured, and to be measured before anyone relies on them: network shares (SMB, NFS, WebDAV), NTFS, and FAT/exFAT on a macOS older than 27. A disk of a kind not in the list is taken at its listing's word, as before.
+
+The disk suites `AccentParityHFSTests`, `AccentParityFAT32Tests` and `AccentParityExFATTests` run the whole parity scenario on images and hold an accented folder against a plain one on the same disk. Any step that adds a reader of a folder, or a comparison of a listed path with one from elsewhere, must leave them with no difference.
 
 ### The boundary's own edges
 

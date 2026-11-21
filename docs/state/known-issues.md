@@ -101,6 +101,15 @@ What the original locations look like, from trashing test files on a disk image:
 
 Reading is simple, about 40 lines of script for the B-tree in `.DS_Store`, and restoring could start from Undo's `PlannedMove(putBack: true)`, which also requires the original parent's id. Not checked: the home folder's Trash, which needs Full Disk Access to read and may spell its paths differently; whether Finder offers Put Back for `trashItem`'s items; and what Finder does when the original folder is gone or a record is stale.
 
+## Names with accents on FAT and exFAT disks
+
+Such a disk lists every name with its accents decomposed, but answers to an item by the spelling it was made or first looked up by since it was mounted, and FAT's rename and exFAT's delete find it only by that one. So wherever File Trail reads a folder there, it asks the disk for each name that has a letter outside ASCII ([plans/one-path-type.md](../plans/one-path-type.md), "A disk whose listing and lookup disagree"). What that leaves:
+
+- **A large folder of such names opens later the first time.** On disk images here, 10,000 names took about 2 s more on FAT32 and half a second on exFAT; opened again, about 20 ms. Names in plain ASCII cost nothing, and no other kind of disk is asked. Every name with a letter outside ASCII is asked, also one that can only be spelled one way (most Chinese and Japanese names).
+- **A search started above such a disk** (in `/Volumes`) leaves that disk's results as they were listed: a result with an accent may not select its row, and can fail to rename (FAT) or delete for good (exFAT) from the results. A search started on the disk is right.
+- **A disk can forget an item it hasn't used for long**, and then hold it by the next spelling that asks. Until the folder is read again, a path kept from before may not match the row; on FAT a rename then fails only if another app asked by the other spelling in between.
+- **Not measured**: network disks (SMB, NFS, WebDAV), NTFS, and FAT or exFAT on a macOS older than 27. They are taken at their listing's word.
+
 ## "._" files on FAT, exFAT and some network disks
 
 These disks can't keep a file's extra attributes (Finder tags, the downloaded-from-the-internet mark, a custom icon, a resource fork), so macOS keeps them in a hidden companion beside each item: `._name` beside `name`, in AppleDouble format. Finder neither lists nor counts these; File Trail does:

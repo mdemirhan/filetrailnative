@@ -426,6 +426,28 @@ extension RealWalks {
             }
         }
 
+        // A folder inside is reported under the path its row has in a listing, byte for byte: on FAT and exFAT, where
+        // reading a folder gives a name decomposed that the disk holds as it was made, the walk asks the disk as the
+        // listing does, so the row finds its size.
+        @Test(.tags(.diskImage), .diskImages, arguments: [DiskImage.Kind.fat32, .exfat, .hfs, .apfs])
+        func reportsAFolderInsideUnderThePathItsRowHas(kind: DiskImage.Kind) async throws {
+            try await DiskImage.withSharedVolume(kind) { volume in
+                let folder = volume.path + "/sizes"
+                try makeFolder(folder + "/\u{C9}t\u{E9}/d\u{E9}j\u{E0}")
+                try write(folder + "/\u{C9}t\u{E9}/d\u{E9}j\u{E0}/a.bin", 10)
+                let disk = NativeFileSystem()
+                let outer = try #require(try disk.readDirectory(folder).first { $0.type == .directory })
+                let outerPath = folder + "/" + outer.name
+                let inner = try #require(try disk.readDirectory(outerPath).first { $0.type == .directory })
+
+                let walk = try await measure(NativeFolderSize(), folder)
+
+                let reported = walk.dirs.keys.map { Array($0.utf8) }
+                #expect(reported.contains(Array(outerPath.utf8)))
+                #expect(reported.contains(Array((outerPath + "/" + inner.name).utf8)))
+            }
+        }
+
         // An app from the Dock may open 256 files at once. A folder waiting its turn holds no descriptor, so a folder
         // with more subfolders than that is measured whole. The limit is lowered in a test process of its own, so the
         // tests running beside this one keep theirs; making the 15,600 folders takes seconds. Only a release runs it.
