@@ -569,12 +569,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         readError = nil
         if !sameFolder { listFilter.clear() }
         folderPath = path
-        listed = []
-        entries = []
-        entryPaths = []
-        entryKeys = []
-        positionsCache = nil
-        rowsCache = nil
+        listNothing()
         startDetailsOver()
         settle(.failed(error))
         setSelection(.empty, notify: true)
@@ -582,6 +577,19 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         pane?.reload(scrollToTop: true)
         refreshState()
         updateStatus()
+    }
+
+    /// Nothing listed, and nothing made of what was: the rows, their order and keys, and the groups, which are made
+    /// only as the items are ordered and so would otherwise stay over an empty list (the last folder's Today and
+    /// September over a Trash that couldn't be read).
+    private func listNothing() {
+        listed = []
+        rowsCache = nil
+        entries = []
+        entryPaths = []
+        entryKeys = []
+        positionsCache = nil
+        groups = []
     }
 
     /// With no folder at all.
@@ -593,12 +601,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         listFilter.clear()
         hiddenItemCount = 0
         startDetailsOver()
-        listed = []
-        rowsCache = nil
-        entries = []
-        entryPaths = []
-        entryKeys = []
-        positionsCache = nil
+        listNothing()
         settle(.idle)
         setSelection(.empty, notify: true)
         closeRenameIfItemLeft()

@@ -198,5 +198,31 @@ extension ExplorerWindowlessTests {
             #expect(second.searchGroupBy == .kind && second.searchGroupReversed)
             #expect(second.content.searchGroupBy == .kind && second.content.searchGroupReversed)
         }
+
+        // A folder that can't be read (the Trash without Full Disk Access, a folder with no permission to list) shows
+        // nothing, and no groups: the last folder's titles stayed over the empty list, as the groups are made only
+        // as items are ordered and the failed read orders none. A folder read again after groups as before.
+        @Test func aFolderThatCantBeReadShowsNoGroupsOfTheFolderBefore() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await opened(harness)
+            await tab.group(by: .groupByModified, expecting: ["Today", "Yesterday", "2020"])
+            let grouped = tab.activePane.shownFolderPath
+            let locked = harness.folder.appending("Locked").path
+            try FileManager.default.createDirectory(atPath: locked, withIntermediateDirectories: false)
+            #expect(chmod(locked, 0) == 0)
+            defer { chmod(locked, 0o755) }
+
+            // Opened as the sidebar's Trash is, from a location, which opens even when it can't be read.
+            tab.activePane.go(to: locked, open: SidebarOpen(origin: .location(.location(locked))))
+            #expect(
+                await waitUntil {
+                    if case .failed = tab.content.loadState { true } else { false }
+                }, "the folder couldn't be read")
+            #expect(tab.content.entries.isEmpty)
+            #expect(tab.groupTitles.isEmpty, "titles shown: \(tab.groupTitles)")
+
+            tab.activePane.go(to: grouped)
+            #expect(await waitUntil { tab.groupTitles == ["Today", "Yesterday", "2020"] })
+        }
     }
 }
