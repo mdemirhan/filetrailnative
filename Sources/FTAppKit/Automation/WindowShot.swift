@@ -120,6 +120,21 @@
                 ? nil : "screencapture failed: allow File Trail in Privacy & Security › Screen Recording"
         }
 
+        /// Where the window starts across its shot. The shadow takes as much room across as it does up and down, half
+        /// on each side; a popover reaching past one side of the window (Folder View Options, over the status bar's
+        /// symbol at the right end) widens the shot on that side alone.
+        private static func windowLeft(in shot: NSBitmapImageRep, of window: NSWindow, extra: Double) -> Double {
+            let children = window.childWindows ?? []
+            let pastLeft = children.contains { $0.frame.minX < window.frame.minX }
+            let pastRight = children.contains { $0.frame.maxX > window.frame.maxX }
+            let width = window.frame.width * 2
+            switch (pastLeft, pastRight) {
+            case (false, true): return extra / 2
+            case (true, false): return Double(shot.pixelsWide) - extra / 2 - width
+            default: return (Double(shot.pixelsWide) - width) / 2
+            }
+        }
+
         /// The window's shot keeps its shadow; inside its rounded corners goes what the screen shows.
         private static func lay(screen screenFile: URL, over file: URL, of window: NSWindow) -> AutomationRunner.Outcome
         {
@@ -133,7 +148,7 @@
             else { return AutomationRunner.Outcome(.failed, "could not read the captures") }
             let extra = (Double(shot.pixelsHigh) - window.frame.height * 2)
             let rect = NSRect(
-                x: (Double(shot.pixelsWide) - window.frame.width * 2) / 2, y: extra * (1 - topShareOfShadow),
+                x: windowLeft(in: shot, of: window, extra: extra), y: extra * (1 - topShareOfShadow),
                 width: window.frame.width * 2, height: window.frame.height * 2)
             NSGraphicsContext.saveGraphicsState()
             NSGraphicsContext.current = context
