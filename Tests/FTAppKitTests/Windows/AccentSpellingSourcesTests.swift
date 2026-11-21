@@ -88,9 +88,10 @@ extension ExplorerWindowlessTests {
     ///
     /// What the system says is measured on this macOS and written down so that a change in it is noticed: the app's
     /// one spelling on such a disk, the one the disk holds, is decided from it. What the app's own readers of a
-    /// folder say (a listing's rows, the tree's rows, a search's results) is then that name on every disk.
+    /// folder say (a listing's rows, the tree's rows, a search's results) is then that name on every disk. A release
+    /// measures it (`ReleaseTests`): what it measures changes with macOS, not with the app.
     @MainActor
-    @Suite struct AccentSpellingSourcesTests {
+    @Suite(.enabled(if: ReleaseTests.enabled)) struct AccentSpellingSourcesTests {
         private static let both = [AccentSpelling.composed, .decomposed]
 
         /// What each source says, for a name stored composed; a name stored decomposed is decomposed everywhere, on

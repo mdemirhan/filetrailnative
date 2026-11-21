@@ -1,4 +1,5 @@
-// The accent parity scenario on other kinds of disk, where the system's calls may not agree on how a name is spelled
+// The accent parity scenario on other kinds of disk, where the system's calls may not agree on how a name is spelled.
+// A release runs it (`ReleaseTests`): each disk's runs take half a minute.
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -58,7 +59,7 @@ extension ExplorerWindowlessTests {
     /// HFS+ stores every name decomposed and gives it so by every call: a folder with an accent behaves there as a
     /// plain one, whatever was typed. A suite a disk, so a full run spreads them over its processes.
     @MainActor
-    @Suite(.restoresWindowSeams) struct AccentParityHFSTests {
+    @Suite(.restoresWindowSeams, .enabled(if: ReleaseTests.enabled)) struct AccentParityHFSTests {
         @Test(.tags(.diskImage), .diskImages)
         func thePlainFolderDoesWhatEachStepShows() async throws {
             try await AccentParity.checkPlain(on: .hfs)
@@ -75,7 +76,7 @@ extension ExplorerWindowlessTests {
     /// it. The app names every item there as the disk holds it (`ft_held_name`), so a folder with an accent behaves
     /// as a plain one.
     @MainActor
-    @Suite(.restoresWindowSeams) struct AccentParityFAT32Tests {
+    @Suite(.restoresWindowSeams, .enabled(if: ReleaseTests.enabled)) struct AccentParityFAT32Tests {
         @Test(.tags(.diskImage), .diskImages)
         func thePlainFolderDoesWhatEachStepShows() async throws {
             try await AccentParity.checkPlain(on: .fat32)
@@ -89,7 +90,7 @@ extension ExplorerWindowlessTests {
 
     /// exFAT spells names as FAT32 does; it takes a rename by either spelling, and an unlink only by the one it holds.
     @MainActor
-    @Suite(.restoresWindowSeams) struct AccentParityExFATTests {
+    @Suite(.restoresWindowSeams, .enabled(if: ReleaseTests.enabled)) struct AccentParityExFATTests {
         @Test(.tags(.diskImage), .diskImages)
         func thePlainFolderDoesWhatEachStepShows() async throws {
             try await AccentParity.checkPlain(on: .exfat)

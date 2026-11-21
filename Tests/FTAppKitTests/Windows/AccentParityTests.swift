@@ -15,7 +15,8 @@ extension ExplorerWindowlessTests {
     /// a folder with no accent and in folders named with one, stored composed and decomposed, in Latin letters and
     /// in Hangul, holding files spelled both ways; and each thing a step saw in an accented folder is to be what it
     /// saw in the plain one, once every name is told by what it is there for. Here the folders are at the top of the
-    /// window's folder; `AccentParityNestedTests` has each inside a folder of its own name.
+    /// window's folder; `AccentParityNestedTests` has each inside a folder of its own name. A release compares every
+    /// kind of folder, any other run a few (`AccentKind.checked`).
     @MainActor
     @Suite(.restoresWindowSeams) struct AccentParityTests {
         // The plain folder's own run is what the others are held against: every step of it did what it is there to
@@ -24,7 +25,7 @@ extension ExplorerWindowlessTests {
             try await AccentParity.checkPlain(nested: false)
         }
 
-        @Test(arguments: AccentKind.compared.filter { !$0.nested })
+        @Test(arguments: AccentKind.checked.filter { !$0.nested })
         func anAccentedFolderBehavesAsAPlainOne(_ kind: AccentKind) async throws {
             try await AccentParity.check(kind)
         }
@@ -106,7 +107,7 @@ extension ExplorerWindowlessTests {
             try await AccentParity.checkPlain(nested: true)
         }
 
-        @Test(arguments: AccentKind.compared.filter(\.nested))
+        @Test(arguments: AccentKind.checked.filter(\.nested))
         func anAccentedFolderInsideOneOfItsNameBehavesAsAPlainOne(_ kind: AccentKind) async throws {
             try await AccentParity.check(kind)
         }

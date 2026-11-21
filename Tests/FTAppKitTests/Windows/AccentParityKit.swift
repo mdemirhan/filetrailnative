@@ -62,6 +62,18 @@ struct AccentKind: Sendable, Hashable, CustomTestStringConvertible {
         return kinds
     }()
 
+    /// The kinds a run compares: every one in a release (`ReleaseTests`), and otherwise "café" stored each way and
+    /// "한글" stored decomposed at the top, and "café" stored decomposed with its files composed inside a folder of its
+    /// name. Each full run through the app takes seconds, so the others wait for the release.
+    static let checked: [AccentKind] =
+        ReleaseTests.enabled
+        ? compared
+        : compared.filter {
+            $0.nested
+                ? $0.label == "cafe decomposed"
+                : ["cafe composed", "cafe decomposed", "hangul decomposed"].contains($0.label)
+        }
+
     /// The folders stored composed, which a launch that knew its folders by a URL's spelling saved with their accents
     /// apart: all but "café" at the top, which the suites of each kept thing look at.
     static let savedByAnEarlierVersion: [AccentKind] = compared.filter {
