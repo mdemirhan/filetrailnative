@@ -78,11 +78,11 @@ extension ExplorerWindowlessTests {
             harness.layout(tab)
             let real = tab.content.loaders.metadata
             let letGo = MainActorFlag()
-            tab.content.loaders.metadata = { folder, paths, listedAdded in
+            tab.content.loaders.metadata = { folder, paths, listedAdded, listedKinds in
                 if NodePath.basename(folder) == "Alpha" {
                     while !letGo.isSet { try? await Task.sleep(for: .milliseconds(10)) }
                 }
-                return await real(folder, paths, listedAdded)
+                return await real(folder, paths, listedAdded, listedKinds)
             }
             engine.finds = { _ in (["note.txt", "Alpha/Inner"], false, false) }
             try search("no", in: tab, timers)

@@ -550,7 +550,7 @@ struct TwoSpellingsRowsTests {
         _ = NSApplication.shared
         var asked: [DiskPath: Int64?] = [:]
         var loaders = ContentLoaders.placeholder
-        loaders.metadata = { _, _, listedAdded in
+        loaders.metadata = { _, _, listedAdded, _ in
             asked.merge(listedAdded) { $1 }
             return []
         }

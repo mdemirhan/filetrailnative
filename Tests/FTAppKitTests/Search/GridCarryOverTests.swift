@@ -75,7 +75,7 @@ extension ExplorerWindowlessTests {
             engine.finds = { _ in (["note.txt"], false, false) }
             final class Asked { var paths: [String] = [] }
             let asked = Asked()
-            tab.content.loaders.metadata = { _, paths, _ in
+            tab.content.loaders.metadata = { _, paths, _, _ in
                 asked.paths += paths
                 return []
             }

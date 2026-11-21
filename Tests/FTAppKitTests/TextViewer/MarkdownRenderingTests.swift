@@ -1,4 +1,5 @@
 import AppKit
+import FTFileSystem
 import FTFoundation
 import FTTestSupport
 import Testing
@@ -189,6 +190,24 @@ struct MarkdownRenderingTests {
         #expect(read[cat] == nil)
         #expect(read.tried(cat))
         #expect(read.bytes == 0)
+        // What a picture takes is told before it is decoded, from its size in pixels, as what it then takes.
+        #expect(QuickLookThumbnailRenderer.imagePixels(cat, side: MarkdownImages.side).map { $0 * 4 } == 40 * 20 * 4)
+        #expect(MarkdownImages.read([cat], spent: 0).bytes == 40 * 20 * 4)
+    }
+
+    // A picture that is a symbolic link shows as the file it leads to; a link to nothing keeps its text.
+    @Test func aPictureThatIsALinkIsReadAsItsOriginal() throws {
+        let folder = try TemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: folder.url) }
+        try png(width: 40, height: 20).write(to: folder.url.appendingPathComponent("cat.png"))
+        let link = folder.url.appendingPathComponent("link.png")
+        try FileManager.default.createSymbolicLink(atPath: link.path, withDestinationPath: "cat.png")
+        let broken = folder.url.appendingPathComponent("broken.png")
+        try FileManager.default.createSymbolicLink(atPath: broken.path, withDestinationPath: "gone.png")
+        let read = MarkdownImages.read([link, broken], spent: 0)
+        #expect(read[link]?.size == NSSize(width: 40, height: 20))
+        #expect(read[broken] == nil)
+        #expect(read.tried(broken))
     }
 
     // An HTML `<img>`, as a README writes one to size or center a picture: its picture on the disk at the size given,
@@ -219,8 +238,9 @@ struct MarkdownRenderingTests {
         #expect(first.text.string.contains("Search & results"), "its description until it is read")
         #expect(!first.text.string.contains("<p"), "the tags around a picture go")
 
-        let read = MarkdownImages.read(in: markdown, file: file)
-        #expect(read[shot] != nil, "read with the file")
+        #expect(MarkdownImages.named(in: markdown, file: file) == first.untried)
+        let read = MarkdownImages.read(first.untried, spent: 0)
+        #expect(read[shot] != nil)
         let second = MarkdownRendering.render(markdown, theme: theme, fontSize: 13, file: file, images: read)
         #expect(pictures(second.text) == [NSSize(width: 300, height: 150)])
         let found = paragraphs(second.text)

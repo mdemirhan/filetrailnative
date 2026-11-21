@@ -134,15 +134,30 @@ enum ExplorerListing {
         try? fileSystem.lstat(path)
     }
 
+    /// Which extensions the system declares packages, as far as one read has asked: a folder of thousands of
+    /// folders named alike ("lodash.merge", "v1.2") asks once for each extension, not for each folder.
+    struct PackageTypes {
+        private var known: [String: Bool] = [:]
+
+        mutating func isPackage(_ fileExtension: String, _ fileSystem: any ExplorerFileSystem) -> Bool {
+            if let answer = known[fileExtension] { return answer }
+            let answer = fileSystem.isPackageType(fileExtension)
+            known[fileExtension] = answer
+            return answer
+        }
+    }
+
     /// What an entry is: a symlink is followed to see whether its target is a file or a folder, and a
     /// folder the system shows as one item is a bundle: one named like a package (.app, .framework…), or one with
     /// another extension that has the bundle bit (the read gives it) or whose type the system declares a package,
-    /// asked once for each such folder of the read and of nothing else (`ItemNames.isPackageFolder`).
-    static func classify(_ record: DirectoryRecord, path: String, _ fileSystem: any ExplorerFileSystem) -> EntryKind {
+    /// asked once for each such extension of the read (`types`) and of nothing else (`ItemNames.isPackageFolder`).
+    static func classify(
+        _ record: DirectoryRecord, path: String, _ fileSystem: any ExplorerFileSystem, types: inout PackageTypes
+    ) -> EntryKind {
         switch record.type {
         case .directory:
             let isPackage = ItemNames.isPackageFolder(named: record.name) {
-                record.hasBundleBit || fileSystem.isPackageType(extensionName(ofName: record.name))
+                record.hasBundleBit || types.isPackage(extensionName(ofName: record.name), fileSystem)
             }
             return isPackage ? .bundle : .directory
         case .file:
@@ -166,13 +181,15 @@ enum ExplorerListing {
 
     /// What `stats` of the item at `path` make it, for an item no folder read described or a link. A folder is a
     /// bundle as `classify` says, by the name at `path` (a link's own); the system is asked about the folder itself, or
-    /// the one a link leads to.
+    /// the one a link leads to, unless a listing has told already (`listedAsPackage`): a look at a folder can cost
+    /// 20 ms (`SystemPackages`), which the details of a folder's rows would pay for every row.
     static func kind(
-        from stats: FileStats, isSymlink: Bool, path: String, _ fileSystem: any ExplorerFileSystem
+        from stats: FileStats, isSymlink: Bool, path: String, listedAsPackage: Bool? = nil,
+        _ fileSystem: any ExplorerFileSystem
     ) -> EntryKind {
         if stats.isDirectory {
             let isPackage = ItemNames.isPackageFolder(named: NodePath.basename(path)) {
-                fileSystem.isPackage(isSymlink ? (try? fileSystem.realpath(path)) ?? path : path)
+                listedAsPackage ?? fileSystem.isPackage(isSymlink ? (try? fileSystem.realpath(path)) ?? path : path)
             }
             if isPackage { return .bundle }
             return isSymlink ? .symlinkDirectory : .directory
@@ -203,12 +220,13 @@ enum ExplorerListing {
         let records = try fileSystem.readDirectory(directoryPath)
         var children: [TreeChild] = []
         var keys = NameKeys(order: order)
+        var types = PackageTypes()
         for record in records {
             let hidden = isHidden(record)
             if !includeHidden && hidden { continue }
             if trash?.isAlwaysHidden(record.name, in: directoryPath) == true { continue }
             let entryPath = join(directoryPath, record.name)
-            let kind = classify(record, path: entryPath, fileSystem)
+            let kind = classify(record, path: entryPath, fileSystem, types: &types)
             guard kind == .directory || kind == .symlinkDirectory else { continue }
             children.append(
                 TreeChild(
@@ -256,6 +274,7 @@ enum ExplorerListing {
         // The groups' values are read as an order's are: the dates and sizes from the item's look, which the folder
         // read gives, Date Last Opened and the tags with one more look at each item.
         let groupNeedsStats = groupRead == .modified || groupRead == .created || groupRead == .size
+        var types = PackageTypes()
         for folder in folders {
             // On FAT and exFAT a file's Finder flags are in its AppleDouble file ("._name") beside it, which the
             // folder read doesn't look into: an alias there is known by asking about the file, only for a file that
@@ -266,7 +285,7 @@ enum ExplorerListing {
                 if !includeHidden && hidden { continue }
                 if trash?.isAlwaysHidden(record.name, in: folder.path) == true { continue }
                 let entryPath = join(folder.path, record.name)
-                var kind = classify(record, path: entryPath, fileSystem)
+                var kind = classify(record, path: entryPath, fileSystem, types: &types)
                 if kind == .file, !appleDouble.isEmpty, appleDouble.contains(FTFoundation.NameKeys.Exact(record.name)),
                     fileSystem.isFinderAlias(entryPath)
                 {
@@ -446,10 +465,11 @@ enum ExplorerListing {
     /// used to look at any path on the disk. `listedAdded` has the Date Added the folder read gave each item that came
     /// from a listing (nil where the disk keeps none): it is shown as it is, so a row shows the date its folder is
     /// sorted by, which for a mount point is not the one the item itself gives, and no row is asked for it again.
-    /// An item not in it (a search result) is asked.
+    /// An item not in it (a search result) is asked. `listedKinds` has what the folder read made of each item, so a
+    /// folder is not asked again whether it is a package.
     static func metadataBatch(
         directoryPath: String, paths: [String], listedAdded: [DiskPath: Int64?] = [:],
-        _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler
+        listedKinds: [DiskPath: EntryKind] = [:], _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler
     ) throws -> MetadataBatch {
         let resolvedDirectoryPath = try resolveDirectoryPath(directoryPath, fileSystem)
         let directory = DiskPath(resolvedDirectoryPath)
@@ -463,7 +483,7 @@ enum ExplorerListing {
             items.append(
                 entryMetadata(
                     path: resolvedPath, added: listedAdded[DiskPath(path)].map(DateAdded.listed) ?? .unread,
-                    fileSystem, kinds: kinds))
+                    listedKind: listedKinds[DiskPath(path)], fileSystem, kinds: kinds))
         }
         return MetadataBatch(directoryPath: resolvedDirectoryPath, items: items)
     }
@@ -477,10 +497,11 @@ enum ExplorerListing {
     }
 
     private static func entryMetadata(
-        path: String, added: DateAdded, _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler
+        path: String, added: DateAdded, listedKind: EntryKind?, _ fileSystem: any ExplorerFileSystem,
+        kinds: KindLabeler
     ) -> EntryMetadata {
         // Directory sizes are intentionally deferred; everything else is cheap enough for bulk reads.
-        let details = readDetails(path: path, added: added, fileSystem, kinds: kinds)
+        let details = readDetails(path: path, added: added, listedKind: listedKind, fileSystem, kinds: kinds)
         return EntryMetadata(
             path: path, kindLabel: details.kindLabel, createdAt: details.createdAt, modifiedAt: details.modifiedAt,
             sizeBytes: details.sizeBytes, sizeStatus: details.sizeStatus, permissionMode: details.permissionMode,
@@ -500,14 +521,21 @@ enum ExplorerListing {
         var lastOpenedAt: Date?
     }
 
+    /// `listedKind`: what a folder read made of the item, which tells whether a folder is a package; everything else
+    /// is read from the item as it is now.
     private static func readDetails(
-        path: String, added: DateAdded = .unread, _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler
+        path: String, added: DateAdded = .unread, listedKind: EntryKind? = nil, _ fileSystem: any ExplorerFileSystem,
+        kinds: KindLabeler
     ) -> Details {
         let symlinkStats = safeLstat(path, fileSystem)
         let stats = safeStat(path, fileSystem)
         let metadataStats = stats ?? symlinkStats
         let isSymlink = symlinkStats?.isSymbolicLink ?? false
-        var kind = stats.map { self.kind(from: $0, isSymlink: isSymlink, path: path, fileSystem) } ?? .other
+        let listedAsPackage = listedKind.map { $0 == .bundle }
+        var kind =
+            stats.map {
+                self.kind(from: $0, isSymlink: isSymlink, path: path, listedAsPackage: listedAsPackage, fileSystem)
+            } ?? .other
         if kind == .file, fileSystem.isFinderAlias(path) {
             kind = fileSystem.aliasLeadsToFolder(path) ? .aliasDirectory : .alias
         }
@@ -578,12 +606,13 @@ enum ExplorerListing {
         let typed = NameMatcher(query.typedName, mode: .contains)
         var matches: [PathSuggestion] = []
         var keys = NameKeys(order: order)
+        var types = PackageTypes()
         for record in records {
             if !includeHidden && isHidden(record) { continue }
             if trash?.isAlwaysHidden(record.name, in: query.basePath) == true { continue }
             if let typed, !typed.isPrefix(of: record.name) { continue }
             let entryPath = join(query.basePath, record.name)
-            let kind = classify(record, path: entryPath, fileSystem)
+            let kind = classify(record, path: entryPath, fileSystem, types: &types)
             guard kind == .directory || kind == .symlinkDirectory else { continue }
             matches.append(PathSuggestion(path: entryPath, name: record.name, isDirectory: true))
             keys.append(record.name)

@@ -1,4 +1,5 @@
 import CFileTrail
+import FTFoundation
 import FTTestSupport
 import Foundation
 import Testing
@@ -371,7 +372,7 @@ struct NativeFileSystemTests {
             let path = directory.path
             // "Machine.utm" has the package bit, as a virtual machine of UTM's has; ".scptd" is a package type macOS
             // declares itself. Neither extension is on the app's list.
-            for name in ["Machine.utm", "Plain.utm", "Script.scptd", "Notes.d", "Plain", "Sample.app"] {
+            for name in ["Machine.utm", "Plain.utm", "Script.scptd", "Notes.d", "Other.d", "Plain", "Sample.app"] {
                 try FileManager.default.createDirectory(atPath: path + "/" + name, withIntermediateDirectories: false)
             }
             try Self.setPackageBit(path + "/Machine.utm")
@@ -384,16 +385,17 @@ struct NativeFileSystemTests {
             #expect(
                 kinds == [
                     "Machine.utm": .bundle, "Plain.utm": .directory, "Script.scptd": .bundle, "Notes.d": .directory,
-                    "Plain": .directory, "Sample.app": .bundle, "Link.utm": .bundle, "notes.txt": .file,
+                    "Other.d": .directory, "Plain": .directory, "Sample.app": .bundle, "Link.utm": .bundle,
+                    "notes.txt": .file,
                 ])
             // With Folders First, the packages sort with the files.
             #expect(
                 snapshot.entries.map(\.name) == [
-                    "Notes.d", "Plain", "Plain.utm", "Link.utm", "Machine.utm", "notes.txt", "Sample.app",
+                    "Notes.d", "Other.d", "Plain", "Plain.utm", "Link.utm", "Machine.utm", "notes.txt", "Sample.app",
                     "Script.scptd",
                 ])
-            // The read gives the bundle bit. The system's types are asked once for each other folder whose extension
-            // isn't on the list, and no folder is looked into but the one the link named so leads to.
+            // The read gives the bundle bit. The system's types are asked once for each extension that isn't on the
+            // list, however many folders have it, and no folder is looked into but the one the link named so leads to.
             let root = try native.realpath(path)
             let records = try native.readDirectory(root)
             #expect(Set(records.filter(\.hasBundleBit).map(\.name)) == ["Machine.utm"])
@@ -401,13 +403,21 @@ struct NativeFileSystemTests {
             #expect(disk.askedPaths == [root + "/Machine.utm"])
             // The tree doesn't open a package.
             let tree = try await service.treeChildren(path: path)
-            #expect(tree.children.map(\.name) == ["Notes.d", "Plain", "Plain.utm"])
+            #expect(tree.children.map(\.name) == ["Notes.d", "Other.d", "Plain", "Plain.utm"])
             // A package's kind is the one the system gives it, as for the packages of the list.
             let details = try await service.metadata(
                 directoryPath: path, paths: [root + "/Script.scptd", root + "/Plain.utm"])
             let labels = details.items.map(\.kindLabel)
             #expect(labels.count == 2 && labels[1] == "Folder")
             #expect(labels.first.map { !["Folder", "Bundle"].contains($0) } == true, "\(labels)")
+            // The details of a row say what its listing made of it: the folder isn't asked again.
+            let asked = disk.askedPaths
+            let listed = try await service.metadata(
+                directoryPath: path, paths: [root + "/Notes.d", root + "/Machine.utm"],
+                listedKinds: [DiskPath(root + "/Notes.d"): .directory, DiskPath(root + "/Machine.utm"): .bundle])
+            #expect(disk.askedPaths == asked)
+            #expect(listed.items.map(\.kindLabel).first == "Folder")
+            #expect(listed.items.map(\.kindLabel).last.map { $0 != "Folder" } == true)
             // A search result is a package as the listing says, by its type: fd's results aren't looked into, so a
             // folder known only by its bundle bit is a folder there.
             #expect(SearchResults.item(rootPath: root, outputPath: root + "/Script.scptd/").kind == .bundle)

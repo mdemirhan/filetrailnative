@@ -65,10 +65,10 @@ extension ExplorerWindowlessTests {
             let read = tab.content.loaders.metadata
             var asked: [DiskPath: Int64?] = [:]
             var paths: Set<String> = []
-            tab.content.loaders.metadata = { folder, batch, listedAdded in
+            tab.content.loaders.metadata = { folder, batch, listedAdded, listedKinds in
                 paths.formUnion(batch)
                 asked.merge(listedAdded) { _, new in new }
-                return await read(folder, batch, listedAdded)
+                return await read(folder, batch, listedAdded, listedKinds)
             }
             tab.perform(.viewAsDetails)
             #expect(await waitUntil { !tab.content.entries.isEmpty })

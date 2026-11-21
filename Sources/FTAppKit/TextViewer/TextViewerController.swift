@@ -72,8 +72,12 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     private let previewScroll = NSScrollView()
     /// TextKit 1, as a Markdown table is drawn with `NSTextTable`, which TextKit 2 doesn't lay out.
     private let previewView = NSTextView(usingTextLayoutManager: false)
-    /// The pictures the Markdown names, read from the disk with the file and as the Preview finds more.
+    /// The pictures the Markdown names, read from the disk as the Preview finds them: the text shows first, and the
+    /// Preview is drawn again with them.
     private var previewImages = MarkdownImages()
+    /// The file was read again after it changed on disk: its pictures are read again too, and the ones read before
+    /// stay in the Preview until then, so it keeps its place.
+    private var previewImagesAreStale = false
     /// The file whose pictures are being read (its `loadNumber`), so one read goes at a time.
     private var readingImagesFor: Int?
     /// What the Markdown Preview shows.
@@ -251,6 +255,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         // Nothing is known of the new file until it is read: the old one's kind isn't kept meanwhile.
         file = nil
         previewImages = MarkdownImages()
+        previewImagesAreStale = false
         isDirty = false
         isEditing = false
         textView.isEditable = false
@@ -292,8 +297,8 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
             self.format = format
             self.indentation = indentation
             self.language = language
-            // Read again with the file: a picture changed on disk shows as it is now.
-            previewImages = file.markdownImages
+            // Read again after the file: a picture changed on disk shows as it is now.
+            if keepingPlace { previewImagesAreStale = true }
             let place = keepingPlace ? (textView.selectedRange(), scrollView.contentView.bounds.origin) : nil
             setText(text)
             savedText = text as NSString
@@ -370,23 +375,33 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
             textView.string, theme: currentTheme, fontSize: settings.fontSize, file: fileURL, images: previewImages)
         previewView.textStorage?.setAttributedString(rendered.text)
         previewView.backgroundColor = NSColor(currentTheme.background)
-        readImages(rendered.untried)
+        if previewImagesAreStale, let fileURL {
+            readImages(MarkdownImages.named(in: textView.string, file: fileURL), again: true)
+        } else {
+            readImages(rendered.untried, again: false)
+        }
     }
 
-    /// Pictures the Preview names that weren't read with the file (one added in Edit, or a file given the Markdown
-    /// language), read off the main actor; the Preview is drawn again with them, where it was.
-    private func readImages(_ untried: [URL]) {
-        guard !untried.isEmpty, readingImagesFor != loadNumber else { return }
+    /// The pictures the Preview names and hasn't read, read off the main actor, one read at a time; the Preview is
+    /// drawn again with them, where it was. `again`: every picture the file names, read in place of those read
+    /// before.
+    private func readImages(_ urls: [URL], again: Bool) {
+        guard readingImagesFor != loadNumber else { return }
+        if again { previewImagesAreStale = false }
+        guard !urls.isEmpty else {
+            if again { previewImages = MarkdownImages() }
+            return
+        }
         let number = loadNumber
-        let spent = previewImages.bytes
+        let spent = again ? 0 : previewImages.bytes
         readingImagesFor = number
         Task { [weak self] in
-            let read = await Task.detached(priority: .userInitiated) { MarkdownImages.read(untried, spent: spent) }
+            let read = await Task.detached(priority: .userInitiated) { MarkdownImages.read(urls, spent: spent) }
                 .value
             guard let self else { return }
             if self.readingImagesFor == number { self.readingImagesFor = nil }
             guard number == self.loadNumber else { return }
-            self.previewImages.add(read)
+            if again { self.previewImages = read } else { self.previewImages.add(read) }
             guard !self.previewScroll.isHidden else { return }
             let place = self.previewScroll.contentView.bounds.origin
             self.renderPreview()

@@ -268,13 +268,13 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
     }
 
     /// The file a URL leads to, every link followed, spelled as its disk has it: what ImageIO is given to read.
-    static func linkTarget(of url: URL) -> URL {
+    public static func linkTarget(of url: URL) -> URL {
         DiskPath(urlSpelling: url)?.asOnDisk().url(isDirectory: false) ?? url
     }
 
     /// The pixels the image file's picture has when it fits in a square of `side`, never larger than the image
     /// itself; nil when the file is not an image ImageIO reads (a video, a drawing).
-    static func imagePixels(_ url: URL, side: Int) -> Int? {
+    public static func imagePixels(_ url: URL, side: Int) -> Int? {
         guard let source = CGImageSourceCreateWithURL(linkTarget(of: url) as CFURL, nil),
             let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
             let width = properties[kCGImagePropertyPixelWidth] as? Int,

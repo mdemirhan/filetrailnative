@@ -1351,10 +1351,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     func wireContent(_ pane: BrowserPane) {
         let content = pane.content
         content.loaders = ContentLoaders(
-            metadata: { [weak self] folder, paths, listedAdded in
+            metadata: { [weak self] folder, paths, listedAdded, listedKinds in
                 guard let service = self?.services.directoryService else { return [] }
                 let batch = try? await service.metadata(
-                    directoryPath: folder, paths: paths, listedAdded: listedAdded)
+                    directoryPath: folder, paths: paths, listedAdded: listedAdded, listedKinds: listedKinds)
                 return batch?.items ?? []
             },
             hiddenCount: { [weak self] folder in

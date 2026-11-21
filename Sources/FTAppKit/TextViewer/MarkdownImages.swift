@@ -2,7 +2,8 @@ import AppKit
 import FTFileSystem
 import UniformTypeIdentifiers
 
-/// The pictures a Markdown file's Preview shows, read from the disk: a path relative to the file, or a `file:` address.
+/// The pictures a Markdown file's Preview shows, read from the disk once its text is on screen: a path relative to the
+/// file, or a `file:` address.
 /// One on the web is never fetched and shows as its text, as does one that can't be read.
 struct MarkdownImages: Sendable {
     /// A picture is read at most this many pixels on its longer side: as wide as a pane at full width on a large
@@ -22,13 +23,12 @@ struct MarkdownImages: Sendable {
     /// Whether `url` (standardized) has been read or found unreadable.
     func tried(_ url: URL) -> Bool { images[url] != nil || unread.contains(url) }
 
-    /// The pictures on the disk that `markdown` names, each once, in order, read off the main actor with the file, so
-    /// its Preview shows them from the first; `file`: the Markdown file's own address.
-    nonisolated static func read(in markdown: String, file: URL) -> MarkdownImages {
+    /// The pictures on the disk that `markdown` names, each once, in order; `file`: the Markdown file's own address.
+    nonisolated static func named(in markdown: String, file: URL) -> [URL] {
         let options = AttributedString.MarkdownParsingOptions(
             allowsExtendedAttributes: false, interpretedSyntax: .full, failurePolicy: .returnPartiallyParsedIfPossible)
         guard let parsed = try? AttributedString(markdown: markdown, options: options, baseURL: file) else {
-            return MarkdownImages()
+            return []
         }
         var named: [URL] = []
         for run in parsed.runs {
@@ -39,22 +39,22 @@ struct MarkdownImages: Sendable {
                 : run.imageURL.flatMap { $0.isFileURL ? [$0.absoluteURL.standardizedFileURL] : nil } ?? []
             for url in urls where !named.contains(url) { named.append(url) }
         }
-        return read(named, spent: 0)
+        return named
     }
 
     /// Reads `urls`, off the main actor, as long as what is read stays within the budget with `spent` already taken.
+    /// A picture that wouldn't fit is told by its size in pixels and not decoded: a file of a hundred photos reads
+    /// the ones it shows.
     nonisolated static func read(_ urls: [URL], spent: Int) -> MarkdownImages {
         var read = MarkdownImages()
-        read.bytes = spent
         for url in urls {
-            guard let (image, cost) = picture(at: url), read.bytes + cost <= budget else {
+            guard let (image, cost) = picture(at: url, room: budget - spent - read.bytes) else {
                 read.unread.insert(url)
                 continue
             }
             read.images[url] = image
             read.bytes += cost
         }
-        read.bytes -= spent
         return read
     }
 
@@ -65,20 +65,23 @@ struct MarkdownImages: Sendable {
         bytes += other.bytes
     }
 
-    /// The picture at `url`, upright and its longer side at most `side`, with what it takes in memory decoded; a
-    /// drawing (SVG, PDF) as the system draws it, which takes next to nothing until it is drawn.
-    private nonisolated static func picture(at url: URL) -> (NSImage, Int)? {
-        let values = try? url.resourceValues(forKeys: [.isRegularFileKey, .contentTypeKey])
+    /// The picture at `url`, upright and its longer side at most `side`, with what it takes in memory decoded, nil
+    /// when that is more than `room`; a drawing (SVG, PDF) as the system draws it, which takes next to nothing until
+    /// it is drawn. A link is read as the file it leads to.
+    private nonisolated static func picture(at url: URL, room: Int) -> (NSImage, Int)? {
+        let target = QuickLookThumbnailRenderer.linkTarget(of: url)
+        let values = try? target.resourceValues(forKeys: [.isRegularFileKey, .contentTypeKey])
         guard values?.isRegularFile == true else { return nil }
-        if let image = QuickLookThumbnailRenderer.decodedImage(url, side: side) {
-            return (
-                NSImage(cgImage: image, size: NSSize(width: image.width, height: image.height)),
-                image.bytesPerRow * image.height
-            )
+        // Four bytes a pixel, as it is decoded: known from the file's header, before any of it is decoded.
+        if let pixels = QuickLookThumbnailRenderer.imagePixels(target, side: side), pixels * 4 > room { return nil }
+        if let image = QuickLookThumbnailRenderer.decodedImage(target, side: side) {
+            let cost = image.bytesPerRow * image.height
+            guard cost <= room else { return nil }
+            return (NSImage(cgImage: image, size: NSSize(width: image.width, height: image.height)), cost)
         }
         // ImageIO reads no drawing; NSImage does, and draws it at any size. Only these are read whole by it.
         guard let type = values?.contentType, type.conforms(to: .svg) || type.conforms(to: .pdf),
-            let image = NSImage(contentsOf: url), image.isValid, image.size.width > 0, image.size.height > 0
+            let image = NSImage(contentsOf: target), image.isValid, image.size.width > 0, image.size.height > 0
         else { return nil }
         return (image, 0)
     }

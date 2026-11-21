@@ -413,13 +413,20 @@ extension ExplorerWindowlessTests {
                 }
                 return found
             }
+            // The text shows first, and the picture once it is read.
             #expect(await waitUntil { viewer.isText })
-            #expect(widths() == [30], "read with the file")
+            #expect(await waitUntil { widths() == [30] }, "\(widths())")
+
+            // The file changed on disk, and its picture with it: the picture is read again.
+            try png(40).write(to: harness.folder.appending("one.png"))
+            try "# Notes\n\n![one](one.png)\n\n".write(
+                to: harness.folder.appending("notes.md"), atomically: true, encoding: .utf8)
+            #expect(await waitUntil { widths() == [40] }, "\(widths())")
 
             viewer.setEditing(true)
             viewer.textView.insertText("![two](two.png)\n\n", replacementRange: NSRange(location: 9, length: 0))
             viewer.setEditing(false)
-            #expect(await waitUntil { widths() == [20, 30] }, "\(widths())")
+            #expect(await waitUntil { widths() == [20, 40] }, "\(widths())")
         }
 
         @Test func escClosesAFileInPlaceThatIsNotTextAndTabGoesOnBesideTheList() async throws {

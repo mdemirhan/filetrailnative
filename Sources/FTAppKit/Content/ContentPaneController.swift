@@ -7,13 +7,16 @@ import FTFoundation
 struct ContentLoaders {
     /// Until the window wires its own.
     static let placeholder = ContentLoaders(
-        metadata: { _, _, _ in [] }, hiddenCount: { _ in 0 }, iconStore: { nil },
+        metadata: { _, _, _, _ in [] }, hiddenCount: { _ in 0 }, iconStore: { nil },
         homePath: DiskPath.home.string, openPrivacySettings: {})
 
     /// The details of items in the folder. `listedAdded` has the Date Added the folder read gave each of them that came
-    /// from a listing; the others are asked for theirs.
+    /// from a listing; the others are asked for theirs. `listedKinds` has what the folder read made of each.
     var metadata:
-        @MainActor (_ folder: String, _ paths: [String], _ listedAdded: [DiskPath: Int64?]) async -> [EntryMetadata]
+        @MainActor (
+            _ folder: String, _ paths: [String], _ listedAdded: [DiskPath: Int64?],
+            _ listedKinds: [DiskPath: FTFileSystem.EntryKind]
+        ) async -> [EntryMetadata]
     /// How many items a folder has with hidden files shown.
     var hiddenCount: @MainActor (_ folder: String) async -> Int
     var iconStore: @MainActor () -> FileIconStore?
@@ -224,9 +227,9 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     var staleMetadata: Set<String> { Set(details.stale.map(\.string)) }
     /// Details asked for and not sent yet: they go together, a batch per folder, once the rows have all asked.
     private var metadataQueue: [String] = []
-    /// The Date Added of the folder's rows asked for by their entries, as their listing gave it, until they are read:
-    /// so the rows on screen are not looked up among all of the folder's.
-    private var queuedAdded: [DiskPath: Int64?] = [:]
+    /// The Date Added and the kind of the folder's rows asked for by their entries, as their listing gave them, until
+    /// they are read: so the rows on screen are not looked up among all of the folder's.
+    private var queuedAdded: [DiskPath: (addedMs: Int64?, kind: FTFileSystem.EntryKind)] = [:]
     private var metadataFlushQueued = false
     /// The Finder tags of the rows on screen. They start over with another folder.
     private var tags = PathReadCache<[FinderTagColor]>()
@@ -1690,7 +1693,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     func requestMetadata(for entries: [DirectoryEntry]) {
         // Search results came from no folder read, and are asked for their own date.
         if searchDisplay == nil {
-            for entry in entries { queuedAdded.updateValue(entry.addedMs, forKey: DiskPath(entry.path)) }
+            for entry in entries { queuedAdded[DiskPath(entry.path)] = (entry.addedMs, entry.kind) }
         }
         requestMetadata(for: entries.map(\.path))
     }
@@ -1722,25 +1725,30 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private func readMetadata(in folder: String, _ paths: [String]) {
         let listKey = listKey
         let generation = details.generation
-        // A folder's rows have their Date Added from the folder read, the one the folder is sorted by; search
-        // results came from no folder read.
+        // A folder's rows have their Date Added from the folder read, the one the folder is sorted by, and their kind,
+        // so no folder is asked again whether it is a package; search results came from no folder read.
         var listedAdded: [DiskPath: Int64?] = [:]
+        var listedKinds: [DiskPath: FTFileSystem.EntryKind] = [:]
         if searchDisplay == nil {
             // A row asked for by its path alone (read again after it changed) is found among the folder's rows.
             var rows: [DiskPath: DirectoryEntry]?
             for path in paths {
                 let key = DiskPath(path)
-                if let added = queuedAdded.removeValue(forKey: key) {
-                    listedAdded.updateValue(added, forKey: key)
+                if let queued = queuedAdded.removeValue(forKey: key) {
+                    listedAdded.updateValue(queued.addedMs, forKey: key)
+                    listedKinds[key] = queued.kind
                 } else {
                     if rows == nil { rows = rowsByPath }
-                    if let row = rows?[key] { listedAdded.updateValue(row.addedMs, forKey: key) }
+                    if let row = rows?[key] {
+                        listedAdded.updateValue(row.addedMs, forKey: key)
+                        listedKinds[key] = row.kind
+                    }
                 }
             }
         }
         Task { @MainActor [weak self] in
             guard let self else { return }
-            let items = await self.loaders.metadata(folder, paths, listedAdded)
+            let items = await self.loaders.metadata(folder, paths, listedAdded, listedKinds)
             let belongs = NameKeys.Exact(listKey) == NameKeys.Exact(self.listKey)
             let answers = Dictionary(items.map { (DiskPath($0.path), $0) }) { $1 }
             let known = paths.filter { self.details[$0] != nil }
