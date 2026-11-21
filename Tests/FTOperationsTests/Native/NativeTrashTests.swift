@@ -61,6 +61,30 @@ struct NativeTrashTests {
         }
     }
 
+    // A link moved to the Trash is the link alone: it goes to the Trash still pointing where it did, and what it
+    // points to, a file or a folder with what is in it, stays where it is.
+    @Test(.tags(.diskImage), .diskImages)
+    func aLinkMovedToTheTrashGoesAloneAndWhatItPointsToStays() async throws {
+        TrashProbe.touch()
+        try await DiskImage.withVolume(.apfs) { volume in
+            let original = volume.path + "/original.txt"
+            let folder = volume.path + "/Folder"
+            try Files.write(original, "original")
+            try FileManager.default.createDirectory(atPath: folder, withIntermediateDirectories: false)
+            try Files.write(folder + "/inside.txt", "inside")
+            let files = FileManager.default
+            for (link, target) in [("to-file", original), ("to-folder", folder)] {
+                try files.createSymbolicLink(atPath: volume.path + "/" + link, withDestinationPath: target)
+                let inTrash = try #require(try NativeFS.trashItem(volume.path + "/" + link), "\(link) trashed")
+                #expect(inTrash.hasPrefix(volume.path + "/.Trashes"), "\(link)")
+                #expect(try files.destinationOfSymbolicLink(atPath: inTrash) == target, "\(link) is still a link")
+                #expect(!Files.exists(volume.path + "/" + link), "\(link) left its folder")
+            }
+            #expect(Files.read(original) == Array("original".utf8))
+            #expect(Files.read(folder + "/inside.txt") == Array("inside".utf8))
+        }
+    }
+
     // FAT keeps a name's accents as they were written, and its Trash finds a name only under that spelling, though
     // the disk itself finds it under either: names written composed (as Windows and cameras do) and decomposed both
     // go, whichever way the path spells them.

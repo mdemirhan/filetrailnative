@@ -32,6 +32,28 @@ struct NativeRemovalTests {
         }
     }
 
+    // A link deleted for good is the link alone: what it points to, a file or a folder with what is in it, stays.
+    @Test func deletingALinkForGoodRemovesTheLinkAndNotWhatItPointsTo() throws {
+        try withTemporaryDirectory(prefix: "native-removal") { root in
+            let files = FileManager.default
+            let folder = root.path + "/Folder"
+            try files.createDirectory(atPath: folder, withIntermediateDirectories: false)
+            try Data("inside".utf8).write(to: URL(fileURLWithPath: folder + "/inside.txt"))
+            let original = root.path + "/original.txt"
+            try Data("original".utf8).write(to: URL(fileURLWithPath: original))
+            try files.createSymbolicLink(atPath: root.path + "/to-file", withDestinationPath: original)
+            try files.createSymbolicLink(atPath: root.path + "/to-folder", withDestinationPath: folder)
+
+            for link in ["to-file", "to-folder"] {
+                try NativeWriteFileSystem().rm(root.path + "/" + link, recursive: true, force: false)
+            }
+
+            #expect(try files.contentsOfDirectory(atPath: root.path).sorted() == ["Folder", "original.txt"])
+            #expect(files.contents(atPath: root.path + "/original.txt") == Data("original".utf8))
+            #expect(files.contents(atPath: folder + "/inside.txt") == Data("inside".utf8))
+        }
+    }
+
     /// A chain of `depth` folders in the new folder `top`, each holding a file, made one from inside the other so
     /// that their paths can pass the longest a path can be.
     private static func makeChain(_ top: String, depth: Int) throws {
