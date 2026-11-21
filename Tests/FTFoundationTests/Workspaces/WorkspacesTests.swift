@@ -193,7 +193,7 @@ struct WorkspacesTests {
         #expect(
             Workspaces.folders(of: session) == ["/Users/demo/Gone", "/Users/demo/Here", "/Volumes/Away/Work"])
 
-        let gone: Set<String> = ["/Users/demo/Gone", "/Volumes/Away/Work"]
+        let gone: Set<DiskPath> = ["/Users/demo/Gone", "/Volumes/Away/Work"]
         let replaced = Workspaces.replacingGoneFolders(session, gone: gone) { path in
             path == "/Users/demo/Gone" ? "/Users/demo" : "/Volumes"
         }

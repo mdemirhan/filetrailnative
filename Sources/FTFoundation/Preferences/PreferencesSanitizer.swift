@@ -134,7 +134,7 @@ public enum PreferencesSanitizer {
 
     private static func favorites(_ value: JSONNode?, _ fallback: [FavoritePreference]) -> [FavoritePreference] {
         guard let entries = value?.array else { return fallback }
-        var seen = Set<[UInt8]>()
+        var seen = Set<DiskPath>()
         var favorites: [FavoritePreference] = []
         for entry in entries {
             guard let record = entry.object else { continue }
@@ -142,8 +142,8 @@ public enum PreferencesSanitizer {
             guard !path.isEmpty, let icon = record["icon"]?.string.flatMap({ FavoriteIconID(rawValue: $0) }) else {
                 continue
             }
-            // De-duplicated by path, scalar for scalar.
-            if seen.insert(Array(path.utf8)).inserted {
+            // De-duplicated by path, byte for byte.
+            if seen.insert(DiskPath(path)).inserted {
                 favorites.append(FavoritePreference(path: path, icon: icon))
             }
         }

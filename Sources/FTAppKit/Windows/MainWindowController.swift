@@ -537,7 +537,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         let path = pane.shownFolderPath
         return OpenTabPreference(
             path: path.isEmpty ? nil : path, treeRootPath: treeRootPath.isEmpty ? nil : treeRootPath,
-            favoritePath: favoritePath == path ? favoritePath : nil, viewMode: pane.viewMode,
+            favoritePath: favoritePath.map(DiskPath.init) == DiskPath(path) ? favoritePath : nil,
+            viewMode: pane.viewMode,
             searchViewMode: pane.searchViewMode, sortBy: pane.sortBy, sortDirection: pane.sortDirection,
             includeHidden: pane.includeHidden, foldersFirst: pane.foldersFirst, favoritesExpanded: favoritesExpanded,
             locationsExpanded: locationsExpanded, viewSizes: savedViewSizes(pane),

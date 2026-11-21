@@ -28,7 +28,7 @@ public struct FolderVisit: Codable, Equatable, Sendable {
 }
 
 public struct VisitedFolder: Codable, Equatable, Sendable {
-    public var path: String
+    @SavedPath public var path: String
     /// Newest first, at most `maxVisitsPerFolder`; empty for a folder only passed through.
     public var visits: [FolderVisit]
 

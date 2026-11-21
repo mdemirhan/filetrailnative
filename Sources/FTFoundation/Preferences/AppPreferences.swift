@@ -59,9 +59,9 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     /// The tabs that were open, in order, and which one was on screen.
     public var openTabs: [OpenTabPreference]
     public var activeTabIndex: Int
-    @NullEncoded public var treeRootPath: String?
-    @NullEncoded public var lastVisitedPath: String?
-    @NullEncoded public var lastVisitedFavoritePath: String?
+    @NullEncodedPath public var treeRootPath: String?
+    @NullEncodedPath public var lastVisitedPath: String?
+    @NullEncodedPath public var lastVisitedFavoritePath: String?
     public var favorites: [FavoritePreference]
     public var favoritesPlacement: FavoritesPlacement
     public var favoritesExpanded: Bool
@@ -127,9 +127,9 @@ extension WindowSession {
 public struct WindowSession: Codable, Equatable, Sendable {
     public var openTabs: [OpenTabPreference]
     public var activeTabIndex: Int
-    @NullEncoded public var treeRootPath: String?
-    @NullEncoded public var lastVisitedPath: String?
-    @NullEncoded public var lastVisitedFavoritePath: String?
+    @NullEncodedPath public var treeRootPath: String?
+    @NullEncodedPath public var lastVisitedPath: String?
+    @NullEncodedPath public var lastVisitedFavoritePath: String?
     public var viewMode: ExplorerViewMode
     public var searchViewMode: ExplorerViewMode
     public var sortBy: SortByPreference

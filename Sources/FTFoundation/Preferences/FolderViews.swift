@@ -209,7 +209,7 @@ public struct FolderViewKeeps: Codable, Equatable, Sendable {
 /// alone says whose it is, so finding a folder's view asks nothing of the disk.
 public struct FolderView: Codable, Equatable, Sendable {
     /// The folder's full path, as its listing gives it (links resolved).
-    public var path: String
+    @SavedPath public var path: String
     /// Whether the folders inside with no view of their own use this one.
     public var subfolders: Bool
     public var keeps: FolderViewKeeps
@@ -245,29 +245,36 @@ public struct FolderViewUse: Equatable, Sendable {
     }
 }
 
-/// Every folder's view, by path (`folder-views.json`).
+/// Every folder's view, by path (`folder-views.json`). A path is a folder's by its bytes: two folders whose paths
+/// differ only in how an accent is encoded, which a disk can keep apart, have a view each.
 public struct FolderViews: Equatable, Sendable {
-    public private(set) var byPath: [String: FolderView]
+    public private(set) var byPath: [DiskPath: FolderView]
 
     public init(_ views: [FolderView] = []) {
         byPath = [:]
         for view in views where !view.isEmpty && !view.path.isEmpty {
-            byPath[view.path] = view
+            byPath[DiskPath(view.path)] = view
         }
     }
 
-    /// Sorted by path, so a parent comes before the folders inside it.
-    public var all: [FolderView] { byPath.values.sorted { $0.path < $1.path } }
+    /// Sorted by path, so a parent comes before the folders inside it. The order is the one text has in Swift, which
+    /// the file has always been written in; it takes two paths that differ only in how an accent is encoded for the
+    /// same, and those two go by their bytes, so there is one order whatever is kept.
+    public var all: [FolderView] {
+        byPath.values.sorted { left, right in
+            left.path != right.path ? left.path < right.path : DiskPath(left.path) < DiskPath(right.path)
+        }
+    }
 
     public var isEmpty: Bool { byPath.isEmpty }
 
     /// The folder's own view, if it has one.
-    public func own(_ path: String) -> FolderView? { byPath[path] }
+    public func own(_ path: String) -> FolderView? { byPath[DiskPath(path)] }
 
     /// The one view a folder uses: its own, or else the nearest folder above whose view covers the folders inside.
     /// Found by the path alone, with no call to the disk.
     public func use(for path: String) -> FolderViewUse? {
-        if let own = byPath[path] {
+        if let own = byPath[DiskPath(path)] {
             return FolderViewUse(view: own, own: true)
         }
         return covering(path).map { FolderViewUse(view: $0, own: false) }
@@ -277,7 +284,7 @@ public struct FolderViews: Equatable, Sendable {
     public func covering(_ path: String) -> FolderView? {
         var parent = Self.parent(of: path)
         while let current = parent {
-            if let view = byPath[current], view.subfolders { return view }
+            if let view = byPath[DiskPath(current)], view.subfolders { return view }
             parent = Self.parent(of: current)
         }
         return nil
@@ -286,20 +293,20 @@ public struct FolderViews: Equatable, Sendable {
     /// Puts `view` in place of the folder's; an empty view removes it.
     public mutating func set(_ view: FolderView) {
         if view.isEmpty {
-            byPath[view.path] = nil
+            byPath[DiskPath(view.path)] = nil
         } else {
-            byPath[view.path] = view
+            byPath[DiskPath(view.path)] = view
         }
     }
 
     public mutating func remove(_ path: String) {
-        byPath[path] = nil
+        byPath[DiskPath(path)] = nil
     }
 
     /// The views of the folders inside `path`, at any depth, sorted by path.
     public func inside(_ path: String) -> [FolderView] {
-        let prefix = path == "/" ? "/" : path + "/"
-        return all.filter { $0.path.hasPrefix(prefix) && $0.path != path }
+        let folder = DiskPath(path)
+        return all.filter { DiskPath($0.path).isInside(folder) }
     }
 
     /// A folder renamed or moved by the app: its view and every view inside it go with it, to another disk too.
@@ -315,16 +322,18 @@ public struct FolderViews: Equatable, Sendable {
     /// that carries a view ended as views are found (its links resolved), asked once for each such move and for no
     /// other.
     public mutating func moved(_ moves: [(from: String, to: String)], destination: (String) -> String = { $0 }) {
-        let moves = moves.filter { $0.from != $0.to && !$0.from.isEmpty && !$0.to.isEmpty }
+        let moves = moves.filter { DiskPath($0.from) != DiskPath($0.to) && !$0.from.isEmpty && !$0.to.isEmpty }
         guard !moves.isEmpty, !byPath.isEmpty else { return }
-        let inside = moves.map { $0.from + "/" }
-        let lengths = moves.map(\.from.count)
+        // A view belongs to a move by its path's bytes, and what is cut off its front is counted in them.
+        let sources = moves.map { DiskPath($0.from) }
+        let lengths = moves.map(\.from.utf8.count)
         var carried: [(view: FolderView, move: Int)] = []
         for view in all {
+            let path = DiskPath(view.path)
             var deepest: Int?
-            for (index, move) in moves.enumerated()
+            for index in moves.indices
             where lengths[index] > deepest.map({ lengths[$0] }) ?? 0
-                && (view.path == move.from || view.path.hasPrefix(inside[index]))
+                && (path == sources[index] || (lengths[index] > 1 && path.isInside(sources[index])))
             {
                 deepest = index
             }
@@ -332,21 +341,22 @@ public struct FolderViews: Equatable, Sendable {
         }
         guard !carried.isEmpty else { return }
         for (view, _) in carried {
-            byPath[view.path] = nil
+            byPath[DiskPath(view.path)] = nil
         }
         var destinations: [Int: String] = [:]
         for (view, index) in carried {
             let to = destinations[index] ?? destination(moves[index].to)
             destinations[index] = to
             var view = view
-            view.path = to + view.path.dropFirst(lengths[index])
-            byPath[view.path] = view
+            let rest = view.path.utf8.index(view.path.utf8.startIndex, offsetBy: lengths[index])
+            view.path = to + view.path[rest...]
+            byPath[DiskPath(view.path)] = view
         }
     }
 
     static func parent(of path: String) -> String? {
-        guard path.count > 1, let slash = path.lastIndex(of: "/") else { return nil }
-        return slash == path.startIndex ? "/" : String(path[..<slash])
+        guard path.utf8.count > 1, let slash = path.utf8.lastIndex(of: UInt8(ascii: "/")) else { return nil }
+        return slash == path.utf8.startIndex ? "/" : String(path[..<slash])
     }
 
     // MARK: The file
@@ -388,7 +398,7 @@ public struct FolderViews: Equatable, Sendable {
     /// read is not kept. Throws when the file as a whole isn't one of the app's.
     public static func read(_ data: Data) throws -> FolderViews {
         let file = try JSONDecoder().decode(File.self, from: data)
-        return FolderViews(file.views.compactMap(\.view).filter { $0.path.hasPrefix("/") })
+        return FolderViews(file.views.compactMap(\.view).filter { $0.path.utf8.first == UInt8(ascii: "/") })
     }
 
     /// As `read`, a file that can't be read being no views.
@@ -446,7 +456,7 @@ public struct FolderViewOnScreen: Equatable, Sendable {
     /// rest shows what is saved.
     public func taking(_ use: FolderViewUse) -> FolderViewOnScreen {
         var next = FolderViewOnScreen(use)
-        guard next.use.view.path == self.use.view.path else { return next }
+        guard DiskPath(next.use.view.path) == DiskPath(self.use.view.path) else { return next }
         for setting in unsaved {
             next.shown.take(setting, from: shown)
         }

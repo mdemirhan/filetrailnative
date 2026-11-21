@@ -152,12 +152,12 @@ final class FolderViewsWindowController: NSWindowController, NSWindowDelegate, N
 
     /// The rows again from the folders as they are now, keeping the selection where its folders still are.
     func reload() {
-        let selected = Set(selectedNodes.map(\.view.path))
+        let selected = Set(selectedNodes.map { DiskPath($0.view.path) })
         roots = FolderViewNode.tree(views.views.all)
         table.reloadData()
         table.expandItem(nil, expandChildren: true)
         let rows = (0..<table.numberOfRows).filter { row in
-            (table.item(atRow: row) as? FolderViewNode).map { selected.contains($0.view.path) } == true
+            (table.item(atRow: row) as? FolderViewNode).map { selected.contains(DiskPath($0.view.path)) } == true
         }
         table.selectRowIndexes(IndexSet(rows), byExtendingSelection: false)
         empty.isHidden = !roots.isEmpty
@@ -221,9 +221,10 @@ final class FolderViewsWindowController: NSWindowController, NSWindowDelegate, N
 
     /// A path under the home folder starts with ~.
     static func shortPath(_ path: String) -> String {
-        let home = DiskPath.home.string
-        if path == home { return "~" }
-        return path.hasPrefix(home + "/") ? "~" + path.dropFirst(home.count) : path
+        let home = DiskPath.home
+        if DiskPath(path) == home { return "~" }
+        guard DiskPath(path).isInside(home), home.string.utf8.count > 1 else { return path }
+        return "~" + path[path.utf8.index(path.utf8.startIndex, offsetBy: home.string.utf8.count)...]
     }
 
     // MARK: Actions
@@ -249,7 +250,8 @@ final class FolderViewsWindowController: NSWindowController, NSWindowDelegate, N
 
     /// The customized folders inside any of `paths` (not those folders themselves).
     static func insideAny(_ paths: [String], of views: FolderViews) -> [String] {
-        Array(Set(paths.flatMap { views.inside($0).map(\.path) }).subtracting(paths)).sorted()
+        let inside = Set(paths.flatMap { views.inside($0).map { DiskPath($0.path) } })
+        return inside.subtracting(paths.map { DiskPath($0) }).sorted().map(\.string)
     }
 
     @objc private func askToRemoveAll() {
@@ -311,42 +313,52 @@ final class FolderViewNode {
         self.parent = parent
     }
 
-    /// `views` as a tree: each under the nearest folder above it that is customized too, each level by name.
+    /// `views` as a tree: each under the nearest folder above it that is customized too, each level by name. A
+    /// folder is one by its path's bytes, as its view is kept: two whose paths differ only in how an accent is
+    /// encoded are two rows.
     static func tree(_ views: [FolderView]) -> [FolderViewNode] {
-        let paths = Set(views.map(\.path))
-        func parent(of path: String) -> String? {
-            var current = (path as NSString).deletingLastPathComponent
-            while current != path, !current.isEmpty {
-                if paths.contains(current) { return current }
-                if current == "/" { return nil }
-                current = (current as NSString).deletingLastPathComponent
+        let paths = Set(views.map { DiskPath($0.path) })
+        func parent(of path: DiskPath) -> String? {
+            var current = path.parent
+            while current != path {
+                if paths.contains(current) { return current.string }
+                if current.string.utf8.count <= 1 { return nil }
+                current = current.parent
             }
             return nil
         }
-        let nodes = Dictionary(
-            uniqueKeysWithValues: views.map { ($0.path, FolderViewNode($0, parent: parent(of: $0.path))) })
+        var nodes: [DiskPath: FolderViewNode] = [:]
+        for view in views {
+            let path = DiskPath(view.path)
+            nodes[path] = FolderViewNode(view, parent: parent(of: path))
+        }
         var roots: [FolderViewNode] = []
         for node in nodes.values {
-            if let above = node.parent, let parent = nodes[above] {
+            if let above = node.parent, let parent = nodes[DiskPath(above)] {
                 parent.children.append(node)
             } else {
                 roots.append(node)
             }
         }
         // Inside a folder, by where each is from it; at the top, the home folder's first.
-        let home = DiskPath.home.string
+        let home = DiskPath.home
         func key(_ node: FolderViewNode) -> (Int, String) {
+            let path = node.view.path
             guard let parent = node.parent else {
-                let mine = node.view.path == home || node.view.path.hasPrefix(home + "/")
-                return (mine ? 0 : 1, node.view.path)
+                return (DiskPath(path).isAtOrInside(home) ? 0 : 1, path)
             }
-            return (0, String(node.view.path.dropFirst(parent == "/" ? 1 : parent.count + 1)))
+            // What follows the folder above and its slash, counted in bytes as the two paths are matched.
+            let rest = path.utf8.index(path.utf8.startIndex, offsetBy: parent == "/" ? 1 : parent.utf8.count + 1)
+            return (0, String(path[rest...]))
         }
         func sorted(_ nodes: [FolderViewNode]) -> [FolderViewNode] {
             for node in nodes { node.children = sorted(node.children) }
             return nodes.sorted {
                 let (a, b) = (key($0), key($1))
-                return a.0 != b.0 ? a.0 < b.0 : a.1.localizedStandardCompare(b.1) == .orderedAscending
+                if a.0 != b.0 { return a.0 < b.0 }
+                let order = a.1.localizedStandardCompare(b.1)
+                // Two names that read the same go by their bytes, so the rows have one order.
+                return order == .orderedSame ? DiskPath(a.1) < DiskPath(b.1) : order == .orderedAscending
             }
         }
         return sorted(roots)

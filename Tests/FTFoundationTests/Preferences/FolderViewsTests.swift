@@ -420,4 +420,87 @@ struct FolderViewsTests {
         // The same folder's view from above taken over as its own (the folder above itself): never set there.
         #expect(!pending.taking(FolderViewUse(view: above, own: true)).becomesOwn)
     }
+
+    // MARK: A path is its bytes
+
+    /// "café" with its "é" as one scalar and with the accent apart: one path to Swift's `==`, and two names a disk
+    /// can keep side by side.
+    private static let composed = "/Volumes/Card/caf\u{E9}"
+    private static let decomposed = "/Volumes/Card/cafe\u{301}"
+
+    private func bytes(_ paths: [String?]) -> [[UInt8]?] { paths.map { $0.map { Array($0.utf8) } } }
+
+    @Test func twoFoldersWhosePathsDifferOnlyInAnAccentsEncodingHaveAViewEach() {
+        let icons = FolderViewKeeps(view: .icons)
+        var views = FolderViews([
+            FolderView(path: Self.decomposed, subfolders: true, keeps: Self.previews),
+            FolderView(path: Self.composed, keeps: icons),
+        ])
+
+        #expect(views.all.count == 2)
+        #expect(views.own(Self.decomposed)?.keeps == Self.previews)
+        #expect(views.own(Self.composed)?.keeps == icons)
+        // Each covers its own folders, and no other's.
+        #expect(bytes([views.use(for: Self.decomposed + "/2019")?.view.path]) == bytes([Self.decomposed]))
+        #expect(views.use(for: Self.composed + "/2019") == nil)
+        #expect(bytes(views.inside("/Volumes/Card").map(\.path)) == bytes([Self.decomposed, Self.composed]))
+        #expect(views.inside(Self.composed).isEmpty)
+
+        // A change of one leaves the other.
+        views.set(FolderView(path: Self.composed, keeps: FolderViewKeeps(view: .list)))
+        #expect(views.own(Self.decomposed)?.keeps == Self.previews)
+        views.remove(Self.composed)
+        #expect(views.own(Self.composed) == nil)
+        #expect(views.own(Self.decomposed)?.keeps == Self.previews)
+        #expect(views.all.count == 1)
+    }
+
+    @Test func aMoveCarriesTheViewsOfItsOwnSpellingOnly() {
+        var views = FolderViews([
+            FolderView(path: Self.decomposed, keeps: Self.previews),
+            FolderView(path: Self.decomposed + "/2019", keeps: Self.previews),
+            FolderView(path: Self.composed, keeps: FolderViewKeeps(view: .icons)),
+            FolderView(path: Self.composed + "/2019", keeps: FolderViewKeeps(view: .icons)),
+        ])
+
+        views.moved(from: Self.composed, to: "/Volumes/Card/bistro")
+
+        #expect(views.own("/Volumes/Card/bistro")?.keeps.view == .icons)
+        #expect(views.own("/Volumes/Card/bistro/2019")?.keeps.view == .icons)
+        #expect(views.own(Self.composed) == nil)
+        #expect(views.own(Self.decomposed)?.keeps == Self.previews)
+        #expect(views.own(Self.decomposed + "/2019")?.keeps == Self.previews)
+        #expect(views.all.count == 4)
+    }
+
+    // The file's order is the order text has in Swift, as it always was, whatever the paths' bytes are: a file with
+    // no path respelled is written as it was read. Two paths that order takes for one go by their bytes.
+    @Test func theFilesOrderIsWhatItWasAndOneOrderForPathsThatDifferOnlyInEncoding() throws {
+        let paths = [
+            "/Users/me/Pictures", "/Users/me/Pictures/Scans", "/Users/me/Pictures-old", "/Users/me/Zebra",
+            "/Users/me/apple", "/Users/me/\u{C9}t\u{E9}", "/Users/me/Ete\u{301}", "/Users/me/Eu",
+        ]
+        let views = FolderViews(paths.shuffled().map { FolderView(path: $0, keeps: Self.previews) })
+
+        #expect(bytes(views.all.map(\.path)) == bytes(paths.sorted()))
+        let read = try FolderViews.read(Data(views.serialize().utf8))
+        #expect(read.serialize() == views.serialize())
+
+        let both = [Self.composed, Self.decomposed].map { FolderView(path: $0, keeps: Self.previews) }
+        #expect(bytes(FolderViews(both).all.map(\.path)) == bytes([Self.decomposed, Self.composed]))
+        #expect(bytes(FolderViews(both.reversed()).all.map(\.path)) == bytes([Self.decomposed, Self.composed]))
+        #expect(FolderViews(both).serialize() == FolderViews(both.reversed()).serialize())
+    }
+
+    // A view on screen is the same folder's as one saved since when their paths are the same bytes.
+    @Test func whatIsChangedOnScreenStaysOnlyForTheSameSpelling() {
+        var onScreen = FolderViewOnScreen(
+            FolderViewUse(view: FolderView(path: Self.composed, keeps: Self.previews), own: true))
+        onScreen.shown.view = .icons
+        var saved = FolderView(path: Self.composed, keeps: Self.previews)
+        saved.keeps.foldersFirst = false
+        #expect(onScreen.taking(FolderViewUse(view: saved, own: true)).shown.view == .icons)
+        saved.path = Self.decomposed
+        #expect(onScreen.taking(FolderViewUse(view: saved, own: true)).shown.view == .previews)
+    }
 }

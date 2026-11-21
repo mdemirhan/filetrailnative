@@ -43,7 +43,7 @@ extension ExplorerWindows {
     private func withGoneFoldersReplaced(_ session: WindowSession) -> (session: WindowSession, tabs: Int) {
         let folders = Workspaces.folders(of: session)
         let kept = ScreenGeometry.keepsWaitingTabs(folders)
-        let gone = Set(zip(folders, kept).filter { !$0.1 }.map(\.0))
+        let gone = Set(zip(folders, kept).filter { !$0.1 }.map { DiskPath($0.0) })
         let home = home
         return Workspaces.replacingGoneFolders(session, gone: gone) { path in
             ExplorerTabs.pathAndAncestors(path).dropFirst().first { ScreenGeometry.isFolder($0) } ?? home

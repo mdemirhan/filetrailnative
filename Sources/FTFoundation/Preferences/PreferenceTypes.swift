@@ -477,7 +477,7 @@ public enum FavoriteIconID: String, Codable, CaseIterable, Sendable, Hashable {
 }
 
 public struct FavoritePreference: Codable, Equatable, Sendable {
-    public var path: String
+    @SavedPath public var path: String
     public var icon: FavoriteIconID
 
     public init(path: String, icon: FavoriteIconID) {
@@ -556,9 +556,9 @@ public struct PaneViewSizes: Codable, Equatable, Sendable {
 /// Its history, selection and search are not kept.
 public struct OpenTabPreference: Codable, Equatable, Sendable {
     /// Nil for a tab that showed no folder (Favorites selected in the sidebar).
-    @NullEncoded public var path: String?
-    @NullEncoded public var treeRootPath: String?
-    @NullEncoded public var favoritePath: String?
+    @NullEncodedPath public var path: String?
+    @NullEncodedPath public var treeRootPath: String?
+    @NullEncodedPath public var favoritePath: String?
     public var viewMode: ExplorerViewMode
     /// How the tab shows search results, kept apart from how it shows folders.
     public var searchViewMode: ExplorerViewMode
@@ -647,7 +647,7 @@ public struct OpenTabPreference: Codable, Equatable, Sendable {
 /// A tab's second pane as it is saved: its folder and how it shows it.
 public struct OpenPanePreference: Codable, Equatable, Sendable {
     /// Nil for a pane that showed no folder.
-    public var path: String?
+    @SavedPathIfAny public var path: String?
     public var viewMode: ExplorerViewMode
     public var searchViewMode: ExplorerViewMode
     public var sortBy: SortByPreference

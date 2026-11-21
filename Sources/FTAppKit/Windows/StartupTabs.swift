@@ -89,7 +89,7 @@ public enum StartupTabs {
         }
         return StartupTab(
             path: path, rootPath: persistedRoot(tab.treeRootPath, homePath: homePath, startupPath: path),
-            favoritePath: tab.favoritePath == path ? path : nil, viewMode: tab.viewMode,
+            favoritePath: tab.favoritePath.map(DiskPath.init) == DiskPath(path) ? path : nil, viewMode: tab.viewMode,
             searchViewMode: tab.searchViewMode, sortBy: tab.sortBy, sortDirection: tab.sortDirection,
             includeHidden: tab.includeHidden, foldersFirst: tab.foldersFirst,
             favoritesExpanded: tab.favoritesExpanded, locationsExpanded: tab.locationsExpanded)
@@ -134,9 +134,10 @@ public enum StartupTabs {
     }
 
     /// A tab saved on a favorite removed since opens as the folder it is, so a row is selected and the tree follows it.
+    /// A favorite is the tab's by its path's bytes.
     public static func withoutRemovedFavorite(_ tab: StartupTab, _ preferences: AppPreferences) -> StartupTab {
         guard preferences.favoritesInitialized, let favorite = tab.favoritePath,
-            !preferences.favorites.contains(where: { $0.path == favorite })
+            !Favorites.contains(preferences.favorites, path: favorite)
         else { return tab }
         var plain = tab
         plain.favoritePath = nil
@@ -173,12 +174,13 @@ public enum StartupTabs {
                 return ([tab(homePath, root: homePath, favorite: nil)], 0)
             }
             let root = persistedRoot(preferences.treeRootPath, homePath: homePath, startupPath: last)
-            return ([tab(last, root: root, favorite: preferences.lastVisitedFavoritePath == last ? last : nil)], 0)
+            let onFavorite = preferences.lastVisitedFavoritePath.map(DiskPath.init) == DiskPath(last)
+            return ([tab(last, root: root, favorite: onFavorite ? last : nil)], 0)
         }
         var tabs = preferences.openTabs.map { startupTab($0, homePath: homePath) }
         var activeIndex = min(preferences.activeTabIndex, tabs.count - 1)
         if let startupFolderPath, !startupFolderPath.isEmpty {
-            if let existing = tabs.firstIndex(where: { $0.path == startupFolderPath }) {
+            if let existing = tabs.firstIndex(where: { DiskPath($0.path) == DiskPath(startupFolderPath) }) {
                 activeIndex = existing
             } else {
                 tabs.append(

@@ -98,12 +98,14 @@ public enum Workspaces {
 
     // MARK: Opening
 
-    /// Every folder of the session's tabs and their second panes, once each, in order.
+    /// Every folder of the session's tabs and their second panes, once each, in order. A folder is one by its path's
+    /// bytes: two paths that differ only in how an accent is encoded are two folders.
     public static func folders(of session: WindowSession) -> [String] {
-        var seen = Set<String>()
+        var seen = Set<DiskPath>()
         var folders: [String] = []
         for tab in session.openTabs {
-            for path in [tab.path, tab.secondPane?.path].compactMap({ $0 }) where seen.insert(path).inserted {
+            for path in [tab.path, tab.secondPane?.path].compactMap({ $0 })
+            where seen.insert(DiskPath(path)).inserted {
                 folders.append(path)
             }
         }
@@ -113,7 +115,7 @@ public enum Workspaces {
     /// The session with each folder in `gone` shown as `nearest` says (the nearest folder above it that is there), and
     /// how many tabs had one. A tab moved off its favorite shows the folder, not the favorite.
     public static func replacingGoneFolders(
-        _ session: WindowSession, gone: Set<String>, nearest: (String) -> String
+        _ session: WindowSession, gone: Set<DiskPath>, nearest: (String) -> String
     ) -> (session: WindowSession, tabs: Int) {
         guard !gone.isEmpty else { return (session, 0) }
         var result = session
@@ -121,12 +123,12 @@ public enum Workspaces {
         for index in result.openTabs.indices {
             var tab = result.openTabs[index]
             var changed = false
-            if let path = tab.path, gone.contains(path) {
+            if let path = tab.path, gone.contains(DiskPath(path)) {
                 tab.path = nearest(path)
                 tab.favoritePath = nil
                 changed = true
             }
-            if let path = tab.secondPane?.path, gone.contains(path) {
+            if let path = tab.secondPane?.path, gone.contains(DiskPath(path)) {
                 tab.secondPane?.path = nearest(path)
                 changed = true
             }

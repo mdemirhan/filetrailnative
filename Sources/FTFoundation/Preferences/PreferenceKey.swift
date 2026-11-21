@@ -61,9 +61,9 @@ public enum PreferenceKey: String, CaseIterable, Sendable, Hashable {
         case .restoreSessionOnStartup: .of(\.restoreSessionOnStartup)
         case .openTabs: .of(\.openTabs)
         case .activeTabIndex: .of(\.activeTabIndex)
-        case .treeRootPath: .of(\.treeRootPath)
-        case .lastVisitedPath: .of(\.lastVisitedPath)
-        case .lastVisitedFavoritePath: .of(\.lastVisitedFavoritePath)
+        case .treeRootPath: .ofPath(\.treeRootPath)
+        case .lastVisitedPath: .ofPath(\.lastVisitedPath)
+        case .lastVisitedFavoritePath: .ofPath(\.lastVisitedFavoritePath)
         case .favorites: .of(\.favorites)
         case .favoritesPlacement: .of(\.favoritesPlacement)
         case .favoritesExpanded: .of(\.favoritesExpanded)
@@ -105,6 +105,16 @@ private struct PreferenceField: @unchecked Sendable {
     static func of<Value: Equatable & Encodable>(_ keyPath: WritableKeyPath<AppPreferences, Value>) -> PreferenceField {
         PreferenceField(
             keyPath: keyPath, same: { $0[keyPath: keyPath] == $1[keyPath: keyPath] },
+            copy: { source, target in target[keyPath: keyPath] = source[keyPath: keyPath] },
+            encode: { (try? JSONNode.of($0[keyPath: keyPath])) ?? .null })
+    }
+
+    /// A field that is a folder's path: the same as another when it is the same bytes, as a `DiskPath` is. Swift's
+    /// `==` on its text would take a path respelled for no change, and it would never be written.
+    static func ofPath(_ keyPath: WritableKeyPath<AppPreferences, String?>) -> PreferenceField {
+        PreferenceField(
+            keyPath: keyPath,
+            same: { $0[keyPath: keyPath].map { DiskPath($0) } == $1[keyPath: keyPath].map { DiskPath($0) } },
             copy: { source, target in target[keyPath: keyPath] = source[keyPath: keyPath] },
             encode: { (try? JSONNode.of($0[keyPath: keyPath])) ?? .null })
     }
