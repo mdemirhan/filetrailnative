@@ -8,7 +8,7 @@ Written as instructions for the model that does the work. Each work package belo
 - Never change, regenerate or delete a file in `Tests/Golden/`. Removing a hand-written test that a golden already covers is allowed; removing the golden is not.
 - These stay whatever else happens: `UndoFuzzTests`, `BatchRenameFuzzTests`, the release-script tests, the large-file tests, the shape tests of the stop and crash recordings, `ExplorerWindowControllerTests` with `FakeWindow`, the `PlainLabel` and `SearchTextCell` drawing tests, the dialog framework's tests, the dozen Settings layout tests.
 - No benchmarks, no timing hooks. A speed guard is a `CPUTime.measureThread` bound.
-- `decisions/left-out.md` lists these as left out on purpose: duplicate tests of the same behavior, suite and folder names that no longer match their contents, the roughly 30 "nothing happened after a fixed sleep" checks, tests that depend on installed apps, the appearance or the keyboard layout. Packages 4 and 5 touch the first of these; they are marked "needs the owner's yes". Do not rename or move suites, and do not touch the fixed-sleep checks except the few named in package 2.
+- `state/tech-debt.md` lists these as left for later: duplicate tests of the same behavior, suite and folder names that no longer match their contents, the roughly 30 "nothing happened after a fixed sleep" checks, tests that depend on installed apps, the appearance or the keyboard layout. Packages 4 and 5 touch the first of these; they are marked "needs the owner's yes". Do not rename or move suites, and do not touch the fixed-sleep checks except the few named in package 2.
 - Line numbers are from commit `d545af2`. Most findings came from readers that did not run the code. Before deleting or merging a test, open both tests and confirm the claim; if it doesn't hold, skip the item and say so.
 - Before a removal, confirm the surviving test fails when the behavior is broken (break the code by hand once, see it fail, undo).
 - After each package: `scripts/ci.sh`, then compare the test count and the time with the baseline below.
@@ -139,7 +139,7 @@ FTAppKitTests (under `Tests/FTAppKitTests/`). The owner decided matching the ear
 
 ## Package 5: duplicates (needs the owner's yes)
 
-`decisions/left-out.md` lists "duplicate tests of the same behavior" as left out on purpose. Offer this list to the owner; do only what is approved. The biggest groups:
+`state/tech-debt.md` lists "duplicate tests of the same behavior" as left for later. Offer this list to the owner; do only what is approved. The biggest groups:
 
 1. Write engine, same scenario many times (under `Tests/FTOperationsTests/Execution/`):
    - "A same-disk move is a rename", 8 times: `CopyPasteExecutionRenameTests.swift:28, 209`; `CopyPasteExecutionMetadataTests.swift:172, 184`; `CopyPasteExecutionIntegrationTests.swift:10, 63`; `CopyPasteExecutionRealFSTests.swift:136, 212`. Keep `RealFS:136` and `Rename:209`.
@@ -156,7 +156,7 @@ Questions for the owner that came up:
 
 - `Execution/UndoRecordingTests.swift:99, 268` and `Undo/UndoRecordingCoordinatorTests.swift:202` pin exact `lstat` counts (7 per copied file). Any harmless extra look breaks them. Loosen to an upper bound?
 - `ExecGoldenTests.swift:27` replays each recording against itself. It helps diagnose a bad recording but adds no coverage. Keep?
-- `BatchRename/BatchRenameSheetTests.swift:75` and lines 22, 24, 70, 283 assert accessibility text. If that text exists only for VoiceOver, it falls under "VoiceOver is not a target".
+- `BatchRename/BatchRenameSheetTests.swift:75` and lines 22, 24, 70, 283 assert accessibility text. If that text exists only for VoiceOver, it falls under "VoiceOver is not a supported target".
 - ENOSPC is used as a generic "can't write" at `Execution/RuntimeSafetyWholeFolderTests.swift:266, 416`, `Execution/PartialFileTests.swift:161`, `Replace/ConflictSafetyTests.swift:423`. The rule is EIO; these pass only because one item is pasted.
 - `Navigation/FoldersThatGoAwayTests.swift:106` pins the user-facing text `"ENOENT: no such file or directory, stat '…'"`. Is that the wording wanted?
 - The golden runs carry no `.diskImages` trait, so `FILETRAIL_NO_DISK_IMAGES=1` doesn't skip them, though the comments at `ExecGoldenTests.swift:37` and `:237` say it does. Fix the comment or the trait?

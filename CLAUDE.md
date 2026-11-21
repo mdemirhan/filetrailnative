@@ -8,7 +8,7 @@ A native macOS file browser in Swift and AppKit. It's a Swift package with no Xc
 - `docs/decisions.md`: the owner's decisions, each with its reason, by area in `docs/decisions/`. Read the part that covers what is being changed before changing it.
 - `docs/process/commands.md`: what a new command needs so it is in the menus, the command palette, Help and Settings → Shortcuts. Follow it for every command added.
 - `docs/process/reviews.md`: how a review's findings are reported (blocker or not, and why what was left was left). Give it to any reviewer started for one.
-- Open issues are in `docs/state/known-issues.md` and `docs/state/battery.md`; what was learned finding a stalled test run or a permission question is in `docs/process/debugging.md`. `docs/README.md` says what is where.
+- Open issues are in `docs/state/known-issues.md` and `docs/state/battery.md`, engineering work left for later in `docs/state/tech-debt.md`; what was learned finding a stalled test run or a permission question is in `docs/process/debugging.md`. `docs/README.md` says what is where.
 
 ## Commands
 
@@ -19,19 +19,18 @@ A native macOS file browser in Swift and AppKit. It's a Swift package with no Xc
 - One `scripts/ci.sh` or `swift test` at a time on this Mac: several at once stall each other. Agents working side by side put every such run behind one lock (`/usr/bin/lockf <scratch>/filetrail-ci.lock scripts/ci.sh --scope '…'`), keep their runs scoped, and leave the one full run for the end; a plain `swift build` may run outside it. Say so in the brief of any agent that may run tests.
 - A run that stalls or fails now and then is looked into, not run again: `docs/process/debugging.md`.
 - App: `scripts/build-app.sh`, then `open "build/File Trail.app"`. To try a change by hand, `scripts/build-app.sh debug` and a scratch `--automation` scenario: `tools/capture/README.md`.
-- Release: `scripts/release.sh <major|minor|patch|X.Y.Z> --notes <file>` makes a draft GitHub release; publishing stays manual. A release is `minor` unless the owner asks otherwise, and its notes are short points in plain sentences for the people who use the app: what they can now do and what no longer goes wrong, commands named by their menus, fixes given as much care as features, never how it works or strings of keys (`docs/decisions/code.md` says how they are written). The notes are written for people before it starts and become the draft's text and the tag's message. It measures the frame times of scrolling, shows them against the last release on the same Mac model, stops on a clear slowdown, and keeps them in `docs/frame-timings.json` in the commit it tags. A release run by an agent shows the owner that table once the draft is made, and is published only with the owner's explicit yes.
+- Release: `scripts/release.sh <major|minor|patch|X.Y.Z> --notes <file>` makes a draft GitHub release; publishing stays manual. A release is `minor` unless the owner asks otherwise. Its notes are written before it starts, for the people who use the app, as `docs/decisions/code.md` ("Release notes are written for the people who use the app") says, and become the draft's text and the tag's message. It measures the frame times of scrolling against the last release on the same Mac model and keeps them in `docs/frame-timings.json`. A release run by an agent shows the owner that table once the draft is made, and is published only with the owner's explicit yes.
 - README screenshots: `scripts/readme-screenshots.sh`.
 
 ## Test data
 
-- `Tests/Golden/*.json` are expected results kept by hand; some were first recorded from the Electron app. Their expected outputs are edited by hand, never regenerated from the code's output; whoever makes a change updates the goldens it moves, without asking the owner, each value checked against what the change should do, and none is deleted without the owner's yes; only a new input field that follows from a case's other inputs may be added by script (`docs/decisions/code.md`). Six of them (shortcuts, command availability, preferences, the toolbar, right-click menus, Help) are written as bases and each case's changes to its base (`Tests/FTTestSupport/GoldenChanges.swift`), so what every case shares changes in one place.
+- `Tests/Golden/*.json` are expected results kept by hand (some were first recorded from the Electron app), never regenerated from the code's output. Whoever makes a change updates the goldens it moves, without asking the owner, each value checked against what the change should do; none is deleted without the owner's yes. The rules, the one exception and the bases-and-changes layout are in `docs/decisions/code.md` ("Goldens are expected results kept by hand").
 - Fixtures are built by `bun tools/fixtures/generate.ts` (it needs [Bun](https://bun.sh)) into `~/Library/Caches/filetrail-dev`. The tests that read them are skipped without them; `scripts/release.sh` refuses to start.
 - Comments describe this app on its own terms: no record IDs (`B-…`, `F-…`, `T-…`), "Port of …" headers, Electron file or function names, or comparisons with "the original".
 
 ## Design
 
-- Prefer the system's look on current macOS: Liquid Glass for tabs and toolbars, Finder's symbols. Font sizes and row heights stay the app's own, not Finder's.
-- A window holds at most 25 tabs.
+- The system's look and Finder's commands, keys and order, except where `docs/decisions.md` says otherwise (the standing decisions there, and the keys that differ from Finder's in `docs/decisions/windows-and-panes.md`).
 
 ## Working in this repository
 
@@ -41,4 +40,4 @@ A native macOS file browser in Swift and AppKit. It's a Swift package with no Xc
 
 ## Benchmarks
 
-- Only a few, and only ones that gate a release: today the frame times of scrolling (`FrameTimeGUITests`, run by `scripts/release.sh`, limits in `scripts/lib/frame-timing-limits.sh`). None run in plain CI. No other bench scripts, benchmark tests, budgets or `--bench` modes; a CPU-time test (`CPUTime.measureThread`) guards a speed fix where one is needed.
+- Only the frame times of scrolling, which gate a release (`docs/decisions/code.md`, "A few benchmarks gate a release"). No other bench scripts, benchmark tests, budgets or `--bench` modes; a CPU-time test (`CPUTime.measureThread`) guards a speed fix where one is needed.

@@ -1,6 +1,6 @@
 # Archives
 
-The plan for archives in File Trail. The owner's decisions behind it are in [decisions/archives.md](../decisions/archives.md) ("Archives are made and taken apart with the system's libarchive", "Archives will be browsed as read-only folders", and "Search inside archives" under "Left out on purpose").
+The plan for archives in File Trail. The owner's decisions behind it are in [decisions/archives.md](../decisions/archives.md) ("Archives are made and taken apart with the system's libarchive", "Archives will be browsed as read-only folders", and "Search doesn't look inside archives" in [decisions/names-and-search.md](../decisions/names-and-search.md)).
 
 ## Phase 1: Compress and Extract (done)
 

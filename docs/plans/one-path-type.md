@@ -199,7 +199,7 @@ A combining mark right after a slash glues to it as one `Character`, so `hasPref
 ### Encoding and saved formats
 
 - No saved file's format changes and no golden's expected output changes. `git diff --stat Tests/Golden` must be empty at every commit. 33 of the 48 goldens hold paths.
-- The Undo types and the journal keep their hand-written `Codable` (`docs/decisions/code.md`); they only swap `String` for `.string` and `DiskPath(_:)`.
+- The Undo types and the journal keep their hand-written `Codable` (`docs/decisions/must-stay.md`, "The journal"); they only swap `String` for `.string` and `DiskPath(_:)`.
 - Strings from `JSONSerialization` are bridged; `DiskPath.init` makes them contiguous once. Do not build a `DiskPath` twice for one lookup on a hot path.
 - `TreeItemID`'s raw forms (`fs:<path>`, `favorite:<path>`, `location:<path>`, `favorites-root`, `locations-root`) are saved in tabs: unchanged, read and written by bytes.
 - `DiskPath`'s `<` is byte order. It is not the order names are shown in (that is the collator's), and it is not `String`'s `<` for non-ASCII text. Wherever a `sort` on paths decides a saved file's order or what a person sees, keep what it does today.

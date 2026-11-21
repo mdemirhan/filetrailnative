@@ -16,7 +16,7 @@ They hold for anyone, person or agent, who works here.
 
 ## The app
 
-- **The system's look comes first.** Prefer what macOS gives: its controls, its symbols, Liquid Glass where a surface is brief. Where Finder has a command, a key or an order of things, the app follows it, and what Finder doesn't have sits beside what it is most like. What the app keeps of its own (font sizes, row heights, its own clipboard for files) is in [decisions.md](decisions.md), each with why.
+- **The system's look comes first.** Prefer what macOS gives: its controls, its symbols, Liquid Glass where a surface is brief. Where Finder has a command, a key or an order of things, the app follows it unless a decision says otherwise, and what Finder doesn't have sits beside what it is most like. The keys that differ from Finder's are listed in one table ("The keys that differ from Finder's" in [decisions/windows-and-panes.md](decisions/windows-and-panes.md)), each with why; a new one is added there. What the app keeps of its own (font sizes, row heights, its own clipboard for files) is in [decisions.md](decisions.md), each with why.
 - **The ordinary case is the one to build for.** What most people do most of the time is to be fast, plain and without questions. A rare case gets what it needs to be safe, and no more.
 
 ## Working with the owner
