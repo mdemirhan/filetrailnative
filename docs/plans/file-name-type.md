@@ -62,6 +62,7 @@ From `docs/records/file-operations-review.md` and the work since; confirm each i
 - Name-keyed caches that hold display text (`CompactListViewController.nameWidths`, `IconLabelText.fitted`): two spellings share one measured width. Harmless or not?
 - `FolderWatches`' changed names, `changedNameSet`.
 - HFS+ stores an accent decomposed whatever was asked, so the name a write asked for is not the name on disk.
+- FAT and exFAT list every name decomposed but answer to an item by the spelling it was made or first looked up by since the disk was mounted ([one-path-type.md](one-path-type.md), "A disk whose listing and lookup disagree"): the name a folder's reading gives is asked of the disk, name by name.
 
 ### 4. What a type would cost
 
