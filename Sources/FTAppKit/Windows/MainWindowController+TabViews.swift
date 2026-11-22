@@ -284,8 +284,9 @@ extension MainWindowController {
     }
 
     /// `setting` shown in `pane` once `list` has settled in its folder and its own viewer, if it had one, has closed
-    /// (`closing` true). Nothing happens if either pane has gone from the tab, or another tab view was applied
-    /// meanwhile.
+    /// (`closing` true), and `pane` has settled in its own: a second pane opened again where it was closed is still
+    /// reading that folder, and its arrival there would read as the pane leaving the viewer's folder. Nothing happens
+    /// if either pane has gone from the tab, or another tab view was applied meanwhile.
     private func showViewerWhenListSettles(
         _ setting: PaneViewer, in pane: BrowserPane, beside list: BrowserPane, after closing: Task<Bool, Never>?
     ) {
@@ -296,10 +297,12 @@ extension MainWindowController {
             else { return nil }
             return (pane, list)
         }
-        let show = { [weak self, weak list] in
+        let show = { [weak self, weak list, weak pane] in
             list?.whenNavigationSettles {
-                guard let (pane, list) = stillApplies() else { return }
-                self?.showTabViewViewer(setting, in: pane, beside: list)
+                pane?.whenNavigationSettles {
+                    guard let (pane, list) = stillApplies() else { return }
+                    self?.showTabViewViewer(setting, in: pane, beside: list)
+                }
             }
         }
         guard let closing else {

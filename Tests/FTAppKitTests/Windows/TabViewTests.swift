@@ -535,7 +535,8 @@ extension ExplorerWindowlessTests {
             tab.applyTabView(id: "v")
             #expect(await waitUntil { tab.panes[0].viewer != nil })
             #expect(samePath(tab.panes[1].folderPath, beta))
-            #expect(samePath(tab.panes[0].viewer?.folderPath ?? "", beta))
+            // It gives way when its own pane leaves the folder it is in, not when the list moves on.
+            #expect(samePath(tab.panes[0].viewer?.folderPath ?? "", real(harness)))
         }
 
         // A one-pane tab view applied with the viewer active keeps the list, never the viewer alone; forgetting the
@@ -612,6 +613,52 @@ extension ExplorerWindowlessTests {
             }
             tab.applyTabView(id: "v")
             #expect(await waitUntil { tab.panes[1].viewer == nil && tab.panes[0].viewer != nil })
+        }
+
+        // A second pane closed in another folder than the list's comes back with the viewer the tab view gives it:
+        // the pane reading the folder it was closed in is not the pane leaving the viewer's folder.
+        @Test func aViewerTabViewShowsInASecondPaneOpenedAgainElsewhere() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            tab.setMode(.icons)
+            tab.updatePreferences {
+                $0.tabViews = [
+                    viewerView(
+                        "v",
+                        TabViewKeeps(
+                            panes: 2, divider: .share(0.2), left: PaneKeeps(view: FolderViewKeeps(view: .details)),
+                            right: PaneKeeps(viewer: PaneViewer())))
+                ]
+            }
+            tab.applyTabView(id: "v")
+            #expect(await waitUntil { tab.panes.count == 2 && tab.panes[1].viewer != nil })
+            await settled(tab)
+            let file = real(harness, "Beta") + "/Code.swift"
+            try "let x = 1".write(toFile: file, atomically: true, encoding: .utf8)
+            await go(tab, harness, "Beta")
+            tab.panes[0].content.select(paths: [file])
+            #expect(await waitUntil { tab.panes[1].viewer?.path.map { samePath($0, file) } == true })
+
+            // ⌘W in the viewer's pane closes the file, then the pane.
+            tab.focusPane(tab.panes[1])
+            tab.closePaneLeavingViewer()
+            #expect(await waitUntil { tab.panes[1].viewer == nil })
+            tab.closePaneLeavingViewer()
+            #expect(await waitUntil { tab.panes.count == 1 })
+            #expect(tab.closedSecondPane.map { samePath($0.start.path, real(harness)) } == true)
+
+            tab.applyTabView(id: "v")
+            #expect(await waitUntil { tab.panes.count == 2 })
+            // The pane opened again reads the folder it was closed in, which isn't the list's.
+            let reopened = tab.panes[1]
+            await withCheckedContinuation { done in reopened.whenFirstReadFinished { _ in done.resume() } }
+            #expect(samePath(reopened.folderPath, real(harness)))
+            #expect(await waitUntil { reopened.viewer != nil })
+            await settled(tab)
+            #expect(
+                tab.panes[1].viewer?.path.map { samePath($0, file) } == true, "the viewer stays once its pane has read")
+            #expect(tab.activePane === tab.panes[0])
         }
     }
 }

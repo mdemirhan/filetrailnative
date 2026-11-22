@@ -153,7 +153,6 @@ extension MainWindowController {
         let mode: TextViewerController.Mode = setting.follows ? .following : .pinned
         guard let viewer = pane.viewer else {
             let viewer = makeViewer(in: pane, mode: mode)
-            viewer.folderPath = list.shownFolderPath
             viewer.show(leadPath(of: list), editing: setting.editing)
             focusPane(list)
             notify(.panels)
@@ -167,7 +166,7 @@ extension MainWindowController {
             return
         }
         if Self.isShown(leadPath(of: list), in: viewer), viewer.isEditing == setting.editing {
-            follow(with: viewer, mode: mode, beside: list)
+            follow(with: viewer, in: pane, mode: mode, beside: list)
             return
         }
         Task { [weak self] in
@@ -176,16 +175,20 @@ extension MainWindowController {
             }
             // The question may have been open a while: the viewer may be gone, and the list may select another file.
             guard let self, pane.viewer === viewer else { return }
-            follow(with: viewer, mode: mode, beside: list)
+            follow(with: viewer, in: pane, mode: mode, beside: list)
             viewer.show(leadPath(of: list), editing: setting.editing)
         }
     }
 
-    /// `viewer` follows `list` as `mode` says, the keyboard in the list.
-    private func follow(with viewer: TextViewerController, mode: TextViewerController.Mode, beside list: BrowserPane) {
+    /// `viewer`, in `pane`, follows `list` as `mode` says, the keyboard in the list. It gives way when `pane` goes
+    /// to another folder, so it holds `pane`'s folder, not the list's: the two are apart once the list has moved on.
+    private func follow(
+        with viewer: TextViewerController, in pane: BrowserPane, mode: TextViewerController.Mode,
+        beside list: BrowserPane
+    ) {
         viewer.mode = mode
         viewer.position = nil
-        viewer.folderPath = list.shownFolderPath
+        viewer.folderPath = pane.shownFolderPath
         focusPane(list)
         commandsChanged()
     }
