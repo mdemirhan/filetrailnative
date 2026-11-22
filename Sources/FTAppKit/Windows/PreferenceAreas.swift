@@ -49,7 +49,8 @@ extension PreferenceKey {
         case .detailColumns, .detailColumnOrder, .searchColumns, .searchColumnOrder:
             // The menus check the columns shown.
             [.columns, .commands]
-        case .detailColumnWidths, .searchColumnWidths, .compactListWidths, .iconSizes, .previewCounts:
+        case .detailColumnWidths, .searchColumnWidths, .compactListWidths, .iconSizes, .previewCounts,
+            .searchCompactListWidths, .searchIconSizes, .searchPreviewCounts:
             .columns
         case .shortcutOverrides:
             // The size slider names the keys of the size commands.

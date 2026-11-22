@@ -89,20 +89,22 @@ extension ExplorerToolbar {
     func sortMenu(anchor: ToolbarButton) {
         guard let context else { return }
         let view = context.viewState
-        var items = SortByPreference.menuOrder.map { value in
+        let canRun = context.commandAvailability()
+        let (current, sortDirection) = view.sortCommand
+        var items = Self.sortRows.map { row in
             AppMenuItem(
-                title: value.title, checked: view.sortBy == value,
+                title: row.title, checked: row.command == current, enabled: canRun(row.command),
                 action: { [weak self] in
-                    if value != view.sortBy { self?.context?.perform(Self.sortCommand(value)) }
+                    if row.command != current { self?.context?.perform(row.command) }
                 })
         }
         items.append(.separator)
         for direction in [SortDirectionPreference.asc, .desc] {
             items.append(
                 AppMenuItem(
-                    title: direction == .asc ? "Ascending" : "Descending", checked: view.sortDirection == direction,
+                    title: direction == .asc ? "Ascending" : "Descending", checked: sortDirection == direction,
                     action: { [weak self] in
-                        if direction != view.sortDirection { self?.context?.perform(Self.sortCommand(view.sortBy)) }
+                        if direction != sortDirection { self?.context?.perform(current) }
                     }))
         }
         // One last item for the groups, named for the grouping in use, so the menu stays short.
@@ -165,17 +167,12 @@ extension ExplorerToolbar {
         present(AppMenu(items: items, identifier: "toolbarMenu", rowIdentifier: "toolbarMenu.item"), from: anchor)
     }
 
-    static func sortCommand(_ value: SortByPreference) -> AppCommand {
-        switch value {
-        case .name: .sortByName
-        case .kind: .sortByKind
-        case .modified: .sortByModified
-        case .created: .sortByCreated
-        case .added: .sortByAdded
-        case .lastOpened: .sortByLastOpened
-        case .size: .sortBySize
-        }
+    /// The fields the Sort menus list, as View ▸ Sort By does: Folder after Name, dimmed while a folder shows.
+    static var sortRows: [(title: String, command: AppCommand)] {
+        SearchResultsSortByPreference.menuOrder.map { ($0.title, $0.command) }
     }
+
+    static func sortCommand(_ value: SortByPreference) -> AppCommand { value.command }
 
     /// The Group button's menu: View ▸ Group By's items.
     func groupByMenu(anchor: ToolbarButton) {
@@ -193,11 +190,13 @@ extension ExplorerToolbar {
         func key(_ shortcut: ShortcutCommandID) -> MenuKeyEquivalent? {
             shortcuts.written(shortcut).flatMap(MenuKeyEquivalent.parse)
         }
+        let canRun = context.commandAvailability()
+        // An item that can't run now is dimmed, as the menu bar's: Folders First over search results.
         func toggle(_ title: String, _ shortcut: ShortcutCommandID, _ on: Bool, _ command: AppCommand)
             -> AppMenuItem
         {
             AppMenuItem(
-                title: title, key: key(shortcut), checked: on,
+                title: title, key: key(shortcut), checked: on, enabled: canRun(command),
                 action: { [weak self] in self?.context?.perform(command) })
         }
         let items: [AppMenuItem] = [
@@ -306,11 +305,14 @@ extension ExplorerToolbar {
                     return overflowItem("as \(mode.menuName)", checked: shown == mode, run: run(Self.viewCommand(mode)))
                 })
         case .sort:
+            let current = view.sortCommand.command
+            let can = canPerform ?? context.commandAvailability()
             return submenu(
                 ToolbarItems.definition(id).label,
-                SortByPreference.menuOrder.map { value in
-                    overflowItem("Sort by \(value.title)", checked: view.sortBy == value) { [weak self] in
-                        if value != view.sortBy { self?.context?.perform(Self.sortCommand(value)) }
+                Self.sortRows.map { row in
+                    overflowItem("Sort by \(row.title)", checked: row.command == current, enabled: can(row.command)) {
+                        [weak self] in
+                        if row.command != current { self?.context?.perform(row.command) }
                     }
                 })
         case .groupBy:
@@ -333,17 +335,23 @@ extension ExplorerToolbar {
                         enabled: can(.reverseGroupOrder), run: run(.reverseGroupOrder)),
                 ])
         case .viewOptions:
+            let can = canPerform ?? context.commandAvailability()
             return submenu(
                 ToolbarItems.definition(id).label,
                 [
-                    overflowItem("Folders First", checked: view.foldersFirst, run: run(.toggleFoldersFirst)),
+                    overflowItem(
+                        "Folders First", checked: view.foldersFirst, enabled: can(.toggleFoldersFirst),
+                        run: run(.toggleFoldersFirst)),
                     overflowItem("Hidden Files", checked: view.includeHidden, run: run(.toggleHiddenFiles)),
                     overflowItem("Info Panel", checked: panels.propertiesOpen, run: run(.toggleInfoPanel)),
                     overflowItem("Info Row", checked: panels.detailRowOpen, run: run(.toggleInfoRow)),
                     overflowItem("Customize Toolbar…", run: run(.customizeToolbar)),
                 ])
         case .foldersFirst:
-            return overflowItem("Folders First", checked: view.foldersFirst, run: run(.toggleFoldersFirst))
+            let can = canPerform ?? context.commandAvailability()
+            return overflowItem(
+                "Folders First", checked: view.foldersFirst, enabled: can(.toggleFoldersFirst),
+                run: run(.toggleFoldersFirst))
         case .hidden:
             return overflowItem("Hidden Files", checked: view.includeHidden, run: run(.toggleHiddenFiles))
         case .folderTree:

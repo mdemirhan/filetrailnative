@@ -8,6 +8,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
     /// How many previews the active pane shows at a time in Previews, which View ▸ Show Previews checks.
     public var previewCount: Int
     public var sortBy: SortByPreference
+    /// The order of search results while they show, which View ▸ Sort By checks in place of `sortBy`.
+    public var resultsSortBy: SearchResultsSortByPreference?
     /// What the list on screen is grouped by: search results' own while they show.
     public var groupBy = GroupByPreference.none
     /// The groups are in the reverse of their order (View ▸ Group By ▸ Reverse Group Order).
@@ -81,7 +83,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
     /// run now, and what its checkmarks show.
     public static func build(
         viewMode: ExplorerViewMode, previewCount: Int = PreviewGrid.defaultCount, sortBy: SortByPreference,
-        groupBy: GroupByPreference = .none, groupReversed: Bool = false, foldersFirst: Bool, hiddenFilesShown: Bool,
+        resultsSortBy: SearchResultsSortByPreference? = nil, groupBy: GroupByPreference = .none,
+        groupReversed: Bool = false, foldersFirst: Bool, hiddenFilesShown: Bool,
         folderTreeOpen: Bool, infoPanelOpen: Bool, infoRowOpen: Bool, twoPanesShown: Bool = false,
         filterPinned: Bool = false, favoriteIsSet: Bool, textEditing: Bool,
         pasteAsFileKind: PasteAsFileKind? = nil,
@@ -105,6 +108,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
             compressTitle: compressTitle, convertImagesCount: convertImagesCount,
             folderViewRemembered: folderViewRemembered, shownColumns: shownColumns,
             clipboardCutCount: clipboardCutCount, clipboardCopiedCount: clipboardCopiedCount)
+        state.resultsSortBy = resultsSortBy
         state.groupBy = groupBy
         state.groupReversed = groupReversed
         return state
@@ -234,7 +238,11 @@ public enum ApplicationMenu {
             return true
         }
         func checked(_ type: AppCommand) -> Bool? {
-            switch type {
+            // Search results' own order while they show, Folder among it.
+            if let results = state.resultsSortBy, let field = SearchResultsSortByPreference(command: type) {
+                return field == results
+            }
+            return switch type {
             case .viewAsIcons: state.viewMode == .icons
             case .viewAsList: state.viewMode == .list
             case .viewAsDetails: state.viewMode == .details
@@ -246,6 +254,7 @@ public enum ApplicationMenu {
                 .groupBySize, .groupByKind, .groupByTags, .groupByFolder:
                 GroupByPreference(command: type) == state.groupBy
             case .reverseGroupOrder: state.groupReversed
+            case .sortByFolder: false
             case .sortByName: state.sortBy == .name
             case .sortByModified: state.sortBy == .modified
             case .sortByCreated: state.sortBy == .created

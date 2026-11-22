@@ -147,7 +147,8 @@ extension ExplorerWindowlessTests {
                     "tabViewOptions.keep.Divider", "tabViewOptions.keep.Hidden Files", "tabViewOptions.pane",
                     "tabViewOptions.keep.Folder", "tabViewOptions.keep.View", "tabViewOptions.view",
                     "tabViewOptions.keep.Group By", "tabViewOptions.keep.Sort By", "tabViewOptions.keep.Folders First",
-                    "tabViewOptions.keep.Icon Size", "tabViewOptions.folderViews", "tabViewOptions.reset",
+                    "tabViewOptions.keep.Icon Size", "tabViewOptions.keep.Search Results", "tabViewOptions.folderViews",
+                    "tabViewOptions.reset",
                     "tabViewOptions.manage", "tabViewOptions.cancel", "tabViewOptions.save",
                 ])
             try SheetInput.choose("List", in: "tabViewOptions.view", of: sheet)

@@ -44,7 +44,8 @@ extension GroupByPreference {
 }
 
 extension GroupByPreference {
-    /// The field a column of the List shows, to group by from its header; nil for Permissions.
+    /// The field a column of the List shows, to group by from its header (Folder in search results'); nil for
+    /// Permissions.
     static func of(_ column: DetailColumn) -> GroupByPreference? {
         switch column.rawValue {
         case "name": .name
@@ -54,6 +55,7 @@ extension GroupByPreference {
         case "added": .added
         case "size": .size
         case "kind": .kind
+        case "folder": .folder
         default: nil
         }
     }
@@ -273,6 +275,11 @@ final class BrowserPane {
     }
 
     /// What Group By shows checked: search results' own while they show.
+    /// The order of the search results on screen; nil while the pane shows a folder.
+    var resultsSortBy: SearchResultsSortByPreference? {
+        guard let search = searchStore, search.showsResults else { return nil }
+        return search.session.sortBy
+    }
     var activeGroupBy: GroupByPreference { searchStore?.showsResults == true ? searchGroupBy : shownGroupBy }
 
     /// The folder's order and groups as on screen, for telling whether a change needs the folder read again.
@@ -283,11 +290,16 @@ final class BrowserPane {
 
     /// What the toolbar and the menus show: the view on screen.
     var viewState: ExplorerViewState {
-        ExplorerViewState(
+        var state = ExplorerViewState(
             viewMode: shownMode, searchViewMode: searchViewMode, sortBy: shownSortBy,
             sortDirection: shownSortDirection, includeHidden: includeHidden, foldersFirst: shownFoldersFirst,
             groupBy: shownGroupBy, searchGroupBy: searchGroupBy, groupReversed: shownGroupReversed,
             searchGroupReversed: searchGroupReversed)
+        if let search = searchStore, search.showsResults {
+            state.resultsSortBy = search.session.sortBy
+            state.resultsSortDirection = search.session.sortDirection
+        }
+        return state
     }
 
     // MARK: What the pane keeps
@@ -1336,6 +1348,21 @@ final class BrowserPane {
         guard var sizes = viewSizes ?? tab.map({ PaneViewSizes($0.preferences) }) else { return }
         change(&sizes)
         viewSizes = sizes
+    }
+
+    /// A change of what the pane keeps of its own (a size, its columns, its search results' and searches' settings):
+    /// the pane's, and the app's from now on, what a pane with nothing to copy starts from. Only what the change made
+    /// different goes to the app's, so what another pane set there meanwhile stays.
+    func changeOwnSettings(_ change: (inout PaneViewSizes) -> Void) {
+        guard let tab else { return }
+        let before = viewSizes ?? PaneViewSizes(tab.preferences)
+        var after = before
+        change(&after)
+        viewSizes = after
+        guard after != before else { return }
+        changeSharedSettings { edited in
+            edited.apply { $0 = after.changes(from: before, appliedTo: $0) }
+        }
     }
 
     /// The path bar shows the folder on screen; in search mode where the one selected result is, as Finder's does, or

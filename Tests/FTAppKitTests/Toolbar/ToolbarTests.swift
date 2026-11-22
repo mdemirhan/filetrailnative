@@ -749,7 +749,8 @@ extension ExplorerWindowlessTests {
             _ = sort.accessibilityPerformPress()
             #expect(
                 titles(menu) == [
-                    "Name", "Date Modified", "Date Created", "Date Last Opened", "Date Added", "Size", "Kind", "-",
+                    "Name", "Folder", "Date Modified", "Date Created", "Date Last Opened", "Date Added", "Size", "Kind",
+                    "-",
                     "Ascending",
                     "Descending", "-", "Group By: None",
                 ])

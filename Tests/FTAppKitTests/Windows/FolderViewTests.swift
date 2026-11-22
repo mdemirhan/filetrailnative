@@ -483,7 +483,7 @@ extension ExplorerWindowlessTests {
         }
 
         // What a pane puts back once its folder keeps a setting is what it changed there itself: a column shown from
-        // another tab meanwhile is every folder's, and stays.
+        // another tab meanwhile is that tab's own, and stays the app's, what a pane with nothing to copy starts from.
         @Test func rememberPutsBackOnlyWhatThePaneChangedItselfAndLeavesWhatAnotherTabChanged() async throws {
             let harness = try ExplorerHarness.windowless()
             let first = try await harness.open()
@@ -496,14 +496,16 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { second.activePane.loaded && !second.isNavigating })
             #expect(!first.preferences.detailColumns[.added] && !first.preferences.detailColumns[.permissions])
 
-            // The first shows Permissions in Alpha; the second then shows Date Added.
+            // The first shows Permissions in Alpha; the second then shows Date Added, in its own pane only.
             first.toggleColumn(.permissions, in: first.activePane)
             second.toggleColumn(.added, in: second.activePane)
             #expect(first.preferences.detailColumns[.added] && first.preferences.detailColumns[.permissions])
+            let shown = first.activePane.shownPreferences(first.preferences).detailColumns
+            #expect(shown[.permissions] && !shown[.added])
             first.perform(.rememberFolderView)
             // Alpha keeps the columns that were on screen; the pane's own change goes back, the other tab's stays.
             let kept = try #require(first.activePane.folderViews.views.own(real(harness, "Alpha"))?.keeps.columns)
-            #expect(kept.visibility.permissions && kept.visibility.added)
+            #expect(kept.visibility.permissions && !kept.visibility.added)
             #expect(!first.preferences.detailColumns[.permissions])
             #expect(first.preferences.detailColumns[.added])
             #expect(first.preferences.detailColumnOrder.contains(.added))
@@ -1168,10 +1170,10 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // What a pane changed of every folder's columns goes back at Remember only where nobody changed it since. A
-        // width set here and then set again in another tab stays as that tab set it; and a column shown here, then
-        // hidden and shown again in another tab, stays shown: it is as this pane left it, but it was that tab that
-        // showed it last.
+        // What a pane changed of the app's columns (what a pane with nothing to copy starts from) goes back at Remember
+        // only where nobody changed it since. A width set here and then set again in another tab stays as that tab set
+        // it; and a column shown here, then hidden and shown again in another tab, stays shown: it is as this pane left
+        // it, but it was that tab that showed it last. The other tab's changes are its own: this pane doesn't show them.
         @Test func whatAnotherTabChangedSinceStaysThoughItIsAsThisPaneLeftIt() async throws {
             let harness = try ExplorerHarness.windowless()
             let (first, _) = try await harness.openList()
@@ -1184,8 +1186,11 @@ extension ExplorerWindowlessTests {
             first.content.onColumnWidthsChanged?(draggedWidths(name: 400))
             second.content.onColumnWidthsChanged?(draggedWidths(name: 500))
             first.toggleColumn(.permissions, in: pane)
+            // The second shows it in its own pane, hides it, and shows it again.
+            second.toggleColumn(.permissions, in: second.activePane)
             second.toggleColumn(.permissions, in: second.activePane)
             #expect(!first.preferences.detailColumns.permissions)
+            #expect(pane.shownPreferences(first.preferences).detailColumns.permissions)
             second.toggleColumn(.permissions, in: second.activePane)
             #expect(first.preferences.detailColumns.permissions)
             // Shown here and left alone elsewhere: this one is the pane's to put back.

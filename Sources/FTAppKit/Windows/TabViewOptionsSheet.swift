@@ -234,6 +234,29 @@ final class TabViewOptionsSheet: SavedViewSheet {
     }
     private lazy var sizeRow = keepRow("Size", sizePopUp) { [weak self] on in self?.changePane { $0.keep(.size, on) } }
 
+    /// How the pane shows search results, kept whole: the checkbox, and under it what it keeps.
+    private lazy var searchResultsBox: ClosureButton = {
+        let box = ClosureButton(checkboxWithTitle: "Search Results") { [weak self] box in
+            self?.changePane { $0.keepsSearchResults = box.state == .on }
+        }
+        box.setAccessibilityIdentifier("tabViewOptions.keep.Search Results")
+        return box
+    }()
+    private lazy var searchResultsDetail: NSTextField = {
+        let field = NSTextField(wrappingLabelWithString: "")
+        field.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
+        field.preferredMaxLayoutWidth = contentWidth - 20
+        field.setAccessibilityIdentifier("tabViewOptions.searchResultsDetail")
+        return field
+    }()
+    private lazy var searchResultsRow: NSView = {
+        let lines = NSStackView(views: [searchResultsBox, indented(searchResultsDetail)])
+        lines.orientation = .vertical
+        lines.alignment = .leading
+        lines.spacing = 2
+        return row(lines, nil, height: 50)
+    }()
+
     // MARK: The viewer's rows
 
     private lazy var followPopUp = popUp(["On", "Off"], label: "Follow", id: "follow") { [weak self] index in
@@ -250,7 +273,7 @@ final class TabViewOptionsSheet: SavedViewSheet {
 
     private lazy var paneCard = card([
         folderRow.view, viewRow.view, groupRow.view, sortRow.view, firstRow.view, columnsRow, sizeRow.view,
-        followRow, readEditRow, viewerNoteRow,
+        searchResultsRow, followRow, readEditRow, viewerNoteRow,
     ])
 
     // MARK: Folder views
@@ -411,6 +434,7 @@ final class TabViewOptionsSheet: SavedViewSheet {
         refreshView(pane, showsViewer: showsViewer)
         refreshFolder(pane, shown: !showsViewer)
         refreshSettings(pane, shown: !showsViewer)
+        refreshSearchResults(pane, shown: !showsViewer)
         refreshViewer(pane, shown: showsViewer)
         refreshFolderViews(pane, shown: !showsViewer)
         Self.set(summary, SavedViewText.parts(draft.keeps).joined(separator: " \u{00B7} "))
@@ -537,6 +561,17 @@ final class TabViewOptionsSheet: SavedViewSheet {
             sizePopUp.setAccessibilityLabel(title)
         }
         sizeRow.show(kept: pane.kept.contains(.size))
+    }
+
+    private func refreshSearchResults(_ pane: TabViewDraft.Pane, shown: Bool) {
+        paneCard.set(searchResultsRow, shown: shown)
+        guard shown else { return }
+        let state: NSControl.StateValue = pane.keepsSearchResults ? .on : .off
+        if searchResultsBox.state != state { searchResultsBox.state = state }
+        Self.set(
+            searchResultsDetail,
+            "Results in \(pane.searchResults.summary), with their columns and sizes")
+        searchResultsDetail.textColor = pane.keepsSearchResults ? .secondaryLabelColor : .tertiaryLabelColor
     }
 
     private func refreshViewer(_ pane: TabViewDraft.Pane, shown: Bool) {

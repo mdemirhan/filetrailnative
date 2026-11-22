@@ -87,6 +87,18 @@
             "standard": 4,
             "finder": 4
           },
+          "searchCompactListWidths": {
+            "standard": 292,
+            "finder": 252
+          },
+          "searchIconSizes": {
+            "standard": 64,
+            "finder": 64
+          },
+          "searchPreviewCounts": {
+            "standard": 4,
+            "finder": 4
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -334,6 +346,18 @@
             "finder": 64
           },
           "previewCounts": {
+            "standard": 4,
+            "finder": 4
+          },
+          "searchCompactListWidths": {
+            "standard": 292,
+            "finder": 252
+          },
+          "searchIconSizes": {
+            "standard": 64,
+            "finder": 64
+          },
+          "searchPreviewCounts": {
             "standard": 4,
             "finder": 4
           },

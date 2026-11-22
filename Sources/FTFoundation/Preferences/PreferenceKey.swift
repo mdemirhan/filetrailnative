@@ -4,7 +4,7 @@ import Foundation
 public enum PreferenceKey: String, CaseIterable, Sendable, Hashable {
     case theme, accent, viewMode, searchViewMode, sortBy, sortDirection, foldersFirst, density, detailColumns
     case detailColumnOrder, detailColumnWidths, searchColumns, searchColumnOrder, searchColumnWidths
-    case compactListWidths, iconSizes, previewCounts
+    case compactListWidths, iconSizes, previewCounts, searchCompactListWidths, searchIconSizes, searchPreviewCounts
     case notificationsEnabled, markClipboardItems, autoCalculateFolderSizes, folderTreeOpen, propertiesOpen
     case detailRowOpen, topToolbarItems, terminalApp, defaultTextEditor, openWithApplications
     case diskImageOpensIn, returnKeyAction, shortcutOverrides, openItemLimit, includeHidden, searchPatternMode
@@ -39,6 +39,9 @@ public enum PreferenceKey: String, CaseIterable, Sendable, Hashable {
         case .compactListWidths: .of(\.compactListWidths)
         case .iconSizes: .of(\.iconSizes)
         case .previewCounts: .of(\.previewCounts)
+        case .searchCompactListWidths: .of(\.searchCompactListWidths)
+        case .searchIconSizes: .of(\.searchIconSizes)
+        case .searchPreviewCounts: .of(\.searchPreviewCounts)
         case .notificationsEnabled: .of(\.notificationsEnabled)
         case .markClipboardItems: .of(\.markClipboardItems)
         case .autoCalculateFolderSizes: .of(\.autoCalculateFolderSizes)

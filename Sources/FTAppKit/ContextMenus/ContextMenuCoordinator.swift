@@ -63,9 +63,9 @@ final class ContextMenuCoordinator: ContextMenuResponder {
                 surface: surface, scope: .selection, paths: entries.map(\.path), targetPath: entries[0].path,
                 entries: entries.map(Self.commandEntry))
         } else {
-            // Empty space: a short menu for the folder on screen. Search results have no single folder behind them,
-            // so there is no menu there.
-            if search || folder.isEmpty { return nil }
+            // Empty space: a short menu for the folder on screen; under search results, which have no one folder
+            // behind them, only how they are shown.
+            if !search, folder.isEmpty { return nil }
             subject = ContextMenuSubject(surface: .background, scope: .background)
         }
         return menu(for: subject)
@@ -124,8 +124,9 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             sortBy: tab.activePane.shownSortBy)
         if tab.showsTwoPanes { request.otherPane = otherPaneItems(subject, request.shortcuts) }
         if subject.surface == .background {
-            request.folderView = folderViewItems(request.shortcuts)
+            if !world.isSearchMode { request.folderView = folderViewItems(request.shortcuts) }
             request.groupBy = groupByItems(request.shortcuts)
+            if world.isSearchMode { request.resultsSortBy = resultsSortItems(request.shortcuts) }
         }
         if subject.surface == .background, let folder = MainWindowController.templatesFolderPath {
             request.templates = NewFileTemplates.names(in: folder)
@@ -244,6 +245,18 @@ final class ContextMenuCoordinator: ContextMenuResponder {
     }
 
     /// View ▸ Group By's items, as the menu bar has them now: a folder's, or search results' while they show.
+    /// Sort By's items under search results: their own fields, Folder among them, checked as they are ordered.
+    private func resultsSortItems(_ shortcuts: ShortcutDisplay) -> [OtherPaneMenuItem] {
+        let current = tab.activePane.resultsSortBy
+        return SearchResultsSortByPreference.menuOrder.map { field in
+            OtherPaneMenuItem(
+                title: field.title, command: field.command, enabled: true,
+                key: ShortcutCommandID(rawValue: field.command.rawValue).flatMap { shortcuts.written($0) }
+                    .flatMap(MenuKeyEquivalent.parse),
+                checked: current == field)
+        }
+    }
+
     private func groupByItems(_ shortcuts: ShortcutDisplay) -> [OtherPaneMenuItem] {
         let canRun = tab.commandAvailability()
         let searching = tab.searchRootPath != nil

@@ -255,6 +255,7 @@ extension MainWindowController {
             pane.tabViewOverride = nil
             pane.arrivingTabViewOverride = nil
             pane.takeTabViewSettings(paneKeeps.view)
+            if let results = paneKeeps.searchResults { pane.takeSearchResultsView(results) }
             let override = paneKeeps.choice == .folderFirst ? nil : paneKeeps
             if let folder = paneKeeps.folder, DiskPath(folder) != DiskPath(pane.folderPath) || pane.folderLetGo {
                 // The override waits for the folder to arrive, and holds there by the path its listing gives.

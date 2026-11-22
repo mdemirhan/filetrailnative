@@ -39,6 +39,17 @@
             handlers[key] = defaultHandlers[key]
         }
 
+        /// The columns, sizes and search settings a scene set are each pane's own: the tab's panes take the app's as
+        /// they are now, as a pane with nothing to copy does.
+        static func giveToPanes(_ controller: MainWindowController) {
+            let own = PaneViewSizes(controller.preferences)
+            for pane in controller.panes { pane.setViewSize { $0 = own } }
+            let options: Set<PreferenceKey> = [
+                .searchPatternMode, .searchMatchScope, .searchRecursive, .searchSkipGitFolders, .searchSkipGitIgnored,
+            ]
+            controller.search.session.applyDefaults(controller.preferences, keys: options)
+        }
+
         /// Sets the preference `key` of the window's to `value`. Every key goes by its name (`PreferenceKey`).
         static func set(_ key: PreferenceKey, _ value: Scenario.PrefValue, on controller: MainWindowController) {
             let read = read(key, value)

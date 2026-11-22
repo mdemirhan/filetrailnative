@@ -377,7 +377,8 @@ import Testing
             return
         }
         let expected: [(String, AppCommand)] = [
-            ("Name", .sortByName), ("Date Modified", .sortByModified), ("Date Created", .sortByCreated),
+            ("Name", .sortByName), ("Folder", .sortByFolder), ("Date Modified", .sortByModified),
+            ("Date Created", .sortByCreated),
             ("Date Last Opened", .sortByLastOpened),
             ("Date Added", .sortByAdded), ("Size", .sortBySize), ("Kind", .sortByKind),
         ]

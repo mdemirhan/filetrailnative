@@ -218,6 +218,8 @@ enum ApplicationMenuBuilder {
             let sortMenu = NSMenu(title: "Sort By")
             // The columns' order, as every list of them has it.
             sortMenu.addItem(context.command(.sortByName, "Name"))
+            // Search results only: dimmed while a folder shows, as Group By ▸ Folder is.
+            sortMenu.addItem(context.command(.sortByFolder, "Folder"))
             sortMenu.addItem(context.command(.sortByModified, "Date Modified"))
             sortMenu.addItem(context.command(.sortByCreated, "Date Created"))
             sortMenu.addItem(context.command(.sortByLastOpened, "Date Last Opened"))

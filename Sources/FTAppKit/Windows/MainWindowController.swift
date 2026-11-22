@@ -1449,7 +1449,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             self?.saveColumnWidths(widths, in: pane)
         }
         // A size set here is this pane's own, and the app's from now on: what a pane with none of its own starts
-        // from. The other panes keep theirs.
+        // from. The other panes keep theirs. Over search results it is the results' own size.
         // In a folder whose view keeps the size, a size set is a change of that view, unsaved until Update.
         content.onCompactListWidthChanged = { [weak self, weak pane] density, width in
             guard let pane else { return }
@@ -1457,8 +1457,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                 pane.changeShownFolderView { $0.size?.compactListWidths[density] = width }
                 return
             }
-            pane.setViewSize { $0.compactListWidths[density] = width }
-            pane.changeSharedSettings { $0.compactListWidths[density] = width }
+            let results = pane.showsSearchResults
+            pane.changeOwnSettings {
+                if results {
+                    $0.searchCompactListWidths[density] = width
+                } else {
+                    $0.compactListWidths[density] = width
+                }
+            }
             if let self { self.group?.tabChanged(self) }
         }
         content.onIconSizeChanged = { [weak self, weak pane] density, size in
@@ -1467,8 +1473,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                 pane.changeShownFolderView { $0.size?.iconSizes[density] = size }
                 return
             }
-            pane.setViewSize { $0.iconSizes[density] = size }
-            pane.changeSharedSettings { $0.iconSizes[density] = size }
+            let results = pane.showsSearchResults
+            pane.changeOwnSettings {
+                if results { $0.searchIconSizes[density] = size } else { $0.iconSizes[density] = size }
+            }
             if let self { self.group?.tabChanged(self) }
         }
         content.onPreviewCountChanged = { [weak self, weak pane] density, count in
@@ -1477,8 +1485,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                 pane.changeShownFolderView { $0.size?.previewCounts[density] = count }
                 return
             }
-            pane.setViewSize { $0.previewCounts[density] = count }
-            pane.changeSharedSettings { $0.previewCounts[density] = count }
+            let results = pane.showsSearchResults
+            pane.changeOwnSettings {
+                if results { $0.searchPreviewCounts[density] = count } else { $0.previewCounts[density] = count }
+            }
             if let self { self.group?.tabChanged(self) }
         }
         content.onHeaderMenu = { [weak self, weak pane] column in
@@ -1518,8 +1528,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                 let column = DetailColumn(rawValue: key.rawValue) ?? .name
                 kept[key] = AppPreferenceLimits.clampSearchColumnWidth(key, width(column))
             }
-            pane.setViewSize { $0.searchColumnWidths = kept }
-            updatePreferences { $0.searchColumnWidths = kept }
+            pane.changeOwnSettings { $0.searchColumnWidths = kept }
         } else {
             var kept = DetailColumnWidths.defaults
             for key in DetailColumnKey.allCases {
@@ -1531,8 +1540,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                 pane.changeShownFolderView { $0.columns?.widths = kept }
                 return
             }
-            pane.setViewSize { $0.detailColumnWidths = kept }
-            pane.changeSharedSettings { $0.detailColumnWidths = kept }
+            pane.changeOwnSettings { $0.detailColumnWidths = kept }
         }
         // Saved with the pane. A drag calls this at each step, so the folders watched aren't gone over again.
         group?.saveSession()
@@ -1704,7 +1712,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         let panels = group?.session.panels
         return ApplicationMenuState.build(
             viewMode: shownViewMode, previewCount: content.previewCount, sortBy: activePane.shownSortBy,
-            groupBy: activePane.activeGroupBy, groupReversed: activePane.activeGroupReversed,
+            resultsSortBy: activePane.resultsSortBy, groupBy: activePane.activeGroupBy,
+            groupReversed: activePane.activeGroupReversed,
             foldersFirst: activePane.shownFoldersFirst,
             hiddenFilesShown: includeHidden,
             folderTreeOpen: panels?.folderTreeOpen ?? true, infoPanelOpen: panels?.propertiesOpen ?? false,
@@ -2045,9 +2054,16 @@ extension MainWindowController: ExplorerWindowHandle {
             if let field = GroupByPreference(command: command) { activePane.setGroupBy(field) }
         case .reverseGroupOrder:
             activePane.toggleGroupReversed()
-        // Search results have an order of their own, chosen in the List view's headers.
-        case .sortByName, .sortByKind, .sortByModified, .sortByCreated, .sortByAdded, .sortByLastOpened, .sortBySize,
-            .toggleFoldersFirst:
+        // Search results have an order of their own, the pane's, Folder among it; and no Folders First.
+        case .sortByName, .sortByFolder, .sortByKind, .sortByModified, .sortByCreated, .sortByAdded,
+            .sortByLastOpened, .sortBySize, .toggleFoldersFirst:
+            if let search = activePane.searchStore, search.showsResults {
+                if let field = SearchResultsSortByPreference(command: command) {
+                    search.sort(by: field)
+                    notify(.view)
+                }
+                return
+            }
             guard searchRootPath == nil else { return }
             switch command {
             case .sortByName: sort(by: .name)
@@ -2057,6 +2073,7 @@ extension MainWindowController: ExplorerWindowHandle {
             case .sortByAdded: sort(by: .added)
             case .sortByLastOpened: sort(by: .lastOpened)
             case .sortBySize: sort(by: .size)
+            case .sortByFolder: break
             default:
                 activePane.toggleFoldersFirst()
             }

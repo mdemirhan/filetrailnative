@@ -285,6 +285,12 @@ public enum ContextMenuRules {
             }
             return hidden
         case .background:
+            // Under search results: how they are shown, and nothing of a folder, as there is no one folder behind
+            // them.
+            if world.isSearchMode {
+                hidden.formUnion(Set(ContextMenuActionID.allCases).subtracting([.viewAs, .groupBy, .sortBy]))
+                return hidden
+            }
             // Nothing is pasted into or created in the Trash; it can be emptied from there.
             if inTrash(world.currentPath) {
                 hidden.insert(.paste)

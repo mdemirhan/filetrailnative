@@ -19,6 +19,8 @@ struct ContextMenuRequest {
     var folderView: [OtherPaneMenuItem] = []
     /// What the Group By submenu offers, on the folder's background: View ▸ Group By's items.
     var groupBy: [OtherPaneMenuItem] = []
+    /// Sort By's items under search results, which have fields of their own; empty over a folder (`sortBy`).
+    var resultsSortBy: [OtherPaneMenuItem] = []
     /// The files of the Templates folder the New File submenu lists, by name in order.
     var templates: [String] = []
 }
@@ -232,6 +234,8 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
                 submenu.addItem(item)
             }
             entry.submenu = submenu
+        case .sortBy where !request.resultsSortBy.isEmpty:
+            entry.submenu = choicesMenu(entry.title, request.resultsSortBy)
         case .sortBy:
             let submenu = NSMenu(title: entry.title)
             for field in SortByPreference.menuOrder {
@@ -260,34 +264,39 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
             add("Open Templates Folder", .openTemplatesFolder)
             entry.submenu = submenu
         case .otherPane, .folderView, .groupBy:
-            let submenu = NSMenu(title: entry.title)
-            submenu.autoenablesItems = false
             let choices =
                 switch id {
                 case .otherPane: request.otherPane
                 case .groupBy: request.groupBy
                 default: request.folderView
                 }
-            for choice in choices {
-                guard let command = choice.command else {
-                    submenu.addItem(.separator())
-                    continue
-                }
-                let item = NSMenuItem(title: choice.title, action: #selector(chooseOtherPane(_:)), keyEquivalent: "")
-                item.target = self
-                item.representedObject = command.rawValue
-                item.isEnabled = choice.enabled
-                item.state = choice.checked ? .on : .off
-                if let key = choice.key {
-                    item.keyEquivalent = key.key
-                    item.keyEquivalentModifierMask = key.modifiers
-                }
-                submenu.addItem(item)
-            }
-            entry.submenu = submenu
+            entry.submenu = choicesMenu(entry.title, choices)
         default:
             break
         }
+    }
+
+    /// A submenu of commands, each run as it is chosen.
+    private func choicesMenu(_ title: String, _ choices: [OtherPaneMenuItem]) -> NSMenu {
+        let submenu = NSMenu(title: title)
+        submenu.autoenablesItems = false
+        for choice in choices {
+            guard let command = choice.command else {
+                submenu.addItem(.separator())
+                continue
+            }
+            let item = NSMenuItem(title: choice.title, action: #selector(chooseOtherPane(_:)), keyEquivalent: "")
+            item.target = self
+            item.representedObject = command.rawValue
+            item.isEnabled = choice.enabled
+            item.state = choice.checked ? .on : .off
+            if let key = choice.key {
+                item.keyEquivalent = key.key
+                item.keyEquivalentModifierMask = key.modifiers
+            }
+            submenu.addItem(item)
+        }
+        return submenu
     }
 
     /// The command's key beside a submenu's item, as the menu bar shows it.

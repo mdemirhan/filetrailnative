@@ -464,7 +464,8 @@ public enum CommandPalette {
         case .viewAsDetails: .details
         case .viewAsList: .list
         case .viewAsPreviews, .showPreviews9, .showPreviews4, .showPreviews2, .showPreviews1: .previews
-        case .sortByName, .sortByKind, .sortByModified, .sortByCreated, .sortByAdded, .sortByLastOpened, .sortBySize:
+        case .sortByName, .sortByFolder, .sortByKind, .sortByModified, .sortByCreated, .sortByAdded, .sortByLastOpened,
+            .sortBySize:
             .sortBy
         case .groupByNone, .groupByName, .groupByModified, .groupByCreated, .groupByLastOpened, .groupByAdded,
             .groupBySize, .groupByKind, .groupByTags, .groupByFolder, .reverseGroupOrder:

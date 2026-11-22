@@ -18,6 +18,7 @@
                     guard let controller = context.controller else { return .unsupported(key.rawValue) }
                     AutomationPrefs.set(key, value, on: controller)
                     controller.search.session.applyDefaults(controller.preferences, keys: [key])
+                    AutomationPrefs.giveToPanes(controller)
                     return .applied
                 }
             }
@@ -33,6 +34,7 @@
                     $0.searchResultsSortBy = sortBy
                     $0.searchResultsSortDirection = direction
                 }
+                AutomationPrefs.giveToPanes(controller)
                 return .applied
             }
             AutomationPrefs.register(.searchResultsSortDirection) { value, context in
@@ -44,6 +46,7 @@
                 let session = controller.search.session
                 session.setSort(session.sortBy, direction)
                 controller.updatePreferences { $0.searchResultsSortDirection = direction }
+                AutomationPrefs.giveToPanes(controller)
                 return .applied
             }
             AutomationPrefs.register(.searchViewMode) { value, context in
@@ -58,11 +61,7 @@
                 AutomationPrefs.register(key) { value, context in
                     guard let controller = context.controller else { return .unsupported(key.rawValue) }
                     AutomationPrefs.set(key, value, on: controller)
-                    // The widths are the panes' own: the tab's panes show these, as a drag in each would leave them.
-                    if key == .searchColumnWidths {
-                        let widths = controller.preferences.searchColumnWidths
-                        for pane in controller.panes { pane.setViewSize { $0.searchColumnWidths = widths } }
-                    }
+                    AutomationPrefs.giveToPanes(controller)
                     controller.refreshColumns()
                     return .applied
                 }

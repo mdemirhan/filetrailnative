@@ -424,14 +424,17 @@ struct CommandAvailabilityTests {
         #expect(!Self.run(.goEnclosingFolder, Self.select { $0.currentPath = "" }))
     }
 
-    @Test func leavesTheOrderOfSearchResultsToTheResultsBar() {
+    // Search results sort by every field a folder does and by their folder, and have no Folders First.
+    @Test func sortsSearchResultsByTheirFolderTooAndWithoutFoldersFirst() {
         let searching = Self.select { $0.isSearchMode = true }
-        for command in [
-            AppCommand.sortByName, .sortByModified, .sortBySize, .sortByKind, .toggleFoldersFirst,
-        ] {
+        for command in [AppCommand.sortByName, .sortByModified, .sortBySize, .sortByKind] {
             #expect(Self.run(command, Self.select()), "\(command)")
-            #expect(!Self.run(command, searching), "\(command)")
+            #expect(Self.run(command, searching), "\(command)")
         }
+        #expect(!Self.run(.sortByFolder, Self.select()))
+        #expect(Self.run(.sortByFolder, searching))
+        #expect(Self.run(.toggleFoldersFirst, Self.select()))
+        #expect(!Self.run(.toggleFoldersFirst, searching))
     }
 
     @Test func bringsBackTheLastResultsOnlyWhenThereAreSomeAndTheyAreNotOnScreen() {

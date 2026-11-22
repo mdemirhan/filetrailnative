@@ -32,6 +32,67 @@ public struct PaneViewer: Codable, Equatable, Sendable {
     }
 }
 
+/// How a pane shows search results, kept whole by a tab view: their view, order, grouping, List columns (shown, their
+/// order and widths) and sizes.
+public struct SearchResultsKeeps: Codable, Equatable, Sendable {
+    public var view: ExplorerViewMode
+    public var sortBy: SearchResultsSortByPreference
+    public var sortDirection: SortDirectionPreference
+    public var groupBy: GroupByPreference
+    public var groupReversed: Bool
+    public var columns: SearchColumnVisibility
+    public var columnOrder: [OptionalSearchColumnKey]
+    public var columnWidths: SearchColumnWidths
+    public var iconSizes: DensitySizes
+    public var compactListWidths: DensitySizes
+    public var previewCounts: DensitySizes
+
+    /// As a pane with `preferences` (its own laid over the app's) and these view and groups shows results.
+    public init(
+        _ preferences: AppPreferences, view: ExplorerViewMode, groupBy: GroupByPreference, groupReversed: Bool
+    ) {
+        self.view = view
+        sortBy = preferences.searchResultsSortBy
+        sortDirection = preferences.searchResultsSortDirection
+        self.groupBy = groupBy.isForSearch ? groupBy : .none
+        self.groupReversed = self.groupBy != .none && groupReversed
+        columns = preferences.searchColumns
+        columnOrder = preferences.searchColumnOrder
+        columnWidths = preferences.searchColumnWidths
+        iconSizes = preferences.searchIconSizes
+        compactListWidths = preferences.searchCompactListWidths
+        previewCounts = preferences.searchPreviewCounts
+    }
+
+    /// What a new install shows results with.
+    public static let defaults: SearchResultsKeeps = {
+        let preferences = AppPreferences.defaults()
+        return SearchResultsKeeps(
+            preferences, view: preferences.searchViewMode, groupBy: .none, groupReversed: false)
+    }()
+
+    /// A pane's own settings with these in place of theirs.
+    public func applied(to own: PaneViewSizes) -> PaneViewSizes {
+        var next = own
+        next.searchResultsSortBy = sortBy
+        next.searchResultsSortDirection = sortDirection
+        next.searchColumns = columns
+        next.searchColumnOrder = columnOrder
+        next.searchColumnWidths = columnWidths
+        next.searchIconSizes = iconSizes
+        next.searchCompactListWidths = compactListWidths
+        next.searchPreviewCounts = previewCounts
+        return next
+    }
+
+    /// What the sheet and the list say of it: "Icons, by Date Modified, grouped by Kind".
+    public var summary: String {
+        var parts = [view.menuName, "by \(sortBy.title.lowercased())"]
+        if groupBy != .none { parts.append("grouped by \(groupBy.title.lowercased())") }
+        return parts.joined(separator: ", ")
+    }
+}
+
 /// What a tab view keeps of one pane, each part only if kept.
 public struct PaneKeeps: Codable, Equatable, Sendable {
     /// The folder the pane goes to; nil: it stays on its folder.
@@ -42,16 +103,19 @@ public struct PaneKeeps: Codable, Equatable, Sendable {
     public var folderViews: FolderViewsChoice?
     /// The pane shows the viewer, not a folder: then it keeps nothing else, as a folder's settings don't show in it.
     public var viewer: PaneViewer?
+    /// How the pane shows search results, all of it or nothing.
+    public var searchResults: SearchResultsKeeps?
 
     public init(
         folder: String? = nil, view: FolderViewKeeps = FolderViewKeeps(), folderViews: FolderViewsChoice = .folderFirst,
-        viewer: PaneViewer? = nil
+        viewer: PaneViewer? = nil, searchResults: SearchResultsKeeps? = nil
     ) {
         self.viewer = viewer
         let list = viewer == nil
         self.folder = !list || folder?.isEmpty == true ? nil : folder
         self.view = list ? view : FolderViewKeeps()
         self.folderViews = !list || folderViews == .folderFirst ? nil : folderViews
+        self.searchResults = list ? searchResults : nil
     }
 
     /// Each part is read on its own: one that can't be read is not kept, and the others are.
@@ -61,16 +125,21 @@ public struct PaneKeeps: Codable, Equatable, Sendable {
             folder: (try? container.decode(SavedPathIfAny.self, forKey: .folder))?.wrappedValue,
             view: (try? container.decode(FolderViewKeeps.self, forKey: .view)) ?? FolderViewKeeps(),
             folderViews: (try? container.decode(FolderViewsChoice.self, forKey: .folderViews)) ?? .folderFirst,
-            viewer: try? container.decode(PaneViewer.self, forKey: .viewer))
+            viewer: try? container.decode(PaneViewer.self, forKey: .viewer),
+            searchResults: try? container.decode(SearchResultsKeeps.self, forKey: .searchResults))
     }
 
     public var choice: FolderViewsChoice { folderViews ?? .folderFirst }
 
     /// Keeps nothing and changes nothing: not kept.
-    public var isEmpty: Bool { folder == nil && view.isEmpty && folderViews == nil && viewer == nil }
+    public var isEmpty: Bool {
+        folder == nil && view.isEmpty && folderViews == nil && viewer == nil && searchResults == nil
+    }
 
     /// The same as a list: no viewer.
-    var withoutViewer: PaneKeeps { PaneKeeps(folder: folder, view: view, folderViews: choice) }
+    var withoutViewer: PaneKeeps {
+        PaneKeeps(folder: folder, view: view, folderViews: choice, searchResults: searchResults)
+    }
 }
 
 /// What a tab view keeps of a tab: each setting only if kept; nil carries over from the tab it is applied to.
@@ -213,11 +282,17 @@ public struct PaneState: Equatable, Sendable {
     public var folder: String?
     public var settings: FolderViewKeeps
     public var viewer: PaneViewer?
+    /// How the pane shows search results now.
+    public var searchResults: SearchResultsKeeps
 
-    public init(folder: String?, settings: FolderViewKeeps, viewer: PaneViewer? = nil) {
+    public init(
+        folder: String?, settings: FolderViewKeeps, viewer: PaneViewer? = nil,
+        searchResults: SearchResultsKeeps = .defaults
+    ) {
         self.folder = folder
         self.settings = settings
         self.viewer = viewer
+        self.searchResults = searchResults
     }
 }
 

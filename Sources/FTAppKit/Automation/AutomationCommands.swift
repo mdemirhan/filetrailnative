@@ -26,7 +26,7 @@
             "showPreviews2", "showPreviews1", "increaseSize", "decreaseSize", "resetSize",
             "groupByNone", "groupByName", "groupByModified", "groupByCreated", "groupByLastOpened", "groupByAdded",
             "groupBySize", "groupByKind", "groupByTags", "groupByFolder", "reverseGroupOrder",
-            "sortByName",
+            "sortByName", "sortByFolder",
             "sortByModified", "sortByCreated", "sortByAdded", "sortByLastOpened", "sortBySize", "sortByKind",
             "toggleFoldersFirst", "toggleHiddenFiles", "togglePinFilter", "goBack", "goForward", "goEnclosingFolder",
             "focusTreePane", "focusContentPane", "openHelp", "openKeyboardShortcuts",

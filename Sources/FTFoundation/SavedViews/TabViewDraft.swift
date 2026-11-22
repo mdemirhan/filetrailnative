@@ -27,6 +27,10 @@ public struct TabViewDraft: Equatable, Sendable {
         public var folderViews: FolderViewsChoice
         /// The View row's choice is Viewer, with how it follows and opens; nil: one of the folder's views, `values`'.
         public var viewer: PaneViewer?
+        /// How the pane shows search results, as it does now or as the tab view being edited keeps it; kept whole
+        /// where checked.
+        public var keepsSearchResults: Bool
+        public var searchResults: SearchResultsKeeps
 
         public init(state: PaneState, keeps: PaneKeeps?) {
             keepsFolder = keeps?.folder != nil
@@ -36,6 +40,8 @@ public struct TabViewDraft: Equatable, Sendable {
             self.values = values
             kept = Set(keeps?.view.kept ?? [])
             folderViews = keeps?.choice ?? .folderFirst
+            keepsSearchResults = keeps?.searchResults != nil
+            searchResults = keeps?.searchResults ?? state.searchResults
             if let viewer = keeps?.viewer {
                 self.viewer = viewer
                 kept.insert(.view)
@@ -51,7 +57,9 @@ public struct TabViewDraft: Equatable, Sendable {
             if viewerAllowed, kept.contains(.view), let viewer { return PaneKeeps(viewer: viewer) }
             var view = FolderViewKeeps()
             for setting in FolderViewSetting.allCases where kept.contains(setting) { view.take(setting, from: values) }
-            return PaneKeeps(folder: keepsFolder ? folder : nil, view: view, folderViews: folderViews)
+            return PaneKeeps(
+                folder: keepsFolder ? folder : nil, view: view, folderViews: folderViews,
+                searchResults: keepsSearchResults ? searchResults : nil)
         }
 
         /// Keep `setting` or not.
@@ -249,6 +257,7 @@ public struct TabViewDraft: Equatable, Sendable {
             pane.keepsFolder = false
             pane.kept = []
             pane.folderViews = .folderFirst
+            pane.keepsSearchResults = false
             self[group] = pane
         }
     }
@@ -299,6 +308,7 @@ public enum SavedViewText {
         if let first = view.foldersFirst { parts.append(prefix + (first ? "folders first" : "folders mixed in")) }
         if view.columns != nil { parts.append(prefix + "columns") }
         if view.size != nil { parts.append(prefix + "sizes") }
+        if let results = pane.searchResults { parts.append(prefix + "search results in " + results.summary) }
         switch pane.choice {
         case .folderFirst: break
         case .tabViewFirst: parts.append(prefix + "over folder views")

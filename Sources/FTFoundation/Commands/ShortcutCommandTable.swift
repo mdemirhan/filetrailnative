@@ -150,6 +150,7 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case groupByFolder
     case reverseGroupOrder
     case sortByName
+    case sortByFolder
     case sortByKind
     case sortByModified
     case sortByCreated
@@ -546,6 +547,8 @@ extension ShortcutCommands {
             menuPath: "View > Group By > Reverse Group Order"),
         ShortcutCommandDefinition(
             id: .sortByName, label: "Sort by Name", group: .view, defaults: [], menuPath: "View > Sort By > Name"),
+        ShortcutCommandDefinition(
+            id: .sortByFolder, label: "Sort by Folder", group: .view, defaults: [], menuPath: "View > Sort By > Folder"),
         ShortcutCommandDefinition(
             id: .sortByModified, label: "Sort by Date Modified", group: .view, defaults: [],
             menuPath: "View > Sort By > Date Modified"),

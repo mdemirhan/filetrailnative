@@ -54,6 +54,54 @@ public enum SearchResultsSortByPreference: String, Codable, CaseIterable, Sendab
 
     /// Whether the order needs a value read for every result (a date, the size).
     public var readsEveryResult: Bool { ![.name, .path, .kind].contains(self) }
+
+    /// The field a View ▸ Sort By command orders results by: Folder is `path`.
+    public init?(command: AppCommand) {
+        switch command {
+        case .sortByName: self = .name
+        case .sortByFolder: self = .path
+        case .sortByKind: self = .kind
+        case .sortByModified: self = .modified
+        case .sortByCreated: self = .created
+        case .sortByLastOpened: self = .lastOpened
+        case .sortByAdded: self = .added
+        case .sortBySize: self = .size
+        default: return nil
+        }
+    }
+
+    /// The View ▸ Sort By command for this field.
+    public var command: AppCommand {
+        switch self {
+        case .name: .sortByName
+        case .path: .sortByFolder
+        case .kind: .sortByKind
+        case .modified: .sortByModified
+        case .created: .sortByCreated
+        case .lastOpened: .sortByLastOpened
+        case .added: .sortByAdded
+        case .size: .sortBySize
+        }
+    }
+
+    /// The order the menus list them in: a folder's fields', with Folder after Name.
+    public static let menuOrder: [SearchResultsSortByPreference] = [
+        .name, .path, .modified, .created, .lastOpened, .added, .size, .kind,
+    ]
+
+    /// What every menu calls it.
+    public var title: String {
+        switch self {
+        case .path: "Folder"
+        case .name: SortByPreference.name.title
+        case .kind: SortByPreference.kind.title
+        case .modified: SortByPreference.modified.title
+        case .created: SortByPreference.created.title
+        case .lastOpened: SortByPreference.lastOpened.title
+        case .added: SortByPreference.added.title
+        case .size: SortByPreference.size.title
+        }
+    }
 }
 
 public enum SortDirectionPreference: String, Codable, CaseIterable, Sendable, Hashable {
@@ -68,6 +116,19 @@ public enum SortByPreference: String, Codable, CaseIterable, Sendable, Hashable 
     public static let menuOrder: [SortByPreference] = [
         .name, .modified, .created, .lastOpened, .added, .size, .kind,
     ]
+
+    /// The View ▸ Sort By command for this field.
+    public var command: AppCommand {
+        switch self {
+        case .name: .sortByName
+        case .kind: .sortByKind
+        case .modified: .sortByModified
+        case .created: .sortByCreated
+        case .added: .sortByAdded
+        case .lastOpened: .sortByLastOpened
+        case .size: .sortBySize
+        }
+    }
 
     /// What every menu calls it.
     public var title: String {
@@ -510,44 +571,121 @@ public struct NullEncoded<Value: Codable & Equatable & Sendable>: Codable, Equat
     }
 }
 
-/// The sizes a pane shows its views at: the Icons view's icon size, the Compact List's column width and how many
-/// previews fill the pane in the Previews view, each at each density, and the List's column widths, a folder's and
-/// search results'. Every pane has its own; the app's (in the preferences) are the ones set last in any pane, which a
-/// pane with none of its own starts from.
+/// What a pane keeps of its own and the app keeps as set last: its sizes (the Icons view's icon size, the Compact
+/// List's column width and how many previews fill the pane in the Previews view, at each density), a folder's List
+/// columns (which are shown, their order and widths), and its search results' own: their sizes, columns, order, and
+/// the options its searches start with. Every pane has its own; the app's (in the preferences) are the ones set last
+/// in any pane, which a pane with nothing to copy starts from, and a pane opened from another takes that pane's.
 public struct PaneViewSizes: Codable, Equatable, Sendable {
     public var iconSizes: DensitySizes
     public var compactListWidths: DensitySizes
     public var previewCounts: DensitySizes
+    public var detailColumns: DetailColumnVisibility
+    public var detailColumnOrder: [OptionalDetailColumnKey]
     public var detailColumnWidths: DetailColumnWidths
+    public var searchIconSizes: DensitySizes
+    public var searchCompactListWidths: DensitySizes
+    public var searchPreviewCounts: DensitySizes
+    public var searchColumns: SearchColumnVisibility
+    public var searchColumnOrder: [OptionalSearchColumnKey]
     public var searchColumnWidths: SearchColumnWidths
+    public var searchResultsSortBy: SearchResultsSortByPreference
+    public var searchResultsSortDirection: SortDirectionPreference
+    public var searchPatternMode: SearchPatternModePreference
+    public var searchMatchScope: SearchMatchScopePreference
+    public var searchRecursive: Bool
+    public var searchSkipGitFolders: Bool
+    public var searchSkipGitIgnored: Bool
 
-    public init(
-        iconSizes: DensitySizes, compactListWidths: DensitySizes, previewCounts: DensitySizes,
-        detailColumnWidths: DetailColumnWidths, searchColumnWidths: SearchColumnWidths
-    ) {
-        self.iconSizes = iconSizes
-        self.compactListWidths = compactListWidths
-        self.previewCounts = previewCounts
-        self.detailColumnWidths = detailColumnWidths
-        self.searchColumnWidths = searchColumnWidths
-    }
-
-    /// The app's own sizes: those set last.
+    /// The app's own: those set last.
     public init(_ preferences: AppPreferences) {
-        self.init(
-            iconSizes: preferences.iconSizes, compactListWidths: preferences.compactListWidths,
-            previewCounts: preferences.previewCounts, detailColumnWidths: preferences.detailColumnWidths,
-            searchColumnWidths: preferences.searchColumnWidths)
+        iconSizes = preferences.iconSizes
+        compactListWidths = preferences.compactListWidths
+        previewCounts = preferences.previewCounts
+        detailColumns = preferences.detailColumns
+        detailColumnOrder = preferences.detailColumnOrder
+        detailColumnWidths = preferences.detailColumnWidths
+        searchIconSizes = preferences.searchIconSizes
+        searchCompactListWidths = preferences.searchCompactListWidths
+        searchPreviewCounts = preferences.searchPreviewCounts
+        searchColumns = preferences.searchColumns
+        searchColumnOrder = preferences.searchColumnOrder
+        searchColumnWidths = preferences.searchColumnWidths
+        searchResultsSortBy = preferences.searchResultsSortBy
+        searchResultsSortDirection = preferences.searchResultsSortDirection
+        searchPatternMode = preferences.searchPatternMode
+        searchMatchScope = preferences.searchMatchScope
+        searchRecursive = preferences.searchRecursive
+        searchSkipGitFolders = preferences.searchSkipGitFolders
+        searchSkipGitIgnored = preferences.searchSkipGitIgnored
     }
 
-    /// `preferences` with these sizes in place of the app's.
+    /// `preferences` with what differs between `before` and these set to these: what a change from `before` writes
+    /// to the app's, leaving the rest as it is there. Columns, their widths and the sizes go one by one (a column, a
+    /// density), so a column shown from another pane meanwhile stays shown.
+    public func changes(from before: PaneViewSizes, appliedTo preferences: AppPreferences) -> AppPreferences {
+        var next = preferences
+        func take<Value: Equatable>(_ own: KeyPath<PaneViewSizes, Value>, _ app: WritableKeyPath<AppPreferences, Value>)
+        {
+            if before[keyPath: own] != self[keyPath: own] { next[keyPath: app] = self[keyPath: own] }
+        }
+        func sizes(_ own: KeyPath<PaneViewSizes, DensitySizes>, _ app: WritableKeyPath<AppPreferences, DensitySizes>) {
+            for density in Density.allCases where before[keyPath: own][density] != self[keyPath: own][density] {
+                next[keyPath: app][density] = self[keyPath: own][density]
+            }
+        }
+        sizes(\.iconSizes, \.iconSizes)
+        sizes(\.compactListWidths, \.compactListWidths)
+        sizes(\.previewCounts, \.previewCounts)
+        sizes(\.searchIconSizes, \.searchIconSizes)
+        sizes(\.searchCompactListWidths, \.searchCompactListWidths)
+        sizes(\.searchPreviewCounts, \.searchPreviewCounts)
+        for key in OptionalDetailColumnKey.allCases where before.detailColumns[key] != detailColumns[key] {
+            next.detailColumns[key] = detailColumns[key]
+        }
+        for key in DetailColumnKey.allCases where before.detailColumnWidths[key] != detailColumnWidths[key] {
+            next.detailColumnWidths[key] = detailColumnWidths[key]
+        }
+        for key in OptionalSearchColumnKey.allCases where before.searchColumns[key] != searchColumns[key] {
+            next.searchColumns[key] = searchColumns[key]
+        }
+        for key in SearchColumnKey.allCases where before.searchColumnWidths[key] != searchColumnWidths[key] {
+            next.searchColumnWidths[key] = searchColumnWidths[key]
+        }
+        take(\.detailColumnOrder, \.detailColumnOrder)
+        take(\.searchColumnOrder, \.searchColumnOrder)
+        take(\.searchResultsSortBy, \.searchResultsSortBy)
+        take(\.searchResultsSortDirection, \.searchResultsSortDirection)
+        take(\.searchPatternMode, \.searchPatternMode)
+        take(\.searchMatchScope, \.searchMatchScope)
+        take(\.searchRecursive, \.searchRecursive)
+        take(\.searchSkipGitFolders, \.searchSkipGitFolders)
+        take(\.searchSkipGitIgnored, \.searchSkipGitIgnored)
+        return next
+    }
+
+    /// `preferences` with these in place of the app's.
     public func applied(to preferences: AppPreferences) -> AppPreferences {
         var shown = preferences
         shown.iconSizes = iconSizes
         shown.compactListWidths = compactListWidths
         shown.previewCounts = previewCounts
+        shown.detailColumns = detailColumns
+        shown.detailColumnOrder = detailColumnOrder
         shown.detailColumnWidths = detailColumnWidths
+        shown.searchIconSizes = searchIconSizes
+        shown.searchCompactListWidths = searchCompactListWidths
+        shown.searchPreviewCounts = searchPreviewCounts
+        shown.searchColumns = searchColumns
+        shown.searchColumnOrder = searchColumnOrder
         shown.searchColumnWidths = searchColumnWidths
+        shown.searchResultsSortBy = searchResultsSortBy
+        shown.searchResultsSortDirection = searchResultsSortDirection
+        shown.searchPatternMode = searchPatternMode
+        shown.searchMatchScope = searchMatchScope
+        shown.searchRecursive = searchRecursive
+        shown.searchSkipGitFolders = searchSkipGitFolders
+        shown.searchSkipGitIgnored = searchSkipGitIgnored
         return shown
     }
 }

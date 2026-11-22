@@ -19,10 +19,12 @@ import Testing
         let columns: Set<PreferenceKey> = [
             .detailColumns, .detailColumnOrder, .detailColumnWidths, .searchColumns, .searchColumnOrder,
             .searchColumnWidths, .compactListWidths, .iconSizes, .previewCounts, .density, .shortcutOverrides,
+            .searchCompactListWidths, .searchIconSizes, .searchPreviewCounts,
         ]
         // Only the lists read the widths and sizes: the toolbar, the Info panel and the menus read every other key.
         let listsOnly: Set<PreferenceKey> = [
             .detailColumnWidths, .searchColumnWidths, .compactListWidths, .iconSizes, .previewCounts,
+            .searchCompactListWidths, .searchIconSizes, .searchPreviewCounts,
         ]
         func keys(of area: PreferenceAreas) -> Set<PreferenceKey> {
             Set(PreferenceKey.allCases.filter { $0.areas.contains(area) })
@@ -149,11 +151,12 @@ extension ExplorerWindowlessTests {
             #expect(second.content.columnState.density == .finder)
             #expect(first.content.columnState.density == .finder)
 
-            // The columns shown are the lists' and the menus'.
+            // The columns shown are the lists' and the menus'. The app's are what a pane with nothing to copy starts
+            // from: a pane with its own keeps them.
             let before = heard.preferences
             let shown = second.content.columnState.columns
             first.updatePreferences { $0.detailColumns.size.toggle() }
-            #expect(second.content.columnState.columns != shown)
+            #expect(second.content.columnState.columns == shown)
             #expect(heard.preferences == before + 1)
             #expect(second.sidebarController.preferencesAppliedCount == tree + 4)
             await harness.close()

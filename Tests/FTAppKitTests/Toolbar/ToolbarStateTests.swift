@@ -5,8 +5,7 @@ import Testing
 @testable import FTAppKit
 
 extension ExplorerWindowlessTests.ToolbarTests {
-    // In search mode the title names the folder searched; Sort waits (search results are sorted in their
-    // headers).
+    // In search mode the title names the folder searched; Sort sorts the results, as it does a folder.
     @Test func titlesTheToolbarWithTheSearchedFolderInSearchMode() async throws {
         let harness = try ExplorerHarness.windowless()
         let tab = try await harness.open()
@@ -14,7 +13,7 @@ extension ExplorerWindowlessTests.ToolbarTests {
         #expect(title.field.stringValue == harness.folder.url.lastPathComponent)
         tab.searchRootPath = harness.folder.appending("Alpha").path
         #expect(title.field.stringValue == "Searching “Alpha”")
-        #expect(button(tab, .sort)?.isEnabled == false)
+        #expect(button(tab, .sort)?.isEnabled == true)
         tab.searchRootPath = nil
         #expect(title.field.stringValue == harness.folder.url.lastPathComponent)
         #expect(button(tab, .sort)?.isEnabled == true)

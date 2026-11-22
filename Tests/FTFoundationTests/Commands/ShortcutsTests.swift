@@ -467,7 +467,7 @@ struct ShortcutsTests {
             (.groupByNone, []), (.groupByName, []), (.groupByModified, []), (.groupByCreated, []),
             (.groupByLastOpened, []), (.groupByAdded, []), (.groupBySize, []), (.groupByKind, []), (.groupByTags, []),
             (.groupByFolder, []), (.reverseGroupOrder, []),
-            (.sortByName, []), (.sortByKind, []),
+            (.sortByName, []), (.sortByFolder, []), (.sortByKind, []),
             (.sortByModified, []), (.sortByCreated, []), (.sortByAdded, []), (.sortByLastOpened, []), (.sortBySize, []),
             (.toggleFoldersFirst, []),
             (.showModifiedColumn, []), (.showSizeColumn, []), (.showKindColumn, []), (.showCreatedColumn, []),

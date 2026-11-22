@@ -376,8 +376,8 @@ public enum CommandAvailability {
         case .viewAsIcons, .viewAsList, .viewAsDetails, .viewAsPreviews, .showPreviews9, .showPreviews4, .showPreviews2,
             .showPreviews1, .increaseSize, .decreaseSize, .resetSize, .groupByNone, .groupByName, .groupByModified,
             .groupByCreated, .groupByLastOpened, .groupByAdded, .groupBySize, .groupByKind, .groupByTags,
-            .groupByFolder, .reverseGroupOrder, .sortByName, .sortByModified, .sortByCreated, .sortByAdded,
-            .sortByLastOpened, .sortBySize, .sortByKind, .toggleFoldersFirst, .toggleHiddenFiles,
+            .groupByFolder, .reverseGroupOrder, .sortByName, .sortByFolder, .sortByModified, .sortByCreated,
+            .sortByAdded, .sortByLastOpened, .sortBySize, .sortByKind, .toggleFoldersFirst, .toggleHiddenFiles,
             .showModifiedColumn, .showSizeColumn, .showKindColumn, .showCreatedColumn, .showAddedColumn,
             .showLastOpenedColumn, .showPermissionsColumn, .rememberFolderView, .updateFolderView, .revertFolderView,
             .folderViewOptions, .resetFolderView, .togglePinFilter, .focusFileSearch, .showLastSearchResults,
@@ -561,9 +561,12 @@ public enum CommandAvailability {
         case .reverseGroupOrder:
             // Only while the list is grouped; a context that doesn't say is taken as grouped.
             return context.listIsGrouped ?? true
-        case .sortByName, .sortByModified, .sortByCreated, .sortByAdded, .sortByLastOpened, .sortBySize, .sortByKind,
-            .toggleFoldersFirst:
-            // Search results have an order of their own, chosen in the List view's headers.
+        // Search results sort by every field a folder does and by their folder; they have no Folders First.
+        case .sortByName, .sortByModified, .sortByCreated, .sortByAdded, .sortByLastOpened, .sortBySize, .sortByKind:
+            return true
+        case .sortByFolder:
+            return context.isSearchMode
+        case .toggleFoldersFirst:
             return !context.isSearchMode
         case .togglePinFilter:
             return context.filterPinnable != false

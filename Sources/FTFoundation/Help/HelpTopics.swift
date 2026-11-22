@@ -132,7 +132,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Tab views",
                             description:
-                                "Layout > Save Tab View… keeps what you check of this tab by name: one or two panes, the divider, hidden files, and for each pane its folder, view, grouping, order, Folders First and columns or size. What isn't checked comes from the tab you apply it to, its folders included. With one pane, Forget the Second Pane has the tab forget the second pane it had, the divider's place included, so Two Panes then opens a new one at half the width. With two panes, either pane can show the viewer instead, beside the other's list: Follow shows the file the list selects as the selection moves, and Read or Edit says how it opens. Choose the tab view in Layout to apply it to this tab; the first five can have keys, {applyTabView1} to {applyTabView5} to begin with, and the rest are in More Tab Views. Up to 20 are kept. Folder Views in each pane says what happens in a folder with a view of its own: its view comes first as in any pane, the tab view comes first, or its view isn't used, until the pane leaves that folder. The Views window can set a tab view that every new tab and window opens with."
+                                "Layout > Save Tab View… keeps what you check of this tab by name: one or two panes, the divider, hidden files, and for each pane its folder, view, grouping, order, Folders First and columns or size, and how it shows search results (all of it, with one checkbox). What isn't checked comes from the tab you apply it to, its folders included. With one pane, Forget the Second Pane has the tab forget the second pane it had, the divider's place included, so Two Panes then opens a new one at half the width. With two panes, either pane can show the viewer instead, beside the other's list: Follow shows the file the list selects as the selection moves, and Read or Edit says how it opens. Choose the tab view in Layout to apply it to this tab; the first five can have keys, {applyTabView1} to {applyTabView5} to begin with, and the rest are in More Tab Views. Up to 20 are kept. Folder Views in each pane says what happens in a folder with a view of its own: its view comes first as in any pane, the tab view comes first, or its view isn't used, until the pane leaves that folder. The Views window can set a tab view that every new tab and window opens with."
                         ),
                         HelpRow(
                             label: "Window views",
@@ -450,7 +450,7 @@ extension HelpContent {
         HelpTopic(
             id: .search, title: "Searching",
             intro:
-                "Search looks for files and folders in the folder you are browsing, as you type in the search field. Return or ↓ moves into the results and Esc shows the folder again. The magnifier in the field, and Options over the results, open the options; a dot on either means an option differs from its default.",
+                "Search looks for files and folders in the folder you are browsing, as you type in the search field. Return or ↓ moves into the results and Esc shows the folder again. The magnifier in the field, and Options over the results, open the options; a dot on either means an option differs from its default. Each pane keeps its own options, and its own view, order and columns for results; a pane opened from another starts with that pane’s.",
             sections: [
                 HelpSection(
                     title: "Plain Text",
@@ -617,7 +617,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Icon size and column width",
                             description:
-                                "The slider at the right of the status bar sets the size of the icons in the Icons view and the width of the columns in the Compact List, and shows the size while it moves. The View menu, {increaseSize} and {decreaseSize} change them a step at a time, and {resetSize} brings back the default size. Each pane keeps its own sizes, and a tab view can bring them back; a pane opened from another starts with that pane’s. With Settings → Browsing → Sizes set to Match Finder, these sizes are kept apart from File Trail’s own."
+                                "The slider at the right of the status bar sets the size of the icons in the Icons view and the width of the columns in the Compact List, and shows the size while it moves. The View menu, {increaseSize} and {decreaseSize} change them a step at a time, and {resetSize} brings back the default size. Each pane keeps its own sizes, search results’ apart from its folders’, and a tab view can bring them back; a pane opened from another starts with that pane’s. With Settings → Browsing → Sizes set to Match Finder, these sizes are kept apart from File Trail’s own."
                         ),
                         HelpRow(
                             label: "Previews",
@@ -627,7 +627,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Columns in List view",
                             description:
-                                "Each column keeps the width you give it. Drag the divider at the right of a column’s heading to make it wider or narrower, or double-click the divider to fit the column to its widest value. Each pane keeps its own widths, as it keeps its sizes. When the columns are wider than the pane (a narrow window, or the Info panel open), the list scrolls sideways. Right-click a column heading, or use View → Columns, to show or hide columns; drag a heading sideways to move its column. The heading’s menu also moves the column clicked left or right, fits every column, and puts the columns back as they first were."
+                                "Each column keeps the width you give it. Drag the divider at the right of a column’s heading to make it wider or narrower, or double-click the divider to fit the column to its widest value. Each pane keeps its own columns and widths, as it keeps its sizes, and search results have their own. When the columns are wider than the pane (a narrow window, or the Info panel open), the list scrolls sideways. Right-click a column heading, or use View → Columns, to show or hide columns; drag a heading sideways to move its column. The heading’s menu also moves the column clicked left or right, fits every column, and puts the columns back as they first were."
                         ),
                         HelpRow(
                             label: "Folder views",
@@ -637,7 +637,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Sort",
                             description:
-                                "The sort button, View > Sort By, or a click on a column heading in List view orders by name, kind, date or size. Choosing the same order again in View > Sort By, or clicking the same heading, reverses it; the sort button has Ascending and Descending. Search results order by name, folder, kind, a date or size: click their headings in List view. Their dates and sizes are read only while they are ordered by them."
+                                "The sort button, View > Sort By, or a click on a column heading in List view orders by name, kind, date or size. Choosing the same order again in View > Sort By, or clicking the same heading, reverses it; the sort button has Ascending and Descending. Search results order the same ways, and by the folder each is in (View > Sort By > Folder); Folders First is for folders only. Their dates and sizes are read only while they are ordered by them."
                         ),
                         HelpRow(
                             label: "Groups",
@@ -961,6 +961,7 @@ extension HelpContent {
             group: .views, .command(.reverseGroupOrder),
             "Put the groups in the reverse of their order, the sort inside unchanged"),
         HelpShortcutItem(group: .views, .command(.sortByName), "Order the list by name, numbers in counting order"),
+        HelpShortcutItem(group: .views, .command(.sortByFolder), "Order search results by the folder each one is in"),
         HelpShortcutItem(group: .views, .command(.sortByModified), "Order the list by when each item last changed"),
         HelpShortcutItem(group: .views, .command(.sortByCreated), "Order the list by when each item was made"),
         HelpShortcutItem(

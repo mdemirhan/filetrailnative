@@ -28,6 +28,22 @@ struct ExplorerViewState: Equatable, Sendable {
     var searchGroupBy = GroupByPreference.none
     var groupReversed = false
     var searchGroupReversed = false
+    /// The order of the search results on screen; nil while the pane shows a folder.
+    var resultsSortBy: SearchResultsSortByPreference?
+    var resultsSortDirection = SortDirectionPreference.asc
+
+    /// The order on screen, as the Sort menu and its button name it: the results' while they show.
+    var sortTitle: String {
+        let title = resultsSortBy?.title ?? sortBy.title
+        let direction = resultsSortBy == nil ? sortDirection : resultsSortDirection
+        return "\(title), \(direction == .asc ? "Ascending" : "Descending")"
+    }
+
+    /// The order on screen as its View ▸ Sort By command, and its direction.
+    var sortCommand: (command: AppCommand, direction: SortDirectionPreference) {
+        if let resultsSortBy { return (resultsSortBy.command, resultsSortDirection) }
+        return (sortBy.command, sortDirection)
+    }
 }
 
 /// What changed in a window, for the panes that show it. A change of a pane's own (its folder, history, view, search

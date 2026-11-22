@@ -350,7 +350,13 @@ extension BrowserPane {
                 }
                 settingsOnArrival?.shared.forgetSizes()
             case .columns:
-                if let sizes = arrival.viewSizes { setViewSize { $0.detailColumnWidths = sizes.detailColumnWidths } }
+                if let sizes = arrival.viewSizes {
+                    setViewSize {
+                        $0.detailColumns = sizes.detailColumns
+                        $0.detailColumnOrder = sizes.detailColumnOrder
+                        $0.detailColumnWidths = sizes.detailColumnWidths
+                    }
+                }
                 let now = tab.preferences
                 let back = arrival.shared.columnsPutBack(in: now)
                 if back != now {

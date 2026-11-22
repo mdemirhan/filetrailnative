@@ -27,6 +27,10 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     public var iconSizes: DensitySizes
     /// How many previews fill the pane in the Previews view (9, 4, 2 or 1), at each density.
     public var previewCounts: DensitySizes
+    /// The same three for search results, which have sizes of their own.
+    public var searchCompactListWidths: DensitySizes
+    public var searchIconSizes: DensitySizes
+    public var searchPreviewCounts: DensitySizes
     public var notificationsEnabled: Bool
     /// Items that were copied or cut flash and keep a mark, in the folder tree and the file list.
     public var markClipboardItems: Bool
@@ -94,7 +98,8 @@ public struct AppPreferences: Codable, Equatable, Sendable {
             detailColumnOrder: AppPreferenceLimits.defaultDetailColumnOrder, detailColumnWidths: .defaults,
             searchColumns: .defaults, searchColumnOrder: AppPreferenceLimits.defaultSearchColumnOrder,
             searchColumnWidths: .defaults, compactListWidths: .compactListDefaults, iconSizes: .iconDefaults,
-            previewCounts: .previewCountDefaults,
+            previewCounts: .previewCountDefaults, searchCompactListWidths: .compactListDefaults,
+            searchIconSizes: .iconDefaults, searchPreviewCounts: .previewCountDefaults,
             notificationsEnabled: true,
             markClipboardItems: true,
             autoCalculateFolderSizes: true, folderTreeOpen: true, propertiesOpen: false, detailRowOpen: false,

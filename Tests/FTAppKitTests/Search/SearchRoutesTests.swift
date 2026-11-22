@@ -532,8 +532,9 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // Options chosen in one pane's field leave the other pane's search as it is; a pane opened next starts with
-        // those chosen last, whichever search each was chosen in.
+        // Options chosen in one pane's field are that pane's, and leave the other pane's search as it is; a pane
+        // opened next starts with those of the pane it is opened from. The app's, what a pane with nothing to copy
+        // starts with, are those chosen last, whichever pane each was chosen in.
         @Test func optionsChosenInOnePaneLeaveTheOther() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -560,9 +561,10 @@ extension ExplorerWindowlessTests {
             tab.closePane()
             let reopened = tab.openSecondPane(at: harness.folder.path)
             #expect(await waitUntil { reopened.loaded && reopened.hasShownFolder && !reopened.isNavigating })
+            // Opened from the left pane: its options, not the closed right pane's.
             #expect(reopened.search.session.patternMode == .glob)
             #expect(reopened.search.session.matchScope == .path)
-            #expect(reopened.search.session.skipGitIgnored)
+            #expect(!reopened.search.session.skipGitIgnored)
             await harness.close()
         }
 

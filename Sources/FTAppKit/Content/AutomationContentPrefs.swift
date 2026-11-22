@@ -45,11 +45,7 @@
                 AutomationPrefs.register(key) { value, context in
                     guard let controller = context.controller else { return .unsupported(key.rawValue) }
                     AutomationPrefs.set(key, value, on: controller)
-                    // The widths are the panes' own: the tab's panes show these, as a drag in each would leave them.
-                    if key == .detailColumnWidths {
-                        let widths = controller.preferences.detailColumnWidths
-                        for pane in controller.panes { pane.setViewSize { $0.detailColumnWidths = widths } }
-                    }
+                    AutomationPrefs.giveToPanes(controller)
                     controller.refreshColumns()
                     return .applied
                 }

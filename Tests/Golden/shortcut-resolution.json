@@ -303,6 +303,7 @@
           "groupByFolder": [],
           "reverseGroupOrder": [],
           "sortByName": [],
+          "sortByFolder": [],
           "sortByKind": [],
           "sortByModified": [],
           "sortBySize": [],

@@ -101,23 +101,49 @@ public enum PreferencesSanitizer {
         value?.string.flatMap(GroupByPreference.init(rawValue:))
     }
 
-    /// A pane's own sizes, each brought into its range; nil when the file has none for it. One it doesn't say is the
-    /// size before any is set; the column widths it doesn't have are `columnWidths`, and a column's it doesn't say is
-    /// that one's there.
+    /// A pane's own sizes, columns and search settings, each checked; nil when the file has none for it. One it
+    /// doesn't say is what a new install starts with; the column widths it doesn't have are `columnWidths`, and a
+    /// column's it doesn't say is that one's there.
     private static func viewSizes(
         _ value: JSONNode?, columnWidths: (detail: DetailColumnWidths, search: SearchColumnWidths)
     ) -> PaneViewSizes? {
         guard let record = value?.object else { return nil }
-        return PaneViewSizes(
-            iconSizes: densitySizes(record["iconSizes"], .iconDefaults) { AppPreferenceLimits.clampIconSize($0) },
-            compactListWidths: densitySizes(record["compactListWidths"], .compactListDefaults) {
-                AppPreferenceLimits.clampPaneWidth($0, AppPreferenceLimits.compactListWidthRange)
-            },
-            previewCounts: densitySizes(record["previewCounts"], .previewCountDefaults) {
-                PreviewGrid.valid(read: $0)
-            },
-            detailColumnWidths: detailColumnWidths(record["detailColumnWidths"], columnWidths.detail),
-            searchColumnWidths: searchColumnWidths(record["searchColumnWidths"], columnWidths.search))
+        var sizes = PaneViewSizes(AppPreferences.defaults())
+        sizes.iconSizes = densitySizes(record["iconSizes"], .iconDefaults) { AppPreferenceLimits.clampIconSize($0) }
+        sizes.compactListWidths = densitySizes(record["compactListWidths"], .compactListDefaults) {
+            AppPreferenceLimits.clampPaneWidth($0, AppPreferenceLimits.compactListWidthRange)
+        }
+        sizes.previewCounts = densitySizes(record["previewCounts"], .previewCountDefaults) {
+            PreviewGrid.valid(read: $0)
+        }
+        sizes.detailColumns = detailColumns(record["detailColumns"], sizes.detailColumns)
+        if record["detailColumnOrder"] != nil {
+            sizes.detailColumnOrder = AppPreferenceLimits.normalizeDetailColumnOrder(record["detailColumnOrder"])
+        }
+        sizes.detailColumnWidths = detailColumnWidths(record["detailColumnWidths"], columnWidths.detail)
+        sizes.searchIconSizes = densitySizes(record["searchIconSizes"], .iconDefaults) {
+            AppPreferenceLimits.clampIconSize($0)
+        }
+        sizes.searchCompactListWidths = densitySizes(record["searchCompactListWidths"], .compactListDefaults) {
+            AppPreferenceLimits.clampPaneWidth($0, AppPreferenceLimits.compactListWidthRange)
+        }
+        sizes.searchPreviewCounts = densitySizes(record["searchPreviewCounts"], .previewCountDefaults) {
+            PreviewGrid.valid(read: $0)
+        }
+        sizes.searchColumns = searchColumns(record["searchColumns"], sizes.searchColumns)
+        if record["searchColumnOrder"] != nil {
+            sizes.searchColumnOrder = AppPreferenceLimits.normalizeSearchColumnOrder(record["searchColumnOrder"])
+        }
+        sizes.searchColumnWidths = searchColumnWidths(record["searchColumnWidths"], columnWidths.search)
+        sizes.searchResultsSortBy = choice(record, "searchResultsSortBy", sizes.searchResultsSortBy)
+        sizes.searchResultsSortDirection = choice(
+            record, "searchResultsSortDirection", sizes.searchResultsSortDirection)
+        sizes.searchPatternMode = choice(record, "searchPatternMode", sizes.searchPatternMode)
+        sizes.searchMatchScope = choice(record, "searchMatchScope", sizes.searchMatchScope)
+        sizes.searchRecursive = bool(record, "searchRecursive", sizes.searchRecursive)
+        sizes.searchSkipGitFolders = bool(record, "searchSkipGitFolders", sizes.searchSkipGitFolders)
+        sizes.searchSkipGitIgnored = bool(record, "searchSkipGitIgnored", sizes.searchSkipGitIgnored)
+        return sizes
     }
 
     private static func sortBy(_ record: [String: JSONNode]) -> SortByPreference {
@@ -270,6 +296,15 @@ public enum PreferencesSanitizer {
             },
             iconSizes: densitySizes(record["iconSizes"], defaults.iconSizes) { AppPreferenceLimits.clampIconSize($0) },
             previewCounts: densitySizes(record["previewCounts"], defaults.previewCounts) {
+                PreviewGrid.valid(read: $0)
+            },
+            searchCompactListWidths: densitySizes(record["searchCompactListWidths"], defaults.searchCompactListWidths) {
+                AppPreferenceLimits.clampPaneWidth($0, AppPreferenceLimits.compactListWidthRange)
+            },
+            searchIconSizes: densitySizes(record["searchIconSizes"], defaults.searchIconSizes) {
+                AppPreferenceLimits.clampIconSize($0)
+            },
+            searchPreviewCounts: densitySizes(record["searchPreviewCounts"], defaults.searchPreviewCounts) {
                 PreviewGrid.valid(read: $0)
             },
             notificationsEnabled: bool(record, "notificationsEnabled", defaults.notificationsEnabled),

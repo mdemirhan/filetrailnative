@@ -359,7 +359,10 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
             case .back: button.isEnabled = context.canGoBack
             case .forward: button.isEnabled = context.canGoForward
             case .up: button.isEnabled = ExplorerTabs.parentDirectoryPath(context.shownFolderPath) != nil
-            case .foldersFirst: button.isOn = view.foldersFirst
+            case .foldersFirst:
+                button.isOn = view.foldersFirst
+                // Search results have no Folders First.
+                button.isEnabled = canPerform(.toggleFoldersFirst)
             case .hidden: button.isOn = view.includeHidden
             case .folderTree: button.isOn = panels.folderTreeOpen
             case .infoPanel: button.isOn = panels.propertiesOpen
@@ -373,7 +376,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
                 button.tooltip = "View as \(mode.menuName)"
             case .sort:
                 button.isEnabled = canPerform(.sortByName)
-                let sorted = "Sort By: \(view.sortBy.title), \(view.sortDirection == .asc ? "Ascending" : "Descending")"
+                let sorted = "Sort By: \(view.sortTitle)"
                 // Grouped, both: the groups decide where an item is, the order where it is in its group.
                 let groups = context.searchRootPath != nil ? view.searchGroupBy : view.groupBy
                 button.tooltip = groups == .none ? sorted : "Group By: \(groups.title) \u{00B7} " + sorted

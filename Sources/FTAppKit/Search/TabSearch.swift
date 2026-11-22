@@ -18,7 +18,9 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     init(pane: BrowserPane, engine: any SearchEngine = SearchRuntime.shared) {
         tab = pane.tab
         self.pane = pane
-        session = SearchSession(preferences: tab.preferences, includeHidden: pane.includeHidden, engine: engine)
+        // The pane's own order and options: what it was given, or the app's, those chosen last in any pane.
+        session = SearchSession(
+            preferences: pane.shownPreferences(tab.preferences), includeHidden: pane.includeHidden, engine: engine)
         super.init()
         session.host = self
         header.showOptions(changed: changedOptions)
@@ -220,12 +222,16 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
 
     private static let homePath = DiskPath.home.string
 
-    /// The columns of search results' List view: Name, then those chosen for results in Settings, with their own widths.
+    /// The columns of search results' List view, Name then those chosen for results, with their own widths, and the
+    /// results' own sizes: `preferences` with the pane's laid over them.
     func columnState(_ preferences: AppPreferences) -> ListColumnState {
         var state = ListColumnState(preferences: preferences)
         state.columns = DetailsColumns.visible(
             visibility: preferences.searchColumns, order: preferences.searchColumnOrder)
         state.widths = DetailsColumns.widths(preferences.searchColumnWidths)
+        state.iconSizes = preferences.searchIconSizes
+        state.compactListWidths = preferences.searchCompactListWidths
+        state.previewCounts = preferences.searchPreviewCounts
         return state
     }
 
@@ -359,18 +365,23 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
 
     // MARK: Sort
 
+    /// View ▸ Sort By over the results: a field as a click on its column's title would order them, the same one again
+    /// turning the order around.
+    func sort(by key: SearchResultsSortByPreference) { sortByColumn(key) }
+
     private func sortByColumn(_ key: SearchResultsSortByPreference) {
         session.sortByColumn(key)
         saveSort()
     }
 
-    /// The results' order is kept with the window's preferences.
+    /// The results' order is the pane's, saved with it, and what a pane with none to copy starts with.
     private func saveSort() {
         let (sortBy, direction) = (session.sortBy, session.sortDirection)
-        tab.updatePreferences {
+        pane.changeOwnSettings {
             $0.searchResultsSortBy = sortBy
             $0.searchResultsSortDirection = direction
         }
+        tab.group?.tabChanged(tab)
     }
 
     // MARK: The options menu
@@ -379,12 +390,12 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         case matchScope, patternMode, recursive, skipGitFolders, skipGitIgnored
     }
 
-    /// The option chosen in the menu is this search's, and what searches opened later start with; no other search
-    /// open changes with it. Only that option is saved: the others may have been chosen since in another search, and
-    /// this one's would take them back.
+    /// The option chosen in the menu is the pane's, saved with it, and what a pane with none to copy starts with; no
+    /// other pane's search changes with it. Only that option goes to the app's: the others may have been chosen since
+    /// in another pane, and this one's would take them back.
     private func save(_ option: Option) {
         let search = session
-        tab.updatePreferences {
+        pane.changeOwnSettings {
             switch option {
             case .matchScope: $0.searchMatchScope = search.matchScope
             case .patternMode: $0.searchPatternMode = search.patternMode
@@ -393,6 +404,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
             case .skipGitIgnored: $0.searchSkipGitIgnored = search.skipGitIgnored
             }
         }
+        tab.group?.tabChanged(tab)
     }
 
     /// The options that differ from the defaults, by the menu's names.
