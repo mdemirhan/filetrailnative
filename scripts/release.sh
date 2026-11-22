@@ -24,6 +24,8 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${ROOT_DIR}"
 # shellcheck source=lib/release-lib.sh
 source scripts/lib/release-lib.sh
+# shellcheck source=lib/test-lock.sh
+source scripts/lib/test-lock.sh
 
 OUT_DIR="build/release"
 APP_BUNDLE="${OUT_DIR}/File Trail.app"
@@ -216,7 +218,9 @@ GUI_LOG="build/logs/release-gui-tests.log"
 mkdir -p build/logs
 rm -f "${FRAME_TIMINGS}"
 printf '\n==> %s\n' "The tests that drive real windows"
-env FILETRAIL_GUI_TESTS=1 FILETRAIL_FRAME_TIMINGS_OUT="${PWD}/${FRAME_TIMINGS}" swift test --filter GUITests 2>&1 |
+# Behind the lock scripts/ci.sh takes, so no other test run on this Mac goes on beside them.
+with_test_lock "the release's tests of real windows" \
+    env FILETRAIL_GUI_TESTS=1 FILETRAIL_FRAME_TIMINGS_OUT="${PWD}/${FRAME_TIMINGS}" swift test --filter GUITests 2>&1 |
     tee "${GUI_LOG}" || die "The tests that drive real windows failed."
 ran_some_tests "${GUI_LOG}" || die "The tests that drive real windows ran no test: --filter GUITests matched none."
 [[ -f "${FRAME_TIMINGS}" ]] || die "The frame-time tests left no timings in ${FRAME_TIMINGS}."

@@ -9,7 +9,7 @@ Don't run it again to see whether it passes. Look once and find the cause:
 - The logs of a failed run are kept in `build/logs/failed-*`, with how long each test took. Many unrelated tests that took the same time waited on one shared thing, not on themselves.
 - `scripts/ci.sh` samples a test process whose log stops for 10 s into `build/logs/bundles/<bundle>.stall-N.txt`: where every thread waits. By hand, `sample` the `swiftpm-testing-helper`.
 - A full run of more than about a minute, with nothing else running, means something is wrong.
-- Only one `scripts/ci.sh` or `swift test` runs at a time on one Mac; several at once stall each other (see `CLAUDE.md`).
+- Only one test run goes on at a time on one Mac; several at once stall each other. `scripts/ci.sh` and a release wait for each other by one lock every checkout shares (`scripts/lib/test-lock.sh`), and `scripts/with-test-lock.sh` puts a `swift test` behind it (see `CLAUDE.md`). Every process of a failed run stalled at the same moment points here first: a run of something else beside it.
 
 Four causes found so far, worth a look first:
 

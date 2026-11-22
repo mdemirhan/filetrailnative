@@ -1,13 +1,32 @@
 #!/bin/bash
 # Quiet CI: one line per step, failures extracted from the log. Full logs are in build/logs/<step>.log.
-# Usage: scripts/ci.sh [--scope <test filter> | --affected] [--full]
+# Usage: scripts/ci.sh [--scope <test filter> | --affected] [--full] [--no-lock]
 # --full is the check before a release: it builds from clean, and builds the release app as well.
+# --no-lock runs at once, beside any other test run on this Mac: only for an exception (a run that holds the lock and
+# can't be stopped), as runs side by side stall each other and fail.
 set -uo pipefail
 cd "$(dirname "$0")/.."
 # shellcheck source=lib/test-runs.sh
 source scripts/lib/test-runs.sh
 # shellcheck source=lib/path-readbacks.sh
 source scripts/lib/path-readbacks.sh
+# shellcheck source=lib/test-lock.sh
+source scripts/lib/test-lock.sh
+
+# One run at a time on this Mac, from any checkout or worktree (scripts/lib/test-lock.sh): the run starts again holding
+# the lock, once it is free.
+if ! lock="$(test_lock_path)"; then
+    echo "scripts/ci.sh: $PWD isn't a git checkout, so it can't wait its turn for the other runs" >&2
+    exit 2
+fi
+no_lock=0
+for arg in "$@"; do [ "$arg" = --no-lock ] && no_lock=1; done
+if [ "$no_lock" = 1 ]; then
+    echo "scripts/ci.sh: --no-lock: running beside whatever else tests on this Mac; a failure may be the other run's doing" >&2
+elif ! test_lock_held "$lock"; then
+    with_test_lock "scripts/ci.sh $*" "$PWD/scripts/ci.sh" "$@"
+    exit $?
+fi
 
 scope=""
 affected=0
@@ -30,8 +49,11 @@ while [ $# -gt 0 ]; do
         full=1
         shift
         ;;
+    --no-lock)
+        shift
+        ;;
     *)
-        echo "usage: scripts/ci.sh [--scope <filter> | --affected] [--full]" >&2
+        echo "usage: scripts/ci.sh [--scope <filter> | --affected] [--full] [--no-lock]" >&2
         exit 2
         ;;
     esac
@@ -45,6 +67,8 @@ logs=build/logs
 mkdir -p "$logs"
 out="$logs/ci-summary.txt"
 : >"$out"
+# A run beside others says so where its results are read.
+[ "$no_lock" = 1 ] && echo "note: run with --no-lock, beside any other test run on this Mac" >>"$out"
 # What is newer than this came during the run (the crash reports listed after a failure).
 started="$logs/.ci-started"
 touch "$started"

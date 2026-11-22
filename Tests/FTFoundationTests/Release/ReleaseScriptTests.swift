@@ -9,6 +9,7 @@ import Testing
     private static let library = repositoryRoot.appendingPathComponent("scripts/lib/release-lib.sh").path
     private static let limits = repositoryRoot.appendingPathComponent("scripts/lib/frame-timing-limits.sh").path
     private static let testRuns = repositoryRoot.appendingPathComponent("scripts/lib/test-runs.sh").path
+    private static let testLock = repositoryRoot.appendingPathComponent("scripts/lib/test-lock.sh").path
     private static let script = repositoryRoot.appendingPathComponent("scripts/release.sh").path
 
     private struct Outcome {
@@ -296,6 +297,8 @@ import Testing
             )
             try FileManager.default.copyItem(
                 atPath: ReleaseScriptTests.testRuns, toPath: scripts.appendingPathComponent("test-runs.sh").path)
+            try FileManager.default.copyItem(
+                atPath: ReleaseScriptTests.testLock, toPath: scripts.appendingPathComponent("test-lock.sh").path)
             try "/build/\n".write(
                 to: root.appendingPathComponent("work/.gitignore"), atomically: true, encoding: .utf8)
             for tree in ["names", "lighthouse", "large"] {

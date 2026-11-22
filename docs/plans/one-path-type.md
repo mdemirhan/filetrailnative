@@ -249,7 +249,7 @@ New tests this plan adds, beyond each step's own: a stand-in disk holding two sp
 
 - Read `CLAUDE.md` and `docs/principles.md` first. Work in a worktree of its own (`.claude/worktrees/<name>`, branch `claude/<name>`), never in the main checkout; commit there; nothing goes to `main` until the owner says, and nothing is pushed.
 - One commit per change that can stand alone, the subject at most about 72 characters saying what is now true, a blank line, then plain sentences. No `Co-Authored-By` trailer. A step of this plan is several commits; a step's bookkeeping in this file goes into the commit that did the work.
-- One `scripts/ci.sh` or `swift test` at a time on the Mac; agents side by side share one lock (`/usr/bin/lockf <scratch>/filetrail-ci.lock scripts/ci.sh --scope '…'`). A run that stalls or fails now and then is looked into (`docs/process/debugging.md`), not run again.
+- One `scripts/ci.sh` or `swift test` at a time on the Mac; `scripts/ci.sh` waits for any other run itself, and a `swift test` of your own goes through `scripts/with-test-lock.sh` (`CLAUDE.md`). A run that stalls or fails now and then is looked into (`docs/process/debugging.md`), not run again.
 - Goldens are expected results kept by hand; none should need a change here. If one seems to, stop and ask.
 - Comments describe the app on its own terms: no "previously", no step numbers, no record ids.
 - Do what the step says. What else is found goes into the report, not into the change.
