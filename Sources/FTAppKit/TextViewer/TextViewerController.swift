@@ -15,12 +15,16 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     var ownsPane = false
     private(set) var path: String?
     private(set) var file: ViewerFile?
-    /// How the file shown went while it was shown: moved to the Trash, or deleted (or moved to another disk). Nil
-    /// while it is there.
+    /// How the file shown went while it was shown: moved to the Trash, or nowhere it can be found. Nil while it is
+    /// there.
     private(set) var gone: GoneFile?
 
     enum GoneFile: Equatable, Sendable {
-        case trashed, deleted
+        /// Found in the Trash.
+        case trashed
+        /// Not found: deleted, moved to another disk, or renamed or moved by another app on a disk that can't tell
+        /// where a file went (exFAT, FAT32). Which of these isn't known, and the viewer doesn't say.
+        case missing
     }
     private(set) var isEditing = false
     private(set) var isDirty = false
@@ -573,11 +577,11 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         return false
     }
 
-    /// "“Notes.txt” was moved to the Trash." or "“Notes.txt” was deleted."
+    /// "“Notes.txt” was moved to the Trash." or "“Notes.txt” is no longer there."
     static func goneTitle(_ gone: GoneFile, _ name: String) -> String {
         switch gone {
         case .trashed: "\u{201C}\(name)\u{201D} was moved to the Trash."
-        case .deleted: "\u{201C}\(name)\u{201D} was deleted."
+        case .missing: "\u{201C}\(name)\u{201D} is no longer there."
         }
     }
 
@@ -782,7 +786,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
             fileMoved(from: path, to: found)
             return
         }
-        let how: GoneFile = found.map(Self.trash.holds) == true ? .trashed : .deleted
+        let how: GoneFile = found.map(Self.trash.holds) == true ? .trashed : .missing
         guard gone != how else { return }
         gone = how
         let title = Self.goneTitle(how, fileName ?? "")
@@ -794,6 +798,42 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         }
         refreshChrome()
         onGone()
+    }
+
+    /// File Trail renamed or moved items, the file shown or a folder it is in perhaps among them: the viewer goes
+    /// along by what the write says, on any disk, with nothing asked of the disk. A file the watch already took for
+    /// gone, on a disk that can't tell where it went, is shown again.
+    func follow(_ moves: [PathMove]) {
+        guard let old = filePath else { return }
+        let new = ExplorerTabs.followMovedPath(old, moves)
+        guard !samePath(new, old) else {
+            // A link or an alias shown was renamed itself: its original stayed.
+            if let shown = path, !samePath(shown, old) {
+                let renamed = ExplorerTabs.followMovedPath(shown, moves)
+                guard !samePath(renamed, shown) else { return }
+                path = renamed
+                refreshChrome()
+                onMoved(shown, renamed)
+            }
+            return
+        }
+        guard file != nil else {
+            // Still being read where it was: read where it is.
+            if path.map({ samePath($0, old) }) == true { show(new) }
+            return
+        }
+        let wasGone = gone != nil
+        gone = nil
+        fileMoved(from: old, to: new)
+        // The file's identity is asked for where it is now: a disk without file ids knows it by its path alone.
+        file?.identity = ViewerFileIdentity(path: new)
+        guard wasGone else { return }
+        if isDirty {
+            conflictBar.isHidden = true
+            view.needsLayout = true
+        } else {
+            reload()
+        }
     }
 
     /// The file was moved or renamed: it is shown, read, watched and saved where it is now, its edits kept. A link or

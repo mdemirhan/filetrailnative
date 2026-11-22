@@ -190,6 +190,44 @@ extension ExplorerWindowlessTests {
             #expect(try String(contentsOfFile: renamed, encoding: .utf8) == "// top\nlet a = 1\n")
         }
 
+        // What File Trail itself renames or moves, the viewer follows by what the write says, at once and with nothing
+        // asked of the disk; so too once the file was taken for gone, as on a disk that can't tell where a file went.
+        @Test func aViewerFollowsWhatTheAppMovedByTheWritesWord() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await tabWithFiles(harness)
+            let pane = tab.activePane
+            pane.content.select(paths: [real(harness, "a.swift")])
+            tab.perform(.viewFile)
+            let viewer = try #require(pane.viewer)
+            #expect(await waitUntil { viewer.isText })
+
+            let renamed = real(harness) + "/c.swift"
+            try FileManager.default.moveItem(atPath: real(harness, "a.swift"), toPath: renamed)
+            tab.viewersFollow([PathMove(from: real(harness) + "/a.swift", to: renamed)])
+            #expect(viewer.path == renamed && viewer.gone == nil)
+            #expect(pane.navigationHistory.current == renamed)
+
+            // A folder it is in, moved: the file goes along.
+            let inWork = real(harness, "Work") + "/c.swift"
+            try FileManager.default.moveItem(atPath: renamed, toPath: inWork)
+            #expect(await waitUntil { viewer.path == inWork })
+            try FileManager.default.moveItem(atPath: real(harness, "Work"), toPath: real(harness) + "/Done")
+            tab.viewersFollow([PathMove(from: real(harness) + "/Work", to: real(harness) + "/Done")])
+            #expect(viewer.path == real(harness) + "/Done/c.swift")
+
+            // Taken for gone first: the file is put where the disk's own word can't find it (a new file elsewhere),
+            // then the write says where it went.
+            let old = real(harness) + "/Done/c.swift"
+            try FileManager.default.removeItem(atPath: old)
+            #expect(await waitUntil { viewer.gone == .missing })
+            let later = real(harness) + "/d.swift"
+            try "let d = 4\n".write(toFile: later, atomically: true, encoding: .utf8)
+            tab.viewersFollow([PathMove(from: old, to: later)])
+            #expect(viewer.path == later && viewer.gone == nil)
+            #expect(await waitUntil { viewer.textView.string == "let d = 4\n" })
+        }
+
         // A following viewer with edits keeps its file where it was moved, and saves it there; one that doesn't
         // follow stays on its file wherever it goes.
         @Test func aViewerKeepsItsFileWhereItWasMoved() async throws {
@@ -239,7 +277,7 @@ extension ExplorerWindowlessTests {
             let viewer = try #require(pane.viewer)
             #expect(await waitUntil { viewer.isText })
             try FileManager.default.removeItem(atPath: b)
-            #expect(await waitUntil { viewer.gone == .deleted })
+            #expect(await waitUntil { viewer.gone == .missing })
             #expect(pane.viewer === viewer)
             try "{\"b\": 3}\n".write(toFile: b, atomically: true, encoding: .utf8)
             #expect(await waitUntil { viewer.gone == nil && viewer.textView.string == "{\"b\": 3}\n" })
@@ -253,12 +291,12 @@ extension ExplorerWindowlessTests {
             edited.setEditing(true)
             edited.textView.insertText("// kept\n", replacementRange: NSRange(location: 0, length: 0))
             try FileManager.default.removeItem(atPath: a)
-            #expect(await waitUntil { edited.gone == .deleted })
+            #expect(await waitUntil { edited.gone == .missing })
             #expect(edited.isDirty && edited.textView.string == "// kept\nlet a = 1\n")
 
             #expect(!edited.save())
-            #expect(
-                await waitUntil { tab.frontAlert?.titleLabel.stringValue == "\u{201C}a.swift\u{201D} was deleted." })
+            let asked = "\u{201C}a.swift\u{201D} is no longer there."
+            #expect(await waitUntil { tab.frontAlert?.titleLabel.stringValue == asked })
             #expect(!FileManager.default.fileExists(atPath: a), "nothing is written before the answer")
             let alert = try #require(tab.frontAlert)
             let save = try #require(alert.buttons.first { $0.title == "Save" })

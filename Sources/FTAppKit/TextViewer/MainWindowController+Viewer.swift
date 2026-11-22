@@ -488,6 +488,11 @@ extension MainWindowController {
         updatePosition(of: viewer, in: pane)
     }
 
+    /// File Trail renamed or moved items: each pane's viewer follows its file (`TextViewerController.follow`).
+    func viewersFollow(_ moves: [PathMove]) {
+        for pane in panes { pane.viewer?.follow(moves) }
+    }
+
     /// The list under a file in place was read: the file's place among the folder's files follows.
     func inPlaceViewerListChanged(in pane: BrowserPane) {
         if let viewer = pane.viewer, viewer.mode == .inPlace { updatePosition(of: viewer, in: pane) }

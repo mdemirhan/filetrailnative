@@ -466,6 +466,7 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         guard !moves.isEmpty, !isDestroyed else { return }
         let front = selected
         for tab in tabs {
+            tab.viewersFollow(moves)
             if tab === front {
                 tab.followOnScreen(moves)
                 continue

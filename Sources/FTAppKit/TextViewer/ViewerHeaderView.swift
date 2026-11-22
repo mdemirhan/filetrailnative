@@ -496,7 +496,9 @@ final class ViewerMessageView: NSView {
         case .gone(let how, let text):
             icon.image = NSImage(systemSymbolName: how == .trashed ? "trash" : "doc", accessibilityDescription: nil)
             title.stringValue = text
-            detail.stringValue = "It isn’t where it was any more."
+            detail.stringValue =
+                how == .trashed
+                ? "It isn’t where it was any more." : "It was deleted, or moved where it can’t be followed."
         }
         needsLayout = true
     }
