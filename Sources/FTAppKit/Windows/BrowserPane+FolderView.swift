@@ -412,7 +412,6 @@ extension BrowserPane {
         changeOnScreen { view in
             view.shown = view.saved
             view.shownSubfolders = view.savedSubfolders
-            view.becomesOwn = false
         }
     }
 
@@ -447,32 +446,6 @@ extension BrowserPane {
                 view.shown.forget(setting)
             }
         }
-    }
-
-    /// Keep Columns for “…” in the List header's menu: the folder's own view keeps the columns on screen, or keeps
-    /// them no more; on screen until Save, as a Keep box is. In a folder using a view from above it is a view of its
-    /// own the folder is to have, also where the view above keeps the very same columns, which would otherwise be no
-    /// change at all.
-    func keepOwnColumns(_ keep: Bool) {
-        let current = shownKeeps
-        changeOnScreen { view in
-            if keep {
-                view.shown.take(.columns, from: current)
-                if !view.use.own { view.becomesOwn = true }
-            } else if view.use.own {
-                view.shown.forget(.columns)
-            } else {
-                // Unchosen again: the folder goes on using the view above, with what that view keeps.
-                view.becomesOwn = false
-                if !view.saved.keeps(.columns) { view.shown.forget(.columns) }
-            }
-        }
-    }
-
-    /// Whether the columns on screen are, or at Save will be, kept by a view of the folder's own.
-    var keepsOwnColumns: Bool {
-        guard let view = shownFolderView else { return false }
-        return view.shown.keeps(.columns) && (view.use.own || view.becomesOwn)
     }
 
     /// A value changed in Folder View Options: kept, with that value, on screen until Save.

@@ -200,7 +200,7 @@ extension ExplorerWindowlessTests {
             #expect(tab.preferences.detailColumns.permissions)
             tab.perform(.showPermissionsColumn)
 
-            tab.keepColumns(true, in: pane)
+            pane.setFolderViewKeeps(.columns, true)
             tab.perform(.showPermissionsColumn)
             #expect(!tab.preferences.detailColumns.permissions)
             #expect(pane.shownFolderView?.unsaved == [.columns])
@@ -457,9 +457,8 @@ extension ExplorerWindowlessTests {
             #expect(tab.preferences.searchColumnOrder.prefix(3) == [.size, .folder, .modified])
             #expect(pane.columns(from: tab.preferences).columns == [.name, .size, .folder, .modified])
 
-            // The header's menu moves the title clicked, and has no Keep item.
+            // The header's menu moves the title clicked.
             var menu = tab.headerMenu(for: .size, in: pane)
-            #expect(!menu.items.contains { $0.title.hasPrefix("Keep Columns") })
             #expect(menu.items.first { $0.title == "Move “Size” Left" }?.isEnabled == false)
             try choose("Move “Size” Right", in: menu)
             #expect(tab.preferences.searchColumnOrder.prefix(3) == [.folder, .size, .modified])
@@ -587,49 +586,33 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        @Test func keepColumnsUnderAViewFromAboveThatKeepsColumnsGivesTheFolderItsOwnAtSave() async throws {
+        @Test func theHeadersMenuSaysWhereAColumnChangeGoes() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             let pane = tab.activePane
+            await go(tab, harness, "Beta")
+            tab.perform(.viewAsDetails)
+            // No folder view: the pane's columns, and the first item says so; Name, always on, comes next.
+            var menu = tab.headerMenu(for: .size, in: pane)
+            #expect(menu.items.first?.title == "Changes apply to all folders in this pane")
+            #expect(menu.items.first?.isEnabled == false && menu.items[1].isSeparatorItem)
+            #expect(menu.items[2].title == "Name")
+
             await go(tab, harness, "Alpha")
             tab.perform(.viewAsDetails)
             tab.perform(.rememberFolderView)
             pane.setFolderViewSubfolders(true)
             tab.perform(.updateFolderView)
             #expect(pane.folderViews.views.own(real(harness, "Alpha"))?.keeps.columns != nil)
-
-            await go(tab, harness, "Alpha/Inner")
-            let inner = real(harness, "Alpha/Inner")
-            #expect(pane.shownFolderView?.use.own == false && pane.folderViewKeeps(.columns))
-            let keep = "Keep Columns for “Inner”"
-            var menu = tab.headerMenu(for: .size, in: pane)
-            #expect(menu.items.first?.title == keep && menu.items.first?.state == .off)
-            #expect(menu.items[1].title == "Changes go to “Alpha” view, until Save")
-            try choose(keep, in: menu)
-            // A change on screen as any other: checked, the dot shows, nothing is saved until Save.
             menu = tab.headerMenu(for: .size, in: pane)
-            #expect(menu.items.first?.state == .on)
-            #expect(menu.items[1].title == "Changes go to this folder's view, until Save")
-            #expect(pane.shownFolderView?.hasUnsavedChanges == true)
-            #expect(pane.content.contentShell.pathBarRow.folderViewMark?.changed == true)
-            #expect(tab.canPerform(.updateFolderView))
-            #expect(pane.folderViews.views.own(inner) == nil)
-            // Chosen again, it is unchosen: nothing is changed.
-            try choose(keep, in: menu)
-            #expect(pane.shownFolderView?.hasUnsavedChanges == false)
-            #expect(tab.headerMenu(for: .size, in: pane).items.first?.state == .off)
-            // Revert drops it too.
-            try choose(keep, in: tab.headerMenu(for: .size, in: pane))
-            tab.perform(.revertFolderView)
-            #expect(pane.shownFolderView?.hasUnsavedChanges == false && !pane.keepsOwnColumns)
+            #expect(menu.items.first?.title == "Changes go to this folder's view, until Save")
 
-            try choose(keep, in: tab.headerMenu(for: .size, in: pane))
-            tab.perform(.updateFolderView)
-            let own = try #require(pane.folderViews.views.own(inner))
-            #expect(own.keeps.columns == pane.folderViews.views.own(real(harness, "Alpha"))?.keeps.columns)
-            #expect(!own.subfolders)
-            #expect(pane.shownFolderView?.isOwnSaved == true && pane.shownFolderView?.hasUnsavedChanges == false)
-            #expect(tab.headerMenu(for: .size, in: pane).items.first?.state == .on)
+            // Under a view from above that keeps columns: that view's, named.
+            await go(tab, harness, "Alpha/Inner")
+            #expect(pane.shownFolderView?.use.own == false && pane.folderViewKeeps(.columns))
+            menu = tab.headerMenu(for: .size, in: pane)
+            #expect(menu.items.first?.title == "Changes go to “Alpha” view, until Save")
+            await harness.close()
         }
 
         @Test func folderCustomizationClosesWhenItsPaneIsClosedOrReplaced() async throws {
@@ -1247,89 +1230,6 @@ extension ExplorerWindowlessTests {
             #expect(pane.viewSizes?.detailColumnWidths.name == 444)
             await go(tab, harness, "Beta")
             #expect(pane.columns(from: tab.preferences).columns.contains(.lastOpened))
-            await harness.close()
-        }
-
-        // Keep Columns chosen in a folder that uses a view from above waits for Save as any change: Folder
-        // Customization shows it, a read in place keeps it, and leaving the folder drops it. While it waits, the view
-        // above saved again in another tab shows here with the choice still made; the folder given a view of its own
-        // there has it, with nothing left to save here; and the view above removed there leaves no view to keep.
-        @Test func keepColumnsThatWaitsForSaveFollowsWhatAnotherTabSaves() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let first = try await harness.open()
-            let pane = first.activePane
-            await go(first, harness, "Alpha")
-            first.perform(.viewAsDetails)
-            first.perform(.rememberFolderView)
-            pane.setFolderViewSubfolders(true)
-            first.perform(.updateFolderView)
-            let alpha = real(harness, "Alpha")
-            let inner = real(harness, "Alpha/Inner")
-            await go(first, harness, "Alpha/Inner")
-            let second = try await secondTab(of: first, harness)
-            let other = second.activePane
-
-            let popover = FolderViewPopover(pane: pane, tab: first, dismiss: {})
-            first.folderViewPopover = popover
-            defer { first.folderViewPopover = nil }
-            func saveIsOn() -> Bool? {
-                func find(_ view: NSView) -> NSView? {
-                    if view.accessibilityIdentifier() == "folderViewPopover.update" { return view }
-                    return view.subviews.lazy.compactMap(find).first
-                }
-                return (find(popover.contentView) as? NSButton)?.isEnabled
-            }
-            #expect(saveIsOn() == false)
-            pane.keepOwnColumns(true)
-            #expect(pane.folderView?.becomesOwn == true && pane.keepsOwnColumns)
-            #expect(saveIsOn() == true)
-            #expect(pane.content.contentShell.pathBarRow.folderViewMark?.changed == true)
-            // A read in place keeps it.
-            first.refresh()
-            #expect(await waitUntil { !first.isNavigating })
-            #expect(pane.folderView?.becomesOwn == true)
-
-            // The view above, saved again elsewhere with another column: it shows here, the choice still made.
-            await go(second, harness, "Alpha")
-            second.toggleColumn(.permissions, in: other)
-            second.perform(.updateFolderView)
-            #expect(pane.folderViews.views.own(alpha)?.keeps.columns?.visibility.permissions == true)
-            #expect(pane.folderView?.becomesOwn == true && pane.folderView?.use.own == false)
-            #expect(pane.folderView?.shown.columns?.visibility.permissions == true)
-            #expect(saveIsOn() == true)
-            first.perform(.updateFolderView)
-            #expect(pane.folderViews.views.own(inner)?.keeps.columns?.visibility.permissions == true)
-            #expect(pane.folderView?.isOwnSaved == true && pane.folderView?.hasUnsavedChanges == false)
-            #expect(saveIsOn() == false)
-
-            // The folder given a view of its own elsewhere: it has one, and nothing waits here.
-            first.perform(.resetFolderView)
-            #expect(pane.folderViews.views.own(inner) == nil && pane.folderView?.use.own == false)
-            pane.keepOwnColumns(true)
-            await go(second, harness, "Alpha/Inner")
-            second.perform(.rememberFolderView)
-            #expect(pane.folderView?.isOwnSaved == true && pane.folderView?.hasUnsavedChanges == false)
-            #expect(pane.keepsOwnColumns && saveIsOn() == false)
-
-            // The view above removed elsewhere: no view is left to give the folder, and nothing waits.
-            first.perform(.resetFolderView)
-            pane.keepOwnColumns(true)
-            #expect(pane.folderView?.becomesOwn == true)
-            await go(second, harness, "Alpha")
-            second.perform(.resetFolderView)
-            #expect(pane.folderView == nil && !pane.keepsOwnColumns && !first.canPerform(.updateFolderView))
-            #expect(pane.content.contentShell.pathBarRow.folderViewMark?.changed == false)
-
-            // Leaving the folder drops it.
-            second.perform(.rememberFolderView)
-            other.setFolderViewSubfolders(true)
-            second.perform(.updateFolderView)
-            #expect(pane.folderView?.use.own == false)
-            pane.keepOwnColumns(true)
-            await go(first, harness, "Beta")
-            await go(first, harness, "Alpha/Inner")
-            #expect(pane.folderView?.becomesOwn == false && pane.folderView?.hasUnsavedChanges == false)
-            #expect(pane.folderViews.views.own(inner) == nil)
             await harness.close()
         }
 

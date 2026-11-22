@@ -435,9 +435,6 @@ public struct FolderViewOnScreen: Equatable, Sendable {
     public var shownSubfolders: Bool
     /// A folder with no view saved, given one on screen and not saved yet.
     public private(set) var isDraft: Bool
-    /// A folder using a view from above that is to have one of its own at Save, though nothing of the view is
-    /// changed (Keep Columns for … chosen there): a change on screen as any other. Never set on a folder's own view.
-    public var becomesOwn = false
 
     public init(_ use: FolderViewUse) {
         self.use = use
@@ -466,7 +463,7 @@ public struct FolderViewOnScreen: Equatable, Sendable {
 
     public var subfoldersUnsaved: Bool { shownSubfolders != savedSubfolders }
 
-    public var hasUnsavedChanges: Bool { !unsaved.isEmpty || subfoldersUnsaved || becomesOwn }
+    public var hasUnsavedChanges: Bool { !unsaved.isEmpty || subfoldersUnsaved }
 
     /// The view saved in its place (Save in another pane): what is changed here and not saved stays as on screen; the
     /// rest shows what is saved.
@@ -477,7 +474,6 @@ public struct FolderViewOnScreen: Equatable, Sendable {
             next.shown.take(setting, from: shown)
         }
         if subfoldersUnsaved { next.shownSubfolders = shownSubfolders }
-        if becomesOwn, !next.use.own { next.becomesOwn = true }
         return next
     }
 }

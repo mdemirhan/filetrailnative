@@ -173,13 +173,8 @@ extension MainWindowController {
             })
     }
 
-    /// Keep Columns for “…”: the folder's own view keeps the columns on screen, or keeps them no more.
-    func keepColumns(_ keep: Bool, in pane: BrowserPane) {
-        pane.keepOwnColumns(keep)
-    }
-
-    /// The List header's right-click menu: Keep Columns for the folder, the columns to show, moving the one clicked,
-    /// Size All Columns to Fit and Reset Columns. Search results have the same of their own columns, and no Keep.
+    /// The List header's right-click menu: where a change goes, the columns to show, moving the one clicked,
+    /// Size All Columns to Fit and Reset Columns. Search results have the same of their own columns.
     func headerMenu(for column: DetailColumn?, in pane: BrowserPane) -> NSMenu {
         activate(pane)
         let menu = NSMenu(title: "Columns")
@@ -225,21 +220,11 @@ extension MainWindowController {
                 })
             return menu
         }
-        let name = FolderViewText.name(pane.shownFolderPath)
         let view = pane.shownFolderView
-        // Checked where the columns are, or at Save will be, this folder's own: a view from above that keeps
-        // columns leaves it unchecked, and choosing it there gives the folder its own.
-        let ownKeeps = pane.keepsOwnColumns
-        let keep = ActionMenuItem("Keep Columns for “\(name)”", checked: ownKeeps) { [weak self, weak pane] in
-            guard let pane else { return }
-            self?.keepColumns(!ownKeeps, in: pane)
-        }
-        keep.isEnabled = !pane.shownFolderPath.isEmpty
-        menu.addItem(keep)
         let whereTo: String
         if let view, view.shown.keeps(.columns) {
             whereTo =
-                view.use.own || view.becomesOwn
+                view.use.own
                 ? "Changes go to this folder's view, until Save"
                 : "Changes go to “\(FolderViewText.name(view.use.view.path))” view, until Save"
         } else {

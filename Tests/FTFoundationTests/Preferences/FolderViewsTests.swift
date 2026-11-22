@@ -398,29 +398,6 @@ struct FolderViewsTests {
         #expect(read.serialize() == written.serialize())
     }
 
-    // Keep Columns chosen in a folder that uses a view from above is a view of its own to come at Save. It stays
-    // that while the view above is saved again elsewhere, and is there no more once the folder has a view of its own.
-    @Test func aViewOfItsOwnToComeStaysWhileTheViewAboveIsSavedAgainAndGoesOnceTheFolderHasOne() {
-        let above = FolderView(path: "/Users/me/Pictures", subfolders: true, keeps: Self.previews)
-        var pending = FolderViewOnScreen(FolderViewUse(view: above, own: false))
-        #expect(!pending.hasUnsavedChanges)
-        pending.becomesOwn = true
-        #expect(pending.hasUnsavedChanges && pending.unsaved.isEmpty)
-        // Not the same as the view with nothing chosen: a pane that compares the two shows the change.
-        #expect(pending != FolderViewOnScreen(FolderViewUse(view: above, own: false)))
-
-        var changed = above
-        changed.keeps.view = .icons
-        let stillPending = pending.taking(FolderViewUse(view: changed, own: false))
-        #expect(stillPending.becomesOwn && stillPending.shown.view == .icons && stillPending.hasUnsavedChanges)
-
-        let own = FolderView(path: "/Users/me/Pictures/Scans", keeps: Self.previews)
-        let saved = pending.taking(FolderViewUse(view: own, own: true))
-        #expect(!saved.becomesOwn && !saved.hasUnsavedChanges && saved.isOwnSaved)
-        // The same folder's view from above taken over as its own (the folder above itself): never set there.
-        #expect(!pending.taking(FolderViewUse(view: above, own: true)).becomesOwn)
-    }
-
     // MARK: A path is its bytes
 
     /// "café" with its "é" as one scalar and with the accent apart: one path to Swift's `==`, and two names a disk
