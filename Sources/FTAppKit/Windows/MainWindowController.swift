@@ -2135,7 +2135,7 @@ extension MainWindowController: ExplorerWindowHandle {
         case .saveTabView: presentTabViewOptions()
         case .saveWindowView: group?.saveWindowView(from: self)
         case .toggleTwoPanes: afterLeavingViewer(of: otherPane) { $0.toggleTwoPanes() }
-        case .duplicatePane: afterLeavingViewer(of: otherPane) { $0.duplicatePane() }
+        case .duplicatePane: afterLeavingViewer(of: paneDuplicatePaneReplaces) { $0.duplicatePane() }
         case .viewFile: viewFile()
         case .switchToOtherPane: switchToOtherPane()
         case .openSelectionInOtherPane:

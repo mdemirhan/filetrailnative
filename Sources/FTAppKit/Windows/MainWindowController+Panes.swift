@@ -29,12 +29,26 @@ extension MainWindowController {
     }
 
     /// View ▸ Duplicate Pane (⌥⌘\): the second pane opens as a copy of the active one, never where a pane was last
-    /// closed. With two panes already, the other one is put in its place as that copy, on its side and at its width.
+    /// closed, the room shared evenly. With two panes already, the other one is put in its place as that copy, on its
+    /// side and at its width. A list is what is copied, never a viewer: with the viewer beside the list active, the
+    /// list is copied in the viewer's place (`paneDuplicatePaneReplaces` asks about its edits first).
     func duplicatePane() {
+        if let viewerPane, viewerPane === activePane, let list = otherPane { focusPane(list) }
         let activeOnTheRight = showsTwoPanes && activePaneIndex == 1
-        if showsTwoPanes { closeOtherPane() }
+        if showsTwoPanes {
+            closeOtherPane()
+        } else {
+            workspace.setPaneSplit(PaneSplit.even)
+        }
         openSecondPane(reopening: false)
         if activeOnTheRight { swapPanes() }
+    }
+
+    /// The pane Duplicate Pane puts the copy in place of: the viewer beside the list, when it is the active pane,
+    /// else the pane that isn't active; nil with one pane.
+    var paneDuplicatePaneReplaces: BrowserPane? {
+        if let viewerPane, viewerPane === activePane, otherPane != nil { return viewerPane }
+        return otherPane
     }
 
     /// Opens the second pane, to the right, on `path`; without one, where it was last closed in this tab (unless

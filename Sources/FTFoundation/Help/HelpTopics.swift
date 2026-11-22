@@ -88,7 +88,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Two Panes",
                             description:
-                                "{toggleTwoPanes} shows a second pane beside the first, each with its own folder, history, view, filter and search. If you closed a pane in this tab, it comes back as you left it; otherwise the new pane is a copy of yours, with the same folder, view and history. {duplicatePane} opens a copy of your pane every time, in place of the other pane when two are open. The toolbar, the folder tree and the Info panel follow the active pane, the one with the blue selection. The same key closes the pane that isn’t active, and {closePane} closes the one you are in."
+                                "{toggleTwoPanes} shows a second pane beside the first, each with its own folder, history, view, filter and search. If you closed a pane in this tab, it comes back as you left it; otherwise the new pane is a copy of yours, with the same folder, view and history. {duplicatePane} opens a copy of your pane every time, side by side at half the width, or in place of the other pane when two are open; beside a file you are viewing, it copies the list in the file's place. The toolbar, the folder tree and the Info panel follow the active pane, the one with the blue selection. The same key closes the pane that isn’t active, and {closePane} closes the one you are in."
                         ),
                         HelpRow(
                             label: "Moving between panes",

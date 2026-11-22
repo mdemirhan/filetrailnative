@@ -122,6 +122,66 @@ extension ExplorerWindowlessTests {
             #expect(tab.workspace.secondStatusCell.content === tab.panes[1].content.contentShell.pathBarRow)
         }
 
+        // From one pane the copy opens with the room shared evenly, wherever the divider was for the pane closed last.
+        @Test func duplicatePaneFromOnePaneSharesTheRoomEvenly() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await tabOnAlpha(harness)
+            let gamma = tab.openSecondPane(at: real(harness, "Gamma"))
+            await arrived(gamma)
+            tab.workspace.setPaneSplit(0.3)
+            tab.perform(.toggleTwoPanes)
+            #expect(!tab.showsTwoPanes)
+            #expect(tab.workspace.paneSplit == 0.3)
+
+            tab.perform(.duplicatePane)
+            await arrived(try #require(tab.otherPane))
+            #expect(tab.workspace.paneSplit == PaneSplit.even)
+        }
+
+        // With the viewer beside the list active, the list is copied in the viewer's place, never the viewer's pane:
+        // the viewer's edits are asked about first, Cancel leaving everything as it was.
+        @Test func duplicatePaneFromTheViewerCopiesTheListInItsPlace() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await tabOnAlpha(harness)
+            await tab.activePane.navigate(to: real(harness), cause: .command)
+            await arrived(tab.activePane)
+            let list = tab.activePane
+            tab.openFileInOtherPane(real(harness, "note.txt"))
+            let viewerPane = try #require(tab.otherPane)
+            let viewer = try #require(viewerPane.viewer)
+            #expect(await waitUntil { viewer.isText })
+            viewer.setEditing(true)
+            viewer.textView.insertText("y", replacementRange: NSRange(location: 1, length: 0))
+            #expect(viewer.isDirty)
+            tab.focusPane(viewerPane)
+            tab.workspace.setPaneSplit(0.4)
+
+            tab.perform(.duplicatePane)
+            #expect(
+                await waitUntil {
+                    tab.frontAlert?.titleLabel.stringValue == "Save changes to \u{201C}note.txt\u{201D}?"
+                })
+            try SheetInput.press(["Escape"], in: tab.window)
+            #expect(await waitUntil { tab.frontAlert == nil })
+            #expect(tab.panes.count == 2 && tab.panes[1] === viewerPane && viewerPane.viewer === viewer)
+
+            tab.perform(.duplicatePane)
+            #expect(await waitUntil { tab.frontAlert != nil })
+            let alert = try #require(tab.frontAlert)
+            try #require(alert.buttons.first { $0.title == "Don\u{2019}t Save" }).performClick(nil)
+            #expect(await waitUntil { tab.panes.count == 2 && tab.panes[1] !== viewerPane })
+            let copy = tab.panes[1]
+            await arrived(copy)
+            #expect(tab.panes[0] === list)
+            expectCopy(copy, of: list)
+            #expect(tab.panes.allSatisfy { $0.viewer == nil })
+            #expect(tab.activePane === list)
+            #expect(tab.workspace.paneSplit == 0.4)
+            #expect(try String(contentsOfFile: real(harness, "note.txt"), encoding: .utf8) == "x")
+        }
+
         @Test func showThisFolderInOtherPaneWithOnePaneOpensTheSameCopy() async throws {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }
