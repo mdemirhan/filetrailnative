@@ -708,18 +708,26 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     // MARK: Changes on disk
 
     private func watch(_ path: String) {
-        // The original's real path, as the watch's events spell the folder's names: told apart byte for byte.
+        // The original's real path, as the watch's events spell the folder's names. A name that differs only by its
+        // letter case or the way its accents are stored is let through: the file renamed to one is told of by its new
+        // name, and whether it is the file is found by asking the disk.
         let folder = NodePath.dirname(path)
-        let name = NodePath.basename(path)
+        let name = Self.nameAnySpelling(NodePath.basename(path))
         stopWatching = FSEventsFolderWatcher.watchFolder(
             path: folder,
             onChange: { [weak self] changed in
-                guard changed.map({ $0.utf8.elementsEqual(name.utf8) }) ?? true else { return }
+                guard changed.map({ Self.nameAnySpelling($0) == name }) ?? true else { return }
                 self?.changedOnDisk()
             }, onFail: {},
             // The watch starts a moment after the file was read, and tells only of what changes from then on: a
             // change made in that moment is found by the file's date.
             onStart: { [weak self] in self?.changedOnDisk() })
+    }
+
+    /// A name with its letter case and the way its accents are stored set aside: what a disk that ignores them takes
+    /// for one name.
+    private static func nameAnySpelling(_ name: String) -> String {
+        name.precomposedStringWithCanonicalMapping.lowercased()
     }
 
     /// Something changed in the file's folder: the file changed where it is, was moved or renamed, or went.
@@ -742,6 +750,13 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
             } else {
                 reload()
             }
+            return
+        }
+        // Renamed to another spelling of its name (its letter case, the way its accents are stored): the path still
+        // opens it on a disk that ignores those, so the disk is asked how it names the file now.
+        let named = DiskPath(path).namedAsOnDisk().string
+        if !samePath(named, path) {
+            fileMoved(from: path, to: named)
             return
         }
         let url = DiskPath(path).url(isDirectory: false)

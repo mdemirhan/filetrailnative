@@ -163,6 +163,33 @@ extension ExplorerWindowlessTests {
             #expect(pane.content.selection.paths.isEmpty)
         }
 
+        // A file in place renamed to another letter case of its name, which its old path still opens on a disk that
+        // ignores case: the viewer takes the new name, keeps its place among the folder's files, and saves under it.
+        @Test func aFileInPlaceFollowsARenameOfItsLetterCaseOnly() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await tabWithFiles(harness)
+            let pane = tab.activePane
+            pane.content.select(paths: [real(harness, "a.swift")])
+            tab.perform(.viewFile)
+            let viewer = try #require(pane.viewer)
+            #expect(await waitUntil { viewer.isText && viewer.position != nil })
+
+            let renamed = real(harness) + "/A.swift"
+            try FileManager.default.moveItem(atPath: real(harness, "a.swift"), toPath: renamed)
+            #expect(await waitUntil { viewer.path == renamed }, "shows \(shown(viewer))")
+            #expect(viewer.gone == nil && viewer.textView.string == "let a = 1\n")
+            #expect(pane.navigationHistory.current == renamed)
+            readAgain(pane, in: tab)
+            #expect(await waitUntil { viewer.position != nil }, "still one of its folder's files")
+
+            viewer.setEditing(true)
+            viewer.textView.insertText("// top\n", replacementRange: NSRange(location: 0, length: 0))
+            #expect(viewer.save())
+            #expect(try FileManager.default.contentsOfDirectory(atPath: real(harness)).contains("A.swift"))
+            #expect(try String(contentsOfFile: renamed, encoding: .utf8) == "// top\nlet a = 1\n")
+        }
+
         // A following viewer with edits keeps its file where it was moved, and saves it there; one that doesn't
         // follow stays on its file wherever it goes.
         @Test func aViewerKeepsItsFileWhereItWasMoved() async throws {
