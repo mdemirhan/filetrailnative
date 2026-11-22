@@ -32,7 +32,8 @@ struct PreferenceKeyTests {
                  "shortcutOverrides": {"newTab": ["Cmd+Option+N"]}, "openItemLimit": 9, "includeHidden": true,
                  "searchPatternMode": "glob", "searchMatchScope": "path", "searchRecursive": false,
                  "searchSkipGitFolders": false, "searchSkipGitIgnored": true, "searchResultsSortBy": "name",
-                 "searchResultsSortDirection": "desc", "treeWidth": 312, "inspectorWidth": 388,
+                 "searchResultsSortDirection": "desc", "searchGroupBy": "kind", "searchGroupReversed": true,
+                 "treeWidth": 312, "inspectorWidth": 388,
                  "restoreSessionOnStartup": false,
                  "openTabs": [{"path": "/Users/demo/src", "viewMode": "list"}], "activeTabIndex": 1,
                  "treeRootPath": "/Users/demo", "lastVisitedPath": "/Users/demo/src",
@@ -52,7 +53,7 @@ struct PreferenceKeyTests {
     @Test func namesEveryFieldOfThePreferencesOnce() throws {
         let encoded = try #require(try JSONNode.of(AppPreferences.defaults()).object)
         #expect(Set(encoded.keys) == Set(PreferenceKey.allCases.map(\.rawValue)))
-        #expect(PreferenceKey.allCases.count == 64)
+        #expect(PreferenceKey.allCases.count == 66)
         #expect(PreferenceKey(\AppPreferences.theme) == .theme)
         #expect(PreferenceKey(\AppPreferences.terminalApp) == .terminalApp)
         #expect(PreferenceKey(\AppPreferences.detailColumnWidths.name) == nil)

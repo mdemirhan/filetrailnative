@@ -1189,9 +1189,11 @@ final class BrowserPane {
         folderViewChanged()
     }
 
-    /// The view search results show in, whether they show now or not.
+    /// The view search results show in, whether they show now or not. It is the pane's, and the app's from now on
+    /// (as their groups are, below): what a pane with none to copy starts from.
     func setSearchViewMode(_ mode: ExplorerViewMode) {
         searchViewMode = mode
+        tab.updatePreferences { $0.searchViewMode = mode }
         if let search = searchStore, search.showsResults { content.setMode(mode) }
         tab.paneChanged(.view, in: self)
         tab.group?.tabChanged(tab)
@@ -1201,6 +1203,7 @@ final class BrowserPane {
         // Search results have a view of their own in each pane (`searchViewMode`).
         if let search = searchStore, search.showsResults {
             searchViewMode = mode
+            tab.updatePreferences { $0.searchViewMode = mode }
         } else if changedByHand(.view), folderView?.shown.keeps(.view) == true {
             // A folder's view that keeps the view: changed on screen only, until Save.
             folderView?.shown.view = mode
@@ -1238,6 +1241,7 @@ final class BrowserPane {
         if let search = searchStore, search.showsResults {
             guard field.isForSearch, field != searchGroupBy else { return }
             searchGroupBy = field
+            tab.updatePreferences { $0.searchGroupBy = field }
             content.setSearchGroupBy(field)
             tab.paneChanged(.view, in: self)
             tab.group?.tabChanged(tab)
@@ -1258,6 +1262,8 @@ final class BrowserPane {
     func toggleGroupReversed() {
         if let search = searchStore, search.showsResults {
             searchGroupReversed.toggle()
+            let reversed = searchGroupReversed
+            tab.updatePreferences { $0.searchGroupReversed = reversed }
             content.setSearchGroupReversed(searchGroupReversed)
         } else {
             // Read before the view is written, and before a tab view's override lets go of it.

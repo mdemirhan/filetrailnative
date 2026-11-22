@@ -44,6 +44,34 @@ struct SearchResultsKeepsTests {
         #expect(PaneKeeps(viewer: PaneViewer(), searchResults: Self.results).searchResults == nil)
     }
 
+    // A file changed by hand: each part is checked as a pane's own is, and the rest is kept.
+    @Test func whatTheFileSaysWronglyIsCheckedPartByPart() throws {
+        let json = """
+            {"searchResults": {"view": "icons", "sortBy": "nope", "sortDirection": "desc", "groupBy": "kind",
+                               "groupReversed": true, "columns": {"folder": false, "size": "yes"},
+                               "columnOrder": ["size", "size", "nope", "folder"],
+                               "columnWidths": {"name": 99999, "folder": 1},
+                               "iconSizes": {"standard": 5000}, "previewCounts": {"standard": 7}}}
+            """
+        let read = try #require(try JSONDecoder().decode(PaneKeeps.self, from: Data(json.utf8)).searchResults)
+        let defaults = SearchResultsKeeps.defaults
+        #expect(read.view == .icons && read.sortBy == defaults.sortBy && read.sortDirection == .desc)
+        #expect(read.groupBy == .kind && read.groupReversed)
+        #expect(read.columns[.folder] == false && read.columns[.size] == defaults.columns[.size])
+        #expect(read.columnOrder.prefix(2) == [.size, .folder])
+        #expect(Set(read.columnOrder).count == OptionalSearchColumnKey.allCases.count)
+        #expect(read.columnOrder.count == OptionalSearchColumnKey.allCases.count)
+        #expect(read.columnWidths.name == SearchColumnKey.name.widthLimits.upperBound)
+        #expect(read.columnWidths.folder == SearchColumnKey.folder.widthLimits.lowerBound)
+        #expect(read.iconSizes.standard == AppPreferenceLimits.iconSizeRange.upperBound)
+        #expect(read.iconSizes.finder == defaults.iconSizes.finder)
+        #expect(read.compactListWidths == defaults.compactListWidths)
+        #expect(PreviewGrid.valid(read: 7) == read.previewCounts.standard)
+        // What is no record at all is not kept.
+        let none = try JSONDecoder().decode(PaneKeeps.self, from: Data(#"{"searchResults": 3}"#.utf8))
+        #expect(none.searchResults == nil)
+    }
+
     @Test func groupsResultsDontHaveAreNotKept() {
         let results = SearchResultsKeeps(AppPreferences.defaults(), view: .details, groupBy: .none, groupReversed: true)
         #expect(results.groupBy == .none && !results.groupReversed)

@@ -697,7 +697,8 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     /// panels.
     func saveSession() {
         guard !isDestroyed, let host, let active = selected else { return }
-        // What a window opened later starts from: the pane that is active, not always the first.
+        // What a window opened later starts from: the pane that is active, not always the first. The view of search
+        // results isn't the front pane's but the one set last in any pane, written as it is set.
         let front = active.activePaneTab
         // A window doesn't take more tabs than it keeps (one the system drops on a full window is sent back out); a
         // launch folder added to a full restored window is the one way past it, and the cut is there for it.
@@ -712,7 +713,6 @@ final class ExplorerTabGroup: ExplorerWindowLike {
             $0.lastVisitedFavoritePath = front.favoritePath
             $0.treeRootPath = front.treeRootPath
             $0.viewMode = front.viewMode
-            $0.searchViewMode = front.searchViewMode
             $0.sortBy = front.sortBy
             $0.sortDirection = front.sortDirection
             $0.includeHidden = front.includeHidden

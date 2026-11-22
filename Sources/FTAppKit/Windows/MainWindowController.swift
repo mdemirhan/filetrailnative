@@ -1451,9 +1451,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         // A size set here is this pane's own, and the app's from now on: what a pane with none of its own starts
         // from. The other panes keep theirs. Over search results it is the results' own size.
         // In a folder whose view keeps the size, a size set is a change of that view, unsaved until Update.
+        // A size set over results is none of the folder's: a tab view's hold on the folder's size stays.
         content.onCompactListWidthChanged = { [weak self, weak pane] density, width in
             guard let pane else { return }
-            if pane.changedByHand(.size), pane.folderViewKeeps(.size) {
+            if !pane.showsSearchResults, pane.changedByHand(.size), pane.folderViewKeeps(.size) {
                 pane.changeShownFolderView { $0.size?.compactListWidths[density] = width }
                 return
             }
@@ -1469,7 +1470,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
         content.onIconSizeChanged = { [weak self, weak pane] density, size in
             guard let pane else { return }
-            if pane.changedByHand(.size), pane.folderViewKeeps(.size) {
+            if !pane.showsSearchResults, pane.changedByHand(.size), pane.folderViewKeeps(.size) {
                 pane.changeShownFolderView { $0.size?.iconSizes[density] = size }
                 return
             }
@@ -1481,7 +1482,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
         content.onPreviewCountChanged = { [weak self, weak pane] density, count in
             guard let pane else { return }
-            if pane.changedByHand(.size), pane.folderViewKeeps(.size) {
+            if !pane.showsSearchResults, pane.changedByHand(.size), pane.folderViewKeeps(.size) {
                 pane.changeShownFolderView { $0.size?.previewCounts[density] = count }
                 return
             }

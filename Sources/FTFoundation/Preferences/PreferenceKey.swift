@@ -9,7 +9,8 @@ public enum PreferenceKey: String, CaseIterable, Sendable, Hashable {
     case detailRowOpen, topToolbarItems, terminalApp, defaultTextEditor, openWithApplications
     case diskImageOpensIn, returnKeyAction, shortcutOverrides, openItemLimit, includeHidden, searchPatternMode
     case searchMatchScope, searchRecursive, searchSkipGitFolders, searchSkipGitIgnored, searchResultsSortBy
-    case searchResultsSortDirection, treeWidth, inspectorWidth, restoreSessionOnStartup, openTabs, activeTabIndex
+    case searchResultsSortDirection, searchGroupBy, searchGroupReversed, treeWidth, inspectorWidth
+    case restoreSessionOnStartup, openTabs, activeTabIndex
     case treeRootPath, lastVisitedPath, lastVisitedFavoritePath, favorites, favoritesPlacement, favoritesExpanded
     case locationsExpanded, favoritesInitialized, singleClickExpandTreeItems, batchRenameSettings
     case batchRenamePresets, listFilterMatch, convertImagesSettings, textViewerSettings
@@ -64,6 +65,8 @@ public enum PreferenceKey: String, CaseIterable, Sendable, Hashable {
         case .searchSkipGitIgnored: .of(\.searchSkipGitIgnored)
         case .searchResultsSortBy: .of(\.searchResultsSortBy)
         case .searchResultsSortDirection: .of(\.searchResultsSortDirection)
+        case .searchGroupBy: .of(\.searchGroupBy)
+        case .searchGroupReversed: .of(\.searchGroupReversed)
         case .treeWidth: .of(\.treeWidth)
         case .inspectorWidth: .of(\.inspectorWidth)
         case .restoreSessionOnStartup: .of(\.restoreSessionOnStartup)

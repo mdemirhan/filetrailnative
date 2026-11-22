@@ -122,6 +122,64 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
+        @Test func resultsViewAndGroupsSetInAPaneAreTheAppsWhicheverPaneIsInFront() async throws {
+            let opened = try await open()
+            let tab = opened.tab
+            let right = tab.openSecondPane()
+            #expect(await waitUntil { right.loaded && right.hasShownFolder && !right.isNavigating })
+            let left = tab.panes[0]
+            tab.activate(left)
+            try search("no", opened)
+            #expect(left.showsSearchResults)
+            tab.perform(.viewAsIcons)
+            tab.perform(.groupByKind)
+            tab.perform(.reverseGroupOrder)
+            #expect(left.searchViewMode == .icons && left.searchGroupBy == .kind && left.searchGroupReversed)
+            #expect(tab.preferences.searchViewMode == .icons)
+            #expect(tab.preferences.searchGroupBy == .kind && tab.preferences.searchGroupReversed)
+            // The other pane in front and the window saved: its own are as they were, and the app's the ones set last.
+            tab.activate(right)
+            tab.group?.saveSession()
+            #expect(right.searchViewMode == .details && right.searchGroupBy == .none)
+            #expect(tab.preferences.searchViewMode == .icons && tab.preferences.searchGroupBy == .kind)
+            // A tab with none to copy starts from them.
+            var none = tab.preferences
+            none.openTabs = []
+            let start = StartupTabs.resolve(none, homePath: "/", startupFolderPath: nil, restoreTabs: false).tabs.first
+            #expect(start?.searchViewMode == .icons)
+            #expect(start?.searchGroupBy == .kind && start?.searchGroupReversed == true)
+            await opened.harness.close()
+        }
+
+        @Test func aSizeSetOverResultsLeavesATabViewsHoldOnTheFoldersSize() async throws {
+            let opened = try await open()
+            let tab = opened.tab
+            let sizes = FolderViewSizes(
+                iconSizes: DensitySizes(standard: 96, finder: 96), compactListWidths: .compactListDefaults,
+                previewCounts: .previewCountDefaults)
+            tab.updatePreferences {
+                $0.tabViews = [
+                    TabView(
+                        id: "tv", name: "Sizes",
+                        keeps: TabViewKeeps(
+                            pane: PaneKeeps(view: FolderViewKeeps(size: sizes), folderViews: .tabViewFirst)))
+                ]
+            }
+            tab.applyTabView(id: "tv")
+            let pane = tab.activePane
+            #expect(pane.tabViewOverride?.kept.contains(.size) == true)
+            try search("no", opened)
+            #expect(pane.showsSearchResults)
+            pane.content.onIconSizeChanged?(.standard, 48)
+            pane.content.onCompactListWidthChanged?(.standard, 400)
+            pane.content.onPreviewCountChanged?(.standard, 9)
+            #expect(pane.tabViewOverride?.kept.contains(.size) == true)
+            let own = pane.shownPreferences(tab.preferences)
+            #expect(own.searchIconSizes.standard == 48 && own.iconSizes.standard == 96)
+            #expect(own.searchCompactListWidths.standard == 400 && own.searchPreviewCounts.standard == 9)
+            await opened.harness.close()
+        }
+
         @Test func columnsShownAreEachPanesOwn() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()

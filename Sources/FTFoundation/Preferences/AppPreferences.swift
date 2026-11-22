@@ -57,6 +57,10 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     public var searchSkipGitIgnored: Bool
     public var searchResultsSortBy: SearchResultsSortByPreference
     public var searchResultsSortDirection: SortDirectionPreference
+    /// What search results are grouped by, and whether the groups are reversed, as set last in any pane: with
+    /// `searchViewMode`, what a pane with none to copy starts from.
+    public var searchGroupBy: GroupByPreference
+    public var searchGroupReversed: Bool
     public var treeWidth: Int
     public var inspectorWidth: Int
     /// Start where the last session ended: its folder, and its tabs.
@@ -108,7 +112,8 @@ public struct AppPreferences: Codable, Equatable, Sendable {
             diskImageOpensIn: .window, returnKeyAction: .rename, shortcutOverrides: [:],
             openItemLimit: 5, includeHidden: false, searchPatternMode: .text, searchMatchScope: .name,
             searchRecursive: true, searchSkipGitFolders: true, searchSkipGitIgnored: false,
-            searchResultsSortBy: .path, searchResultsSortDirection: .asc, treeWidth: 280, inspectorWidth: 320,
+            searchResultsSortBy: .path, searchResultsSortDirection: .asc, searchGroupBy: .none,
+            searchGroupReversed: false, treeWidth: 280, inspectorWidth: 320,
             restoreSessionOnStartup: true, openTabs: [], activeTabIndex: 0, treeRootPath: nil, lastVisitedPath: nil,
             lastVisitedFavoritePath: nil, favorites: [], favoritesPlacement: .integrated, favoritesExpanded: true,
             locationsExpanded: true, favoritesInitialized: false,

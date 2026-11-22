@@ -35,13 +35,14 @@ public enum PreferencesSanitizer {
 
     /// Tabs from a damaged file are kept as far as they make sense; a tab that does not is dropped rather than failing
     /// the whole list. A tab saved before it kept Favorites and Locations open or closed takes the window's setting,
-    /// and a pane saved with its sizes but without the List's column widths takes `columnWidths`, its window's.
+    /// and a pane saved with settings of its own but not all of them takes the rest from `own`: its window's, as it
+    /// showed them before each pane had its own.
     static func openTabs(
         _ value: JSONNode?, includeHidden: Bool, foldersFirst: Bool, favoritesExpanded: Bool, locationsExpanded: Bool,
-        columnWidths: (detail: DetailColumnWidths, search: SearchColumnWidths) = (.defaults, .defaults)
+        own: PaneViewSizes = PaneViewSizes(AppPreferences.defaults())
     ) -> [OpenTabPreference] {
         func viewSizes(_ value: JSONNode?) -> PaneViewSizes? {
-            Self.viewSizes(value, columnWidths: columnWidths)
+            Self.viewSizes(value, own: own)
         }
         guard let candidates = value?.array else { return [] }
         var tabs: [OpenTabPreference] = []
@@ -101,14 +102,14 @@ public enum PreferencesSanitizer {
         value?.string.flatMap(GroupByPreference.init(rawValue:))
     }
 
-    /// A pane's own sizes, columns and search settings, each checked; nil when the file has none for it. One it
-    /// doesn't say is what a new install starts with; the column widths it doesn't have are `columnWidths`, and a
-    /// column's it doesn't say is that one's there.
-    private static func viewSizes(
-        _ value: JSONNode?, columnWidths: (detail: DetailColumnWidths, search: SearchColumnWidths)
-    ) -> PaneViewSizes? {
+    /// A pane's own sizes, columns and search settings, each checked; nil when the file has none for it. A folder's
+    /// size it doesn't say is the size before any is set. Its columns, their order and widths, its results' order and
+    /// its search options, where it doesn't say them, are `own`: its window's, which showed them in every pane before
+    /// each pane had its own, so a pane saved then comes back as it was. Its results' sizes, where it has none, are
+    /// its folders', as results showed at those.
+    private static func viewSizes(_ value: JSONNode?, own: PaneViewSizes) -> PaneViewSizes? {
         guard let record = value?.object else { return nil }
-        var sizes = PaneViewSizes(AppPreferences.defaults())
+        var sizes = own
         sizes.iconSizes = densitySizes(record["iconSizes"], .iconDefaults) { AppPreferenceLimits.clampIconSize($0) }
         sizes.compactListWidths = densitySizes(record["compactListWidths"], .compactListDefaults) {
             AppPreferenceLimits.clampPaneWidth($0, AppPreferenceLimits.compactListWidthRange)
@@ -120,21 +121,21 @@ public enum PreferencesSanitizer {
         if record["detailColumnOrder"] != nil {
             sizes.detailColumnOrder = AppPreferenceLimits.normalizeDetailColumnOrder(record["detailColumnOrder"])
         }
-        sizes.detailColumnWidths = detailColumnWidths(record["detailColumnWidths"], columnWidths.detail)
-        sizes.searchIconSizes = densitySizes(record["searchIconSizes"], .iconDefaults) {
+        sizes.detailColumnWidths = detailColumnWidths(record["detailColumnWidths"], own.detailColumnWidths)
+        sizes.searchIconSizes = densitySizes(record["searchIconSizes"], sizes.iconSizes) {
             AppPreferenceLimits.clampIconSize($0)
         }
-        sizes.searchCompactListWidths = densitySizes(record["searchCompactListWidths"], .compactListDefaults) {
+        sizes.searchCompactListWidths = densitySizes(record["searchCompactListWidths"], sizes.compactListWidths) {
             AppPreferenceLimits.clampPaneWidth($0, AppPreferenceLimits.compactListWidthRange)
         }
-        sizes.searchPreviewCounts = densitySizes(record["searchPreviewCounts"], .previewCountDefaults) {
+        sizes.searchPreviewCounts = densitySizes(record["searchPreviewCounts"], sizes.previewCounts) {
             PreviewGrid.valid(read: $0)
         }
         sizes.searchColumns = searchColumns(record["searchColumns"], sizes.searchColumns)
         if record["searchColumnOrder"] != nil {
             sizes.searchColumnOrder = AppPreferenceLimits.normalizeSearchColumnOrder(record["searchColumnOrder"])
         }
-        sizes.searchColumnWidths = searchColumnWidths(record["searchColumnWidths"], columnWidths.search)
+        sizes.searchColumnWidths = searchColumnWidths(record["searchColumnWidths"], own.searchColumnWidths)
         sizes.searchResultsSortBy = choice(record, "searchResultsSortBy", sizes.searchResultsSortBy)
         sizes.searchResultsSortDirection = choice(
             record, "searchResultsSortDirection", sizes.searchResultsSortDirection)
@@ -144,6 +145,32 @@ public enum PreferencesSanitizer {
         sizes.searchSkipGitFolders = bool(record, "searchSkipGitFolders", sizes.searchSkipGitFolders)
         sizes.searchSkipGitIgnored = bool(record, "searchSkipGitIgnored", sizes.searchSkipGitIgnored)
         return sizes
+    }
+
+    /// How a tab view shows search results, as the file has it, each part checked as a pane's own is: one the file
+    /// doesn't say, or says wrongly, is as a new install has it, a column's order is made whole, and a width or a size
+    /// is brought into its range. Nil for what is no record at all.
+    static func searchResultsKeeps(_ value: JSONNode?) -> SearchResultsKeeps? {
+        guard let record = value?.object else { return nil }
+        var keeps = SearchResultsKeeps.defaults
+        keeps.view = viewMode(record["view"], keeps.view)
+        keeps.sortBy = choice(record, "sortBy", keeps.sortBy)
+        keeps.sortDirection = choice(record, "sortDirection", keeps.sortDirection)
+        keeps.groupBy = groupBy(record["groupBy"]).flatMap { $0.isForSearch ? $0 : nil } ?? .none
+        keeps.groupReversed = keeps.groupBy != .none && bool(record, "groupReversed", false)
+        keeps.columns = searchColumns(record["columns"], keeps.columns)
+        if record["columnOrder"] != nil {
+            keeps.columnOrder = AppPreferenceLimits.normalizeSearchColumnOrder(record["columnOrder"])
+        }
+        keeps.columnWidths = searchColumnWidths(record["columnWidths"], keeps.columnWidths)
+        keeps.iconSizes = densitySizes(record["iconSizes"], keeps.iconSizes) { AppPreferenceLimits.clampIconSize($0) }
+        keeps.compactListWidths = densitySizes(record["compactListWidths"], keeps.compactListWidths) {
+            AppPreferenceLimits.clampPaneWidth($0, AppPreferenceLimits.compactListWidthRange)
+        }
+        keeps.previewCounts = densitySizes(record["previewCounts"], keeps.previewCounts) {
+            PreviewGrid.valid(read: $0)
+        }
+        return keeps
     }
 
     private static func sortBy(_ record: [String: JSONNode]) -> SortByPreference {
@@ -270,7 +297,7 @@ public enum PreferencesSanitizer {
         let global = AppPreferences.defaults()
         let detailWidths = detailColumnWidths(record["detailColumnWidths"], defaults.detailColumnWidths)
         let searchWidths = searchColumnWidths(record["searchColumnWidths"], defaults.searchColumnWidths)
-        return AppPreferences(
+        var checked = AppPreferences(
             theme: choice(record, "theme", defaults.theme),
             accent: record["accent"]?.string.map { AppPreferenceLimits.normalizeAccent($0) ?? defaults.accent }
                 ?? defaults.accent,
@@ -332,17 +359,16 @@ public enum PreferencesSanitizer {
             searchResultsSortBy: choice(record, "searchResultsSortBy", defaults.searchResultsSortBy),
             searchResultsSortDirection: choice(
                 record, "searchResultsSortDirection", defaults.searchResultsSortDirection),
+            searchGroupBy: groupBy(record["searchGroupBy"]).flatMap { $0.isForSearch ? $0 : nil }
+                ?? defaults.searchGroupBy,
+            searchGroupReversed: bool(record, "searchGroupReversed", defaults.searchGroupReversed),
             treeWidth: AppPreferenceLimits.clampPaneWidth(
                 record["treeWidth"]?.number ?? Double(defaults.treeWidth), AppPreferenceLimits.treeWidthRange),
             inspectorWidth: AppPreferenceLimits.clampPaneWidth(
                 record["inspectorWidth"]?.number ?? Double(defaults.inspectorWidth),
                 AppPreferenceLimits.inspectorWidthRange),
             restoreSessionOnStartup: bool(record, "restoreSessionOnStartup", defaults.restoreSessionOnStartup),
-            openTabs: openTabs(
-                record["openTabs"], includeHidden: defaults.includeHidden, foldersFirst: defaults.foldersFirst,
-                favoritesExpanded: bool(record, "favoritesExpanded", defaults.favoritesExpanded),
-                locationsExpanded: bool(record, "locationsExpanded", defaults.locationsExpanded),
-                columnWidths: (detail: detailWidths, search: searchWidths)),
+            openTabs: [],
             activeTabIndex: activeTabIndex(record["activeTabIndex"]),
             treeRootPath: nonEmptyString(record["treeRootPath"]),
             lastVisitedPath: nonEmptyString(record["lastVisitedPath"]),
@@ -364,6 +390,12 @@ public enum PreferencesSanitizer {
             // Read on its own, as every key is: one that names no tab view does nothing (`applyNewTabView`).
             newTabViewID: record["newTabViewID"] == nil
                 ? defaults.newTabViewID : nonEmptyString(record["newTabViewID"]))
+        // The tabs last: a pane saved without some of its own settings takes those read here.
+        checked.openTabs = openTabs(
+            record["openTabs"], includeHidden: defaults.includeHidden, foldersFirst: defaults.foldersFirst,
+            favoritesExpanded: checked.favoritesExpanded, locationsExpanded: checked.locationsExpanded,
+            own: PaneViewSizes(checked))
+        return checked
     }
 
     /// A whole number, zero or more; anything else is zero. A number past what a count can be stops at the largest.

@@ -153,13 +153,17 @@ public enum StartupTabs {
     public static func resolve(
         _ preferences: AppPreferences, homePath: String, startupFolderPath: String?, restoreTabs: Bool
     ) -> (tabs: [StartupTab], activeIndex: Int) {
+        // A tab with none to copy: the app's, search results' view and groups as set last in any pane.
         func tab(_ path: String, root: String, favorite: String?) -> StartupTab {
-            StartupTab(
+            var start = StartupTab(
                 path: path, rootPath: root, favoritePath: favorite, viewMode: preferences.viewMode,
                 searchViewMode: preferences.searchViewMode, sortBy: preferences.sortBy,
                 sortDirection: preferences.sortDirection, includeHidden: preferences.includeHidden,
                 foldersFirst: preferences.foldersFirst, favoritesExpanded: preferences.favoritesExpanded,
                 locationsExpanded: preferences.locationsExpanded)
+            start.searchGroupBy = preferences.searchGroupBy
+            start.searchGroupReversed = preferences.searchGroupReversed
+            return start
         }
         if !(preferences.restoreSessionOnStartup || restoreTabs) || preferences.openTabs.isEmpty {
             if let startupFolderPath, !startupFolderPath.isEmpty {

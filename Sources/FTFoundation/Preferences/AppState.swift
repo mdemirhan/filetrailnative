@@ -102,7 +102,8 @@ public enum AppStateReader {
     /// way (`read(data:)` throws for it).
     public static func read(_ parsed: JSONNode, defaults: AppPreferences) -> AppState {
         guard let file = parsed.object else { return AppState() }
-        let preferences = PreferencesSanitizer.sanitize(file["preferences"], defaults: defaults)
+        let preferences = PreferencesSanitizer.sanitize(
+            resultsSizesFromFolders(file["preferences"]), defaults: defaults)
         let lastClosedWindow = sanitizeWindows(
             JSONNode.array([file["lastClosedWindow"] ?? .null]), preferences: preferences)?.first
         let windows: [StoredExplorerWindow]
@@ -126,6 +127,20 @@ public enum AppStateReader {
             unknownPreferences: (file["preferences"]?.object ?? [:]).filter { key, _ in
                 PreferenceKey(rawValue: key) == nil && !PreferenceKey.retired.contains(key)
             })
+    }
+
+    /// The file's preferences with search results' sizes, where it has none, set to its folders': a file saved while
+    /// results showed at the folders' sizes starts results where they were.
+    private static func resultsSizesFromFolders(_ preferences: JSONNode?) -> JSONNode? {
+        guard var record = preferences?.object else { return preferences }
+        let sizes: [(results: PreferenceKey, folders: PreferenceKey)] = [
+            (.searchIconSizes, .iconSizes), (.searchCompactListWidths, .compactListWidths),
+            (.searchPreviewCounts, .previewCounts),
+        ]
+        for size in sizes where record[size.results.rawValue] == nil {
+            record[size.results.rawValue] = record[size.folders.rawValue]
+        }
+        return .object(record)
     }
 
     /// The saved state from the file's bytes: throws when they are not JSON.

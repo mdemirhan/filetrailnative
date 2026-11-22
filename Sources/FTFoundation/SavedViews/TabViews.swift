@@ -64,6 +64,17 @@ public struct SearchResultsKeeps: Codable, Equatable, Sendable {
         previewCounts = preferences.searchPreviewCounts
     }
 
+    /// Read part by part and checked, as a pane's own settings are (`PreferencesSanitizer.searchResultsKeeps`): a
+    /// file changed by hand can't give a column twice, or a width or a size outside its range.
+    public init(from decoder: any Decoder) throws {
+        guard let keeps = PreferencesSanitizer.searchResultsKeeps(try JSONNode(from: decoder)) else {
+            throw DecodingError.typeMismatch(
+                SearchResultsKeeps.self,
+                DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "not a record"))
+        }
+        self = keeps
+    }
+
     /// What a new install shows results with.
     public static let defaults: SearchResultsKeeps = {
         let preferences = AppPreferences.defaults()

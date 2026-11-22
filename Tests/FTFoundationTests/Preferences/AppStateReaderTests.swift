@@ -398,6 +398,57 @@ struct AppStateReaderTests {
         #expect(encoded["searchColumnWidths"] == nil)
     }
 
+    // A pane saved while the columns shown, the results' order and the search options were the window's kept only its
+    // sizes and widths: it comes back with the columns, order and options it showed, not a new install's, and its
+    // results at its folders' sizes. What the pane says is its own.
+    @Test func aPaneSavedBeforeItHadItsOwnColumnsAndSearchSettingsTakesItsWindows() {
+        let state = Self.read(
+            """
+            {"preferences": {"detailColumns": {"kind": false, "created": true}, "detailColumnOrder": ["created", "size"],
+                             "searchColumns": {"folder": false}, "searchPatternMode": "regex",
+                             "searchSkipGitIgnored": true, "searchResultsSortBy": "name",
+                             "iconSizes": {"standard": 112}, "previewCounts": {"standard": 9}},
+             "windows": [{"id": "window-a",
+                          "session": {"searchResultsSortBy": "modified", "searchResultsSortDirection": "desc",
+                                      "openTabs": [{"path": "/Users/demo/a",
+                                                    "viewSizes": {"iconSizes": {"standard": 96},
+                                                                  "compactListWidths": {"standard": 320},
+                                                                  "previewCounts": {"standard": 2},
+                                                                  "detailColumnWidths": {"name": 410}},
+                                                    "secondPane": {"path": "/Users/demo/b",
+                                                                   "viewSizes": {"iconSizes": {"standard": 48},
+                                                                                 "searchIconSizes": {"standard": 80},
+                                                                                 "detailColumns": {"kind": true},
+                                                                                 "searchPatternMode": "glob"}}}]}}]}
+            """)
+        let app = state.preferences ?? .defaults()
+        let tab = state.windows?.first?.session.openTabs.first
+        let own = tab?.viewSizes
+        #expect(own?.detailColumns == app.detailColumns)
+        #expect(own?.detailColumns[.created] == true && own?.detailColumns[.kind] == false)
+        #expect(own?.detailColumnOrder == app.detailColumnOrder)
+        #expect(own?.searchColumns[.folder] == false)
+        #expect(own?.searchPatternMode == .regex && own?.searchSkipGitIgnored == true)
+        // The results' order was the window's.
+        #expect(own?.searchResultsSortBy == .modified && own?.searchResultsSortDirection == .desc)
+        #expect(own?.detailColumnWidths.name == 410)
+        // Results showed at the folders' sizes: the pane's, and for the app the app's.
+        #expect(own?.searchIconSizes.standard == 96 && own?.searchCompactListWidths.standard == 320)
+        #expect(own?.searchPreviewCounts.standard == 2)
+        #expect(app.searchIconSizes.standard == 112 && app.searchPreviewCounts.standard == 9)
+        let second = tab?.secondPane?.viewSizes
+        #expect(second?.detailColumns[.kind] == true && second?.detailColumns[.created] == true)
+        #expect(second?.searchPatternMode == .glob)
+        #expect(second?.searchIconSizes.standard == 80 && second?.iconSizes.standard == 48)
+    }
+
+    // Results' sizes the file has are kept, whatever the folders' are.
+    @Test func resultsSizesTheFileHasAreNotTheFolders() {
+        let app = Self.preferences(
+            #"{"preferences": {"iconSizes": {"standard": 112}, "searchIconSizes": {"standard": 48}}}"#)
+        #expect(app.iconSizes.standard == 112 && app.searchIconSizes.standard == 48)
+    }
+
     // A window and the window closed last, as 1.2 saved them, kept the List's column widths in their session too: each
     // pane saved without widths takes those of the window it is in, not the app's nor another's.
     @Test func aWindowAndTheWindowClosedLastSavedWithoutPaneWidthsTakeTheirOwn() {

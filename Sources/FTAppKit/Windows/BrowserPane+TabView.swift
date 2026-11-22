@@ -93,9 +93,16 @@ extension BrowserPane {
     /// How a tab view shows search results in this pane, taken whole: the pane's own from now on, and the app's, as
     /// a change by hand over them is. Results on screen show it at once.
     func takeSearchResultsView(_ keeps: SearchResultsKeeps) {
+        // Only what it changes goes to the app's, as with the rest below.
+        let before = (searchViewMode, searchGroupBy, searchGroupReversed)
         searchViewMode = keeps.view
         searchGroupBy = keeps.groupBy
         searchGroupReversed = keeps.groupReversed
+        tab?.updatePreferences {
+            if before.0 != keeps.view { $0.searchViewMode = keeps.view }
+            if before.1 != keeps.groupBy { $0.searchGroupBy = keeps.groupBy }
+            if before.2 != keeps.groupReversed { $0.searchGroupReversed = keeps.groupReversed }
+        }
         changeOwnSettings { $0 = keeps.applied(to: $0) }
         guard let search = searchStore else { return }
         search.session.setSort(keeps.sortBy, keeps.sortDirection)

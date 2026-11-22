@@ -64,6 +64,7 @@ extension PreferenceKey {
             .terminalApp, .defaultTextEditor, .openWithApplications, .diskImageOpensIn, .returnKeyAction,
             .openItemLimit, .includeHidden, .searchPatternMode, .searchMatchScope, .searchRecursive,
             .searchSkipGitFolders, .searchSkipGitIgnored, .searchResultsSortBy, .searchResultsSortDirection,
+            .searchGroupBy, .searchGroupReversed,
             .treeWidth, .inspectorWidth, .restoreSessionOnStartup, .openTabs, .activeTabIndex, .treeRootPath,
             .lastVisitedPath, .lastVisitedFavoritePath, .favoritesExpanded, .locationsExpanded,
             .batchRenameSettings, .batchRenamePresets, .listFilterMatch, .convertImagesSettings,
