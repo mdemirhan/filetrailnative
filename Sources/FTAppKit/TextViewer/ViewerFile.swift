@@ -15,12 +15,15 @@ struct ViewerFile: @unchecked Sendable {
         case unreadable(String)
     }
 
-    let path: String
+    /// Where the file is: where it was read, and where it was found since if it was moved or renamed.
+    var path: String
     let content: Content
     let modified: Date?
     let size: Int64
     /// A picture's image, read with the file.
     var image: NSImage?
+    /// The file as what it is, to find it again where it is moved or renamed; nil for one that can't be read.
+    var identity: ViewerFileIdentity?
 
     /// A file up to this size is shown and can be edited.
     static let viewLimit: Int64 = 50 * 1024 * 1024
@@ -52,8 +55,9 @@ struct ViewerFile: @unchecked Sendable {
         ])
         let modified = values?.contentModificationDate
         let size = Int64(values?.fileSize ?? 0)
+        let identity = values == nil ? nil : ViewerFileIdentity(path: path)
         func file(_ content: Content) -> ViewerFile {
-            ViewerFile(path: path, content: content, modified: modified, size: size)
+            ViewerFile(path: path, content: content, modified: modified, size: size, identity: identity)
         }
         guard let values else { return file(.unreadable("The file can’t be read.")) }
         if values.isDirectory == true { return file(values.isPackage == true ? .other : .folder) }
@@ -103,7 +107,12 @@ struct ViewerFile: @unchecked Sendable {
         defer { try? manager.removeItem(at: folder) }
         let temporary = folder.appendingPathComponent(NodePath.basename(path))
         try data.write(to: temporary)
-        _ = try manager.replaceItemAt(url, withItemAt: temporary)
+        if access(DiskPath(path).string, F_OK) == 0 {
+            _ = try manager.replaceItemAt(url, withItemAt: temporary)
+        } else {
+            // A file that went (to the Trash, or deleted) is put back where it was: there is nothing to replace.
+            try manager.moveItem(at: temporary, to: url)
+        }
         return (try? url.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
     }
 }
@@ -115,5 +124,32 @@ enum ViewerSaveError: LocalizedError {
         switch self {
         case .encoding(let name): "Some characters can’t be written in \(name), the file’s encoding."
         }
+    }
+}
+
+/// A file known by what it is rather than by its path, as a document app knows its file: moved or renamed on its
+/// disk, by this app or another, it is found where it went. Not found once it is deleted or moved to another disk,
+/// which makes another file of it. Held as a bookmark, which finds the file by its identity on the disk: a file
+/// reference URL is the same, but Swift's `URL` turns one back into the path it had.
+struct ViewerFileIdentity: Sendable {
+    private let bookmark: Data
+
+    init?(path: String) {
+        guard let bookmark = try? DiskPath(path).url(isDirectory: false).bookmarkData(options: [.minimalBookmark])
+        else { return nil }
+        self.bookmark = bookmark
+    }
+
+    /// Where the file is now, as the disk spells it; nil once it is gone. Nothing is mounted or asked of the user to
+    /// find it.
+    var currentPath: String? {
+        var stale = false
+        guard
+            let found = try? URL(
+                resolvingBookmarkData: bookmark, options: [.withoutUI, .withoutMounting], bookmarkDataIsStale: &stale),
+            let path = DiskPath(urlSpelling: found)
+        else { return nil }
+        let onDisk = path.asOnDisk()
+        return access(onDisk.string, F_OK) == 0 ? onDisk.string : nil
     }
 }

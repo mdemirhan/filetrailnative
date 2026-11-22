@@ -115,9 +115,9 @@ extension ExplorerWindowlessTests {
             harness.services.directoryService.cache.clear()
 
             right.readAgain(selecting: [made])
-            await right.navigate(to: real(harness, "Alpha"))
+            await right.navigate(to: real(harness, "Alpha"), cause: .command)
             await settle()
-            await right.navigate(to: gamma)
+            await right.navigate(to: gamma, cause: .command)
             #expect(right.content.selection.paths.isEmpty)
 
             let later = gamma + "/later.txt"
@@ -237,12 +237,12 @@ extension ExplorerWindowlessTests {
             left.search.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification, object: field))
             #expect(left.search.session.draftQuery == "a")
 
-            await right.navigate(to: real(harness, "Beta/Inner"))
+            await right.navigate(to: real(harness, "Beta/Inner"), cause: .command)
             #expect(field.stringValue == "a")
             #expect(left.search.session.draftQuery == "a")
 
             // The active pane's own folder still empties it.
-            await left.navigate(to: real(harness, "Alpha"))
+            await left.navigate(to: real(harness, "Alpha"), cause: .command)
             #expect(field.stringValue.isEmpty)
         }
 
@@ -348,8 +348,8 @@ extension ExplorerWindowlessTests {
             #expect(left.shownFolderPath == real(harness))
 
             // With both panes on the disk, nothing of the tab is left: it closes.
-            await front.panes[0].navigate(to: disk)
-            await front.panes[1].navigate(to: disk + "/Inner")
+            await front.panes[0].navigate(to: disk, cause: .command)
+            await front.panes[1].navigate(to: disk + "/Inner", cause: .command)
             harness.windows.disksUnmounted([disk])
             #expect(await waitUntil { group.tabs.count == 1 })
             #expect(group.tabs.first === tab)
@@ -468,7 +468,7 @@ extension ExplorerWindowlessTests {
             #expect(tab.canPerform(.copyToOtherPane))
 
             for folder in [trash, trash + "/Old"] {
-                await right.navigate(to: folder)
+                await right.navigate(to: folder, cause: .command)
                 #expect(right.shownFolderPath == folder)
                 #expect(!tab.canPerform(.copyToOtherPane))
                 #expect(!tab.canPerform(.moveToOtherPane))

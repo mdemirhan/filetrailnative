@@ -69,7 +69,7 @@ extension ExplorerWindowlessTests {
             #expect(right.shownFolderPath == real(harness, "Alpha"))
             #expect(left.shownFolderPath == real(harness))
 
-            await right.navigate(to: real(harness, "Alpha/Inner"))
+            await right.navigate(to: real(harness, "Alpha/Inner"), cause: .command)
             #expect(right.navigationHistory.paths == [real(harness, "Alpha"), real(harness, "Alpha/Inner")])
             #expect(left.navigationHistory.paths == [real(harness)])
             // The tab reads the active pane: the left one still.
@@ -201,7 +201,7 @@ extension ExplorerWindowlessTests {
 
             // A tree rooted below the other pane's folder stays where it is when that pane becomes active.
             model.initializeTree(real(harness, "Alpha"))
-            await left.navigate(to: real(harness, "Alpha"))
+            await left.navigate(to: real(harness, "Alpha"), cause: .command)
             await settle()
             tab.focusPane(right)
             await settle()
@@ -241,7 +241,7 @@ extension ExplorerWindowlessTests {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }
             let (tab, left, right) = try await twoPanes(harness)
-            await right.navigate(to: real(harness, "Alpha"))
+            await right.navigate(to: real(harness, "Alpha"), cause: .command)
             await arrived(right)
             right.content.setViewFilterMode(.contains)
             right.content.select(paths: [real(harness, "Alpha/Inner")])
@@ -334,7 +334,7 @@ extension ExplorerWindowlessTests {
             await arrived(second)
             // Both panes show one folder.
             #expect(!tab.canPerform(.copyToOtherPane))
-            await second.navigate(to: real(harness, "Beta"))
+            await second.navigate(to: real(harness, "Beta"), cause: .command)
             #expect(tab.canPerform(.copyToOtherPane))
             #expect(tab.canPerform(.moveToOtherPane))
         }
@@ -481,7 +481,7 @@ extension ExplorerWindowlessTests {
             #expect(left.shownFolderPath == real(harness, "Gamma"))
             #expect(!tab.canPerform(.goToOtherPaneFolder))
 
-            await left.navigate(to: real(harness, "Alpha"))
+            await left.navigate(to: real(harness, "Alpha"), cause: .command)
             tab.perform(.showFolderInOtherPane)
             #expect(await waitUntil { right.shownFolderPath == real(harness, "Alpha") })
             #expect(tab.activePane === left)
@@ -544,7 +544,7 @@ extension ExplorerWindowlessTests {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }
             let (tab, _, right) = try await twoPanes(harness, right: "Alpha")
-            await right.navigate(to: real(harness, "Alpha/Inner"))
+            await right.navigate(to: real(harness, "Alpha/Inner"), cause: .command)
             let group = try #require(tab.group)
 
             group.duplicateTab(tab)
@@ -572,7 +572,7 @@ extension ExplorerWindowlessTests {
             let copy = try await opened(tab, after: 1)
             let (copyLeft, copyRight) = (copy.panes[0], copy.panes[1])
             await arrived(copyLeft)
-            copyLeft.go(to: real(harness, "Beta"))
+            copyLeft.go(to: real(harness, "Beta"), cause: .command)
             #expect(await waitUntil { copyLeft.shownFolderPath == real(harness, "Beta") })
             await arrived(copyLeft)
             #expect(copy.activePane === copyLeft)
@@ -638,7 +638,7 @@ extension ExplorerWindowlessTests {
             group.openNewTab(from: first)
             let middle = try await opened(first, after: 1)
             await arrived(middle.activePane)
-            middle.activePane.go(to: real(harness, "Beta"))
+            middle.activePane.go(to: real(harness, "Beta"), cause: .command)
             #expect(await waitUntil { middle.activePane.shownFolderPath == real(harness, "Beta") })
             group.openNewTab(from: middle)
             let last = try await opened(middle, after: 2)

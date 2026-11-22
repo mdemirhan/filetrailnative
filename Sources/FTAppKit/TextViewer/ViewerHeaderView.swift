@@ -359,10 +359,18 @@ final class ClosureMenuItem: NSMenuItem {
 
 /// Over the text when another app changed the file while it has edits.
 final class ViewerConflictBar: NSView {
+    /// Another app changed the file under the edits, or the file went.
+    enum Kind: Equatable {
+        case changed
+        /// What happened to the file: Save puts it back where it was.
+        case gone(String)
+    }
+
     static let height = 34.0
     var onKeepMine: () -> Void = {}
     var onUseDisk: () -> Void = {}
-    private let label = FlushTextField(labelWithString: "Another app changed this file. Your edits haven’t been saved.")
+    private static let changedText = "Another app changed this file. Your edits haven’t been saved."
+    private let label = FlushTextField(labelWithString: changedText)
     private let useDisk = NSButton(title: "Use the File on Disk", target: nil, action: nil)
     private let keepMine = NSButton(title: "Keep Mine", target: nil, action: nil)
 
@@ -388,6 +396,22 @@ final class ViewerConflictBar: NSView {
 
     override var isFlipped: Bool { true }
 
+    /// Shown as `kind` says: a file that went has no file on disk to use, nor anything to keep edits over.
+    func show(_ kind: Kind) {
+        switch kind {
+        case .changed:
+            label.stringValue = Self.changedText
+            useDisk.isHidden = false
+            keepMine.isHidden = false
+        case .gone(let text):
+            label.stringValue = text
+            useDisk.isHidden = true
+            keepMine.isHidden = true
+        }
+        isHidden = false
+        needsLayout = true
+    }
+
     @objc private func useDiskPressed() { onUseDisk() }
     @objc private func keepMinePressed() { onKeepMine() }
 
@@ -396,7 +420,7 @@ final class ViewerConflictBar: NSView {
         layer?.backgroundColor = NSColor.systemYellow.withAlphaComponent(0.18).cgColor
         label.textColor = ChromeColors.color(infoTheme.palette.textPrimary)
         var right = Double(bounds.width) - 10
-        for button in [keepMine, useDisk] {
+        for button in [keepMine, useDisk] where !button.isHidden {
             let width = Double(ceil(button.fittingSize.width))
             right -= width
             button.frame = NSRect(x: right, y: 5, width: width, height: 24)
@@ -414,6 +438,8 @@ final class ViewerMessageView: NSView {
         case folder(String)
         case tooLarge(String, Int64)
         case unreadable(String)
+        /// The file went while shown, and what the title says of it.
+        case gone(TextViewerController.GoneFile, String)
     }
 
     var theme: TextViewerTheme? {
@@ -467,6 +493,10 @@ final class ViewerMessageView: NSView {
             icon.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: nil)
             title.stringValue = "Can’t Show This File"
             detail.stringValue = text
+        case .gone(let how, let text):
+            icon.image = NSImage(systemSymbolName: how == .trashed ? "trash" : "doc", accessibilityDescription: nil)
+            title.stringValue = text
+            detail.stringValue = "It isn’t where it was any more."
         }
         needsLayout = true
     }

@@ -213,7 +213,7 @@ extension ExplorerWindowlessTests {
             defer { chmod(locked, 0o755) }
 
             // Opened as the sidebar's Trash is, from a location, which opens even when it can't be read.
-            tab.activePane.go(to: locked, open: SidebarOpen(origin: .location(.location(locked))))
+            tab.activePane.go(to: locked, open: SidebarOpen(origin: .location(.location(locked))), cause: .command)
             #expect(
                 await waitUntil {
                     if case .failed = tab.content.loadState { true } else { false }
@@ -221,7 +221,7 @@ extension ExplorerWindowlessTests {
             #expect(tab.content.entries.isEmpty)
             #expect(tab.groupTitles.isEmpty, "titles shown: \(tab.groupTitles)")
 
-            tab.activePane.go(to: grouped)
+            tab.activePane.go(to: grouped, cause: .command)
             #expect(await waitUntil { tab.groupTitles == ["Today", "Yesterday", "2020"] })
         }
     }

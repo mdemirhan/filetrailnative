@@ -58,7 +58,7 @@ extension ExplorerWindowlessTests {
             right.content.applyFilterKey(.clear)
             #expect(left.content.filterMode == .contains)
             #expect(right.content.filterMode == .fuzzy)
-            right.go(to: harness.folder.appending("Beta").path)
+            right.go(to: harness.folder.appending("Beta").path, cause: .command)
             #expect(await waitUntil { NodePath.basename(right.folderPath) == "Beta" && !right.isNavigating })
             #expect(right.content.filterMode == .fuzzy)
 
@@ -130,7 +130,7 @@ extension ExplorerWindowlessTests {
             #expect(left.content.filterMode == .fuzzy)
             #expect(right.content.filterMode == .fuzzy)
             #expect(chip(right) == .fuzzy)
-            left.go(to: harness.folder.appending("Gamma").path)
+            left.go(to: harness.folder.appending("Gamma").path, cause: .command)
             #expect(await waitUntil { NodePath.basename(left.folderPath) == "Gamma" && !left.isNavigating })
             #expect(left.content.filterMode == .fuzzy)
 

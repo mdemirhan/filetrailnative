@@ -13,10 +13,15 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     }
     /// The pane was opened for the viewer, and closes with it.
     var ownsPane = false
-    /// The folder the pane showed under the viewer when it opened: the pane going elsewhere closes the viewer.
-    var folderPath = ""
     private(set) var path: String?
     private(set) var file: ViewerFile?
+    /// How the file shown went while it was shown: moved to the Trash, or deleted (or moved to another disk). Nil
+    /// while it is there.
+    private(set) var gone: GoneFile?
+
+    enum GoneFile: Equatable, Sendable {
+        case trashed, deleted
+    }
     private(set) var isEditing = false
     private(set) var isDirty = false
     /// The text as the file has it: Undo back to it leaves nothing to save.
@@ -46,6 +51,10 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     var onStatusChange: (String) -> Void = { _ in }
     /// Tab in Read: on to the next pane, as Tab in a list.
     var onTab: () -> Void = {}
+    /// The file shown was moved or renamed, by this app or another: the path it was shown by, and the one it has now.
+    var onMoved: (_ from: String, _ to: String) -> Void = { _, _ in }
+    /// The file shown went: to the Trash, deleted, or moved to another disk.
+    var onGone: () -> Void = {}
     /// The command of the app's own keys a key press is, if any: the page keys move the text; Save, Next File and
     /// Previous File are the viewer's.
     var commandForKey: (NSEvent) -> ShortcutCommandID? = { _ in nil }
@@ -284,6 +293,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         stopWatching?()
         stopWatching = nil
         conflictBar.isHidden = true
+        gone = nil
         self.path = path
         // Nothing is known of the new file until it is read: the old one's kind isn't kept meanwhile.
         file = nil
@@ -543,15 +553,46 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         refreshFooter()
     }
 
-    /// Writes the text over the file. A failure says why and keeps the edits.
+    /// Save, from the bar, its menu or the key: writes the text over the file. A file that went while shown is never
+    /// written back unasked: the question says so, and Save there puts it back where it was. False when it is asked.
     @discardableResult
     func save() -> Bool {
+        guard let gone else { return write() }
+        guard isText, let window = view.window else { return false }
+        let title = Self.goneTitle(gone, fileName ?? "")
+        Task { [weak self] in
+            let answer = await InWindowAlerts.ask(
+                title: title, message: "Save puts it back where it was, with your changes.",
+                buttons: [
+                    AlertButtonSpec("Cancel", .plain, answer: false),
+                    AlertButtonSpec("Save", .default, answer: true),
+                ], escape: false, in: window)
+            guard answer, let self, self.gone != nil else { return }
+            self.write()
+        }
+        return false
+    }
+
+    /// "“Notes.txt” was moved to the Trash." or "“Notes.txt” was deleted."
+    static func goneTitle(_ gone: GoneFile, _ name: String) -> String {
+        switch gone {
+        case .trashed: "\u{201C}\(name)\u{201D} was moved to the Trash."
+        case .deleted: "\u{201C}\(name)\u{201D} was deleted."
+        }
+    }
+
+    /// Writes the text over the file, or where the file was if it went. A failure says why and keeps the edits.
+    @discardableResult
+    private func write() -> Bool {
         guard let path = filePath, isText else { return false }
         do {
             knownModified = try ViewerFile.write(textView.string, as: format, to: path)
             savedText = NSString(string: textView.string)
             isDirty = false
             conflictBar.isHidden = true
+            // What is written is the file from now on: put in place of the one there, or back where one was.
+            file?.identity = ViewerFileIdentity(path: path)
+            gone = nil
             refreshChrome()
             return true
         } catch {
@@ -568,15 +609,18 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     /// Whether the file may be left: true at once without edits; with edits, after Save or Don't Save.
     func confirmLeave() async -> Bool {
         guard isDirty, let window = view.window else { return true }
+        // A file that went says so: Save puts it back where it was.
+        let title = gone.map { Self.goneTitle($0, fileName ?? "") + " Save your changes where it was?" }
         let answer = await InWindowAlerts.ask(
-            title: "Save changes to “\(fileName ?? "")”?", message: "Your changes are lost if you don’t save them.",
+            title: title ?? "Save changes to “\(fileName ?? "")”?",
+            message: "Your changes are lost if you don’t save them.",
             buttons: [
                 AlertButtonSpec("Don’t Save", .plain, answer: LeaveAnswer.discard),
                 AlertButtonSpec("Cancel", .plain, answer: LeaveAnswer.cancel),
                 AlertButtonSpec("Save", .default, answer: LeaveAnswer.save),
             ], escape: .cancel, in: window)
         switch answer {
-        case .save: return save()
+        case .save: return write()
         case .discard:
             isDirty = false
             refreshChrome()
@@ -650,7 +694,15 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     /// The file as it is on disk in place of the edits, as one change Undo takes back.
     func revertToSaved() {
         guard isDirty else { return }
-        useFileOnDisk()
+        guard let gone else {
+            useFileOnDisk()
+            return
+        }
+        // Nothing on disk to go back to: the edits go, and the viewer says the file went.
+        isDirty = false
+        conflictBar.isHidden = true
+        showMessage(.gone(gone, Self.goneTitle(gone, fileName ?? "")))
+        refreshChrome()
     }
 
     // MARK: Changes on disk
@@ -670,18 +722,77 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
             onStart: { [weak self] in self?.changedOnDisk() })
     }
 
+    /// Something changed in the file's folder: the file changed where it is, was moved or renamed, or went.
     private func changedOnDisk() {
         guard let path = filePath else { return }
+        guard access(path, F_OK) == 0 else {
+            fileLeft(path)
+            return
+        }
+        if gone != nil {
+            // A file is there again (Undo of Move to Trash, another app writing it anew): it is the file shown, as
+            // the disk has it now.
+            gone = nil
+            file?.identity = ViewerFileIdentity(path: path)
+            refreshChrome()
+            if isDirty {
+                knownModified = nil
+                conflictBar.show(.changed)
+                view.needsLayout = true
+            } else {
+                reload()
+            }
+            return
+        }
         let url = DiskPath(path).url(isDirectory: false)
         let modified = (try? url.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
         guard modified != knownModified else { return }
         if isDirty {
             knownModified = modified
-            conflictBar.isHidden = false
+            conflictBar.show(.changed)
             view.needsLayout = true
         } else {
             reload()
         }
+    }
+
+    /// The Trash folders, to tell a file moved to the Trash from one moved elsewhere.
+    private static let trash = TrashFolders()
+
+    /// Nothing is at the file's path any more: it is found where it was moved or renamed to, or it went. One that went
+    /// keeps its edits on screen, if it has any; without, the viewer says so.
+    private func fileLeft(_ path: String) {
+        let found = file?.identity?.currentPath
+        if let found, !samePath(found, path), !Self.trash.holds(found) {
+            fileMoved(from: path, to: found)
+            return
+        }
+        let how: GoneFile = found.map(Self.trash.holds) == true ? .trashed : .deleted
+        guard gone != how else { return }
+        gone = how
+        let title = Self.goneTitle(how, fileName ?? "")
+        if isDirty {
+            conflictBar.show(.gone(title + " Your changes haven\u{2019}t been saved."))
+            view.needsLayout = true
+        } else {
+            showMessage(.gone(how, title))
+        }
+        refreshChrome()
+        onGone()
+    }
+
+    /// The file was moved or renamed: it is shown, read, watched and saved where it is now, its edits kept. A link or
+    /// an alias shown keeps its own name: only its original moved.
+    private func fileMoved(from old: String, to new: String) {
+        let shownItself = path.map { samePath($0, old) } ?? false
+        file?.path = new
+        if shownItself { path = new }
+        stopWatching?()
+        stopWatching = nil
+        // Once it runs, the watch looks at the file's date: one changed meanwhile is read again.
+        watch(new)
+        refreshChrome()
+        if shownItself { onMoved(old, new) }
     }
 
     private func keepMine() {

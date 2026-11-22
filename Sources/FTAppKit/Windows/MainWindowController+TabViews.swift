@@ -265,7 +265,7 @@ extension MainWindowController {
                 // its own shows nothing new by itself.
                 pane.refreshColumns()
                 pane.content.setMode(pane.shownViewMode)
-                pane.go(to: folder)
+                pane.go(to: folder, cause: .command)
             } else {
                 pane.tabViewOverride = override.map {
                     TabViewOverride(folder: pane.folderPath, choice: $0.choice, kept: Set($0.view.kept))
@@ -284,9 +284,8 @@ extension MainWindowController {
     }
 
     /// `setting` shown in `pane` once `list` has settled in its folder and its own viewer, if it had one, has closed
-    /// (`closing` true), and `pane` has settled in its own: a second pane opened again where it was closed is still
-    /// reading that folder, and its arrival there would read as the pane leaving the viewer's folder. Nothing happens
-    /// if either pane has gone from the tab, or another tab view was applied meanwhile.
+    /// (`closing` true). Nothing happens if either pane has gone from the tab, or another tab view was applied
+    /// meanwhile.
     private func showViewerWhenListSettles(
         _ setting: PaneViewer, in pane: BrowserPane, beside list: BrowserPane, after closing: Task<Bool, Never>?
     ) {
@@ -297,12 +296,10 @@ extension MainWindowController {
             else { return nil }
             return (pane, list)
         }
-        let show = { [weak self, weak list, weak pane] in
+        let show = { [weak self, weak list] in
             list?.whenNavigationSettles {
-                pane?.whenNavigationSettles {
-                    guard let (pane, list) = stillApplies() else { return }
-                    self?.showTabViewViewer(setting, in: pane, beside: list)
-                }
+                guard let (pane, list) = stillApplies() else { return }
+                self?.showTabViewViewer(setting, in: pane, beside: list)
             }
         }
         guard let closing else {

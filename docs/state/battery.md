@@ -1,5 +1,7 @@
 # Battery and background work
 
+**Smooth first, then battery** (the owner, 2026-11-22). What can't be seen may keep its data current where that is cheap, so it is right the moment it is shown. Nothing that happens out of sight changes what the user is doing: a viewer, a selection, the keyboard, a question. A cost is cut only where it is measured, and never by making a view slower or less smooth to show. The rows below are weighed by this.
+
 Background work costs little, so nothing further is planned here. Measure before adding anything more elaborate.
 
 ## Measured (2026-10-31)

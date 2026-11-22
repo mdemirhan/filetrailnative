@@ -15,6 +15,10 @@ Changes to how the app is built that were weighed and left, each with why, so th
 - **One write slot instead of two kept in step by a polling loop, and the early-event buffers.** Sound today; the order of "operation ended" against "next write may start" is delicate. When stalls were measured, the paste's `usleep(50)` loop at its end and the progress hop to the main queue (about 1 µs an event) were left with it.
 - **File ids of 2^53 or more treated as unknown.** Needs a check on a FAT disk of which ids are really shared.
 
+## Lists
+
+- **Items added or removed shown in place, not by drawing every row again.** Today an item added or removed, or a change of order, draws every row again (the scroll and the selection kept, each preview checked again); a change to an item's details draws only its row. Measured on 2026-11-22 in a release build, a folder of 3,000 items scrolled to where the changes landed, one change every 1.5 s: no flicker was seen, and drawing every row held the main thread 26 to 60 ms (median, by view; 76 ms at worst), against 7 to 10 ms of work for a row alone. A held frame shows only as a stutter while scrolling or dragging. Worth doing once a measurement shows a stutter that would be seen, a folder of tens of thousands of items that keeps changing, say. It is the riskiest change of the lists: the rows and the listing must agree exactly, with groups, renames by identity, the scroll kept on the item at the top, and a rename, a drag or a marquee under way.
+
 ## Small things left as they are
 
 - **The response cache's 3-second lifetime, the hand-written app-state writer, the visited-folders ranking constants, the path bar's 250 ms single-click delay, matching AppKit's private views by class name.** The response cache never merged identical requests in flight: two listings of one folder asked at once both read it.

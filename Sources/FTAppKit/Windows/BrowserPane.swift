@@ -15,6 +15,19 @@ struct ShownOrder: Equatable {
     var groupBy: GroupByPreference
 }
 
+/// Why a pane goes to a folder, which decides whether a viewer over its list gives way there: only a command sends a
+/// pane somewhere. What the pane reads on its own (its first folder, the folder again, the folder above one that is
+/// gone, a folder followed to its new name, Home for a disk that went) leaves the viewer as it is.
+enum NavigationCause: Equatable, Sendable {
+    /// A command sends the pane there: a viewer over its list gives way once it has arrived in another folder.
+    case command
+    /// A command sends the pane to the folder of the file it is about to show over its list (Open in Other Pane):
+    /// that viewer stays.
+    case viewersFolder
+    /// The pane follows the disk, or reads its folder again.
+    case followingDisk
+}
+
 extension GroupByPreference {
     /// What the listing reads for these groups besides what the order needs.
     var listingRead: DirectoryGroupRead {
@@ -55,6 +68,9 @@ final class BrowserPane {
 
     /// The tab it is a pane of; set as the tab is made.
     weak var tab: MainWindowController!
+    /// Whether the pane is one of its tab's: one closed with Two Panes may still finish a read it started, and does
+    /// nothing with it.
+    var isInTab: Bool { tab?.panes.contains { $0 === self } == true }
     let content: ContentPaneController
     /// The pane's folder, by its path as the pane knows it: the real path its listing gave, spelled as the disk spells
     /// it, which is how its rows' paths start and how a write names what it made here. Until the folder has been
@@ -402,9 +418,11 @@ final class BrowserPane {
     /// folder that can't be read gives way to Home, with the tree at Home.
     private func readStartupFolder() async -> Bool {
         if let open = openKeepingFavoriteRow() {
-            return await attemptNavigation(to: folderPath, history: .none, open: open, readFailure: .opens).didOpen
+            return await attemptNavigation(
+                to: folderPath, history: .none, open: open, readFailure: .opens, cause: .followingDisk
+            ).didOpen
         }
-        switch await attemptNavigation(to: folderPath, history: .none) {
+        switch await attemptNavigation(to: folderPath, history: .none, cause: .followingDisk) {
         case .opened: return true
         case .superseded: return false
         case .failed: break
@@ -412,7 +430,7 @@ final class BrowserPane {
         let home = DiskPath.home.string
         guard folderPath != home else { return false }
         if drivesSidebar { sidebar.model.initializeTree(home) }
-        return await attemptNavigation(to: home, history: .replace).didOpen
+        return await attemptNavigation(to: home, history: .replace, cause: .followingDisk).didOpen
     }
 
     /// Runs `action` once the first read of the pane's folder has finished, with whether it showed the folder.
@@ -454,7 +472,7 @@ final class BrowserPane {
         guard !path.isEmpty, followed != path else { return }
         followTabViewOverride(to: followed)
         if loaded {
-            go(to: followed, history: .replace)
+            go(to: followed, history: .replace, cause: .followingDisk)
         } else {
             folderPath = followed
             tab.updateTitle()
@@ -619,6 +637,7 @@ final class BrowserPane {
     private func quietRead(_ changedPaths: [String]?) async {
         let path = folderPath
         let result = await readFolder(path, view: folderView)
+        guard isInTab else { return }
         // The folder was left meanwhile: the user's folder wins. A folder being opened settles what waits for a
         // write's end itself.
         guard samePath(path, folderPath), !isNavigating, !folderLetGo else {
@@ -650,7 +669,7 @@ final class BrowserPane {
     @discardableResult
     private func openNearestExistingFolder(above path: String) async -> Bool {
         for candidate in ExplorerTabs.pathAndAncestors(path).dropFirst() {
-            switch await attemptNavigation(to: candidate, history: .replace) {
+            switch await attemptNavigation(to: candidate, history: .replace, cause: .followingDisk) {
             case .opened: return true
             case .superseded: return false
             case .failed: continue
@@ -668,7 +687,7 @@ final class BrowserPane {
     ) async -> Bool {
         let outcome = await attemptNavigation(
             to: path, history: history, open: open, keepingSearch: keepingSearch, readFailure: readFailure,
-            restoringView: restoringView, arrives: arrives)
+            restoringView: restoringView, arrives: arrives, cause: .followingDisk)
         if case .failed = outcome {
             finishCarrying(nil)
             await openNearestExistingFolder(above: path)
@@ -685,7 +704,7 @@ final class BrowserPane {
         let open = drivesSidebar ? sidebar.model.openReadingAgain(path) : SidebarOpen(origin: .alias)
         let outcome = await attemptNavigation(
             to: path, history: .none, open: open, keepingSearch: true, readFailure: .opensUnlessGone, quiet: true,
-            keepingSelection: true)
+            keepingSelection: true, cause: .followingDisk)
         var opened = outcome.didOpen
         if case .failed = outcome { opened = await openNearestExistingFolder(above: path) }
         if refreshingTree, opened, drivesSidebar { await sidebar.model.refreshBranches() }
@@ -737,10 +756,13 @@ final class BrowserPane {
 
     /// Opens the folder at `path` (`navigate`). The path may spell the folder any way that leads to it (through a link,
     /// with an accent encoded either way): the pane knows the folder by the path its listing gives.
-    func go(to path: String, history: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false) {
+    func go(
+        to path: String, history: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false,
+        cause: NavigationCause
+    ) {
         navigationsAsked += 1
         holdingTab { pane in
-            await pane.navigate(to: path, history: history, open: open, keepingSearch: keepingSearch)
+            await pane.navigate(to: path, history: history, open: open, keepingSearch: keepingSearch, cause: cause)
             pane.navigationsAsked -= 1
             pane.navigationSettledIfSo()
         }
@@ -808,10 +830,10 @@ final class BrowserPane {
     @discardableResult
     func navigate(
         to path: String, history move: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false,
-        goToFailure: ((String) -> Void)? = nil
+        goToFailure: ((String) -> Void)? = nil, cause: NavigationCause
     ) async -> Bool {
         let outcome = await attemptNavigation(
-            to: path, history: move, open: open, keepingSearch: keepingSearch, goToFailure: goToFailure)
+            to: path, history: move, open: open, keepingSearch: keepingSearch, goToFailure: goToFailure, cause: cause)
         if case .opened = outcome { return true }
         return false
     }
@@ -869,7 +891,7 @@ final class BrowserPane {
     func attemptNavigation(
         to path: String, history move: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false,
         goToFailure: ((String) -> Void)? = nil, readFailure: ReadFailure? = nil, quiet: Bool = false,
-        keepingSelection: Bool = false, restoringView: Bool = false, arrives: Bool = false
+        keepingSelection: Bool = false, restoringView: Bool = false, arrives: Bool = false, cause: NavigationCause
     ) async -> NavigationOutcome {
         // A pane sent somewhere before it was first read takes this as its first read.
         if !loaded {
@@ -878,7 +900,7 @@ final class BrowserPane {
             let outcome = await attemptNavigation(
                 to: path, history: move, open: open, keepingSearch: keepingSearch, goToFailure: goToFailure,
                 readFailure: readFailure, quiet: quiet, keepingSelection: keepingSelection,
-                restoringView: restoringView, arrives: arrives)
+                restoringView: restoringView, arrives: arrives, cause: cause)
             finishFirstRead(outcome.didOpen)
             return outcome
         }
@@ -965,7 +987,8 @@ final class BrowserPane {
                 }
             }
         }
-        guard let tab else { return .superseded }
+        // A pane closed with Two Panes while it read is no longer the tab's: what it read changes nothing.
+        guard let tab, isInTab else { return .superseded }
 
         var entries: [DirectoryEntry] = []
         // The folder is known by the real path its listing gives (`response.path`), spelled as the disk spells it, not
@@ -1104,6 +1127,7 @@ final class BrowserPane {
         updatePathBar()
         // A write's end waiting for this folder shows now; one that waited for the folder just left never will.
         if opensWithError { dropWriteEndRead() } else { writeEndShown(in: shownPath) }
+        if cause == .command, opensAnotherFolder { tab.paneWasSentElsewhere(self) }
         tab.paneChanged(.folder, in: self)
         window?.contentView?.layoutSubtreeIfNeeded()
         if let carried { content.pane?.scrollPosition = (carried.contentScroll.y, carried.contentScroll.x) }
@@ -1124,9 +1148,10 @@ final class BrowserPane {
     /// A drag's springs are undone: the folder opens as it was left, and its history and sidebar row come back with it,
     /// once it has opened. A folder that can't (gone meanwhile) leaves the pane where the drag left it.
     func comeBack(to place: MainWindowController.TabPlace) async {
+        // Undoing a drag's springs takes the pane back as the springs took it: a command.
         let outcome = await attemptNavigation(
             to: place.path, history: .none, open: SidebarOpen(origin: .alias),
-            readFailure: .leavesFolderOnScreen, restoringView: true)
+            readFailure: .leavesFolderOnScreen, restoringView: true, cause: .command)
         guard outcome.didOpen, let tab else { return }
         navigationHistory = place.history
         if drivesSidebar { sidebar.model.restoreSelected(place.sidebarRow) }
@@ -1269,7 +1294,8 @@ final class BrowserPane {
         let path = folderPath
         holdingTab {
             _ = await $0.attemptNavigation(
-                to: path, history: .replace, open: open, keepingSearch: true, keepingSelection: keepingSelection)
+                to: path, history: .replace, open: open, keepingSearch: true, keepingSelection: keepingSelection,
+                cause: .followingDisk)
         }
     }
 

@@ -347,7 +347,7 @@ extension ExplorerWindowlessTests {
             let mode = pane.content.mode
             disk.refuse(beta, read: 2)
 
-            let opened = await pane.navigate(to: link)
+            let opened = await pane.navigate(to: link, cause: .command)
             #expect(!opened && !tab.isNavigating)
             #expect(disk.reads(of: beta) == 2)
             #expect(pane.shownFolderPath == root && tab.content.entries.map(\.name) == listed)
@@ -355,7 +355,7 @@ extension ExplorerWindowlessTests {
             #expect(pane.shownFolderView == nil && pane.content.mode == mode)
             #expect(tab.navigationHistory.paths == history)
 
-            #expect(await pane.navigate(to: link))
+            #expect(await pane.navigate(to: link, cause: .command))
             #expect(tab.content.readError == nil)
             #expect(pane.shownFolderPath == beta && pane.shownFolderView?.use.own == true)
             #expect(tab.content.entries.map(\.name) == ["Inner", "c.txt", "b.txt", "a.txt"])
@@ -373,7 +373,7 @@ extension ExplorerWindowlessTests {
             let listed = tab.content.entries.map(\.name)
             let mode = pane.content.mode
             disk.hold(beta, read: 2)
-            pane.go(to: link)
+            pane.go(to: link, cause: .command)
             #expect(await waitUntil { disk.isHolding })
             #expect(pane.shownFolderPath == root && tab.content.entries.map(\.name) == listed)
             #expect(pane.folderView == nil && pane.content.mode == mode)

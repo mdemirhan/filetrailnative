@@ -43,7 +43,7 @@ extension MainWindowController {
     @discardableResult
     func openSecondPane(at path: String? = nil, reopening: Bool = true) -> BrowserPane {
         if let other = otherPane {
-            if let path { other.go(to: path) }
+            if let path { other.go(to: path, cause: .command) }
             return other
         }
         let source = activePane
@@ -309,7 +309,7 @@ extension MainWindowController {
         guard !homePath.isEmpty else { return }
         let active = activePane
         let activeLeaves = isGone(active.shownFolderPath)
-        for pane in panes where isGone(pane.shownFolderPath) { pane.go(to: homePath) }
+        for pane in panes where isGone(pane.shownFolderPath) { pane.go(to: homePath, cause: .followingDisk) }
         if !activeLeaves, isGone(treeRootPath) {
             sidebarController.model.initializeTree(homePath)
             sidebarController.activePaneChanged(to: active.shownFolderPath)
@@ -329,7 +329,7 @@ extension MainWindowController {
         switch change {
         case .selection: followSelection(of: pane)
         case .folder:
-            viewerPaneMoved(pane)
+            inPlaceViewerListChanged(in: pane)
             followSelection(of: pane)
         default: break
         }

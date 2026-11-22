@@ -35,6 +35,15 @@ public struct TrashFolders: Sendable {
             && parts[3] == String(uid)
     }
 
+    /// Whether `path` is inside the Trash: the home folder's, by either of its two paths, or this user's on another
+    /// disk. Byte for byte, as paths are told apart.
+    public func holds(_ path: String) -> Bool {
+        if [home, homeAsSpelled].contains(where: { path.utf8.starts(with: ($0 + "/").utf8) }) { return true }
+        let parts = path.split(separator: "/")
+        return path.hasPrefix("/") && parts.count > 4 && parts[0] == "Volumes" && parts[2] == ".Trashes"
+            && parts[3] == String(uid)
+    }
+
     /// Whether `path` is a disk's ".Trashes", which holds one Trash per user. macOS makes it so that no one can list
     /// it, Full Disk Access or not (mode d-wx--x--t); only this user's folder in it can be read.
     func isTrashesOfDisk(_ path: String) -> Bool {

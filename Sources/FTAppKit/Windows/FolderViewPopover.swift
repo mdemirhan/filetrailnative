@@ -272,7 +272,7 @@ final class FolderViewPopover {
             let ownerPath = view.use.view.path
             let go = button("Go to \u{201C}\(owner)\u{201D}") { [weak self, weak pane] in
                 self?.dismiss()
-                pane?.go(to: ownerPath)
+                pane?.go(to: ownerPath, cause: .command)
             }
             go.controlSize = .small
             let note = NSTextField(

@@ -728,6 +728,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     /// A pane's first read ended: the tab is ready once its first pane's has.
     func paneFinishedFirstRead(_ pane: BrowserPane) {
+        // A pane closed with Two Panes before its first read ended is the tab's no more.
+        guard pane.isInTab else { return }
         viewerPaneRead(pane)
         guard pane === panes.first, let ready = onReady else { return }
         onReady = nil
@@ -890,19 +892,20 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     // MARK: Navigation
 
-    /// Opens the folder at `path` in the active pane (`BrowserPane.go`).
+    /// Opens the folder at `path` in the active pane (`BrowserPane.go`), as a command does.
     func go(to path: String, history: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false) {
-        activePane.go(to: path, history: history, open: open, keepingSearch: keepingSearch)
+        activePane.go(to: path, history: history, open: open, keepingSearch: keepingSearch, cause: .command)
     }
 
-    /// Reads the folder at `path` in the active pane, then shows it (`BrowserPane.navigate`).
+    /// Reads the folder at `path` in the active pane, then shows it (`BrowserPane.navigate`), as a command does.
     @discardableResult
     func navigate(
         to path: String, history move: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false,
         goToFailure: ((String) -> Void)? = nil
     ) async -> Bool {
         await activePane.navigate(
-            to: path, history: move, open: open, keepingSearch: keepingSearch, goToFailure: goToFailure)
+            to: path, history: move, open: open, keepingSearch: keepingSearch, goToFailure: goToFailure,
+            cause: .command)
     }
 
     /// Where a pane is, history and sidebar row with it.
@@ -1045,7 +1048,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                         }
                         if original.isFolder {
                             guard token == pane.navigationCount, isKeyOrOnly else { return }
-                            pane.go(to: original.path)
+                            pane.go(to: original.path, cause: .command)
                         } else if ArchiveNames.isArchive(NodePath.basename(original.path)),
                             ArchiveNames.isArchive(NodePath.basename(path)),
                             !DiskImageNames.isDiskImagePath(original.path)

@@ -77,7 +77,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { info.propertiesLoad.phase == .answered(path: beta) })
             let asked = info.propertiesLoad.requests
 
-            right.go(to: real(harness, "Gamma"))
+            right.go(to: real(harness, "Gamma"), cause: .command)
             #expect(await waitUntil { right.shownFolderPath == real(harness, "Gamma") && !right.isNavigating })
             await settle()
             #expect(info.targetOverride == beta)
@@ -85,7 +85,7 @@ extension ExplorerWindowlessTests {
             #expect(tab.sidebarController.paneFolders == [real(harness), real(harness, "Gamma")])
 
             // The active pane opening a folder still lets it go.
-            tab.activePane.go(to: real(harness, "Beta"))
+            tab.activePane.go(to: real(harness, "Beta"), cause: .command)
             #expect(await waitUntil { info.targetOverride == nil })
         }
 
@@ -133,7 +133,7 @@ extension ExplorerWindowlessTests {
             let trash = real(harness) + "/.Trash"
             try FileManager.default.createDirectory(atPath: trash, withIntermediateDirectories: true)
             tab.trashHomePath = real(harness)
-            await right.navigate(to: trash)
+            await right.navigate(to: trash, cause: .command)
             #expect(right.shownFolderPath == trash)
             #expect(!tab.canPerform(.copyToOtherPane))
             #expect(tab.canPerform(.goToOtherPaneFolder))
@@ -280,7 +280,7 @@ extension ExplorerWindowlessTests {
 
         /// `pane` opens `name` and shows it.
         private func open(_ pane: BrowserPane, _ harness: ExplorerHarness, _ name: String) async {
-            pane.go(to: real(harness, name))
+            pane.go(to: real(harness, name), cause: .command)
             #expect(await waitUntil { pane.shownFolderPath == real(harness, name) && !pane.isNavigating })
         }
 
@@ -459,12 +459,12 @@ extension ExplorerWindowlessTests {
             #expect(shows.back == true && shows.forward == false)
             let told = Told(tab)
 
-            right.go(to: real(harness, "Alpha"), history: .back)
+            right.go(to: real(harness, "Alpha"), history: .back, cause: .command)
             #expect(await waitUntil { right.shownFolderPath == real(harness, "Alpha") && !right.isNavigating })
             await settle()
             #expect(right.navigationHistory.canGoForward)
             #expect(toolbarShows(tab) == shows)
-            right.go(to: real(harness, "Gamma"), history: .forward)
+            right.go(to: real(harness, "Gamma"), history: .forward, cause: .command)
             #expect(await waitUntil { right.shownFolderPath == real(harness, "Gamma") && !right.isNavigating })
             await settle()
             #expect(toolbarShows(tab) == shows)
@@ -476,7 +476,7 @@ extension ExplorerWindowlessTests {
             // The tree marks the folders of both all along.
             #expect(tab.sidebarController.paneFolders == [real(harness, "Beta"), real(harness, "Gamma")])
 
-            left.go(to: real(harness), history: .back)
+            left.go(to: real(harness), history: .back, cause: .command)
             #expect(await waitUntil { left.shownFolderPath == real(harness) && !left.isNavigating })
             await settle()
             #expect(told.changes.contains(.history))
@@ -562,7 +562,7 @@ extension ExplorerWindowlessTests {
             #expect(left.searchRootPath == nil)
             #expect(toolbarShows(tab) == shows)
             #expect(tab.window?.tab.accessoryView is SearchTabMagnifier)
-            right.go(to: real(harness, "Gamma"))
+            right.go(to: real(harness, "Gamma"), cause: .command)
             #expect(await waitUntil { right.searchRootPath == nil && !right.isNavigating })
             await settle()
             #expect(toolbarShows(tab) == shows)

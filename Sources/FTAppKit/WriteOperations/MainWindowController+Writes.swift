@@ -439,7 +439,8 @@ extension MainWindowController {
             acting.readAgain()
             treeFollows = acting.treeFollowsReadingAgain && (open.forceTreeReload || open.selectingRow != nil)
         } else {
-            acting.go(to: refresh.path, history: .replace, open: open)
+            // The folder on screen at its new place, where the write moved it.
+            acting.go(to: refresh.path, history: .replace, open: open, cause: .followingDisk)
         }
         // The tab's other pane is read again now too, instead of when the folder watch tells of the change: a copy, a
         // move or a drag between the panes changed both. What arrived there is selected. A pane on a folder the write

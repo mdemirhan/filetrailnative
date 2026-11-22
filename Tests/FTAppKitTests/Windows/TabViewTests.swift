@@ -535,8 +535,7 @@ extension ExplorerWindowlessTests {
             tab.applyTabView(id: "v")
             #expect(await waitUntil { tab.panes[0].viewer != nil })
             #expect(samePath(tab.panes[1].folderPath, beta))
-            // It gives way when its own pane leaves the folder it is in, not when the list moves on.
-            #expect(samePath(tab.panes[0].viewer?.folderPath ?? "", real(harness)))
+            #expect(tab.panes[0].viewer?.mode == .following)
         }
 
         // A one-pane tab view applied with the viewer active keeps the list, never the viewer alone; forgetting the

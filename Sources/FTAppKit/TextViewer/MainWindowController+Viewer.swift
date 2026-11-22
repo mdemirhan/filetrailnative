@@ -135,9 +135,8 @@ extension MainWindowController {
             return
         }
         let folder = ExplorerTabs.parentDirectoryPath(path) ?? target.shownFolderPath
-        if !samePath(target.shownFolderPath, folder) { target.go(to: folder) }
-        let viewer = openViewer(in: target, mode: .following, path: path, focus: false)
-        viewer.folderPath = folder
+        if !samePath(target.shownFolderPath, folder) { target.go(to: folder, cause: .viewersFolder) }
+        openViewer(in: target, mode: .following, path: path, focus: false)
         focusPane(source)
         notify(.panels)
     }
@@ -166,7 +165,7 @@ extension MainWindowController {
             return
         }
         if Self.isShown(leadPath(of: list), in: viewer), viewer.isEditing == setting.editing {
-            follow(with: viewer, in: pane, mode: mode, beside: list)
+            follow(with: viewer, mode: mode, beside: list)
             return
         }
         Task { [weak self] in
@@ -175,20 +174,15 @@ extension MainWindowController {
             }
             // The question may have been open a while: the viewer may be gone, and the list may select another file.
             guard let self, pane.viewer === viewer else { return }
-            follow(with: viewer, in: pane, mode: mode, beside: list)
+            follow(with: viewer, mode: mode, beside: list)
             viewer.show(leadPath(of: list), editing: setting.editing)
         }
     }
 
-    /// `viewer`, in `pane`, follows `list` as `mode` says, the keyboard in the list. It gives way when `pane` goes
-    /// to another folder, so it holds `pane`'s folder, not the list's: the two are apart once the list has moved on.
-    private func follow(
-        with viewer: TextViewerController, in pane: BrowserPane, mode: TextViewerController.Mode,
-        beside list: BrowserPane
-    ) {
+    /// `viewer` follows `list` as `mode` says, the keyboard in the list.
+    private func follow(with viewer: TextViewerController, mode: TextViewerController.Mode, beside list: BrowserPane) {
         viewer.mode = mode
         viewer.position = nil
-        viewer.folderPath = pane.shownFolderPath
         focusPane(list)
         commandsChanged()
     }
@@ -283,6 +277,15 @@ extension MainWindowController {
         }
         viewer.onOpenInEditor = { [weak self] path in self?.openInTextEditor(path) }
         viewer.onFocusChange = { [weak self] in self?.commandsChanged() }
+        viewer.onMoved = { [weak self, weak pane, weak viewer] old, new in
+            guard let self, let pane, let viewer, pane.viewer === viewer else { return }
+            self.viewerFileMoved(viewer, in: pane, from: old, to: new)
+        }
+        viewer.onGone = { [weak self, weak pane, weak viewer] in
+            guard let self, let pane, let viewer, pane.viewer === viewer else { return }
+            if viewer.mode == .inPlace { viewer.position = nil }
+            self.commandsChanged()
+        }
         viewer.onStatusChange = { [weak pane] status in pane?.content.contentShell.pathBarRow.fileStatus = status }
         viewer.onTab = { [weak self, weak pane] in
             guard let self, let pane else { return }
@@ -298,7 +301,6 @@ extension MainWindowController {
             guard let self else { return nil }
             return ShortcutDisplay(shortcuts: ShortcutCommands.resolve(self.preferences.shortcutOverrides)).label(id)
         }
-        viewer.folderPath = pane.shownFolderPath
         pane.viewer = viewer
         pane.content.showViewer(viewer.view) { [weak viewer] in viewer?.keyboardView }
         commandsChanged()
@@ -411,12 +413,11 @@ extension MainWindowController {
         }
     }
 
-    /// A pane with a viewer went to another folder (the tree, the path bar, a search): the viewer gives way to the
-    /// folder, unless it has edits, which stay on screen until they are saved or dropped.
-    func viewerPaneMoved(_ pane: BrowserPane) {
-        guard let viewer = pane.viewer, !viewer.isDirty, !samePath(pane.shownFolderPath, viewer.folderPath) else {
-            return
-        }
+    /// A command sent a pane with a viewer to another folder, and it arrived (the tree, the path bar, Back, a search's
+    /// result): the viewer gives way to the folder, unless it has edits, which stay on screen until they are saved or
+    /// dropped. Nothing the pane reads on its own closes it (`NavigationCause`).
+    func paneWasSentElsewhere(_ pane: BrowserPane) {
+        guard let viewer = pane.viewer, !viewer.isDirty else { return }
         pane.viewer = nil
         pane.content.showViewer(nil)
         commandsChanged()
@@ -473,11 +474,31 @@ extension MainWindowController {
         }
     }
 
-    /// A pane finished reading its folder: the file a following viewer showed is selected again in it.
+    /// The file a viewer shows was moved or renamed. In place, its step of the history goes with it, so Back and
+    /// Forward find it, and it is placed among its folder's files again: none, once it has left the folder. Beside the
+    /// list, nothing more: what follows the list shows what the list selects, and a viewer that doesn't stays on it.
+    private func viewerFileMoved(
+        _ viewer: TextViewerController, in pane: BrowserPane, from old: String, to new: String
+    ) {
+        guard viewer.mode == .inPlace else { return }
+        if pane.navigationHistory.current.map({ samePath($0, old) }) == true {
+            pane.navigationHistory.record(new, mode: .replace)
+            paneChanged(.history, in: pane)
+        }
+        updatePosition(of: viewer, in: pane)
+    }
+
+    /// The list under a file in place was read: the file's place among the folder's files follows.
+    func inPlaceViewerListChanged(in pane: BrowserPane) {
+        if let viewer = pane.viewer, viewer.mode == .inPlace { updatePosition(of: viewer, in: pane) }
+    }
+
+    /// A pane finished its first read: the file a following viewer showed is selected again in the list beside it,
+    /// if that list has it. Either way nothing waits any more, so no later read selects it.
     func viewerPaneRead(_ pane: BrowserPane) {
-        if let path = viewerSelectsAfterRead, pane !== viewerPane, pane.content.listedEntry(at: path) != nil {
+        if let path = viewerSelectsAfterRead, pane !== viewerPane {
             viewerSelectsAfterRead = nil
-            pane.content.select(paths: [path])
+            if pane.content.listedEntry(at: path) != nil { pane.content.select(paths: [path]) }
         }
         if let viewer = pane.viewer, viewer.mode == .inPlace { updatePosition(of: viewer, in: pane) }
     }
