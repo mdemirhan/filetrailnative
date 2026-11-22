@@ -98,7 +98,8 @@ struct ApplicationMenuTests {
                 "toggleHiddenFiles": true, "toggleInfoPanel": true, "toggleInfoRow": false, "toggleTwoPanes": false,
                 "togglePinFilter": false, "viewAsPreviews": false, "showPreviews9": false, "showPreviews4": false,
                 "showPreviews2": false, "showPreviews1": false, "rememberFolderView": false,
-                "showModifiedColumn": false, "showSizeColumn": false, "showKindColumn": false,
+                "showFolderColumn": false, "showModifiedColumn": false, "showSizeColumn": false,
+                "showKindColumn": false,
                 "showCreatedColumn": false, "showAddedColumn": false, "showLastOpenedColumn": false,
                 "showPermissionsColumn": false,
             ])

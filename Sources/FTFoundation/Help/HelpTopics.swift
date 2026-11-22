@@ -973,6 +973,8 @@ extension HelpContent {
         HelpShortcutItem(
             group: .views, .command(.toggleFoldersFirst), "List the folders before the files, or among them"),
         HelpShortcutItem(
+            group: .views, .command(.showFolderColumn), "Show or hide the Folder column of search results in List view"),
+        HelpShortcutItem(
             group: .views, .command(.showModifiedColumn), "Show or hide the Date Modified column in List view"),
         HelpShortcutItem(
             group: .views, .command(.showCreatedColumn), "Show or hide the Date Created column in List view"),

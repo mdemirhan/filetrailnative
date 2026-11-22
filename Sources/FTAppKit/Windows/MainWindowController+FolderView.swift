@@ -15,6 +15,14 @@ extension MainWindowController {
         return Set(OptionalDetailColumnKey.allCases.filter { columns[$0] })
     }
 
+    /// Search results' columns shown in the active pane while they show, which View ▸ Columns checks; nil over a
+    /// folder.
+    var shownSearchColumns: Set<OptionalSearchColumnKey>? {
+        guard activePane.showsSearchResults else { return nil }
+        let columns = activePane.shownPreferences(preferences).searchColumns
+        return Set(OptionalSearchColumnKey.allCases.filter { columns[$0] })
+    }
+
     /// View ▸ Folder View's commands, for the active pane.
     func performFolderViewCommand(_ command: AppCommand) {
         let pane = activePane

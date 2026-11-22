@@ -71,6 +71,7 @@
           "saveAsTemplate",
           "shareSelection",
           "showClipboard",
+          "showFolderColumn",
           "showOriginal",
           "sortByFolder",
           "trashSelection",
@@ -256,6 +257,7 @@
           "showAddedColumn",
           "showClipboard",
           "showCreatedColumn",
+          "showFolderColumn",
           "showFolderInOtherPane",
           "showInFinder",
           "showKindColumn",
@@ -401,17 +403,10 @@
           "revertFolderView",
           "saveAsTemplate",
           "shareSelection",
-          "showAddedColumn",
           "showClipboard",
-          "showCreatedColumn",
           "showFolderInOtherPane",
-          "showKindColumn",
-          "showLastOpenedColumn",
           "showLastSearchResults",
-          "showModifiedColumn",
           "showOriginal",
-          "showPermissionsColumn",
-          "showSizeColumn",
           "toggleFavorite",
           "toggleFoldersFirst",
           "trashSelection",
@@ -573,6 +568,7 @@
           "showAddedColumn",
           "showClipboard",
           "showCreatedColumn",
+          "showFolderColumn",
           "showFolderInOtherPane",
           "showInFinder",
           "showKindColumn",
@@ -709,6 +705,7 @@
           "selectNextTab",
           "selectPreviousTab",
           "shareSelection",
+          "showFolderColumn",
           "showOriginal",
           "sortByFolder",
           "toggleFavorite",
@@ -800,6 +797,7 @@
           "selectNextTab",
           "selectPreviousTab",
           "showClipboard",
+          "showFolderColumn",
           "showLastSearchResults",
           "showOriginal",
           "sortByFolder",
@@ -1649,7 +1647,7 @@
           ],
           "$insert": [
             [
-              "showClipboard",
+              "showFolderColumn",
               "showLastSearchResults"
             ]
           ]
@@ -2010,7 +2008,7 @@
               "showClipboard"
             ],
             [
-              "showClipboard",
+              "showFolderColumn",
               "showLastSearchResults"
             ]
           ]
@@ -3807,7 +3805,7 @@
               "goBack"
             ],
             [
-              "shareSelection",
+              "showFolderColumn",
               "showLastSearchResults"
             ]
           ]
@@ -4642,7 +4640,7 @@
               "newTextFile"
             ],
             [
-              "showClipboard",
+              "showFolderColumn",
               "showLastSearchResults"
             ]
           ]
@@ -6334,7 +6332,7 @@
               "redo"
             ],
             [
-              "shareSelection",
+              "showFolderColumn",
               "showLastSearchResults"
             ],
             [
@@ -7092,7 +7090,7 @@
           ],
           "$insert": [
             [
-              "shareSelection",
+              "showFolderColumn",
               "showLastSearchResults"
             ]
           ]
@@ -7528,7 +7526,7 @@
               "rememberFolderView"
             ],
             [
-              "shareSelection",
+              "showFolderColumn",
               "showFolderInOtherPane"
             ],
             [
@@ -8636,7 +8634,7 @@
               "goForward"
             ],
             [
-              "shareSelection",
+              "showFolderColumn",
               "showLastSearchResults"
             ]
           ]
@@ -8888,7 +8886,7 @@
               "goForward"
             ],
             [
-              "shareSelection",
+              "showFolderColumn",
               "showLastSearchResults"
             ]
           ]
@@ -9143,7 +9141,7 @@
               "showClipboard"
             ],
             [
-              "showClipboard",
+              "showFolderColumn",
               "showLastSearchResults"
             ]
           ]
@@ -9849,7 +9847,7 @@
               "goForward"
             ],
             [
-              "showClipboard",
+              "showFolderColumn",
               "showLastSearchResults"
             ]
           ]
@@ -10652,7 +10650,7 @@
               "showClipboard"
             ],
             [
-              "showClipboard",
+              "showFolderColumn",
               "showLastSearchResults"
             ],
             [
@@ -12094,7 +12092,7 @@
               "rememberFolderView"
             ],
             [
-              "shareSelection",
+              "showFolderColumn",
               "showFolderInOtherPane"
             ],
             [
@@ -12442,7 +12440,7 @@
               "selectPreviousTab"
             ],
             [
-              "showClipboard",
+              "showFolderColumn",
               "showLastSearchResults"
             ]
           ]
@@ -12937,7 +12935,7 @@
               "showClipboard"
             ],
             [
-              "showClipboard",
+              "showFolderColumn",
               "showLastSearchResults"
             ]
           ]
@@ -16898,7 +16896,7 @@
               "showClipboard"
             ],
             [
-              "showClipboard",
+              "showFolderColumn",
               "showLastSearchResults"
             ]
           ]
@@ -17562,7 +17560,7 @@
               "openInTerminal"
             ],
             [
-              "shareSelection",
+              "showFolderColumn",
               "showLastSearchResults"
             ],
             [
@@ -19066,7 +19064,7 @@
               "newTextFile"
             ],
             [
-              "showClipboard",
+              "showFolderColumn",
               "showLastSearchResults"
             ],
             [
@@ -19752,7 +19750,7 @@
               "redo"
             ],
             [
-              "shareSelection",
+              "showFolderColumn",
               "showLastSearchResults"
             ],
             [
@@ -20213,7 +20211,7 @@
               "redo"
             ],
             [
-              "saveAsTemplate",
+              "showFolderColumn",
               "showLastSearchResults"
             ],
             [
@@ -21182,14 +21180,7 @@
             "redo",
             "resetFolderView",
             "revertFolderView",
-            "showAddedColumn",
-            "showCreatedColumn",
-            "showKindColumn",
-            "showLastOpenedColumn",
             "showLastSearchResults",
-            "showModifiedColumn",
-            "showPermissionsColumn",
-            "showSizeColumn",
             "toggleFoldersFirst",
             "undo",
             "updateFolderView"
@@ -21214,6 +21205,10 @@
             [
               "selectNextTab",
               "selectPreviousTab"
+            ],
+            [
+              "showClipboard",
+              "showFolderColumn"
             ],
             [
               "showFolderInOtherPane",
@@ -22368,7 +22363,7 @@
               "goEnclosingFolder"
             ],
             [
-              "showClipboard",
+              "showFolderColumn",
               "showLastSearchResults"
             ],
             [

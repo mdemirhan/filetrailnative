@@ -233,6 +233,8 @@ enum ApplicationMenuBuilder {
             // The List's columns, as the header's right-click menu lists them; Name is always there.
             let columns = NSMenuItem(title: "Columns", action: nil, keyEquivalent: "")
             let columnsMenu = NSMenu(title: "Columns")
+            // Search results' own: dimmed while a folder shows, as Sort By ▸ Folder is.
+            columnsMenu.addItem(context.command(.showFolderColumn, "Folder"))
             for key in OptionalDetailColumnKey.menuOrder {
                 columnsMenu.addItem(
                     context.command(key.columnCommand, DetailColumnKey(rawValue: key.rawValue)?.label ?? ""))

@@ -541,8 +541,9 @@ extension ExplorerWindowlessTests {
             #expect(changes == SharedSettingChanges())
         }
 
-        // A dimmed item's key still reaches the command: it does nothing where the item is dimmed.
-        @Test func theFolderViewAndColumnCommandsDoNothingOverSearchResultsOrWithNoFolder() async throws {
+        // A dimmed item's key still reaches the command: it does nothing where the item is dimmed. View ▸ Columns
+        // over search results shows or hides their own columns, never a folder's.
+        @Test func theFolderViewCommandsDoNothingOverSearchResultsAndColumnsAreTheResults() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()
             let pane = tab.activePane
@@ -551,13 +552,22 @@ extension ExplorerWindowlessTests {
             tab.perform(.viewAsIcons)
             #expect(pane.searchViewMode == .icons)
 
-            let columns = tab.preferences.detailColumns
-            #expect(!tab.canPerform(.folderViewOptions) && !tab.canPerform(.showPermissionsColumn))
+            let columns = pane.shownPreferences(tab.preferences).detailColumns
+            let results = pane.shownPreferences(tab.preferences).searchColumns
+            #expect(!tab.canPerform(.folderViewOptions))
+            #expect(tab.canPerform(.showPermissionsColumn) && tab.canPerform(.showFolderColumn))
             tab.perform(.folderViewOptions)
             #expect(tab.folderViewPopover == nil)
             tab.perform(.showPermissionsColumn)
-            tab.perform(.showSizeColumn)
-            #expect(tab.preferences.detailColumns == columns)
+            tab.perform(.showFolderColumn)
+            let shown = pane.shownPreferences(tab.preferences)
+            #expect(shown.detailColumns == columns)
+            #expect(shown.searchColumns.permissions != results.permissions)
+            #expect(shown.searchColumns.folder != results.folder)
+            #expect(tab.menuState.shownSearchColumns?.contains(.permissions) == shown.searchColumns.permissions)
+            // Back as they were, for what follows.
+            tab.perform(.showPermissionsColumn)
+            tab.perform(.showFolderColumn)
             tab.perform(.rememberFolderView)
             #expect(pane.folderViews.views.isEmpty)
             tab.perform(.updateFolderView)
@@ -690,10 +700,11 @@ extension ExplorerWindowlessTests {
             #expect(pane.content.contentShell.pathBarRow.folderViewMark == nil)
             for command: AppCommand in [
                 .rememberFolderView, .updateFolderView, .revertFolderView, .folderViewOptions, .resetFolderView,
-                .showPermissionsColumn,
             ] {
                 #expect(!tab.canPerform(command), "\(command)")
             }
+            // View ▸ Columns is the results' own here.
+            #expect(tab.canPerform(.showPermissionsColumn) && tab.canPerform(.showFolderColumn))
             // The view chosen over the results is theirs: Alpha's view isn't changed by it.
             tab.setMode(.previews)
             #expect(pane.searchViewMode == .previews && pane.folderView?.hasUnsavedChanges == false)

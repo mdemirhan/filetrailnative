@@ -311,6 +311,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "showFolderColumn": [],
           "showModifiedColumn": [],
           "showSizeColumn": [],
           "showKindColumn": [],

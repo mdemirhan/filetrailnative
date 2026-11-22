@@ -1730,7 +1730,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                 firstName: context.selectedPathsInViewOrder.first.map(NodePath.basename)),
             convertImagesCount: context.selectedPathsInViewOrder.count,
             folderViewRemembered: activePane.shownFolderView?.isOwnSaved == true,
-            shownColumns: shownColumns,
+            shownColumns: shownColumns, shownSearchColumns: shownSearchColumns,
             clipboardCutCount: services.clipboard.contents.cutPaths.count,
             clipboardCopiedCount: services.clipboard.contents.copiedPaths.count
         ) { CommandAvailability.canRun($0, context) }
@@ -2079,9 +2079,16 @@ extension MainWindowController: ExplorerWindowHandle {
             }
         case .togglePinFilter:
             content.togglePin()
-        // Search results have columns of their own, chosen on their header: a folder's aren't changed from there.
-        case .showModifiedColumn, .showSizeColumn, .showKindColumn, .showCreatedColumn, .showAddedColumn,
-            .showLastOpenedColumn, .showPermissionsColumn:
+        // Search results have columns of their own, the pane's, Folder among them: a folder's aren't changed from
+        // there, nor theirs from a folder.
+        case .showFolderColumn, .showModifiedColumn, .showSizeColumn, .showKindColumn, .showCreatedColumn,
+            .showAddedColumn, .showLastOpenedColumn, .showPermissionsColumn:
+            if activePane.showsSearchResults {
+                if let key = OptionalSearchColumnKey(columnCommand: command) {
+                    toggleSearchColumn(key, in: activePane)
+                }
+                return
+            }
             guard searchRootPath == nil else { return }
             if let key = OptionalDetailColumnKey(columnCommand: command) { toggleColumn(key, in: activePane) }
         case .rememberFolderView, .updateFolderView, .revertFolderView, .folderViewOptions, .resetFolderView,

@@ -379,7 +379,8 @@ public enum CommandAvailability {
             .groupByFolder, .reverseGroupOrder, .sortByName, .sortByFolder, .sortByModified, .sortByCreated,
             .sortByAdded, .sortByLastOpened, .sortBySize, .sortByKind, .toggleFoldersFirst, .toggleHiddenFiles,
             .showModifiedColumn, .showSizeColumn, .showKindColumn, .showCreatedColumn, .showAddedColumn,
-            .showLastOpenedColumn, .showPermissionsColumn, .rememberFolderView, .updateFolderView, .revertFolderView,
+            .showLastOpenedColumn, .showPermissionsColumn, .showFolderColumn, .rememberFolderView, .updateFolderView,
+            .revertFolderView,
             .folderViewOptions, .resetFolderView, .togglePinFilter, .focusFileSearch, .showLastSearchResults,
             .refreshOrApplySearchSort, .newFolder, .newTextFile, .pasteSelection, .pasteAsFile, .moveItemsHere,
             .calculateSize, .showFolderInOtherPane, .copyToOtherPane, .moveToOtherPane,
@@ -570,10 +571,13 @@ public enum CommandAvailability {
             return !context.isSearchMode
         case .togglePinFilter:
             return context.filterPinnable != false
-        // Search results are no folder: they have no folder's view, and columns of their own.
+        // A folder's columns, or search results' own while they show: Folder is theirs alone.
         case .showModifiedColumn, .showSizeColumn, .showKindColumn, .showCreatedColumn, .showAddedColumn,
             .showLastOpenedColumn, .showPermissionsColumn:
-            return !context.isSearchMode
+            return true
+        case .showFolderColumn:
+            return context.isSearchMode
+        // Search results are no folder: they have no folder's view.
         case .rememberFolderView, .folderViewOptions:
             return !context.isSearchMode && !context.currentPath.isEmpty
         case .updateFolderView, .revertFolderView:

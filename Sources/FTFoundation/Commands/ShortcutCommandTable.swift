@@ -159,6 +159,7 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case sortBySize
     case toggleFoldersFirst
     case toggleHiddenFiles
+    case showFolderColumn
     case showModifiedColumn
     case showSizeColumn
     case showKindColumn
@@ -571,6 +572,9 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .toggleHiddenFiles, label: "Hidden Files", group: .view, defaults: ["Cmd+Shift+."],
             menuPath: "View > Hidden Files"),
+        ShortcutCommandDefinition(
+            id: .showFolderColumn, label: "Folder Column", group: .view, defaults: [],
+            menuPath: "View > Columns > Folder"),
         ShortcutCommandDefinition(
             id: .showModifiedColumn, label: "Date Modified Column", group: .view, defaults: [],
             menuPath: "View > Columns > Date Modified"),

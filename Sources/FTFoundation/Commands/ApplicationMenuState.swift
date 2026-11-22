@@ -39,6 +39,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
     public var folderViewRemembered: Bool
     /// The List's columns shown in the folder on screen, which View ▸ Columns checks.
     public var shownColumns: Set<OptionalDetailColumnKey>
+    /// Search results' columns shown, while they show, which View ▸ Columns checks in place of `shownColumns`.
+    public var shownSearchColumns: Set<OptionalSearchColumnKey>?
     /// How many items on the clipboard ⌘V would move, and how many it would copy, which Paste and Move Items Here say.
     public var clipboardCutCount: Int
     public var clipboardCopiedCount: Int
@@ -90,6 +92,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         pasteAsFileKind: PasteAsFileKind? = nil,
         copyContentsGuess: CopyContentsGuess? = nil, compressTitle: String? = nil, convertImagesCount: Int = 0,
         folderViewRemembered: Bool = false, shownColumns: Set<OptionalDetailColumnKey> = [],
+        shownSearchColumns: Set<OptionalSearchColumnKey>? = nil,
         clipboardCutCount: Int = 0, clipboardCopiedCount: Int = 0,
         canRun: (AppCommand) -> Bool
     ) -> ApplicationMenuState {
@@ -109,6 +112,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
             folderViewRemembered: folderViewRemembered, shownColumns: shownColumns,
             clipboardCutCount: clipboardCutCount, clipboardCopiedCount: clipboardCopiedCount)
         state.resultsSortBy = resultsSortBy
+        state.shownSearchColumns = shownSearchColumns
         state.groupBy = groupBy
         state.groupReversed = groupReversed
         return state
@@ -242,6 +246,9 @@ public enum ApplicationMenu {
             if let results = state.resultsSortBy, let field = SearchResultsSortByPreference(command: type) {
                 return field == results
             }
+            if let shown = state.shownSearchColumns, let key = OptionalSearchColumnKey(columnCommand: type) {
+                return shown.contains(key)
+            }
             return switch type {
             case .viewAsIcons: state.viewMode == .icons
             case .viewAsList: state.viewMode == .list
@@ -272,6 +279,7 @@ public enum ApplicationMenu {
             case .showModifiedColumn, .showSizeColumn, .showKindColumn, .showCreatedColumn, .showAddedColumn,
                 .showLastOpenedColumn, .showPermissionsColumn:
                 OptionalDetailColumnKey(columnCommand: type).map(state.shownColumns.contains)
+            case .showFolderColumn: false
             default: nil
             }
         }
@@ -422,6 +430,18 @@ public enum ApplicationMenu {
                 control.subtitle = subtitle
             }
         }
+    }
+}
+
+extension OptionalSearchColumnKey {
+    /// The column of search results View ▸ Columns' item shows or hides: Folder, or one a folder has too.
+    public init?(columnCommand command: AppCommand) {
+        if command == .showFolderColumn {
+            self = .folder
+            return
+        }
+        guard let key = OptionalDetailColumnKey(columnCommand: command) else { return nil }
+        self.init(rawValue: key.rawValue)
     }
 }
 

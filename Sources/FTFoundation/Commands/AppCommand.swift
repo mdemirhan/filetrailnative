@@ -123,6 +123,7 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case sortByKind
     case toggleFoldersFirst
     case toggleHiddenFiles
+    case showFolderColumn
     case showModifiedColumn
     case showSizeColumn
     case showKindColumn
