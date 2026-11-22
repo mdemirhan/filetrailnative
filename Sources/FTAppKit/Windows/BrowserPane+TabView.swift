@@ -68,18 +68,11 @@ extension BrowserPane {
 
     // MARK: What a tab view sees and gives
 
-    /// The pane as a tab view sees it: its folder and what it carries, its sizes and the app's columns included.
+    /// The pane as a tab view sees it: its folder and its settings as on screen, the folder's view (and a tab view's
+    /// over it) laid over what the pane carries, its sizes and columns included. Tab View Options starts from these,
+    /// so a setting checked there keeps what the folder shows.
     var tabViewState: PaneState {
-        let preferences = viewSizes?.applied(to: tab.preferences) ?? tab.preferences
-        let settings = FolderViewKeeps(
-            view: viewMode, groupBy: groupBy, groupReversed: groupReversed,
-            sort: FolderViewSort(by: sortBy, direction: sortDirection), foldersFirst: foldersFirst,
-            columns: FolderViewColumns(
-                visibility: preferences.detailColumns, order: preferences.detailColumnOrder,
-                widths: preferences.detailColumnWidths),
-            size: FolderViewSizes(
-                iconSizes: preferences.iconSizes, compactListWidths: preferences.compactListWidths,
-                previewCounts: preferences.previewCounts))
+        let settings = shownKeeps
         // A viewer beside the other pane's list; a file in place of the folder is the folder's, for a tab view.
         let viewer = self.viewer.flatMap { viewer in
             viewer.mode == .inPlace

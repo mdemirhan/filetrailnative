@@ -227,6 +227,34 @@ extension ExplorerWindowlessTests {
                 pane.content.contentShell.pathBarRow.folderViewMark?.tooltip.contains("tab view comes first") == true)
         }
 
+        @Test func tabViewOptionsStartsFromWhatTheFoldersViewShows() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            await go(tab, harness, "Alpha")
+            let pane = tab.activePane
+            let carried = (pane.viewMode, pane.sortBy, pane.groupBy)
+            #expect(carried.0 != .previews && carried.1 != .size && carried.2 != .kind)
+            tab.setMode(.previews)
+            tab.setSort(.size, .desc)
+            tab.perform(.groupByKind)
+            tab.perform(.rememberFolderView)
+            // The pane carries what it came in with again; the folder's view is what is on screen.
+            #expect(pane.viewMode == carried.0 && pane.sortBy == carried.1 && pane.groupBy == carried.2)
+            #expect(pane.shownMode == .previews && pane.shownSortBy == .size && pane.shownGroupBy == .kind)
+
+            let draft = TabViewDraft(tab: tab.tabViewState, columnWidth: tab.workspace.paneColumnWidth)
+            // Unchecked rows show what is on screen, so checking one keeps it.
+            #expect(draft.active.kept == [.view])
+            #expect(draft.active.values.view == .previews)
+            #expect(draft.active.values.sort == FolderViewSort(by: .size, direction: .desc))
+            #expect(draft.active.values.groupBy == .kind)
+            var checked = draft.active
+            checked.keep(.sort, true)
+            #expect(
+                checked.keeps(viewerAllowed: false).view
+                    == FolderViewKeeps(view: .previews, sort: FolderViewSort(by: .size, direction: .desc)))
+        }
+
         @Test func theTabViewFirstHoldsInAFolderCoveredFromAbove() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
