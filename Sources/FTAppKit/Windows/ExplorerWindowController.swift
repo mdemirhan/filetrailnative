@@ -185,11 +185,16 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
     }
 
     /// `openDefaultWindow`: a window opened with none open (the Dock icon, a place of the Go menu, the second launch).
-    /// It starts where the window closed last was, on the tab that was in front; `initialCommand` is run once it has
-    /// opened.
+    /// It starts where the window closed last was, on the tab that was in front. With no `initialCommand` its tab is
+    /// a new tab, as New Window's with none open; with one, the tab is as it was and the command is run once it has
+    /// opened: a tab opened for a place.
     public func openDefaultWindow(initialCommand: AppCommand? = nil) {
         // Not while quitting: the window would close again moments later.
         guard !shuttingDown else { return }
+        guard let initialCommand else {
+            openNewWindowFromLastClosed()
+            return
+        }
         let record = recordFromLastClosed()
         host.store.addExplorerWindow(id: record.id, bounds: record.bounds, session: record.session)
         open(
@@ -206,13 +211,13 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
     public func openNewWindowFromFront() {
         guard !shuttingDown else { return }
         guard let front = openWindows().first else {
-            openNewWindowFromLastClosed()
+            openDefaultWindow()
             return
         }
         let preferences = host.store.windowPreferences(front.id)
         let tabs = preferences.openTabs
         guard !tabs.isEmpty else {
-            openNewWindowFromLastClosed()
+            openDefaultWindow()
             return
         }
         // One pane, the active one's, as New Window opens from the window itself.
@@ -220,8 +225,9 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         openWindowFrom(front.windowID, tabs: [tab], activeTabIndex: 0, newTab: true)
     }
 
-    // New Window with none to take a tab from: the tab kept of the window closed last (the one in front), with one
-    // pane, as a new tab. Before any window has closed, the folder a first window opens on.
+    // A window opened with none to take a tab from (New Window, the Dock icon): the tab kept of the window closed
+    // last (the one in front), with one pane, as a new tab. Before any window has closed, the folder a first window
+    // opens on.
     private func openNewWindowFromLastClosed() {
         let lastClosed = host.store.lastClosedWindow()
         let record = createRecord(lastClosed?.bounds ?? .default) { session in

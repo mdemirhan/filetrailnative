@@ -161,8 +161,9 @@ import Testing
     }
 
     // New Window with none open is a new tab on the folder that was in front in the window closed last, where that
-    // window was. A click on the Dock icon opens the same tab, and it is not a new tab.
-    @Test func newWindowWithNoneOpenIsANewTabOfTheWindowClosedLastAndTheDockIconsIsNot() throws {
+    // window was, and so is the window a click on the Dock icon opens. A place of the Go menu opens the same tab as it
+    // was, not a new tab: it is opened for the place.
+    @Test func aWindowOpenedWithNoneOpenIsANewTabOfTheWindowClosedLastUnlessItOpensForAPlace() throws {
         let store = try makeStore()
         var old = storedWindow(store, "window-old", ["/Users/demo/a", "/Users/demo/b"], x: 40, y: 60)
         old.session.activeTabIndex = 1
@@ -183,7 +184,14 @@ import Testing
         setup.controller.openDefaultWindow()
         let again = setup.store.windowPreferences(setup.windows[1].recordID)
         #expect(again.openTabs == [tab("/Users/demo/b")] && again.activeTabIndex == 0)
-        #expect(setup.launches[setup.windows[1].recordID] == ExplorerLaunchContext(restoreTabs: true))
+        #expect(setup.launches[setup.windows[1].recordID] == ExplorerLaunchContext(restoreTabs: true, newTab: true))
+
+        setup.controller.openDefaultWindow(initialCommand: .goDesktop)
+        let forPlace = setup.store.windowPreferences(setup.windows[2].recordID)
+        #expect(forPlace.openTabs == [tab("/Users/demo/b")])
+        #expect(
+            setup.launches[setup.windows[2].recordID]
+                == ExplorerLaunchContext(restoreTabs: true, initialCommand: .goDesktop))
     }
 
     @Test func bringsTheWindowInFrontForwardForASecondLaunchOrOpensOne() throws {

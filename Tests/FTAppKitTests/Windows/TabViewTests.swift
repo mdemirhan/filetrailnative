@@ -453,7 +453,8 @@ extension ExplorerWindowlessTests {
 
         // New Window's tab is a new tab wherever New Window is chosen: in a window, from the Dock's menu or while
         // Settings has the keyboard, and with no window open, where it is one tab on the folder that was in front in
-        // the window closed last. A folder opened in a new window is not a new tab.
+        // the window closed last, as is the window a click on the Dock icon opens then. A folder opened in a new
+        // window is not a new tab.
         @Test func newWindowTakesTheNewTabViewWhereverItIsChosenAndWithNoWindowOpen() async throws {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }
@@ -510,6 +511,16 @@ extension ExplorerWindowlessTests {
             #expect(alone !== first && alone.tabs.count == 1)
             #expect(await waitUntil { alone.selected?.activePane.folderPath == real(harness, "Beta") })
             #expect(await waitUntil { alone.selected?.activePane.viewMode == .details })
+
+            // A click on the Dock icon with no window open: the same. The tab closed was in Icons again.
+            alone.selected?.setMode(.icons)
+            alone.close()
+            #expect(await waitUntil { harness.windows.count == 0 })
+            harness.windows.openDefaultWindow(initialCommand: nil)
+            let fromIcon = try newest(1)
+            #expect(fromIcon !== alone && fromIcon.tabs.count == 1)
+            #expect(await waitUntil { fromIcon.selected?.activePane.folderPath == real(harness, "Beta") })
+            #expect(await waitUntil { fromIcon.selected?.activePane.viewMode == .details })
         }
 
         // MARK: The viewer
