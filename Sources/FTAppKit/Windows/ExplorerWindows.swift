@@ -348,6 +348,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         }
         group.start(with: controllers, active: active)
         groups.append(group)
+        if launch.newTab { shown.applyNewTabView() }
         return group
     }
 

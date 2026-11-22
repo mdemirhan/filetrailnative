@@ -536,14 +536,13 @@ final class ExplorerTabGroup: ExplorerWindowLike {
             preference.favoritePath = nil
         }
         guard preference.path?.isEmpty == false, let host else { return }
-        guard host.controller.openWindowFrom(windowID, tabs: [preference], activeTabIndex: 0) else { return }
-        guard let opened = host.newestGroup, opened !== self else { return }
-        if let openedItem {
-            opened.selected?.showOpenedItem(openedItem)
-        } else if path == nil {
-            // New Window, not a folder opened in one: its tab is a new tab.
-            opened.selected?.applyNewTabView()
+        // New Window, not a folder opened in one: its tab is a new tab.
+        let newTab = path == nil && openedItem == nil
+        guard host.controller.openWindowFrom(windowID, tabs: [preference], activeTabIndex: 0, newTab: newTab) else {
+            return
         }
+        guard let openedItem, let opened = host.newestGroup, opened !== self else { return }
+        opened.selected?.showOpenedItem(openedItem)
     }
 
     /// `moveTabToNewWindow`: the tab leaves for a window of its own, its folder, tree and view along; its history

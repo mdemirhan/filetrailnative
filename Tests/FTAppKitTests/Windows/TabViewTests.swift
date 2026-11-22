@@ -451,6 +451,67 @@ extension ExplorerWindowlessTests {
             #expect(opened.activePane.viewMode == .icons)
         }
 
+        // New Window's tab is a new tab wherever New Window is chosen: in a window, from the Dock's menu or while
+        // Settings has the keyboard, and with no window open, where it is one tab on the folder that was in front in
+        // the window closed last. A folder opened in a new window is not a new tab.
+        @Test func newWindowTakesTheNewTabViewWhereverItIsChosenAndWithNoWindowOpen() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            tab.setMode(.icons)
+            tab.updatePreferences {
+                $0.tabViews = [
+                    TabView(
+                        id: "new", name: "New",
+                        keeps: TabViewKeeps(pane: PaneKeeps(view: FolderViewKeeps(view: .details))))
+                ]
+                $0.newTabViewID = "new"
+            }
+            let first = try #require(tab.group)
+            // A window a test opens reads this harness's preferences once its tab is given its services, before
+            // its first folder is read: the new-tab view is looked for then.
+            func newest(_ count: Int) throws -> ExplorerTabGroup {
+                #expect(harness.windows.count == count)
+                let group = try #require(harness.windows.newestGroup)
+                group.selected?.servicesOverride = harness.services
+                return group
+            }
+            func settled(_ group: ExplorerTabGroup) async throws -> MainWindowController {
+                let front = try #require(group.selected)
+                #expect(await waitUntil { front.loaded && !front.isNavigating })
+                return front
+            }
+
+            first.openNewWindow(from: tab, path: nil)
+            let fromWindow = try newest(2)
+            #expect(await waitUntil { fromWindow.selected?.activePane.viewMode == .details })
+
+            first.openNewWindow(from: tab, path: real(harness, "Beta"))
+            let forFolder = try newest(3)
+            #expect(try await settled(forFolder).activePane.viewMode == .icons)
+
+            first.select(tab)
+            first.focus()
+            harness.windows.openNewWindowFromFront()
+            let fromDock = try newest(4)
+            #expect(fromDock !== forFolder)
+            #expect(await waitUntil { fromDock.selected?.activePane.viewMode == .details })
+
+            // With no window open: the window closed last had two tabs, the second in front, in Icons.
+            for group in [fromWindow, forFolder, fromDock] { group.close() }
+            #expect(await waitUntil { harness.windows.count == 1 })
+            first.openTab(path: real(harness, "Beta"), from: tab)
+            let beta = try await settled(first)
+            #expect(first.tabs.count == 2 && beta.activePane.viewMode == .icons)
+            first.close()
+            #expect(await waitUntil { harness.windows.count == 0 })
+            harness.windows.openNewWindowFromFront()
+            let alone = try newest(1)
+            #expect(alone !== first && alone.tabs.count == 1)
+            #expect(await waitUntil { alone.selected?.activePane.folderPath == real(harness, "Beta") })
+            #expect(await waitUntil { alone.selected?.activePane.viewMode == .details })
+        }
+
         // MARK: The viewer
 
         private func viewerView(_ id: String, _ keeps: TabViewKeeps) -> TabView {

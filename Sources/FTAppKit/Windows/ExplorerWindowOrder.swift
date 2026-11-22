@@ -6,7 +6,7 @@ import Foundation
 // has the keyboard, and where a running operation goes when the window that started it closes.
 
 /// What a window opens with: the launch folder for the window in front at startup, whether it opens the tabs it was
-/// given, and a menu command to run once it has opened.
+/// given, a menu command to run once it has opened, and whether its tab is a new tab.
 public struct ExplorerLaunchContext: Equatable, Sendable {
     /// The folder File Trail was launched with, given to the window in front at startup.
     public var startupFolderPath: String?
@@ -14,11 +14,17 @@ public struct ExplorerLaunchContext: Equatable, Sendable {
     public var restoreTabs: Bool
     /// A place of the Go menu chosen while no window was open.
     public var initialCommand: AppCommand?
+    /// New Window's: its tab is a new tab, which takes the tab view new tabs open with once its folder is read.
+    public var newTab: Bool
 
-    public init(startupFolderPath: String? = nil, restoreTabs: Bool = false, initialCommand: AppCommand? = nil) {
+    public init(
+        startupFolderPath: String? = nil, restoreTabs: Bool = false, initialCommand: AppCommand? = nil,
+        newTab: Bool = false
+    ) {
         self.startupFolderPath = startupFolderPath
         self.restoreTabs = restoreTabs
         self.initialCommand = initialCommand
+        self.newTab = newTab
     }
 }
 

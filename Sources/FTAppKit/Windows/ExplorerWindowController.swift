@@ -184,8 +184,9 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         var shown = false
     }
 
-    /// `openDefaultWindow`: a window opened with none open (the Dock icon, New Window, the second launch). It starts
-    /// where the window closed last was; `initialCommand` is run once it has opened.
+    /// `openDefaultWindow`: a window opened with none open (the Dock icon, a place of the Go menu, the second launch).
+    /// It starts where the window closed last was, on the tab that was in front; `initialCommand` is run once it has
+    /// opened.
     public func openDefaultWindow(initialCommand: AppCommand? = nil) {
         // Not while quitting: the window would close again moments later.
         guard !shuttingDown else { return }
@@ -198,30 +199,57 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
             place: .front)
     }
 
-    /// `openNewWindowFromFront`: New Window from the Dock menu, or while another window (Settings) has the keyboard: a
-    /// window on the folder of the front window's tab. It is opened here rather than by that window, which can't
-    /// while a sheet is open in it.
+    /// `openNewWindowFromFront`: New Window from the Dock menu, with no window open, or while another window
+    /// (Settings) has the keyboard: a window with one new tab on the folder of the front window's tab. It is opened
+    /// here rather than by that window, which can't while a sheet is open in it. With none open, the tab is on the
+    /// folder that was in front in the window closed last, at that window's place and size and with its panels.
     public func openNewWindowFromFront() {
         guard !shuttingDown else { return }
         guard let front = openWindows().first else {
-            openDefaultWindow()
+            openNewWindowFromLastClosed()
             return
         }
         let preferences = host.store.windowPreferences(front.id)
         let tabs = preferences.openTabs
         guard !tabs.isEmpty else {
-            openDefaultWindow()
+            openNewWindowFromLastClosed()
             return
         }
         // One pane, the active one's, as New Window opens from the window itself.
         let tab = tabs[min(preferences.activeTabIndex, tabs.count - 1)].activePaneAlone
-        openWindowFrom(front.windowID, tabs: [tab], activeTabIndex: 0)
+        openWindowFrom(front.windowID, tabs: [tab], activeTabIndex: 0, newTab: true)
+    }
+
+    // New Window with none to take a tab from: the tab kept of the window closed last (the one in front), with one
+    // pane, as a new tab. Before any window has closed, the folder a first window opens on.
+    private func openNewWindowFromLastClosed() {
+        let lastClosed = host.store.lastClosedWindow()
+        let record = createRecord(lastClosed?.bounds ?? .default) { session in
+            guard let lastClosed else { return }
+            session = lastClosed.session
+            let tabs = session.openTabs
+            guard !tabs.isEmpty else { return }
+            let tab = tabs[min(max(0, session.activeTabIndex), tabs.count - 1)].activePaneAlone
+            session.openTabs = [tab]
+            session.activeTabIndex = 0
+            session.lastVisitedPath = tab.path
+            session.lastVisitedFavoritePath = tab.favoritePath
+            session.treeRootPath = tab.treeRootPath
+        }
+        host.store.addExplorerWindow(id: record.id, bounds: record.bounds, session: record.session)
+        open(
+            record,
+            launch: ExplorerLaunchContext(restoreTabs: !record.session.openTabs.isEmpty, newTab: true),
+            place: .front)
     }
 
     /// `openWindowFrom`: a window opened from another one (New Window, Open in New Window, Move Tab to New Window). It
     /// has the tabs it is given, and the other window's panels and size, a step down and to the right of it.
+    /// `newTab`: New Window's, whose tab takes the tab view new tabs open with.
     @discardableResult
-    public func openWindowFrom(_ senderID: Int?, tabs: [OpenTabPreference], activeTabIndex: Int) -> Bool {
+    public func openWindowFrom(
+        _ senderID: Int?, tabs: [OpenTabPreference], activeTabIndex: Int, newTab: Bool = false
+    ) -> Bool {
         guard !tabs.isEmpty, !shuttingDown else { return false }
         let store = host.store
         let source = windows.byWindowID(senderID) ?? windows.front
@@ -236,7 +264,7 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         session.treeRootPath = activeTab.treeRootPath
         let record = createRecord(newWindowBounds(source?.window)) { $0 = session }
         store.addExplorerWindow(id: record.id, bounds: record.bounds, session: record.session)
-        open(record, launch: ExplorerLaunchContext(restoreTabs: true), place: .front)
+        open(record, launch: ExplorerLaunchContext(restoreTabs: true, newTab: newTab), place: .front)
         return true
     }
 

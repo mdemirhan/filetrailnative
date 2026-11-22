@@ -141,6 +141,8 @@ import Testing
         setup.controller.openNewWindowFromFront()
         #expect(setup.windows.count == 1)
         let front = try #require(setup.windows.first)
+        // Its tab is a new tab, with none open too.
+        #expect(setup.launches[front.recordID] == ExplorerLaunchContext(newTab: true))
         setup.store.updateWindow(front.recordID) {
             $0.openTabs = [tab("/Users/demo/a"), tab("/Users/demo/b")]
             $0.activeTabIndex = 1
@@ -155,6 +157,33 @@ import Testing
         let opened = setup.store.windowPreferences(setup.windows[1].recordID)
         #expect(opened.openTabs == [tab("/Users/demo/b")])
         #expect(opened.propertiesOpen)
+        #expect(setup.launches[setup.windows[1].recordID] == ExplorerLaunchContext(restoreTabs: true, newTab: true))
+    }
+
+    // New Window with none open is a new tab on the folder that was in front in the window closed last, where that
+    // window was. A click on the Dock icon opens the same tab, and it is not a new tab.
+    @Test func newWindowWithNoneOpenIsANewTabOfTheWindowClosedLastAndTheDockIconsIsNot() throws {
+        let store = try makeStore()
+        var old = storedWindow(store, "window-old", ["/Users/demo/a", "/Users/demo/b"], x: 40, y: 60)
+        old.session.activeTabIndex = 1
+        add(store, old)
+        store.rememberClosedWindow("window-old")
+        store.removeExplorerWindow("window-old")
+        let setup = try WindowSetup(store: store)
+
+        setup.controller.openNewWindowFromFront()
+
+        let new = try #require(setup.windows.first)
+        let opened = setup.store.windowPreferences(new.recordID)
+        #expect(opened.openTabs == [tab("/Users/demo/b")] && opened.activeTabIndex == 0)
+        #expect(opened.lastVisitedPath == "/Users/demo/b")
+        #expect(setup.store.explorerWindows().first?.bounds == old.bounds)
+        #expect(setup.launches[new.recordID] == ExplorerLaunchContext(restoreTabs: true, newTab: true))
+
+        setup.controller.openDefaultWindow()
+        let again = setup.store.windowPreferences(setup.windows[1].recordID)
+        #expect(again.openTabs == [tab("/Users/demo/b")] && again.activeTabIndex == 0)
+        #expect(setup.launches[setup.windows[1].recordID] == ExplorerLaunchContext(restoreTabs: true))
     }
 
     @Test func bringsTheWindowInFrontForwardForASecondLaunchOrOpensOne() throws {
