@@ -234,16 +234,17 @@ final class TabViewOptionsSheet: SavedViewSheet {
     }
     private lazy var sizeRow = keepRow("Size", sizePopUp) { [weak self] on in self?.changePane { $0.keep(.size, on) } }
 
-    /// How the pane shows search results, kept whole: the checkbox, and under it what it keeps.
+    /// The pane's search view, how it shows search results, kept whole: the checkbox, and under it what it keeps.
     private lazy var searchResultsBox: ClosureButton = {
-        let box = ClosureButton(checkboxWithTitle: "Search Results") { [weak self] box in
+        let box = ClosureButton(checkboxWithTitle: "Search View") { [weak self] box in
             self?.changePane { $0.keepsSearchResults = box.state == .on }
         }
-        box.setAccessibilityIdentifier("tabViewOptions.keep.Search Results")
+        box.setAccessibilityIdentifier("tabViewOptions.keep.Search View")
         return box
     }()
     private lazy var searchResultsDetail: NSTextField = {
-        let field = NSTextField(wrappingLabelWithString: "")
+        let field = NSTextField(
+            wrappingLabelWithString: "Saves how search results are shown: view, sort, groups, columns and sizes")
         field.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
         field.preferredMaxLayoutWidth = contentWidth - 20
         field.setAccessibilityIdentifier("tabViewOptions.searchResultsDetail")
@@ -568,9 +569,6 @@ final class TabViewOptionsSheet: SavedViewSheet {
         guard shown else { return }
         let state: NSControl.StateValue = pane.keepsSearchResults ? .on : .off
         if searchResultsBox.state != state { searchResultsBox.state = state }
-        Self.set(
-            searchResultsDetail,
-            "Results in \(pane.searchResults.summary), with their columns and sizes")
         searchResultsDetail.textColor = pane.keepsSearchResults ? .secondaryLabelColor : .tertiaryLabelColor
     }
 

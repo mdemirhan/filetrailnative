@@ -1,4 +1,4 @@
-// Checks a tab view's Search Results: kept whole where checked and never apart, read back as written, and left out of
+// Checks a tab view's Search View, how a pane shows search results: kept whole where checked and never apart, read back as written, and left out of
 // a pane that shows the viewer; and a pane's own settings written to the app's only where they changed
 import Foundation
 import Testing
@@ -23,7 +23,7 @@ struct SearchResultsKeepsTests {
         #expect(draft.keeps.pane?.searchResults == nil)
         draft.active.keepsSearchResults = true
         #expect(draft.keeps.pane?.searchResults == Self.results)
-        #expect(SavedViewText.parts(draft.keeps).contains("search results in Icons, by size, grouped by kind"))
+        #expect(SavedViewText.parts(draft.keeps).contains("search view: Icons, sorted by Size, grouped by Kind"))
         draft.reset()
         #expect(!draft.active.keepsSearchResults)
     }

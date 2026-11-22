@@ -308,7 +308,7 @@ public enum SavedViewText {
         if let first = view.foldersFirst { parts.append(prefix + (first ? "folders first" : "folders mixed in")) }
         if view.columns != nil { parts.append(prefix + "columns") }
         if view.size != nil { parts.append(prefix + "sizes") }
-        if let results = pane.searchResults { parts.append(prefix + "search results in " + results.summary) }
+        if let results = pane.searchResults { parts.append(prefix + "search view: " + results.summary) }
         switch pane.choice {
         case .folderFirst: break
         case .tabViewFirst: parts.append(prefix + "over folder views")

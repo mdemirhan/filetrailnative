@@ -85,11 +85,10 @@ public struct SearchResultsKeeps: Codable, Equatable, Sendable {
         return next
     }
 
-    /// What the sheet and the list say of it: "Icons, by Date Modified, grouped by Kind".
+    /// Its view, order and grouping, as the list of tab views says them: "List, sorted by Folder, not grouped".
     public var summary: String {
-        var parts = [view.menuName, "by \(sortBy.title.lowercased())"]
-        if groupBy != .none { parts.append("grouped by \(groupBy.title.lowercased())") }
-        return parts.joined(separator: ", ")
+        [view.menuName, "sorted by \(sortBy.title)", groupBy == .none ? "not grouped" : "grouped by \(groupBy.title)"]
+            .joined(separator: ", ")
     }
 }
 
