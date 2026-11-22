@@ -244,7 +244,6 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         ]
     }
 
-    /// View ▸ Group By's items, as the menu bar has them now: a folder's, or search results' while they show.
     /// Sort By's items under search results: their own fields, Folder among them, checked as they are ordered.
     private func resultsSortItems(_ shortcuts: ShortcutDisplay) -> [OtherPaneMenuItem] {
         let current = tab.activePane.resultsSortBy
@@ -257,6 +256,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         }
     }
 
+    /// View ▸ Group By's items, as the menu bar has them now: a folder's, or search results' while they show.
     private func groupByItems(_ shortcuts: ShortcutDisplay) -> [OtherPaneMenuItem] {
         let canRun = tab.commandAvailability()
         let searching = tab.searchRootPath != nil

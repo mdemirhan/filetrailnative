@@ -274,12 +274,13 @@ final class BrowserPane {
         searchStore?.showsResults == true ? searchGroupReversed : shownGroupReversed
     }
 
-    /// What Group By shows checked: search results' own while they show.
     /// The order of the search results on screen; nil while the pane shows a folder.
     var resultsSortBy: SearchResultsSortByPreference? {
         guard let search = searchStore, search.showsResults else { return nil }
         return search.session.sortBy
     }
+
+    /// What Group By shows checked: search results' own while they show.
     var activeGroupBy: GroupByPreference { searchStore?.showsResults == true ? searchGroupBy : shownGroupBy }
 
     /// The folder's order and groups as on screen, for telling whether a change needs the folder read again.
