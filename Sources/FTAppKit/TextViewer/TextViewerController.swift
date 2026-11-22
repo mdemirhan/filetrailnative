@@ -664,7 +664,10 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
             onChange: { [weak self] changed in
                 guard changed.map({ $0.utf8.elementsEqual(name.utf8) }) ?? true else { return }
                 self?.changedOnDisk()
-            }, onFail: {})
+            }, onFail: {},
+            // The watch starts a moment after the file was read, and tells only of what changes from then on: a
+            // change made in that moment is found by the file's date.
+            onStart: { [weak self] in self?.changedOnDisk() })
     }
 
     private func changedOnDisk() {
