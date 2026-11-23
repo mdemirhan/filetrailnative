@@ -149,9 +149,49 @@ extension ExplorerWindowlessTests {
             #expect(!quickLook.isShowing)
         }
 
-        @Test func spacePreviewsTheSelectedItemWithQuickLookAndSpaceAgainClosesIt() async throws {
+        /// Space sent to the window, as a key pressed.
+        private func space(_ tab: MainWindowController) {
+            guard let window = tab.window,
+                let event = NSEvent.keyEvent(
+                    with: .keyDown, location: .zero, modifierFlags: [], timestamp: 0,
+                    windowNumber: window.windowNumber, context: nil, characters: " ",
+                    charactersIgnoringModifiers: " ",
+                    isARepeat: false, keyCode: 49)
+            else { return }
+            window.sendEvent(event)
+        }
+
+        // Space opens the selected file in the viewer, in place of the folder, and never Quick Look; on a folder it
+        // opens nothing.
+        @Test func spaceOpensTheSelectedFileInTheViewer() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
+            let quickLook = QuickLookController.shared
+            let system = quickLook.panel
+            let fake = FakeQuickLookPanel()
+            quickLook.panel = fake
+            defer { quickLook.panel = system }
+            let folder = try #require(tab.content.entries.first { $0.kind == .directory })
+            tab.content.focusList()
+            tab.content.select(paths: [folder.path])
+            #expect(await waitUntil { tab.focusedPane == .content && tab.content.selection.paths == [folder.path] })
+            space(tab)
+            #expect(tab.activePane.viewer == nil)
+            #expect(fake.presented == 0)
+            let note = try #require(tab.content.entries.first { $0.name == "note.txt" })
+            tab.content.select(paths: [note.path])
+            space(tab)
+            let viewer = try #require(tab.activePane.viewer)
+            #expect(viewer.mode == .inPlace && viewer.path == note.path)
+            #expect(fake.presented == 0)
+            await harness.close()
+        }
+
+        // Given Space in Settings, Quick Look has it.
+        @Test func spaceGivenToQuickLookPreviewsTheSelectedItemAndSpaceAgainClosesIt() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await opened(harness)
+            tab.updatePreferences { $0.shortcutOverrides = ["quickLookSelection": ["Cmd+Y", "Space"]] }
             let note = try #require(tab.content.entries.first { $0.name == "note.txt" })
             tab.content.focusList()
             tab.content.select(paths: [note.path])
@@ -161,16 +201,7 @@ extension ExplorerWindowlessTests {
             let fake = FakeQuickLookPanel()
             quickLook.panel = fake
             defer { quickLook.panel = system }
-            func space() {
-                guard let window = tab.window,
-                    let event = NSEvent.keyEvent(
-                        with: .keyDown, location: .zero, modifierFlags: [], timestamp: 0,
-                        windowNumber: window.windowNumber, context: nil, characters: " ",
-                        charactersIgnoringModifiers: " ",
-                        isARepeat: false, keyCode: 49)
-                else { return }
-                window.sendEvent(event)
-            }
+            func space() { self.space(tab) }
             space()
             #expect(quickLook.url?.path == note.path)
             #expect(quickLook.isShowing)

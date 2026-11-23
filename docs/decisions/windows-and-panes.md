@@ -76,6 +76,7 @@ Two panes, tabs, saved views, the toolbar, the menus and their keys, Back and Fo
   |---|---|---|---|
   | ⌘K | Connect to Server | Go To | The app has no Connect to Server; ⇧⌘G, Finder's Go to Folder, does the same (inferred). |
   | ⌘E | Eject | Open in Viewer | The owner's choice, 2026-11-20. Eject has no default key. |
+  | Space | Quick Look | Open in Viewer | The owner's choice, 2026-11-23: the viewer shows a file with the keyboard and Back. Quick Look keeps ⌘Y, and Settings can give it Space back (`views.md`). |
   | ⌘R | Show Original | Refresh | Show Original has no default key. |
   | ⌘3 | as Columns | as Compact List | There is no column view; ⌘4 is Previews, as Finder's is Gallery. |
   | ⇧⌘C | Go ▸ Computer | Copy Contents | It pairs with Paste as File's ⇧⌘V, and pressed out of habit only replaces the clipboard. |

@@ -21,7 +21,7 @@ extension MainWindowController {
             isEnabled: { [weak self] in self?.preferences.notificationsEnabled ?? true })
         notifications?.progress.currentPath = { [weak self] in self?.folderPath ?? "" }
         guard let window else { return }
-        WindowEventRouting.add(window) { [weak self] event in self?.handleQuickLookKey(event) ?? false }
+        WindowEventRouting.add(window) { [weak self] event in self?.handleSpaceKey(event) ?? false }
     }
 
     /// "Show notifications" changed: those showing go when it is off.
@@ -29,16 +29,18 @@ extension MainWindowController {
         notifications?.notificationsSettingChanged()
     }
 
-    // MARK: Quick Look
+    // MARK: Space and Quick Look
 
-    /// Space, while it is Quick Look's key, previews the selected item while the file list has the keyboard (`quickLook`
-    /// in the key table), unless a filter is being typed: then Space is part of its text ("my doc") until Esc ends it,
-    /// and the list takes it. A pinned filter leaves Space to Quick Look. Any other key chosen for it goes through the
-    /// list's keys.
-    private func handleQuickLookKey(_ event: NSEvent) -> Bool {
+    /// Space opens the selected file in the viewer, or previews the selected item while it is Quick Look's key, while
+    /// the file list has the keyboard (`quickLook` in the key table), unless a filter is being typed: then Space is
+    /// part of its text ("my doc") until Esc ends it, and the list takes it. A pinned filter leaves Space to its
+    /// command. A selection the viewer can't show (a folder, several items) beeps, as ⌘E does. Any other key chosen
+    /// for either goes through the list's keys.
+    private func handleSpaceKey(_ event: NSEvent) -> Bool {
         guard event.type == .keyDown, event.keyCode == 49,
             event.modifierFlags.intersection([.command, .control, .option, .shift]).isEmpty,
-            ShortcutCommands.resolve(preferences.shortcutOverrides).commandByShortcut["Space"] == .quickLookSelection,
+            let command = ShortcutCommands.resolve(preferences.shortcutOverrides).commandByShortcut["Space"],
+            command == .viewFile || command == .quickLookSelection,
             window?.attachedSheet == nil, DialogScrim.front(in: window) == nil, !(window?.firstResponder is NSText),
             focusedPane == .content,
             // A file a pane shows takes Space itself: a PDF or a document scrolls, a movie plays.
@@ -46,7 +48,13 @@ extension MainWindowController {
             !content.selection.isEmpty,
             !content.listFilter.isActive || content.pinnedFilter != nil
         else { return false }
-        quickLookSelection()
+        if command == .quickLookSelection {
+            quickLookSelection()
+        } else if selectedViewableFile != nil {
+            viewFile()
+        } else {
+            NSSound.beep()
+        }
         return true
     }
 

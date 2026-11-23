@@ -215,12 +215,12 @@
           {
             "group": "files",
             "shortcut": "Cmd+Y",
-            "description": "Preview the selected item without opening it (Space also works)"
+            "description": "Preview the selected item without opening it"
           },
           {
             "group": "files",
             "shortcut": "Cmd+E",
-            "description": "Show the selected file's text in this pane, to read or edit it"
+            "description": "Show the selected file in this pane, to read or edit it (Space also works)"
           },
           {"group": "files", "shortcut": "Cmd+S", "description": "Save the file the viewer shows, in its pane"},
           {
@@ -1133,6 +1133,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -1234,17 +1235,20 @@
             }
           ],
           [
-            {"shortcuts": [], "topic": "navigation", "rows": [["Keyboard", "Type in the list"]]},
             {
               "shortcuts": [
                 {
                   "group": "files",
                   "shortcut": "Cmd+Y",
-                  "description": "Preview the selected item without opening it (Space also works)"
+                  "description": "Preview the selected item without opening it"
                 }
               ],
               "topic": "files",
-              "rows": [["Opening", "Quick Look"], ["Changing", "Aliases and symbolic links"]]
+              "rows": [
+                ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
+                ["Changing", "Aliases and symbolic links"]
+              ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Previews"]]}
           ],
@@ -1547,12 +1551,12 @@
           {
             "group": "files",
             "shortcut": "Cmd+Y",
-            "description": "Preview the selected item without opening it (Space also works)"
+            "description": "Preview the selected item without opening it"
           },
           {
             "group": "files",
             "shortcut": "Cmd+E",
-            "description": "Show the selected file's text in this pane, to read or edit it"
+            "description": "Show the selected file in this pane, to read or edit it (Space also works)"
           },
           {"group": "files", "shortcut": "Cmd+S", "description": "Save the file the viewer shows, in its pane"},
           {
@@ -2467,6 +2471,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -2553,17 +2558,20 @@
             }
           ],
           [
-            {"shortcuts": [], "topic": "navigation", "rows": [["Keyboard", "Type in the list"]]},
             {
               "shortcuts": [
                 {
                   "group": "files",
                   "shortcut": "Cmd+Y",
-                  "description": "Preview the selected item without opening it (Space also works)"
+                  "description": "Preview the selected item without opening it"
                 }
               ],
               "topic": "files",
-              "rows": [["Opening", "Quick Look"], ["Changing", "Aliases and symbolic links"]]
+              "rows": [
+                ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
+                ["Changing", "Aliases and symbolic links"]
+              ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Previews"]]}
           ],
@@ -3456,6 +3464,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -3557,17 +3566,20 @@
             }
           ],
           [
-            {"shortcuts": [], "topic": "navigation", "rows": [["Keyboard", "Type in the list"]]},
             {
               "shortcuts": [
                 {
                   "group": "files",
                   "shortcut": "Cmd+Y",
-                  "description": "Preview the selected item without opening it (Space also works)"
+                  "description": "Preview the selected item without opening it"
                 }
               ],
               "topic": "files",
-              "rows": [["Opening", "Quick Look"], ["Changing", "Aliases and symbolic links"]]
+              "rows": [
+                ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
+                ["Changing", "Aliases and symbolic links"]
+              ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Previews"]]}
           ],
@@ -4497,6 +4509,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -4598,17 +4611,20 @@
             }
           ],
           [
-            {"shortcuts": [], "topic": "navigation", "rows": [["Keyboard", "Type in the list"]]},
             {
               "shortcuts": [
                 {
                   "group": "files",
                   "shortcut": "Cmd+Y",
-                  "description": "Preview the selected item without opening it (Space also works)"
+                  "description": "Preview the selected item without opening it"
                 }
               ],
               "topic": "files",
-              "rows": [["Opening", "Quick Look"], ["Changing", "Aliases and symbolic links"]]
+              "rows": [
+                ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
+                ["Changing", "Aliases and symbolic links"]
+              ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Previews"]]}
           ],
@@ -4761,7 +4777,7 @@
             {
               "group": "files",
               "shortcut": "Cmd+Y",
-              "description": "Preview the selected item without opening it (Space also works)"
+              "description": "Preview the selected item without opening it"
             },
             {
               "group": "files",
@@ -4770,14 +4786,6 @@
             }
           ],
           "$insert": [
-            [
-              {
-                "group": "files",
-                "shortcut": "Cmd+Shift+E",
-                "description": "Open the selected files in the text editor chosen in Settings"
-              },
-              {"group": "files", "shortcut": "Space", "description": "Preview the selected item without opening it"}
-            ],
             [
               {
                 "group": "files",
@@ -5511,6 +5519,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
+                ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -5612,13 +5621,14 @@
             }
           ],
           [
-            {"shortcuts": [], "topic": "navigation", "rows": [["Keyboard", "Type in the list"]]},
             {
-              "shortcuts": [
-                {"group": "files", "shortcut": "Space", "description": "Preview the selected item without opening it"}
-              ],
+              "shortcuts": [],
               "topic": "files",
-              "rows": [["Opening", "Quick Look"], ["Changing", "Aliases and symbolic links"]]
+              "rows": [
+                ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
+                ["Changing", "Aliases and symbolic links"]
+              ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Previews"]]}
           ],
@@ -5919,7 +5929,7 @@
             {
               "group": "files",
               "shortcut": "Cmd+Y",
-              "description": "Preview the selected item without opening it (Space also works)"
+              "description": "Preview the selected item without opening it"
             },
             {
               "group": "files",
@@ -6551,13 +6561,15 @@
                 ["Windows", "Tab views"],
                 ["Windows", "Window views"],
                 ["Windows", "Command palette"],
-                ["Windows", "Closing"]
+                ["Windows", "Closing"],
+                ["Keyboard", "Type in the list"]
               ]
             },
             {
               "shortcuts": [],
               "topic": "files",
               "rows": [
+                ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -6630,11 +6642,14 @@
             }
           ],
           [
-            {"shortcuts": [], "topic": "navigation", "rows": [["Keyboard", "Type in the list"]]},
             {
               "shortcuts": [],
               "topic": "files",
-              "rows": [["Opening", "Quick Look"], ["Changing", "Aliases and symbolic links"]]
+              "rows": [
+                ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
+                ["Changing", "Aliases and symbolic links"]
+              ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Previews"]]}
           ],
@@ -7539,6 +7554,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -7625,17 +7641,20 @@
             }
           ],
           [
-            {"shortcuts": [], "topic": "navigation", "rows": [["Keyboard", "Type in the list"]]},
             {
               "shortcuts": [
                 {
                   "group": "files",
                   "shortcut": "Cmd+Y",
-                  "description": "Preview the selected item without opening it (Space also works)"
+                  "description": "Preview the selected item without opening it"
                 }
               ],
               "topic": "files",
-              "rows": [["Opening", "Quick Look"], ["Changing", "Aliases and symbolic links"]]
+              "rows": [
+                ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
+                ["Changing", "Aliases and symbolic links"]
+              ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Previews"]]}
           ],
@@ -8556,6 +8575,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -8657,17 +8677,20 @@
             }
           ],
           [
-            {"shortcuts": [], "topic": "navigation", "rows": [["Keyboard", "Type in the list"]]},
             {
               "shortcuts": [
                 {
                   "group": "files",
                   "shortcut": "Cmd+Y",
-                  "description": "Preview the selected item without opening it (Space also works)"
+                  "description": "Preview the selected item without opening it"
                 }
               ],
               "topic": "files",
-              "rows": [["Opening", "Quick Look"], ["Changing", "Aliases and symbolic links"]]
+              "rows": [
+                ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
+                ["Changing", "Aliases and symbolic links"]
+              ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Previews"]]}
           ],
@@ -8838,7 +8861,7 @@
             {
               "group": "files",
               "shortcut": "Cmd+Y",
-              "description": "Preview the selected item without opening it (Space also works)"
+              "description": "Preview the selected item without opening it"
             },
             {
               "group": "files",
@@ -8883,14 +8906,6 @@
                 "description": "Close this tab with both its panes, or the window when it is the last tab"
               },
               {"group": "navigation", "shortcut": "Cmd+Y", "description": "Show the tab to the right of this one"}
-            ],
-            [
-              {
-                "group": "files",
-                "shortcut": "Cmd+Shift+E",
-                "description": "Open the selected files in the text editor chosen in Settings"
-              },
-              {"group": "files", "shortcut": "Space", "description": "Preview the selected item without opening it"}
             ],
             [
               {
@@ -9631,6 +9646,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
+                ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -9717,13 +9733,14 @@
             }
           ],
           [
-            {"shortcuts": [], "topic": "navigation", "rows": [["Keyboard", "Type in the list"]]},
             {
-              "shortcuts": [
-                {"group": "files", "shortcut": "Space", "description": "Preview the selected item without opening it"}
-              ],
+              "shortcuts": [],
               "topic": "files",
-              "rows": [["Opening", "Quick Look"], ["Changing", "Aliases and symbolic links"]]
+              "rows": [
+                ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
+                ["Changing", "Aliases and symbolic links"]
+              ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Previews"]]}
           ],
@@ -10632,6 +10649,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -10733,17 +10751,20 @@
             }
           ],
           [
-            {"shortcuts": [], "topic": "navigation", "rows": [["Keyboard", "Type in the list"]]},
             {
               "shortcuts": [
                 {
                   "group": "files",
                   "shortcut": "Cmd+Y",
-                  "description": "Preview the selected item without opening it (Space also works)"
+                  "description": "Preview the selected item without opening it"
                 }
               ],
               "topic": "files",
-              "rows": [["Opening", "Quick Look"], ["Changing", "Aliases and symbolic links"]]
+              "rows": [
+                ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
+                ["Changing", "Aliases and symbolic links"]
+              ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Previews"]]}
           ],
@@ -11684,6 +11705,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -11776,17 +11798,20 @@
             }
           ],
           [
-            {"shortcuts": [], "topic": "navigation", "rows": [["Keyboard", "Type in the list"]]},
             {
               "shortcuts": [
                 {
                   "group": "files",
                   "shortcut": "Cmd+Y",
-                  "description": "Preview the selected item without opening it (Space also works)"
+                  "description": "Preview the selected item without opening it"
                 }
               ],
               "topic": "files",
-              "rows": [["Opening", "Quick Look"], ["Changing", "Aliases and symbolic links"]]
+              "rows": [
+                ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
+                ["Changing", "Aliases and symbolic links"]
+              ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Previews"]]}
           ],
@@ -12745,6 +12770,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -12846,17 +12872,20 @@
             }
           ],
           [
-            {"shortcuts": [], "topic": "navigation", "rows": [["Keyboard", "Type in the list"]]},
             {
               "shortcuts": [
                 {
                   "group": "files",
                   "shortcut": "Cmd+Y",
-                  "description": "Preview the selected item without opening it (Space also works)"
+                  "description": "Preview the selected item without opening it"
                 }
               ],
               "topic": "files",
-              "rows": [["Opening", "Quick Look"], ["Changing", "Aliases and symbolic links"]]
+              "rows": [
+                ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
+                ["Changing", "Aliases and symbolic links"]
+              ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Previews"]]}
           ],
@@ -13780,6 +13809,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -13881,17 +13911,20 @@
             }
           ],
           [
-            {"shortcuts": [], "topic": "navigation", "rows": [["Keyboard", "Type in the list"]]},
             {
               "shortcuts": [
                 {
                   "group": "files",
                   "shortcut": "Cmd+Y",
-                  "description": "Preview the selected item without opening it (Space also works)"
+                  "description": "Preview the selected item without opening it"
                 }
               ],
               "topic": "files",
-              "rows": [["Opening", "Quick Look"], ["Changing", "Aliases and symbolic links"]]
+              "rows": [
+                ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
+                ["Changing", "Aliases and symbolic links"]
+              ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Previews"]]}
           ],
@@ -14810,6 +14843,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -14917,17 +14951,20 @@
             }
           ],
           [
-            {"shortcuts": [], "topic": "navigation", "rows": [["Keyboard", "Type in the list"]]},
             {
               "shortcuts": [
                 {
                   "group": "files",
                   "shortcut": "Cmd+Y",
-                  "description": "Preview the selected item without opening it (Space also works)"
+                  "description": "Preview the selected item without opening it"
                 }
               ],
               "topic": "files",
-              "rows": [["Opening", "Quick Look"], ["Changing", "Aliases and symbolic links"]]
+              "rows": [
+                ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
+                ["Changing", "Aliases and symbolic links"]
+              ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Previews"]]}
           ],
@@ -16006,6 +16043,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -16107,17 +16145,20 @@
             }
           ],
           [
-            {"shortcuts": [], "topic": "navigation", "rows": [["Keyboard", "Type in the list"]]},
             {
               "shortcuts": [
                 {
                   "group": "files",
                   "shortcut": "Cmd+Y",
-                  "description": "Preview the selected item without opening it (Space also works)"
+                  "description": "Preview the selected item without opening it"
                 }
               ],
               "topic": "files",
-              "rows": [["Opening", "Quick Look"], ["Changing", "Aliases and symbolic links"]]
+              "rows": [
+                ["Opening", "Quick Look"],
+                ["Opening", "Open in Viewer"],
+                ["Changing", "Aliases and symbolic links"]
+              ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Previews"]]}
           ],

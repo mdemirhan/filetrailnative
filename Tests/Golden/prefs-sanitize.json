@@ -4348,7 +4348,7 @@
             "refreshOrApplySearchSort": [],
             "swapPanes": [],
             "newTab": ["Cmd+Y", "Cmd+U"],
-            "quickLookSelection": ["Space"]
+            "quickLookSelection": []
           }
         }
       }

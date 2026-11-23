@@ -18,7 +18,7 @@ A Mac file browser with fast search, a real folder tree, two panes and true cut 
 - **Any folder, any command, in a few keystrokes.** ⌘K finds a folder you have used from a few letters, typing in a folder narrows it to the names that match, and ⇧⌘P finds any command by name. Every command can have a shortcut that you choose.
 - **Fast, free, open source and private.** Smooth with thousands of files. MIT licensed, with no accounts, no analytics and nothing sent anywhere.
 
-Switching is easy. File Trail keeps most of Finder's shortcuts, Quick Look on Space and ⌘Y, drag and drop with other apps, tabs, and the sidebar's Locations. This page is about what is different; [everything File Trail does](docs/features.md) is on a page of its own.
+Switching is easy. File Trail keeps most of Finder's shortcuts, Quick Look on ⌘Y, drag and drop with other apps, tabs, and the sidebar's Locations. This page is about what is different; [everything File Trail does](docs/features.md) is on a page of its own.
 
 ## Search that keeps up with your typing
 
@@ -59,7 +59,7 @@ A way of working can be saved and given back in one step. A tab view keeps what 
   <img src="docs/screenshots/viewer.png" alt="A folder of components in a list, with TripCard.jsx selected and its code shown in color in the pane beside it, Follow checked" width="900">
 </p>
 
-Quick Look shows a file but doesn't let you change it, and opening an editor takes you away from the folder. In File Trail, ⌘E shows the selected file in place of the folder, in color for about 60 languages and formats; switch to Edit to change it, and ⌘S saves. Show it in the other pane instead (⌥⌘↓) and it follows the list: move from file to file and each one appears beside it.
+Quick Look shows a file but doesn't let you change it, and opening an editor takes you away from the folder. In File Trail, Space or ⌘E shows the selected file in place of the folder, in color for about 60 languages and formats; switch to Edit to change it, and ⌘S saves. Show it in the other pane instead (⌥⌘↓) and it follows the list: move from file to file and each one appears beside it.
 
 - **More than text.** Markdown shows as it reads, pictures as pictures, and anything else as Quick Look shows it.
 - **Part of browsing.** Back returns to the folder with the file selected, ⌥⌘] and ⌥⌘[ step to the next and previous file, and the file asks before unsaved edits are lost.

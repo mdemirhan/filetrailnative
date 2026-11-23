@@ -84,8 +84,8 @@ struct ContentKeysTests {
         #expect(action("Escape", code: "Escape", pinned: true) == .typeToSelect(nil))
         #expect(action("Backspace", code: "Backspace", pinned: true) == nil)
         #expect(action("Backspace", code: "Backspace", alt: true, pinned: true) == nil)
-        // Space stays Quick Look, the arrows move, and ⌘ with a letter is still its command.
-        #expect(action(" ", code: "Space", pinned: true) == .command(.quickLookSelection))
+        // Space stays Open in Viewer, the arrows move, and ⌘ with a letter is still its command.
+        #expect(action(" ", code: "Space", pinned: true) == .command(.viewFile))
         #expect(action("ArrowDown", code: "ArrowDown", pinned: true) == .move(.down, extend: false))
         #expect(action("t", code: "KeyT", meta: true, pinned: true) == .command(.newTab))
     }
@@ -100,9 +100,9 @@ struct ContentKeysTests {
         #expect(action("Backspace", code: "Backspace", alt: true, filter: typed, pinned: true) == nil)
         #expect(action("Escape", code: "Escape", filter: typed, pinned: true) == .typeToSelect(nil))
         #expect(action("s", code: "KeyS", filter: typed, pinned: true) == .typeToSelect("s"))
-        // Space types into the field's text, and with the pin it is Quick Look.
+        // Space types into the field's text, and with the pin it is Open in Viewer.
         #expect(action(" ", code: "Space", filter: typed) == .filter(.type(" ")))
-        #expect(action(" ", code: "Space", filter: typed, pinned: true) == .command(.quickLookSelection))
+        #expect(action(" ", code: "Space", filter: typed, pinned: true) == .command(.viewFile))
     }
 
     @Test func arrowsHomeAndEndMoveTheSelectionAndShiftExtendsIt() {
@@ -170,16 +170,17 @@ struct ContentKeysTests {
         #expect(action("Backspace", code: "Backspace", filter: filter) == .filter(.erase))
         #expect(action("Escape", code: "Escape", filter: filter) == .filter(.clear))
         #expect(action(" ", code: "Space", filter: filter) == .filter(.type(" ")))
-        // ⌘Y is Quick Look while the filter is there.
+        // ⌘E is Open in Viewer and ⌘Y Quick Look while the filter is there.
+        #expect(action("e", code: "KeyE", meta: true, filter: filter) == .command(.viewFile))
         #expect(action("y", code: "KeyY", meta: true, filter: filter) == .command(.quickLookSelection))
-        // With no filter (Esc ended it) Space is Quick Look.
+        // With no filter (Esc ended it) Space is Open in Viewer.
         filter.clear()
-        #expect(action(" ", code: "Space", filter: filter) == .command(.quickLookSelection))
+        #expect(action(" ", code: "Space", filter: filter) == .command(.viewFile))
     }
 
-    // Space never starts a filter. While one is typed it always types a space, whether Quick Look has it or Settings
-    // took it off (no other command can have it).
-    @Test func spaceTypesIntoAFilterWhetherQuickLookHasItOrNot() {
+    // Space never starts a filter. While one is typed it always types a space, whether Open in Viewer has it, Quick
+    // Look was given it or Settings took it off (no other command can have it).
+    @Test func spaceTypesIntoAFilterWhateverCommandHasIt() {
         func action(_ overrides: ShortcutOverrides, filter: ListFilterTyping) -> ContentKeyAction? {
             ContentKeys.action(
                 for: ShortcutKeyEvent(key: " ", code: "Space"), shortcuts: ShortcutCommands.resolve(overrides),
@@ -188,11 +189,14 @@ struct ContentKeysTests {
         var typed = ListFilterTyping()
         typed.type("my")
         var unassigned = ShortcutOverrides()
-        unassigned["quickLookSelection"] = []
+        unassigned["viewFile"] = ["Cmd+E"]
         #expect(action(unassigned, filter: ListFilterTyping()) == nil)
         #expect(action(unassigned, filter: typed) == .filter(.type(" ")))
+        let quickLook: ShortcutOverrides = ["quickLookSelection": ["Cmd+Y", "Space"]]
+        #expect(action(quickLook, filter: typed) == .filter(.type(" ")))
+        #expect(action(quickLook, filter: ListFilterTyping()) == .command(.quickLookSelection))
         #expect(action([:], filter: typed) == .filter(.type(" ")))
-        #expect(action([:], filter: ListFilterTyping()) == .command(.quickLookSelection))
+        #expect(action([:], filter: ListFilterTyping()) == .command(.viewFile))
     }
 
     @Test func returnWithAnItemSelectedAndTabSwitchesPanes() {

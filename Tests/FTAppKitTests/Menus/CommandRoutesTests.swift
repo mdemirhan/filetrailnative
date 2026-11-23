@@ -409,7 +409,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Quick Look
 
-        // Quick Look is on whatever key it has.
+        // Quick Look is on whatever key it has, Space too once it is given it; without, Space opens the viewer.
         @Test func quickLookGoesWithItsKey() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
@@ -421,13 +421,15 @@ extension ExplorerWindowlessTests {
                 let event = try key(name, in: tab)
                 if !WindowEventRouting.intercept(event, in: window) { list.table?.keyDown(with: event) }
             }
+            tab.updatePreferences { $0.shortcutOverrides = ["quickLookSelection": ["Cmd+Y", "Space"]] }
             try press("Space")
             #expect(shown.count == 1)
             tab.updatePreferences { $0.shortcutOverrides = ["quickLookSelection": ["F2"]] }
-            try press("Space")
-            #expect(shown.count == 1)
             try press("F2")
             #expect(shown.count == 2)
+            try press("Space")
+            #expect(shown.count == 2)
+            #expect(tab.activePane.viewer?.mode == .inPlace)
             await harness.close()
         }
 

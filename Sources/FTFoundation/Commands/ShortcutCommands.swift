@@ -11,10 +11,13 @@ public struct ShortcutCommandDefinition: Sendable, Equatable {
     public var menuPath: String?
     /// Never changed in Settings: the key is shared with text fields, or is macOS's own.
     public var fixed: Bool
+    /// Keys no command could be given that this one can, beyond its defaults: Space for Quick Look, which Open in
+    /// Viewer has by default.
+    public var alsoAllowed: [String]
 
     init(
         id: ShortcutCommandID, label: String, group: ShortcutGroup, defaults: [String], menuPath: String? = nil,
-        fixed: Bool = false
+        fixed: Bool = false, alsoAllowed: [String] = []
     ) {
         self.id = id
         self.label = label
@@ -22,7 +25,11 @@ public struct ShortcutCommandDefinition: Sendable, Equatable {
         self.defaults = defaults
         self.menuPath = menuPath
         self.fixed = fixed
+        self.alsoAllowed = alsoAllowed
     }
+
+    /// The keys it may have that `refusal(for:)` refuses: its defaults and `alsoAllowed`.
+    var ownKeys: [String] { defaults + alsoAllowed }
 }
 
 /// The keys of every command, main first.
@@ -143,12 +150,13 @@ public enum ShortcutCommands {
         macOSOptionalShortcuts.contains(shortcut)
     }
 
-    /// A command keeps a key of its own defaults that could not be given out today (Space for Quick Look, ? for Help).
+    /// A command keeps a key of its own that could not be given out today (Space for Open in Viewer or Quick Look, ?
+    /// for Help).
     private static func isAllowed(_ command: ShortcutCommandDefinition, _ shortcut: String) -> Bool {
         if refusal(for: shortcut) == nil {
             return true
         }
-        return has(normalizeAll(command.defaults), shortcut)
+        return has(normalizeAll(command.ownKeys), shortcut)
     }
 
     // MARK: Resolution
@@ -268,7 +276,7 @@ public enum ShortcutCommands {
         if has(bindings[id] ?? [], shortcut) {
             return .unchanged
         }
-        if let refusal = refusal(for: shortcut), !has(normalizeAll(command.defaults), shortcut) {
+        if let refusal = refusal(for: shortcut), !has(normalizeAll(command.ownKeys), shortcut) {
             return .refused(refusal)
         }
         for other in all where other.id != id && has(bindings[other.id] ?? [], shortcut) {

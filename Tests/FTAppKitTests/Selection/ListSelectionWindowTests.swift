@@ -240,11 +240,13 @@ extension ExplorerWindowlessTests {
             #expect(list.hasKeyboard)
             #expect(!identified("list.header", in: tab.content.container).isEmpty)
             #expect(tab.content.container.topInset > 0)
-            // With no filter typed, Space previews the selected item.
-            tab.content.select(paths: [path(tab, "notes.txt")].compactMap { $0 })
+            // With no filter typed, Space opens the selected file in the viewer.
+            let notes = try #require(path(tab, "notes.txt"))
+            tab.content.select(paths: [notes])
             tab.content.focusList()
             list.key("Space")
-            #expect(fake.presented == 1)
+            #expect(tab.activePane.viewer?.path == notes)
+            #expect(fake.presented == 0)
             quickLook.close()
             await harness.close()
         }

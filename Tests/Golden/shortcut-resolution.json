@@ -79,8 +79,8 @@
           "openSelection": ["Cmd+O"],
           "openSelectedItem": ["Cmd+Down"],
           "editSelection": ["Cmd+Shift+E"],
-          "quickLookSelection": ["Cmd+Y", "Space"],
-          "viewFile": ["Cmd+E"],
+          "quickLookSelection": ["Cmd+Y"],
+          "viewFile": ["Cmd+E", "Space"],
           "calculateSize": [],
           "renameSelection": ["F2"],
           "duplicateSelection": ["Cmd+D"],
@@ -223,8 +223,8 @@
           ["Cmd+Down", "openSelectedItem"],
           ["Cmd+Shift+E", "editSelection"],
           ["Cmd+Y", "quickLookSelection"],
-          ["Space", "quickLookSelection"],
           ["Cmd+E", "viewFile"],
+          ["Space", "viewFile"],
           ["Cmd+Option+A", "deselectAll"],
           ["F2", "renameSelection"],
           ["Cmd+D", "duplicateSelection"],
@@ -1970,12 +1970,12 @@
         "events": []
       },
       "changes": {
-        "bindings": {"newTab": ["Cmd+Y"], "quickLookSelection": ["Space"]},
+        "bindings": {"newTab": ["Cmd+Y"], "quickLookSelection": []},
         "commandByShortcut": {
           "$remove": [["Cmd+T", "newTab"], ["Cmd+Y", "quickLookSelection"]],
           "$insert": [[null, ["Cmd+Y", "newTab"]]]
         },
-        "sanitized": {"newTab": ["Cmd+Y"], "quickLookSelection": ["Space"]},
+        "sanitized": {"newTab": ["Cmd+Y"], "quickLookSelection": []},
         "probes": [
           {
             "shortcut": "Cmd+Y",
@@ -1996,9 +1996,9 @@
             "refusal": null,
             "command": null,
             "customized": true,
-            "assigned": {"newTab": ["Cmd+Y"], "quickLookSelection": ["Space"]},
-            "removed": {"newTab": [], "quickLookSelection": ["Space"]},
-            "reset": {"quickLookSelection": ["Space"]},
+            "assigned": {"newTab": ["Cmd+Y"], "quickLookSelection": []},
+            "removed": {"newTab": [], "quickLookSelection": []},
+            "reset": {"quickLookSelection": []},
             "takenFrom": [],
             "menuShortcut": "Cmd+Y"
           }
@@ -2038,12 +2038,12 @@
       "name": "7: a third key is dropped",
       "input": {"overrides": {"newTab": ["Cmd+Y", "Cmd+U", "Cmd+I"]}, "probes": [], "assignments": [], "events": []},
       "changes": {
-        "bindings": {"newTab": ["Cmd+Y", "Cmd+U"], "swapPanes": [], "quickLookSelection": ["Space"]},
+        "bindings": {"newTab": ["Cmd+Y", "Cmd+U"], "swapPanes": [], "quickLookSelection": []},
         "commandByShortcut": {
           "$remove": [["Cmd+T", "newTab"], ["Cmd+U", "swapPanes"], ["Cmd+Y", "quickLookSelection"]],
           "$insert": [[null, ["Cmd+Y", "newTab"]], [["Cmd+Y", "newTab"], ["Cmd+U", "newTab"]]]
         },
-        "sanitized": {"newTab": ["Cmd+Y", "Cmd+U"], "swapPanes": [], "quickLookSelection": ["Space"]}
+        "sanitized": {"newTab": ["Cmd+Y", "Cmd+U"], "swapPanes": [], "quickLookSelection": []}
       }
     },
     {
@@ -2060,16 +2060,16 @@
       "name": "9: a fixed key is refused",
       "input": {"overrides": {"newTab": ["Cmd+C", "Cmd+Y"]}, "probes": [], "assignments": [], "events": []},
       "changes": {
-        "bindings": {"newTab": ["Cmd+Y"], "quickLookSelection": ["Space"]},
+        "bindings": {"newTab": ["Cmd+Y"], "quickLookSelection": []},
         "commandByShortcut": {
           "$remove": [["Cmd+T", "newTab"], ["Cmd+Y", "quickLookSelection"]],
           "$insert": [[null, ["Cmd+Y", "newTab"]]]
         },
-        "sanitized": {"newTab": ["Cmd+Y"], "quickLookSelection": ["Space"]}
+        "sanitized": {"newTab": ["Cmd+Y"], "quickLookSelection": []}
       }
     },
     {
-      "name": "10: a command keeps a default that could not be given",
+      "name": "10: a command keeps a key of its own that could not be given",
       "input": {
         "overrides": {"quickLookSelection": ["Space"], "openHelp": ["?"]},
         "probes": [],
@@ -2077,12 +2077,12 @@
         "events": []
       },
       "changes": {
-        "bindings": {"quickLookSelection": ["Space"]},
+        "bindings": {"quickLookSelection": ["Space"], "viewFile": ["Cmd+E"]},
         "commandByShortcut": {
-          "$remove": [["Cmd+Y", "quickLookSelection"], ["Space", "quickLookSelection"], ["?", "openHelp"]],
+          "$remove": [["Cmd+Y", "quickLookSelection"], ["Space", "viewFile"], ["?", "openHelp"]],
           "$insert": [[null, ["Space", "quickLookSelection"]], [["Space", "quickLookSelection"], ["?", "openHelp"]]]
         },
-        "sanitized": {"quickLookSelection": ["Space"]}
+        "sanitized": {"quickLookSelection": ["Space"], "viewFile": ["Cmd+E"]}
       }
     },
     {
@@ -2126,12 +2126,12 @@
         "events": []
       },
       "changes": {
-        "bindings": {"newTab": ["Cmd+Y"], "quickLookSelection": ["Space"]},
+        "bindings": {"newTab": ["Cmd+Y"], "quickLookSelection": []},
         "commandByShortcut": {
           "$remove": [["Cmd+T", "newTab"], ["Cmd+Y", "quickLookSelection"]],
           "$insert": [[null, ["Cmd+Y", "newTab"]]]
         },
-        "sanitized": {"newTab": ["Cmd+Y"], "quickLookSelection": ["Space"]}
+        "sanitized": {"newTab": ["Cmd+Y"], "quickLookSelection": []}
       }
     },
     {
@@ -2152,12 +2152,12 @@
         "events": []
       },
       "changes": {
-        "bindings": {"newWindow": ["Cmd+Y"], "newTab": [], "quickLookSelection": ["Space"]},
+        "bindings": {"newWindow": ["Cmd+Y"], "newTab": [], "quickLookSelection": []},
         "commandByShortcut": {
           "$remove": [["Cmd+N", "newWindow"], ["Cmd+T", "newTab"], ["Cmd+Y", "quickLookSelection"]],
           "$insert": [[null, ["Cmd+Y", "newWindow"]]]
         },
-        "sanitized": {"newWindow": ["Cmd+Y"], "newTab": [], "quickLookSelection": ["Space"]}
+        "sanitized": {"newWindow": ["Cmd+Y"], "newTab": [], "quickLookSelection": []}
       }
     },
     {
@@ -2227,6 +2227,7 @@
           {"id": "newTab", "shortcut": "Up", "slot": 0},
           {"id": "newTab", "shortcut": "Ctrl+Up", "slot": 0},
           {"id": "quickLookSelection", "shortcut": "Space", "slot": 0},
+          {"id": "viewFile", "shortcut": "Space", "slot": 1},
           {"id": "goBack", "shortcut": "Cmd+Right", "slot": 0},
           {"id": "goBack", "shortcut": "Cmd+Left", "slot": 2},
           {"id": "openHelp", "shortcut": "?", "slot": 0},
@@ -2272,7 +2273,7 @@
             "refusal": null,
             "command": "quickLookSelection",
             "customized": false,
-            "assigned": {"newTab": ["Cmd+T", "Cmd+Y"], "quickLookSelection": ["Space"]},
+            "assigned": {"newTab": ["Cmd+T", "Cmd+Y"], "quickLookSelection": []},
             "removed": {},
             "reset": {},
             "takenFrom": [],
@@ -2286,7 +2287,7 @@
             "refusal": null,
             "command": "quickLookSelection",
             "customized": false,
-            "assigned": {"newTab": ["Cmd+T", "Cmd+Y"], "quickLookSelection": ["Space"]},
+            "assigned": {"newTab": ["Cmd+T", "Cmd+Y"], "quickLookSelection": []},
             "removed": {},
             "reset": {},
             "takenFrom": [],
@@ -2380,15 +2381,29 @@
             "id": "quickLookSelection",
             "shortcut": "Space",
             "slot": 0,
+            "status": "conflict",
+            "refusal": null,
+            "command": "viewFile",
+            "customized": false,
+            "assigned": {"quickLookSelection": ["Space"], "viewFile": ["Cmd+E"]},
+            "removed": {"quickLookSelection": []},
+            "reset": {},
+            "takenFrom": [],
+            "menuShortcut": "Cmd+Y"
+          },
+          {
+            "id": "viewFile",
+            "shortcut": "Space",
+            "slot": 1,
             "status": "unchanged",
             "refusal": null,
             "command": null,
             "customized": false,
-            "assigned": {"quickLookSelection": ["Space"]},
-            "removed": {"quickLookSelection": ["Space"]},
+            "assigned": {},
+            "removed": {"viewFile": ["Cmd+E"]},
             "reset": {},
             "takenFrom": [],
-            "menuShortcut": "Cmd+Y"
+            "menuShortcut": "Cmd+E"
           },
           {
             "id": "goBack",
@@ -2714,7 +2729,7 @@
               "openLocationSheet": ["Cmd+Shift+G"],
               "focusFileSearch": ["Cmd+Home"],
               "viewAsList": ["Cmd+K"],
-              "quickLookSelection": ["Space"]
+              "quickLookSelection": []
             },
             "removed": {"openLocationSheet": ["Cmd+Shift+G"], "focusFileSearch": ["Cmd+Home"], "viewAsList": ["Cmd+K"]},
             "reset": {"openLocationSheet": ["Cmd+Shift+G"], "focusFileSearch": ["Cmd+Home"], "viewAsList": ["Cmd+K"]},
@@ -3299,7 +3314,7 @@
               "halfPageDown": ["Cmd+["],
               "moveTabToNewWindow": ["F11", "Cmd+PageUp"],
               "openSelectedItem": [],
-              "quickLookSelection": ["Space"]
+              "quickLookSelection": []
             },
             "removed": {
               "goBack": ["Cmd+Left"],
@@ -3330,7 +3345,7 @@
               "halfPageDown": ["Cmd+["],
               "moveTabToNewWindow": ["F11", "Cmd+PageUp"],
               "openSelectedItem": [],
-              "quickLookSelection": ["Space"]
+              "quickLookSelection": []
             },
             "removed": {
               "goBack": ["Cmd+Left"],

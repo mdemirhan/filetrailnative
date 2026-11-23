@@ -194,7 +194,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Type in the list",
                             description:
-                                "Narrows the folder to the names with the letters you type in that order, marks them and selects the best match; a plain letter also finds its accented forms. The bar under the list shows what you typed, with Fuzzy and Contains: click Contains to keep only the names with the letters side by side. Your choice stays for the next filters typed in this list, and panes and windows opened later start with it; those already open keep their own. Backspace takes a character back, and Option-Backspace a word. Space types a space while there is a filter, and {quickLookSelection} is Quick Look. Esc shows everything again and keeps the selection, and Space is Quick Look again. {focusFileSearch} looks for the same text in the subfolders."
+                                "Narrows the folder to the names with the letters you type in that order, marks them and selects the best match; a plain letter also finds its accented forms. The bar under the list shows what you typed, with Fuzzy and Contains: click Contains to keep only the names with the letters side by side. Your choice stays for the next filters typed in this list, and panes and windows opened later start with it; those already open keep their own. Backspace takes a character back, and Option-Backspace a word. Space types a space while there is a filter, and {viewFile} opens the selected file in the viewer. Esc shows everything again and keeps the selection, and Space opens the viewer again. {focusFileSearch} looks for the same text in the subfolders."
                         ),
                         HelpRow(
                             label: "Type in the folder tree",
@@ -225,7 +225,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Open in Viewer",
                             description:
-                                "Open in Viewer shows the selected file's text in its pane, with colors for code, to read or to edit and save, as you last chose in that pane; Back goes back to the list. Open in Other Pane shows it in the other pane instead, which then follows the list's selection unless Follow was turned off there, and asks to save edits before it moves on. What else it does is in its bar: Read or Edit, Save, Follow, and its ⋯ menu, which names its keys."
+                                "Open in Viewer, Space or {viewFile}, shows the selected file in its pane: text with colors for code, to read or to edit and save, as you last chose in that pane; Back goes back to the list. Settings → Shortcuts can give Space to Quick Look instead. Open in Other Pane shows it in the other pane instead, which then follows the list's selection unless Follow was turned off there, and asks to save edits before it moves on. What else it does is in its bar: Read or Edit, Save, Follow, and its ⋯ menu, which names its keys."
                         ),
                         HelpRow(
                             label: "PDFs, pictures and documents in the viewer",
@@ -829,7 +829,7 @@ extension HelpContent {
             group: .files, .command(.editSelection), "Open the selected files in the text editor chosen in Settings"),
         HelpShortcutItem(group: .files, .command(.quickLookSelection), "Preview the selected item without opening it"),
         HelpShortcutItem(
-            group: .files, .command(.viewFile), "Show the selected file's text in this pane, to read or edit it"),
+            group: .files, .command(.viewFile), "Show the selected file in this pane, to read or edit it"),
         HelpShortcutItem(group: .files, .command(.saveViewerFile), "Save the file the viewer shows, in its pane"),
         HelpShortcutItem(
             group: .files, .command(.nextViewerFile), "Show the next file of the folder, in a file shown in place"),

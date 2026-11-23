@@ -121,16 +121,22 @@ import Testing
         press(Kit.key(Kit.space.0, code: Kit.space.1, window: controller.window), in: controller)
         #expect(notes(view) == ["Space on its own types into the file list. Add ⌘ or ⌃."])
         #expect(place.isRecording)
-        // Quick Look can have Space back, its own default, though no other command can have it.
-        // Space is its second key, after ⌘Y.
-        let quickLook = try slot(.quickLookSelection, 1, in: view)
-        controller.window?.makeFirstResponder(quickLook)
-        quickLook.keyDown(with: Kit.key(Kit.backspace.0, code: Kit.backspace.1, window: controller.window))
-        #expect(try slot(.quickLookSelection, 1, in: view).stringValue == "+")
+        // Open in Viewer has Space by default, its second key after ⌘E, and can have it back; Quick Look can be
+        // given it, though no other command can have it.
+        let viewer = try slot(.viewFile, 1, in: view)
+        controller.window?.makeFirstResponder(viewer)
+        viewer.keyDown(with: Kit.key(Kit.backspace.0, code: Kit.backspace.1, window: controller.window))
+        #expect(try slot(.viewFile, 1, in: view).stringValue == "+")
         try slot(.quickLookSelection, 1, in: view).perform()
         press(Kit.key(Kit.space.0, code: Kit.space.1, window: controller.window), in: controller)
         #expect(try slot(.quickLookSelection, 1, in: view).stringValue == "Space")
         #expect(notes(view).isEmpty)
+        try slot(.viewFile, 1, in: view).perform()
+        press(Kit.key(Kit.space.0, code: Kit.space.1, window: controller.window), in: controller)
+        #expect(notes(view) == ["Space is used by Quick Look."])
+        Kit.click(view.row(.viewFile)?.reassignButton)
+        #expect(try slot(.viewFile, 1, in: view).stringValue == "Space")
+        #expect(try slot(.quickLookSelection, 1, in: view).stringValue == "+")
     }
 
     // A key the command has already, in either place, ends the recording with no change and no note.

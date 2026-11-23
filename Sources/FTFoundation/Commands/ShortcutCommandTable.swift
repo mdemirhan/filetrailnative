@@ -376,10 +376,10 @@ extension ShortcutCommands {
             id: .editSelection, label: "Edit in Text Editor", group: .files, defaults: ["Cmd+Shift+E"],
             menuPath: "File > Edit in Text Editor"),
         ShortcutCommandDefinition(
-            id: .quickLookSelection, label: "Quick Look", group: .files, defaults: ["Cmd+Y", "Space"],
-            menuPath: "File > Quick Look"),
+            id: .quickLookSelection, label: "Quick Look", group: .files, defaults: ["Cmd+Y"],
+            menuPath: "File > Quick Look", alsoAllowed: ["Space"]),
         ShortcutCommandDefinition(
-            id: .viewFile, label: "Open in Viewer", group: .files, defaults: ["Cmd+E"],
+            id: .viewFile, label: "Open in Viewer", group: .files, defaults: ["Cmd+E", "Space"],
             menuPath: "File > Open in Viewer"),
         ShortcutCommandDefinition(
             id: .deselectAll, label: "Deselect All", group: .files, defaults: ["Cmd+Option+A"],

@@ -62,8 +62,8 @@ public enum ContentKeys {
         // ? opens Help from anywhere.
         if command == .openHelp { return .command(.openHelp) }
         if let move = pageMove(command) { return .page(forward: move.forward, size: move.size, extend: false) }
-        // Space never starts a filter. While one is typed Space is always the filter's and ⌘Y is Quick Look; once Esc
-        // ends it, Space is Quick Look again. A pinned filter leaves Space to Quick Look.
+        // Space never starts a filter. While one is typed Space is always the filter's, and ⌘E opens the viewer; once
+        // Esc ends it, Space is its command's again. A pinned filter leaves Space to its command.
         if event.key == " ", !event.metaKey, !event.ctrlKey, !event.altKey, !event.shiftKey, filter.isActive, !pinned {
             return .filter(.type(" "))
         }

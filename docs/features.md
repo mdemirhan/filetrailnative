@@ -54,7 +54,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
 - **Results in any view**, with columns of their own that you choose and sort, and a filter field that trims them by name or by folder without searching again. A search stops at 50,000 results, and the status bar says so when some folders couldn't be read.
 - **Each tab keeps its own search**, a search keeps running while you look at another tab, and ⇧⌘F shows the last results again.
 - **Results stay put while you work in them**: what you move away or delete leaves the list, what you rename keeps its place, and when you add something to the folder searched a note offers Search Again rather than searching on its own.
-- **Type in the file list** to narrow the folder on screen. Fuzzy keeps the names with your letters in order, and marks them; Contains keeps the names with the letters side by side. Backspace edits what you typed, Space types a space in it (⌘Y is Quick Look meanwhile), Esc brings the rest back, and ⌘F turns the same text into a search of the subfolders.
+- **Type in the file list** to narrow the folder on screen. Fuzzy keeps the names with your letters in order, and marks them; Contains keeps the names with the letters side by side. Backspace edits what you typed, Space types a space in it (⌘E opens the viewer meanwhile), Esc brings the rest back, and ⌘F turns the same text into a search of the subfolders.
 - **A pinned filter** stays while you go from folder to folder and search.
 
 ## Copying, moving and undoing
@@ -105,7 +105,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
 - **Sizes**: a slider in the status bar, and View ▸ Make Bigger, Make Smaller and Default Size (⌘+, ⌘- and ⌘0), set the icon size, the Compact List's column width and how many previews show. Each pane keeps its own.
 - **Previews (⌘4)** fills the pane with 9, 4, 2 or 1 large previews, each in its own proportions. View ▸ Show Previews switches to it at the count you pick from any view, search results too, with the selected file on screen.
 - **At 1 preview at a time** the file on screen is the selected one, so Space, the Info panel and Move to Trash act on what you see.
-- **Quick Look** on Space and ⌘Y, in every view; while a filter is typed, on ⌘Y.
+- **Quick Look** on ⌘Y, in every view. Space opens the selected file in the viewer, as ⌘E does; Settings → Shortcuts can give Space to Quick Look instead.
 <p align="center">
   <img src="screenshots/markdown-pane.png" alt="A project folder with README.md selected, and the pane beside it showing the Markdown as it reads, with headings, a list, a table and numbered steps" width="900">
 </p>

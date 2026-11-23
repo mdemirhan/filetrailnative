@@ -221,7 +221,7 @@ struct ShortcutsTests {
         let resolved = ShortcutCommands.defaultResolved
         #expect(resolved.commandByShortcut["Cmd+D"] == .duplicateSelection)
         #expect(resolved.commandByShortcut["Cmd+Left"] == .goBack)
-        #expect(resolved.commandByShortcut["Space"] == .quickLookSelection)
+        #expect(resolved.commandByShortcut["Space"] == .viewFile)
         #expect(resolved.commandByShortcut["?"] == .openHelp)
         // Fixed commands have handlers of their own.
         #expect(resolved.commandByShortcut["Cmd+C"] == nil)
@@ -299,12 +299,15 @@ struct ShortcutsTests {
         #expect(bindings[.closePane] == ["Cmd+W"])
     }
 
-    @Test func letsACommandKeepAKeyOfItsOwnDefaultsThatCouldNotBeGivenOutToday() {
-        #expect(
-            ShortcutCommands.resolve(["quickLookSelection": ["Cmd+Y", "Space"]]).bindings[.quickLookSelection]
-                == ["Cmd+Y", "Space"])
+    @Test func letsACommandKeepAKeyOfItsOwnThatCouldNotBeGivenOutToday() {
+        #expect(ShortcutCommands.resolve(["viewFile": ["Space", "Cmd+E"]]).bindings[.viewFile] == ["Space", "Cmd+E"])
         #expect(ShortcutCommands.resolve(["openHelp": ["F1", "?"]]).bindings[.openHelp] == ["F1", "?"])
-        // Space is Quick Look's alone.
+        // Quick Look given Space has it, and Open in Viewer keeps ⌘E.
+        let quickLook = ShortcutCommands.resolve(["quickLookSelection": ["Cmd+Y", "Space"]])
+        #expect(quickLook.bindings[.quickLookSelection] == ["Cmd+Y", "Space"])
+        #expect(quickLook.bindings[.viewFile] == ["Cmd+E"])
+        #expect(quickLook.commandByShortcut["Space"] == .quickLookSelection)
+        // Space is Open in Viewer's or Quick Look's alone.
         #expect(ShortcutCommands.resolve(["newTab": ["Space"]]).bindings[.newTab] == [])
     }
 
@@ -334,8 +337,10 @@ struct ShortcutsTests {
         #expect(ShortcutCommands.checkAssignment(bindings, .newFolder, "Cmd+D") == .conflict(.duplicateSelection))
         #expect(ShortcutCommands.checkAssignment(bindings, .newFolder, "Cmd+V") == .refused(.fixedCommand(.paste)))
         #expect(ShortcutCommands.checkAssignment(bindings, .newFolder, "N") == .refused(.needsCommandOrControl))
-        // Quick Look can have Space back; nothing else can have it.
-        let withoutSpace = ShortcutCommands.remove(bindings, .quickLookSelection, slot: 1)
+        // Open in Viewer can have Space back, Quick Look can be given it, and nothing else can have it.
+        #expect(ShortcutCommands.checkAssignment(bindings, .quickLookSelection, "Space") == .conflict(.viewFile))
+        let withoutSpace = ShortcutCommands.remove(bindings, .viewFile, slot: 1)
+        #expect(ShortcutCommands.checkAssignment(withoutSpace, .viewFile, "Space") == .ok)
         #expect(ShortcutCommands.checkAssignment(withoutSpace, .quickLookSelection, "Space") == .ok)
         let other = ShortcutCommands.checkAssignment(withoutSpace, .newTab, "Space")
         if case .refused = other {} else { Issue.record("Space should be refused for New Tab") }
@@ -435,8 +440,8 @@ struct ShortcutsTests {
             (.moveToOtherPane, ["F6"]), (.swapPanes, ["Cmd+U"]), (.showFolderInOtherPane, []),
             (.goToOtherPaneFolder, []), (.equalizePanes, []),
             (.openSelection, ["Cmd+O"]), (.openSelectedItem, ["Cmd+Down"]),
-            (.editSelection, ["Cmd+Shift+E"]), (.quickLookSelection, ["Cmd+Y", "Space"]),
-            (.viewFile, ["Cmd+E"]),
+            (.editSelection, ["Cmd+Shift+E"]), (.quickLookSelection, ["Cmd+Y"]),
+            (.viewFile, ["Cmd+E", "Space"]),
             (.deselectAll, ["Cmd+Option+A"]), (.invertSelection, []), (.renameSelection, ["F2"]),
             (.duplicateSelection, ["Cmd+D"]), (.makeAlias, ["Ctrl+Cmd+A"]), (.showOriginal, []), (.convertImages, []),
             (.moveSelection, ["Cmd+Shift+M"]),
