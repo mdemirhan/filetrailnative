@@ -13,6 +13,7 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case openSelection
     case editSelection
     case openLocationSheet
+    case goToPage
     case openSettings
     case openInTerminal
     case moveSelection

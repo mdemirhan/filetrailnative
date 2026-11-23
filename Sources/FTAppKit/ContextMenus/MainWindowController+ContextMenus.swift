@@ -41,6 +41,8 @@ extension MainWindowController {
             ShortcutCommands.resolve(preferences.shortcutOverrides).commandByShortcut["Space"] == .quickLookSelection,
             window?.attachedSheet == nil, DialogScrim.front(in: window) == nil, !(window?.firstResponder is NSText),
             focusedPane == .content,
+            // A file a pane shows takes Space itself: a PDF or a document scrolls, a movie plays.
+            !panes.contains(where: { $0.viewer?.hasKeyboard == true }),
             !content.selection.isEmpty,
             !content.listFilter.isActive || content.pinnedFilter != nil
         else { return false }

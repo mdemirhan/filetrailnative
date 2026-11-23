@@ -38,6 +38,7 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case goApplications
     case goTrash
     case openLocationSheet
+    case goToPage
     case rootTreeAtSelection
     case refreshOrApplySearchSort
     case focusTreePane
@@ -230,6 +231,10 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .openLocationSheet, label: "Go to Folder…", group: .navigation, defaults: ["Cmd+K", "Cmd+Shift+G"],
             menuPath: "Go > Go to Folder…"),
+        // Preview's key for the same command.
+        ShortcutCommandDefinition(
+            id: .goToPage, label: "Go to Page…", group: .navigation, defaults: ["Cmd+Option+G"],
+            menuPath: "Go > Go to Page…"),
         ShortcutCommandDefinition(
             id: .rootTreeAtSelection, label: "Use as Tree Root", group: .navigation, defaults: ["Cmd+Shift+R"],
             menuPath: "Go > Use as Tree Root"),

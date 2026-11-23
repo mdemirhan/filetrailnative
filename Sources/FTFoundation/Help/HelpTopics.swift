@@ -228,9 +228,9 @@ extension HelpContent {
                                 "Open in Viewer shows the selected file's text in its pane, with colors for code, to read or to edit and save, as you last chose in that pane; Back goes back to the list. Open in Other Pane shows it in the other pane instead, which then follows the list's selection unless Follow was turned off there, and asks to save edits before it moves on. What else it does is in its bar: Read or Edit, Save, Follow, and its ⋯ menu, which names its keys."
                         ),
                         HelpRow(
-                            label: "PDFs and documents in the viewer",
+                            label: "PDFs, pictures and documents in the viewer",
                             description:
-                                "A PDF, a Word document, a presentation or a spreadsheet takes the keyboard as it opens: the arrows, Space, {pageDown} and {halfPageDown} move it, and ← and → go to the next or previous page or slide. {increaseSize} and {decreaseSize} zoom in and out of a PDF or a document (a presentation's slides stay at the pane's size), {resetSize} shows it at its actual size, and {zoomToFit} fits a whole page of a PDF in the pane."
+                                "A PDF, a picture, a Word document, a presentation or a spreadsheet takes the keyboard as it opens: the arrows, Space, {pageDown} and {halfPageDown} move it, ← and → go to the next or previous page or slide, and {goToPage} goes to one by its number. {increaseSize} and {decreaseSize} zoom in and out (a presentation's slides stay at the pane's size), {resetSize} shows it at its actual size, and {zoomToFit} fits a whole page or picture in the pane, or a document's page to its width; the next file of its kind opens at the same zoom. In text they make the text bigger and smaller. {focusFileSearch} finds text in a PDF, and Copy copies what is selected in it. A movie or a sound plays in the pane: Space plays and pauses, and ← and → go five seconds back and forward."
                         ),
                         HelpRow(
                             label: "Open in Terminal",
@@ -729,6 +729,8 @@ extension HelpContent {
         HelpShortcutItem(
             group: .navigation, .command(.openLocationSheet),
             "Go to a folder by name or path, or pick one of those you use most"),
+        HelpShortcutItem(
+            group: .navigation, .command(.goToPage), "Go to a page of the PDF, or a slide, a pane shows, by its number"),
         HelpShortcutItem(
             group: .navigation, .command(.goHomeRootTree),
             "Open your home folder and make it the top of the folder tree"),

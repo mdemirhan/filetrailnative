@@ -167,4 +167,112 @@ final class ViewerPDFView: PDFView {
         }
         return true
     }
+
+    // MARK: Find
+
+    /// The matches found of what is looked for, in the order of the pages, and the one shown.
+    private(set) var matches: [PDFSelection] = []
+    private(set) var matchIndex: Int?
+    /// Looking for text, which is done a page at a time off the main thread.
+    private(set) var isFinding = false
+    /// The matches or the one shown changed.
+    var onFindChange: () -> Void = {}
+    private var findObservers: [NSObjectProtocol] = []
+
+    /// Looks for `text`, without regard to case or accents; the first match is shown once found. Empty stops.
+    func find(_ text: String) {
+        stopFinding()
+        guard let document, !text.isEmpty else {
+            onFindChange()
+            return
+        }
+        let center = NotificationCenter.default
+        findObservers = [
+            center.addObserver(forName: .PDFDocumentDidFindMatch, object: document, queue: .main) { [weak self] note in
+                // Told on the main queue, as asked.
+                nonisolated(unsafe) let note = note
+                MainActor.assumeIsolated {
+                    self?.found(note.userInfo?["PDFDocumentFoundSelection"] as? PDFSelection)
+                }
+            },
+            center.addObserver(forName: .PDFDocumentDidEndFind, object: document, queue: .main) { [weak self] _ in
+                MainActor.assumeIsolated { self?.endedFinding() }
+            },
+        ]
+        isFinding = true
+        document.beginFindString(text, withOptions: [.caseInsensitive, .diacriticInsensitive])
+        onFindChange()
+    }
+
+    private func found(_ selection: PDFSelection?) {
+        guard let selection else { return }
+        selection.color = NSColor.findHighlightColor.withAlphaComponent(0.55)
+        matches.append(selection)
+        // Marked a page's worth at a time, not one by one, which would draw the pages again for each.
+        if matches.count == 1 || matches.count % 50 == 0 { highlightedSelections = matches }
+        if matchIndex == nil { showMatch(0) } else { onFindChange() }
+    }
+
+    private func endedFinding() {
+        isFinding = false
+        highlightedSelections = matches.isEmpty ? nil : matches
+        onFindChange()
+    }
+
+    /// The next match, or the one before; it goes round at the ends. Beeps with none.
+    func stepMatch(forward: Bool) {
+        guard !matches.isEmpty else {
+            NSSound.beep()
+            return
+        }
+        let index = matchIndex.map { ($0 + (forward ? 1 : -1) + matches.count) % matches.count } ?? 0
+        showMatch(index)
+    }
+
+    private func showMatch(_ index: Int) {
+        matchIndex = index
+        let match = matches[index]
+        setCurrentSelection(match, animate: false)
+        go(to: match)
+        onFindChange()
+    }
+
+    /// Stops looking, and takes the marks away.
+    func stopFinding() {
+        for observer in findObservers { NotificationCenter.default.removeObserver(observer) }
+        findObservers = []
+        if isFinding { document?.cancelFindString() }
+        isFinding = false
+        matches = []
+        matchIndex = nil
+        highlightedSelections = nil
+        clearSelection()
+    }
+
+    // MARK: The zoom kept for the next file
+
+    /// The zoom chosen, to show the next PDF at: nil while it is at the pane's width, as a PDF opens.
+    var keptZoom: KeptZoom? {
+        switch fit {
+        case .width: nil
+        case .page: .fit
+        case .none: .scale(scaleFactor)
+        }
+    }
+
+    func apply(_ kept: KeptZoom?) {
+        switch kept {
+        case nil: break
+        case .fit: fitPage()
+        case .scale(let scale):
+            setScale(scale)
+            onChange()
+        }
+    }
+}
+
+/// A zoom kept from one file to the next of its kind as the viewer steps through a folder: a fit, or a scale.
+enum KeptZoom: Equatable {
+    case fit
+    case scale(CGFloat)
 }

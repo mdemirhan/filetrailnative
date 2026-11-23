@@ -1736,7 +1736,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             shownColumns: shownColumns, shownSearchColumns: shownSearchColumns,
             clipboardCutCount: services.clipboard.contents.cutPaths.count,
             clipboardCopiedCount: services.clipboard.contents.copiedPaths.count,
-            fileShown: context.paneShowsFile
+            fileShown: context.paneShowsFile, fileShowsText: activePane.viewer?.isText == true
         ) { CommandAvailability.canRun($0, context) }
     }
 
@@ -2027,10 +2027,19 @@ extension MainWindowController: ExplorerWindowHandle {
         // A name being edited in its row waits for nothing but Settings and the field's own
         // editing, and the list's commands need the list (or the tree, for those it takes).
         guard ShortcutPolicy.canHandle(command, shortcutContext) else { return }
+        // Copy and Select All while the keyboard is in a PDF, a picture or Quick Look's preview act there: the file isn't
+        // what is in front.
+        if command == .editCopy || command == .editSelectAll,
+            let viewer = panes.first(where: { $0.viewer?.keyboardInPages == true })?.viewer
+        {
+            if !viewer.performEdit(command) { NSSound.beep() }
+            return
+        }
         // Cut, Copy, Paste and the file operations go to the write coordinator (WriteOperations/).
         if !isCustomizingToolbar, performWriteCommand(command) { return }
         switch command {
         case .openLocationSheet: openLocationSheet()
+        case .goToPage: goToPage()
         case .goBack: goBack(nil)
         case .goForward: goForward(nil)
         case .goEnclosingFolder:
@@ -2379,6 +2388,7 @@ extension MainWindowController: ExplorerWindowContext {
         context.paneShowsFile = activePane.viewer != nil
         context.fileZoom = Set(
             (commandViewer?.zoomSteps ?? []).compactMap { AppCommand(rawValue: $0.command.rawValue) })
+        context.filePageCount = commandViewer?.pageCount ?? 0
         return context
     }
 

@@ -966,12 +966,216 @@ extension ExplorerWindowlessTests {
             try send("\t", "\t", 48)
             #expect(!viewer.hasKeyboard)
 
-            // Text doesn't zoom.
+            // Text: the size commands change the text's size, ⌘= too, and nothing fits.
             tab.focusPane(pane)
             tab.stepFile(by: -1)
             #expect(await waitUntil { viewer.isText })
-            #expect(!tab.canPerform(.increaseSize) && !tab.canPerform(.zoomToFit))
             #expect(viewer.pdfView.document == nil)
+            #expect(tab.canPerform(.increaseSize) && !tab.canPerform(.zoomToFit) && !tab.canPerform(.resetSize))
+            #expect(tab.menuState.fileShowsText)
+            let size = viewer.settings.fontSize
+            try send("=", "=", 24, [.command])
+            #expect(await waitUntil { viewer.settings.fontSize == size + 1 })
+            tab.perform(.resetSize)
+            #expect(await waitUntil { viewer.settings.fontSize == TextViewerSettings().fontSize })
+        }
+
+        /// A PDF's find bar marks every match and steps through them; Go to Page goes to a page by its number; Copy
+        /// copies the text selected in it, not the file; and the next PDF opens at the zoom the one before was given.
+        @Test func aPDFFindsGoesToAPageCopiesItsTextAndKeepsItsZoomForTheNext() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            try writePDF(pages: 4, to: harness.folder.appending("d.pdf"))
+            try writePDF(pages: 2, to: harness.folder.appending("e.pdf"))
+            let tab = try await tabWithFiles(harness)
+            let pane = tab.activePane
+            let d = real(harness, "d.pdf")
+            #expect(await waitUntil { pane.content.listedEntry(at: real(harness, "e.pdf")) != nil })
+            select(d, in: tab)
+            tab.perform(.viewFile)
+            let viewer = try #require(pane.viewer)
+            #expect(await waitUntil { viewer.pdfView.document?.pageCount == 4 })
+            let pdf = viewer.pdfView
+            let window = try #require(tab.window)
+            window.layoutIfNeeded()
+
+            // Find, from the menu's ⌘F.
+            #expect(viewer.canFind)
+            tab.perform(.focusFileSearch)
+            #expect(!viewer.findBar.isHidden)
+            #expect((window.firstResponder as? NSView)?.isDescendant(of: viewer.findBar) == true)
+            viewer.findBar.field.stringValue = "page"
+            viewer.findBar.onChange("page")
+            #expect(await waitUntil { !pdf.isFinding && pdf.matches.count == 4 })
+            #expect(pdf.matchIndex == 0)
+            viewer.findBar.onStep(true)
+            #expect(pdf.matchIndex == 1)
+            viewer.findBar.onStep(false)
+            viewer.findBar.onStep(false)
+            #expect(pdf.matchIndex == 3)
+            viewer.closeFind()
+            #expect(viewer.findBar.isHidden && pdf.matches.isEmpty && pdf.highlightedSelections == nil)
+            #expect(window.firstResponder === pdf)
+
+            // Go to Page.
+            #expect(tab.canPerform(.goToPage))
+            #expect(viewer.pageCount == 4)
+            #expect(viewer.goToPage(2))
+            #expect(await waitUntil { viewer.pageIndex == 2 })
+            #expect(!viewer.goToPage(4))
+
+            // Copy: the selected text goes on the clipboard, the file doesn't.
+            NSPasteboard.general.clearContents()
+            pdf.setCurrentSelection(
+                pdf.document?.page(at: 0)?.selection(for: pdf.document!.page(at: 0)!.bounds(for: .mediaBox)),
+                animate: false)
+            tab.perform(.editCopy)
+            #expect(NSPasteboard.general.string(forType: .string)?.contains("Page 1") == true)
+            #expect(
+                NSPasteboard.general.readObjects(forClasses: [NSURL.self]) as? [URL] == nil
+                    || (NSPasteboard.general.readObjects(forClasses: [NSURL.self]) as? [URL])?.isEmpty == true)
+
+            // The zoom chosen goes on to the next PDF.
+            tab.perform(.resetSize)
+            #expect(pdf.isActualSize)
+            tab.stepFile(by: 1)
+            #expect(await waitUntil { viewer.pdfView.document?.pageCount == 2 })
+            #expect(viewer.pdfView.isActualSize)
+            tab.perform(.zoomToFit)
+            tab.stepFile(by: -1)
+            #expect(await waitUntil { viewer.pdfView.document?.pageCount == 4 })
+            #expect(viewer.pdfView.fitsPage)
+        }
+
+        /// A PNG of `width` by `height` pixels.
+        private func writePNG(width: Int, height: Int, to url: URL) throws {
+            let rep = try #require(
+                NSBitmapImageRep(
+                    bitmapDataPlanes: nil, pixelsWide: width, pixelsHigh: height, bitsPerSample: 8, samplesPerPixel: 4,
+                    hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0))
+            try #require(rep.representation(using: .png, properties: [:])).write(to: url)
+        }
+
+        /// A picture opens fitted and never enlarged; it zooms, shows at its actual size (its pixels as points) and
+        /// fits the pane, enlarged if small; the next picture opens at the zoom chosen; Space isn't Quick Look's while
+        /// a file has the keyboard.
+        @Test func aPictureZoomsFitsAndKeepsItsZoomForTheNext() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            try writePNG(width: 4000, height: 3000, to: harness.folder.appending("p.png"))
+            try writePNG(width: 40, height: 30, to: harness.folder.appending("q.png"))
+            let tab = try await tabWithFiles(harness)
+            let pane = tab.activePane
+            #expect(await waitUntil { pane.content.listedEntry(at: real(harness, "q.png")) != nil })
+            select(real(harness, "p.png"), in: tab)
+            tab.perform(.viewFile)
+            let viewer = try #require(pane.viewer)
+            #expect(await waitUntil { viewer.imageView.image != nil })
+            let picture = viewer.imageView
+            let window = try #require(tab.window)
+            window.layoutIfNeeded()
+            #expect(picture.pixelSize == NSSize(width: 4000, height: 3000))
+            #expect(picture.scale < 1 && picture.fit == .opening)
+            #expect(viewer.hasKeyboard && viewer.keyboardInPages)
+            #expect(tab.canPerform(.increaseSize) && tab.canPerform(.resetSize) && tab.canPerform(.zoomToFit))
+
+            tab.perform(.resetSize)
+            #expect(picture.isActualSize)
+            tab.perform(.increaseSize)
+            #expect(picture.scale > 1)
+            tab.perform(.resetSize)
+
+            // The small one opens at its actual size too, then fits the pane, enlarged.
+            tab.stepFile(by: 1)
+            #expect(await waitUntil { viewer.imageView.pixelSize.width == 40 })
+            #expect(picture.isActualSize)
+            tab.perform(.zoomToFit)
+            #expect(picture.fits && picture.scale > 1)
+            tab.stepFile(by: -1)
+            #expect(await waitUntil { viewer.imageView.pixelSize.width == 4000 })
+            #expect(picture.fits && picture.scale < 1)
+
+            // Space with the keyboard in the picture is the picture's, not Quick Look's.
+            var quickLooked: [String] = []
+            tab.showQuickLook = { quickLooked.append($0) }
+            window.makeFirstResponder(viewer.keyboardView)
+            window.sendEvent(
+                try #require(
+                    NSEvent.keyEvent(
+                        with: .keyDown, location: .zero, modifierFlags: [], timestamp: 0,
+                        windowNumber: window.windowNumber, context: nil, characters: " ",
+                        charactersIgnoringModifiers: " ", isARepeat: false, keyCode: 49)))
+            #expect(quickLooked.isEmpty)
+        }
+
+        /// `seconds` of a quiet tone as a WAV: 8 kHz, one channel, 16 bits.
+        private func writeWAV(seconds: Int, to url: URL) throws {
+            let rate = 8000
+            let samples = rate * seconds
+            var data = Data()
+            func append<T: FixedWidthInteger>(_ value: T) {
+                withUnsafeBytes(of: value.littleEndian) { data.append(contentsOf: $0) }
+            }
+            data.append(contentsOf: Array("RIFF".utf8))
+            append(UInt32(36 + samples * 2))
+            data.append(contentsOf: Array("WAVEfmt ".utf8))
+            append(UInt32(16))
+            append(UInt16(1))
+            append(UInt16(1))
+            append(UInt32(rate))
+            append(UInt32(rate * 2))
+            append(UInt16(2))
+            append(UInt16(16))
+            data.append(contentsOf: Array("data".utf8))
+            append(UInt32(samples * 2))
+            for index in 0..<samples { append(Int16(sin(Double(index) * 0.3) * 300)) }
+            try data.write(to: url)
+        }
+
+        /// A sound or a movie plays in the pane, paused as it opens: Space plays and pauses, → and ← go five seconds
+        /// forward and back, and it stops as the viewer closes.
+        @Test func aSoundPlaysWithSpaceAndSeeksWithTheArrows() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            try writeWAV(seconds: 12, to: harness.folder.appending("m.wav"))
+            let tab = try await tabWithFiles(harness)
+            let pane = tab.activePane
+            let m = real(harness, "m.wav")
+            #expect(await waitUntil { pane.content.listedEntry(at: m) != nil })
+            select(m, in: tab)
+            tab.perform(.viewFile)
+            let viewer = try #require(pane.viewer)
+            #expect(await waitUntil { viewer.mediaView.player != nil })
+            let media = viewer.mediaView
+            let window = try #require(tab.window)
+            #expect(await waitUntil { viewer.keyboardInPages })
+            #expect(!media.isPlaying)
+            #expect(!tab.canPerform(.increaseSize) && !tab.canPerform(.goToPage))
+            func send(_ characters: String, _ keyCode: UInt16, _ flags: NSEvent.ModifierFlags = []) throws {
+                window.sendEvent(
+                    try #require(
+                        NSEvent.keyEvent(
+                            with: .keyDown, location: .zero, modifierFlags: flags, timestamp: 0,
+                            windowNumber: window.windowNumber, context: nil, characters: characters,
+                            charactersIgnoringModifiers: characters, isARepeat: false, keyCode: keyCode)))
+            }
+            try send(" ", 49)
+            #expect(await waitUntil { media.isPlaying })
+            try send(" ", 49)
+            #expect(await waitUntil { !media.isPlaying })
+            let right = String(UnicodeScalar(UInt16(NSRightArrowFunctionKey))!)
+            let left = String(UnicodeScalar(UInt16(NSLeftArrowFunctionKey))!)
+            let start = media.player?.currentTime().seconds ?? 0
+            try send(right, 124, [.function, .numericPad])
+            #expect(await waitUntil { (media.player?.currentTime().seconds ?? 0) >= start + 4.9 })
+            try send(left, 123, [.function, .numericPad])
+            #expect(await waitUntil { abs((media.player?.currentTime().seconds ?? 0) - start) < 0.1 })
+
+            try send(" ", 49)
+            #expect(await waitUntil { media.isPlaying })
+            tab.perform(.goBack)
+            #expect(await waitUntil { pane.viewer == nil })
+            #expect(!media.isPlaying)
         }
     }
 }

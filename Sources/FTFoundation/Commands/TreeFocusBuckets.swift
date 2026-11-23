@@ -24,7 +24,7 @@ extension ShortcutPolicy {
             .showInFinder,
             .showLastSearchResults, .viewAsIcons,
             .viewAsList, .viewAsDetails, .viewAsPreviews, .showPreviews9, .showPreviews4, .showPreviews2,
-            .showPreviews1, .increaseSize, .decreaseSize, .resetSize, .zoomToFit, .groupByNone, .groupByName,
+            .showPreviews1, .increaseSize, .decreaseSize, .resetSize, .zoomToFit, .goToPage, .groupByNone, .groupByName,
             .groupByModified,
             .groupByCreated, .groupByLastOpened, .groupByAdded, .groupBySize, .groupByKind, .groupByTags,
             .groupByFolder, .reverseGroupOrder, .sortByName, .sortByFolder,

@@ -1,3 +1,4 @@
+import AVFoundation
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -26,6 +27,11 @@ struct ViewerFile: @unchecked Sendable {
     var image: NSImage?
     /// A PDF's pages, read with the file; none for one locked with a password, which Quick Look shows and asks for.
     var pdf: PDFDocument?
+    /// A movie or a sound, which the viewer plays itself where the system can play it.
+    var mayPlay = false
+    var plays = false
+    /// A presentation, whose pages are slides.
+    var isPresentation = false
     /// The file as what it is, to find it again where it is moved or renamed; nil for one that can't be read.
     var identity: ViewerFileIdentity?
 
@@ -40,7 +46,13 @@ struct ViewerFile: @unchecked Sendable {
 
     /// Reads `path`, off the main actor.
     static func read(_ path: String) async -> ViewerFile {
-        await Task.detached(priority: .userInitiated) { readNow(path) }.value
+        var file = await Task.detached(priority: .userInitiated) { readNow(path) }.value
+        if file.mayPlay {
+            // A kind the system can't play (an AVI, an MKV) is Quick Look's.
+            let asset = AVURLAsset(url: DiskPath(file.path).url(isDirectory: false))
+            file.plays = (try? await asset.load(.isPlayable)) == true
+        }
+        return file
     }
 
     /// A symbolic link or an alias is read as its original, which its `path` is then: what is saved goes there, not
@@ -71,10 +83,13 @@ struct ViewerFile: @unchecked Sendable {
             previewTypes.contains(where: { type.conforms(to: $0) })
         {
             var picture = file(.other)
+            picture.isPresentation = type.conforms(to: .presentation)
             if type.conforms(to: .image), let image = NSImage(contentsOf: url), image.isValid {
                 picture.image = image
             } else if type.conforms(to: .pdf), let pdf = PDFDocument(url: url), !pdf.isLocked, pdf.pageCount > 0 {
                 picture.pdf = pdf
+            } else if type.conforms(to: .audiovisualContent) {
+                picture.mayPlay = true
             }
             return picture
         }

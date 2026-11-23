@@ -75,7 +75,8 @@ import Testing
             titles(submenu(main, "Go")) == [
                 "Back", "Forward", "Enclosing Folder", "-", "Documents", "Desktop",
                 "Downloads", "Home", "Library",
-                "Macintosh HD", "Applications", "Trash", "-", "Go to Folder…", "-", "Show This Folder in Other Pane",
+                "Macintosh HD", "Applications", "Trash", "-", "Go to Folder…", "Go to Page…", "-",
+                "Show This Folder in Other Pane",
                 "Go to Other Pane's Folder", "-", "Use as Tree Root",
             ])
         #expect(
@@ -355,6 +356,7 @@ import Testing
             ("Go", "Applications", nil, .goApplications),
             ("Go", "Trash", nil, .goTrash),
             ("Go", "Go to Folder…", "Command+K", .openLocationSheet),
+            ("Go", "Go to Page…", "Command+Alt+G", .goToPage),
             ("Go", "Use as Tree Root", "Command+Shift+R", .rootTreeAtSelection),
             ("Window", "Show Previous Tab", "Control+Shift+Tab", .selectPreviousTab),
             ("Window", "Show Next Tab", "Control+Tab", .selectNextTab),

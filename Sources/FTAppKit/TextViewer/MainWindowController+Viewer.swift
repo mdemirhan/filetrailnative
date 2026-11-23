@@ -558,9 +558,30 @@ extension MainWindowController {
 
     /// ⌘F from the menu while the viewer's text has the keyboard: the find bar over the text.
     func findInViewer() -> Bool {
-        guard let viewer = commandViewer, viewer.textHasKeyboard else { return false }
+        guard let viewer = commandViewer, viewer.findTakesKeyboard else { return false }
         viewer.showFind()
         return true
+    }
+
+    /// Go ▸ Go to Page…: asks for a page of the PDF, or a slide of the presentation, the pane shows, and shows it. A
+    /// number it doesn't have is refused under the field.
+    func goToPage() {
+        guard let viewer = commandViewer, viewer.pageCount > 1, let window else { return }
+        let noun = viewer.showsSlides ? "Slide" : "Page"
+        let count = viewer.pageCount
+        let prompt = NamePrompt(
+            title: "Go to \(noun)", message: "\(noun) 1 to \(FormatLocale.count(count))", label: noun,
+            submitLabel: "Go", initialName: "\((viewer.pageIndex ?? 0) + 1)", selectsAll: true)
+        Task { [weak viewer] in
+            await InWindowAlerts.askName(prompt, in: window) { text in
+                guard let number = Int(text.trimmingCharacters(in: .whitespaces)), (1...count).contains(number) else {
+                    return .refuse("Type a number from 1 to \(FormatLocale.count(count)).")
+                }
+                viewer?.goToPage(number - 1)
+                return .close
+            }
+            if let viewer { window.makeFirstResponder(viewer.keyboardView) }
+        }
     }
 
     /// Back, Enclosing Folder and ⌘W while the active pane shows a file: its folder again.

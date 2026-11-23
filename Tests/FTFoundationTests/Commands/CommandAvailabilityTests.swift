@@ -517,6 +517,26 @@ struct CommandAvailabilityTests {
         #expect(!Self.run(.zoomToFit, text))
     }
 
+    // Go to Page runs while the pane shows a file of more than one page or slide.
+    @Test func goToPageNeedsAFileOfPages() {
+        #expect(!Self.run(.goToPage, Self.context { $0.filePageCount = 12 }))
+        #expect(!Self.run(.goToPage, Self.context { $0.paneShowsFile = true }))
+        #expect(
+            !Self.run(
+                .goToPage,
+                Self.context {
+                    $0.paneShowsFile = true
+                    $0.filePageCount = 1
+                }))
+        #expect(
+            Self.run(
+                .goToPage,
+                Self.context {
+                    $0.paneShowsFile = true
+                    $0.filePageCount = 2
+                }))
+    }
+
     @Test func theTrashAndEjectRules() {
         let inTrash = Self.context {
             $0.homePath = "/Users/demo"

@@ -170,6 +170,9 @@ struct ApplicationMenuTests {
         state.fileShown = true
         #expect(titles(state) == ["Zoom In", "Zoom Out", "Actual Size"])
         #expect(Self.stateOf("zoomToFit", state).title == nil)
+        // Text: its size.
+        state.fileShowsText = true
+        #expect(titles(state) == ["Bigger Text", "Smaller Text", "Default Text Size"])
     }
 
     @Test func turnsTheFilesUndoAndRedoOnOnlyWhenThereIsSomethingToDo() {

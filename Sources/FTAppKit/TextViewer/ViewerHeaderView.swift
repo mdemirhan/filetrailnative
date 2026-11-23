@@ -22,6 +22,8 @@ final class ViewerHeaderView: NSView {
         /// Which of Zoom In, Zoom Out, Actual Size and Zoom to Fit would change a PDF or Quick Look's preview; nil for
         /// a file that doesn't zoom, whose menu has none of them.
         var zoom: Set<ViewerZoom>?
+        /// Find… is in the menu: for the text, and for a PDF.
+        var canFind = false
         /// The keys chosen in Settings → Shortcuts for Save, Next File, Previous File and the zoom, as the menu writes
         /// them.
         var keys = Keys()
@@ -196,9 +198,11 @@ final class ViewerHeaderView: NSView {
             add("Next File", .next, key: state.keys.next, enabled: state.position != nil)
             add("Previous File", .previous, key: state.keys.previous, enabled: state.position != nil)
         }
-        if state.isText {
+        if state.canFind {
             menu.addItem(.separator())
             add("Find…", .find, key: "⌘F")
+        }
+        if state.isText {
             let language = NSMenuItem(title: "Language", action: nil, keyEquivalent: "")
             language.submenu = NSMenu()
             for each in TextLanguage.all {
@@ -216,8 +220,14 @@ final class ViewerHeaderView: NSView {
         }
         menu.addItem(.separator())
         menu.addItem(appearanceItem(state.settings))
-        add("Bigger Text", .settings { $0.fontSize = min(TextViewerSettings.fontSizes.upperBound, $0.fontSize + 1) })
-        add("Smaller Text", .settings { $0.fontSize = max(TextViewerSettings.fontSizes.lowerBound, $0.fontSize - 1) })
+        // View ▸ Zoom In and Zoom Out's keys while text shows.
+        let textKeys = state.isText ? state.keys.zoom : [:]
+        add(
+            "Bigger Text", .settings { $0.fontSize = min(TextViewerSettings.fontSizes.upperBound, $0.fontSize + 1) },
+            key: textKeys[.zoomIn])
+        add(
+            "Smaller Text", .settings { $0.fontSize = max(TextViewerSettings.fontSizes.lowerBound, $0.fontSize - 1) },
+            key: textKeys[.zoomOut])
         add("Wrap Lines", .settings { $0.wrapLines.toggle() }, on: state.settings.wrapLines)
         add("Line Numbers", .settings { $0.lineNumbers.toggle() }, on: state.settings.lineNumbers)
         menu.addItem(.separator())

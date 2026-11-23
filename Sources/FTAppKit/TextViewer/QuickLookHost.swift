@@ -15,6 +15,8 @@ final class QuickLookHost: NSView {
     private(set) var preview: QLPreviewView?
     /// Told once Quick Look shows what it made of the file, or shows another: what the keys and the zoom reach changed.
     var onLoad: () -> Void = {}
+    /// Told as the page or slide shown changes.
+    var onPageChange: () -> Void = {}
     private var loadObservation: QuickLookLoadObservation?
 
     /// The file shown, or none.
@@ -36,7 +38,9 @@ final class QuickLookHost: NSView {
             made.autoresizingMask = [.width, .height]
             addSubview(made)
             preview = made
-            loadObservation = QuickLookLoadObservation(made) { [weak self] in self?.onLoad() }
+            loadObservation = QuickLookLoadObservation(made) { [weak self] key in
+                if key == QuickLookLoadObservation.pageKey { self?.onPageChange() } else { self?.onLoad() }
+            }
         }
         preview?.previewItem = item as NSURL
     }
@@ -105,6 +109,16 @@ final class QuickLookHost: NSView {
         return QuickLookPrivate.int(preview, "numberOfPages") ?? 0
     }
 
+    /// The page or slide shown, from 0.
+    var currentPage: Int? { preview.flatMap { QuickLookPrivate.int($0, "currentPage") } }
+
+    /// Shows page `index`, from 0; false where there are no pages to go to.
+    func go(toPage index: Int) -> Bool {
+        guard let preview, pageCount > 1, (0..<pageCount).contains(index) else { return false }
+        QuickLookPrivate.set(preview, "currentPage", index)
+        return true
+    }
+
     /// The next slide or page, or one before (`by` negative); false when there are none to step through.
     func step(by count: Int) -> Bool {
         guard let preview, pageCount > 1, let page = QuickLookPrivate.int(preview, "currentPage") else { return false }
@@ -140,30 +154,42 @@ final class QuickLookHost: NSView {
 
     // MARK: Zoom
 
-    /// How far the preview can be magnified, 1 being as Quick Look shows it.
-    static let magnifications: ClosedRange<CGFloat> = 0.5...4
+    /// How far a document can be zoomed, 1 being as Quick Look shows it.
+    static let zooms: ClosedRange<CGFloat> = 0.5...5
     /// Each Zoom In and Zoom Out.
-    static let magnificationStep: CGFloat = 1.25
+    static let zoomStep: CGFloat = 1.25
 
-    /// The magnification now, nil where the preview has none (a presentation's pages, a movie).
-    var magnification: CGFloat? {
-        if let webView { return webView.magnification }
+    /// The zoom now, nil where the preview has none (a presentation's pages, a movie).
+    var zoom: CGFloat? {
+        if let webView { return webView.pageZoom }
         if let scrollView { return scrollView.magnification }
         return nil
     }
 
-    /// Magnifies the preview about the middle of what shows; false where it can't be.
-    func setMagnification(_ wanted: CGFloat) -> Bool {
-        let value = min(max(wanted, Self.magnifications.lowerBound), Self.magnifications.upperBound)
+    /// The zoom at which a document's page is as wide as the pane. Quick Look shows a Word document's pages at a width
+    /// of their own, centered in a wider pane; a spreadsheet or a Pages document fills the pane already, at 1.
+    var fitZoom: CGFloat? {
+        guard zoom != nil else { return nil }
+        guard let webView, let centering = webView.superview,
+            QuickLookPrivate.double(centering, "scale") != nil,
+            let page = (QuickLookPrivate.object(webView, "pageSize") as? NSValue)?.sizeValue, page.width > 0
+        else { return 1 }
+        return min(max(bounds.width / page.width, Self.zooms.lowerBound), Self.zooms.upperBound)
+    }
+
+    /// Zooms the preview; false where it can't be. A web view's page keeps its layout and is drawn larger, as wide as
+    /// the pane allows: Quick Look's centering view widens it as its page grows, past which it scrolls sideways.
+    func setZoom(_ wanted: CGFloat) -> Bool {
+        let value = min(max(wanted, Self.zooms.lowerBound), Self.zooms.upperBound)
         if let webView {
-            webView.allowsMagnification = true
-            webView.setMagnification(value, centeredAt: NSPoint(x: webView.bounds.midX, y: webView.bounds.midY))
+            if let centering = webView.superview { QuickLookPrivate.set(centering, "scale", value) }
+            webView.pageZoom = value
             return true
         }
         if let scrollView {
             scrollView.allowsMagnification = true
-            scrollView.minMagnification = Self.magnifications.lowerBound
-            scrollView.maxMagnification = Self.magnifications.upperBound
+            scrollView.minMagnification = Self.zooms.lowerBound
+            scrollView.maxMagnification = Self.zooms.upperBound
             let visible = scrollView.contentView.bounds
             scrollView.setMagnification(value, centeredAt: NSPoint(x: visible.midX, y: visible.midY))
             return true
@@ -184,6 +210,10 @@ enum QuickLookPrivate {
         (object(target, getter) as? NSNumber)?.intValue
     }
 
+    static func double(_ target: NSObject, _ getter: String) -> Double? {
+        (object(target, getter) as? NSNumber)?.doubleValue
+    }
+
     static func set(_ target: NSObject, _ key: String, _ value: Any) {
         let setter = "set" + key.prefix(1).uppercased() + key.dropFirst() + ":"
         guard target.responds(to: NSSelectorFromString(setter)) else { return }
@@ -191,24 +221,27 @@ enum QuickLookPrivate {
     }
 }
 
-/// Watches which of Quick Look's ways of showing a file its view uses, which changes once it has read the file. Quick
-/// Look changes it on the main thread.
+/// Watches which of Quick Look's ways of showing a file its view uses, which changes once it has read the file, and the
+/// page it shows. Quick Look changes them on the main thread.
 private final class QuickLookLoadObservation: NSObject, @unchecked Sendable {
-    private static let key = "displayedDisplayBundle"
+    static let loadKey = "displayedDisplayBundle"
+    static let pageKey = "currentPage"
     private let preview: QLPreviewView
-    private let onChange: @MainActor () -> Void
+    private let keys: [String]
+    private let onChange: @MainActor (String) -> Void
 
     @MainActor
-    init?(_ preview: QLPreviewView, onChange: @escaping @MainActor () -> Void) {
-        guard preview.responds(to: NSSelectorFromString(Self.key)) else { return nil }
+    init?(_ preview: QLPreviewView, onChange: @escaping @MainActor (String) -> Void) {
+        keys = [Self.loadKey, Self.pageKey].filter { preview.responds(to: NSSelectorFromString($0)) }
+        guard keys.contains(Self.loadKey) else { return nil }
         self.preview = preview
         self.onChange = onChange
         super.init()
-        preview.addObserver(self, forKeyPath: Self.key, options: [], context: nil)
+        for key in keys { preview.addObserver(self, forKeyPath: key, options: [], context: nil) }
     }
 
     deinit {
-        preview.removeObserver(self, forKeyPath: Self.key)
+        for key in keys { preview.removeObserver(self, forKeyPath: key) }
     }
 
     override func observeValue(
@@ -216,6 +249,7 @@ private final class QuickLookLoadObservation: NSObject, @unchecked Sendable {
         context: UnsafeMutableRawPointer?
     ) {
         // After its change: the views it shows the file in are in place once this returns.
-        Task { @MainActor [weak self] in self?.onChange() }
+        let key = keyPath ?? ""
+        Task { @MainActor [weak self] in self?.onChange(key) }
     }
 }

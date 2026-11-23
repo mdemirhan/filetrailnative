@@ -88,6 +88,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+G",
+            "description": "Go to a page of the PDF, or a slide, a pane shows, by its number"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Shift+H",
             "description": "Open your home folder and make it the top of the folder tree"
           },
@@ -1128,7 +1133,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
-                ["Opening", "PDFs and documents in the viewer"],
+                ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -1413,6 +1418,11 @@
             "group": "navigation",
             "shortcut": "Cmd+Shift+G",
             "description": "Go to a folder by name or path, or pick one of those you use most"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Option+G",
+            "description": "Go to a page of the PDF, or a slide, a pane shows, by its number"
           },
           {
             "group": "navigation",
@@ -2457,7 +2467,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
-                ["Opening", "PDFs and documents in the viewer"],
+                ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -3446,7 +3456,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
-                ["Opening", "PDFs and documents in the viewer"],
+                ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -4487,7 +4497,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
-                ["Opening", "PDFs and documents in the viewer"],
+                ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -5501,7 +5511,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
-                ["Opening", "PDFs and documents in the viewer"],
+                ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -6548,7 +6558,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
-                ["Opening", "PDFs and documents in the viewer"],
+                ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
                 ["Copying and moving", "Image or text as a file"],
@@ -7529,7 +7539,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
-                ["Opening", "PDFs and documents in the viewer"],
+                ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -8546,7 +8556,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
-                ["Opening", "PDFs and documents in the viewer"],
+                ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -9621,7 +9631,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
-                ["Opening", "PDFs and documents in the viewer"],
+                ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -10622,7 +10632,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
-                ["Opening", "PDFs and documents in the viewer"],
+                ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -10918,8 +10928,8 @@
             [
               {
                 "group": "navigation",
-                "shortcut": "Cmd+K",
-                "description": "Go to a folder by name or path, or pick one of those you use most (Cmd+Shift+G also works)"
+                "shortcut": "Cmd+Option+G",
+                "description": "Go to a page of the PDF, or a slide, a pane shows, by its number"
               },
               {
                 "group": "navigation",
@@ -11674,7 +11684,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
-                ["Opening", "PDFs and documents in the viewer"],
+                ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -12735,7 +12745,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
-                ["Opening", "PDFs and documents in the viewer"],
+                ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -13770,7 +13780,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
-                ["Opening", "PDFs and documents in the viewer"],
+                ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -14800,7 +14810,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
-                ["Opening", "PDFs and documents in the viewer"],
+                ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -15996,7 +16006,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
-                ["Opening", "PDFs and documents in the viewer"],
+                ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],

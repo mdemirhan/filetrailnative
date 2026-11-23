@@ -46,6 +46,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
     public var clipboardCopiedCount: Int
     /// The active pane shows a file: the size commands zoom it, and are named so.
     public var fileShown = false
+    /// The file shown is text: the size commands change the text's size, and are named so.
+    public var fileShowsText = false
 
     public init(
         disabledCommands: [AppCommand] = [], viewMode: ExplorerViewMode = .list,
@@ -96,7 +98,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         folderViewRemembered: Bool = false, shownColumns: Set<OptionalDetailColumnKey> = [],
         shownSearchColumns: Set<OptionalSearchColumnKey>? = nil,
         clipboardCutCount: Int = 0, clipboardCopiedCount: Int = 0, fileShown: Bool = false,
-        canRun: (AppCommand) -> Bool
+        fileShowsText: Bool = false, canRun: (AppCommand) -> Bool
     ) -> ApplicationMenuState {
         // A text field's Undo and Redo are always there, even in a dialog or while a file operation runs: they only
         // change its text.
@@ -118,6 +120,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         state.groupBy = groupBy
         state.groupReversed = groupReversed
         state.fileShown = fileShown
+        state.fileShowsText = fileShowsText
         return state
     }
 }
@@ -313,7 +316,7 @@ public enum ApplicationMenu {
             // With no explorer window to act on, no view is named.
             case .increaseSize, .decreaseSize, .resetSize:
                 window.explorerFocused && state.fileShown
-                    ? ApplicationMenu.zoomTitle(type)
+                    ? ApplicationMenu.zoomTitle(type, text: state.fileShowsText)
                     : ApplicationMenu.sizeTitle(type, viewMode: window.explorerFocused ? state.viewMode : .details)
             default: nil
             }
@@ -388,12 +391,16 @@ public enum ApplicationMenu {
         return name.isEmpty ? nil : name
     }
 
-    /// The size commands while the active pane shows a file, which they zoom: a PDF, a document Quick Look draws.
-    public static func zoomTitle(_ command: AppCommand) -> String? {
-        switch command {
-        case .increaseSize: "Zoom In"
-        case .decreaseSize: "Zoom Out"
-        case .resetSize: "Actual Size"
+    /// The size commands while the active pane shows a file, which they zoom: a PDF, a picture, a document Quick Look
+    /// draws; for text, the text's size.
+    public static func zoomTitle(_ command: AppCommand, text: Bool = false) -> String? {
+        switch (command, text) {
+        case (.increaseSize, false): "Zoom In"
+        case (.decreaseSize, false): "Zoom Out"
+        case (.resetSize, false): "Actual Size"
+        case (.increaseSize, true): "Bigger Text"
+        case (.decreaseSize, true): "Smaller Text"
+        case (.resetSize, true): "Default Text Size"
         default: nil
         }
     }

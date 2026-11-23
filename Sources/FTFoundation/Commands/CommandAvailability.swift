@@ -112,6 +112,9 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
     /// Which of Make Bigger, Make Smaller, Default Size and Zoom to Fit would zoom the file the pane shows, a PDF or a
     /// document Quick Look draws: they act on it in place of the folder's view while it shows.
     public var fileZoom: Set<AppCommand> = []
+    /// The pages of the PDF, or the slides of the presentation, the pane shows, which Go to Page goes among; 0 for
+    /// anything else.
+    public var filePageCount = 0
 
     public init(
         shortcutContext: ShortcutContext = ShortcutContext(), currentPath: String = "",
@@ -421,6 +424,9 @@ public enum CommandAvailability {
         }
         if command == .zoomToFit {
             return context.paneShowsFile && context.fileZoom.contains(command)
+        }
+        if command == .goToPage {
+            return context.paneShowsFile && context.filePageCount > 1
         }
         let focusedPane = context.shortcutContext.focusedPane
         let selectedCount = context.selectedPathsInViewOrder.count

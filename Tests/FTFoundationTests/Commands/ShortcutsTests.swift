@@ -415,6 +415,7 @@ struct ShortcutsTests {
         let expected: [(ShortcutCommandID, [String])] = [
             (.goBack, ["Cmd+[", "Cmd+Left"]), (.goForward, ["Cmd+]", "Cmd+Right"]), (.goEnclosingFolder, ["Cmd+Up"]),
             (.goHomeRootTree, ["Cmd+Shift+H"]), (.openLocationSheet, ["Cmd+K", "Cmd+Shift+G"]),
+            (.goToPage, ["Cmd+Option+G"]),
             (.rootTreeAtSelection, ["Cmd+Shift+R"]), (.refreshOrApplySearchSort, ["Cmd+R"]),
             (.goDocuments, []), (.goDesktop, []), (.goDownloads, []), (.goLibrary, []), (.goMacintoshHD, []),
             (.goApplications, []), (.goTrash, []), (.focusTreePane, []), (.focusContentPane, []),
