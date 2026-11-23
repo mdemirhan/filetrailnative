@@ -130,6 +130,10 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     private enum ZoomKind { case pdf, picture, document }
     /// Quick Look's document is at its page's width, as it opens, and stays so as the pane is resized.
     private var documentFitsWidth = true
+    /// The keyboard was given to Quick Look's preview of a file it hasn't loaded yet. Quick Look then takes away the
+    /// view that had it, the last file's, and the window is left with the keyboard: it goes on into the preview once
+    /// it has loaded, unless something else took it meanwhile.
+    private var keyboardAwaitsQuickLook = false
 
     /// `opensForEditing`: its pane's Read or Edit.
     init(mode: Mode, settings: TextViewerSettings, opensForEditing: Bool) {
@@ -317,10 +321,14 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     /// Quick Look shows what it made of the file: the keyboard goes on into it if the viewer had it, and the zoom
     /// commands say whether it zooms.
     private func quickLookLoaded() {
-        if !quickLook.isHidden, let window = view.window, let responder = window.firstResponder as? NSView,
-            responder === view || responder === quickLook.preview
-        {
-            window.makeFirstResponder(keyboardView)
+        let awaited = keyboardAwaitsQuickLook
+        keyboardAwaitsQuickLook = false
+        if !quickLook.isHidden, let window = view.window {
+            let responder = window.firstResponder
+            let lost = responder === window || (responder as? NSView)?.window == nil
+            if responder === view || responder === quickLook.preview || (awaited && lost) {
+                window.makeFirstResponder(keyboardView)
+            }
         }
         // A document opens at its page's width, as a PDF does, or at the zoom the one before it was given.
         switch keptZoom[.document] {
@@ -565,7 +573,10 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
                 self.showHeading(heading)
             }
             // The text, or the viewer itself for a file that isn't text, so Esc and Tab reach it.
-            if focus { self.view.window?.makeFirstResponder(self.keyboardView) }
+            if focus {
+                self.view.window?.makeFirstResponder(self.keyboardView)
+                if self.shownBody == .quickLook { self.keyboardAwaitsQuickLook = true }
+            }
             guard case .text = file.content else { return }
             // Read or Edit, as chosen last.
             if editing { self.setEditing(true, focus: focus) }
@@ -695,6 +706,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         if keyboard, let window = view.window, window.firstResponder !== keyboardView {
             window.makeFirstResponder(keyboardView)
         }
+        keyboardAwaitsQuickLook = keyboard && quickLookItem != nil
         view.needsLayout = true
     }
 

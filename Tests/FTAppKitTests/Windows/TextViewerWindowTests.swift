@@ -730,6 +730,37 @@ extension ExplorerWindowlessTests {
             #expect(tab.showsTwoPanes)
         }
 
+        // From one file Quick Look shows to another, the keyboard goes on into the new one: Quick Look takes away the
+        // view the last one gave it to, and the window was left with it.
+        @Test func theKeyboardGoesFromOneQuickLookPreviewToTheNext() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            try Data([0, 1, 2, 3, 0, 0xFF, 0xFE, 0]).write(to: harness.folder.appending("c.bin"))
+            try Data([0, 4, 5, 6, 0, 0xFF, 0xFE, 0]).write(to: harness.folder.appending("d.bin"))
+            let tab = try await tabWithFiles(harness)
+            let pane = tab.activePane
+            let (b, c, d) = (real(harness, "b.json"), real(harness, "c.bin"), real(harness, "d.bin"))
+            #expect(await waitUntil { pane.content.listedEntry(at: d) != nil })
+            let window = try #require(tab.window)
+            func previewHasKeyboard(_ viewer: TextViewerController) -> Bool {
+                viewer.quickLook.preview.map { (window.firstResponder as? NSView)?.isDescendant(of: $0) == true }
+                    ?? false
+            }
+            select(b, in: tab)
+            tab.perform(.viewFile)
+            let viewer = try #require(pane.viewer)
+            #expect(await waitUntil { viewer.isText })
+            tab.focusPane(pane)
+            tab.stepFile(by: 1)
+            #expect(await waitUntil { viewer.path == c && previewHasKeyboard(viewer) })
+            tab.stepFile(by: 1)
+            #expect(await waitUntil { viewer.path == d })
+            #expect(await waitUntil { previewHasKeyboard(viewer) }, "\(String(describing: window.firstResponder))")
+            tab.stepFile(by: -1)
+            #expect(await waitUntil { viewer.path == c })
+            #expect(await waitUntil { previewHasKeyboard(viewer) }, "\(String(describing: window.firstResponder))")
+        }
+
         /// Quick Look stops the app when its view is closed out of a window: it is closed as the viewer leaves the
         /// window, whichever way it goes.
         @Test func aFileShownByQuickLookIsClosedAsItsViewerGoes() async throws {
