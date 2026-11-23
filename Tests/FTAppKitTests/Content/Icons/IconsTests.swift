@@ -393,6 +393,14 @@ extension ExplorerWindowlessTests {
             tab.perform(.viewAsList)
             #expect(slider.toolTip == "Column Width (⌘+ wider, ⌘- narrower, ⌘0 default)" && slider.doubleValue == 292)
             #expect(bar.sizeLabel.stringValue == "292 pt")
+            // It goes in steps of 40, as Make Bigger and Make Smaller do: let go at 279, the width is 280.
+            slider.doubleValue = 279
+            _ = slider.sendAction(slider.action, to: slider.target)
+            #expect(slider.doubleValue == 280 && bar.sizeLabel.stringValue == "280 pt")
+            #expect(tab.preferences.compactListWidths.standard == 280)
+            // Default Size still gives the width between steps.
+            tab.perform(.resetSize)
+            #expect(slider.doubleValue == 292 && tab.preferences.compactListWidths.standard == 292)
             tab.perform(.viewAsDetails)
             #expect(!bar.showsSizeSlider && slider.isHidden && bar.sizeLabel.isHidden)
             await harness.close()

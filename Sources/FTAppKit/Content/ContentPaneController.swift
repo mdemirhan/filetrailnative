@@ -1606,10 +1606,14 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         shell.pathBarRow.flashSizeValue()
     }
 
+    /// The slider moved: the icon size goes in steps of 8 points, the column width in steps of 40, as Make Bigger and
+    /// Make Smaller step them.
     private func sizeSlid(to value: Double, save: Bool) {
         switch mode {
         case .icons: iconSizeChanged(value, save: save)
-        case .list: compactListWidthChanged(value, save: save)
+        case .list:
+            compactListWidthChanged(Double(AppPreferenceLimits.stepCompactListWidth(value)), save: save)
+            if save { syncSizeSlider() }
         case .previews: previewStopChanged(value, save: save)
         case .details: break
         }

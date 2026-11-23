@@ -184,6 +184,12 @@ struct AppPreferencesTests {
         #expect(large.iconSizes == DensitySizes(standard: 64, finder: 128))
         #expect(AppPreferenceLimits.clampIconSize(75.9) == 72)
         #expect(AppPreferenceLimits.clampIconSize(76) == 80)
+        // The slider's column width goes in steps of 40, within 160 to 600.
+        #expect(AppPreferenceLimits.stepCompactListWidth(279) == 280)
+        #expect(AppPreferenceLimits.stepCompactListWidth(299.9) == 280)
+        #expect(AppPreferenceLimits.stepCompactListWidth(300) == 320)
+        #expect(AppPreferenceLimits.stepCompactListWidth(150) == 160)
+        #expect(AppPreferenceLimits.stepCompactListWidth(615) == 600)
         #expect(!PreferenceKey.iconSizes.isWindowSessionKey)
     }
 

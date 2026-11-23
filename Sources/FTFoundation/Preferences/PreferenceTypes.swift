@@ -861,6 +861,15 @@ public enum AppPreferenceLimits {
     public static let iconSizeStep = 8
 
     /// An icon size within its range, at a whole step.
+    /// A Compact List column width the status bar's slider sets: the nearest step of 40 points, within the range.
+    /// Only the slider steps it: Default Size's widths (292 and 252) are between steps.
+    public static func stepCompactListWidth(_ value: Double) -> Int {
+        let step = Double(compactListWidthStep)
+        let stepped = (value / step).rounded() * step
+        return clampRounded(
+            stepped, Double(compactListWidthRange.lowerBound), Double(compactListWidthRange.upperBound))
+    }
+
     public static func clampIconSize(_ value: Double) -> Int {
         let step = Double(iconSizeStep)
         let stepped = (value / step).rounded() * step
