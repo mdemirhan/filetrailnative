@@ -121,7 +121,7 @@ import Testing
         press(Kit.key(Kit.space.0, code: Kit.space.1, window: controller.window), in: controller)
         #expect(notes(view) == ["Space on its own types into the file list. Add ⌘ or ⌃."])
         #expect(place.isRecording)
-        // Open in Viewer has Space by default, its second key after ⌘E, and can have it back; Quick Look can be
+        // Open in Viewer has Space by default, its second key after ⇧⌘E, and can have it back; Quick Look can be
         // given it, though no other command can have it.
         let viewer = try slot(.viewFile, 1, in: view)
         controller.window?.makeFirstResponder(viewer)

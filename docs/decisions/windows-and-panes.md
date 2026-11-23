@@ -50,7 +50,7 @@ Two panes, tabs, saved views, the toolbar, the menus and their keys, Back and Fo
 
 - **Back and Forward move the history before the folder is read**, so two quick Backs go two folders back; the hold menus do the same. While such a move hasn't arrived, the pane remembers where the folder on screen is in the history and puts the index back there when a folder is opened, a read in place starts, or the move fails with the old folder still on screen. Back doesn't follow a folder renamed since it was visited, and Quick Look does nothing of its own when the window's folder changes.
 - **A click on a sidebar row opens its folder at once.** Nothing waits to see whether a second click follows; the second click of a double-click only opens or closes the folder's branch in the tree. With single-click expand on, the first click already does both, and the second does nothing more. A click on a path bar segment still waits 250 ms, as a double-click there edits the path.
-- **Double-click always opens.** Edit is File ▸ Edit in… (⇧⌘E) and the file's context menu. Replaced a "Double-click a file to: Edit" setting, which sent zips, pictures and PDFs to the text editor too; a saved value of it is ignored.
+- **Double-click always opens.** Edit is File ▸ Edit in… (⌘E) and the file's context menu. Replaced a "Double-click a file to: Edit" setting, which sent zips, pictures and PDFs to the text editor too; a saved value of it is ignored.
 - **An item opened from another app waits for the items given before it for 3 seconds at most**, so a disk that doesn't answer holds up only its own item.
 
 ## The toolbar
@@ -75,7 +75,7 @@ Two panes, tabs, saved views, the toolbar, the menus and their keys, Back and Fo
   | Key | In Finder | In File Trail | Why |
   |---|---|---|---|
   | ⌘K | Connect to Server | Go To | The app has no Connect to Server; ⇧⌘G, Finder's Go to Folder, does the same (inferred). |
-  | ⌘E | Eject | Open in Viewer | The owner's choice, 2026-11-20. Eject has no default key. |
+  | ⌘E | Eject | Edit in Text Editor | The owner's choice, 2026-11-23; Open in Viewer's from 2026-11-20 until then, now ⇧⌘E and Space. Eject has no default key. |
   | Space | Quick Look | Open in Viewer | The owner's choice, 2026-11-23: the viewer shows a file with the keyboard and Back. Quick Look keeps ⌘Y, and Settings can give it Space back (`views.md`). |
   | ⌘R | Show Original | Refresh | Show Original has no default key. |
   | ⌘3 | as Columns | as Compact List | There is no column view; ⌘4 is Previews, as Finder's is Gallery. |
@@ -90,7 +90,7 @@ Two panes, tabs, saved views, the toolbar, the menus and their keys, Back and Fo
   | ⌥⌘⌫ | Delete Immediately, anywhere | Delete Immediately, in the Trash only, always asking Finder's question first | Outside the Trash the key does nothing, whichever way it arrives, so a slip can't delete for good. |
   | ⌃⌘1–⌃⌘5 | Group By, Sort By | Open a window view | The window views' keys; Sort By and Group By have none. |
 
-  Keys Finder has for the same command here too include ⌃⌘T (Add to Sidebar, here Add to Favorites), ⌃⌘A (Make Alias), ⌃⌘N (New Folder with Selection), ⌥⌘V (Move Items Here) and ⌘J (View Options). Keys of the app's own that Finder doesn't use: ⌥⌘1 to ⌥⌘5 Tab View 1 to 5, ⇧⌘E Edit in Text Editor, ⇧⌘V Paste as File, ⌘U Swap Panes, ⌘\\ Two Panes, ⌃⌘C, ⌃⌘X and ⌃⌘V for the clipboard you add to, F2, F5 and F6, ⌘9 Zoom to Fit and ⌥⌘G Go to Page, Preview's keys.
+  Keys Finder has for the same command here too include ⌃⌘T (Add to Sidebar, here Add to Favorites), ⌃⌘A (Make Alias), ⌃⌘N (New Folder with Selection), ⌥⌘V (Move Items Here) and ⌘J (View Options). Keys of the app's own that Finder doesn't use: ⌥⌘1 to ⌥⌘5 Tab View 1 to 5, ⇧⌘E Open in Viewer, ⇧⌘V Paste as File, ⌘U Swap Panes, ⌘\\ Two Panes, ⌃⌘C, ⌃⌘X and ⌃⌘V for the clipboard you add to, F2, F5 and F6, ⌘9 Zoom to Fit and ⌥⌘G Go to Page, Preview's keys.
 
 - **The command palette lists every command.** ⇧⌘P, or View ▸ Command Palette…, lists every row of the shortcut table and the menu items that aren't in it, so a command with keys but no menu item can be found too. Each row has the command's name, where it is in the menus, its keys and a check for what is on, and the selected command's line from Help says what it does. What a new command needs to be in it is in `docs/process/commands.md`.
   - **A command that can't run now is dimmed**, as the menu dims it, and listed after the ones that can; Return on it beeps. Hiding it would make the command seem missing.

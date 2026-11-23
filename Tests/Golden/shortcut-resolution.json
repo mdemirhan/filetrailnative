@@ -78,9 +78,9 @@
           "equalizePanes": [],
           "openSelection": ["Cmd+O"],
           "openSelectedItem": ["Cmd+Down"],
-          "editSelection": ["Cmd+Shift+E"],
+          "editSelection": ["Cmd+E"],
           "quickLookSelection": ["Cmd+Y"],
-          "viewFile": ["Cmd+E", "Space"],
+          "viewFile": ["Cmd+Shift+E", "Space"],
           "calculateSize": [],
           "renameSelection": ["F2"],
           "duplicateSelection": ["Cmd+D"],
@@ -221,9 +221,9 @@
           ["Cmd+U", "swapPanes"],
           ["Cmd+O", "openSelection"],
           ["Cmd+Down", "openSelectedItem"],
-          ["Cmd+Shift+E", "editSelection"],
+          ["Cmd+E", "editSelection"],
           ["Cmd+Y", "quickLookSelection"],
-          ["Cmd+E", "viewFile"],
+          ["Cmd+Shift+E", "viewFile"],
           ["Space", "viewFile"],
           ["Cmd+Option+A", "deselectAll"],
           ["F2", "renameSelection"],
@@ -2077,12 +2077,12 @@
         "events": []
       },
       "changes": {
-        "bindings": {"quickLookSelection": ["Space"], "viewFile": ["Cmd+E"]},
+        "bindings": {"quickLookSelection": ["Space"], "viewFile": ["Cmd+Shift+E"]},
         "commandByShortcut": {
           "$remove": [["Cmd+Y", "quickLookSelection"], ["Space", "viewFile"], ["?", "openHelp"]],
           "$insert": [[null, ["Space", "quickLookSelection"]], [["Space", "quickLookSelection"], ["?", "openHelp"]]]
         },
-        "sanitized": {"quickLookSelection": ["Space"], "viewFile": ["Cmd+E"]}
+        "sanitized": {"quickLookSelection": ["Space"], "viewFile": ["Cmd+Shift+E"]}
       }
     },
     {
@@ -2385,7 +2385,7 @@
             "refusal": null,
             "command": "viewFile",
             "customized": false,
-            "assigned": {"quickLookSelection": ["Space"], "viewFile": ["Cmd+E"]},
+            "assigned": {"quickLookSelection": ["Space"], "viewFile": ["Cmd+Shift+E"]},
             "removed": {"quickLookSelection": []},
             "reset": {},
             "takenFrom": [],
@@ -2400,10 +2400,10 @@
             "command": null,
             "customized": false,
             "assigned": {},
-            "removed": {"viewFile": ["Cmd+E"]},
+            "removed": {"viewFile": ["Cmd+Shift+E"]},
             "reset": {},
             "takenFrom": [],
-            "menuShortcut": "Cmd+E"
+            "menuShortcut": "Cmd+Shift+E"
           },
           {
             "id": "goBack",

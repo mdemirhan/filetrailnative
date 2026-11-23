@@ -31,7 +31,7 @@ extension MainWindowController {
 
     // MARK: Open in Viewer
 
-    /// File ▸ Open in Viewer (⌘E): the selected file in place of the active pane's folder, a step of its own in the
+    /// File ▸ Open in Viewer (⇧⌘E): the selected file in place of the active pane's folder, a step of its own in the
     /// pane's Back and Forward. Back, Esc and ⌘W return to the folder with the file selected.
     func viewFile() {
         guard let path = selectedViewableFile else { return }

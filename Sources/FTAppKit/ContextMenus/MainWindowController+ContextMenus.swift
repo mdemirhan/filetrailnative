@@ -34,7 +34,7 @@ extension MainWindowController {
     /// Space opens the selected file in the viewer, or previews the selected item while it is Quick Look's key, while
     /// the file list has the keyboard (`quickLook` in the key table), unless a filter is being typed: then Space is
     /// part of its text ("my doc") until Esc ends it, and the list takes it. A pinned filter leaves Space to its
-    /// command. A selection the viewer can't show (a folder, several items) beeps, as ⌘E does. Any other key chosen
+    /// command. A selection the viewer can't show (a folder, several items) beeps, as ⇧⌘E does. Any other key chosen
     /// for either goes through the list's keys.
     private func handleSpaceKey(_ event: NSEvent) -> Bool {
         guard event.type == .keyDown, event.keyCode == 49,

@@ -11,7 +11,7 @@ A Mac file browser with fast search, a real folder tree, two panes and true cut 
 - **Search that works, and is fast.** Results appear as you type, from the folder you are in, by name or full path, in plain text, glob or regex. There is no index to wait for, and nothing left out for not being indexed.
 - **A folder tree beside your files.** See where you are and what is around it, and open any folder's arrow to look inside without leaving.
 - **Two folders side by side.** ⌘\\ splits a tab into two panes, and F5 and F6 copy or move what is selected from one to the other. No second window to line up, and a tab's panes and views can be saved as a tab view and given to any tab with a key.
-- **Read and edit files where they are.** ⌘E shows a file's code or text in color, ready to edit, and the other pane can show each file as you move through the list.
+- **Read and edit files where they are.** Space shows a file's code or text in color, ready to edit, and the other pane can show each file as you move through the list.
 - **Cut and paste files, from many folders at once.** ⌘X and ⌘V move files. The clipboard is a shelf you can keep adding to: ⌃⌘C and ⌃⌘X put more on it from folder after folder, and one ⌘V copies the copied ones and moves the cut ones together. What is on it stays marked until you paste, and a paste never destroys anything: what it replaces goes to the Trash.
 - **Folder sizes when you ask.** A folder and every folder inside it are measured in one pass, and sorted by size each row gets a bar, so the heavy ones stand out.
 - **Small jobs without another app.** Save a copied screenshot as a file, extract zip, 7z and RAR archives, and convert images, all where the files are.
@@ -59,7 +59,7 @@ A way of working can be saved and given back in one step. A tab view keeps what 
   <img src="docs/screenshots/viewer.png" alt="A folder of components in a list, with TripCard.jsx selected and its code shown in color in the pane beside it, Follow checked" width="900">
 </p>
 
-Quick Look shows a file but doesn't let you change it, and opening an editor takes you away from the folder. In File Trail, Space or ⌘E shows the selected file in place of the folder, in color for about 60 languages and formats; switch to Edit to change it, and ⌘S saves. Show it in the other pane instead (⌥⌘↓) and it follows the list: move from file to file and each one appears beside it.
+Quick Look shows a file but doesn't let you change it, and opening an editor takes you away from the folder. In File Trail, Space or ⇧⌘E shows the selected file in place of the folder, in color for about 60 languages and formats; switch to Edit to change it, and ⌘S saves. Show it in the other pane instead (⌥⌘↓) and it follows the list: move from file to file and each one appears beside it.
 
 - **More than text.** Markdown shows as it reads, pictures as pictures, and anything else as Quick Look shows it.
 - **Part of browsing.** Back returns to the folder with the file selected, ⌥⌘] and ⌥⌘[ step to the next and previous file, and the file asks before unsaved edits are lost.

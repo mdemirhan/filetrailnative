@@ -30,7 +30,7 @@ public enum OpenItems {
         case nothing
         /// More items than "open at most N items" allows: a notice, and nothing opens.
         case tooMany(action: Action, selected: Int, limit: Int)
-        /// Edit (⇧⌘E): the files open in the text editor.
+        /// Edit (⌘E): the files open in the text editor.
         case edit([String])
         /// The items, one after another in list order.
         case steps([Step])

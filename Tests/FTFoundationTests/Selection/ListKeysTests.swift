@@ -170,8 +170,9 @@ struct ContentKeysTests {
         #expect(action("Backspace", code: "Backspace", filter: filter) == .filter(.erase))
         #expect(action("Escape", code: "Escape", filter: filter) == .filter(.clear))
         #expect(action(" ", code: "Space", filter: filter) == .filter(.type(" ")))
-        // ⌘E is Open in Viewer and ⌘Y Quick Look while the filter is there.
-        #expect(action("e", code: "KeyE", meta: true, filter: filter) == .command(.viewFile))
+        // ⇧⌘E is Open in Viewer, ⌘E Edit in Text Editor and ⌘Y Quick Look while the filter is there.
+        #expect(action("E", code: "KeyE", meta: true, shift: true, filter: filter) == .command(.viewFile))
+        #expect(action("e", code: "KeyE", meta: true, filter: filter) == .command(.editSelection))
         #expect(action("y", code: "KeyY", meta: true, filter: filter) == .command(.quickLookSelection))
         // With no filter (Esc ended it) Space is Open in Viewer.
         filter.clear()
@@ -189,7 +190,7 @@ struct ContentKeysTests {
         var typed = ListFilterTyping()
         typed.type("my")
         var unassigned = ShortcutOverrides()
-        unassigned["viewFile"] = ["Cmd+E"]
+        unassigned["viewFile"] = ["Cmd+Shift+E"]
         #expect(action(unassigned, filter: ListFilterTyping()) == nil)
         #expect(action(unassigned, filter: typed) == .filter(.type(" ")))
         let quickLook: ShortcutOverrides = ["quickLookSelection": ["Cmd+Y", "Space"]]

@@ -209,7 +209,7 @@
           },
           {
             "group": "files",
-            "shortcut": "Cmd+Shift+E",
+            "shortcut": "Cmd+E",
             "description": "Open the selected files in the text editor chosen in Settings"
           },
           {
@@ -219,7 +219,7 @@
           },
           {
             "group": "files",
-            "shortcut": "Cmd+E",
+            "shortcut": "Cmd+Shift+E",
             "description": "Show the selected file in this pane, to read or edit it (Space also works)"
           },
           {"group": "files", "shortcut": "Cmd+S", "description": "Save the file the viewer shows, in its pane"},
@@ -1545,7 +1545,7 @@
           },
           {
             "group": "files",
-            "shortcut": "Cmd+Shift+E",
+            "shortcut": "Cmd+E",
             "description": "Open the selected files in the text editor chosen in Settings"
           },
           {
@@ -1555,7 +1555,7 @@
           },
           {
             "group": "files",
-            "shortcut": "Cmd+E",
+            "shortcut": "Cmd+Shift+E",
             "description": "Show the selected file in this pane, to read or edit it (Space also works)"
           },
           {"group": "files", "shortcut": "Cmd+S", "description": "Save the file the viewer shows, in its pane"},
@@ -5923,7 +5923,7 @@
             },
             {
               "group": "files",
-              "shortcut": "Cmd+Shift+E",
+              "shortcut": "Cmd+E",
               "description": "Open the selected files in the text editor chosen in Settings"
             },
             {
@@ -15116,7 +15116,7 @@
           "$remove": [
             {
               "group": "files",
-              "shortcut": "Cmd+Shift+E",
+              "shortcut": "Cmd+E",
               "description": "Open the selected files in the text editor chosen in Settings"
             }
           ]

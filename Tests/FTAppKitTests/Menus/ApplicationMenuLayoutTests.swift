@@ -294,7 +294,7 @@ import Testing
             ("File", "New Folder", "Command+Shift+N", .newFolder),
             ("File", "New Folder with Selection", "Control+Command+N", .newFolderWithSelection),
             ("File", "Open", "Command+O", .openSelection),
-            ("File", "Open in Viewer", "Command+E", .viewFile),
+            ("File", "Open in Viewer", "Command+Shift+E", .viewFile),
             ("File", "Open in New Tab", nil, .openSelectionInNewTab),
             ("File", "Open in New Window", nil, .openSelectionInNewWindow),
             ("File", "Quick Look", "Command+Y", .quickLookSelection),
@@ -304,7 +304,7 @@ import Testing
             // Return, while it renames, and F2 work from the window itself: the menu shows Return and never takes
             // it, so text fields and dialogs keep it.
             ("File", "Rename", "Return", .renameSelection),
-            ("File", "Edit in Text Editor", "Command+Shift+E", .editSelection),
+            ("File", "Edit in Text Editor", "Command+E", .editSelection),
             ("File", "Duplicate", "Command+D", .duplicateSelection),
             ("File", "Make Alias", "Control+Command+A", .makeAlias),
             ("File", "Move to…", "Command+Shift+M", .moveSelection),

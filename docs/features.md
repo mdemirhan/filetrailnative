@@ -54,7 +54,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
 - **Results in any view**, with columns of their own that you choose and sort, and a filter field that trims them by name or by folder without searching again. A search stops at 50,000 results, and the status bar says so when some folders couldn't be read.
 - **Each tab keeps its own search**, a search keeps running while you look at another tab, and ⇧⌘F shows the last results again.
 - **Results stay put while you work in them**: what you move away or delete leaves the list, what you rename keeps its place, and when you add something to the folder searched a note offers Search Again rather than searching on its own.
-- **Type in the file list** to narrow the folder on screen. Fuzzy keeps the names with your letters in order, and marks them; Contains keeps the names with the letters side by side. Backspace edits what you typed, Space types a space in it (⌘E opens the viewer meanwhile), Esc brings the rest back, and ⌘F turns the same text into a search of the subfolders.
+- **Type in the file list** to narrow the folder on screen. Fuzzy keeps the names with your letters in order, and marks them; Contains keeps the names with the letters side by side. Backspace edits what you typed, Space types a space in it (⇧⌘E opens the viewer meanwhile), Esc brings the rest back, and ⌘F turns the same text into a search of the subfolders.
 - **A pinned filter** stays while you go from folder to folder and search.
 
 ## Copying, moving and undoing
@@ -105,12 +105,12 @@ The [README](../README.md) is about what is different from Finder. This page lis
 - **Sizes**: a slider in the status bar, and View ▸ Make Bigger, Make Smaller and Default Size (⌘+, ⌘- and ⌘0), set the icon size, the Compact List's column width and how many previews show. Each pane keeps its own.
 - **Previews (⌘4)** fills the pane with 9, 4, 2 or 1 large previews, each in its own proportions. View ▸ Show Previews switches to it at the count you pick from any view, search results too, with the selected file on screen.
 - **At 1 preview at a time** the file on screen is the selected one, so Space, the Info panel and Move to Trash act on what you see.
-- **Quick Look** on ⌘Y, in every view. Space opens the selected file in the viewer, as ⌘E does; Settings → Shortcuts can give Space to Quick Look instead.
+- **Quick Look** on ⌘Y, in every view. Space opens the selected file in the viewer, as ⇧⌘E does; Settings → Shortcuts can give Space to Quick Look instead.
 <p align="center">
   <img src="screenshots/markdown-pane.png" alt="A project folder with README.md selected, and the pane beside it showing the Markdown as it reads, with headings, a list, a table and numbered steps" width="900">
 </p>
 
-- **Open in Viewer (⌘E)** shows a file's text in place of the folder, with colors for about 60 languages and formats, to read or to edit and save, in Read or Edit as you last chose. It's a step of Back and Forward, so Back returns to the folder with the file selected, and the viewer's bar steps to the next and previous file.
+- **Open in Viewer (Space or ⇧⌘E)** shows a file's text in place of the folder, with colors for about 60 languages and formats, to read or to edit and save, in Read or Edit as you last chose. It's a step of Back and Forward, so Back returns to the folder with the file selected, and the viewer's bar steps to the next and previous file.
 - **Open in Other Pane (⌥⌘↓ or ⌥⌘E)** on a file shows it in the other pane, which then follows the list as you move through it: text with colors, Markdown as it reads, pictures and other files as Quick Look shows them. It keeps following while you edit, and asks to save before it moves on. A workspace keeps it, and the file it showed.
 - **Markdown's pictures**: a picture beside the file, or anywhere on your Mac, shows in the Preview, shrunk to fit the pane, written in Markdown or as an HTML picture at the size and centering it gives. A picture on the web is never fetched, so a README can't tell anyone you read it; it shows as its description.
 - **The viewer's own bar and menu**: Read or Edit, Save, Follow, and a ⋯ menu with Find, the zoom, the language, light or dark whatever the app's appearance, one of three themes for each, the text size, wrapped lines and line numbers.
@@ -156,7 +156,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
 
 ## With the rest of the Mac
 
-- **Open With** for the apps you choose, **Edit** in your text editor and **Open in Terminal** on a key, and **Copy Path**.
+- **Open With** for the apps you choose, **Edit** in your text editor (⌘E) and **Open in Terminal** on a key, and **Copy Path**.
 - **Share** the selected items by AirDrop, Mail, Messages and the rest, from the File menu, the right-click menu, the Info panel or the toolbar.
 - **Disk images** open in File Trail instead of a Finder window, and disks eject from the sidebar.
 - **Show in Finder** takes you to the same item there.

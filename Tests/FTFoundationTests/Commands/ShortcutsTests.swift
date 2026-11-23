@@ -300,12 +300,14 @@ struct ShortcutsTests {
     }
 
     @Test func letsACommandKeepAKeyOfItsOwnThatCouldNotBeGivenOutToday() {
-        #expect(ShortcutCommands.resolve(["viewFile": ["Space", "Cmd+E"]]).bindings[.viewFile] == ["Space", "Cmd+E"])
+        #expect(
+            ShortcutCommands.resolve(["viewFile": ["Space", "Cmd+Shift+E"]]).bindings[.viewFile]
+                == ["Space", "Cmd+Shift+E"])
         #expect(ShortcutCommands.resolve(["openHelp": ["F1", "?"]]).bindings[.openHelp] == ["F1", "?"])
-        // Quick Look given Space has it, and Open in Viewer keeps ⌘E.
+        // Quick Look given Space has it, and Open in Viewer keeps ⇧⌘E.
         let quickLook = ShortcutCommands.resolve(["quickLookSelection": ["Cmd+Y", "Space"]])
         #expect(quickLook.bindings[.quickLookSelection] == ["Cmd+Y", "Space"])
-        #expect(quickLook.bindings[.viewFile] == ["Cmd+E"])
+        #expect(quickLook.bindings[.viewFile] == ["Cmd+Shift+E"])
         #expect(quickLook.commandByShortcut["Space"] == .quickLookSelection)
         // Space is Open in Viewer's or Quick Look's alone.
         #expect(ShortcutCommands.resolve(["newTab": ["Space"]]).bindings[.newTab] == [])
@@ -440,8 +442,8 @@ struct ShortcutsTests {
             (.moveToOtherPane, ["F6"]), (.swapPanes, ["Cmd+U"]), (.showFolderInOtherPane, []),
             (.goToOtherPaneFolder, []), (.equalizePanes, []),
             (.openSelection, ["Cmd+O"]), (.openSelectedItem, ["Cmd+Down"]),
-            (.editSelection, ["Cmd+Shift+E"]), (.quickLookSelection, ["Cmd+Y"]),
-            (.viewFile, ["Cmd+E", "Space"]),
+            (.editSelection, ["Cmd+E"]), (.quickLookSelection, ["Cmd+Y"]),
+            (.viewFile, ["Cmd+Shift+E", "Space"]),
             (.deselectAll, ["Cmd+Option+A"]), (.invertSelection, []), (.renameSelection, ["F2"]),
             (.duplicateSelection, ["Cmd+D"]), (.makeAlias, ["Ctrl+Cmd+A"]), (.showOriginal, []), (.convertImages, []),
             (.moveSelection, ["Cmd+Shift+M"]),

@@ -666,7 +666,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // Open and Edit go by the limit in Settings: ⌘O and ⌘⇧E over "Ask before opening more than" say so; only the
+        // Open and Edit go by the limit in Settings: ⌘O and ⌘E over "Ask before opening more than" say so; only the
         // toolbar's button and the menu's item dim.
         @Test func openAndEditKeysOverTheLimitTellOfIt() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -685,11 +685,10 @@ extension ExplorerWindowlessTests {
             tab.dialogs.last?.dismiss()
             #expect(await waitUntil { tab.frontAlert == nil })
             try select(["note.txt", "second.txt"], tab)
-            // Edit in Text Editor has no key until one is chosen in Settings: the one it had.
-            tab.updatePreferences { $0.shortcutOverrides["editSelection"] = ["Cmd+Shift+E"] }
+            // Edit in Text Editor's own key, ⌘E.
             menu.report()
             #expect(!menu.isEnabled("editSelection"))
-            try press("e", [.command, .shift], in: tab, menu: menu)
+            try press("e", .command, in: tab, menu: menu)
             #expect(await waitUntil { tab.frontAlert != nil })
             tab.dialogs.last?.dismiss()
             await harness.close()
@@ -704,7 +703,7 @@ extension ExplorerWindowlessTests {
             tab.updatePreferences { $0.openItemLimit = 1 }
             try select(["Alpha", "Beta"], tab)
             menu.report()
-            try press("e", [.command, .shift], in: tab, menu: menu)
+            try press("e", .command, in: tab, menu: menu)
             try? await Task.sleep(for: .milliseconds(25))
             #expect(tab.frontAlert == nil)
             #expect(spy.all.isEmpty)

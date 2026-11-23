@@ -2008,7 +2008,7 @@
           "selectedTreeTargetKind": "filesystemFolder"
         }
       },
-      "output": "⇧⌘E"
+      "output": "⌘E"
     },
     {
       "name": "shortcut edit: content/favorite",
@@ -2024,7 +2024,7 @@
           "selectedTreeTargetKind": "favorite"
         }
       },
-      "output": "⇧⌘E"
+      "output": "⌘E"
     },
     {
       "name": "shortcut edit: content/favoritesRoot",
@@ -2040,7 +2040,7 @@
           "selectedTreeTargetKind": "favoritesRoot"
         }
       },
-      "output": "⇧⌘E"
+      "output": "⌘E"
     },
     {
       "name": "shortcut edit: content/null",
@@ -2056,7 +2056,7 @@
           "selectedTreeTargetKind": null
         }
       },
-      "output": "⇧⌘E"
+      "output": "⌘E"
     },
     {
       "name": "shortcut edit: null/filesystemFolder",
