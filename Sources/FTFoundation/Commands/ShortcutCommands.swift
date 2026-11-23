@@ -159,6 +159,12 @@ public enum ShortcutCommands {
         return has(normalizeAll(command.ownKeys), shortcut)
     }
 
+    /// The commands that may have a key `refusal(for:)` refuses to the rest: Quick Look and Open in Viewer for Space,
+    /// File Trail Help for ?.
+    public static func commandsKeeping(_ shortcut: String) -> [ShortcutCommandID] {
+        all.filter { !$0.fixed && has(normalizeAll($0.ownKeys), shortcut) }.map(\.id)
+    }
+
     // MARK: Resolution
 
     /// The keys every command has, given what was saved. Saved keys are taken as far as they make

@@ -36,14 +36,14 @@ import Testing
         let (_, _, view) = try make()
         #expect(
             view.groups.map { $0.titleText.stringValue } == [
-                "Navigation", "Windows, Tabs and Panes", "Files", "Search", "View", "Viewer", "Standard shortcuts",
+                "Navigation", "Windows, Tabs and Panes", "Files", "Search", "View", "Viewer", "Standard Shortcuts",
             ])
         #expect(view.rows.count == ShortcutCommands.all.count)
         #expect(texts("settings.shortcuts.intro", in: view) == [ShortcutSettingsText.intro])
         let standard = try #require(view.groups.last)
         #expect(
             standard.groupNote?.stringValue
-                == "The same in every Mac app, or shared with text fields. They can not be changed here.")
+                == "These are the same in every Mac app or shared with text fields, so they can’t be changed.")
         #expect(standard.rows.allSatisfy { $0.slots.isEmpty && !$0.fixedKeys.isEmpty })
         #expect(views("settings.shortcuts.fixedKey", in: standard).count > 0)
         // A command with one key has a second, empty place; the keys are written ⌃⌥⇧⌘ then the key.
@@ -108,18 +108,24 @@ import Testing
         let place = try slot(.newFolder, 1, in: view)
         place.perform()
         press(Kit.letter("n", window: controller.window), in: controller)
-        #expect(notes(view) == ["N on its own types into the file list. Add ⌘ or ⌃."])
+        #expect(notes(view) == ["Typing N in the list filters it. Add ⌘ or ⌃ to use it as a shortcut."])
         #expect(place.isRecording)
         let note = try #require(view.row(.newFolder)?.noteText)
         // A key that can't be used is said in the danger colour.
         #expect(note.textColor == NSColor(AppearanceModel.shared.theme.palette.dangerText))
         // ⌘Q goes to the recorder too, and is Quit's for good.
         press(Kit.letter("q", .command, window: controller.window), in: controller)
-        #expect(notes(view) == ["⌘Q is Quit File Trail, which can not be changed."])
+        #expect(notes(view) == ["⌘Q is always Quit File Trail. Choose another key."])
         press(Kit.letter(".", .command, window: controller.window), in: controller)
-        #expect(notes(view) == ["⌘. cancels a dialog, as Esc does."])
+        #expect(notes(view) == ["⌘. cancels dialogs, as Esc does. Choose another key."])
         press(Kit.key(Kit.space.0, code: Kit.space.1, window: controller.window), in: controller)
-        #expect(notes(view) == ["Space on its own types into the file list. Add ⌘ or ⌃."])
+        // Space and ? on their own are kept for the commands that may have them, and the note names those.
+        #expect(
+            notes(view) == [
+                "Only Quick Look or Open in Viewer can have Space on its own. Add ⌘ or ⌃ to use it for New Folder."
+            ])
+        press(Kit.key("?", code: 44, modifiers: .shift, window: controller.window), in: controller)
+        #expect(notes(view) == ["Only File Trail Help can have ? on its own. Add ⌘ or ⌃ to use it for New Folder."])
         #expect(place.isRecording)
         // Open in Viewer has Space by default, its second key after ⇧⌘E, and can have it back; Quick Look can be
         // given it, though no other command can have it.
@@ -133,7 +139,7 @@ import Testing
         #expect(notes(view).isEmpty)
         try slot(.viewFile, 1, in: view).perform()
         press(Kit.key(Kit.space.0, code: Kit.space.1, window: controller.window), in: controller)
-        #expect(notes(view) == ["Space is used by Quick Look."])
+        #expect(notes(view) == ["Space is already used by Quick Look."])
         Kit.click(view.row(.viewFile)?.reassignButton)
         #expect(try slot(.viewFile, 1, in: view).stringValue == "Space")
         #expect(try slot(.quickLookSelection, 1, in: view).stringValue == "+")
@@ -166,7 +172,7 @@ import Testing
         let (controller, recorder, view) = try make()
         try slot(.newFolder, 1, in: view).perform()
         press(Kit.letter("d", .command, window: controller.window), in: controller)
-        #expect(notes(view) == ["⌘D is used by Duplicate."])
+        #expect(notes(view) == ["⌘D is already used by Duplicate."])
         let row = try #require(view.row(.newFolder))
         #expect(row.reassignButton?.title == "Reassign")
         #expect(row.reassignButton?.isDefault == true)
@@ -188,7 +194,7 @@ import Testing
         let (controller, _, view) = try make()
         try slot(.newFolder, 1, in: view).perform()
         press(Kit.key("+", code: 24, modifiers: [.command, .shift], window: controller.window), in: controller)
-        #expect(notes(view) == ["⌘+ is used by Make Bigger."])
+        #expect(notes(view) == ["⌘+ is already used by Make Bigger."])
         Kit.click(view.row(.newFolder)?.reassignButton)
         #expect(view.row(.newFolder)?.slots.map(\.stringValue) == ["⇧⌘N", "⌘+"])
         #expect(view.row(.increaseSize)?.slots.map(\.stringValue).contains("⌘+") == false)
@@ -202,9 +208,9 @@ import Testing
         let place = try slot(.trashSelection, 1, in: view)
         place.perform()
         press(Kit.letter("n", window: controller.window), in: controller)
-        #expect(notes(view) == ["N on its own types into the file list. Add ⌘ or ⌃."])
+        #expect(notes(view) == ["Typing N in the list filters it. Add ⌘ or ⌃ to use it as a shortcut."])
         #expect(press(Kit.letter("d", .command, window: controller.window), in: controller))
-        #expect(notes(view) == ["⌘D is used by Duplicate."])
+        #expect(notes(view) == ["⌘D is already used by Duplicate."])
         Kit.layout(controller)
         let row = try #require(view.row(.trashSelection))
         let width = row.frame.width
@@ -235,7 +241,7 @@ import Testing
         place.perform()
         #expect(!place.focusIsVisible)
         press(Kit.letter("d", .command, window: window), in: controller)
-        #expect(notes(view) == ["⌘D is used by Duplicate."])
+        #expect(notes(view) == ["⌘D is already used by Duplicate."])
         #expect(window.firstResponder === place)
         #expect(!place.isRecording)
         #expect(!place.focusIsVisible)
@@ -259,7 +265,7 @@ import Testing
         let place = row.slots[1]
         place.perform()
         press(Kit.letter("d", .command, window: window), in: controller)
-        #expect(notes(view) == ["⌘D is used by Duplicate."])
+        #expect(notes(view) == ["⌘D is already used by Duplicate."])
         #expect(row.clearButtons[0].isHidden)
         let entered = try #require(
             NSEvent.enterExitEvent(
@@ -402,7 +408,7 @@ import Testing
         #expect(built.menu.performKeyEquivalent(with: commandD))
         #expect(view.model.note == nil)
         #expect(controller.window?.performKeyEquivalent(with: commandD) == true)
-        #expect(notes(view) == ["⌘D is used by Duplicate."])
+        #expect(notes(view) == ["⌘D is already used by Duplicate."])
     }
 
     @Test func resetsOneCommandTakingItsDefaultKeyBackOrAllOfThem() throws {
@@ -414,7 +420,7 @@ import Testing
         let duplicate = try #require(view.row(.duplicateSelection))
         #expect(duplicate.restoreButton.accessibilityLabel() == "Restore Default for Duplicate")
         Kit.click(duplicate.restoreButton)
-        #expect(notes(view) == ["Taken back from New Folder."])
+        #expect(notes(view) == ["New Folder had its default key, and no longer has it."])
         #expect(view.row(.duplicateSelection)?.slots.first?.stringValue == "⌘D")
         // Back where they started: nothing differs.
         #expect(recorder.current.shortcutOverrides.isEmpty)
@@ -436,7 +442,7 @@ import Testing
         press(up, in: controller)
         #expect(
             notes(view) == [
-                "macOS may use ⌃↑ itself, for Mission Control. It works here once that is switched off in System Settings → Keyboard → Keyboard Shortcuts."
+                "macOS may use ⌃↑ for Mission Control. To use it here, turn it off in System Settings → Keyboard → Keyboard Shortcuts → Mission Control."
             ])
         #expect(view.row(.newFolder)?.slots.map(\.stringValue) == ["⇧⌘N", "⌃↑"])
     }

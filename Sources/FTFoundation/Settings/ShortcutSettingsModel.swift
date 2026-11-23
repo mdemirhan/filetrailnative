@@ -29,16 +29,16 @@ public enum ShortcutRowNote: Equatable, Sendable {
     public var text: String {
         switch self {
         case .refused(_, let text), .info(_, let text): text
-        case .conflict(_, _, let shortcut, let other): "\(ShortcutLabels.format(shortcut)) is used by \(other)."
+        case .conflict(_, _, let shortcut, let other): "\(ShortcutLabels.format(shortcut)) is already used by \(other)."
         }
     }
 }
 
 /// The texts of Settings › Shortcuts.
 public enum ShortcutSettingsText {
-    public static let intro = "Click a key and press the new one. Esc cancels, and ⌫ removes the key."
+    public static let intro = "Click a shortcut or +, then press the new keys. Esc cancels, and ⌫ removes the shortcut."
     public static let standardGroupNote =
-        "The same in every Mac app, or shared with text fields. They can not be changed here."
+        "These are the same in every Mac app or shared with text fields, so they can’t be changed."
     public static let searchPlaceholder = "Search commands or keys"
 
     /// And Rename's while Return renames.
@@ -48,7 +48,7 @@ public enum ShortcutSettingsText {
         case .openSelectedItem: "Does what a double-click does."
         case .toggleFavorite: "Removes the folder when it is a favorite already."
         case .increaseSize, .decreaseSize, .resetSize:
-            "The icons in the Icons view, the columns in the Compact List, the previews in Previews; a PDF or a document a pane shows zooms."
+            "Resizes the icons, the Compact List’s columns or the previews, and zooms a PDF or document in a pane."
         case .closePane: "Closes the tab when it has one pane."
         case .closeTab: "Closes the tab with both its panes."
         case .duplicatePane: "Opens a copy of this pane beside it, in place of the other pane if there is one."
@@ -58,7 +58,7 @@ public enum ShortcutSettingsText {
 
     /// The group's title above its card.
     public static func groupTitle(_ group: ShortcutGroup) -> String {
-        group == .standard ? "Standard shortcuts" : group.label
+        group == .standard ? "Standard Shortcuts" : group.label
     }
 
     /// The label without a trailing "…".
@@ -70,24 +70,36 @@ public enum ShortcutSettingsText {
         withoutEllipsis(ShortcutCommands.definition(id).label)
     }
 
-    public static func refusal(_ refusal: ShortcutCommands.Refusal, _ shortcut: String) -> String {
+    /// Why `shortcut` can't be given to `id`.
+    public static func refusal(_ refusal: ShortcutCommands.Refusal, _ shortcut: String, for id: ShortcutCommandID)
+        -> String
+    {
         let keys = ShortcutLabels.format(shortcut)
         switch refusal {
-        case .needsCommandOrControl: return "\(keys) on its own types into the file list. Add ⌘ or ⌃."
-        case .needsModifier: return "\(keys) on its own moves around the list. Add ⌘, ⌃ or ⌥."
-        case .fixedCommand(let command): return "\(keys) is \(label(command)), which can not be changed."
-        case .cancelsDialogs: return "\(keys) cancels a dialog, as Esc does."
-        case .macOS: return "macOS keeps \(keys) for itself."
+        case .needsCommandOrControl:
+            let keeping = ShortcutCommands.commandsKeeping(shortcut)
+            if !keeping.isEmpty {
+                return "Only \(keeping.map(label).joined(separator: " or ")) can have \(keys) on its own. "
+                    + "Add ⌘ or ⌃ to use it for \(label(id))."
+            }
+            return "Typing \(keys) in the list filters it. Add ⌘ or ⌃ to use it as a shortcut."
+        case .needsModifier: return "The list already uses \(keys). Add ⌘, ⌃ or ⌥ to use it as a shortcut."
+        case .fixedCommand(let command): return "\(keys) is always \(label(command)). Choose another key."
+        case .cancelsDialogs: return "\(keys) cancels dialogs, as Esc does. Choose another key."
+        case .macOS: return "macOS uses \(keys) itself, so File Trail never sees it. Choose another key."
         }
     }
 
     public static func missionControl(_ shortcut: String) -> String {
-        "macOS may use \(ShortcutLabels.format(shortcut)) itself, for Mission Control. It works here once that is "
-            + "switched off in System Settings → Keyboard → Keyboard Shortcuts."
+        "macOS may use \(ShortcutLabels.format(shortcut)) for Mission Control. To use it here, turn it off in "
+            + "System Settings → Keyboard → Keyboard Shortcuts → Mission Control."
     }
 
     public static func takenBack(_ commands: [ShortcutCommandID]) -> String {
-        "Taken back from \(commands.map(label).joined(separator: " and "))."
+        let names = commands.map(label).joined(separator: " and ")
+        return commands.count == 1
+            ? "\(names) had its default key, and no longer has it."
+            : "\(names) had its default keys, and no longer have them."
     }
 
     public static func noMatch(_ query: String) -> String {
@@ -173,7 +185,7 @@ public struct ShortcutSettingsModel: Equatable, Sendable {
             return nil
         case .refused(let refusal):
             // Recording goes on, so another key can be tried straight away.
-            note = .refused(slot.id, ShortcutSettingsText.refusal(refusal, shortcut))
+            note = .refused(slot.id, ShortcutSettingsText.refusal(refusal, shortcut, for: slot.id))
             return nil
         case .conflict(let other):
             recording = nil
