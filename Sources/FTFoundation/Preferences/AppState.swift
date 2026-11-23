@@ -115,11 +115,10 @@ public enum AppStateReader {
             windows = []
         } else {
             // Saved before there could be more than one window: the one window, with the tabs and panels the
-            // preferences held.
-            windows = [
-                StoredExplorerWindow(
-                    id: legacyWindowID, bounds: windowState(file["window"]), session: preferences.windowSession)
-            ]
+            // preferences held, its tab in front one of its tabs, as a saved window's is.
+            var session = preferences.windowSession
+            session.activeTabIndex = session.frontTabIndex
+            windows = [StoredExplorerWindow(id: legacyWindowID, bounds: windowState(file["window"]), session: session)]
         }
         return AppState(
             preferences: preferences, windows: windows, lastClosedWindow: lastClosedWindow,

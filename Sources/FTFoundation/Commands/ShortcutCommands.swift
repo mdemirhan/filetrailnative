@@ -190,13 +190,8 @@ public enum ShortcutCommands {
                 claim(command, shortcuts)
             }
         }
-        // Close Tab had ⌘W before Close Pane was a command of its own. Someone who gave Close Tab other keys then, or
-        // none, chose what ⌘W does: Close Pane, which closes the tab too when it has one pane, doesn't take ⌘W back
-        // unasked. It has the keys it is given in Settings.
-        let closeTabWasSet = customized(definition(.closeTab)) != nil
         for command in all where bindings[command.id] == nil {
-            let unasked = command.id == .closePane && closeTabWasSet
-            claim(command, unasked ? [] : defaultBindings[command.id] ?? [])
+            claim(command, defaultBindings[command.id] ?? [])
         }
         var commandByShortcut: [String: ShortcutCommandID] = [:]
         var order: [String] = []

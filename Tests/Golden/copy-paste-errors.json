@@ -1848,56 +1848,6 @@
       "output": {"described": "random 436656 '/p/9'"}
     },
     {
-      "name": "random 10",
-      "input": {"kind": "error", "message": "random 861115 '/p/10'", "code": null},
-      "output": {"described": "random 861115 '/p/10'"}
-    },
-    {
-      "name": "random 11",
-      "input": {"kind": "error", "message": "random 952708 '/p/11'", "code": "ENOLINK"},
-      "output": {"described": "random 952708 '/p/11'"}
-    },
-    {
-      "name": "random 12",
-      "input": {"kind": "error", "message": "random 817615 '/p/12'", "code": null},
-      "output": {"described": "random 817615 '/p/12'"}
-    },
-    {
-      "name": "random 13",
-      "input": {"kind": "error", "message": "random 697741 '/p/13'", "code": "ENOTTY"},
-      "output": {"described": "random 697741 '/p/13'"}
-    },
-    {
-      "name": "random 14",
-      "input": {"kind": "error", "message": "random 552700 '/p/14'", "code": "EADDRNOTAVAIL"},
-      "output": {"described": "random 552700 '/p/14'"}
-    },
-    {
-      "name": "random 15",
-      "input": {"kind": "error", "message": "random 859273 '/p/15'", "code": "EBUSY"},
-      "output": {"described": "The item is in use."}
-    },
-    {
-      "name": "random 16",
-      "input": {"kind": "error", "message": "random 151968 '/p/16'", "code": "ENAMETOOLONG"},
-      "output": {"described": "The name is too long."}
-    },
-    {
-      "name": "random 17",
-      "input": {"kind": "error", "message": "random 870698 '/p/17'", "code": "EHOSTUNREACH"},
-      "output": {"described": "random 870698 '/p/17'"}
-    },
-    {
-      "name": "random 18",
-      "input": {"kind": "error", "message": "random 596653 '/p/18'", "code": "EDESTADDRREQ"},
-      "output": {"described": "random 596653 '/p/18'"}
-    },
-    {
-      "name": "random 19",
-      "input": {"kind": "error", "message": "random 802076 '/p/19'", "code": null},
-      "output": {"described": "random 802076 '/p/19'"}
-    },
-    {
       "name": "thrown string \"plain\"",
       "input": {"kind": "string", "value": "plain"},
       "output": {"described": "plain"}

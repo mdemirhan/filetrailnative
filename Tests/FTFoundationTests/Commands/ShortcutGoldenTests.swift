@@ -133,7 +133,50 @@ struct ShortcutGoldenTests {
 
     @Test func keysAreResolvedAsTheGoldenFileSays() throws {
         let cases: [GoldenCase<Input, Output>] = try GoldenChanges.load(suite: "shortcut-resolution")
-        #expect(cases.count >= 301)
+        #expect(cases.count == 30)
         Golden.expectMatches(cases) { Self.run($0) }
+    }
+
+    // Over many saved sets of keys, made from every default key, a few others and some that make no sense, given to
+    // commands that exist and one that doesn't: no command has more keys than it may, no key runs two commands, a key
+    // press runs the command that has the key, and the keys saved for the result give the same result again.
+    @Test func keysResolveByTheirRulesOverManySavedSets() {
+        var random = SeededGenerator(seed: 0x5EED_0002)
+        let keys =
+            Array(Set(ShortcutCommands.all.flatMap(\.defaults))).sorted()
+            + ["Cmd+K", "Cmd+Shift+K", "Ctrl+Alt+P", "F7", "Cmd+", "", "Hyper+X", "cmd+k"]
+        let commands = ShortcutCommands.all.map(\.id.rawValue) + ["notACommand"]
+        for _ in 0..<300 {
+            var saved: [String: JSONNode] = [:]
+            for _ in 0..<Int.random(in: 0...8, using: &random) {
+                let command = commands.randomElement(using: &random)!
+                let count = Int.random(in: 0...3, using: &random)
+                saved[command] =
+                    Int.random(in: 0..<10, using: &random) == 0
+                    ? .string("Cmd+K")
+                    : .array((0..<count).map { _ in .string(keys.randomElement(using: &random)!) })
+            }
+            let resolved = ShortcutCommands.resolve(JSONNode.object(saved))
+            var holder: [String: ShortcutCommandID] = [:]
+            for (command, shortcuts) in resolved.bindings {
+                #expect(shortcuts.count <= ShortcutCommands.perCommand, "\(command): \(shortcuts)")
+                for shortcut in shortcuts {
+                    #expect(
+                        holder[shortcut] == nil, "\(shortcut) is \(command)'s and \(holder[shortcut]?.rawValue ?? "")'s"
+                    )
+                    holder[shortcut] = command
+                    if !ShortcutCommands.definition(command).fixed {
+                        #expect(resolved.commandByShortcut[shortcut] == command, "\(shortcut) runs \(command)")
+                    }
+                }
+            }
+            for (shortcut, command) in resolved.commandByShortcut {
+                #expect(resolved.bindings[command]?.contains(shortcut) == true, "\(shortcut) isn't \(command)'s")
+            }
+            let again = ShortcutCommands.resolve(ShortcutCommands.overrides(for: resolved.bindings))
+            let differing = resolved.bindings.keys.filter { again.bindings[$0] != resolved.bindings[$0] }
+                .map { "\($0.rawValue): \(resolved.bindings[$0] ?? []) then \(again.bindings[$0] ?? [])" }
+            #expect(differing.isEmpty, "\(differing) from \(ShortcutCommands.overrides(for: resolved.bindings))")
+        }
     }
 }

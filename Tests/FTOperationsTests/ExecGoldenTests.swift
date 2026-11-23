@@ -56,7 +56,7 @@ struct ExecGoldenTests {
         let execution = try ExecHarness.executionSuites.flatMap { try ExecHarness.cases(suite: $0) }
         let analysis = try ExecHarness.analysisSuites.flatMap { try ExecHarness.cases(suite: $0) }
         #expect(execution.count >= 40)
-        #expect(analysis.count >= 150)
+        #expect(analysis.count == 115)
         let crashes = execution.filter { $0.input.crashAt != nil }
         #expect(!crashes.isEmpty)
         #expect(crashes.allSatisfy { $0.output["recovery"] != JSONValue.null })

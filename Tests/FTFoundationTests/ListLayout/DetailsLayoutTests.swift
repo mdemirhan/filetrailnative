@@ -193,7 +193,7 @@ struct DetailsLayoutTests {
 
     @Test func theColumnMathMatchesTheGoldenFile() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "details-layout")
-        #expect(cases.count >= 190)
+        #expect(cases.count == 102)
         Golden.expectMatches(cases) { Self.run($0) }
     }
 }

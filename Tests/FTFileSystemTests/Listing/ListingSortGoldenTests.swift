@@ -151,10 +151,54 @@ struct ListingSortGoldenTests {
                 == ["Apple", "apple", "élan", "file1.txt", "File2.txt", "file10.txt", "Zebra"])
     }
 
+    // Over many folders of files and folders, some hidden, each with a size and a date of its own: the listing holds
+    // what is shown, each once, folders first when asked, and its files in the order of their size or date.
+    @Test func listsByTheRulesOverManyFolders() async throws {
+        var random = SeededGenerator(seed: 0x5EED_0004)
+        for _ in 0..<200 {
+            let count = Int.random(in: 0...12, using: &random)
+            let sizes = Array(1...40).shuffled(using: &random)
+            let dates = Array(1...40).shuffled(using: &random)
+            let items = (0..<count).map { index in
+                let hidden = Int.random(in: 0..<5, using: &random) == 0
+                let folder = Int.random(in: 0..<3, using: &random) == 0
+                return Item(
+                    name: (hidden ? "." : "") + (folder ? "Folder \(index)" : "file \(index).txt"),
+                    type: folder ? "dir" : "file", size: Int64(sizes[index] * 100),
+                    mtimeMs: 1_700_000_000_000 + Int64(dates[index]) * 1000, mode: 0o644)
+            }
+            let sortBy = [DirectorySortKey.name, .modified, .size, .kind].randomElement(using: &random)!
+            let direction = SortDirection.allCases.randomElement(using: &random)!
+            let includeHidden = Bool.random(using: &random)
+            let foldersFirst = Bool.random(using: &random)
+            let service = DirectoryService(
+                fileSystem: Self.fileSystem(items), cache: ResponseCache(),
+                kinds: KindLabeler(describer: nil), order: NameOrder(localeIdentifier: ""))
+            let entries = try await service.snapshot(
+                path: Self.directory, includeHidden: includeHidden, sortBy: sortBy, sortDirection: direction,
+                foldersFirst: foldersFirst
+            ).entries
+            let shown = items.filter { includeHidden || !$0.name.hasPrefix(".") }
+            let context =
+                "\(sortBy) \(direction) hidden \(includeHidden) folders first \(foldersFirst): \(items.map(\.name))"
+            #expect(entries.map(\.name).sorted() == shown.map(\.name).sorted(), "\(context)")
+            let byName = Dictionary(uniqueKeysWithValues: items.map { ($0.name, $0) })
+            let isFolder = entries.map { byName[$0.name]?.type == "dir" }
+            if foldersFirst, let firstFile = isFolder.firstIndex(of: false) {
+                #expect(!isFolder[firstFile...].contains(true), "\(context)")
+            }
+            guard sortBy == .size || sortBy == .modified else { continue }
+            let files = entries.compactMap { byName[$0.name] }.filter { $0.type == "file" }
+            let keys = files.map { sortBy == .size ? $0.size : $0.mtimeMs }
+            let ordered = direction == .ascending ? keys.sorted() : keys.sorted(by: >)
+            #expect(keys == ordered, "\(context)")
+        }
+    }
+
     @Test("Tests/Golden/listing-sort.json")
     func sortsAsTheGoldenFileSays() async throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "listing-sort")
-        #expect(cases.count >= 300)
+        #expect(cases.count == 35)
         var lines: [String] = []
         var failures = 0
         for testCase in cases {

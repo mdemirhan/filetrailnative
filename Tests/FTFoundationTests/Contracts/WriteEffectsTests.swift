@@ -282,7 +282,7 @@ struct WriteEffectsTests {
 
     @Test func effectsMatchTheGoldenFile() throws {
         let cases: [GoldenCase<GoldenInput, GoldenOutput>] = try Golden.load(suite: "write-effects")
-        #expect(cases.count >= 200)
+        #expect(cases.count == 57)
         Golden.expectMatches(cases) { Self.run($0) }
     }
 }

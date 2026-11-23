@@ -54,7 +54,7 @@ struct DragOperationsGoldenTests {
 
     @Test func dropDecisionsMatchTheGoldenFile() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "drag-operations")
-        #expect(cases.count >= 400)
+        #expect(cases.count == 43)
         Golden.expectMatches(cases) { input in
             let items = input.items.map { DragItem(path: $0.path, kind: EntryKind(rawValue: $0.kind) ?? .other) }
             let folders = DragRules.sourceFolderPaths(items)

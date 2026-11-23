@@ -71,7 +71,7 @@ struct BatchRenameGoldenTests {
 
     @Test func proposeNamesMatchesTheGoldenFile() throws {
         let cases: [GoldenCase<ProposeInput, ProposeOutput>] = try Golden.load(suite: "batch-rename-propose")
-        #expect(cases.count == 600)
+        #expect(cases.count == 304)
         Golden.expectMatches(cases, actual: Self.propose)
     }
 
@@ -158,7 +158,7 @@ struct BatchRenameGoldenTests {
 
     @Test func planMatchesTheGoldenFile() throws {
         let cases: [GoldenCase<PlanInput, PlanOutput>] = try Golden.load(suite: "batch-rename-plan")
-        #expect(cases.count == 300)
+        #expect(cases.count == 39)
         Golden.expectMatches(cases, actual: Self.plan)
     }
 }

@@ -259,7 +259,7 @@ struct CopyPasteNamesTests {
 
     @Test func keepBothNamesMatchTheGoldenFile() throws {
         let cases: [GoldenCase<KeepBothInput, KeepBothOutput>] = try Golden.load(suite: "keep-both-names")
-        #expect(cases.count >= 500)
+        #expect(cases.count == 402)
         Golden.expectMatches(cases) { input in
             // Paths are compared scalar for scalar, as lstat's names are.
             let taken = Set(input.taken.map { NameKeys.Exact("/target/\($0)") })

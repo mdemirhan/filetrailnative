@@ -258,25 +258,21 @@ struct ShortcutsTests {
         #expect(bindings[.closePane] == [])
     }
 
-    // Close Tab given other keys, or none, before Close Pane was a command: ⌘W was taken off on purpose, and Close
-    // Pane, which closes a tab of one pane too, doesn't bring it back. It has ⌘W again once it is reset, or given.
-    @Test func closePaneTakesNoKeyUnaskedWhereCloseTabWasGivenItsOwn() {
+    // Close Pane keeps ⌘W whatever Close Tab is given, but ⌘W itself: Close Tab left with no key, by hand or because
+    // another command took ⌥⌘W in Settings, leaves ⌘W closing the pane, then and after the keys are saved and read.
+    @Test func closePaneKeepsCmdWWhateverCloseTabIsGiven() {
         #expect(ShortcutCommands.resolve(.object([:])).bindings[.closePane] == ["Cmd+W"])
-        let earlier: [JSONNode] = [
+        let saved: [JSONNode] = [
             .object(["closeTab": .array([])]), .object(["closeTab": .array([.string("Ctrl+W")])]),
+            .object(["newWindow": .array([.string("Cmd+Option+W")])]),
         ]
-        for saved in earlier {
-            let resolved = ShortcutCommands.resolve(saved)
-            #expect(resolved.bindings[.closePane] == [], "\(saved)")
-            #expect(resolved.commandByShortcut["Cmd+W"] == nil, "\(saved)")
-            #expect(ShortcutCommands.reset(resolved.bindings, .closePane).bindings[.closePane] == ["Cmd+W"])
+        for keys in saved {
+            let resolved = ShortcutCommands.resolve(keys)
+            #expect(resolved.bindings[.closePane] == ["Cmd+W"], "\(keys)")
+            #expect(resolved.commandByShortcut["Cmd+W"] == .closePane, "\(keys)")
+            let again = ShortcutCommands.resolve(ShortcutCommands.overrides(for: resolved.bindings))
+            #expect(again.bindings[.closePane] == ["Cmd+W"], "\(keys) saved and read")
         }
-        let given = ShortcutCommands.resolve(
-            .object(["closeTab": .array([]), "closePane": .array([.string("Cmd+W")])]))
-        #expect(given.bindings[.closePane] == ["Cmd+W"])
-        // What is saved again says so, so it holds from then on.
-        let saved = ShortcutCommands.overrides(for: ShortcutCommands.resolve(earlier[0]).bindings)
-        #expect(saved["closePane"] == [])
     }
 
     // Settings says under Close Pane and Close Tab what each closes, as their names alone don't.

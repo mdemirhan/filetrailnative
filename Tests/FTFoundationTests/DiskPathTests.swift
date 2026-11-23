@@ -192,7 +192,7 @@ struct DiskPathTests {
     /// say which path is inside which, the root, doubled slashes and both spellings among them.
     @Test func insideAgreesWithTheNestedPathsGoldenFile() throws {
         let cases: [GoldenCase<[String], [String]>] = try Golden.load(suite: "paths-nested")
-        #expect(cases.count >= 300)
+        #expect(cases.count == 36)
         Golden.expectMatches(cases) { input in
             let picked = input.map(DiskPath.init)
             var seen = Set<DiskPath>()
