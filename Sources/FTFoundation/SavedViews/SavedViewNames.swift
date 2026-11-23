@@ -2,8 +2,8 @@ import Foundation
 
 /// A saved view with a name of its own: a tab view or a window view.
 public protocol NamedSavedView: Sendable {
-    var id: String { get }
-    var name: String { get }
+    var id: String { get set }
+    var name: String { get set }
 }
 
 /// The rules of the names of tab views and window views, the same for both: unique ignoring case and how an accented
@@ -71,11 +71,70 @@ public enum SavedViewNames {
         return candidate
     }
 
-    /// What a window says when no more can be saved: "No more tab views can be saved".
-    public static func limitTitle(kind: String) -> String { "No more \(kind) can be saved" }
+    /// The title of the notice when no more can be kept: "Too Many Tab Views". `kind` is "tab views" or "window
+    /// views".
+    public static func limitTitle(kind: String) -> String {
+        let words = kind.split(separator: " ").map { $0.prefix(1).uppercased() + $0.dropFirst() }
+        return "Too Many " + words.joined(separator: " ")
+    }
 
-    public static let limitMessage =
-        "Up to \(limit) are kept. Remove one in the Views window (Layout \u{203A} Manage) to save another."
+    /// The notice when a new one named `name` can't be saved, `count` being kept: what the limit is, and the two ways
+    /// on, removing one or saving over one.
+    public static func saveLimitMessage(kind: String, name: String, count: Int) -> String {
+        "File Trail keeps up to \(FormatLocale.count(limit)) \(kind), and you have \(FormatLocale.count(count)). "
+            + "To save \u{201C}\(name)\u{201D}, remove one you no longer use, or save over one by choosing its name "
+            + "from the list."
+    }
+
+    /// The notice when `copies` copies can't be made, `count` being kept: what the limit is, how many more fit when
+    /// some do, and the ways on.
+    public static func duplicateLimitMessage(kind: String, count: Int, copies: Int) -> String {
+        let room = max(0, limit - count)
+        let keeps = "File Trail keeps up to \(FormatLocale.count(limit)) \(kind)"
+        guard copies > 1, room > 0 else {
+            let them =
+                copies > 1
+                ? "some you no longer use to make room for the copies"
+                : "one you no longer use to make room for the copy"
+            return "\(keeps), and you have \(FormatLocale.count(count)). Remove \(them)."
+        }
+        let fit = room == 1 ? "1 more copy fits" : "\(FormatLocale.count(room)) more copies fit"
+        return "\(keeps). You have \(FormatLocale.count(count)), so \(fit), and \(FormatLocale.count(copies)) are "
+            + "selected. Remove some you no longer use, or select fewer."
+    }
+
+    /// `views` with a copy of each of the ones with `ids` right after it, each copy's name the first "… copy" no other
+    /// has, and the copies' ids. Nothing is copied when the copies would take the list past `limit`.
+    public static func duplicating<View: NamedSavedView>(
+        _ ids: [String], in views: [View], newID: () -> String
+    ) -> (views: [View], copies: [String]) {
+        let chosen = views.filter { view in ids.contains { $0.utf16.elementsEqual(view.id.utf16) } }
+        guard !chosen.isEmpty, views.count + chosen.count <= limit else { return (views, []) }
+        var result = views
+        var copies: [String] = []
+        for original in chosen {
+            guard let at = index(id: original.id, in: result) else { continue }
+            var copy = original
+            copy.id = newID()
+            copy.name = copyName(of: original.name, in: result)
+            result.insert(copy, at: at + 1)
+            copies.append(copy.id)
+        }
+        return (result, copies)
+    }
+
+    /// `views` with the ones at `rows` taken out and put, in their order, before the one at `target` (the end at
+    /// `views.count`); where the first of them landed. Out of range changes nothing.
+    public static func moving<View>(_ views: [View], rows: IndexSet, to target: Int) -> (views: [View], at: Int) {
+        guard !rows.isEmpty, rows.allSatisfy(views.indices.contains), target >= 0, target <= views.count else {
+            return (views, rows.first ?? 0)
+        }
+        let moved = rows.map { views[$0] }
+        var rest = views.enumerated().filter { !rows.contains($0.offset) }.map(\.element)
+        let at = target - rows.count(in: 0..<target)
+        rest.insert(contentsOf: moved, at: at)
+        return (rest, at)
+    }
 
     /// A new id, with the kind's prefix.
     public static func newID(_ prefix: String) -> String {

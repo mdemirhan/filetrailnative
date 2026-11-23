@@ -171,4 +171,54 @@ struct WindowViewsTests {
         let second = SavedViewNames.copyName(of: long, in: longViews)
         #expect(second.hasSuffix(" copy 2") && second.utf16.count == SavedViewNames.nameLimit)
     }
+
+    @Test func theLimitsNoticesSayWhatIsKeptAndHowToGoOn() {
+        #expect(SavedViewNames.limitTitle(kind: "tab views") == "Too Many Tab Views")
+        #expect(SavedViewNames.limitTitle(kind: "window views") == "Too Many Window Views")
+        #expect(
+            SavedViewNames.saveLimitMessage(kind: "window views", name: "Work", count: 20)
+                == "File Trail keeps up to 20 window views, and you have 20. To save \u{201C}Work\u{201D}, remove one "
+                + "you no longer use, or save over one by choosing its name from the list.")
+        #expect(
+            SavedViewNames.duplicateLimitMessage(kind: "tab views", count: 20, copies: 1)
+                == "File Trail keeps up to 20 tab views, and you have 20. Remove one you no longer use to make room "
+                + "for the copy.")
+        #expect(
+            SavedViewNames.duplicateLimitMessage(kind: "tab views", count: 20, copies: 3)
+                == "File Trail keeps up to 20 tab views, and you have 20. Remove some you no longer use to make room "
+                + "for the copies.")
+        #expect(
+            SavedViewNames.duplicateLimitMessage(kind: "tab views", count: 18, copies: 3)
+                == "File Trail keeps up to 20 tab views. You have 18, so 2 more copies fit, and 3 are selected. "
+                + "Remove some you no longer use, or select fewer.")
+        #expect(
+            SavedViewNames.duplicateLimitMessage(kind: "tab views", count: 19, copies: 2)
+                == "File Trail keeps up to 20 tab views. You have 19, so 1 more copy fits, and 2 are selected. "
+                + "Remove some you no longer use, or select fewer.")
+    }
+
+    @Test func severalAreCopiedEachAfterItsOwnAndNoneWhenTheyDontFit() {
+        let views = ["A", "B", "A copy"].map { TabView(id: $0, name: $0, keeps: TabViewKeeps(panes: 1)) }
+        var next = 0
+        let result = SavedViewNames.duplicating(["A copy", "A"], in: views) {
+            next += 1
+            return "new\(next)"
+        }
+        #expect(result.views.map(\.name) == ["A", "A copy 2", "B", "A copy", "A copy copy"])
+        #expect(result.copies == ["new1", "new2"])
+        let full = (0..<(SavedViewNames.limit - 1)).map {
+            TabView(id: "t\($0)", name: "V\($0)", keeps: TabViewKeeps(panes: 1))
+        }
+        #expect(SavedViewNames.duplicating(["t0", "t1"], in: full) { "x" }.views == full)
+        #expect(SavedViewNames.duplicating(["t0"], in: full) { "x" }.views.count == SavedViewNames.limit)
+    }
+
+    @Test func rowsMovedTogetherKeepTheirOrder() {
+        let list = ["a", "b", "c", "d", "e"]
+        #expect(SavedViewNames.moving(list, rows: [1, 3], to: 0) == (["b", "d", "a", "c", "e"], 0))
+        #expect(SavedViewNames.moving(list, rows: [0, 2], to: 5) == (["b", "d", "e", "a", "c"], 3))
+        #expect(SavedViewNames.moving(list, rows: [0, 4], to: 2) == (["b", "a", "e", "c", "d"], 1))
+        #expect(SavedViewNames.moving(list, rows: [1], to: 2).views == list)
+        #expect(SavedViewNames.moving(list, rows: [9], to: 0).views == list)
+    }
 }

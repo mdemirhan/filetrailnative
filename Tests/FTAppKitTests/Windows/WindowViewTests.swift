@@ -175,8 +175,87 @@ extension ExplorerWindowlessTests {
             draft.name = "One More"
             try tabSheet(tab).onSave(draft)
             #expect(await waitUntil { tab.frontAlert != nil })
-            #expect(tab.frontAlert?.titleLabel.stringValue == SavedViewNames.limitTitle(kind: "tab views"))
+            let alert = try #require(tab.frontAlert)
+            #expect(alert.titleLabel.stringValue == "Too Many Tab Views")
+            #expect(
+                alert.messageLabel?.stringValue
+                    == "File Trail keeps up to 20 tab views, and you have 20. To save \u{201C}One More\u{201D}, remove "
+                    + "one you no longer use, or save over one by choosing its name from the list.")
+            #expect(alert.buttons.map(\.title) == ["Manage Tab Views\u{2026}", "OK"])
             #expect(tab.preferences.tabViews == full)
+            // OK goes back to the sheet, still up, where a name kept can be chosen to save over.
+            alert.buttons[1].performClick(nil)
+            #expect(await waitUntil { tab.frontAlert == nil })
+            draft = try tabSheet(tab).draft
+            draft.name = "kept 3"
+            try tabSheet(tab).onSave(draft)
+            #expect(await waitUntil { tab.dialogs.isEmpty })
+            #expect(tab.preferences.tabViews.count == SavedViewNames.limit)
+            #expect(tab.preferences.tabViews[3].id == "t3" && tab.preferences.tabViews[3].name == "kept 3")
+        }
+
+        // Several rows are selected at once: Duplicate copies each after its own, a drag moves them together in their
+        // order, and Remove takes them all; Apply and Edit… act on one alone, and are dimmed for several.
+        @Test func severalTabViewsAreDuplicatedMovedAndRemovedAtOnce() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            tab.updatePreferences {
+                $0.tabViews = ["A", "B", "C", "D"].map {
+                    TabView(id: $0.lowercased(), name: $0, keeps: TabViewKeeps(panes: 1))
+                }
+            }
+            let views = ViewsWindowController(views: SharedFolderViews(), open: { _ in })
+            defer { views.close() }
+            views.present(.tabViews, explorer: tab)
+            let pane: SavedViewsPane = views.tabViewsPane
+            pane.reload()
+            let table = pane.tableView
+            #expect(table.allowsMultipleSelection)
+            func button(_ name: String) throws -> NSButton {
+                try #require(SheetInput.control("tabViews.\(name)", in: pane, as: NSButton.self))
+            }
+            table.selectRowIndexes([0, 2], byExtendingSelection: false)
+            #expect(try !button("apply").isEnabled && !button("edit").isEnabled)
+            #expect(try button("duplicate").isEnabled && button("remove").isEnabled)
+
+            try SheetInput.click("tabViews.duplicate", in: pane)
+            #expect(tab.preferences.tabViews.map(\.name) == ["A", "A copy", "B", "C", "C copy", "D"])
+            // The copies are left selected.
+            #expect(table.selectedRowIndexes == [1, 4])
+
+            pane.move(rows: [1, 4], to: 6)
+            #expect(tab.preferences.tabViews.map(\.name) == ["A", "B", "C", "D", "A copy", "C copy"])
+            #expect(table.selectedRowIndexes == [4, 5])
+            pane.move(rows: [0, 3], to: 2)
+            #expect(tab.preferences.tabViews.map(\.name) == ["B", "A", "D", "C", "A copy", "C copy"])
+            #expect(table.selectedRowIndexes == [1, 2])
+
+            table.selectRowIndexes([0, 4, 5], byExtendingSelection: false)
+            try SheetInput.click("tabViews.remove", in: pane)
+            #expect(tab.preferences.tabViews.map(\.name) == ["A", "D", "C"])
+        }
+
+        // Duplicate past the limit adds nothing.
+        @Test func severalCopiesPastTheLimitAddNothing() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            let kept = (0..<(SavedViewNames.limit - 2)).map {
+                WindowView(id: "w\($0)", name: "Kept \($0)", tabs: [nil])
+            }
+            tab.updatePreferences { $0.windowViews = kept }
+            let views = ViewsWindowController(views: SharedFolderViews(), open: { _ in })
+            defer { views.close() }
+            views.present(.windowViews, explorer: tab)
+            let pane: SavedViewsPane = views.windowViewsPane
+            pane.reload()
+            pane.tableView.selectRowIndexes([0, 1, 2], byExtendingSelection: false)
+            pane.duplicateSelected()
+            #expect(tab.preferences.windowViews == kept)
+            pane.tableView.selectRowIndexes([0, 1], byExtendingSelection: false)
+            pane.duplicateSelected()
+            #expect(tab.preferences.windowViews.count == SavedViewNames.limit)
         }
 
         // MARK: Saving a window view

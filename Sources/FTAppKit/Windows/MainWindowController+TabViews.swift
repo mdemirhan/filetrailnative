@@ -94,8 +94,12 @@ extension MainWindowController {
             Task { @MainActor in done(await Self.pickDirectory(start, window)) }
         }
         sheet.onSave = { [weak self, weak scrim] draft in
+            guard let self else { return }
+            // A new one past the limit keeps the sheet up, so another name can be chosen to save over.
+            guard !self.refusesNew(draft.name, editing: draft.editingID, in: self.tabViews, kind: .tabViews, scrim)
+            else { return }
             scrim?.dismiss()
-            self?.saveTabView(draft)
+            self.saveTabView(draft)
         }
         scrim.present(in: window)
     }
@@ -106,10 +110,7 @@ extension MainWindowController {
         guard !name.isEmpty else { return }
         let kept = tabViews
         let taken = SavedViewNames.index(named: name, in: kept)
-        if draft.editingID == nil, taken == nil, kept.count >= SavedViewNames.limit {
-            showNotice(title: SavedViewNames.limitTitle(kind: "tab views"), message: SavedViewNames.limitMessage)
-            return
-        }
+        guard draft.editingID != nil || taken != nil || kept.count < SavedViewNames.limit else { return }
         let id = draft.editingID ?? taken.map { kept[$0].id } ?? SavedViewNames.newID("tab-view")
         let view = TabView(id: id, name: name, keeps: draft.keeps)
         updatePreferences { preferences in
@@ -155,8 +156,13 @@ extension MainWindowController {
             self?.manageViews(.windowViews)
         }
         sheet.onSave = { [weak self, weak scrim] draft in
+            guard let self else { return }
+            guard
+                !self.refusesNew(
+                    draft.name, editing: draft.editingID, in: self.preferences.windowViews, kind: .windowViews, scrim)
+            else { return }
             scrim?.dismiss()
-            self?.saveWindowView(draft)
+            self.saveWindowView(draft)
         }
         scrim.present(in: window)
     }
@@ -176,10 +182,7 @@ extension MainWindowController {
         guard !name.isEmpty else { return }
         let kept = preferences.windowViews
         let taken = SavedViewNames.index(named: name, in: kept)
-        if draft.editingID == nil, taken == nil, kept.count >= SavedViewNames.limit {
-            showNotice(title: SavedViewNames.limitTitle(kind: "window views"), message: SavedViewNames.limitMessage)
-            return
-        }
+        guard draft.editingID != nil || taken != nil || kept.count < SavedViewNames.limit else { return }
         let id = draft.editingID ?? taken.map { kept[$0].id } ?? SavedViewNames.newID("window-view")
         let view = draft.windowView(id: id)
         updatePreferences { preferences in
@@ -192,6 +195,35 @@ extension MainWindowController {
             }
             preferences.windowViews = list
         }
+    }
+
+    /// Whether a sheet's Save would add a new one, named `typed`, to `kept` already at the limit: then a notice over
+    /// the sheet says so, with Manage… to the Views window (the sheet closing) and OK back to the sheet, where another
+    /// name can be chosen to save over.
+    private func refusesNew<View: NamedSavedView>(
+        _ typed: String, editing: String?, in kept: [View], kind: ViewsWindowPane, _ sheet: DialogScrim?
+    ) -> Bool {
+        let name = SavedViewNames.clean(typed)
+        guard editing == nil, !name.isEmpty, SavedViewNames.index(named: name, in: kept) == nil,
+            kept.count >= SavedViewNames.limit, let window
+        else { return false }
+        let words = kind == .tabViews ? "tab views" : "window views"
+        let manage = kind == .tabViews ? "Manage Tab Views\u{2026}" : "Manage Window Views\u{2026}"
+        let count = kept.count
+        // Stacked, so Manage Tab Views… shows whole on the narrow alert.
+        Task { @MainActor [weak self, weak sheet] in
+            let goes = await InWindowAlerts.ask(
+                title: SavedViewNames.limitTitle(kind: words),
+                message: SavedViewNames.saveLimitMessage(kind: words, name: name, count: count),
+                buttons: [
+                    AlertButtonSpec(manage, .plain, answer: true), AlertButtonSpec("OK", .default, answer: false),
+                ],
+                escape: false, stacked: true, in: window)
+            guard goes else { return }
+            sheet?.dismiss()
+            self?.manageViews(kind)
+        }
+        return true
     }
 
     /// Manage Folder Views…, Manage Tab Views… or Manage Window Views…: the Views window on that pane, acting on this

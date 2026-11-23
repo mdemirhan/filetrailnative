@@ -142,7 +142,7 @@ extension HelpContent {
                         HelpRow(
                             label: "The Views window",
                             description:
-                                "Layout > Manage Folder Views…, Manage Tab Views… and Manage Window Views… open one window with a pane for each. Tab Views and Window Views list each by name with what it keeps: drag to reorder (the first five can be given keys in Settings > Shortcuts), double-click a name to rename it, and Edit, Duplicate, Remove or apply one."
+                                "Layout > Manage Folder Views…, Manage Tab Views… and Manage Window Views… open one window with a pane for each. Tab Views and Window Views list each by name with what it keeps: drag to reorder (the first five can be given keys in Settings > Shortcuts), double-click a name to rename it, and Edit, Duplicate, Remove or apply one. Select several rows to duplicate, drag or remove them together."
                         ),
                         HelpRow(
                             label: "Between windows",

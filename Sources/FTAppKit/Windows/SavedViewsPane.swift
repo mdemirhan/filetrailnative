@@ -4,8 +4,9 @@ import FTFoundation
 
 /// A pane of the Views window listing the tab views or the window views in the menu's order: the key each has now (the
 /// first five can be given keys), its name, and what it keeps. Drag a row to reorder; double-click a name to rename
-/// it. Apply (a tab view, to the window that opened the Views window) or Open (a window view), Edit…, Duplicate,
-/// Remove and Remove All… act on the selected row. Tab Views also chooses the tab view new tabs open with.
+/// it. Several rows can be selected: Duplicate, Remove and a drag act on all of them; Apply (a tab view, to the window
+/// that opened the Views window) or Open (a window view) and Edit… on one alone. Remove All… removes every row. Tab
+/// Views also chooses the tab view new tabs open with.
 @MainActor
 final class SavedViewsPane: NSView, NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate {
     enum Kind {
@@ -75,6 +76,7 @@ final class SavedViewsPane: NSView, NSTableViewDataSource, NSTableViewDelegate, 
         table.style = .inset
         table.rowHeight = 24
         table.usesAlternatingRowBackgroundColors = true
+        table.allowsMultipleSelection = true
         table.columnAutoresizingStyle = .lastColumnOnlyAutoresizingStyle
         table.dataSource = self
         table.delegate = self
@@ -154,9 +156,9 @@ final class SavedViewsPane: NSView, NSTableViewDataSource, NSTableViewDelegate, 
 
     // MARK: Rows
 
-    /// The rows again from the preferences, keeping the selection where its view still is.
+    /// The rows again from the preferences, keeping the selection where its views still are.
     func reload() {
-        let selectedID = selectedRow.map(\.id)
+        let selectedIDs = selectedRows.map(\.id)
         let preferences = preferences
         let bindings = ShortcutCommands.resolve(preferences.shortcutOverrides).bindings
         let slots = kind == .tab ? TabViews.slotCommands : WindowViews.slotCommands
@@ -186,21 +188,34 @@ final class SavedViewsPane: NSView, NSTableViewDataSource, NSTableViewDelegate, 
             }
         }
         table.reloadData()
-        if let selectedID, let row = rows.firstIndex(where: { $0.id == selectedID }) {
-            table.selectRowIndexes([row], byExtendingSelection: false)
-        }
+        select(selectedIDs)
         empty.isHidden = !rows.isEmpty
         scroll.isHidden = rows.isEmpty
         syncButtons()
     }
 
+    /// The selected rows, in the list's order.
+    private var selectedRows: [Row] {
+        table.selectedRowIndexes.filter(rows.indices.contains).map { rows[$0] }
+    }
+
+    /// The selected row when it is the only one: what Apply or Open and Edit… act on.
     private var selectedRow: Row? {
-        rows.indices.contains(table.selectedRow) ? rows[table.selectedRow] : nil
+        let selected = selectedRows
+        return selected.count == 1 ? selected[0] : nil
+    }
+
+    /// The rows of the views with these ids selected, and no other.
+    private func select(_ ids: [String]) {
+        let indexes = IndexSet(rows.indices.filter { ids.contains(rows[$0].id) })
+        table.selectRowIndexes(indexes, byExtendingSelection: false)
     }
 
     private func syncButtons() {
-        let on = selectedRow != nil
-        for button in [apply, edit, duplicate, remove] { button.isEnabled = on && explorer != nil }
+        let one = selectedRow != nil && explorer != nil
+        let any = !selectedRows.isEmpty && explorer != nil
+        for button in [apply, edit] { button.isEnabled = one }
+        for button in [duplicate, remove] { button.isEnabled = any }
         removeAll.isEnabled = !rows.isEmpty && explorer != nil
     }
 
@@ -285,15 +300,17 @@ final class SavedViewsPane: NSView, NSTableViewDataSource, NSTableViewDelegate, 
         }
     }
 
-    private func say(_ text: String, in window: NSWindow) {
+    private func say(_ text: String, _ detail: String = "", in window: NSWindow) {
         let alert = NSAlert()
         alert.messageText = text
+        alert.informativeText = detail
         alert.addButton(withTitle: "OK")
         alert.beginSheetModal(for: window)
     }
 
     // MARK: Reordering
 
+    /// One item for each row dragged: the selected rows when the drag starts on one of them, else the row alone.
     func tableView(_ tableView: NSTableView, pasteboardWriterForRow row: Int) -> (any NSPasteboardWriting)? {
         let item = NSPasteboardItem()
         item.setString(String(row), forType: Self.dragType)
@@ -311,26 +328,32 @@ final class SavedViewsPane: NSView, NSTableViewDataSource, NSTableViewDelegate, 
         _ tableView: NSTableView, acceptDrop info: any NSDraggingInfo, row: Int,
         dropOperation: NSTableView.DropOperation
     ) -> Bool {
-        guard let text = info.draggingPasteboard.pasteboardItems?.first?.string(forType: Self.dragType),
-            let from = Int(text)
-        else { return false }
-        move(from: from, to: row)
+        let dragged = (info.draggingPasteboard.pasteboardItems ?? []).compactMap {
+            $0.string(forType: Self.dragType).flatMap { Int($0) }
+        }
+        guard !dragged.isEmpty else { return false }
+        move(rows: IndexSet(dragged), to: row)
         return true
     }
 
-    /// The row at `from` put before the row at `to` (the end at `rows.count`): the keys go by the new order.
-    func move(from: Int, to: Int) {
-        guard rows.indices.contains(from), to >= 0, to <= rows.count, to != from, to != from + 1 else { return }
-        // Where it lands once taken out of its place.
-        let landed = to > from ? to - 1 : to
+    /// The row at `from` put before the row at `to` (the end at `rows.count`).
+    func move(from: Int, to: Int) { move(rows: [from], to: to) }
+
+    /// The rows at `moved` put, in their order, before the row at `to` (the end at `rows.count`), and left selected:
+    /// the keys go by the new order.
+    func move(rows moved: IndexSet, to: Int) {
+        guard !moved.isEmpty, moved.allSatisfy(rows.indices.contains), to >= 0, to <= rows.count else { return }
+        let ids = moved.map { rows[$0].id }
+        let order = rows.map(\.id)
+        guard SavedViewNames.moving(order, rows: moved, to: to).views != order else { return }
         update { preferences in
             switch kind {
-            case .tab: preferences.tabViews = SettingsValues.move(preferences.tabViews, from: from, to: landed)
+            case .tab: preferences.tabViews = SavedViewNames.moving(preferences.tabViews, rows: moved, to: to).views
             case .window:
-                preferences.windowViews = SettingsValues.move(preferences.windowViews, from: from, to: landed)
+                preferences.windowViews = SavedViewNames.moving(preferences.windowViews, rows: moved, to: to).views
             }
         }
-        table.selectRowIndexes([landed], byExtendingSelection: false)
+        select(ids)
         syncButtons()
     }
 
@@ -360,60 +383,74 @@ final class SavedViewsPane: NSView, NSTableViewDataSource, NSTableViewDelegate, 
         }
     }
 
-    /// Duplicate: a copy after the row, its name the first "… copy" no other has. At the limit, a notice says so and
-    /// nothing is added.
+    /// Duplicate: a copy after each selected row, its name the first "… copy" no other has; the copies are left
+    /// selected. When they don't fit under the limit, a notice says so and nothing is added.
     @objc func duplicateSelected() {
-        guard let row = selectedRow else { return }
-        guard ids.count < SavedViewNames.limit else {
-            if let window { say(SavedViewNames.limitTitle(kind: kind.words), in: window) }
+        let selected = selectedRows.map(\.id)
+        guard !selected.isEmpty else { return }
+        guard ids.count + selected.count <= SavedViewNames.limit else {
+            if let window {
+                say(
+                    SavedViewNames.limitTitle(kind: kind.words),
+                    SavedViewNames.duplicateLimitMessage(kind: kind.words, count: ids.count, copies: selected.count),
+                    in: window)
+            }
             return
         }
+        var copies: [String] = []
         update { preferences in
             switch kind {
             case .tab:
-                guard let at = SavedViewNames.index(id: row.id, in: preferences.tabViews),
-                    preferences.tabViews.count < SavedViewNames.limit
-                else { return }
-                var copy = preferences.tabViews[at]
-                copy.id = SavedViewNames.newID("tab-view")
-                copy.name = SavedViewNames.copyName(of: copy.name, in: preferences.tabViews)
-                preferences.tabViews.insert(copy, at: at + 1)
+                let result = SavedViewNames.duplicating(selected, in: preferences.tabViews) {
+                    SavedViewNames.newID("tab-view")
+                }
+                preferences.tabViews = result.views
+                copies = result.copies
             case .window:
-                guard let at = SavedViewNames.index(id: row.id, in: preferences.windowViews),
-                    preferences.windowViews.count < SavedViewNames.limit
-                else { return }
-                var copy = preferences.windowViews[at]
-                copy.id = SavedViewNames.newID("window-view")
-                copy.name = SavedViewNames.copyName(of: copy.name, in: preferences.windowViews)
-                preferences.windowViews.insert(copy, at: at + 1)
+                let result = SavedViewNames.duplicating(selected, in: preferences.windowViews) {
+                    SavedViewNames.newID("window-view")
+                }
+                preferences.windowViews = result.views
+                copies = result.copies
             }
         }
-        if let index = rows.firstIndex(where: { $0.id == row.id }) {
-            table.selectRowIndexes([index + 1], byExtendingSelection: false)
-        }
+        select(copies)
+        syncButtons()
     }
 
-    /// Remove doesn't ask, as Duplicate is there first and nothing else is lost; a tab view that window views use asks
-    /// first, naming them, as their tabs will open as new tabs.
+    /// Remove takes the selected rows without asking, as Duplicate is there first and nothing else is lost; tab views
+    /// that window views use ask first, naming them, as their tabs will open as new tabs.
     @objc func removeSelected() {
-        guard let row = selectedRow else { return }
-        let users = kind == .tab ? WindowViews.using(row.id, in: preferences.windowViews) : []
+        let selected = selectedRows
+        guard !selected.isEmpty else { return }
+        let gone = selected.map(\.id)
+        let windowViews = preferences.windowViews
+        let used = kind == .tab ? selected.filter { !WindowViews.using($0.id, in: windowViews).isEmpty } : []
+        let users = windowViews.filter { view in used.contains { !WindowViews.using($0.id, in: [view]).isEmpty } }
         guard !users.isEmpty, let window else {
-            forget([row.id])
+            forget(gone)
             return
         }
-        let names = users.map { "\u{201C}\($0.name)\u{201D}" }
+        func quoted(_ names: [String]) -> String {
+            ListFormatter.localizedString(byJoining: names.map { "\u{201C}\($0)\u{201D}" })
+        }
         let alert = NSAlert()
-        alert.messageText = "Remove \u{201C}\(row.name)\u{201D}?"
-        alert.informativeText =
-            "It is used by \(ListFormatter.localizedString(byJoining: names)). Their tabs will open as new tabs."
+        if selected.count == 1 {
+            alert.messageText = "Remove \u{201C}\(selected[0].name)\u{201D}?"
+            alert.informativeText = "It is used by \(quoted(users.map(\.name))). Their tabs will open as new tabs."
+        } else {
+            alert.messageText = "Remove \(FormatLocale.count(selected.count)) \(kind.words)?"
+            alert.informativeText =
+                "\(quoted(used.map(\.name))) \(used.count == 1 ? "is" : "are") used by \(quoted(users.map(\.name))). "
+                + "Their tabs will open as new tabs."
+        }
         alert.addButton(withTitle: "Remove")
         alert.addButton(withTitle: "Cancel")
         alert.buttons.first?.hasDestructiveAction = true
         alert.beginSheetModal(for: window) { [weak self] response in
             MainActor.assumeIsolated {
                 guard response == .alertFirstButtonReturn else { return }
-                self?.forget([row.id])
+                self?.forget(gone)
             }
         }
     }
@@ -473,7 +510,7 @@ final class SavedViewsPane: NSView, NSTableViewDataSource, NSTableViewDelegate, 
     #endif
 }
 
-/// The list of saved views: ⌫ removes the selected one, Esc closes the window.
+/// The list of saved views: ⌫ removes the selected ones, Esc closes the window.
 final class SavedViewsTable: NSTableView {
     var onDelete: () -> Void = {}
 
