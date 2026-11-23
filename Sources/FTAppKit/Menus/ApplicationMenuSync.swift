@@ -140,15 +140,17 @@ final class ApplicationMenuSync {
         sync()
     }
 
-    /// The menu is about to be used: what the window it acts on can do now, whatever has changed without saying so
-    /// (a dialog, a sheet).
+    /// The menu is about to be used: what the window it acts on can do now, and which window has the keyboard,
+    /// whatever has changed without saying so (a dialog, a sheet, the keyboard back in an explorer window the menu
+    /// last saw as another).
     func readWindowState() {
-        let focused = dependencies.focusedWindow()
-        guard let entry = focused.flatMap({ dependencies.windows.handle(for: $0) }) ?? dependencies.windows.front,
-            let state = entry.currentMenuState, states[entry.windowID] != state
-        else { return }
-        states[entry.windowID] = state
-        sync()
+        let current = currentExplorer()
+        var changed = current.focus != appliedFocus
+        if let entry = current.entry, let state = entry.currentMenuState, states[entry.windowID] != state {
+            states[entry.windowID] = state
+            changed = true
+        }
+        if changed { sync() }
     }
 
     /// The state an explorer window last reported (`.initial` before it has).
@@ -195,8 +197,10 @@ final class ApplicationMenuSync {
         guard let menu = dependencies.menu() else { return }
         let current = currentExplorer()
         let facts = windowFacts(
-            explorerFocused: current.explorerFocused, otherWindowFocused: current.otherWindowFocused)
-        ApplicationMenu.apply(ApplicationMenu.itemStates(current.state, window: facts)) { menu.control($0) }
+            explorerFocused: current.focus.explorerFocused, otherWindowFocused: current.focus.otherWindowFocused)
+        let state = current.entry.flatMap { states[$0.windowID] } ?? .initial
+        ApplicationMenu.apply(ApplicationMenu.itemStates(state, window: facts)) { menu.control($0) }
+        appliedFocus = current.focus
     }
 
     /// What the menu's items would show for `target` with the keyboard in it, as it is now: the command palette's
@@ -216,19 +220,31 @@ final class ApplicationMenuSync {
                 undo: undoHistory.undo, redo: undoHistory.redo, cantUndo: undoHistory.cantUndo))
     }
 
+    /// Which explorer window the menu acts on and where the keyboard is, as the menu was last brought up to date for.
+    private struct Focus: Equatable {
+        var windowID: Int?
+        var explorerFocused: Bool
+        var otherWindowFocused: Bool
+    }
+
+    /// What the last `sync` applied; nil before the first.
+    private var appliedFocus: Focus?
+
     /// The explorer window the menu shows, and whether it has the keyboard. With no window focused (the app is in the
     /// background) the front window's state stays while it is on screen; with every explorer window minimized or none
     /// open there is none to act on.
-    private func currentExplorer() -> (state: ApplicationMenuState, explorerFocused: Bool, otherWindowFocused: Bool) {
+    private func currentExplorer() -> (entry: (any ExplorerWindowHandle)?, focus: Focus) {
         let focused = dependencies.focusedWindow()
         let focusedEntry = focused.flatMap { dependencies.windows.handle(for: $0) }
         let front = dependencies.windows.front
         let entry = focusedEntry ?? front
         let frontOnScreen = front?.isOnScreen ?? false
         return (
-            entry.flatMap { states[$0.windowID] } ?? .initial,
-            focusedEntry != nil || (focused == nil && frontOnScreen),
-            focused != nil && focusedEntry == nil
+            entry,
+            Focus(
+                windowID: entry?.windowID,
+                explorerFocused: focusedEntry != nil || (focused == nil && frontOnScreen),
+                otherWindowFocused: focused != nil && focusedEntry == nil)
         )
     }
 }

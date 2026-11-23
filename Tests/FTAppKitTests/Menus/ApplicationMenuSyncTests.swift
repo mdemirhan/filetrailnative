@@ -71,6 +71,41 @@ import Testing
         #expect(f.item("mergeAllWindows").isEnabled)
     }
 
+    // The keyboard can come back to an explorer window with nothing telling the menu; the menu asks again as it is
+    // used (opened, or a key matched), and its explorer commands come back on.
+    @Test func readsTheFocusAgainAsTheMenuIsUsed() {
+        let f = Fixture()
+        let a = f.open(1)
+        f.sync.setWindowState(windowID: 1, .initial)
+        f.focused = makeOffscreenWindow()
+        f.sync.sync()
+        #expect(!f.item("trashSelection").isEnabled)
+        #expect(!f.router.validateMenuItem(f.item("trashSelection")))
+
+        f.focused = a.window
+        f.sync.readWindowState()
+
+        #expect(f.item("trashSelection").isEnabled)
+        #expect(f.router.validateMenuItem(f.item("trashSelection")))
+        #expect(f.item("newTab").isEnabled)
+    }
+
+    // And the other way: another window took the keyboard unannounced, so the explorer's commands dim.
+    @Test func dimsTheExplorerCommandsOnceAnotherWindowIsFoundWithTheKeyboard() {
+        let f = Fixture()
+        let a = f.open(1)
+        f.sync.setWindowState(windowID: 1, .initial)
+        f.focused = a.window
+        f.sync.sync()
+        #expect(f.item("trashSelection").isEnabled)
+
+        f.focused = makeOffscreenWindow()
+        f.sync.readWindowState()
+
+        #expect(!f.item("trashSelection").isEnabled)
+        #expect(f.item("newWindow").isEnabled)
+    }
+
     @Test func doesntHearWindowsThatArentExplorerWindows() {
         let f = Fixture()
         let a = f.open(1)
