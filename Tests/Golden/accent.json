@@ -1,18 +1,8 @@
 {
-  "source": {
-    "commit": "e4d0872",
-    "files": [
-      "accent.ts",
-      "theme.ts",
-      "colorUtils.ts"
-    ]
-  },
+  "source": {"commit": "e4d0872", "files": ["accent.ts", "theme.ts", "colorUtils.ts"]},
   "cases": [
     {
-      "input": {
-        "accent": "#007aff",
-        "theme": "light"
-      },
+      "input": {"accent": "#007aff", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#007aff",
@@ -64,10 +54,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#007aff",
-        "theme": "dark"
-      },
+      "input": {"accent": "#007aff", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#007aff",
@@ -119,10 +106,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a550a7",
-        "theme": "light"
-      },
+      "input": {"accent": "#a550a7", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a550a7",
@@ -174,10 +158,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a550a7",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a550a7", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a550a7",
@@ -229,10 +210,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f74f9e",
-        "theme": "light"
-      },
+      "input": {"accent": "#f74f9e", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#f74f9e",
@@ -284,10 +262,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f74f9e",
-        "theme": "dark"
-      },
+      "input": {"accent": "#f74f9e", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#f74f9e",
@@ -339,10 +314,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#e0383e",
-        "theme": "light"
-      },
+      "input": {"accent": "#e0383e", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#e0383e",
@@ -394,10 +366,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#e0383e",
-        "theme": "dark"
-      },
+      "input": {"accent": "#e0383e", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#e0383e",
@@ -449,10 +418,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f7821b",
-        "theme": "light"
-      },
+      "input": {"accent": "#f7821b", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#f7821b",
@@ -504,10 +470,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f7821b",
-        "theme": "dark"
-      },
+      "input": {"accent": "#f7821b", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#f7821b",
@@ -559,10 +522,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ffc600",
-        "theme": "light"
-      },
+      "input": {"accent": "#ffc600", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#ffc600",
@@ -614,10 +574,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ffc600",
-        "theme": "dark"
-      },
+      "input": {"accent": "#ffc600", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#ffc600",
@@ -669,10 +626,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#62ba46",
-        "theme": "light"
-      },
+      "input": {"accent": "#62ba46", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#62ba46",
@@ -724,10 +678,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#62ba46",
-        "theme": "dark"
-      },
+      "input": {"accent": "#62ba46", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#62ba46",
@@ -779,10 +730,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#8c8c8c",
-        "theme": "light"
-      },
+      "input": {"accent": "#8c8c8c", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#8c8c8c",
@@ -834,10 +782,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#8c8c8c",
-        "theme": "dark"
-      },
+      "input": {"accent": "#8c8c8c", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#8c8c8c",
@@ -889,10 +834,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d4845a",
-        "theme": "light"
-      },
+      "input": {"accent": "#d4845a", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#d4845a",
@@ -944,10 +886,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d4845a",
-        "theme": "dark"
-      },
+      "input": {"accent": "#d4845a", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#d4845a",
@@ -999,10 +938,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#000000",
-        "theme": "light"
-      },
+      "input": {"accent": "#000000", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#000000",
@@ -1054,10 +990,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#000000",
-        "theme": "dark"
-      },
+      "input": {"accent": "#000000", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#000000",
@@ -1109,10 +1042,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ffffff",
-        "theme": "light"
-      },
+      "input": {"accent": "#ffffff", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#ffffff",
@@ -1164,10 +1094,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ffffff",
-        "theme": "dark"
-      },
+      "input": {"accent": "#ffffff", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#ffffff",
@@ -1219,10 +1146,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2a5a42",
-        "theme": "light"
-      },
+      "input": {"accent": "#2a5a42", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#2a5a42",
@@ -1274,10 +1198,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2a5a42",
-        "theme": "dark"
-      },
+      "input": {"accent": "#2a5a42", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#2a5a42",
@@ -1329,10 +1250,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#b300a0",
-        "theme": "light"
-      },
+      "input": {"accent": "#b300a0", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#b300a0",
@@ -1384,10 +1302,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#b300a0",
-        "theme": "dark"
-      },
+      "input": {"accent": "#b300a0", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#b300a0",
@@ -1439,10 +1354,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9bd10a",
-        "theme": "light"
-      },
+      "input": {"accent": "#9bd10a", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#9bd10a",
@@ -1494,10 +1406,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9bd10a",
-        "theme": "dark"
-      },
+      "input": {"accent": "#9bd10a", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#9bd10a",
@@ -1549,10 +1458,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#700942",
-        "theme": "light"
-      },
+      "input": {"accent": "#700942", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#700942",
@@ -1604,10 +1510,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#700942",
-        "theme": "dark"
-      },
+      "input": {"accent": "#700942", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#700942",
@@ -1659,10 +1562,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#bc5c08",
-        "theme": "light"
-      },
+      "input": {"accent": "#bc5c08", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#bc5c08",
@@ -1714,10 +1614,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#bc5c08",
-        "theme": "dark"
-      },
+      "input": {"accent": "#bc5c08", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#bc5c08",
@@ -1769,10 +1666,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#eadf51",
-        "theme": "light"
-      },
+      "input": {"accent": "#eadf51", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#eadf51",
@@ -1824,10 +1718,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#eadf51",
-        "theme": "dark"
-      },
+      "input": {"accent": "#eadf51", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#eadf51",
@@ -1879,10 +1770,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#b960e9",
-        "theme": "light"
-      },
+      "input": {"accent": "#b960e9", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#b960e9",
@@ -1934,10 +1822,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#b960e9",
-        "theme": "dark"
-      },
+      "input": {"accent": "#b960e9", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#b960e9",
@@ -1989,10 +1874,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#aee2e5",
-        "theme": "light"
-      },
+      "input": {"accent": "#aee2e5", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#aee2e5",
@@ -2044,10 +1926,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#aee2e5",
-        "theme": "dark"
-      },
+      "input": {"accent": "#aee2e5", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#aee2e5",
@@ -2099,10 +1978,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#7467ba",
-        "theme": "light"
-      },
+      "input": {"accent": "#7467ba", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#7467ba",
@@ -2154,10 +2030,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#7467ba",
-        "theme": "dark"
-      },
+      "input": {"accent": "#7467ba", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#7467ba",
@@ -2209,10 +2082,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#17b41e",
-        "theme": "light"
-      },
+      "input": {"accent": "#17b41e", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#17b41e",
@@ -2264,10 +2134,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#17b41e",
-        "theme": "dark"
-      },
+      "input": {"accent": "#17b41e", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#17b41e",
@@ -2319,10 +2186,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#e4ce72",
-        "theme": "light"
-      },
+      "input": {"accent": "#e4ce72", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#e4ce72",
@@ -2374,10 +2238,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#e4ce72",
-        "theme": "dark"
-      },
+      "input": {"accent": "#e4ce72", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#e4ce72",
@@ -2429,10 +2290,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#1ef0b4",
-        "theme": "light"
-      },
+      "input": {"accent": "#1ef0b4", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#1ef0b4",
@@ -2484,10 +2342,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#1ef0b4",
-        "theme": "dark"
-      },
+      "input": {"accent": "#1ef0b4", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#1ef0b4",
@@ -2539,10 +2394,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#731eb1",
-        "theme": "light"
-      },
+      "input": {"accent": "#731eb1", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#731eb1",
@@ -2594,10 +2446,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#731eb1",
-        "theme": "dark"
-      },
+      "input": {"accent": "#731eb1", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#731eb1",
@@ -2649,10 +2498,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#34bc54",
-        "theme": "light"
-      },
+      "input": {"accent": "#34bc54", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#34bc54",
@@ -2704,10 +2550,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#34bc54",
-        "theme": "dark"
-      },
+      "input": {"accent": "#34bc54", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#34bc54",
@@ -2759,10 +2602,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#4aa99a",
-        "theme": "light"
-      },
+      "input": {"accent": "#4aa99a", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#4aa99a",
@@ -2814,10 +2654,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#4aa99a",
-        "theme": "dark"
-      },
+      "input": {"accent": "#4aa99a", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#4aa99a",
@@ -2869,10 +2706,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#01c640",
-        "theme": "light"
-      },
+      "input": {"accent": "#01c640", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#01c640",
@@ -2924,10 +2758,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#01c640",
-        "theme": "dark"
-      },
+      "input": {"accent": "#01c640", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#01c640",
@@ -2979,10 +2810,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a6edba",
-        "theme": "light"
-      },
+      "input": {"accent": "#a6edba", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a6edba",
@@ -3034,10 +2862,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a6edba",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a6edba", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a6edba",
@@ -3089,10 +2914,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#7a2718",
-        "theme": "light"
-      },
+      "input": {"accent": "#7a2718", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#7a2718",
@@ -3144,10 +2966,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#7a2718",
-        "theme": "dark"
-      },
+      "input": {"accent": "#7a2718", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#7a2718",
@@ -3199,10 +3018,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6446a6",
-        "theme": "light"
-      },
+      "input": {"accent": "#6446a6", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#6446a6",
@@ -3254,10 +3070,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6446a6",
-        "theme": "dark"
-      },
+      "input": {"accent": "#6446a6", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#6446a6",
@@ -3309,10 +3122,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#fd43a6",
-        "theme": "light"
-      },
+      "input": {"accent": "#fd43a6", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#fd43a6",
@@ -3364,10 +3174,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#fd43a6",
-        "theme": "dark"
-      },
+      "input": {"accent": "#fd43a6", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#fd43a6",
@@ -3419,10 +3226,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#1026f7",
-        "theme": "light"
-      },
+      "input": {"accent": "#1026f7", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#1026f7",
@@ -3474,10 +3278,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#1026f7",
-        "theme": "dark"
-      },
+      "input": {"accent": "#1026f7", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#1026f7",
@@ -3529,10 +3330,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#be02ff",
-        "theme": "light"
-      },
+      "input": {"accent": "#be02ff", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#be02ff",
@@ -3584,10 +3382,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#be02ff",
-        "theme": "dark"
-      },
+      "input": {"accent": "#be02ff", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#be02ff",
@@ -3639,10 +3434,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#5c39a4",
-        "theme": "light"
-      },
+      "input": {"accent": "#5c39a4", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#5c39a4",
@@ -3694,10 +3486,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#5c39a4",
-        "theme": "dark"
-      },
+      "input": {"accent": "#5c39a4", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#5c39a4",
@@ -3749,10 +3538,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2c85b5",
-        "theme": "light"
-      },
+      "input": {"accent": "#2c85b5", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#2c85b5",
@@ -3804,10 +3590,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2c85b5",
-        "theme": "dark"
-      },
+      "input": {"accent": "#2c85b5", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#2c85b5",
@@ -3859,10 +3642,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#72188d",
-        "theme": "light"
-      },
+      "input": {"accent": "#72188d", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#72188d",
@@ -3914,10 +3694,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#72188d",
-        "theme": "dark"
-      },
+      "input": {"accent": "#72188d", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#72188d",
@@ -3969,10 +3746,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#3be0de",
-        "theme": "light"
-      },
+      "input": {"accent": "#3be0de", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#3be0de",
@@ -4024,10 +3798,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#3be0de",
-        "theme": "dark"
-      },
+      "input": {"accent": "#3be0de", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#3be0de",
@@ -4079,10 +3850,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a15f99",
-        "theme": "light"
-      },
+      "input": {"accent": "#a15f99", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a15f99",
@@ -4134,10 +3902,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a15f99",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a15f99", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a15f99",
@@ -4189,10 +3954,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#20e482",
-        "theme": "light"
-      },
+      "input": {"accent": "#20e482", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#20e482",
@@ -4244,10 +4006,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#20e482",
-        "theme": "dark"
-      },
+      "input": {"accent": "#20e482", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#20e482",
@@ -4299,10 +4058,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ed0091",
-        "theme": "light"
-      },
+      "input": {"accent": "#ed0091", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#ed0091",
@@ -4354,10 +4110,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ed0091",
-        "theme": "dark"
-      },
+      "input": {"accent": "#ed0091", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#ed0091",
@@ -4409,10 +4162,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#1081ef",
-        "theme": "light"
-      },
+      "input": {"accent": "#1081ef", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#1081ef",
@@ -4464,10 +4214,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#1081ef",
-        "theme": "dark"
-      },
+      "input": {"accent": "#1081ef", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#1081ef",
@@ -4519,10 +4266,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#c52017",
-        "theme": "light"
-      },
+      "input": {"accent": "#c52017", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#c52017",
@@ -4574,10 +4318,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#c52017",
-        "theme": "dark"
-      },
+      "input": {"accent": "#c52017", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#c52017",
@@ -4629,10 +4370,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#67c3f4",
-        "theme": "light"
-      },
+      "input": {"accent": "#67c3f4", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#67c3f4",
@@ -4684,10 +4422,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#67c3f4",
-        "theme": "dark"
-      },
+      "input": {"accent": "#67c3f4", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#67c3f4",
@@ -4739,10 +4474,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#0b67a3",
-        "theme": "light"
-      },
+      "input": {"accent": "#0b67a3", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#0b67a3",
@@ -4794,10 +4526,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#0b67a3",
-        "theme": "dark"
-      },
+      "input": {"accent": "#0b67a3", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#0b67a3",
@@ -4849,10 +4578,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#eb67f5",
-        "theme": "light"
-      },
+      "input": {"accent": "#eb67f5", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#eb67f5",
@@ -4904,10 +4630,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#eb67f5",
-        "theme": "dark"
-      },
+      "input": {"accent": "#eb67f5", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#eb67f5",
@@ -4959,10 +4682,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#798699",
-        "theme": "light"
-      },
+      "input": {"accent": "#798699", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#798699",
@@ -5014,10 +4734,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#798699",
-        "theme": "dark"
-      },
+      "input": {"accent": "#798699", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#798699",
@@ -5069,10 +4786,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#bf18ca",
-        "theme": "light"
-      },
+      "input": {"accent": "#bf18ca", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#bf18ca",
@@ -5124,10 +4838,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#bf18ca",
-        "theme": "dark"
-      },
+      "input": {"accent": "#bf18ca", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#bf18ca",
@@ -5179,10 +4890,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2648ae",
-        "theme": "light"
-      },
+      "input": {"accent": "#2648ae", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#2648ae",
@@ -5234,10 +4942,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2648ae",
-        "theme": "dark"
-      },
+      "input": {"accent": "#2648ae", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#2648ae",
@@ -5289,10 +4994,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#59d18b",
-        "theme": "light"
-      },
+      "input": {"accent": "#59d18b", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#59d18b",
@@ -5344,10 +5046,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#59d18b",
-        "theme": "dark"
-      },
+      "input": {"accent": "#59d18b", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#59d18b",
@@ -5399,10 +5098,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#42a8b8",
-        "theme": "light"
-      },
+      "input": {"accent": "#42a8b8", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#42a8b8",
@@ -5454,10 +5150,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#42a8b8",
-        "theme": "dark"
-      },
+      "input": {"accent": "#42a8b8", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#42a8b8",
@@ -5509,10 +5202,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ac340e",
-        "theme": "light"
-      },
+      "input": {"accent": "#ac340e", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#ac340e",
@@ -5564,10 +5254,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ac340e",
-        "theme": "dark"
-      },
+      "input": {"accent": "#ac340e", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#ac340e",
@@ -5619,10 +5306,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#4844c9",
-        "theme": "light"
-      },
+      "input": {"accent": "#4844c9", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#4844c9",
@@ -5674,10 +5358,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#4844c9",
-        "theme": "dark"
-      },
+      "input": {"accent": "#4844c9", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#4844c9",
@@ -5729,10 +5410,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6ffcf2",
-        "theme": "light"
-      },
+      "input": {"accent": "#6ffcf2", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#6ffcf2",
@@ -5784,10 +5462,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6ffcf2",
-        "theme": "dark"
-      },
+      "input": {"accent": "#6ffcf2", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#6ffcf2",
@@ -5839,10 +5514,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#95f657",
-        "theme": "light"
-      },
+      "input": {"accent": "#95f657", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#95f657",
@@ -5894,10 +5566,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#95f657",
-        "theme": "dark"
-      },
+      "input": {"accent": "#95f657", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#95f657",
@@ -5949,10 +5618,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#41c7a5",
-        "theme": "light"
-      },
+      "input": {"accent": "#41c7a5", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#41c7a5",
@@ -6004,10 +5670,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#41c7a5",
-        "theme": "dark"
-      },
+      "input": {"accent": "#41c7a5", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#41c7a5",
@@ -6059,10 +5722,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#0dcd87",
-        "theme": "light"
-      },
+      "input": {"accent": "#0dcd87", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#0dcd87",
@@ -6114,10 +5774,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#0dcd87",
-        "theme": "dark"
-      },
+      "input": {"accent": "#0dcd87", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#0dcd87",
@@ -6169,10 +5826,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#fc6f1f",
-        "theme": "light"
-      },
+      "input": {"accent": "#fc6f1f", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#fc6f1f",
@@ -6224,10 +5878,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#fc6f1f",
-        "theme": "dark"
-      },
+      "input": {"accent": "#fc6f1f", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#fc6f1f",
@@ -6279,10 +5930,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#c64f3e",
-        "theme": "light"
-      },
+      "input": {"accent": "#c64f3e", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#c64f3e",
@@ -6334,10 +5982,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#c64f3e",
-        "theme": "dark"
-      },
+      "input": {"accent": "#c64f3e", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#c64f3e",
@@ -6389,10 +6034,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d4459b",
-        "theme": "light"
-      },
+      "input": {"accent": "#d4459b", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#d4459b",
@@ -6444,10 +6086,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d4459b",
-        "theme": "dark"
-      },
+      "input": {"accent": "#d4459b", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#d4459b",
@@ -6499,10 +6138,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#61d98e",
-        "theme": "light"
-      },
+      "input": {"accent": "#61d98e", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#61d98e",
@@ -6554,10 +6190,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#61d98e",
-        "theme": "dark"
-      },
+      "input": {"accent": "#61d98e", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#61d98e",
@@ -6609,10 +6242,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#4ff7e0",
-        "theme": "light"
-      },
+      "input": {"accent": "#4ff7e0", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#4ff7e0",
@@ -6664,10 +6294,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#4ff7e0",
-        "theme": "dark"
-      },
+      "input": {"accent": "#4ff7e0", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#4ff7e0",
@@ -6719,10 +6346,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#5d68c4",
-        "theme": "light"
-      },
+      "input": {"accent": "#5d68c4", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#5d68c4",
@@ -6774,10 +6398,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#5d68c4",
-        "theme": "dark"
-      },
+      "input": {"accent": "#5d68c4", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#5d68c4",
@@ -6829,10 +6450,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#7d4841",
-        "theme": "light"
-      },
+      "input": {"accent": "#7d4841", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#7d4841",
@@ -6884,10 +6502,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#7d4841",
-        "theme": "dark"
-      },
+      "input": {"accent": "#7d4841", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#7d4841",
@@ -6939,10 +6554,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#20de7c",
-        "theme": "light"
-      },
+      "input": {"accent": "#20de7c", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#20de7c",
@@ -6994,10 +6606,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#20de7c",
-        "theme": "dark"
-      },
+      "input": {"accent": "#20de7c", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#20de7c",
@@ -7049,10 +6658,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a9a5d1",
-        "theme": "light"
-      },
+      "input": {"accent": "#a9a5d1", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a9a5d1",
@@ -7104,10 +6710,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a9a5d1",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a9a5d1", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a9a5d1",
@@ -7159,10 +6762,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#4b8d5b",
-        "theme": "light"
-      },
+      "input": {"accent": "#4b8d5b", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#4b8d5b",
@@ -7214,10 +6814,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#4b8d5b",
-        "theme": "dark"
-      },
+      "input": {"accent": "#4b8d5b", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#4b8d5b",
@@ -7269,10 +6866,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#bc8060",
-        "theme": "light"
-      },
+      "input": {"accent": "#bc8060", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#bc8060",
@@ -7324,10 +6918,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#bc8060",
-        "theme": "dark"
-      },
+      "input": {"accent": "#bc8060", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#bc8060",
@@ -7379,10 +6970,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#491b9c",
-        "theme": "light"
-      },
+      "input": {"accent": "#491b9c", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#491b9c",
@@ -7434,10 +7022,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#491b9c",
-        "theme": "dark"
-      },
+      "input": {"accent": "#491b9c", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#491b9c",
@@ -7489,10 +7074,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#dab966",
-        "theme": "light"
-      },
+      "input": {"accent": "#dab966", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#dab966",
@@ -7544,10 +7126,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#dab966",
-        "theme": "dark"
-      },
+      "input": {"accent": "#dab966", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#dab966",
@@ -7599,10 +7178,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#8ba7e7",
-        "theme": "light"
-      },
+      "input": {"accent": "#8ba7e7", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#8ba7e7",
@@ -7654,10 +7230,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#8ba7e7",
-        "theme": "dark"
-      },
+      "input": {"accent": "#8ba7e7", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#8ba7e7",
@@ -7709,10 +7282,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#824391",
-        "theme": "light"
-      },
+      "input": {"accent": "#824391", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#824391",
@@ -7764,10 +7334,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#824391",
-        "theme": "dark"
-      },
+      "input": {"accent": "#824391", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#824391",
@@ -7819,10 +7386,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#3aae37",
-        "theme": "light"
-      },
+      "input": {"accent": "#3aae37", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#3aae37",
@@ -7874,10 +7438,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#3aae37",
-        "theme": "dark"
-      },
+      "input": {"accent": "#3aae37", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#3aae37",
@@ -7929,10 +7490,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d805ca",
-        "theme": "light"
-      },
+      "input": {"accent": "#d805ca", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#d805ca",
@@ -7984,10 +7542,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d805ca",
-        "theme": "dark"
-      },
+      "input": {"accent": "#d805ca", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#d805ca",
@@ -8039,10 +7594,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#42ff4a",
-        "theme": "light"
-      },
+      "input": {"accent": "#42ff4a", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#42ff4a",
@@ -8094,10 +7646,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#42ff4a",
-        "theme": "dark"
-      },
+      "input": {"accent": "#42ff4a", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#42ff4a",
@@ -8149,10 +7698,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#248ec5",
-        "theme": "light"
-      },
+      "input": {"accent": "#248ec5", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#248ec5",
@@ -8204,10 +7750,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#248ec5",
-        "theme": "dark"
-      },
+      "input": {"accent": "#248ec5", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#248ec5",
@@ -8259,10 +7802,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#982eeb",
-        "theme": "light"
-      },
+      "input": {"accent": "#982eeb", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#982eeb",
@@ -8314,10 +7854,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#982eeb",
-        "theme": "dark"
-      },
+      "input": {"accent": "#982eeb", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#982eeb",
@@ -8369,10 +7906,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#8effc3",
-        "theme": "light"
-      },
+      "input": {"accent": "#8effc3", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#8effc3",
@@ -8424,10 +7958,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#8effc3",
-        "theme": "dark"
-      },
+      "input": {"accent": "#8effc3", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#8effc3",
@@ -8479,10 +8010,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a83f7d",
-        "theme": "light"
-      },
+      "input": {"accent": "#a83f7d", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a83f7d",
@@ -8534,10 +8062,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a83f7d",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a83f7d", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a83f7d",
@@ -8589,10 +8114,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#49e3f8",
-        "theme": "light"
-      },
+      "input": {"accent": "#49e3f8", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#49e3f8",
@@ -8644,10 +8166,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#49e3f8",
-        "theme": "dark"
-      },
+      "input": {"accent": "#49e3f8", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#49e3f8",
@@ -8699,10 +8218,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#576c20",
-        "theme": "light"
-      },
+      "input": {"accent": "#576c20", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#576c20",
@@ -8754,10 +8270,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#576c20",
-        "theme": "dark"
-      },
+      "input": {"accent": "#576c20", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#576c20",
@@ -8809,10 +8322,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#c9e6dc",
-        "theme": "light"
-      },
+      "input": {"accent": "#c9e6dc", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#c9e6dc",
@@ -8864,10 +8374,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#c9e6dc",
-        "theme": "dark"
-      },
+      "input": {"accent": "#c9e6dc", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#c9e6dc",
@@ -8919,10 +8426,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d839de",
-        "theme": "light"
-      },
+      "input": {"accent": "#d839de", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#d839de",
@@ -8974,10 +8478,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d839de",
-        "theme": "dark"
-      },
+      "input": {"accent": "#d839de", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#d839de",
@@ -9029,10 +8530,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#166207",
-        "theme": "light"
-      },
+      "input": {"accent": "#166207", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#166207",
@@ -9084,10 +8582,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#166207",
-        "theme": "dark"
-      },
+      "input": {"accent": "#166207", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#166207",
@@ -9139,10 +8634,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f8dab4",
-        "theme": "light"
-      },
+      "input": {"accent": "#f8dab4", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#f8dab4",
@@ -9194,10 +8686,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f8dab4",
-        "theme": "dark"
-      },
+      "input": {"accent": "#f8dab4", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#f8dab4",
@@ -9249,10 +8738,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#965377",
-        "theme": "light"
-      },
+      "input": {"accent": "#965377", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#965377",
@@ -9304,10 +8790,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#965377",
-        "theme": "dark"
-      },
+      "input": {"accent": "#965377", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#965377",
@@ -9359,10 +8842,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f6c1f6",
-        "theme": "light"
-      },
+      "input": {"accent": "#f6c1f6", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#f6c1f6",
@@ -9414,10 +8894,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f6c1f6",
-        "theme": "dark"
-      },
+      "input": {"accent": "#f6c1f6", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#f6c1f6",
@@ -9469,10 +8946,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#56911e",
-        "theme": "light"
-      },
+      "input": {"accent": "#56911e", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#56911e",
@@ -9524,10 +8998,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#56911e",
-        "theme": "dark"
-      },
+      "input": {"accent": "#56911e", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#56911e",
@@ -9579,10 +9050,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#cf2e1b",
-        "theme": "light"
-      },
+      "input": {"accent": "#cf2e1b", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#cf2e1b",
@@ -9634,10 +9102,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#cf2e1b",
-        "theme": "dark"
-      },
+      "input": {"accent": "#cf2e1b", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#cf2e1b",
@@ -9689,10 +9154,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6867a3",
-        "theme": "light"
-      },
+      "input": {"accent": "#6867a3", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#6867a3",
@@ -9744,10 +9206,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6867a3",
-        "theme": "dark"
-      },
+      "input": {"accent": "#6867a3", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#6867a3",
@@ -9799,10 +9258,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#504bdd",
-        "theme": "light"
-      },
+      "input": {"accent": "#504bdd", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#504bdd",
@@ -9854,10 +9310,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#504bdd",
-        "theme": "dark"
-      },
+      "input": {"accent": "#504bdd", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#504bdd",
@@ -9909,10 +9362,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#da6450",
-        "theme": "light"
-      },
+      "input": {"accent": "#da6450", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#da6450",
@@ -9964,10 +9414,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#da6450",
-        "theme": "dark"
-      },
+      "input": {"accent": "#da6450", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#da6450",
@@ -10019,10 +9466,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a83def",
-        "theme": "light"
-      },
+      "input": {"accent": "#a83def", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a83def",
@@ -10074,10 +9518,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a83def",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a83def", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a83def",
@@ -10129,10 +9570,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#65b2f3",
-        "theme": "light"
-      },
+      "input": {"accent": "#65b2f3", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#65b2f3",
@@ -10184,10 +9622,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#65b2f3",
-        "theme": "dark"
-      },
+      "input": {"accent": "#65b2f3", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#65b2f3",
@@ -10239,10 +9674,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#dd5fc0",
-        "theme": "light"
-      },
+      "input": {"accent": "#dd5fc0", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#dd5fc0",
@@ -10294,10 +9726,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#dd5fc0",
-        "theme": "dark"
-      },
+      "input": {"accent": "#dd5fc0", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#dd5fc0",
@@ -10349,10 +9778,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#dd4d76",
-        "theme": "light"
-      },
+      "input": {"accent": "#dd4d76", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#dd4d76",
@@ -10404,10 +9830,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#dd4d76",
-        "theme": "dark"
-      },
+      "input": {"accent": "#dd4d76", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#dd4d76",
@@ -10459,10 +9882,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#0fd0c4",
-        "theme": "light"
-      },
+      "input": {"accent": "#0fd0c4", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#0fd0c4",
@@ -10514,10 +9934,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#0fd0c4",
-        "theme": "dark"
-      },
+      "input": {"accent": "#0fd0c4", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#0fd0c4",
@@ -10569,10 +9986,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2a085b",
-        "theme": "light"
-      },
+      "input": {"accent": "#2a085b", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#2a085b",
@@ -10624,10 +10038,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2a085b",
-        "theme": "dark"
-      },
+      "input": {"accent": "#2a085b", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#2a085b",
@@ -10679,10 +10090,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#3f9420",
-        "theme": "light"
-      },
+      "input": {"accent": "#3f9420", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#3f9420",
@@ -10734,10 +10142,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#3f9420",
-        "theme": "dark"
-      },
+      "input": {"accent": "#3f9420", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#3f9420",
@@ -10789,10 +10194,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#3bcd56",
-        "theme": "light"
-      },
+      "input": {"accent": "#3bcd56", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#3bcd56",
@@ -10844,10 +10246,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#3bcd56",
-        "theme": "dark"
-      },
+      "input": {"accent": "#3bcd56", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#3bcd56",
@@ -10899,10 +10298,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#7a2e82",
-        "theme": "light"
-      },
+      "input": {"accent": "#7a2e82", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#7a2e82",
@@ -10954,10 +10350,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#7a2e82",
-        "theme": "dark"
-      },
+      "input": {"accent": "#7a2e82", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#7a2e82",
@@ -11009,10 +10402,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a424a7",
-        "theme": "light"
-      },
+      "input": {"accent": "#a424a7", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a424a7",
@@ -11064,10 +10454,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a424a7",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a424a7", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a424a7",
@@ -11119,10 +10506,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#1ba6cc",
-        "theme": "light"
-      },
+      "input": {"accent": "#1ba6cc", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#1ba6cc",
@@ -11174,10 +10558,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#1ba6cc",
-        "theme": "dark"
-      },
+      "input": {"accent": "#1ba6cc", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#1ba6cc",
@@ -11229,10 +10610,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#793881",
-        "theme": "light"
-      },
+      "input": {"accent": "#793881", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#793881",
@@ -11284,10 +10662,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#793881",
-        "theme": "dark"
-      },
+      "input": {"accent": "#793881", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#793881",
@@ -11339,10 +10714,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d92996",
-        "theme": "light"
-      },
+      "input": {"accent": "#d92996", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#d92996",
@@ -11394,10 +10766,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d92996",
-        "theme": "dark"
-      },
+      "input": {"accent": "#d92996", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#d92996",
@@ -11449,10 +10818,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#1a065f",
-        "theme": "light"
-      },
+      "input": {"accent": "#1a065f", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#1a065f",
@@ -11504,10 +10870,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#1a065f",
-        "theme": "dark"
-      },
+      "input": {"accent": "#1a065f", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#1a065f",
@@ -11559,10 +10922,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#adbd4c",
-        "theme": "light"
-      },
+      "input": {"accent": "#adbd4c", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#adbd4c",
@@ -11614,10 +10974,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#adbd4c",
-        "theme": "dark"
-      },
+      "input": {"accent": "#adbd4c", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#adbd4c",
@@ -11669,10 +11026,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#708f7e",
-        "theme": "light"
-      },
+      "input": {"accent": "#708f7e", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#708f7e",
@@ -11724,10 +11078,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#708f7e",
-        "theme": "dark"
-      },
+      "input": {"accent": "#708f7e", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#708f7e",
@@ -11779,10 +11130,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6c0ebd",
-        "theme": "light"
-      },
+      "input": {"accent": "#6c0ebd", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#6c0ebd",
@@ -11834,10 +11182,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6c0ebd",
-        "theme": "dark"
-      },
+      "input": {"accent": "#6c0ebd", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#6c0ebd",
@@ -11889,10 +11234,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#cd4446",
-        "theme": "light"
-      },
+      "input": {"accent": "#cd4446", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#cd4446",
@@ -11944,10 +11286,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#cd4446",
-        "theme": "dark"
-      },
+      "input": {"accent": "#cd4446", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#cd4446",
@@ -11999,10 +11338,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#cbab36",
-        "theme": "light"
-      },
+      "input": {"accent": "#cbab36", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#cbab36",
@@ -12054,10 +11390,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#cbab36",
-        "theme": "dark"
-      },
+      "input": {"accent": "#cbab36", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#cbab36",
@@ -12109,10 +11442,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d9b429",
-        "theme": "light"
-      },
+      "input": {"accent": "#d9b429", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#d9b429",
@@ -12164,10 +11494,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d9b429",
-        "theme": "dark"
-      },
+      "input": {"accent": "#d9b429", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#d9b429",
@@ -12219,10 +11546,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#17ba40",
-        "theme": "light"
-      },
+      "input": {"accent": "#17ba40", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#17ba40",
@@ -12274,10 +11598,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#17ba40",
-        "theme": "dark"
-      },
+      "input": {"accent": "#17ba40", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#17ba40",
@@ -12329,10 +11650,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#1ec3ea",
-        "theme": "light"
-      },
+      "input": {"accent": "#1ec3ea", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#1ec3ea",
@@ -12384,10 +11702,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#1ec3ea",
-        "theme": "dark"
-      },
+      "input": {"accent": "#1ec3ea", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#1ec3ea",
@@ -12439,10 +11754,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#04d702",
-        "theme": "light"
-      },
+      "input": {"accent": "#04d702", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#04d702",
@@ -12494,10 +11806,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#04d702",
-        "theme": "dark"
-      },
+      "input": {"accent": "#04d702", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#04d702",
@@ -12549,10 +11858,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#effddc",
-        "theme": "light"
-      },
+      "input": {"accent": "#effddc", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#effddc",
@@ -12604,10 +11910,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#effddc",
-        "theme": "dark"
-      },
+      "input": {"accent": "#effddc", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#effddc",
@@ -12659,10 +11962,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#54b0ec",
-        "theme": "light"
-      },
+      "input": {"accent": "#54b0ec", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#54b0ec",
@@ -12714,10 +12014,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#54b0ec",
-        "theme": "dark"
-      },
+      "input": {"accent": "#54b0ec", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#54b0ec",
@@ -12769,10 +12066,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#dc26f5",
-        "theme": "light"
-      },
+      "input": {"accent": "#dc26f5", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#dc26f5",
@@ -12824,10 +12118,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#dc26f5",
-        "theme": "dark"
-      },
+      "input": {"accent": "#dc26f5", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#dc26f5",
@@ -12879,10 +12170,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#daaaf9",
-        "theme": "light"
-      },
+      "input": {"accent": "#daaaf9", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#daaaf9",
@@ -12934,10 +12222,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#daaaf9",
-        "theme": "dark"
-      },
+      "input": {"accent": "#daaaf9", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#daaaf9",
@@ -12989,10 +12274,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9b400a",
-        "theme": "light"
-      },
+      "input": {"accent": "#9b400a", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#9b400a",
@@ -13044,10 +12326,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9b400a",
-        "theme": "dark"
-      },
+      "input": {"accent": "#9b400a", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#9b400a",
@@ -13099,10 +12378,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#8e018e",
-        "theme": "light"
-      },
+      "input": {"accent": "#8e018e", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#8e018e",
@@ -13154,10 +12430,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#8e018e",
-        "theme": "dark"
-      },
+      "input": {"accent": "#8e018e", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#8e018e",
@@ -13209,10 +12482,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#e43801",
-        "theme": "light"
-      },
+      "input": {"accent": "#e43801", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#e43801",
@@ -13264,10 +12534,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#e43801",
-        "theme": "dark"
-      },
+      "input": {"accent": "#e43801", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#e43801",
@@ -13319,10 +12586,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#4eb068",
-        "theme": "light"
-      },
+      "input": {"accent": "#4eb068", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#4eb068",
@@ -13374,10 +12638,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#4eb068",
-        "theme": "dark"
-      },
+      "input": {"accent": "#4eb068", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#4eb068",
@@ -13429,10 +12690,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f68a7a",
-        "theme": "light"
-      },
+      "input": {"accent": "#f68a7a", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#f68a7a",
@@ -13484,10 +12742,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f68a7a",
-        "theme": "dark"
-      },
+      "input": {"accent": "#f68a7a", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#f68a7a",
@@ -13539,10 +12794,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#1c4e2f",
-        "theme": "light"
-      },
+      "input": {"accent": "#1c4e2f", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#1c4e2f",
@@ -13594,10 +12846,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#1c4e2f",
-        "theme": "dark"
-      },
+      "input": {"accent": "#1c4e2f", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#1c4e2f",
@@ -13649,10 +12898,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#49b1eb",
-        "theme": "light"
-      },
+      "input": {"accent": "#49b1eb", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#49b1eb",
@@ -13704,10 +12950,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#49b1eb",
-        "theme": "dark"
-      },
+      "input": {"accent": "#49b1eb", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#49b1eb",
@@ -13759,10 +13002,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ee54b6",
-        "theme": "light"
-      },
+      "input": {"accent": "#ee54b6", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#ee54b6",
@@ -13814,10 +13054,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ee54b6",
-        "theme": "dark"
-      },
+      "input": {"accent": "#ee54b6", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#ee54b6",
@@ -13869,10 +13106,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#df116f",
-        "theme": "light"
-      },
+      "input": {"accent": "#df116f", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#df116f",
@@ -13924,10 +13158,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#df116f",
-        "theme": "dark"
-      },
+      "input": {"accent": "#df116f", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#df116f",
@@ -13979,10 +13210,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#378024",
-        "theme": "light"
-      },
+      "input": {"accent": "#378024", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#378024",
@@ -14034,10 +13262,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#378024",
-        "theme": "dark"
-      },
+      "input": {"accent": "#378024", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#378024",
@@ -14089,10 +13314,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#af843b",
-        "theme": "light"
-      },
+      "input": {"accent": "#af843b", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#af843b",
@@ -14144,10 +13366,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#af843b",
-        "theme": "dark"
-      },
+      "input": {"accent": "#af843b", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#af843b",
@@ -14199,10 +13418,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#683d66",
-        "theme": "light"
-      },
+      "input": {"accent": "#683d66", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#683d66",
@@ -14254,10 +13470,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#683d66",
-        "theme": "dark"
-      },
+      "input": {"accent": "#683d66", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#683d66",
@@ -14309,10 +13522,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#e9e36d",
-        "theme": "light"
-      },
+      "input": {"accent": "#e9e36d", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#e9e36d",
@@ -14364,10 +13574,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#e9e36d",
-        "theme": "dark"
-      },
+      "input": {"accent": "#e9e36d", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#e9e36d",
@@ -14419,10 +13626,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#cfac08",
-        "theme": "light"
-      },
+      "input": {"accent": "#cfac08", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#cfac08",
@@ -14474,10 +13678,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#cfac08",
-        "theme": "dark"
-      },
+      "input": {"accent": "#cfac08", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#cfac08",
@@ -14529,10 +13730,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#56af69",
-        "theme": "light"
-      },
+      "input": {"accent": "#56af69", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#56af69",
@@ -14584,10 +13782,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#56af69",
-        "theme": "dark"
-      },
+      "input": {"accent": "#56af69", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#56af69",
@@ -14639,10 +13834,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ef54f1",
-        "theme": "light"
-      },
+      "input": {"accent": "#ef54f1", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#ef54f1",
@@ -14694,10 +13886,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ef54f1",
-        "theme": "dark"
-      },
+      "input": {"accent": "#ef54f1", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#ef54f1",
@@ -14749,10 +13938,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a21068",
-        "theme": "light"
-      },
+      "input": {"accent": "#a21068", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a21068",
@@ -14804,10 +13990,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a21068",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a21068", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a21068",
@@ -14859,10 +14042,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#66267d",
-        "theme": "light"
-      },
+      "input": {"accent": "#66267d", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#66267d",
@@ -14914,10 +14094,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#66267d",
-        "theme": "dark"
-      },
+      "input": {"accent": "#66267d", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#66267d",
@@ -14969,10 +14146,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6a3b2d",
-        "theme": "light"
-      },
+      "input": {"accent": "#6a3b2d", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#6a3b2d",
@@ -15024,10 +14198,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6a3b2d",
-        "theme": "dark"
-      },
+      "input": {"accent": "#6a3b2d", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#6a3b2d",
@@ -15079,10 +14250,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#e90c0a",
-        "theme": "light"
-      },
+      "input": {"accent": "#e90c0a", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#e90c0a",
@@ -15134,10 +14302,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#e90c0a",
-        "theme": "dark"
-      },
+      "input": {"accent": "#e90c0a", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#e90c0a",
@@ -15189,10 +14354,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a27e03",
-        "theme": "light"
-      },
+      "input": {"accent": "#a27e03", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a27e03",
@@ -15244,10 +14406,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a27e03",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a27e03", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a27e03",
@@ -15299,10 +14458,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#13c66a",
-        "theme": "light"
-      },
+      "input": {"accent": "#13c66a", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#13c66a",
@@ -15354,10 +14510,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#13c66a",
-        "theme": "dark"
-      },
+      "input": {"accent": "#13c66a", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#13c66a",
@@ -15409,10 +14562,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#99a1e1",
-        "theme": "light"
-      },
+      "input": {"accent": "#99a1e1", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#99a1e1",
@@ -15464,10 +14614,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#99a1e1",
-        "theme": "dark"
-      },
+      "input": {"accent": "#99a1e1", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#99a1e1",
@@ -15519,10 +14666,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#94f086",
-        "theme": "light"
-      },
+      "input": {"accent": "#94f086", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#94f086",
@@ -15574,10 +14718,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#94f086",
-        "theme": "dark"
-      },
+      "input": {"accent": "#94f086", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#94f086",
@@ -15629,10 +14770,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#7c16ba",
-        "theme": "light"
-      },
+      "input": {"accent": "#7c16ba", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#7c16ba",
@@ -15684,10 +14822,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#7c16ba",
-        "theme": "dark"
-      },
+      "input": {"accent": "#7c16ba", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#7c16ba",
@@ -15739,10 +14874,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#06cdb4",
-        "theme": "light"
-      },
+      "input": {"accent": "#06cdb4", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#06cdb4",
@@ -15794,10 +14926,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#06cdb4",
-        "theme": "dark"
-      },
+      "input": {"accent": "#06cdb4", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#06cdb4",
@@ -15849,10 +14978,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#dc898b",
-        "theme": "light"
-      },
+      "input": {"accent": "#dc898b", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#dc898b",
@@ -15904,10 +15030,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#dc898b",
-        "theme": "dark"
-      },
+      "input": {"accent": "#dc898b", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#dc898b",
@@ -15959,10 +15082,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#0dc83c",
-        "theme": "light"
-      },
+      "input": {"accent": "#0dc83c", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#0dc83c",
@@ -16014,10 +15134,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#0dc83c",
-        "theme": "dark"
-      },
+      "input": {"accent": "#0dc83c", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#0dc83c",
@@ -16069,10 +15186,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#5e75a0",
-        "theme": "light"
-      },
+      "input": {"accent": "#5e75a0", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#5e75a0",
@@ -16124,10 +15238,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#5e75a0",
-        "theme": "dark"
-      },
+      "input": {"accent": "#5e75a0", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#5e75a0",
@@ -16179,10 +15290,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#627d7e",
-        "theme": "light"
-      },
+      "input": {"accent": "#627d7e", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#627d7e",
@@ -16234,10 +15342,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#627d7e",
-        "theme": "dark"
-      },
+      "input": {"accent": "#627d7e", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#627d7e",
@@ -16289,10 +15394,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#b95ca8",
-        "theme": "light"
-      },
+      "input": {"accent": "#b95ca8", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#b95ca8",
@@ -16344,10 +15446,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#b95ca8",
-        "theme": "dark"
-      },
+      "input": {"accent": "#b95ca8", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#b95ca8",
@@ -16399,10 +15498,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#5d659e",
-        "theme": "light"
-      },
+      "input": {"accent": "#5d659e", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#5d659e",
@@ -16454,10 +15550,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#5d659e",
-        "theme": "dark"
-      },
+      "input": {"accent": "#5d659e", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#5d659e",
@@ -16509,10 +15602,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ffffd8",
-        "theme": "light"
-      },
+      "input": {"accent": "#ffffd8", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#ffffd8",
@@ -16564,10 +15654,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ffffd8",
-        "theme": "dark"
-      },
+      "input": {"accent": "#ffffd8", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#ffffd8",
@@ -16619,10 +15706,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#af7560",
-        "theme": "light"
-      },
+      "input": {"accent": "#af7560", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#af7560",
@@ -16674,10 +15758,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#af7560",
-        "theme": "dark"
-      },
+      "input": {"accent": "#af7560", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#af7560",
@@ -16729,10 +15810,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#5fa339",
-        "theme": "light"
-      },
+      "input": {"accent": "#5fa339", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#5fa339",
@@ -16784,10 +15862,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#5fa339",
-        "theme": "dark"
-      },
+      "input": {"accent": "#5fa339", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#5fa339",
@@ -16839,10 +15914,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#55af45",
-        "theme": "light"
-      },
+      "input": {"accent": "#55af45", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#55af45",
@@ -16894,10 +15966,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#55af45",
-        "theme": "dark"
-      },
+      "input": {"accent": "#55af45", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#55af45",
@@ -16949,10 +16018,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#35109c",
-        "theme": "light"
-      },
+      "input": {"accent": "#35109c", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#35109c",
@@ -17004,10 +16070,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#35109c",
-        "theme": "dark"
-      },
+      "input": {"accent": "#35109c", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#35109c",
@@ -17059,10 +16122,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d7e5cf",
-        "theme": "light"
-      },
+      "input": {"accent": "#d7e5cf", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#d7e5cf",
@@ -17114,10 +16174,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d7e5cf",
-        "theme": "dark"
-      },
+      "input": {"accent": "#d7e5cf", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#d7e5cf",
@@ -17169,10 +16226,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2a01b6",
-        "theme": "light"
-      },
+      "input": {"accent": "#2a01b6", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#2a01b6",
@@ -17224,10 +16278,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2a01b6",
-        "theme": "dark"
-      },
+      "input": {"accent": "#2a01b6", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#2a01b6",
@@ -17279,10 +16330,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#672bde",
-        "theme": "light"
-      },
+      "input": {"accent": "#672bde", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#672bde",
@@ -17334,10 +16382,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#672bde",
-        "theme": "dark"
-      },
+      "input": {"accent": "#672bde", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#672bde",
@@ -17389,10 +16434,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#4303fb",
-        "theme": "light"
-      },
+      "input": {"accent": "#4303fb", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#4303fb",
@@ -17444,10 +16486,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#4303fb",
-        "theme": "dark"
-      },
+      "input": {"accent": "#4303fb", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#4303fb",
@@ -17499,10 +16538,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#c717f9",
-        "theme": "light"
-      },
+      "input": {"accent": "#c717f9", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#c717f9",
@@ -17554,10 +16590,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#c717f9",
-        "theme": "dark"
-      },
+      "input": {"accent": "#c717f9", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#c717f9",
@@ -17609,10 +16642,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9a9ff1",
-        "theme": "light"
-      },
+      "input": {"accent": "#9a9ff1", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#9a9ff1",
@@ -17664,10 +16694,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9a9ff1",
-        "theme": "dark"
-      },
+      "input": {"accent": "#9a9ff1", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#9a9ff1",
@@ -17719,10 +16746,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a04cab",
-        "theme": "light"
-      },
+      "input": {"accent": "#a04cab", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a04cab",
@@ -17774,10 +16798,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a04cab",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a04cab", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a04cab",
@@ -17829,10 +16850,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#e57d28",
-        "theme": "light"
-      },
+      "input": {"accent": "#e57d28", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#e57d28",
@@ -17884,10 +16902,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#e57d28",
-        "theme": "dark"
-      },
+      "input": {"accent": "#e57d28", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#e57d28",
@@ -17939,10 +16954,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f03a5a",
-        "theme": "light"
-      },
+      "input": {"accent": "#f03a5a", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#f03a5a",
@@ -17994,10 +17006,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f03a5a",
-        "theme": "dark"
-      },
+      "input": {"accent": "#f03a5a", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#f03a5a",
@@ -18049,10 +17058,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#23afd8",
-        "theme": "light"
-      },
+      "input": {"accent": "#23afd8", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#23afd8",
@@ -18104,10 +17110,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#23afd8",
-        "theme": "dark"
-      },
+      "input": {"accent": "#23afd8", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#23afd8",
@@ -18159,10 +17162,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a638cd",
-        "theme": "light"
-      },
+      "input": {"accent": "#a638cd", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a638cd",
@@ -18214,10 +17214,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a638cd",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a638cd", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a638cd",
@@ -18269,10 +17266,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#655f63",
-        "theme": "light"
-      },
+      "input": {"accent": "#655f63", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#655f63",
@@ -18324,10 +17318,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#655f63",
-        "theme": "dark"
-      },
+      "input": {"accent": "#655f63", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#655f63",
@@ -18379,10 +17370,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d10daf",
-        "theme": "light"
-      },
+      "input": {"accent": "#d10daf", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#d10daf",
@@ -18434,10 +17422,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d10daf",
-        "theme": "dark"
-      },
+      "input": {"accent": "#d10daf", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#d10daf",
@@ -18489,10 +17474,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#95b3bd",
-        "theme": "light"
-      },
+      "input": {"accent": "#95b3bd", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#95b3bd",
@@ -18544,10 +17526,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#95b3bd",
-        "theme": "dark"
-      },
+      "input": {"accent": "#95b3bd", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#95b3bd",
@@ -18599,10 +17578,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#0a567a",
-        "theme": "light"
-      },
+      "input": {"accent": "#0a567a", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#0a567a",
@@ -18654,10 +17630,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#0a567a",
-        "theme": "dark"
-      },
+      "input": {"accent": "#0a567a", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#0a567a",
@@ -18709,10 +17682,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2ed203",
-        "theme": "light"
-      },
+      "input": {"accent": "#2ed203", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#2ed203",
@@ -18764,10 +17734,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2ed203",
-        "theme": "dark"
-      },
+      "input": {"accent": "#2ed203", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#2ed203",
@@ -18819,10 +17786,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a290dd",
-        "theme": "light"
-      },
+      "input": {"accent": "#a290dd", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a290dd",
@@ -18874,10 +17838,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a290dd",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a290dd", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a290dd",
@@ -18929,10 +17890,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2ef74b",
-        "theme": "light"
-      },
+      "input": {"accent": "#2ef74b", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#2ef74b",
@@ -18984,10 +17942,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2ef74b",
-        "theme": "dark"
-      },
+      "input": {"accent": "#2ef74b", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#2ef74b",
@@ -19039,10 +17994,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#66a857",
-        "theme": "light"
-      },
+      "input": {"accent": "#66a857", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#66a857",
@@ -19094,10 +18046,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#66a857",
-        "theme": "dark"
-      },
+      "input": {"accent": "#66a857", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#66a857",
@@ -19149,10 +18098,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ce63e4",
-        "theme": "light"
-      },
+      "input": {"accent": "#ce63e4", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#ce63e4",
@@ -19204,10 +18150,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ce63e4",
-        "theme": "dark"
-      },
+      "input": {"accent": "#ce63e4", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#ce63e4",
@@ -19259,10 +18202,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a55647",
-        "theme": "light"
-      },
+      "input": {"accent": "#a55647", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a55647",
@@ -19314,10 +18254,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a55647",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a55647", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a55647",
@@ -19369,10 +18306,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#15dacf",
-        "theme": "light"
-      },
+      "input": {"accent": "#15dacf", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#15dacf",
@@ -19424,10 +18358,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#15dacf",
-        "theme": "dark"
-      },
+      "input": {"accent": "#15dacf", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#15dacf",
@@ -19479,10 +18410,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d008da",
-        "theme": "light"
-      },
+      "input": {"accent": "#d008da", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#d008da",
@@ -19534,10 +18462,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d008da",
-        "theme": "dark"
-      },
+      "input": {"accent": "#d008da", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#d008da",
@@ -19589,10 +18514,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f10173",
-        "theme": "light"
-      },
+      "input": {"accent": "#f10173", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#f10173",
@@ -19644,10 +18566,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f10173",
-        "theme": "dark"
-      },
+      "input": {"accent": "#f10173", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#f10173",
@@ -19699,10 +18618,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#778862",
-        "theme": "light"
-      },
+      "input": {"accent": "#778862", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#778862",
@@ -19754,10 +18670,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#778862",
-        "theme": "dark"
-      },
+      "input": {"accent": "#778862", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#778862",
@@ -19809,10 +18722,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#19bf8d",
-        "theme": "light"
-      },
+      "input": {"accent": "#19bf8d", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#19bf8d",
@@ -19864,10 +18774,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#19bf8d",
-        "theme": "dark"
-      },
+      "input": {"accent": "#19bf8d", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#19bf8d",
@@ -19919,10 +18826,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#88adb4",
-        "theme": "light"
-      },
+      "input": {"accent": "#88adb4", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#88adb4",
@@ -19974,10 +18878,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#88adb4",
-        "theme": "dark"
-      },
+      "input": {"accent": "#88adb4", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#88adb4",
@@ -20029,10 +18930,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#5f3227",
-        "theme": "light"
-      },
+      "input": {"accent": "#5f3227", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#5f3227",
@@ -20084,10 +18982,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#5f3227",
-        "theme": "dark"
-      },
+      "input": {"accent": "#5f3227", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#5f3227",
@@ -20139,10 +19034,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#1a4be9",
-        "theme": "light"
-      },
+      "input": {"accent": "#1a4be9", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#1a4be9",
@@ -20194,10 +19086,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#1a4be9",
-        "theme": "dark"
-      },
+      "input": {"accent": "#1a4be9", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#1a4be9",
@@ -20249,10 +19138,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6ea930",
-        "theme": "light"
-      },
+      "input": {"accent": "#6ea930", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#6ea930",
@@ -20304,10 +19190,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6ea930",
-        "theme": "dark"
-      },
+      "input": {"accent": "#6ea930", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#6ea930",
@@ -20359,10 +19242,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#61349b",
-        "theme": "light"
-      },
+      "input": {"accent": "#61349b", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#61349b",
@@ -20414,10 +19294,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#61349b",
-        "theme": "dark"
-      },
+      "input": {"accent": "#61349b", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#61349b",
@@ -20469,10 +19346,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f62e78",
-        "theme": "light"
-      },
+      "input": {"accent": "#f62e78", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#f62e78",
@@ -20524,10 +19398,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f62e78",
-        "theme": "dark"
-      },
+      "input": {"accent": "#f62e78", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#f62e78",
@@ -20579,10 +19450,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#82f5de",
-        "theme": "light"
-      },
+      "input": {"accent": "#82f5de", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#82f5de",
@@ -20634,10 +19502,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#82f5de",
-        "theme": "dark"
-      },
+      "input": {"accent": "#82f5de", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#82f5de",
@@ -20689,10 +19554,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ec6195",
-        "theme": "light"
-      },
+      "input": {"accent": "#ec6195", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#ec6195",
@@ -20744,10 +19606,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ec6195",
-        "theme": "dark"
-      },
+      "input": {"accent": "#ec6195", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#ec6195",
@@ -20799,10 +19658,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#57fc73",
-        "theme": "light"
-      },
+      "input": {"accent": "#57fc73", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#57fc73",
@@ -20854,10 +19710,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#57fc73",
-        "theme": "dark"
-      },
+      "input": {"accent": "#57fc73", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#57fc73",
@@ -20909,10 +19762,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#920fcf",
-        "theme": "light"
-      },
+      "input": {"accent": "#920fcf", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#920fcf",
@@ -20964,10 +19814,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#920fcf",
-        "theme": "dark"
-      },
+      "input": {"accent": "#920fcf", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#920fcf",
@@ -21019,10 +19866,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f48d7e",
-        "theme": "light"
-      },
+      "input": {"accent": "#f48d7e", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#f48d7e",
@@ -21074,10 +19918,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f48d7e",
-        "theme": "dark"
-      },
+      "input": {"accent": "#f48d7e", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#f48d7e",
@@ -21129,10 +19970,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#04dce9",
-        "theme": "light"
-      },
+      "input": {"accent": "#04dce9", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#04dce9",
@@ -21184,10 +20022,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#04dce9",
-        "theme": "dark"
-      },
+      "input": {"accent": "#04dce9", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#04dce9",
@@ -21239,10 +20074,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a2a178",
-        "theme": "light"
-      },
+      "input": {"accent": "#a2a178", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a2a178",
@@ -21294,10 +20126,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a2a178",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a2a178", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a2a178",
@@ -21349,10 +20178,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#3bffab",
-        "theme": "light"
-      },
+      "input": {"accent": "#3bffab", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#3bffab",
@@ -21404,10 +20230,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#3bffab",
-        "theme": "dark"
-      },
+      "input": {"accent": "#3bffab", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#3bffab",
@@ -21459,10 +20282,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a7c132",
-        "theme": "light"
-      },
+      "input": {"accent": "#a7c132", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a7c132",
@@ -21514,10 +20334,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a7c132",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a7c132", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a7c132",
@@ -21569,10 +20386,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#94cf1b",
-        "theme": "light"
-      },
+      "input": {"accent": "#94cf1b", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#94cf1b",
@@ -21624,10 +20438,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#94cf1b",
-        "theme": "dark"
-      },
+      "input": {"accent": "#94cf1b", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#94cf1b",
@@ -21679,10 +20490,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a8068f",
-        "theme": "light"
-      },
+      "input": {"accent": "#a8068f", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a8068f",
@@ -21734,10 +20542,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a8068f",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a8068f", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a8068f",
@@ -21789,10 +20594,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#8c9ca7",
-        "theme": "light"
-      },
+      "input": {"accent": "#8c9ca7", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#8c9ca7",
@@ -21844,10 +20646,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#8c9ca7",
-        "theme": "dark"
-      },
+      "input": {"accent": "#8c9ca7", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#8c9ca7",
@@ -21899,10 +20698,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6173f1",
-        "theme": "light"
-      },
+      "input": {"accent": "#6173f1", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#6173f1",
@@ -21954,10 +20750,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6173f1",
-        "theme": "dark"
-      },
+      "input": {"accent": "#6173f1", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#6173f1",
@@ -22009,10 +20802,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#625262",
-        "theme": "light"
-      },
+      "input": {"accent": "#625262", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#625262",
@@ -22064,10 +20854,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#625262",
-        "theme": "dark"
-      },
+      "input": {"accent": "#625262", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#625262",
@@ -22119,10 +20906,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ebae8d",
-        "theme": "light"
-      },
+      "input": {"accent": "#ebae8d", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#ebae8d",
@@ -22174,10 +20958,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ebae8d",
-        "theme": "dark"
-      },
+      "input": {"accent": "#ebae8d", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#ebae8d",
@@ -22229,10 +21010,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#0a00c0",
-        "theme": "light"
-      },
+      "input": {"accent": "#0a00c0", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#0a00c0",
@@ -22284,10 +21062,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#0a00c0",
-        "theme": "dark"
-      },
+      "input": {"accent": "#0a00c0", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#0a00c0",
@@ -22339,10 +21114,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#378cde",
-        "theme": "light"
-      },
+      "input": {"accent": "#378cde", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#378cde",
@@ -22394,10 +21166,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#378cde",
-        "theme": "dark"
-      },
+      "input": {"accent": "#378cde", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#378cde",
@@ -22449,10 +21218,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#933dda",
-        "theme": "light"
-      },
+      "input": {"accent": "#933dda", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#933dda",
@@ -22504,10 +21270,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#933dda",
-        "theme": "dark"
-      },
+      "input": {"accent": "#933dda", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#933dda",
@@ -22559,10 +21322,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6a8d56",
-        "theme": "light"
-      },
+      "input": {"accent": "#6a8d56", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#6a8d56",
@@ -22614,10 +21374,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6a8d56",
-        "theme": "dark"
-      },
+      "input": {"accent": "#6a8d56", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#6a8d56",
@@ -22669,10 +21426,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#3b9879",
-        "theme": "light"
-      },
+      "input": {"accent": "#3b9879", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#3b9879",
@@ -22724,10 +21478,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#3b9879",
-        "theme": "dark"
-      },
+      "input": {"accent": "#3b9879", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#3b9879",
@@ -22779,10 +21530,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#3a9d02",
-        "theme": "light"
-      },
+      "input": {"accent": "#3a9d02", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#3a9d02",
@@ -22834,10 +21582,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#3a9d02",
-        "theme": "dark"
-      },
+      "input": {"accent": "#3a9d02", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#3a9d02",
@@ -22889,10 +21634,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#020add",
-        "theme": "light"
-      },
+      "input": {"accent": "#020add", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#020add",
@@ -22944,10 +21686,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#020add",
-        "theme": "dark"
-      },
+      "input": {"accent": "#020add", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#020add",
@@ -22999,10 +21738,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d6a22d",
-        "theme": "light"
-      },
+      "input": {"accent": "#d6a22d", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#d6a22d",
@@ -23054,10 +21790,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d6a22d",
-        "theme": "dark"
-      },
+      "input": {"accent": "#d6a22d", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#d6a22d",
@@ -23109,10 +21842,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#870397",
-        "theme": "light"
-      },
+      "input": {"accent": "#870397", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#870397",
@@ -23164,10 +21894,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#870397",
-        "theme": "dark"
-      },
+      "input": {"accent": "#870397", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#870397",
@@ -23219,10 +21946,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#50fbf6",
-        "theme": "light"
-      },
+      "input": {"accent": "#50fbf6", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#50fbf6",
@@ -23274,10 +21998,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#50fbf6",
-        "theme": "dark"
-      },
+      "input": {"accent": "#50fbf6", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#50fbf6",
@@ -23329,10 +22050,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#fce403",
-        "theme": "light"
-      },
+      "input": {"accent": "#fce403", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#fce403",
@@ -23384,10 +22102,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#fce403",
-        "theme": "dark"
-      },
+      "input": {"accent": "#fce403", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#fce403",
@@ -23439,10 +22154,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#411418",
-        "theme": "light"
-      },
+      "input": {"accent": "#411418", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#411418",
@@ -23494,10 +22206,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#411418",
-        "theme": "dark"
-      },
+      "input": {"accent": "#411418", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#411418",
@@ -23549,10 +22258,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#575aea",
-        "theme": "light"
-      },
+      "input": {"accent": "#575aea", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#575aea",
@@ -23604,10 +22310,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#575aea",
-        "theme": "dark"
-      },
+      "input": {"accent": "#575aea", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#575aea",
@@ -23659,10 +22362,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6e3d20",
-        "theme": "light"
-      },
+      "input": {"accent": "#6e3d20", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#6e3d20",
@@ -23714,10 +22414,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6e3d20",
-        "theme": "dark"
-      },
+      "input": {"accent": "#6e3d20", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#6e3d20",
@@ -23769,10 +22466,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#212f9c",
-        "theme": "light"
-      },
+      "input": {"accent": "#212f9c", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#212f9c",
@@ -23824,10 +22518,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#212f9c",
-        "theme": "dark"
-      },
+      "input": {"accent": "#212f9c", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#212f9c",
@@ -23879,10 +22570,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#eff23e",
-        "theme": "light"
-      },
+      "input": {"accent": "#eff23e", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#eff23e",
@@ -23934,10 +22622,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#eff23e",
-        "theme": "dark"
-      },
+      "input": {"accent": "#eff23e", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#eff23e",
@@ -23989,10 +22674,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#c798bb",
-        "theme": "light"
-      },
+      "input": {"accent": "#c798bb", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#c798bb",
@@ -24044,10 +22726,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#c798bb",
-        "theme": "dark"
-      },
+      "input": {"accent": "#c798bb", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#c798bb",
@@ -24099,10 +22778,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2d3b4d",
-        "theme": "light"
-      },
+      "input": {"accent": "#2d3b4d", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#2d3b4d",
@@ -24154,10 +22830,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2d3b4d",
-        "theme": "dark"
-      },
+      "input": {"accent": "#2d3b4d", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#2d3b4d",
@@ -24209,10 +22882,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9a1236",
-        "theme": "light"
-      },
+      "input": {"accent": "#9a1236", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#9a1236",
@@ -24264,10 +22934,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9a1236",
-        "theme": "dark"
-      },
+      "input": {"accent": "#9a1236", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#9a1236",
@@ -24319,10 +22986,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#1b958c",
-        "theme": "light"
-      },
+      "input": {"accent": "#1b958c", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#1b958c",
@@ -24374,10 +23038,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#1b958c",
-        "theme": "dark"
-      },
+      "input": {"accent": "#1b958c", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#1b958c",
@@ -24429,10 +23090,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a5ae77",
-        "theme": "light"
-      },
+      "input": {"accent": "#a5ae77", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a5ae77",
@@ -24484,10 +23142,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a5ae77",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a5ae77", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a5ae77",
@@ -24539,10 +23194,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#915bad",
-        "theme": "light"
-      },
+      "input": {"accent": "#915bad", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#915bad",
@@ -24594,10 +23246,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#915bad",
-        "theme": "dark"
-      },
+      "input": {"accent": "#915bad", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#915bad",
@@ -24649,10 +23298,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ba000f",
-        "theme": "light"
-      },
+      "input": {"accent": "#ba000f", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#ba000f",
@@ -24704,10 +23350,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ba000f",
-        "theme": "dark"
-      },
+      "input": {"accent": "#ba000f", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#ba000f",
@@ -24759,10 +23402,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#eee26c",
-        "theme": "light"
-      },
+      "input": {"accent": "#eee26c", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#eee26c",
@@ -24814,10 +23454,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#eee26c",
-        "theme": "dark"
-      },
+      "input": {"accent": "#eee26c", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#eee26c",
@@ -24869,10 +23506,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#c7e5f9",
-        "theme": "light"
-      },
+      "input": {"accent": "#c7e5f9", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#c7e5f9",
@@ -24924,10 +23558,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#c7e5f9",
-        "theme": "dark"
-      },
+      "input": {"accent": "#c7e5f9", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#c7e5f9",
@@ -24979,10 +23610,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#7fb6f9",
-        "theme": "light"
-      },
+      "input": {"accent": "#7fb6f9", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#7fb6f9",
@@ -25034,10 +23662,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#7fb6f9",
-        "theme": "dark"
-      },
+      "input": {"accent": "#7fb6f9", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#7fb6f9",
@@ -25089,10 +23714,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2382dd",
-        "theme": "light"
-      },
+      "input": {"accent": "#2382dd", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#2382dd",
@@ -25144,10 +23766,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2382dd",
-        "theme": "dark"
-      },
+      "input": {"accent": "#2382dd", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#2382dd",
@@ -25199,10 +23818,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f99da9",
-        "theme": "light"
-      },
+      "input": {"accent": "#f99da9", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#f99da9",
@@ -25254,10 +23870,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f99da9",
-        "theme": "dark"
-      },
+      "input": {"accent": "#f99da9", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#f99da9",
@@ -25309,10 +23922,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#b86623",
-        "theme": "light"
-      },
+      "input": {"accent": "#b86623", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#b86623",
@@ -25364,10 +23974,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#b86623",
-        "theme": "dark"
-      },
+      "input": {"accent": "#b86623", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#b86623",
@@ -25419,10 +24026,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2499b3",
-        "theme": "light"
-      },
+      "input": {"accent": "#2499b3", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#2499b3",
@@ -25474,10 +24078,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2499b3",
-        "theme": "dark"
-      },
+      "input": {"accent": "#2499b3", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#2499b3",
@@ -25529,10 +24130,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#e09ea6",
-        "theme": "light"
-      },
+      "input": {"accent": "#e09ea6", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#e09ea6",
@@ -25584,10 +24182,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#e09ea6",
-        "theme": "dark"
-      },
+      "input": {"accent": "#e09ea6", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#e09ea6",
@@ -25639,10 +24234,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f57f3d",
-        "theme": "light"
-      },
+      "input": {"accent": "#f57f3d", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#f57f3d",
@@ -25694,10 +24286,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f57f3d",
-        "theme": "dark"
-      },
+      "input": {"accent": "#f57f3d", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#f57f3d",
@@ -25749,10 +24338,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#cbf55a",
-        "theme": "light"
-      },
+      "input": {"accent": "#cbf55a", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#cbf55a",
@@ -25804,10 +24390,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#cbf55a",
-        "theme": "dark"
-      },
+      "input": {"accent": "#cbf55a", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#cbf55a",
@@ -25859,10 +24442,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#c030c9",
-        "theme": "light"
-      },
+      "input": {"accent": "#c030c9", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#c030c9",
@@ -25914,10 +24494,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#c030c9",
-        "theme": "dark"
-      },
+      "input": {"accent": "#c030c9", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#c030c9",
@@ -25969,10 +24546,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#8914b0",
-        "theme": "light"
-      },
+      "input": {"accent": "#8914b0", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#8914b0",
@@ -26024,10 +24598,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#8914b0",
-        "theme": "dark"
-      },
+      "input": {"accent": "#8914b0", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#8914b0",
@@ -26079,10 +24650,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#8eb788",
-        "theme": "light"
-      },
+      "input": {"accent": "#8eb788", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#8eb788",
@@ -26134,10 +24702,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#8eb788",
-        "theme": "dark"
-      },
+      "input": {"accent": "#8eb788", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#8eb788",
@@ -26189,10 +24754,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#537d49",
-        "theme": "light"
-      },
+      "input": {"accent": "#537d49", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#537d49",
@@ -26244,10 +24806,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#537d49",
-        "theme": "dark"
-      },
+      "input": {"accent": "#537d49", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#537d49",
@@ -26299,10 +24858,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#5b09aa",
-        "theme": "light"
-      },
+      "input": {"accent": "#5b09aa", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#5b09aa",
@@ -26354,10 +24910,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#5b09aa",
-        "theme": "dark"
-      },
+      "input": {"accent": "#5b09aa", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#5b09aa",
@@ -26409,10 +24962,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#024a01",
-        "theme": "light"
-      },
+      "input": {"accent": "#024a01", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#024a01",
@@ -26464,10 +25014,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#024a01",
-        "theme": "dark"
-      },
+      "input": {"accent": "#024a01", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#024a01",
@@ -26519,10 +25066,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#08f0e0",
-        "theme": "light"
-      },
+      "input": {"accent": "#08f0e0", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#08f0e0",
@@ -26574,10 +25118,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#08f0e0",
-        "theme": "dark"
-      },
+      "input": {"accent": "#08f0e0", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#08f0e0",
@@ -26629,10 +25170,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2b502c",
-        "theme": "light"
-      },
+      "input": {"accent": "#2b502c", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#2b502c",
@@ -26684,10 +25222,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2b502c",
-        "theme": "dark"
-      },
+      "input": {"accent": "#2b502c", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#2b502c",
@@ -26739,10 +25274,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a2d9d2",
-        "theme": "light"
-      },
+      "input": {"accent": "#a2d9d2", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a2d9d2",
@@ -26794,10 +25326,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a2d9d2",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a2d9d2", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a2d9d2",
@@ -26849,10 +25378,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#54dfa7",
-        "theme": "light"
-      },
+      "input": {"accent": "#54dfa7", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#54dfa7",
@@ -26904,10 +25430,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#54dfa7",
-        "theme": "dark"
-      },
+      "input": {"accent": "#54dfa7", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#54dfa7",
@@ -26959,10 +25482,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#eac7a6",
-        "theme": "light"
-      },
+      "input": {"accent": "#eac7a6", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#eac7a6",
@@ -27014,10 +25534,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#eac7a6",
-        "theme": "dark"
-      },
+      "input": {"accent": "#eac7a6", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#eac7a6",
@@ -27069,10 +25586,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9c8fbc",
-        "theme": "light"
-      },
+      "input": {"accent": "#9c8fbc", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#9c8fbc",
@@ -27124,10 +25638,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9c8fbc",
-        "theme": "dark"
-      },
+      "input": {"accent": "#9c8fbc", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#9c8fbc",
@@ -27179,10 +25690,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#36c1ef",
-        "theme": "light"
-      },
+      "input": {"accent": "#36c1ef", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#36c1ef",
@@ -27234,10 +25742,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#36c1ef",
-        "theme": "dark"
-      },
+      "input": {"accent": "#36c1ef", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#36c1ef",
@@ -27289,10 +25794,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#813eba",
-        "theme": "light"
-      },
+      "input": {"accent": "#813eba", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#813eba",
@@ -27344,10 +25846,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#813eba",
-        "theme": "dark"
-      },
+      "input": {"accent": "#813eba", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#813eba",
@@ -27399,10 +25898,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#97d49f",
-        "theme": "light"
-      },
+      "input": {"accent": "#97d49f", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#97d49f",
@@ -27454,10 +25950,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#97d49f",
-        "theme": "dark"
-      },
+      "input": {"accent": "#97d49f", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#97d49f",
@@ -27509,10 +26002,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#168dc5",
-        "theme": "light"
-      },
+      "input": {"accent": "#168dc5", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#168dc5",
@@ -27564,10 +26054,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#168dc5",
-        "theme": "dark"
-      },
+      "input": {"accent": "#168dc5", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#168dc5",
@@ -27619,10 +26106,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ef2cf4",
-        "theme": "light"
-      },
+      "input": {"accent": "#ef2cf4", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#ef2cf4",
@@ -27674,10 +26158,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ef2cf4",
-        "theme": "dark"
-      },
+      "input": {"accent": "#ef2cf4", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#ef2cf4",
@@ -27729,10 +26210,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9c9420",
-        "theme": "light"
-      },
+      "input": {"accent": "#9c9420", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#9c9420",
@@ -27784,10 +26262,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9c9420",
-        "theme": "dark"
-      },
+      "input": {"accent": "#9c9420", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#9c9420",
@@ -27839,10 +26314,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#c9e277",
-        "theme": "light"
-      },
+      "input": {"accent": "#c9e277", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#c9e277",
@@ -27894,10 +26366,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#c9e277",
-        "theme": "dark"
-      },
+      "input": {"accent": "#c9e277", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#c9e277",
@@ -27949,10 +26418,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d0cd92",
-        "theme": "light"
-      },
+      "input": {"accent": "#d0cd92", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#d0cd92",
@@ -28004,10 +26470,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d0cd92",
-        "theme": "dark"
-      },
+      "input": {"accent": "#d0cd92", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#d0cd92",
@@ -28059,10 +26522,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#63e617",
-        "theme": "light"
-      },
+      "input": {"accent": "#63e617", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#63e617",
@@ -28114,10 +26574,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#63e617",
-        "theme": "dark"
-      },
+      "input": {"accent": "#63e617", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#63e617",
@@ -28169,10 +26626,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#b2acb6",
-        "theme": "light"
-      },
+      "input": {"accent": "#b2acb6", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#b2acb6",
@@ -28224,10 +26678,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#b2acb6",
-        "theme": "dark"
-      },
+      "input": {"accent": "#b2acb6", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#b2acb6",
@@ -28279,10 +26730,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f73b1a",
-        "theme": "light"
-      },
+      "input": {"accent": "#f73b1a", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#f73b1a",
@@ -28334,10 +26782,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f73b1a",
-        "theme": "dark"
-      },
+      "input": {"accent": "#f73b1a", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#f73b1a",
@@ -28389,10 +26834,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ed7fbb",
-        "theme": "light"
-      },
+      "input": {"accent": "#ed7fbb", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#ed7fbb",
@@ -28444,10 +26886,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ed7fbb",
-        "theme": "dark"
-      },
+      "input": {"accent": "#ed7fbb", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#ed7fbb",
@@ -28499,10 +26938,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9bfc3f",
-        "theme": "light"
-      },
+      "input": {"accent": "#9bfc3f", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#9bfc3f",
@@ -28554,10 +26990,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9bfc3f",
-        "theme": "dark"
-      },
+      "input": {"accent": "#9bfc3f", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#9bfc3f",
@@ -28609,10 +27042,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#4ef0b7",
-        "theme": "light"
-      },
+      "input": {"accent": "#4ef0b7", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#4ef0b7",
@@ -28664,10 +27094,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#4ef0b7",
-        "theme": "dark"
-      },
+      "input": {"accent": "#4ef0b7", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#4ef0b7",
@@ -28719,10 +27146,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9564fa",
-        "theme": "light"
-      },
+      "input": {"accent": "#9564fa", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#9564fa",
@@ -28774,10 +27198,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9564fa",
-        "theme": "dark"
-      },
+      "input": {"accent": "#9564fa", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#9564fa",
@@ -28829,10 +27250,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d1a514",
-        "theme": "light"
-      },
+      "input": {"accent": "#d1a514", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#d1a514",
@@ -28884,10 +27302,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d1a514",
-        "theme": "dark"
-      },
+      "input": {"accent": "#d1a514", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#d1a514",
@@ -28939,10 +27354,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#5d75dc",
-        "theme": "light"
-      },
+      "input": {"accent": "#5d75dc", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#5d75dc",
@@ -28994,10 +27406,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#5d75dc",
-        "theme": "dark"
-      },
+      "input": {"accent": "#5d75dc", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#5d75dc",
@@ -29049,10 +27458,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6c4ca9",
-        "theme": "light"
-      },
+      "input": {"accent": "#6c4ca9", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#6c4ca9",
@@ -29104,10 +27510,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6c4ca9",
-        "theme": "dark"
-      },
+      "input": {"accent": "#6c4ca9", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#6c4ca9",
@@ -29159,10 +27562,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#971959",
-        "theme": "light"
-      },
+      "input": {"accent": "#971959", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#971959",
@@ -29214,10 +27614,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#971959",
-        "theme": "dark"
-      },
+      "input": {"accent": "#971959", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#971959",
@@ -29269,10 +27666,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#646f75",
-        "theme": "light"
-      },
+      "input": {"accent": "#646f75", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#646f75",
@@ -29324,10 +27718,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#646f75",
-        "theme": "dark"
-      },
+      "input": {"accent": "#646f75", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#646f75",
@@ -29379,10 +27770,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#bfa90c",
-        "theme": "light"
-      },
+      "input": {"accent": "#bfa90c", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#bfa90c",
@@ -29434,10 +27822,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#bfa90c",
-        "theme": "dark"
-      },
+      "input": {"accent": "#bfa90c", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#bfa90c",
@@ -29489,10 +27874,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ed67d8",
-        "theme": "light"
-      },
+      "input": {"accent": "#ed67d8", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#ed67d8",
@@ -29544,10 +27926,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ed67d8",
-        "theme": "dark"
-      },
+      "input": {"accent": "#ed67d8", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#ed67d8",
@@ -29599,10 +27978,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#03e692",
-        "theme": "light"
-      },
+      "input": {"accent": "#03e692", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#03e692",
@@ -29654,10 +28030,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#03e692",
-        "theme": "dark"
-      },
+      "input": {"accent": "#03e692", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#03e692",
@@ -29709,10 +28082,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#bf4f26",
-        "theme": "light"
-      },
+      "input": {"accent": "#bf4f26", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#bf4f26",
@@ -29764,10 +28134,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#bf4f26",
-        "theme": "dark"
-      },
+      "input": {"accent": "#bf4f26", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#bf4f26",
@@ -29819,10 +28186,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#fde4b4",
-        "theme": "light"
-      },
+      "input": {"accent": "#fde4b4", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#fde4b4",
@@ -29874,10 +28238,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#fde4b4",
-        "theme": "dark"
-      },
+      "input": {"accent": "#fde4b4", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#fde4b4",
@@ -29929,10 +28290,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#0f69a5",
-        "theme": "light"
-      },
+      "input": {"accent": "#0f69a5", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#0f69a5",
@@ -29984,10 +28342,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#0f69a5",
-        "theme": "dark"
-      },
+      "input": {"accent": "#0f69a5", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#0f69a5",
@@ -30039,10 +28394,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9a639a",
-        "theme": "light"
-      },
+      "input": {"accent": "#9a639a", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#9a639a",
@@ -30094,10 +28446,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9a639a",
-        "theme": "dark"
-      },
+      "input": {"accent": "#9a639a", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#9a639a",
@@ -30149,10 +28498,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9bdbba",
-        "theme": "light"
-      },
+      "input": {"accent": "#9bdbba", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#9bdbba",
@@ -30204,10 +28550,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9bdbba",
-        "theme": "dark"
-      },
+      "input": {"accent": "#9bdbba", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#9bdbba",
@@ -30259,10 +28602,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ff622e",
-        "theme": "light"
-      },
+      "input": {"accent": "#ff622e", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#ff622e",
@@ -30314,10 +28654,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ff622e",
-        "theme": "dark"
-      },
+      "input": {"accent": "#ff622e", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#ff622e",
@@ -30369,10 +28706,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#831098",
-        "theme": "light"
-      },
+      "input": {"accent": "#831098", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#831098",
@@ -30424,10 +28758,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#831098",
-        "theme": "dark"
-      },
+      "input": {"accent": "#831098", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#831098",
@@ -30479,10 +28810,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#1d7a32",
-        "theme": "light"
-      },
+      "input": {"accent": "#1d7a32", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#1d7a32",
@@ -30534,10 +28862,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#1d7a32",
-        "theme": "dark"
-      },
+      "input": {"accent": "#1d7a32", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#1d7a32",
@@ -30589,10 +28914,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#32de45",
-        "theme": "light"
-      },
+      "input": {"accent": "#32de45", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#32de45",
@@ -30644,10 +28966,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#32de45",
-        "theme": "dark"
-      },
+      "input": {"accent": "#32de45", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#32de45",
@@ -30699,10 +29018,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f9012a",
-        "theme": "light"
-      },
+      "input": {"accent": "#f9012a", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#f9012a",
@@ -30754,10 +29070,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#f9012a",
-        "theme": "dark"
-      },
+      "input": {"accent": "#f9012a", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#f9012a",
@@ -30809,10 +29122,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a43042",
-        "theme": "light"
-      },
+      "input": {"accent": "#a43042", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a43042",
@@ -30864,10 +29174,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a43042",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a43042", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a43042",
@@ -30919,10 +29226,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#e4ec12",
-        "theme": "light"
-      },
+      "input": {"accent": "#e4ec12", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#e4ec12",
@@ -30974,10 +29278,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#e4ec12",
-        "theme": "dark"
-      },
+      "input": {"accent": "#e4ec12", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#e4ec12",
@@ -31029,10 +29330,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2b6889",
-        "theme": "light"
-      },
+      "input": {"accent": "#2b6889", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#2b6889",
@@ -31084,10 +29382,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#2b6889",
-        "theme": "dark"
-      },
+      "input": {"accent": "#2b6889", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#2b6889",
@@ -31139,10 +29434,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#3ce2b4",
-        "theme": "light"
-      },
+      "input": {"accent": "#3ce2b4", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#3ce2b4",
@@ -31194,10 +29486,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#3ce2b4",
-        "theme": "dark"
-      },
+      "input": {"accent": "#3ce2b4", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#3ce2b4",
@@ -31249,10 +29538,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#3d55c9",
-        "theme": "light"
-      },
+      "input": {"accent": "#3d55c9", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#3d55c9",
@@ -31304,10 +29590,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#3d55c9",
-        "theme": "dark"
-      },
+      "input": {"accent": "#3d55c9", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#3d55c9",
@@ -31359,10 +29642,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a8d1d2",
-        "theme": "light"
-      },
+      "input": {"accent": "#a8d1d2", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a8d1d2",
@@ -31414,10 +29694,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a8d1d2",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a8d1d2", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a8d1d2",
@@ -31469,10 +29746,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#88c2c7",
-        "theme": "light"
-      },
+      "input": {"accent": "#88c2c7", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#88c2c7",
@@ -31524,10 +29798,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#88c2c7",
-        "theme": "dark"
-      },
+      "input": {"accent": "#88c2c7", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#88c2c7",
@@ -31579,10 +29850,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d58d3e",
-        "theme": "light"
-      },
+      "input": {"accent": "#d58d3e", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#d58d3e",
@@ -31634,10 +29902,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d58d3e",
-        "theme": "dark"
-      },
+      "input": {"accent": "#d58d3e", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#d58d3e",
@@ -31689,10 +29954,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6ab35c",
-        "theme": "light"
-      },
+      "input": {"accent": "#6ab35c", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#6ab35c",
@@ -31744,10 +30006,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6ab35c",
-        "theme": "dark"
-      },
+      "input": {"accent": "#6ab35c", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#6ab35c",
@@ -31799,10 +30058,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a021dd",
-        "theme": "light"
-      },
+      "input": {"accent": "#a021dd", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a021dd",
@@ -31854,10 +30110,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a021dd",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a021dd", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a021dd",
@@ -31909,10 +30162,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9032d1",
-        "theme": "light"
-      },
+      "input": {"accent": "#9032d1", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#9032d1",
@@ -31964,10 +30214,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9032d1",
-        "theme": "dark"
-      },
+      "input": {"accent": "#9032d1", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#9032d1",
@@ -32019,10 +30266,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#5311b5",
-        "theme": "light"
-      },
+      "input": {"accent": "#5311b5", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#5311b5",
@@ -32074,10 +30318,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#5311b5",
-        "theme": "dark"
-      },
+      "input": {"accent": "#5311b5", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#5311b5",
@@ -32129,10 +30370,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9b0953",
-        "theme": "light"
-      },
+      "input": {"accent": "#9b0953", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#9b0953",
@@ -32184,10 +30422,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#9b0953",
-        "theme": "dark"
-      },
+      "input": {"accent": "#9b0953", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#9b0953",
@@ -32239,10 +30474,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#bdc8d0",
-        "theme": "light"
-      },
+      "input": {"accent": "#bdc8d0", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#bdc8d0",
@@ -32294,10 +30526,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#bdc8d0",
-        "theme": "dark"
-      },
+      "input": {"accent": "#bdc8d0", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#bdc8d0",
@@ -32349,10 +30578,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6b7305",
-        "theme": "light"
-      },
+      "input": {"accent": "#6b7305", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#6b7305",
@@ -32404,10 +30630,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#6b7305",
-        "theme": "dark"
-      },
+      "input": {"accent": "#6b7305", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#6b7305",
@@ -32459,10 +30682,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#aacf1d",
-        "theme": "light"
-      },
+      "input": {"accent": "#aacf1d", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#aacf1d",
@@ -32514,10 +30734,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#aacf1d",
-        "theme": "dark"
-      },
+      "input": {"accent": "#aacf1d", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#aacf1d",
@@ -32569,10 +30786,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#7c4d09",
-        "theme": "light"
-      },
+      "input": {"accent": "#7c4d09", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#7c4d09",
@@ -32624,10 +30838,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#7c4d09",
-        "theme": "dark"
-      },
+      "input": {"accent": "#7c4d09", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#7c4d09",
@@ -32679,10 +30890,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#e1b88a",
-        "theme": "light"
-      },
+      "input": {"accent": "#e1b88a", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#e1b88a",
@@ -32734,10 +30942,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#e1b88a",
-        "theme": "dark"
-      },
+      "input": {"accent": "#e1b88a", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#e1b88a",
@@ -32789,10 +30994,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#b9a9b0",
-        "theme": "light"
-      },
+      "input": {"accent": "#b9a9b0", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#b9a9b0",
@@ -32844,10 +31046,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#b9a9b0",
-        "theme": "dark"
-      },
+      "input": {"accent": "#b9a9b0", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#b9a9b0",
@@ -32899,10 +31098,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#45a11c",
-        "theme": "light"
-      },
+      "input": {"accent": "#45a11c", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#45a11c",
@@ -32954,10 +31150,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#45a11c",
-        "theme": "dark"
-      },
+      "input": {"accent": "#45a11c", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#45a11c",
@@ -33009,10 +31202,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#994e38",
-        "theme": "light"
-      },
+      "input": {"accent": "#994e38", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#994e38",
@@ -33064,10 +31254,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#994e38",
-        "theme": "dark"
-      },
+      "input": {"accent": "#994e38", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#994e38",
@@ -33119,10 +31306,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d63074",
-        "theme": "light"
-      },
+      "input": {"accent": "#d63074", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#d63074",
@@ -33174,10 +31358,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#d63074",
-        "theme": "dark"
-      },
+      "input": {"accent": "#d63074", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#d63074",
@@ -33229,10 +31410,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#e0fbe8",
-        "theme": "light"
-      },
+      "input": {"accent": "#e0fbe8", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#e0fbe8",
@@ -33284,10 +31462,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#e0fbe8",
-        "theme": "dark"
-      },
+      "input": {"accent": "#e0fbe8", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#e0fbe8",
@@ -33339,10 +31514,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#34dcc4",
-        "theme": "light"
-      },
+      "input": {"accent": "#34dcc4", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#34dcc4",
@@ -33394,10 +31566,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#34dcc4",
-        "theme": "dark"
-      },
+      "input": {"accent": "#34dcc4", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#34dcc4",
@@ -33449,10 +31618,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#02d455",
-        "theme": "light"
-      },
+      "input": {"accent": "#02d455", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#02d455",
@@ -33504,10 +31670,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#02d455",
-        "theme": "dark"
-      },
+      "input": {"accent": "#02d455", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#02d455",
@@ -33559,10 +31722,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a66460",
-        "theme": "light"
-      },
+      "input": {"accent": "#a66460", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#a66460",
@@ -33614,10 +31774,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#a66460",
-        "theme": "dark"
-      },
+      "input": {"accent": "#a66460", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#a66460",
@@ -33669,10 +31826,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ed71a1",
-        "theme": "light"
-      },
+      "input": {"accent": "#ed71a1", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#ed71a1",
@@ -33724,10 +31878,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#ed71a1",
-        "theme": "dark"
-      },
+      "input": {"accent": "#ed71a1", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#ed71a1",
@@ -33779,10 +31930,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#dfd4ea",
-        "theme": "light"
-      },
+      "input": {"accent": "#dfd4ea", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#dfd4ea",
@@ -33834,10 +31982,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#dfd4ea",
-        "theme": "dark"
-      },
+      "input": {"accent": "#dfd4ea", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#dfd4ea",
@@ -33889,10 +32034,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#28061b",
-        "theme": "light"
-      },
+      "input": {"accent": "#28061b", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#28061b",
@@ -33944,10 +32086,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#28061b",
-        "theme": "dark"
-      },
+      "input": {"accent": "#28061b", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#28061b",
@@ -33999,10 +32138,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#98659e",
-        "theme": "light"
-      },
+      "input": {"accent": "#98659e", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#98659e",
@@ -34054,10 +32190,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#98659e",
-        "theme": "dark"
-      },
+      "input": {"accent": "#98659e", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#98659e",
@@ -34109,10 +32242,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#5d0604",
-        "theme": "light"
-      },
+      "input": {"accent": "#5d0604", "theme": "light"},
       "output": {
         "tokens": {
           "solid": "#5d0604",
@@ -34164,10 +32294,7 @@
       }
     },
     {
-      "input": {
-        "accent": "#5d0604",
-        "theme": "dark"
-      },
+      "input": {"accent": "#5d0604", "theme": "dark"},
       "output": {
         "tokens": {
           "solid": "#5d0604",

@@ -5,34 +5,12 @@
       "input": {
         "name": "apfs: a file and a folder into an empty folder",
         "tree": [
-          {
-            "path": "source/a.txt",
-            "kind": "file",
-            "content": "source/a.txt\n"
-          },
-          {
-            "path": "source/f/b.txt",
-            "kind": "file",
-            "content": "source/f/b.txt\n"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/a.txt", "kind": "file", "content": "source/a.txt\n"},
+          {"path": "source/f/b.txt", "kind": "file", "content": "source/f/b.txt\n"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/a.txt",
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "copy", "sources": ["source/a.txt", "source/f"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -40,32 +18,14 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "destination": "apfs"
-        },
+        "volumes": {"destination": "apfs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -75,13 +35,7 @@
             "sha256": "eee384e0bdf197ab09d32c270a16bca5169e7fa5941eadf459cc10627c23c63f",
             "size": 13
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -219,10 +173,7 @@
               "totalNodeCount": 2
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/a.txt",
-            "$ROOT/source/f"
-          ],
+          "sourcePaths": ["$ROOT/source/a.txt", "$ROOT/source/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -235,12 +186,7 @@
           "warnings": []
         },
         "resolved": [
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/destination/a.txt",
-            "id": "item-1"
-          },
+          {"action": "create", "children": [], "destinationPath": "$ROOT/destination/a.txt", "id": "item-1"},
           {
             "action": "create",
             "children": [
@@ -262,50 +208,15 @@
       "input": {
         "name": "apfs: conflicts at the destination",
         "tree": [
-          {
-            "path": "source/a.txt",
-            "kind": "file",
-            "content": "new\n"
-          },
-          {
-            "path": "source/f/x.txt",
-            "kind": "file",
-            "content": "new x\n"
-          },
-          {
-            "path": "source/f/n.txt",
-            "kind": "file",
-            "content": "source/f/n.txt\n"
-          },
-          {
-            "path": "destination/a.txt",
-            "kind": "file",
-            "content": "old\n"
-          },
-          {
-            "path": "destination/f/x.txt",
-            "kind": "file",
-            "content": "old x\n"
-          },
-          {
-            "path": "destination/f/only.txt",
-            "kind": "file",
-            "content": "destination/f/only.txt\n"
-          }
+          {"path": "source/a.txt", "kind": "file", "content": "new\n"},
+          {"path": "source/f/x.txt", "kind": "file", "content": "new x\n"},
+          {"path": "source/f/n.txt", "kind": "file", "content": "source/f/n.txt\n"},
+          {"path": "destination/a.txt", "kind": "file", "content": "old\n"},
+          {"path": "destination/f/x.txt", "kind": "file", "content": "old x\n"},
+          {"path": "destination/f/only.txt", "kind": "file", "content": "destination/f/only.txt\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/a.txt",
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "skip",
-          "directory": "merge",
-          "mismatch": "skip"
-        },
+        "paste": {"mode": "copy", "sources": ["source/a.txt", "source/f"], "destination": "destination"},
+        "policy": {"file": "skip", "directory": "merge", "mismatch": "skip"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -313,26 +224,13 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "destination": "apfs"
-        },
+        "volumes": {"destination": "apfs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "add_missing",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "add_missing", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
           {
             "acl": false,
             "flags": [],
@@ -342,13 +240,7 @@
             "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
           {
             "acl": false,
             "flags": [],
@@ -367,13 +259,7 @@
             "sha256": "0e06d231f17ba8957e89856decc01e898c4b44a26d23f51039b0ff50e2060fd2",
             "size": 6
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -383,13 +269,7 @@
             "sha256": "7aa7a5359173d05b63cfd682e3c38487f3cb4f7f1d60659fe59fab1505977d4c",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -418,11 +298,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           },
           "item-2": {
             "effective": {
@@ -432,12 +308,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "merge",
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["merge", "keep_both", "overwrite", "skip"]
           },
           "item-2/x.txt": {
             "effective": {
@@ -447,11 +318,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           }
         },
         "report": {
@@ -594,12 +461,7 @@
                 "symlinkTarget": null
               },
               "destinationKind": "directory",
-              "destinationOnly": {
-                "count": 1,
-                "samplePaths": [
-                  "only.txt"
-                ]
-              },
+              "destinationOnly": {"count": 1, "samplePaths": ["only.txt"]},
               "destinationPath": "$ROOT/destination/f",
               "destinationTotalNodeCount": 2,
               "disposition": "conflict",
@@ -624,10 +486,7 @@
               "totalNodeCount": 3
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/a.txt",
-            "$ROOT/source/f"
-          ],
+          "sourcePaths": ["$ROOT/source/a.txt", "$ROOT/source/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 1,
@@ -640,12 +499,7 @@
           "warnings": []
         },
         "resolved": [
-          {
-            "action": "skip",
-            "children": [],
-            "destinationPath": "$ROOT/destination/a.txt",
-            "id": "item-1"
-          },
+          {"action": "skip", "children": [], "destinationPath": "$ROOT/destination/a.txt", "id": "item-1"},
           {
             "action": "merge",
             "children": [
@@ -655,12 +509,7 @@
                 "destinationPath": "$ROOT/destination/f/n.txt",
                 "id": "item-2/n.txt"
               },
-              {
-                "action": "skip",
-                "children": [],
-                "destinationPath": "$ROOT/destination/f/x.txt",
-                "id": "item-2/x.txt"
-              }
+              {"action": "skip", "children": [], "destinationPath": "$ROOT/destination/f/x.txt", "id": "item-2/x.txt"}
             ],
             "destinationPath": "$ROOT/destination/f",
             "id": "item-2"
@@ -673,29 +522,11 @@
       "input": {
         "name": "apfs: a name differing in case at the destination",
         "tree": [
-          {
-            "path": "source/readme.txt",
-            "kind": "file",
-            "content": "source/readme.txt\n"
-          },
-          {
-            "path": "destination/README.txt",
-            "kind": "file",
-            "content": "destination/README.txt\n"
-          }
+          {"path": "source/readme.txt", "kind": "file", "content": "source/readme.txt\n"},
+          {"path": "destination/README.txt", "kind": "file", "content": "destination/README.txt\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/readme.txt"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "keep_both",
-          "directory": "merge",
-          "mismatch": "keep_both"
-        },
+        "paste": {"mode": "copy", "sources": ["source/readme.txt"], "destination": "destination"},
+        "policy": {"file": "keep_both", "directory": "merge", "mismatch": "keep_both"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -703,25 +534,13 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "destination": "apfs"
-        },
+        "volumes": {"destination": "apfs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
           {
             "acl": false,
             "flags": [],
@@ -731,13 +550,7 @@
             "sha256": "96b666034458044d3b98a6b48697d8382de69632befd64134e08ea36dcaeed64",
             "size": 23
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -757,11 +570,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           }
         },
         "report": {
@@ -811,9 +620,7 @@
               "totalNodeCount": 1
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/readme.txt"
-          ],
+          "sourcePaths": ["$ROOT/source/readme.txt"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -840,50 +647,15 @@
       "input": {
         "name": "apfs: moved from the disk to the startup disk",
         "tree": [
-          {
-            "path": "source/a.txt",
-            "kind": "file",
-            "content": "new\n"
-          },
-          {
-            "path": "source/f/x.txt",
-            "kind": "file",
-            "content": "new x\n"
-          },
-          {
-            "path": "source/f/n.txt",
-            "kind": "file",
-            "content": "source/f/n.txt\n"
-          },
-          {
-            "path": "destination/a.txt",
-            "kind": "file",
-            "content": "old\n"
-          },
-          {
-            "path": "destination/f/x.txt",
-            "kind": "file",
-            "content": "old x\n"
-          },
-          {
-            "path": "destination/f/only.txt",
-            "kind": "file",
-            "content": "destination/f/only.txt\n"
-          }
+          {"path": "source/a.txt", "kind": "file", "content": "new\n"},
+          {"path": "source/f/x.txt", "kind": "file", "content": "new x\n"},
+          {"path": "source/f/n.txt", "kind": "file", "content": "source/f/n.txt\n"},
+          {"path": "destination/a.txt", "kind": "file", "content": "old\n"},
+          {"path": "destination/f/x.txt", "kind": "file", "content": "old x\n"},
+          {"path": "destination/f/only.txt", "kind": "file", "content": "destination/f/only.txt\n"}
         ],
-        "paste": {
-          "mode": "cut",
-          "sources": [
-            "source/a.txt",
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "cut", "sources": ["source/a.txt", "source/f"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -891,25 +663,13 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "source": "apfs"
-        },
+        "volumes": {"source": "apfs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
           {
             "acl": false,
             "flags": [],
@@ -919,13 +679,7 @@
             "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
           {
             "acl": false,
             "flags": [],
@@ -944,13 +698,7 @@
             "sha256": "0e06d231f17ba8957e89856decc01e898c4b44a26d23f51039b0ff50e2060fd2",
             "size": 6
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -960,13 +708,7 @@
             "sha256": "7aa7a5359173d05b63cfd682e3c38487f3cb4f7f1d60659fe59fab1505977d4c",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -995,11 +737,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           },
           "item-2": {
             "effective": {
@@ -1009,12 +747,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "merge",
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["merge", "keep_both", "overwrite", "skip"]
           },
           "item-2/x.txt": {
             "effective": {
@@ -1024,11 +757,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           }
         },
         "report": {
@@ -1171,12 +900,7 @@
                 "symlinkTarget": null
               },
               "destinationKind": "directory",
-              "destinationOnly": {
-                "count": 1,
-                "samplePaths": [
-                  "only.txt"
-                ]
-              },
+              "destinationOnly": {"count": 1, "samplePaths": ["only.txt"]},
               "destinationPath": "$ROOT/destination/f",
               "destinationTotalNodeCount": 2,
               "disposition": "conflict",
@@ -1201,10 +925,7 @@
               "totalNodeCount": 3
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/a.txt",
-            "$ROOT/source/f"
-          ],
+          "sourcePaths": ["$ROOT/source/a.txt", "$ROOT/source/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 1,
@@ -1215,19 +936,11 @@
             "totalNodeCount": 4
           },
           "warnings": [
-            {
-              "code": "cut_requires_delete",
-              "message": "Cut/Paste removes the original items after the copy succeeds."
-            }
+            {"code": "cut_requires_delete", "message": "Cut/Paste removes the original items after the copy succeeds."}
           ]
         },
         "resolved": [
-          {
-            "action": "overwrite",
-            "children": [],
-            "destinationPath": "$ROOT/destination/a.txt",
-            "id": "item-1"
-          },
+          {"action": "overwrite", "children": [], "destinationPath": "$ROOT/destination/a.txt", "id": "item-1"},
           {
             "action": "overwrite",
             "children": [
@@ -1255,34 +968,12 @@
       "input": {
         "name": "apfs: moved within the disk",
         "tree": [
-          {
-            "path": "source/f/a.txt",
-            "kind": "file",
-            "content": "source/f/a.txt\n"
-          },
-          {
-            "path": "source/b.txt",
-            "kind": "file",
-            "content": "source/b.txt\n"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/f/a.txt", "kind": "file", "content": "source/f/a.txt\n"},
+          {"path": "source/b.txt", "kind": "file", "content": "source/b.txt\n"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "cut",
-          "sources": [
-            "source/f",
-            "source/b.txt"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "cut", "sources": ["source/f", "source/b.txt"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -1290,33 +981,14 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "source": "apfs",
-          "destination": "apfs"
-        },
+        "volumes": {"source": "apfs", "destination": "apfs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -1326,13 +998,7 @@
             "sha256": "9073465e395abc5a69797dc5c708ca49546a4ee5cff74147078ff80ac8118c78",
             "size": 13
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -1430,10 +1096,7 @@
               "totalNodeCount": 1
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/f",
-            "$ROOT/source/b.txt"
-          ],
+          "sourcePaths": ["$ROOT/source/f", "$ROOT/source/b.txt"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -1444,25 +1107,12 @@
             "totalNodeCount": 2
           },
           "warnings": [
-            {
-              "code": "cut_requires_delete",
-              "message": "Cut/Paste removes the original items after the copy succeeds."
-            }
+            {"code": "cut_requires_delete", "message": "Cut/Paste removes the original items after the copy succeeds."}
           ]
         },
         "resolved": [
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/destination/f",
-            "id": "item-1"
-          },
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/destination/b.txt",
-            "id": "item-2"
-          }
+          {"action": "create", "children": [], "destinationPath": "$ROOT/destination/f", "id": "item-1"},
+          {"action": "create", "children": [], "destinationPath": "$ROOT/destination/b.txt", "id": "item-2"}
         ]
       }
     },
@@ -1471,30 +1121,11 @@
       "input": {
         "name": "apfs: copied into its own folder",
         "tree": [
-          {
-            "path": "folder/a.txt",
-            "kind": "file",
-            "content": "folder/a.txt\n"
-          },
-          {
-            "path": "folder/f/b.txt",
-            "kind": "file",
-            "content": "folder/f/b.txt\n"
-          }
+          {"path": "folder/a.txt", "kind": "file", "content": "folder/a.txt\n"},
+          {"path": "folder/f/b.txt", "kind": "file", "content": "folder/f/b.txt\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "folder/a.txt",
-            "folder/f"
-          ],
-          "destination": "folder"
-        },
-        "policy": {
-          "file": "keep_both",
-          "directory": "merge",
-          "mismatch": "keep_both"
-        },
+        "paste": {"mode": "copy", "sources": ["folder/a.txt", "folder/f"], "destination": "folder"},
+        "policy": {"file": "keep_both", "directory": "merge", "mismatch": "keep_both"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -1502,25 +1133,13 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "folder": "apfs"
-        },
+        "volumes": {"folder": "apfs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "folder"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "folder"},
           {
             "acl": false,
             "flags": [],
@@ -1530,13 +1149,7 @@
             "sha256": "4a1994cbd3e09c92f04d047e01d40b7848917a1fdb4d136093738cfcfcf223db",
             "size": 13
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "folder/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "folder/f"},
           {
             "acl": false,
             "flags": [],
@@ -1674,10 +1287,7 @@
               "totalNodeCount": 2
             }
           ],
-          "sourcePaths": [
-            "$ROOT/folder/a.txt",
-            "$ROOT/folder/f"
-          ],
+          "sourcePaths": ["$ROOT/folder/a.txt", "$ROOT/folder/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -1690,12 +1300,7 @@
           "warnings": []
         },
         "resolved": [
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/folder/a copy.txt",
-            "id": "item-1"
-          },
+          {"action": "create", "children": [], "destinationPath": "$ROOT/folder/a copy.txt", "id": "item-1"},
           {
             "action": "create",
             "children": [
@@ -1717,34 +1322,12 @@
       "input": {
         "name": "apfs-cs: a file and a folder into an empty folder",
         "tree": [
-          {
-            "path": "source/a.txt",
-            "kind": "file",
-            "content": "source/a.txt\n"
-          },
-          {
-            "path": "source/f/b.txt",
-            "kind": "file",
-            "content": "source/f/b.txt\n"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/a.txt", "kind": "file", "content": "source/a.txt\n"},
+          {"path": "source/f/b.txt", "kind": "file", "content": "source/f/b.txt\n"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/a.txt",
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "copy", "sources": ["source/a.txt", "source/f"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -1752,32 +1335,14 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "destination": "apfs-cs"
-        },
+        "volumes": {"destination": "apfs-cs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -1787,13 +1352,7 @@
             "sha256": "eee384e0bdf197ab09d32c270a16bca5169e7fa5941eadf459cc10627c23c63f",
             "size": 13
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -1931,10 +1490,7 @@
               "totalNodeCount": 2
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/a.txt",
-            "$ROOT/source/f"
-          ],
+          "sourcePaths": ["$ROOT/source/a.txt", "$ROOT/source/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -1947,12 +1503,7 @@
           "warnings": []
         },
         "resolved": [
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/destination/a.txt",
-            "id": "item-1"
-          },
+          {"action": "create", "children": [], "destinationPath": "$ROOT/destination/a.txt", "id": "item-1"},
           {
             "action": "create",
             "children": [
@@ -1974,50 +1525,15 @@
       "input": {
         "name": "apfs-cs: conflicts at the destination",
         "tree": [
-          {
-            "path": "source/a.txt",
-            "kind": "file",
-            "content": "new\n"
-          },
-          {
-            "path": "source/f/x.txt",
-            "kind": "file",
-            "content": "new x\n"
-          },
-          {
-            "path": "source/f/n.txt",
-            "kind": "file",
-            "content": "source/f/n.txt\n"
-          },
-          {
-            "path": "destination/a.txt",
-            "kind": "file",
-            "content": "old\n"
-          },
-          {
-            "path": "destination/f/x.txt",
-            "kind": "file",
-            "content": "old x\n"
-          },
-          {
-            "path": "destination/f/only.txt",
-            "kind": "file",
-            "content": "destination/f/only.txt\n"
-          }
+          {"path": "source/a.txt", "kind": "file", "content": "new\n"},
+          {"path": "source/f/x.txt", "kind": "file", "content": "new x\n"},
+          {"path": "source/f/n.txt", "kind": "file", "content": "source/f/n.txt\n"},
+          {"path": "destination/a.txt", "kind": "file", "content": "old\n"},
+          {"path": "destination/f/x.txt", "kind": "file", "content": "old x\n"},
+          {"path": "destination/f/only.txt", "kind": "file", "content": "destination/f/only.txt\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/a.txt",
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "skip",
-          "directory": "merge",
-          "mismatch": "skip"
-        },
+        "paste": {"mode": "copy", "sources": ["source/a.txt", "source/f"], "destination": "destination"},
+        "policy": {"file": "skip", "directory": "merge", "mismatch": "skip"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -2025,26 +1541,13 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "destination": "apfs-cs"
-        },
+        "volumes": {"destination": "apfs-cs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "add_missing",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "add_missing", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
           {
             "acl": false,
             "flags": [],
@@ -2054,13 +1557,7 @@
             "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
           {
             "acl": false,
             "flags": [],
@@ -2079,13 +1576,7 @@
             "sha256": "0e06d231f17ba8957e89856decc01e898c4b44a26d23f51039b0ff50e2060fd2",
             "size": 6
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -2095,13 +1586,7 @@
             "sha256": "7aa7a5359173d05b63cfd682e3c38487f3cb4f7f1d60659fe59fab1505977d4c",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -2130,11 +1615,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           },
           "item-2": {
             "effective": {
@@ -2144,12 +1625,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "merge",
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["merge", "keep_both", "overwrite", "skip"]
           },
           "item-2/x.txt": {
             "effective": {
@@ -2159,11 +1635,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           }
         },
         "report": {
@@ -2306,12 +1778,7 @@
                 "symlinkTarget": null
               },
               "destinationKind": "directory",
-              "destinationOnly": {
-                "count": 1,
-                "samplePaths": [
-                  "only.txt"
-                ]
-              },
+              "destinationOnly": {"count": 1, "samplePaths": ["only.txt"]},
               "destinationPath": "$ROOT/destination/f",
               "destinationTotalNodeCount": 2,
               "disposition": "conflict",
@@ -2336,10 +1803,7 @@
               "totalNodeCount": 3
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/a.txt",
-            "$ROOT/source/f"
-          ],
+          "sourcePaths": ["$ROOT/source/a.txt", "$ROOT/source/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 1,
@@ -2352,12 +1816,7 @@
           "warnings": []
         },
         "resolved": [
-          {
-            "action": "skip",
-            "children": [],
-            "destinationPath": "$ROOT/destination/a.txt",
-            "id": "item-1"
-          },
+          {"action": "skip", "children": [], "destinationPath": "$ROOT/destination/a.txt", "id": "item-1"},
           {
             "action": "merge",
             "children": [
@@ -2367,12 +1826,7 @@
                 "destinationPath": "$ROOT/destination/f/n.txt",
                 "id": "item-2/n.txt"
               },
-              {
-                "action": "skip",
-                "children": [],
-                "destinationPath": "$ROOT/destination/f/x.txt",
-                "id": "item-2/x.txt"
-              }
+              {"action": "skip", "children": [], "destinationPath": "$ROOT/destination/f/x.txt", "id": "item-2/x.txt"}
             ],
             "destinationPath": "$ROOT/destination/f",
             "id": "item-2"
@@ -2385,29 +1839,11 @@
       "input": {
         "name": "apfs-cs: a name differing in case at the destination",
         "tree": [
-          {
-            "path": "source/readme.txt",
-            "kind": "file",
-            "content": "source/readme.txt\n"
-          },
-          {
-            "path": "destination/README.txt",
-            "kind": "file",
-            "content": "destination/README.txt\n"
-          }
+          {"path": "source/readme.txt", "kind": "file", "content": "source/readme.txt\n"},
+          {"path": "destination/README.txt", "kind": "file", "content": "destination/README.txt\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/readme.txt"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "keep_both",
-          "directory": "merge",
-          "mismatch": "keep_both"
-        },
+        "paste": {"mode": "copy", "sources": ["source/readme.txt"], "destination": "destination"},
+        "policy": {"file": "keep_both", "directory": "merge", "mismatch": "keep_both"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -2415,25 +1851,13 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "destination": "apfs-cs"
-        },
+        "volumes": {"destination": "apfs-cs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
           {
             "acl": false,
             "flags": [],
@@ -2443,13 +1867,7 @@
             "sha256": "96b666034458044d3b98a6b48697d8382de69632befd64134e08ea36dcaeed64",
             "size": 23
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -2508,9 +1926,7 @@
               "totalNodeCount": 1
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/readme.txt"
-          ],
+          "sourcePaths": ["$ROOT/source/readme.txt"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -2523,12 +1939,7 @@
           "warnings": []
         },
         "resolved": [
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/destination/readme.txt",
-            "id": "item-1"
-          }
+          {"action": "create", "children": [], "destinationPath": "$ROOT/destination/readme.txt", "id": "item-1"}
         ]
       }
     },
@@ -2537,50 +1948,15 @@
       "input": {
         "name": "apfs-cs: moved from the disk to the startup disk",
         "tree": [
-          {
-            "path": "source/a.txt",
-            "kind": "file",
-            "content": "new\n"
-          },
-          {
-            "path": "source/f/x.txt",
-            "kind": "file",
-            "content": "new x\n"
-          },
-          {
-            "path": "source/f/n.txt",
-            "kind": "file",
-            "content": "source/f/n.txt\n"
-          },
-          {
-            "path": "destination/a.txt",
-            "kind": "file",
-            "content": "old\n"
-          },
-          {
-            "path": "destination/f/x.txt",
-            "kind": "file",
-            "content": "old x\n"
-          },
-          {
-            "path": "destination/f/only.txt",
-            "kind": "file",
-            "content": "destination/f/only.txt\n"
-          }
+          {"path": "source/a.txt", "kind": "file", "content": "new\n"},
+          {"path": "source/f/x.txt", "kind": "file", "content": "new x\n"},
+          {"path": "source/f/n.txt", "kind": "file", "content": "source/f/n.txt\n"},
+          {"path": "destination/a.txt", "kind": "file", "content": "old\n"},
+          {"path": "destination/f/x.txt", "kind": "file", "content": "old x\n"},
+          {"path": "destination/f/only.txt", "kind": "file", "content": "destination/f/only.txt\n"}
         ],
-        "paste": {
-          "mode": "cut",
-          "sources": [
-            "source/a.txt",
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "cut", "sources": ["source/a.txt", "source/f"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -2588,25 +1964,13 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "source": "apfs-cs"
-        },
+        "volumes": {"source": "apfs-cs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
           {
             "acl": false,
             "flags": [],
@@ -2616,13 +1980,7 @@
             "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
           {
             "acl": false,
             "flags": [],
@@ -2641,13 +1999,7 @@
             "sha256": "0e06d231f17ba8957e89856decc01e898c4b44a26d23f51039b0ff50e2060fd2",
             "size": 6
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -2657,13 +2009,7 @@
             "sha256": "7aa7a5359173d05b63cfd682e3c38487f3cb4f7f1d60659fe59fab1505977d4c",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -2692,11 +2038,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           },
           "item-2": {
             "effective": {
@@ -2706,12 +2048,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "merge",
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["merge", "keep_both", "overwrite", "skip"]
           },
           "item-2/x.txt": {
             "effective": {
@@ -2721,11 +2058,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           }
         },
         "report": {
@@ -2868,12 +2201,7 @@
                 "symlinkTarget": null
               },
               "destinationKind": "directory",
-              "destinationOnly": {
-                "count": 1,
-                "samplePaths": [
-                  "only.txt"
-                ]
-              },
+              "destinationOnly": {"count": 1, "samplePaths": ["only.txt"]},
               "destinationPath": "$ROOT/destination/f",
               "destinationTotalNodeCount": 2,
               "disposition": "conflict",
@@ -2898,10 +2226,7 @@
               "totalNodeCount": 3
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/a.txt",
-            "$ROOT/source/f"
-          ],
+          "sourcePaths": ["$ROOT/source/a.txt", "$ROOT/source/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 1,
@@ -2912,19 +2237,11 @@
             "totalNodeCount": 4
           },
           "warnings": [
-            {
-              "code": "cut_requires_delete",
-              "message": "Cut/Paste removes the original items after the copy succeeds."
-            }
+            {"code": "cut_requires_delete", "message": "Cut/Paste removes the original items after the copy succeeds."}
           ]
         },
         "resolved": [
-          {
-            "action": "overwrite",
-            "children": [],
-            "destinationPath": "$ROOT/destination/a.txt",
-            "id": "item-1"
-          },
+          {"action": "overwrite", "children": [], "destinationPath": "$ROOT/destination/a.txt", "id": "item-1"},
           {
             "action": "overwrite",
             "children": [
@@ -2952,34 +2269,12 @@
       "input": {
         "name": "apfs-cs: moved within the disk",
         "tree": [
-          {
-            "path": "source/f/a.txt",
-            "kind": "file",
-            "content": "source/f/a.txt\n"
-          },
-          {
-            "path": "source/b.txt",
-            "kind": "file",
-            "content": "source/b.txt\n"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/f/a.txt", "kind": "file", "content": "source/f/a.txt\n"},
+          {"path": "source/b.txt", "kind": "file", "content": "source/b.txt\n"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "cut",
-          "sources": [
-            "source/f",
-            "source/b.txt"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "cut", "sources": ["source/f", "source/b.txt"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -2987,33 +2282,14 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "source": "apfs-cs",
-          "destination": "apfs-cs"
-        },
+        "volumes": {"source": "apfs-cs", "destination": "apfs-cs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -3023,13 +2299,7 @@
             "sha256": "9073465e395abc5a69797dc5c708ca49546a4ee5cff74147078ff80ac8118c78",
             "size": 13
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -3127,10 +2397,7 @@
               "totalNodeCount": 1
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/f",
-            "$ROOT/source/b.txt"
-          ],
+          "sourcePaths": ["$ROOT/source/f", "$ROOT/source/b.txt"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -3141,25 +2408,12 @@
             "totalNodeCount": 2
           },
           "warnings": [
-            {
-              "code": "cut_requires_delete",
-              "message": "Cut/Paste removes the original items after the copy succeeds."
-            }
+            {"code": "cut_requires_delete", "message": "Cut/Paste removes the original items after the copy succeeds."}
           ]
         },
         "resolved": [
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/destination/f",
-            "id": "item-1"
-          },
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/destination/b.txt",
-            "id": "item-2"
-          }
+          {"action": "create", "children": [], "destinationPath": "$ROOT/destination/f", "id": "item-1"},
+          {"action": "create", "children": [], "destinationPath": "$ROOT/destination/b.txt", "id": "item-2"}
         ]
       }
     },
@@ -3168,30 +2422,11 @@
       "input": {
         "name": "apfs-cs: copied into its own folder",
         "tree": [
-          {
-            "path": "folder/a.txt",
-            "kind": "file",
-            "content": "folder/a.txt\n"
-          },
-          {
-            "path": "folder/f/b.txt",
-            "kind": "file",
-            "content": "folder/f/b.txt\n"
-          }
+          {"path": "folder/a.txt", "kind": "file", "content": "folder/a.txt\n"},
+          {"path": "folder/f/b.txt", "kind": "file", "content": "folder/f/b.txt\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "folder/a.txt",
-            "folder/f"
-          ],
-          "destination": "folder"
-        },
-        "policy": {
-          "file": "keep_both",
-          "directory": "merge",
-          "mismatch": "keep_both"
-        },
+        "paste": {"mode": "copy", "sources": ["folder/a.txt", "folder/f"], "destination": "folder"},
+        "policy": {"file": "keep_both", "directory": "merge", "mismatch": "keep_both"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -3199,25 +2434,13 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "folder": "apfs-cs"
-        },
+        "volumes": {"folder": "apfs-cs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "folder"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "folder"},
           {
             "acl": false,
             "flags": [],
@@ -3227,13 +2450,7 @@
             "sha256": "4a1994cbd3e09c92f04d047e01d40b7848917a1fdb4d136093738cfcfcf223db",
             "size": 13
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "folder/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "folder/f"},
           {
             "acl": false,
             "flags": [],
@@ -3371,10 +2588,7 @@
               "totalNodeCount": 2
             }
           ],
-          "sourcePaths": [
-            "$ROOT/folder/a.txt",
-            "$ROOT/folder/f"
-          ],
+          "sourcePaths": ["$ROOT/folder/a.txt", "$ROOT/folder/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -3387,12 +2601,7 @@
           "warnings": []
         },
         "resolved": [
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/folder/a copy.txt",
-            "id": "item-1"
-          },
+          {"action": "create", "children": [], "destinationPath": "$ROOT/folder/a copy.txt", "id": "item-1"},
           {
             "action": "create",
             "children": [
@@ -3414,34 +2623,12 @@
       "input": {
         "name": "hfs: a file and a folder into an empty folder",
         "tree": [
-          {
-            "path": "source/a.txt",
-            "kind": "file",
-            "content": "source/a.txt\n"
-          },
-          {
-            "path": "source/f/b.txt",
-            "kind": "file",
-            "content": "source/f/b.txt\n"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/a.txt", "kind": "file", "content": "source/a.txt\n"},
+          {"path": "source/f/b.txt", "kind": "file", "content": "source/f/b.txt\n"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/a.txt",
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "copy", "sources": ["source/a.txt", "source/f"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -3449,32 +2636,14 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "destination": "hfs"
-        },
+        "volumes": {"destination": "hfs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -3484,13 +2653,7 @@
             "sha256": "eee384e0bdf197ab09d32c270a16bca5169e7fa5941eadf459cc10627c23c63f",
             "size": 13
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -3628,10 +2791,7 @@
               "totalNodeCount": 2
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/a.txt",
-            "$ROOT/source/f"
-          ],
+          "sourcePaths": ["$ROOT/source/a.txt", "$ROOT/source/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -3644,12 +2804,7 @@
           "warnings": []
         },
         "resolved": [
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/destination/a.txt",
-            "id": "item-1"
-          },
+          {"action": "create", "children": [], "destinationPath": "$ROOT/destination/a.txt", "id": "item-1"},
           {
             "action": "create",
             "children": [
@@ -3671,50 +2826,15 @@
       "input": {
         "name": "hfs: conflicts at the destination",
         "tree": [
-          {
-            "path": "source/a.txt",
-            "kind": "file",
-            "content": "new\n"
-          },
-          {
-            "path": "source/f/x.txt",
-            "kind": "file",
-            "content": "new x\n"
-          },
-          {
-            "path": "source/f/n.txt",
-            "kind": "file",
-            "content": "source/f/n.txt\n"
-          },
-          {
-            "path": "destination/a.txt",
-            "kind": "file",
-            "content": "old\n"
-          },
-          {
-            "path": "destination/f/x.txt",
-            "kind": "file",
-            "content": "old x\n"
-          },
-          {
-            "path": "destination/f/only.txt",
-            "kind": "file",
-            "content": "destination/f/only.txt\n"
-          }
+          {"path": "source/a.txt", "kind": "file", "content": "new\n"},
+          {"path": "source/f/x.txt", "kind": "file", "content": "new x\n"},
+          {"path": "source/f/n.txt", "kind": "file", "content": "source/f/n.txt\n"},
+          {"path": "destination/a.txt", "kind": "file", "content": "old\n"},
+          {"path": "destination/f/x.txt", "kind": "file", "content": "old x\n"},
+          {"path": "destination/f/only.txt", "kind": "file", "content": "destination/f/only.txt\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/a.txt",
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "skip",
-          "directory": "merge",
-          "mismatch": "skip"
-        },
+        "paste": {"mode": "copy", "sources": ["source/a.txt", "source/f"], "destination": "destination"},
+        "policy": {"file": "skip", "directory": "merge", "mismatch": "skip"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -3722,26 +2842,13 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "destination": "hfs"
-        },
+        "volumes": {"destination": "hfs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "add_missing",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "add_missing", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
           {
             "acl": false,
             "flags": [],
@@ -3751,13 +2858,7 @@
             "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
           {
             "acl": false,
             "flags": [],
@@ -3776,13 +2877,7 @@
             "sha256": "0e06d231f17ba8957e89856decc01e898c4b44a26d23f51039b0ff50e2060fd2",
             "size": 6
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -3792,13 +2887,7 @@
             "sha256": "7aa7a5359173d05b63cfd682e3c38487f3cb4f7f1d60659fe59fab1505977d4c",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -3827,11 +2916,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           },
           "item-2": {
             "effective": {
@@ -3841,12 +2926,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "merge",
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["merge", "keep_both", "overwrite", "skip"]
           },
           "item-2/x.txt": {
             "effective": {
@@ -3856,11 +2936,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           }
         },
         "report": {
@@ -4003,12 +3079,7 @@
                 "symlinkTarget": null
               },
               "destinationKind": "directory",
-              "destinationOnly": {
-                "count": 1,
-                "samplePaths": [
-                  "only.txt"
-                ]
-              },
+              "destinationOnly": {"count": 1, "samplePaths": ["only.txt"]},
               "destinationPath": "$ROOT/destination/f",
               "destinationTotalNodeCount": 2,
               "disposition": "conflict",
@@ -4033,10 +3104,7 @@
               "totalNodeCount": 3
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/a.txt",
-            "$ROOT/source/f"
-          ],
+          "sourcePaths": ["$ROOT/source/a.txt", "$ROOT/source/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 1,
@@ -4049,12 +3117,7 @@
           "warnings": []
         },
         "resolved": [
-          {
-            "action": "skip",
-            "children": [],
-            "destinationPath": "$ROOT/destination/a.txt",
-            "id": "item-1"
-          },
+          {"action": "skip", "children": [], "destinationPath": "$ROOT/destination/a.txt", "id": "item-1"},
           {
             "action": "merge",
             "children": [
@@ -4064,12 +3127,7 @@
                 "destinationPath": "$ROOT/destination/f/n.txt",
                 "id": "item-2/n.txt"
               },
-              {
-                "action": "skip",
-                "children": [],
-                "destinationPath": "$ROOT/destination/f/x.txt",
-                "id": "item-2/x.txt"
-              }
+              {"action": "skip", "children": [], "destinationPath": "$ROOT/destination/f/x.txt", "id": "item-2/x.txt"}
             ],
             "destinationPath": "$ROOT/destination/f",
             "id": "item-2"
@@ -4082,29 +3140,11 @@
       "input": {
         "name": "hfs: a name differing in case at the destination",
         "tree": [
-          {
-            "path": "source/readme.txt",
-            "kind": "file",
-            "content": "source/readme.txt\n"
-          },
-          {
-            "path": "destination/README.txt",
-            "kind": "file",
-            "content": "destination/README.txt\n"
-          }
+          {"path": "source/readme.txt", "kind": "file", "content": "source/readme.txt\n"},
+          {"path": "destination/README.txt", "kind": "file", "content": "destination/README.txt\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/readme.txt"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "keep_both",
-          "directory": "merge",
-          "mismatch": "keep_both"
-        },
+        "paste": {"mode": "copy", "sources": ["source/readme.txt"], "destination": "destination"},
+        "policy": {"file": "keep_both", "directory": "merge", "mismatch": "keep_both"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -4112,25 +3152,13 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "destination": "hfs"
-        },
+        "volumes": {"destination": "hfs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
           {
             "acl": false,
             "flags": [],
@@ -4140,13 +3168,7 @@
             "sha256": "96b666034458044d3b98a6b48697d8382de69632befd64134e08ea36dcaeed64",
             "size": 23
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -4166,11 +3188,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           }
         },
         "report": {
@@ -4220,9 +3238,7 @@
               "totalNodeCount": 1
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/readme.txt"
-          ],
+          "sourcePaths": ["$ROOT/source/readme.txt"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -4249,50 +3265,15 @@
       "input": {
         "name": "hfs: moved from the disk to the startup disk",
         "tree": [
-          {
-            "path": "source/a.txt",
-            "kind": "file",
-            "content": "new\n"
-          },
-          {
-            "path": "source/f/x.txt",
-            "kind": "file",
-            "content": "new x\n"
-          },
-          {
-            "path": "source/f/n.txt",
-            "kind": "file",
-            "content": "source/f/n.txt\n"
-          },
-          {
-            "path": "destination/a.txt",
-            "kind": "file",
-            "content": "old\n"
-          },
-          {
-            "path": "destination/f/x.txt",
-            "kind": "file",
-            "content": "old x\n"
-          },
-          {
-            "path": "destination/f/only.txt",
-            "kind": "file",
-            "content": "destination/f/only.txt\n"
-          }
+          {"path": "source/a.txt", "kind": "file", "content": "new\n"},
+          {"path": "source/f/x.txt", "kind": "file", "content": "new x\n"},
+          {"path": "source/f/n.txt", "kind": "file", "content": "source/f/n.txt\n"},
+          {"path": "destination/a.txt", "kind": "file", "content": "old\n"},
+          {"path": "destination/f/x.txt", "kind": "file", "content": "old x\n"},
+          {"path": "destination/f/only.txt", "kind": "file", "content": "destination/f/only.txt\n"}
         ],
-        "paste": {
-          "mode": "cut",
-          "sources": [
-            "source/a.txt",
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "cut", "sources": ["source/a.txt", "source/f"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -4300,25 +3281,13 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "source": "hfs"
-        },
+        "volumes": {"source": "hfs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
           {
             "acl": false,
             "flags": [],
@@ -4328,13 +3297,7 @@
             "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
           {
             "acl": false,
             "flags": [],
@@ -4353,13 +3316,7 @@
             "sha256": "0e06d231f17ba8957e89856decc01e898c4b44a26d23f51039b0ff50e2060fd2",
             "size": 6
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -4369,13 +3326,7 @@
             "sha256": "7aa7a5359173d05b63cfd682e3c38487f3cb4f7f1d60659fe59fab1505977d4c",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -4404,11 +3355,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           },
           "item-2": {
             "effective": {
@@ -4418,12 +3365,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "merge",
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["merge", "keep_both", "overwrite", "skip"]
           },
           "item-2/x.txt": {
             "effective": {
@@ -4433,11 +3375,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           }
         },
         "report": {
@@ -4580,12 +3518,7 @@
                 "symlinkTarget": null
               },
               "destinationKind": "directory",
-              "destinationOnly": {
-                "count": 1,
-                "samplePaths": [
-                  "only.txt"
-                ]
-              },
+              "destinationOnly": {"count": 1, "samplePaths": ["only.txt"]},
               "destinationPath": "$ROOT/destination/f",
               "destinationTotalNodeCount": 2,
               "disposition": "conflict",
@@ -4610,10 +3543,7 @@
               "totalNodeCount": 3
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/a.txt",
-            "$ROOT/source/f"
-          ],
+          "sourcePaths": ["$ROOT/source/a.txt", "$ROOT/source/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 1,
@@ -4624,19 +3554,11 @@
             "totalNodeCount": 4
           },
           "warnings": [
-            {
-              "code": "cut_requires_delete",
-              "message": "Cut/Paste removes the original items after the copy succeeds."
-            }
+            {"code": "cut_requires_delete", "message": "Cut/Paste removes the original items after the copy succeeds."}
           ]
         },
         "resolved": [
-          {
-            "action": "overwrite",
-            "children": [],
-            "destinationPath": "$ROOT/destination/a.txt",
-            "id": "item-1"
-          },
+          {"action": "overwrite", "children": [], "destinationPath": "$ROOT/destination/a.txt", "id": "item-1"},
           {
             "action": "overwrite",
             "children": [
@@ -4664,34 +3586,12 @@
       "input": {
         "name": "hfs: moved within the disk",
         "tree": [
-          {
-            "path": "source/f/a.txt",
-            "kind": "file",
-            "content": "source/f/a.txt\n"
-          },
-          {
-            "path": "source/b.txt",
-            "kind": "file",
-            "content": "source/b.txt\n"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/f/a.txt", "kind": "file", "content": "source/f/a.txt\n"},
+          {"path": "source/b.txt", "kind": "file", "content": "source/b.txt\n"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "cut",
-          "sources": [
-            "source/f",
-            "source/b.txt"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "cut", "sources": ["source/f", "source/b.txt"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -4699,33 +3599,14 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "source": "hfs",
-          "destination": "hfs"
-        },
+        "volumes": {"source": "hfs", "destination": "hfs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -4735,13 +3616,7 @@
             "sha256": "9073465e395abc5a69797dc5c708ca49546a4ee5cff74147078ff80ac8118c78",
             "size": 13
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -4839,10 +3714,7 @@
               "totalNodeCount": 1
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/f",
-            "$ROOT/source/b.txt"
-          ],
+          "sourcePaths": ["$ROOT/source/f", "$ROOT/source/b.txt"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -4853,25 +3725,12 @@
             "totalNodeCount": 2
           },
           "warnings": [
-            {
-              "code": "cut_requires_delete",
-              "message": "Cut/Paste removes the original items after the copy succeeds."
-            }
+            {"code": "cut_requires_delete", "message": "Cut/Paste removes the original items after the copy succeeds."}
           ]
         },
         "resolved": [
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/destination/f",
-            "id": "item-1"
-          },
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/destination/b.txt",
-            "id": "item-2"
-          }
+          {"action": "create", "children": [], "destinationPath": "$ROOT/destination/f", "id": "item-1"},
+          {"action": "create", "children": [], "destinationPath": "$ROOT/destination/b.txt", "id": "item-2"}
         ]
       }
     },
@@ -4880,30 +3739,11 @@
       "input": {
         "name": "hfs: copied into its own folder",
         "tree": [
-          {
-            "path": "folder/a.txt",
-            "kind": "file",
-            "content": "folder/a.txt\n"
-          },
-          {
-            "path": "folder/f/b.txt",
-            "kind": "file",
-            "content": "folder/f/b.txt\n"
-          }
+          {"path": "folder/a.txt", "kind": "file", "content": "folder/a.txt\n"},
+          {"path": "folder/f/b.txt", "kind": "file", "content": "folder/f/b.txt\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "folder/a.txt",
-            "folder/f"
-          ],
-          "destination": "folder"
-        },
-        "policy": {
-          "file": "keep_both",
-          "directory": "merge",
-          "mismatch": "keep_both"
-        },
+        "paste": {"mode": "copy", "sources": ["folder/a.txt", "folder/f"], "destination": "folder"},
+        "policy": {"file": "keep_both", "directory": "merge", "mismatch": "keep_both"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -4911,25 +3751,13 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "folder": "hfs"
-        },
+        "volumes": {"folder": "hfs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "folder"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "folder"},
           {
             "acl": false,
             "flags": [],
@@ -4939,13 +3767,7 @@
             "sha256": "4a1994cbd3e09c92f04d047e01d40b7848917a1fdb4d136093738cfcfcf223db",
             "size": 13
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "folder/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "folder/f"},
           {
             "acl": false,
             "flags": [],
@@ -5083,10 +3905,7 @@
               "totalNodeCount": 2
             }
           ],
-          "sourcePaths": [
-            "$ROOT/folder/a.txt",
-            "$ROOT/folder/f"
-          ],
+          "sourcePaths": ["$ROOT/folder/a.txt", "$ROOT/folder/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -5099,12 +3918,7 @@
           "warnings": []
         },
         "resolved": [
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/folder/a copy.txt",
-            "id": "item-1"
-          },
+          {"action": "create", "children": [], "destinationPath": "$ROOT/folder/a copy.txt", "id": "item-1"},
           {
             "action": "create",
             "children": [
@@ -5126,34 +3940,12 @@
       "input": {
         "name": "fat32: a file and a folder into an empty folder",
         "tree": [
-          {
-            "path": "source/a.txt",
-            "kind": "file",
-            "content": "source/a.txt\n"
-          },
-          {
-            "path": "source/f/b.txt",
-            "kind": "file",
-            "content": "source/f/b.txt\n"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/a.txt", "kind": "file", "content": "source/a.txt\n"},
+          {"path": "source/f/b.txt", "kind": "file", "content": "source/f/b.txt\n"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/a.txt",
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "copy", "sources": ["source/a.txt", "source/f"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -5161,43 +3953,23 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "destination": "fat32"
-        },
+        "volumes": {"destination": "fat32"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "._destination",
             "sha256": "28de136e7b74c7c34c2a5407e387262d8b1374fece888a9adeed56b46ad0d863",
             "size": 4096
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -5207,13 +3979,7 @@
             "sha256": "eee384e0bdf197ab09d32c270a16bca5169e7fa5941eadf459cc10627c23c63f",
             "size": 13
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -5351,10 +4117,7 @@
               "totalNodeCount": 2
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/a.txt",
-            "$ROOT/source/f"
-          ],
+          "sourcePaths": ["$ROOT/source/a.txt", "$ROOT/source/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -5367,12 +4130,7 @@
           "warnings": []
         },
         "resolved": [
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/destination/a.txt",
-            "id": "item-1"
-          },
+          {"action": "create", "children": [], "destinationPath": "$ROOT/destination/a.txt", "id": "item-1"},
           {
             "action": "create",
             "children": [
@@ -5394,50 +4152,15 @@
       "input": {
         "name": "fat32: conflicts at the destination",
         "tree": [
-          {
-            "path": "source/a.txt",
-            "kind": "file",
-            "content": "new\n"
-          },
-          {
-            "path": "source/f/x.txt",
-            "kind": "file",
-            "content": "new x\n"
-          },
-          {
-            "path": "source/f/n.txt",
-            "kind": "file",
-            "content": "source/f/n.txt\n"
-          },
-          {
-            "path": "destination/a.txt",
-            "kind": "file",
-            "content": "old\n"
-          },
-          {
-            "path": "destination/f/x.txt",
-            "kind": "file",
-            "content": "old x\n"
-          },
-          {
-            "path": "destination/f/only.txt",
-            "kind": "file",
-            "content": "destination/f/only.txt\n"
-          }
+          {"path": "source/a.txt", "kind": "file", "content": "new\n"},
+          {"path": "source/f/x.txt", "kind": "file", "content": "new x\n"},
+          {"path": "source/f/n.txt", "kind": "file", "content": "source/f/n.txt\n"},
+          {"path": "destination/a.txt", "kind": "file", "content": "old\n"},
+          {"path": "destination/f/x.txt", "kind": "file", "content": "old x\n"},
+          {"path": "destination/f/only.txt", "kind": "file", "content": "destination/f/only.txt\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/a.txt",
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "skip",
-          "directory": "merge",
-          "mismatch": "skip"
-        },
+        "paste": {"mode": "copy", "sources": ["source/a.txt", "source/f"], "destination": "destination"},
+        "policy": {"file": "skip", "directory": "merge", "mismatch": "skip"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -5445,42 +4168,25 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "destination": "fat32"
-        },
+        "volumes": {"destination": "fat32"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "add_missing",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "add_missing", "keep_all", "overwrite"],
         "before": [
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "._destination",
             "sha256": "28de136e7b74c7c34c2a5407e387262d8b1374fece888a9adeed56b46ad0d863",
             "size": 4096
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "destination"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "destination/._a.txt",
@@ -5489,9 +4195,7 @@
           },
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "destination/._f",
@@ -5507,18 +4211,10 @@
             "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
             "size": 4
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "destination/f"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "destination/f"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "destination/f/._only.txt",
@@ -5527,9 +4223,7 @@
           },
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "destination/f/._x.txt",
@@ -5554,13 +4248,7 @@
             "sha256": "0e06d231f17ba8957e89856decc01e898c4b44a26d23f51039b0ff50e2060fd2",
             "size": 6
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -5570,13 +4258,7 @@
             "sha256": "7aa7a5359173d05b63cfd682e3c38487f3cb4f7f1d60659fe59fab1505977d4c",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -5605,11 +4287,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           },
           "item-2": {
             "effective": {
@@ -5619,12 +4297,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "merge",
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["merge", "keep_both", "overwrite", "skip"]
           },
           "item-2/x.txt": {
             "effective": {
@@ -5634,11 +4307,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           }
         },
         "report": {
@@ -5781,14 +4450,7 @@
                 "symlinkTarget": null
               },
               "destinationKind": "directory",
-              "destinationOnly": {
-                "count": 3,
-                "samplePaths": [
-                  "._only.txt",
-                  "._x.txt",
-                  "only.txt"
-                ]
-              },
+              "destinationOnly": {"count": 3, "samplePaths": ["._only.txt", "._x.txt", "only.txt"]},
               "destinationPath": "$ROOT/destination/f",
               "destinationTotalNodeCount": 4,
               "disposition": "conflict",
@@ -5813,10 +4475,7 @@
               "totalNodeCount": 3
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/a.txt",
-            "$ROOT/source/f"
-          ],
+          "sourcePaths": ["$ROOT/source/a.txt", "$ROOT/source/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 1,
@@ -5829,12 +4488,7 @@
           "warnings": []
         },
         "resolved": [
-          {
-            "action": "skip",
-            "children": [],
-            "destinationPath": "$ROOT/destination/a.txt",
-            "id": "item-1"
-          },
+          {"action": "skip", "children": [], "destinationPath": "$ROOT/destination/a.txt", "id": "item-1"},
           {
             "action": "merge",
             "children": [
@@ -5844,12 +4498,7 @@
                 "destinationPath": "$ROOT/destination/f/n.txt",
                 "id": "item-2/n.txt"
               },
-              {
-                "action": "skip",
-                "children": [],
-                "destinationPath": "$ROOT/destination/f/x.txt",
-                "id": "item-2/x.txt"
-              }
+              {"action": "skip", "children": [], "destinationPath": "$ROOT/destination/f/x.txt", "id": "item-2/x.txt"}
             ],
             "destinationPath": "$ROOT/destination/f",
             "id": "item-2"
@@ -5862,29 +4511,11 @@
       "input": {
         "name": "fat32: a name differing in case at the destination",
         "tree": [
-          {
-            "path": "source/readme.txt",
-            "kind": "file",
-            "content": "source/readme.txt\n"
-          },
-          {
-            "path": "destination/README.txt",
-            "kind": "file",
-            "content": "destination/README.txt\n"
-          }
+          {"path": "source/readme.txt", "kind": "file", "content": "source/readme.txt\n"},
+          {"path": "destination/README.txt", "kind": "file", "content": "destination/README.txt\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/readme.txt"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "keep_both",
-          "directory": "merge",
-          "mismatch": "keep_both"
-        },
+        "paste": {"mode": "copy", "sources": ["source/readme.txt"], "destination": "destination"},
+        "policy": {"file": "keep_both", "directory": "merge", "mismatch": "keep_both"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -5892,41 +4523,25 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "destination": "fat32"
-        },
+        "volumes": {"destination": "fat32"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "._destination",
             "sha256": "28de136e7b74c7c34c2a5407e387262d8b1374fece888a9adeed56b46ad0d863",
             "size": 4096
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "destination"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "destination/._README.txt",
@@ -5942,13 +4557,7 @@
             "sha256": "96b666034458044d3b98a6b48697d8382de69632befd64134e08ea36dcaeed64",
             "size": 23
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -5968,11 +4577,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           }
         },
         "report": {
@@ -6022,9 +4627,7 @@
               "totalNodeCount": 1
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/readme.txt"
-          ],
+          "sourcePaths": ["$ROOT/source/readme.txt"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -6051,50 +4654,15 @@
       "input": {
         "name": "fat32: moved from the disk to the startup disk",
         "tree": [
-          {
-            "path": "source/a.txt",
-            "kind": "file",
-            "content": "new\n"
-          },
-          {
-            "path": "source/f/x.txt",
-            "kind": "file",
-            "content": "new x\n"
-          },
-          {
-            "path": "source/f/n.txt",
-            "kind": "file",
-            "content": "source/f/n.txt\n"
-          },
-          {
-            "path": "destination/a.txt",
-            "kind": "file",
-            "content": "old\n"
-          },
-          {
-            "path": "destination/f/x.txt",
-            "kind": "file",
-            "content": "old x\n"
-          },
-          {
-            "path": "destination/f/only.txt",
-            "kind": "file",
-            "content": "destination/f/only.txt\n"
-          }
+          {"path": "source/a.txt", "kind": "file", "content": "new\n"},
+          {"path": "source/f/x.txt", "kind": "file", "content": "new x\n"},
+          {"path": "source/f/n.txt", "kind": "file", "content": "source/f/n.txt\n"},
+          {"path": "destination/a.txt", "kind": "file", "content": "old\n"},
+          {"path": "destination/f/x.txt", "kind": "file", "content": "old x\n"},
+          {"path": "destination/f/only.txt", "kind": "file", "content": "destination/f/only.txt\n"}
         ],
-        "paste": {
-          "mode": "cut",
-          "sources": [
-            "source/a.txt",
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "cut", "sources": ["source/a.txt", "source/f"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -6102,36 +4670,22 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "source": "fat32"
-        },
+        "volumes": {"source": "fat32"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "._source",
             "sha256": "28de136e7b74c7c34c2a5407e387262d8b1374fece888a9adeed56b46ad0d863",
             "size": 4096
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
           {
             "acl": false,
             "flags": [],
@@ -6141,13 +4695,7 @@
             "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
           {
             "acl": false,
             "flags": [],
@@ -6166,18 +4714,10 @@
             "sha256": "0e06d231f17ba8957e89856decc01e898c4b44a26d23f51039b0ff50e2060fd2",
             "size": 6
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "source"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "source/._a.txt",
@@ -6186,9 +4726,7 @@
           },
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "source/._f",
@@ -6204,18 +4742,10 @@
             "sha256": "7aa7a5359173d05b63cfd682e3c38487f3cb4f7f1d60659fe59fab1505977d4c",
             "size": 4
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "source/f"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "source/f"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "source/f/._n.txt",
@@ -6224,9 +4754,7 @@
           },
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "source/f/._x.txt",
@@ -6261,11 +4789,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           },
           "item-2": {
             "effective": {
@@ -6275,12 +4799,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "merge",
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["merge", "keep_both", "overwrite", "skip"]
           },
           "item-2/x.txt": {
             "effective": {
@@ -6290,11 +4809,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           }
         },
         "report": {
@@ -6437,12 +4952,7 @@
                 "symlinkTarget": null
               },
               "destinationKind": "directory",
-              "destinationOnly": {
-                "count": 1,
-                "samplePaths": [
-                  "only.txt"
-                ]
-              },
+              "destinationOnly": {"count": 1, "samplePaths": ["only.txt"]},
               "destinationPath": "$ROOT/destination/f",
               "destinationTotalNodeCount": 2,
               "disposition": "conflict",
@@ -6467,10 +4977,7 @@
               "totalNodeCount": 3
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/a.txt",
-            "$ROOT/source/f"
-          ],
+          "sourcePaths": ["$ROOT/source/a.txt", "$ROOT/source/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 1,
@@ -6481,19 +4988,11 @@
             "totalNodeCount": 4
           },
           "warnings": [
-            {
-              "code": "cut_requires_delete",
-              "message": "Cut/Paste removes the original items after the copy succeeds."
-            }
+            {"code": "cut_requires_delete", "message": "Cut/Paste removes the original items after the copy succeeds."}
           ]
         },
         "resolved": [
-          {
-            "action": "overwrite",
-            "children": [],
-            "destinationPath": "$ROOT/destination/a.txt",
-            "id": "item-1"
-          },
+          {"action": "overwrite", "children": [], "destinationPath": "$ROOT/destination/a.txt", "id": "item-1"},
           {
             "action": "overwrite",
             "children": [
@@ -6521,34 +5020,12 @@
       "input": {
         "name": "fat32: moved within the disk",
         "tree": [
-          {
-            "path": "source/f/a.txt",
-            "kind": "file",
-            "content": "source/f/a.txt\n"
-          },
-          {
-            "path": "source/b.txt",
-            "kind": "file",
-            "content": "source/b.txt\n"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/f/a.txt", "kind": "file", "content": "source/f/a.txt\n"},
+          {"path": "source/b.txt", "kind": "file", "content": "source/b.txt\n"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "cut",
-          "sources": [
-            "source/f",
-            "source/b.txt"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "cut", "sources": ["source/f", "source/b.txt"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -6556,24 +5033,15 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "source": "fat32",
-          "destination": "fat32"
-        },
+        "volumes": {"source": "fat32", "destination": "fat32"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "._destination",
@@ -6582,34 +5050,18 @@
           },
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "._source",
             "sha256": "28de136e7b74c7c34c2a5407e387262d8b1374fece888a9adeed56b46ad0d863",
             "size": 4096
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "source"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "source/._b.txt",
@@ -6618,9 +5070,7 @@
           },
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "source/._f",
@@ -6636,18 +5086,10 @@
             "sha256": "9073465e395abc5a69797dc5c708ca49546a4ee5cff74147078ff80ac8118c78",
             "size": 13
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "source/f"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "source/f"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "source/f/._a.txt",
@@ -6751,10 +5193,7 @@
               "totalNodeCount": 1
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/f",
-            "$ROOT/source/b.txt"
-          ],
+          "sourcePaths": ["$ROOT/source/f", "$ROOT/source/b.txt"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -6765,25 +5204,12 @@
             "totalNodeCount": 2
           },
           "warnings": [
-            {
-              "code": "cut_requires_delete",
-              "message": "Cut/Paste removes the original items after the copy succeeds."
-            }
+            {"code": "cut_requires_delete", "message": "Cut/Paste removes the original items after the copy succeeds."}
           ]
         },
         "resolved": [
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/destination/f",
-            "id": "item-1"
-          },
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/destination/b.txt",
-            "id": "item-2"
-          }
+          {"action": "create", "children": [], "destinationPath": "$ROOT/destination/f", "id": "item-1"},
+          {"action": "create", "children": [], "destinationPath": "$ROOT/destination/b.txt", "id": "item-2"}
         ]
       }
     },
@@ -6792,30 +5218,11 @@
       "input": {
         "name": "fat32: copied into its own folder",
         "tree": [
-          {
-            "path": "folder/a.txt",
-            "kind": "file",
-            "content": "folder/a.txt\n"
-          },
-          {
-            "path": "folder/f/b.txt",
-            "kind": "file",
-            "content": "folder/f/b.txt\n"
-          }
+          {"path": "folder/a.txt", "kind": "file", "content": "folder/a.txt\n"},
+          {"path": "folder/f/b.txt", "kind": "file", "content": "folder/f/b.txt\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "folder/a.txt",
-            "folder/f"
-          ],
-          "destination": "folder"
-        },
-        "policy": {
-          "file": "keep_both",
-          "directory": "merge",
-          "mismatch": "keep_both"
-        },
+        "paste": {"mode": "copy", "sources": ["folder/a.txt", "folder/f"], "destination": "folder"},
+        "policy": {"file": "keep_both", "directory": "merge", "mismatch": "keep_both"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -6823,41 +5230,25 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "folder": "fat32"
-        },
+        "volumes": {"folder": "fat32"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "._folder",
             "sha256": "28de136e7b74c7c34c2a5407e387262d8b1374fece888a9adeed56b46ad0d863",
             "size": 4096
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "folder"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "folder"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "folder/._a.txt",
@@ -6866,9 +5257,7 @@
           },
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "folder/._f",
@@ -6884,18 +5273,10 @@
             "sha256": "4a1994cbd3e09c92f04d047e01d40b7848917a1fdb4d136093738cfcfcf223db",
             "size": 13
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "folder/f"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "folder/f"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "folder/f/._b.txt",
@@ -7039,10 +5420,7 @@
               "totalNodeCount": 2
             }
           ],
-          "sourcePaths": [
-            "$ROOT/folder/a.txt",
-            "$ROOT/folder/f"
-          ],
+          "sourcePaths": ["$ROOT/folder/a.txt", "$ROOT/folder/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -7055,12 +5433,7 @@
           "warnings": []
         },
         "resolved": [
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/folder/a copy.txt",
-            "id": "item-1"
-          },
+          {"action": "create", "children": [], "destinationPath": "$ROOT/folder/a copy.txt", "id": "item-1"},
           {
             "action": "create",
             "children": [
@@ -7082,34 +5455,12 @@
       "input": {
         "name": "exfat: a file and a folder into an empty folder",
         "tree": [
-          {
-            "path": "source/a.txt",
-            "kind": "file",
-            "content": "source/a.txt\n"
-          },
-          {
-            "path": "source/f/b.txt",
-            "kind": "file",
-            "content": "source/f/b.txt\n"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/a.txt", "kind": "file", "content": "source/a.txt\n"},
+          {"path": "source/f/b.txt", "kind": "file", "content": "source/f/b.txt\n"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/a.txt",
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "copy", "sources": ["source/a.txt", "source/f"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -7117,43 +5468,23 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "destination": "exfat"
-        },
+        "volumes": {"destination": "exfat"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "._destination",
             "sha256": "28de136e7b74c7c34c2a5407e387262d8b1374fece888a9adeed56b46ad0d863",
             "size": 4096
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -7163,13 +5494,7 @@
             "sha256": "eee384e0bdf197ab09d32c270a16bca5169e7fa5941eadf459cc10627c23c63f",
             "size": 13
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -7307,10 +5632,7 @@
               "totalNodeCount": 2
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/a.txt",
-            "$ROOT/source/f"
-          ],
+          "sourcePaths": ["$ROOT/source/a.txt", "$ROOT/source/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -7323,12 +5645,7 @@
           "warnings": []
         },
         "resolved": [
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/destination/a.txt",
-            "id": "item-1"
-          },
+          {"action": "create", "children": [], "destinationPath": "$ROOT/destination/a.txt", "id": "item-1"},
           {
             "action": "create",
             "children": [
@@ -7350,50 +5667,15 @@
       "input": {
         "name": "exfat: conflicts at the destination",
         "tree": [
-          {
-            "path": "source/a.txt",
-            "kind": "file",
-            "content": "new\n"
-          },
-          {
-            "path": "source/f/x.txt",
-            "kind": "file",
-            "content": "new x\n"
-          },
-          {
-            "path": "source/f/n.txt",
-            "kind": "file",
-            "content": "source/f/n.txt\n"
-          },
-          {
-            "path": "destination/a.txt",
-            "kind": "file",
-            "content": "old\n"
-          },
-          {
-            "path": "destination/f/x.txt",
-            "kind": "file",
-            "content": "old x\n"
-          },
-          {
-            "path": "destination/f/only.txt",
-            "kind": "file",
-            "content": "destination/f/only.txt\n"
-          }
+          {"path": "source/a.txt", "kind": "file", "content": "new\n"},
+          {"path": "source/f/x.txt", "kind": "file", "content": "new x\n"},
+          {"path": "source/f/n.txt", "kind": "file", "content": "source/f/n.txt\n"},
+          {"path": "destination/a.txt", "kind": "file", "content": "old\n"},
+          {"path": "destination/f/x.txt", "kind": "file", "content": "old x\n"},
+          {"path": "destination/f/only.txt", "kind": "file", "content": "destination/f/only.txt\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/a.txt",
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "skip",
-          "directory": "merge",
-          "mismatch": "skip"
-        },
+        "paste": {"mode": "copy", "sources": ["source/a.txt", "source/f"], "destination": "destination"},
+        "policy": {"file": "skip", "directory": "merge", "mismatch": "skip"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -7401,42 +5683,25 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "destination": "exfat"
-        },
+        "volumes": {"destination": "exfat"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "add_missing",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "add_missing", "keep_all", "overwrite"],
         "before": [
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "._destination",
             "sha256": "28de136e7b74c7c34c2a5407e387262d8b1374fece888a9adeed56b46ad0d863",
             "size": 4096
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "destination"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "destination/._a.txt",
@@ -7445,9 +5710,7 @@
           },
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "destination/._f",
@@ -7463,18 +5726,10 @@
             "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
             "size": 4
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "destination/f"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "destination/f"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "destination/f/._only.txt",
@@ -7483,9 +5738,7 @@
           },
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "destination/f/._x.txt",
@@ -7510,13 +5763,7 @@
             "sha256": "0e06d231f17ba8957e89856decc01e898c4b44a26d23f51039b0ff50e2060fd2",
             "size": 6
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -7526,13 +5773,7 @@
             "sha256": "7aa7a5359173d05b63cfd682e3c38487f3cb4f7f1d60659fe59fab1505977d4c",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -7561,11 +5802,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           },
           "item-2": {
             "effective": {
@@ -7575,12 +5812,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "merge",
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["merge", "keep_both", "overwrite", "skip"]
           },
           "item-2/x.txt": {
             "effective": {
@@ -7590,11 +5822,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           }
         },
         "report": {
@@ -7737,14 +5965,7 @@
                 "symlinkTarget": null
               },
               "destinationKind": "directory",
-              "destinationOnly": {
-                "count": 3,
-                "samplePaths": [
-                  "._only.txt",
-                  "._x.txt",
-                  "only.txt"
-                ]
-              },
+              "destinationOnly": {"count": 3, "samplePaths": ["._only.txt", "._x.txt", "only.txt"]},
               "destinationPath": "$ROOT/destination/f",
               "destinationTotalNodeCount": 4,
               "disposition": "conflict",
@@ -7769,10 +5990,7 @@
               "totalNodeCount": 3
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/a.txt",
-            "$ROOT/source/f"
-          ],
+          "sourcePaths": ["$ROOT/source/a.txt", "$ROOT/source/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 1,
@@ -7785,12 +6003,7 @@
           "warnings": []
         },
         "resolved": [
-          {
-            "action": "skip",
-            "children": [],
-            "destinationPath": "$ROOT/destination/a.txt",
-            "id": "item-1"
-          },
+          {"action": "skip", "children": [], "destinationPath": "$ROOT/destination/a.txt", "id": "item-1"},
           {
             "action": "merge",
             "children": [
@@ -7800,12 +6013,7 @@
                 "destinationPath": "$ROOT/destination/f/n.txt",
                 "id": "item-2/n.txt"
               },
-              {
-                "action": "skip",
-                "children": [],
-                "destinationPath": "$ROOT/destination/f/x.txt",
-                "id": "item-2/x.txt"
-              }
+              {"action": "skip", "children": [], "destinationPath": "$ROOT/destination/f/x.txt", "id": "item-2/x.txt"}
             ],
             "destinationPath": "$ROOT/destination/f",
             "id": "item-2"
@@ -7818,29 +6026,11 @@
       "input": {
         "name": "exfat: a name differing in case at the destination",
         "tree": [
-          {
-            "path": "source/readme.txt",
-            "kind": "file",
-            "content": "source/readme.txt\n"
-          },
-          {
-            "path": "destination/README.txt",
-            "kind": "file",
-            "content": "destination/README.txt\n"
-          }
+          {"path": "source/readme.txt", "kind": "file", "content": "source/readme.txt\n"},
+          {"path": "destination/README.txt", "kind": "file", "content": "destination/README.txt\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/readme.txt"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "keep_both",
-          "directory": "merge",
-          "mismatch": "keep_both"
-        },
+        "paste": {"mode": "copy", "sources": ["source/readme.txt"], "destination": "destination"},
+        "policy": {"file": "keep_both", "directory": "merge", "mismatch": "keep_both"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -7848,41 +6038,25 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "destination": "exfat"
-        },
+        "volumes": {"destination": "exfat"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "._destination",
             "sha256": "28de136e7b74c7c34c2a5407e387262d8b1374fece888a9adeed56b46ad0d863",
             "size": 4096
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "destination"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "destination/._README.txt",
@@ -7898,13 +6072,7 @@
             "sha256": "96b666034458044d3b98a6b48697d8382de69632befd64134e08ea36dcaeed64",
             "size": 23
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -7924,11 +6092,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           }
         },
         "report": {
@@ -7978,9 +6142,7 @@
               "totalNodeCount": 1
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/readme.txt"
-          ],
+          "sourcePaths": ["$ROOT/source/readme.txt"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -8007,50 +6169,15 @@
       "input": {
         "name": "exfat: moved from the disk to the startup disk",
         "tree": [
-          {
-            "path": "source/a.txt",
-            "kind": "file",
-            "content": "new\n"
-          },
-          {
-            "path": "source/f/x.txt",
-            "kind": "file",
-            "content": "new x\n"
-          },
-          {
-            "path": "source/f/n.txt",
-            "kind": "file",
-            "content": "source/f/n.txt\n"
-          },
-          {
-            "path": "destination/a.txt",
-            "kind": "file",
-            "content": "old\n"
-          },
-          {
-            "path": "destination/f/x.txt",
-            "kind": "file",
-            "content": "old x\n"
-          },
-          {
-            "path": "destination/f/only.txt",
-            "kind": "file",
-            "content": "destination/f/only.txt\n"
-          }
+          {"path": "source/a.txt", "kind": "file", "content": "new\n"},
+          {"path": "source/f/x.txt", "kind": "file", "content": "new x\n"},
+          {"path": "source/f/n.txt", "kind": "file", "content": "source/f/n.txt\n"},
+          {"path": "destination/a.txt", "kind": "file", "content": "old\n"},
+          {"path": "destination/f/x.txt", "kind": "file", "content": "old x\n"},
+          {"path": "destination/f/only.txt", "kind": "file", "content": "destination/f/only.txt\n"}
         ],
-        "paste": {
-          "mode": "cut",
-          "sources": [
-            "source/a.txt",
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "cut", "sources": ["source/a.txt", "source/f"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -8058,36 +6185,22 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "source": "exfat"
-        },
+        "volumes": {"source": "exfat"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "._source",
             "sha256": "28de136e7b74c7c34c2a5407e387262d8b1374fece888a9adeed56b46ad0d863",
             "size": 4096
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
           {
             "acl": false,
             "flags": [],
@@ -8097,13 +6210,7 @@
             "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
           {
             "acl": false,
             "flags": [],
@@ -8122,18 +6229,10 @@
             "sha256": "0e06d231f17ba8957e89856decc01e898c4b44a26d23f51039b0ff50e2060fd2",
             "size": 6
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "source"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "source/._a.txt",
@@ -8142,9 +6241,7 @@
           },
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "source/._f",
@@ -8160,18 +6257,10 @@
             "sha256": "7aa7a5359173d05b63cfd682e3c38487f3cb4f7f1d60659fe59fab1505977d4c",
             "size": 4
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "source/f"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "source/f"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "source/f/._n.txt",
@@ -8180,9 +6269,7 @@
           },
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "source/f/._x.txt",
@@ -8217,11 +6304,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           },
           "item-2": {
             "effective": {
@@ -8231,12 +6314,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "merge",
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["merge", "keep_both", "overwrite", "skip"]
           },
           "item-2/x.txt": {
             "effective": {
@@ -8246,11 +6324,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           }
         },
         "report": {
@@ -8393,12 +6467,7 @@
                 "symlinkTarget": null
               },
               "destinationKind": "directory",
-              "destinationOnly": {
-                "count": 1,
-                "samplePaths": [
-                  "only.txt"
-                ]
-              },
+              "destinationOnly": {"count": 1, "samplePaths": ["only.txt"]},
               "destinationPath": "$ROOT/destination/f",
               "destinationTotalNodeCount": 2,
               "disposition": "conflict",
@@ -8423,10 +6492,7 @@
               "totalNodeCount": 3
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/a.txt",
-            "$ROOT/source/f"
-          ],
+          "sourcePaths": ["$ROOT/source/a.txt", "$ROOT/source/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 1,
@@ -8437,19 +6503,11 @@
             "totalNodeCount": 4
           },
           "warnings": [
-            {
-              "code": "cut_requires_delete",
-              "message": "Cut/Paste removes the original items after the copy succeeds."
-            }
+            {"code": "cut_requires_delete", "message": "Cut/Paste removes the original items after the copy succeeds."}
           ]
         },
         "resolved": [
-          {
-            "action": "overwrite",
-            "children": [],
-            "destinationPath": "$ROOT/destination/a.txt",
-            "id": "item-1"
-          },
+          {"action": "overwrite", "children": [], "destinationPath": "$ROOT/destination/a.txt", "id": "item-1"},
           {
             "action": "overwrite",
             "children": [
@@ -8477,34 +6535,12 @@
       "input": {
         "name": "exfat: moved within the disk",
         "tree": [
-          {
-            "path": "source/f/a.txt",
-            "kind": "file",
-            "content": "source/f/a.txt\n"
-          },
-          {
-            "path": "source/b.txt",
-            "kind": "file",
-            "content": "source/b.txt\n"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/f/a.txt", "kind": "file", "content": "source/f/a.txt\n"},
+          {"path": "source/b.txt", "kind": "file", "content": "source/b.txt\n"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "cut",
-          "sources": [
-            "source/f",
-            "source/b.txt"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "cut", "sources": ["source/f", "source/b.txt"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -8512,24 +6548,15 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "source": "exfat",
-          "destination": "exfat"
-        },
+        "volumes": {"source": "exfat", "destination": "exfat"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "._destination",
@@ -8538,34 +6565,18 @@
           },
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "._source",
             "sha256": "28de136e7b74c7c34c2a5407e387262d8b1374fece888a9adeed56b46ad0d863",
             "size": 4096
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "source"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "source/._b.txt",
@@ -8574,9 +6585,7 @@
           },
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "source/._f",
@@ -8592,18 +6601,10 @@
             "sha256": "9073465e395abc5a69797dc5c708ca49546a4ee5cff74147078ff80ac8118c78",
             "size": 13
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "source/f"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "source/f"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "source/f/._a.txt",
@@ -8707,10 +6708,7 @@
               "totalNodeCount": 1
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/f",
-            "$ROOT/source/b.txt"
-          ],
+          "sourcePaths": ["$ROOT/source/f", "$ROOT/source/b.txt"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -8721,25 +6719,12 @@
             "totalNodeCount": 2
           },
           "warnings": [
-            {
-              "code": "cut_requires_delete",
-              "message": "Cut/Paste removes the original items after the copy succeeds."
-            }
+            {"code": "cut_requires_delete", "message": "Cut/Paste removes the original items after the copy succeeds."}
           ]
         },
         "resolved": [
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/destination/f",
-            "id": "item-1"
-          },
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/destination/b.txt",
-            "id": "item-2"
-          }
+          {"action": "create", "children": [], "destinationPath": "$ROOT/destination/f", "id": "item-1"},
+          {"action": "create", "children": [], "destinationPath": "$ROOT/destination/b.txt", "id": "item-2"}
         ]
       }
     },
@@ -8748,30 +6733,11 @@
       "input": {
         "name": "exfat: copied into its own folder",
         "tree": [
-          {
-            "path": "folder/a.txt",
-            "kind": "file",
-            "content": "folder/a.txt\n"
-          },
-          {
-            "path": "folder/f/b.txt",
-            "kind": "file",
-            "content": "folder/f/b.txt\n"
-          }
+          {"path": "folder/a.txt", "kind": "file", "content": "folder/a.txt\n"},
+          {"path": "folder/f/b.txt", "kind": "file", "content": "folder/f/b.txt\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "folder/a.txt",
-            "folder/f"
-          ],
-          "destination": "folder"
-        },
-        "policy": {
-          "file": "keep_both",
-          "directory": "merge",
-          "mismatch": "keep_both"
-        },
+        "paste": {"mode": "copy", "sources": ["folder/a.txt", "folder/f"], "destination": "folder"},
+        "policy": {"file": "keep_both", "directory": "merge", "mismatch": "keep_both"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -8779,41 +6745,25 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "folder": "exfat"
-        },
+        "volumes": {"folder": "exfat"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "._folder",
             "sha256": "28de136e7b74c7c34c2a5407e387262d8b1374fece888a9adeed56b46ad0d863",
             "size": 4096
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "folder"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "folder"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "folder/._a.txt",
@@ -8822,9 +6772,7 @@
           },
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "folder/._f",
@@ -8840,18 +6788,10 @@
             "sha256": "4a1994cbd3e09c92f04d047e01d40b7848917a1fdb4d136093738cfcfcf223db",
             "size": 13
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "folder/f"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "folder/f"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "folder/f/._b.txt",
@@ -8995,10 +6935,7 @@
               "totalNodeCount": 2
             }
           ],
-          "sourcePaths": [
-            "$ROOT/folder/a.txt",
-            "$ROOT/folder/f"
-          ],
+          "sourcePaths": ["$ROOT/folder/a.txt", "$ROOT/folder/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -9011,12 +6948,7 @@
           "warnings": []
         },
         "resolved": [
-          {
-            "action": "create",
-            "children": [],
-            "destinationPath": "$ROOT/folder/a copy.txt",
-            "id": "item-1"
-          },
+          {"action": "create", "children": [], "destinationPath": "$ROOT/folder/a copy.txt", "id": "item-1"},
           {
             "action": "create",
             "children": [
@@ -9038,33 +6970,12 @@
       "input": {
         "name": "case-sensitive source: case-variant names in a folder pasted onto a disk that can't tell them apart",
         "tree": [
-          {
-            "path": "source/f/Read.txt",
-            "kind": "file",
-            "content": "upper\n"
-          },
-          {
-            "path": "source/f/read.txt",
-            "kind": "file",
-            "content": "lower\n"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/f/Read.txt", "kind": "file", "content": "upper\n"},
+          {"path": "source/f/read.txt", "kind": "file", "content": "lower\n"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "copy", "sources": ["source/f"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -9072,39 +6983,15 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "source": "apfs-cs"
-        },
+        "volumes": {"source": "apfs-cs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -9258,9 +7145,7 @@
               "totalNodeCount": 3
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/f"
-          ],
+          "sourcePaths": ["$ROOT/source/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -9280,33 +7165,12 @@
       "input": {
         "name": "case-sensitive source: case-variant names pasted onto a case-sensitive disk land side by side",
         "tree": [
-          {
-            "path": "source/f/Read.txt",
-            "kind": "file",
-            "content": "upper\n"
-          },
-          {
-            "path": "source/f/read.txt",
-            "kind": "file",
-            "content": "lower\n"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/f/Read.txt", "kind": "file", "content": "upper\n"},
+          {"path": "source/f/read.txt", "kind": "file", "content": "lower\n"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "copy", "sources": ["source/f"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -9314,40 +7178,15 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "source": "apfs-cs",
-          "destination": "apfs-cs"
-        },
+        "volumes": {"source": "apfs-cs", "destination": "apfs-cs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -9494,9 +7333,7 @@
               "totalNodeCount": 3
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/f"
-          ],
+          "sourcePaths": ["$ROOT/source/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -9536,34 +7373,12 @@
       "input": {
         "name": "case-sensitive source: two picks differing in case onto the startup disk",
         "tree": [
-          {
-            "path": "source/X.txt",
-            "kind": "file",
-            "content": "source/X.txt\n"
-          },
-          {
-            "path": "source/x.txt",
-            "kind": "file",
-            "content": "source/x.txt\n"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/X.txt", "kind": "file", "content": "source/X.txt\n"},
+          {"path": "source/x.txt", "kind": "file", "content": "source/x.txt\n"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/X.txt",
-            "source/x.txt"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "copy", "sources": ["source/X.txt", "source/x.txt"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -9571,32 +7386,14 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "source": "apfs-cs"
-        },
+        "volumes": {"source": "apfs-cs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -9671,10 +7468,7 @@
               "totalNodeCount": 1
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/X.txt",
-            "$ROOT/source/x.txt"
-          ],
+          "sourcePaths": ["$ROOT/source/X.txt", "$ROOT/source/x.txt"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -9694,34 +7488,12 @@
       "input": {
         "name": "case-sensitive destination: Keep Both reserved by exact case",
         "tree": [
-          {
-            "path": "source/a.txt",
-            "kind": "file",
-            "content": "source/a.txt\n"
-          },
-          {
-            "path": "destination/a.txt",
-            "kind": "file",
-            "content": "destination/a.txt\n"
-          },
-          {
-            "path": "destination/A copy.txt",
-            "kind": "file",
-            "content": "destination/A copy.txt\n"
-          }
+          {"path": "source/a.txt", "kind": "file", "content": "source/a.txt\n"},
+          {"path": "destination/a.txt", "kind": "file", "content": "destination/a.txt\n"},
+          {"path": "destination/A copy.txt", "kind": "file", "content": "destination/A copy.txt\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/a.txt"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "keep_both",
-          "directory": "merge",
-          "mismatch": "keep_both"
-        },
+        "paste": {"mode": "copy", "sources": ["source/a.txt"], "destination": "destination"},
+        "policy": {"file": "keep_both", "directory": "merge", "mismatch": "keep_both"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -9729,25 +7501,13 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "destination": "apfs-cs"
-        },
+        "volumes": {"destination": "apfs-cs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
           {
             "acl": false,
             "flags": [],
@@ -9766,13 +7526,7 @@
             "sha256": "fd0b1a07e39429698fa9670137aa261a6c9a58a2b545b9e8e6affb41313e1703",
             "size": 18
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -9792,11 +7546,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           }
         },
         "report": {
@@ -9846,9 +7596,7 @@
               "totalNodeCount": 1
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/a.txt"
-          ],
+          "sourcePaths": ["$ROOT/source/a.txt"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -9861,12 +7609,7 @@
           "warnings": []
         },
         "resolved": [
-          {
-            "action": "keep_both",
-            "children": [],
-            "destinationPath": "$ROOT/destination/a copy.txt",
-            "id": "item-1"
-          }
+          {"action": "keep_both", "children": [], "destinationPath": "$ROOT/destination/a copy.txt", "id": "item-1"}
         ]
       }
     },
@@ -9875,38 +7618,13 @@
       "input": {
         "name": "FAT32 source: AppleDouble companions go with their item, not as items",
         "tree": [
-          {
-            "path": "source/f/a.txt",
-            "kind": "file",
-            "content": "source/f/a.txt\n"
-          },
-          {
-            "path": "source/f/._a.txt",
-            "kind": "file",
-            "content": "\u0000\u0005\u0016\u0007\u0000\u0002\u0000\u0000"
-          },
-          {
-            "path": "source/f/._orphan",
-            "kind": "file",
-            "content": "\u0000\u0005\u0016\u0007\u0000\u0002\u0000\u0000"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/f/a.txt", "kind": "file", "content": "source/f/a.txt\n"},
+          {"path": "source/f/._a.txt", "kind": "file", "content": "\u0000\u0005\u0016\u0007\u0000\u0002\u0000\u0000"},
+          {"path": "source/f/._orphan", "kind": "file", "content": "\u0000\u0005\u0016\u0007\u0000\u0002\u0000\u0000"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "copy", "sources": ["source/f"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -9914,66 +7632,36 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "source": "fat32"
-        },
+        "volumes": {"source": "fat32"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "._source",
             "sha256": "28de136e7b74c7c34c2a5407e387262d8b1374fece888a9adeed56b46ad0d863",
             "size": 4096
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "source"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "source/._f",
             "sha256": "28de136e7b74c7c34c2a5407e387262d8b1374fece888a9adeed56b46ad0d863",
             "size": 4096
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "source/f"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "source/f"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "source/f/._a.txt",
@@ -9982,9 +7670,7 @@
           },
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "source/f/._orphan",
@@ -10128,9 +7814,7 @@
               "totalNodeCount": 3
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/f"
-          ],
+          "sourcePaths": ["$ROOT/source/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -10170,33 +7854,12 @@
       "input": {
         "name": "APFS: an AppleDouble look-alike is an item of its own",
         "tree": [
-          {
-            "path": "source/f/a.txt",
-            "kind": "file",
-            "content": "source/f/a.txt\n"
-          },
-          {
-            "path": "source/f/._a.txt",
-            "kind": "file",
-            "content": "\u0000\u0005\u0016\u0007\u0000\u0002\u0000\u0000"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/f/a.txt", "kind": "file", "content": "source/f/a.txt\n"},
+          {"path": "source/f/._a.txt", "kind": "file", "content": "\u0000\u0005\u0016\u0007\u0000\u0002\u0000\u0000"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "copy", "sources": ["source/f"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -10204,39 +7867,15 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "source": "apfs"
-        },
+        "volumes": {"source": "apfs"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -10383,9 +8022,7 @@
               "totalNodeCount": 3
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/f"
-          ],
+          "sourcePaths": ["$ROOT/source/f"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -10425,40 +8062,13 @@
       "input": {
         "name": "FAT32: empty files over empty files",
         "tree": [
-          {
-            "path": "source/e1",
-            "kind": "file",
-            "content": ""
-          },
-          {
-            "path": "source/e2",
-            "kind": "file",
-            "content": ""
-          },
-          {
-            "path": "destination/e1",
-            "kind": "file",
-            "content": ""
-          },
-          {
-            "path": "destination/e2",
-            "kind": "file",
-            "content": ""
-          }
+          {"path": "source/e1", "kind": "file", "content": ""},
+          {"path": "source/e2", "kind": "file", "content": ""},
+          {"path": "destination/e1", "kind": "file", "content": ""},
+          {"path": "destination/e2", "kind": "file", "content": ""}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/e1",
-            "source/e2"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "copy", "sources": ["source/e1", "source/e2"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -10466,24 +8076,15 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "source": "fat32",
-          "destination": "fat32"
-        },
+        "volumes": {"source": "fat32", "destination": "fat32"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "._destination",
@@ -10492,27 +8093,17 @@
           },
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "._source",
             "sha256": "28de136e7b74c7c34c2a5407e387262d8b1374fece888a9adeed56b46ad0d863",
             "size": 4096
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "destination"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "destination/._e1",
@@ -10521,9 +8112,7 @@
           },
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "destination/._e2",
@@ -10548,18 +8137,10 @@
             "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
             "size": 0
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "source"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "source/._e1",
@@ -10568,9 +8149,7 @@
           },
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "source/._e2",
@@ -10605,11 +8184,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           },
           "item-2": {
             "effective": {
@@ -10619,11 +8194,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           }
         },
         "report": {
@@ -10712,10 +8283,7 @@
               "totalNodeCount": 1
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/e1",
-            "$ROOT/source/e2"
-          ],
+          "sourcePaths": ["$ROOT/source/e1", "$ROOT/source/e2"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -10728,18 +8296,8 @@
           "warnings": []
         },
         "resolved": [
-          {
-            "action": "overwrite",
-            "children": [],
-            "destinationPath": "$ROOT/destination/e1",
-            "id": "item-1"
-          },
-          {
-            "action": "overwrite",
-            "children": [],
-            "destinationPath": "$ROOT/destination/e2",
-            "id": "item-2"
-          }
+          {"action": "overwrite", "children": [], "destinationPath": "$ROOT/destination/e1", "id": "item-1"},
+          {"action": "overwrite", "children": [], "destinationPath": "$ROOT/destination/e2", "id": "item-2"}
         ]
       }
     },
@@ -10748,29 +8306,11 @@
       "input": {
         "name": "exFAT: a folder replacing a file moved from the startup disk",
         "tree": [
-          {
-            "path": "source/x/in.txt",
-            "kind": "file",
-            "content": "source/x/in.txt\n"
-          },
-          {
-            "path": "destination/x",
-            "kind": "file",
-            "content": "destination/x\n"
-          }
+          {"path": "source/x/in.txt", "kind": "file", "content": "source/x/in.txt\n"},
+          {"path": "destination/x", "kind": "file", "content": "destination/x\n"}
         ],
-        "paste": {
-          "mode": "cut",
-          "sources": [
-            "source/x"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "cut", "sources": ["source/x"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
@@ -10778,41 +8318,25 @@
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {
-          "destination": "exfat"
-        },
+        "volumes": {"destination": "exfat"},
         "volumesWithoutTrash": []
       },
       "output": {
-        "allConflictsChoices": [
-          "skip",
-          "keep_all",
-          "overwrite"
-        ],
+        "allConflictsChoices": ["skip", "keep_all", "overwrite"],
         "before": [
           {
             "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "._destination",
             "sha256": "28de136e7b74c7c34c2a5407e387262d8b1374fece888a9adeed56b46ad0d863",
             "size": 4096
           },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0700", "path": "destination"},
           {
             "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0700",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [
-              "hidden"
-            ],
+            "flags": ["hidden"],
             "kind": "file",
             "mode": "0700",
             "path": "destination/._x",
@@ -10828,20 +8352,8 @@
             "sha256": "26cdc5d88c3569ce2d066d2b38a3054dab53347fede69531655a392ed1b18bbe",
             "size": 14
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/x"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/x"},
           {
             "acl": false,
             "flags": [],
@@ -10861,11 +8373,7 @@
               "overwrite": "overwrite",
               "skip": "skip"
             },
-            "offered": [
-              "keep_both",
-              "overwrite",
-              "skip"
-            ]
+            "offered": ["keep_both", "overwrite", "skip"]
           }
         },
         "report": {
@@ -10955,9 +8463,7 @@
               "totalNodeCount": 2
             }
           ],
-          "sourcePaths": [
-            "$ROOT/source/x"
-          ],
+          "sourcePaths": ["$ROOT/source/x"],
           "summary": {
             "blockedCount": 0,
             "directoryConflictCount": 0,
@@ -10968,10 +8474,7 @@
             "totalNodeCount": 2
           },
           "warnings": [
-            {
-              "code": "cut_requires_delete",
-              "message": "Cut/Paste removes the original items after the copy succeeds."
-            }
+            {"code": "cut_requires_delete", "message": "Cut/Paste removes the original items after the copy succeeds."}
           ]
         },
         "resolved": [

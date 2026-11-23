@@ -1,472 +1,86 @@
 {
   "cases": [
-    {
-      "name": "empty",
-      "input": [],
-      "output": []
-    },
-    {
-      "name": "root alone",
-      "input": [
-        "/"
-      ],
-      "output": [
-        "/"
-      ]
-    },
-    {
-      "name": "root takes everything",
-      "input": [
-        "/",
-        "/a",
-        "/a/b",
-        "relative"
-      ],
-      "output": [
-        "/",
-        "relative"
-      ]
-    },
-    {
-      "name": "root picked last",
-      "input": [
-        "/a/b",
-        "/x",
-        "/"
-      ],
-      "output": [
-        "/"
-      ]
-    },
-    {
-      "name": "child before parent",
-      "input": [
-        "/a/b",
-        "/a"
-      ],
-      "output": [
-        "/a"
-      ]
-    },
-    {
-      "name": "parent before child",
-      "input": [
-        "/a",
-        "/a/b",
-        "/c"
-      ],
-      "output": [
-        "/a",
-        "/c"
-      ]
-    },
-    {
-      "name": "deep descendant",
-      "input": [
-        "/a/b/c/d",
-        "/a/b"
-      ],
-      "output": [
-        "/a/b"
-      ]
-    },
-    {
-      "name": "exact duplicates",
-      "input": [
-        "/a",
-        "/a",
-        "/b",
-        "/a"
-      ],
-      "output": [
-        "/a",
-        "/b"
-      ]
-    },
+    {"name": "empty", "input": [], "output": []},
+    {"name": "root alone", "input": ["/"], "output": ["/"]},
+    {"name": "root takes everything", "input": ["/", "/a", "/a/b", "relative"], "output": ["/", "relative"]},
+    {"name": "root picked last", "input": ["/a/b", "/x", "/"], "output": ["/"]},
+    {"name": "child before parent", "input": ["/a/b", "/a"], "output": ["/a"]},
+    {"name": "parent before child", "input": ["/a", "/a/b", "/c"], "output": ["/a", "/c"]},
+    {"name": "deep descendant", "input": ["/a/b/c/d", "/a/b"], "output": ["/a/b"]},
+    {"name": "exact duplicates", "input": ["/a", "/a", "/b", "/a"], "output": ["/a", "/b"]},
     {
       "name": "sibling with shared prefix",
-      "input": [
-        "/ab",
-        "/a",
-        "/a b",
-        "/a-b"
-      ],
-      "output": [
-        "/ab",
-        "/a",
-        "/a b",
-        "/a-b"
-      ]
+      "input": ["/ab", "/a", "/a b", "/a-b"],
+      "output": ["/ab", "/a", "/a b", "/a-b"]
     },
-    {
-      "name": "trailing slash is not an ancestor",
-      "input": [
-        "/a/",
-        "/a/b"
-      ],
-      "output": [
-        "/a/",
-        "/a/b"
-      ]
-    },
-    {
-      "name": "trailing slash and a double slash",
-      "input": [
-        "/a/",
-        "/a//b"
-      ],
-      "output": [
-        "/a/"
-      ]
-    },
-    {
-      "name": "double slash under root",
-      "input": [
-        "/",
-        "//x"
-      ],
-      "output": [
-        "/"
-      ]
-    },
-    {
-      "name": "double slash root kept apart",
-      "input": [
-        "//",
-        "/a"
-      ],
-      "output": [
-        "//",
-        "/a"
-      ]
-    },
+    {"name": "trailing slash is not an ancestor", "input": ["/a/", "/a/b"], "output": ["/a/", "/a/b"]},
+    {"name": "trailing slash and a double slash", "input": ["/a/", "/a//b"], "output": ["/a/"]},
+    {"name": "double slash under root", "input": ["/", "//x"], "output": ["/"]},
+    {"name": "double slash root kept apart", "input": ["//", "/a"], "output": ["//", "/a"]},
     {
       "name": "case differs",
-      "input": [
-        "/A",
-        "/a/b",
-        "/Users/Me",
-        "/users/me/x"
-      ],
-      "output": [
-        "/A",
-        "/a/b",
-        "/Users/Me",
-        "/users/me/x"
-      ]
+      "input": ["/A", "/a/b", "/Users/Me", "/users/me/x"],
+      "output": ["/A", "/a/b", "/Users/Me", "/users/me/x"]
     },
-    {
-      "name": "nfc parent, nfd child",
-      "input": [
-        "/Café",
-        "/Café/x"
-      ],
-      "output": [
-        "/Café",
-        "/Café/x"
-      ]
-    },
-    {
-      "name": "nfd parent, nfc child",
-      "input": [
-        "/Café",
-        "/Café/x"
-      ],
-      "output": [
-        "/Café",
-        "/Café/x"
-      ]
-    },
-    {
-      "name": "nfc parent, nfc child",
-      "input": [
-        "/Café",
-        "/Café/x"
-      ],
-      "output": [
-        "/Café"
-      ]
-    },
-    {
-      "name": "nfc and nfd duplicates",
-      "input": [
-        "/Zoë",
-        "/Zoë",
-        "/Zoë"
-      ],
-      "output": [
-        "/Zoë",
-        "/Zoë"
-      ]
-    },
-    {
-      "name": "combining mark after a slash",
-      "input": [
-        "/a",
-        "/a/́"
-      ],
-      "output": [
-        "/a"
-      ]
-    },
-    {
-      "name": "relative paths",
-      "input": [
-        "a",
-        "a/b",
-        "b/c",
-        "b"
-      ],
-      "output": [
-        "a",
-        "b"
-      ]
-    },
-    {
-      "name": "empty string picked",
-      "input": [
-        "",
-        "/a",
-        "a"
-      ],
-      "output": [
-        "",
-        "/a",
-        "a"
-      ]
-    },
-    {
-      "name": "dot components",
-      "input": [
-        "/a/.",
-        "/a/./b",
-        "/a/..",
-        "/a/../c"
-      ],
-      "output": [
-        "/a/.",
-        "/a/.."
-      ]
-    },
+    {"name": "nfc parent, nfd child", "input": ["/Café", "/Café/x"], "output": ["/Café", "/Café/x"]},
+    {"name": "nfd parent, nfc child", "input": ["/Café", "/Café/x"], "output": ["/Café", "/Café/x"]},
+    {"name": "nfc parent, nfc child", "input": ["/Café", "/Café/x"], "output": ["/Café"]},
+    {"name": "nfc and nfd duplicates", "input": ["/Zoë", "/Zoë", "/Zoë"], "output": ["/Zoë", "/Zoë"]},
+    {"name": "combining mark after a slash", "input": ["/a", "/a/́"], "output": ["/a"]},
+    {"name": "relative paths", "input": ["a", "a/b", "b/c", "b"], "output": ["a", "b"]},
+    {"name": "empty string picked", "input": ["", "/a", "a"], "output": ["", "/a", "a"]},
+    {"name": "dot components", "input": ["/a/.", "/a/./b", "/a/..", "/a/../c"], "output": ["/a/.", "/a/.."]},
     {
       "name": "volumes and trashes",
-      "input": [
-        "/Volumes/X",
-        "/Volumes/X/.Trashes",
-        "/Volumes/Xy/.Trashes"
-      ],
-      "output": [
-        "/Volumes/X",
-        "/Volumes/Xy/.Trashes"
-      ]
+      "input": ["/Volumes/X", "/Volumes/X/.Trashes", "/Volumes/Xy/.Trashes"],
+      "output": ["/Volumes/X", "/Volumes/Xy/.Trashes"]
     },
-    {
-      "name": "emoji",
-      "input": [
-        "/🎉",
-        "/🎉/👩‍👩‍👧‍👦",
-        "/🎈/🎉"
-      ],
-      "output": [
-        "/🎉",
-        "/🎈/🎉"
-      ]
-    },
-    {
-      "name": "spaces",
-      "input": [
-        "/a b",
-        "/a b/c",
-        "/a  b/c"
-      ],
-      "output": [
-        "/a b",
-        "/a  b/c"
-      ]
-    },
+    {"name": "emoji", "input": ["/🎉", "/🎉/👩‍👩‍👧‍👦", "/🎈/🎉"], "output": ["/🎉", "/🎈/🎉"]},
+    {"name": "spaces", "input": ["/a b", "/a b/c", "/a  b/c"], "output": ["/a b", "/a  b/c"]},
     {
       "name": "home and trash",
-      "input": [
-        "/Users/me",
-        "/Users/me/.Trash/x",
-        "/Users/meme"
-      ],
-      "output": [
-        "/Users/me",
-        "/Users/meme"
-      ]
+      "input": ["/Users/me", "/Users/me/.Trash/x", "/Users/meme"],
+      "output": ["/Users/me", "/Users/meme"]
     },
     {
       "name": "random 0",
-      "input": [
-        "./SS/x y/Ω",
-        "./SS/x y/Ω",
-        "./SS/x y/Ω",
-        "./SS/x y/Ω",
-        "./SS/x y/Ω/./ab/Users"
-      ],
-      "output": [
-        "./SS/x y/Ω"
-      ]
+      "input": ["./SS/x y/Ω", "./SS/x y/Ω", "./SS/x y/Ω", "./SS/x y/Ω", "./SS/x y/Ω/./ab/Users"],
+      "output": ["./SS/x y/Ω"]
     },
     {
       "name": "random 1",
-      "input": [
-        ".Trash",
-        ".Trash",
-        "./../Ω/É",
-        "/🎉/a/́",
-        "/🎉/a/́/a/É"
-      ],
-      "output": [
-        ".Trash",
-        "./../Ω/É",
-        "/🎉/a/́"
-      ]
+      "input": [".Trash", ".Trash", "./../Ω/É", "/🎉/a/́", "/🎉/a/́/a/É"],
+      "output": [".Trash", "./../Ω/É", "/🎉/a/́"]
     },
     {
       "name": "random 2",
-      "input": [
-        "/Ω/SS",
-        "/x y/́",
-        "/A/./é",
-        "/",
-        "/x y/́",
-        "/",
-        "A/..//ß/",
-        "/"
-      ],
-      "output": [
-        "/",
-        "A/..//ß/"
-      ]
+      "input": ["/Ω/SS", "/x y/́", "/A/./é", "/", "/x y/́", "/", "A/..//ß/", "/"],
+      "output": ["/", "A/..//ß/"]
     },
     {
       "name": "random 3",
-      "input": [
-        "/é/é/Ω/é/Volumes/🎉/Volumes",
-        "/é/é/Ω/é/a/.",
-        "/é/é/Ω/é/.Trash",
-        "/../ab/b",
-        "/SS/b/x y"
-      ],
-      "output": [
-        "/é/é/Ω/é/Volumes/🎉/Volumes",
-        "/é/é/Ω/é/a/.",
-        "/é/é/Ω/é/.Trash",
-        "/../ab/b",
-        "/SS/b/x y"
-      ]
+      "input": ["/é/é/Ω/é/Volumes/🎉/Volumes", "/é/é/Ω/é/a/.", "/é/é/Ω/é/.Trash", "/../ab/b", "/SS/b/x y"],
+      "output": ["/é/é/Ω/é/Volumes/🎉/Volumes", "/é/é/Ω/é/a/.", "/é/é/Ω/é/.Trash", "/../ab/b", "/SS/b/x y"]
     },
     {
       "name": "random 4",
-      "input": [
-        "/a/.Trash/é/é/É",
-        "a/É/Ω/ab",
-        "a/.Trash",
-        "a/.Trash",
-        "//../é/b/Users"
-      ],
-      "output": [
-        "/a/.Trash/é/é/É",
-        "a/É/Ω/ab",
-        "a/.Trash",
-        "//../é/b/Users"
-      ]
+      "input": ["/a/.Trash/é/é/É", "a/É/Ω/ab", "a/.Trash", "a/.Trash", "//../é/b/Users"],
+      "output": ["/a/.Trash/é/é/É", "a/É/Ω/ab", "a/.Trash", "//../é/b/Users"]
     },
-    {
-      "name": "random 5",
-      "input": [
-        "/A//x y/ß",
-        "/b/a/Users",
-        "/./́"
-      ],
-      "output": [
-        "/A//x y/ß",
-        "/b/a/Users",
-        "/./́"
-      ]
-    },
-    {
-      "name": "random 6",
-      "input": [
-        "Ω/SS/Ω/A",
-        "Ω",
-        "Ω",
-        "Ω",
-        "Ω",
-        "/.",
-        "/É/é/́"
-      ],
-      "output": [
-        "Ω",
-        "/.",
-        "/É/é/́"
-      ]
-    },
-    {
-      "name": "random 7",
-      "input": [
-        "x y",
-        "ab/A/Ω",
-        "ab/A/Ω"
-      ],
-      "output": [
-        "x y",
-        "ab/A/Ω"
-      ]
-    },
-    {
-      "name": "random 8",
-      "input": [
-        "/",
-        "/",
-        "/Ω"
-      ],
-      "output": [
-        "/"
-      ]
-    },
-    {
-      "name": "random 9",
-      "input": [
-        "/b/",
-        "/b/Ω",
-        "/b/Ω/.",
-        "/./a/É/́"
-      ],
-      "output": [
-        "/b/",
-        "/b/Ω",
-        "/./a/É/́"
-      ]
-    },
+    {"name": "random 5", "input": ["/A//x y/ß", "/b/a/Users", "/./́"], "output": ["/A//x y/ß", "/b/a/Users", "/./́"]},
+    {"name": "random 6", "input": ["Ω/SS/Ω/A", "Ω", "Ω", "Ω", "Ω", "/.", "/É/é/́"], "output": ["Ω", "/.", "/É/é/́"]},
+    {"name": "random 7", "input": ["x y", "ab/A/Ω", "ab/A/Ω"], "output": ["x y", "ab/A/Ω"]},
+    {"name": "random 8", "input": ["/", "/", "/Ω"], "output": ["/"]},
+    {"name": "random 9", "input": ["/b/", "/b/Ω", "/b/Ω/.", "/./a/É/́"], "output": ["/b/", "/b/Ω", "/./a/É/́"]},
     {
       "name": "random 10",
-      "input": [
-        "/b/Users",
-        "/a/Ω/Ω/",
-        "/Ω/SS/ß/."
-      ],
-      "output": [
-        "/b/Users",
-        "/a/Ω/Ω/",
-        "/Ω/SS/ß/."
-      ]
+      "input": ["/b/Users", "/a/Ω/Ω/", "/Ω/SS/ß/."],
+      "output": ["/b/Users", "/a/Ω/Ω/", "/Ω/SS/ß/."]
     },
     {
       "name": "random 11",
-      "input": [
-        "/Users/🎉/🎉/Volumes/É",
-        "/Users/🎉/🎉/Volumes/É",
-        "//A/",
-        "/Users/🎉/SS"
-      ],
-      "output": [
-        "/Users/🎉/🎉/Volumes/É",
-        "//A/",
-        "/Users/🎉/SS"
-      ]
+      "input": ["/Users/🎉/🎉/Volumes/É", "/Users/🎉/🎉/Volumes/É", "//A/", "/Users/🎉/SS"],
+      "output": ["/Users/🎉/🎉/Volumes/É", "//A/", "/Users/🎉/SS"]
     },
     {
       "name": "random 12",
@@ -480,11 +94,7 @@
         "/Ω/ß/🎉/..",
         "́/́/É/"
       ],
-      "output": [
-        "́/́/É",
-        "/Ω/ß/é",
-        "/Ω/ß/🎉/.."
-      ]
+      "output": ["́/́/É", "/Ω/ß/é", "/Ω/ß/🎉/.."]
     },
     {
       "name": "random 13",
@@ -499,152 +109,41 @@
         "/../🎉/Users/a/ß",
         "/é/🎉/́/SS"
       ],
-      "output": [
-        "/🎉",
-        "Users/é/a/é",
-        "/../🎉",
-        "/é/🎉/́/SS"
-      ]
+      "output": ["/🎉", "Users/é/a/é", "/../🎉", "/é/🎉/́/SS"]
     },
     {
       "name": "random 14",
-      "input": [
-        "Ω/A/Ω",
-        "Ω/A/Ω",
-        "/a/Ω/x y/ß",
-        "Ω/A/Ω",
-        "/a//🎉"
-      ],
-      "output": [
-        "Ω/A/Ω",
-        "/a/Ω/x y/ß",
-        "/a//🎉"
-      ]
+      "input": ["Ω/A/Ω", "Ω/A/Ω", "/a/Ω/x y/ß", "Ω/A/Ω", "/a//🎉"],
+      "output": ["Ω/A/Ω", "/a/Ω/x y/ß", "/a//🎉"]
     },
-    {
-      "name": "random 15",
-      "input": [
-        "/ß/b",
-        "/.Trash",
-        "/ab/́/",
-        "/ab/́"
-      ],
-      "output": [
-        "/ß/b",
-        "/.Trash",
-        "/ab/́"
-      ]
-    },
+    {"name": "random 15", "input": ["/ß/b", "/.Trash", "/ab/́/", "/ab/́"], "output": ["/ß/b", "/.Trash", "/ab/́"]},
     {
       "name": "random 16",
-      "input": [
-        "/.//./é",
-        "/.//./",
-        "/SS/./ab",
-        "/SS/a/SS",
-        "/SS/./ab",
-        "/.//./"
-      ],
-      "output": [
-        "/.//./é",
-        "/.//./",
-        "/SS/./ab",
-        "/SS/a/SS"
-      ]
+      "input": ["/.//./é", "/.//./", "/SS/./ab", "/SS/a/SS", "/SS/./ab", "/.//./"],
+      "output": ["/.//./é", "/.//./", "/SS/./ab", "/SS/a/SS"]
     },
     {
       "name": "random 17",
-      "input": [
-        "/é",
-        "/é/SS/x y/ß/.",
-        "/SS//ß/A",
-        "/é/SS",
-        "/é/́"
-      ],
-      "output": [
-        "/é",
-        "/SS//ß/A",
-        "/é/SS"
-      ]
+      "input": ["/é", "/é/SS/x y/ß/.", "/SS//ß/A", "/é/SS", "/é/́"],
+      "output": ["/é", "/SS//ß/A", "/é/SS"]
     },
-    {
-      "name": "random 18",
-      "input": [
-        "/.Trash/Ω",
-        "/.Trash/Ω",
-        "/Ω/Ω/"
-      ],
-      "output": [
-        "/.Trash/Ω",
-        "/Ω/Ω/"
-      ]
-    },
+    {"name": "random 18", "input": ["/.Trash/Ω", "/.Trash/Ω", "/Ω/Ω/"], "output": ["/.Trash/Ω", "/Ω/Ω/"]},
     {
       "name": "random 19",
-      "input": [
-        "/.Trash",
-        "/.Trash/SS/ß",
-        "/.Trash/é/a",
-        "/.Trash/b/Users/"
-      ],
-      "output": [
-        "/.Trash"
-      ]
+      "input": ["/.Trash", "/.Trash/SS/ß", "/.Trash/é/a", "/.Trash/b/Users/"],
+      "output": ["/.Trash"]
     },
-    {
-      "name": "random 20",
-      "input": [
-        "//🎉/Ω/A",
-        "//../́",
-        "/é"
-      ],
-      "output": [
-        "//🎉/Ω/A",
-        "//../́",
-        "/é"
-      ]
-    },
-    {
-      "name": "random 21",
-      "input": [
-        "Users/../ab",
-        "/a",
-        "/a/Users",
-        "/a/Users"
-      ],
-      "output": [
-        "Users/../ab",
-        "/a"
-      ]
-    },
+    {"name": "random 20", "input": ["//🎉/Ω/A", "//../́", "/é"], "output": ["//🎉/Ω/A", "//../́", "/é"]},
+    {"name": "random 21", "input": ["Users/../ab", "/a", "/a/Users", "/a/Users"], "output": ["Users/../ab", "/a"]},
     {
       "name": "random 22",
-      "input": [
-        "/x y//é",
-        "/Volumes/🎉/./x y",
-        "/Volumes/Ω/x y/",
-        "/Volumes/🎉/./x y"
-      ],
-      "output": [
-        "/x y//é",
-        "/Volumes/🎉/./x y",
-        "/Volumes/Ω/x y/"
-      ]
+      "input": ["/x y//é", "/Volumes/🎉/./x y", "/Volumes/Ω/x y/", "/Volumes/🎉/./x y"],
+      "output": ["/x y//é", "/Volumes/🎉/./x y", "/Volumes/Ω/x y/"]
     },
     {
       "name": "random 23",
-      "input": [
-        "/x y/É/ß",
-        "/x y/É/ß",
-        "/é/",
-        "/x y/É/ß",
-        "/x y/É/ß",
-        "/",
-        "/x y/É/ß"
-      ],
-      "output": [
-        "/"
-      ]
+      "input": ["/x y/É/ß", "/x y/É/ß", "/é/", "/x y/É/ß", "/x y/É/ß", "/", "/x y/É/ß"],
+      "output": ["/"]
     },
     {
       "name": "random 24",
@@ -657,26 +156,12 @@
         "/a/é/SS",
         "/a/é/a"
       ],
-      "output": [
-        "/Users/É/Ω",
-        "/Users/É/́/ß",
-        "/ab/./.Trash",
-        "/a/é/SS",
-        "/a/é/a"
-      ]
+      "output": ["/Users/É/Ω", "/Users/É/́/ß", "/ab/./.Trash", "/a/é/SS", "/a/é/a"]
     },
     {
       "name": "random 25",
-      "input": [
-        "/Volumes/../././x y/🎉",
-        "/Volumes/../././é/Ω/Ω",
-        "/Volumes/../././"
-      ],
-      "output": [
-        "/Volumes/../././x y/🎉",
-        "/Volumes/../././é/Ω/Ω",
-        "/Volumes/../././"
-      ]
+      "input": ["/Volumes/../././x y/🎉", "/Volumes/../././é/Ω/Ω", "/Volumes/../././"],
+      "output": ["/Volumes/../././x y/🎉", "/Volumes/../././é/Ω/Ω", "/Volumes/../././"]
     },
     {
       "name": "random 26",
@@ -690,38 +175,14 @@
         "/ß/́/é/",
         "/./é/.Trash"
       ],
-      "output": [
-        "🎉/É",
-        "/é/.Trash/SS",
-        "/ß/́/é/",
-        "/./é/.Trash"
-      ]
+      "output": ["🎉/É", "/é/.Trash/SS", "/ß/́/é/", "/./é/.Trash"]
     },
     {
       "name": "random 27",
-      "input": [
-        "/É",
-        "/É/b/Volumes/Users",
-        "/É/b",
-        "/É/A/É",
-        "/a/Users",
-        "/É/.Trash"
-      ],
-      "output": [
-        "/É",
-        "/a/Users"
-      ]
+      "input": ["/É", "/É/b/Volumes/Users", "/É/b", "/É/A/É", "/a/Users", "/É/.Trash"],
+      "output": ["/É", "/a/Users"]
     },
-    {
-      "name": "random 28",
-      "input": [
-        "/b/ß/é",
-        "/b/ß/é"
-      ],
-      "output": [
-        "/b/ß/é"
-      ]
-    },
+    {"name": "random 28", "input": ["/b/ß/é", "/b/ß/é"], "output": ["/b/ß/é"]},
     {
       "name": "random 29",
       "input": [
@@ -735,60 +196,22 @@
         "A/Ω/́/Users",
         "/́/Users"
       ],
-      "output": [
-        "A/Ω/́",
-        "/́/Users",
-        "/ß/ß/Ω",
-        "/Users/b",
-        "/ß/ß/Users/́/ab"
-      ]
+      "output": ["A/Ω/́", "/́/Users", "/ß/ß/Ω", "/Users/b", "/ß/ß/Users/́/ab"]
     },
     {
       "name": "random 30",
-      "input": [
-        "/./Ω/",
-        "/./Ω/",
-        "/ab/Users/́/b/a",
-        "/ab/Users/́/b"
-      ],
-      "output": [
-        "/./Ω/",
-        "/ab/Users/́/b"
-      ]
+      "input": ["/./Ω/", "/./Ω/", "/ab/Users/́/b/a", "/ab/Users/́/b"],
+      "output": ["/./Ω/", "/ab/Users/́/b"]
     },
     {
       "name": "random 31",
-      "input": [
-        "/a/Ω/A",
-        "/a/É",
-        "/a/Ω/A/🎉",
-        "/a/É",
-        "/a",
-        "/a/́/́/Ω",
-        "/a/É",
-        "/a"
-      ],
-      "output": [
-        "/a"
-      ]
+      "input": ["/a/Ω/A", "/a/É", "/a/Ω/A/🎉", "/a/É", "/a", "/a/́/́/Ω", "/a/É", "/a"],
+      "output": ["/a"]
     },
     {
       "name": "random 32",
-      "input": [
-        "/Ω/../Users",
-        "/Ω/../Users",
-        "/ab",
-        "/ab/É/Users",
-        "/Ω/..",
-        "/Users/🎉/.Trash",
-        "/Ω/..",
-        "/Ω/.."
-      ],
-      "output": [
-        "/ab",
-        "/Ω/..",
-        "/Users/🎉/.Trash"
-      ]
+      "input": ["/Ω/../Users", "/Ω/../Users", "/ab", "/ab/É/Users", "/Ω/..", "/Users/🎉/.Trash", "/Ω/..", "/Ω/.."],
+      "output": ["/ab", "/Ω/..", "/Users/🎉/.Trash"]
     },
     {
       "name": "random 33",
@@ -801,14 +224,7 @@
         "/É/é/🎉/Users",
         "/./SS/Ω/SS/ß/ß"
       ],
-      "output": [
-        "/ab",
-        "/./SS/Ω/SS//../x y",
-        "/./SS/Ω/SS/A",
-        "/SS",
-        "/É/é/🎉/Users",
-        "/./SS/Ω/SS/ß/ß"
-      ]
+      "output": ["/ab", "/./SS/Ω/SS//../x y", "/./SS/Ω/SS/A", "/SS", "/É/é/🎉/Users", "/./SS/Ω/SS/ß/ß"]
     },
     {
       "name": "random 34",
@@ -821,34 +237,10 @@
         "/É/Volumes",
         "/É/Volumes/.//Users"
       ],
-      "output": [
-        "/É/Volumes"
-      ]
+      "output": ["/É/Volumes"]
     },
-    {
-      "name": "random 35",
-      "input": [
-        "/Ω/É/x y/é",
-        "/a/../ß/..",
-        "/b"
-      ],
-      "output": [
-        "/Ω/É/x y/é",
-        "/a/../ß/..",
-        "/b"
-      ]
-    },
-    {
-      "name": "random 36",
-      "input": [
-        "/a/.Trash/́",
-        "/a",
-        "/a/ß"
-      ],
-      "output": [
-        "/a"
-      ]
-    },
+    {"name": "random 35", "input": ["/Ω/É/x y/é", "/a/../ß/..", "/b"], "output": ["/Ω/É/x y/é", "/a/../ß/..", "/b"]},
+    {"name": "random 36", "input": ["/a/.Trash/́", "/a", "/a/ß"], "output": ["/a"]},
     {
       "name": "random 37",
       "input": [
@@ -859,245 +251,58 @@
         "/Volumes//ab/a/A/A",
         "/Volumes//ab"
       ],
-      "output": [
-        "/Ω/SS/./a/.Trash/🎉/",
-        "/Volumes//ab"
-      ]
+      "output": ["/Ω/SS/./a/.Trash/🎉/", "/Volumes//ab"]
     },
-    {
-      "name": "random 38",
-      "input": [
-        "/SS/Ω/ß/É",
-        "/SS/é/é/SS"
-      ],
-      "output": [
-        "/SS/Ω/ß/É",
-        "/SS/é/é/SS"
-      ]
-    },
-    {
-      "name": "random 39",
-      "input": [
-        "b/Volumes/.",
-        "/b/É"
-      ],
-      "output": [
-        "b/Volumes/.",
-        "/b/É"
-      ]
-    },
-    {
-      "name": "random 40",
-      "input": [
-        "/./Users",
-        "//🎉/"
-      ],
-      "output": [
-        "/./Users",
-        "//🎉/"
-      ]
-    },
+    {"name": "random 38", "input": ["/SS/Ω/ß/É", "/SS/é/é/SS"], "output": ["/SS/Ω/ß/É", "/SS/é/é/SS"]},
+    {"name": "random 39", "input": ["b/Volumes/.", "/b/É"], "output": ["b/Volumes/.", "/b/É"]},
+    {"name": "random 40", "input": ["/./Users", "//🎉/"], "output": ["/./Users", "//🎉/"]},
     {
       "name": "random 41",
-      "input": [
-        "/É",
-        "/x y/é/é/SS/́/Volumes",
-        "/É/./é/",
-        "/É",
-        "/x y/é/é/SS"
-      ],
-      "output": [
-        "/É",
-        "/x y/é/é/SS"
-      ]
+      "input": ["/É", "/x y/é/é/SS/́/Volumes", "/É/./é/", "/É", "/x y/é/é/SS"],
+      "output": ["/É", "/x y/é/é/SS"]
     },
     {
       "name": "random 42",
-      "input": [
-        "/Ω/Users/é",
-        "/a/a/A",
-        "/Ω/a",
-        "/a/a/A/ab",
-        "/Ω/Users",
-        "/a/a/A/é/A",
-        "/a/a/A"
-      ],
-      "output": [
-        "/a/a/A",
-        "/Ω/a",
-        "/Ω/Users"
-      ]
+      "input": ["/Ω/Users/é", "/a/a/A", "/Ω/a", "/a/a/A/ab", "/Ω/Users", "/a/a/A/é/A", "/a/a/A"],
+      "output": ["/a/a/A", "/Ω/a", "/Ω/Users"]
     },
     {
       "name": "random 43",
-      "input": [
-        "/ß",
-        "/ß",
-        "/ß",
-        "/.Trash/ab/🎉",
-        "/ß",
-        "/é"
-      ],
-      "output": [
-        "/ß",
-        "/.Trash/ab/🎉",
-        "/é"
-      ]
+      "input": ["/ß", "/ß", "/ß", "/.Trash/ab/🎉", "/ß", "/é"],
+      "output": ["/ß", "/.Trash/ab/🎉", "/é"]
     },
-    {
-      "name": "random 44",
-      "input": [
-        "/é"
-      ],
-      "output": [
-        "/é"
-      ]
-    },
-    {
-      "name": "random 45",
-      "input": [
-        "/ab/é/SS"
-      ],
-      "output": [
-        "/ab/é/SS"
-      ]
-    },
+    {"name": "random 44", "input": ["/é"], "output": ["/é"]},
+    {"name": "random 45", "input": ["/ab/é/SS"], "output": ["/ab/é/SS"]},
     {
       "name": "random 46",
-      "input": [
-        "/Users/Ω/Ω",
-        "//é/./.Trash/./Volumes",
-        "/Users",
-        "/Ω/SS/Volumes",
-        "//é/./.Trash/./SS/É"
-      ],
-      "output": [
-        "//é/./.Trash/./Volumes",
-        "/Users",
-        "/Ω/SS/Volumes",
-        "//é/./.Trash/./SS/É"
-      ]
+      "input": ["/Users/Ω/Ω", "//é/./.Trash/./Volumes", "/Users", "/Ω/SS/Volumes", "//é/./.Trash/./SS/É"],
+      "output": ["//é/./.Trash/./Volumes", "/Users", "/Ω/SS/Volumes", "//é/./.Trash/./SS/É"]
     },
     {
       "name": "random 47",
-      "input": [
-        "/b/Volumes",
-        "/SS/Volumes/a",
-        "/ß",
-        "/ß",
-        "/SS/Volumes/🎉",
-        "/.Trash/🎉/x y",
-        "/é",
-        "x y/Volumes"
-      ],
-      "output": [
-        "/b/Volumes",
-        "/SS/Volumes/a",
-        "/ß",
-        "/SS/Volumes/🎉",
-        "/.Trash/🎉/x y",
-        "/é",
-        "x y/Volumes"
-      ]
+      "input": ["/b/Volumes", "/SS/Volumes/a", "/ß", "/ß", "/SS/Volumes/🎉", "/.Trash/🎉/x y", "/é", "x y/Volumes"],
+      "output": ["/b/Volumes", "/SS/Volumes/a", "/ß", "/SS/Volumes/🎉", "/.Trash/🎉/x y", "/é", "x y/Volumes"]
     },
     {
       "name": "random 48",
-      "input": [
-        "/é",
-        "/A/",
-        "/é",
-        "/A/",
-        "/é///É",
-        "/é/Ω/ab/Volumes"
-      ],
-      "output": [
-        "/é",
-        "/A/"
-      ]
+      "input": ["/é", "/A/", "/é", "/A/", "/é///É", "/é/Ω/ab/Volumes"],
+      "output": ["/é", "/A/"]
     },
-    {
-      "name": "random 49",
-      "input": [
-        "/A/A/SS/é",
-        "/../Ω/ab"
-      ],
-      "output": [
-        "/A/A/SS/é",
-        "/../Ω/ab"
-      ]
-    },
-    {
-      "name": "random 50",
-      "input": [
-        "A/🎉/é",
-        "A/🎉/é",
-        "A/🎉/é"
-      ],
-      "output": [
-        "A/🎉/é"
-      ]
-    },
-    {
-      "name": "random 51",
-      "input": [
-        "é",
-        "../.Trash",
-        "/x y/Ω/é"
-      ],
-      "output": [
-        "é",
-        "../.Trash",
-        "/x y/Ω/é"
-      ]
-    },
-    {
-      "name": "random 52",
-      "input": [
-        "/é/./.Trash/a",
-        "/é/É/b/ab"
-      ],
-      "output": [
-        "/é/./.Trash/a",
-        "/é/É/b/ab"
-      ]
-    },
+    {"name": "random 49", "input": ["/A/A/SS/é", "/../Ω/ab"], "output": ["/A/A/SS/é", "/../Ω/ab"]},
+    {"name": "random 50", "input": ["A/🎉/é", "A/🎉/é", "A/🎉/é"], "output": ["A/🎉/é"]},
+    {"name": "random 51", "input": ["é", "../.Trash", "/x y/Ω/é"], "output": ["é", "../.Trash", "/x y/Ω/é"]},
+    {"name": "random 52", "input": ["/é/./.Trash/a", "/é/É/b/ab"], "output": ["/é/./.Trash/a", "/é/É/b/ab"]},
     {
       "name": "random 53",
-      "input": [
-        "./É/Users/SS",
-        "/SS/a/SS",
-        "/Ω/🎉/é",
-        "./É/Users/SS//Users/ß"
-      ],
-      "output": [
-        "./É/Users/SS",
-        "/SS/a/SS",
-        "/Ω/🎉/é"
-      ]
+      "input": ["./É/Users/SS", "/SS/a/SS", "/Ω/🎉/é", "./É/Users/SS//Users/ß"],
+      "output": ["./É/Users/SS", "/SS/a/SS", "/Ω/🎉/é"]
     },
     {
       "name": "random 54",
-      "input": [
-        "/ab/A/../Ω/́/Ω/é",
-        "/./ab",
-        "/ab/A/../Ω/́/Ω/é"
-      ],
-      "output": [
-        "/ab/A/../Ω/́/Ω/é",
-        "/./ab"
-      ]
+      "input": ["/ab/A/../Ω/́/Ω/é", "/./ab", "/ab/A/../Ω/́/Ω/é"],
+      "output": ["/ab/A/../Ω/́/Ω/é", "/./ab"]
     },
-    {
-      "name": "random 55",
-      "input": [
-        "/b/🎉/ab",
-        "/b/🎉/ab",
-        "/b/🎉"
-      ],
-      "output": [
-        "/b/🎉"
-      ]
-    },
+    {"name": "random 55", "input": ["/b/🎉/ab", "/b/🎉/ab", "/b/🎉"], "output": ["/b/🎉"]},
     {
       "name": "random 56",
       "input": [
@@ -1111,10 +316,7 @@
         "/x y/É/é",
         "/x y/É/é"
       ],
-      "output": [
-        "/x y/É/é",
-        "/Users"
-      ]
+      "output": ["/x y/É/é", "/Users"]
     },
     {
       "name": "random 57",
@@ -1126,65 +328,23 @@
         "/x y/Volumes/Volumes/.",
         "/x y/Volumes"
       ],
-      "output": [
-        "/A/Ω/Users/Volumes/SS/ß/Volumes",
-        "/x y/Volumes"
-      ]
+      "output": ["/A/Ω/Users/Volumes/SS/ß/Volumes", "/x y/Volumes"]
     },
     {
       "name": "random 58",
-      "input": [
-        "//Ω/é/./../é",
-        "//Ω/é/b/.Trash",
-        "//Ω/é/.Trash",
-        "//Ω/é",
-        "//Ω/é/Volumes",
-        "//Ω/é/A/Ω/b"
-      ],
-      "output": [
-        "//Ω/é"
-      ]
+      "input": ["//Ω/é/./../é", "//Ω/é/b/.Trash", "//Ω/é/.Trash", "//Ω/é", "//Ω/é/Volumes", "//Ω/é/A/Ω/b"],
+      "output": ["//Ω/é"]
     },
     {
       "name": "random 59",
-      "input": [
-        "/Ω/🎉/É",
-        "/b/Volumes/Ω",
-        "/Ω/🎉/É",
-        "/Users/é/ab/a"
-      ],
-      "output": [
-        "/Ω/🎉/É",
-        "/b/Volumes/Ω",
-        "/Users/é/ab/a"
-      ]
+      "input": ["/Ω/🎉/É", "/b/Volumes/Ω", "/Ω/🎉/É", "/Users/é/ab/a"],
+      "output": ["/Ω/🎉/É", "/b/Volumes/Ω", "/Users/é/ab/a"]
     },
-    {
-      "name": "random 60",
-      "input": [
-        "/Users/ab/x y/a/ß"
-      ],
-      "output": [
-        "/Users/ab/x y/a/ß"
-      ]
-    },
+    {"name": "random 60", "input": ["/Users/ab/x y/a/ß"], "output": ["/Users/ab/x y/a/ß"]},
     {
       "name": "random 61",
-      "input": [
-        "/É/x y/",
-        "/É/x y/É/Volumes",
-        "/É/x y",
-        "/b",
-        "/É/x y",
-        "/.Trash/Ω/́",
-        "/É/x y/b",
-        "/.Trash/Ω/́"
-      ],
-      "output": [
-        "/É/x y",
-        "/b",
-        "/.Trash/Ω/́"
-      ]
+      "input": ["/É/x y/", "/É/x y/É/Volumes", "/É/x y", "/b", "/É/x y", "/.Trash/Ω/́", "/É/x y/b", "/.Trash/Ω/́"],
+      "output": ["/É/x y", "/b", "/.Trash/Ω/́"]
     },
     {
       "name": "random 62",
@@ -1197,234 +357,62 @@
         "/Volumes/.Trash/A/a",
         "/Volumes/́/SS/Users"
       ],
-      "output": [
-        "/.Trash/Volumes/é",
-        "/́",
-        "/Volumes/.Trash/A",
-        "/Volumes/́/SS/Users"
-      ]
+      "output": ["/.Trash/Volumes/é", "/́", "/Volumes/.Trash/A", "/Volumes/́/SS/Users"]
     },
-    {
-      "name": "random 63",
-      "input": [
-        "/Ω/Volumes/x y/🎉/."
-      ],
-      "output": [
-        "/Ω/Volumes/x y/🎉/."
-      ]
-    },
-    {
-      "name": "random 64",
-      "input": [
-        "/Users/SS//é",
-        "/Users/SS//é",
-        "/",
-        "/Users/SS//é/.Trash"
-      ],
-      "output": [
-        "/"
-      ]
-    },
-    {
-      "name": "random 65",
-      "input": [
-        "/.",
-        "/É/../ab/A"
-      ],
-      "output": [
-        "/.",
-        "/É/../ab/A"
-      ]
-    },
+    {"name": "random 63", "input": ["/Ω/Volumes/x y/🎉/."], "output": ["/Ω/Volumes/x y/🎉/."]},
+    {"name": "random 64", "input": ["/Users/SS//é", "/Users/SS//é", "/", "/Users/SS//é/.Trash"], "output": ["/"]},
+    {"name": "random 65", "input": ["/.", "/É/../ab/A"], "output": ["/.", "/É/../ab/A"]},
     {
       "name": "random 66",
-      "input": [
-        "/é/é",
-        "/é/é/Volumes/́/A",
-        "/é/é",
-        "/é/é",
-        "/é/é"
-      ],
-      "output": [
-        "/é/é"
-      ]
+      "input": ["/é/é", "/é/é/Volumes/́/A", "/é/é", "/é/é", "/é/é"],
+      "output": ["/é/é"]
     },
     {
       "name": "random 67",
-      "input": [
-        "/.Trash",
-        "́/.Trash/́",
-        "/./🎉",
-        "́/.Trash/́/é",
-        "/́/Ω/Ω",
-        "́/.Trash/́"
-      ],
-      "output": [
-        "/.Trash",
-        "́/.Trash/́",
-        "/./🎉",
-        "/́/Ω/Ω"
-      ]
+      "input": ["/.Trash", "́/.Trash/́", "/./🎉", "́/.Trash/́/é", "/́/Ω/Ω", "́/.Trash/́"],
+      "output": ["/.Trash", "́/.Trash/́", "/./🎉", "/́/Ω/Ω"]
     },
     {
       "name": "random 68",
-      "input": [
-        "́/Ω/🎉/🎉/x y",
-        "́/Ω/🎉/🎉/x y",
-        "/b/A/A/Ω/́/./Users",
-        "/b/A/A/Ω",
-        "A"
-      ],
-      "output": [
-        "́/Ω/🎉/🎉/x y",
-        "/b/A/A/Ω",
-        "A"
-      ]
+      "input": ["́/Ω/🎉/🎉/x y", "́/Ω/🎉/🎉/x y", "/b/A/A/Ω/́/./Users", "/b/A/A/Ω", "A"],
+      "output": ["́/Ω/🎉/🎉/x y", "/b/A/A/Ω", "A"]
     },
     {
       "name": "random 69",
-      "input": [
-        "/ß/A/b",
-        "/ß/Ω/Ω",
-        "/.Trash/..",
-        "/A/🎉",
-        "/🎉",
-        "/🎉",
-        "/.Trash/..",
-        "Ω",
-        "/🎉"
-      ],
-      "output": [
-        "/ß/A/b",
-        "/ß/Ω/Ω",
-        "/.Trash/..",
-        "/A/🎉",
-        "/🎉",
-        "Ω"
-      ]
+      "input": ["/ß/A/b", "/ß/Ω/Ω", "/.Trash/..", "/A/🎉", "/🎉", "/🎉", "/.Trash/..", "Ω", "/🎉"],
+      "output": ["/ß/A/b", "/ß/Ω/Ω", "/.Trash/..", "/A/🎉", "/🎉", "Ω"]
     },
     {
       "name": "random 70",
-      "input": [
-        "/",
-        "/Ω/Ω/",
-        "/Ω/Ω/́/Ω/x y",
-        "/é//../🎉/ab",
-        "/",
-        "/a/b/Ω//Volumes",
-        "/Ω"
-      ],
-      "output": [
-        "/"
-      ]
+      "input": ["/", "/Ω/Ω/", "/Ω/Ω/́/Ω/x y", "/é//../🎉/ab", "/", "/a/b/Ω//Volumes", "/Ω"],
+      "output": ["/"]
     },
     {
       "name": "random 71",
-      "input": [
-        "ab/Volumes/́/é/.Trash",
-        "ab/Volumes/́",
-        "ab/Volumes/́/é/b",
-        "/x y/́/́/.."
-      ],
-      "output": [
-        "ab/Volumes/́",
-        "/x y/́/́/.."
-      ]
+      "input": ["ab/Volumes/́/é/.Trash", "ab/Volumes/́", "ab/Volumes/́/é/b", "/x y/́/́/.."],
+      "output": ["ab/Volumes/́", "/x y/́/́/.."]
     },
-    {
-      "name": "random 72",
-      "input": [
-        "/Volumes/a/x y",
-        "/́/Ω",
-        "/",
-        "/ab/É/A",
-        "/",
-        "//./A"
-      ],
-      "output": [
-        "/"
-      ]
-    },
+    {"name": "random 72", "input": ["/Volumes/a/x y", "/́/Ω", "/", "/ab/É/A", "/", "//./A"], "output": ["/"]},
     {
       "name": "random 73",
-      "input": [
-        "/é/./Volumes",
-        "/./../..",
-        "/🎉",
-        "/.//é",
-        "/./ß/́",
-        "/É/Ω/é/.Trash",
-        "/.//é/Volumes",
-        "/.",
-        "/."
-      ],
-      "output": [
-        "/é/./Volumes",
-        "/🎉",
-        "/É/Ω/é/.Trash",
-        "/."
-      ]
+      "input": ["/é/./Volumes", "/./../..", "/🎉", "/.//é", "/./ß/́", "/É/Ω/é/.Trash", "/.//é/Volumes", "/.", "/."],
+      "output": ["/é/./Volumes", "/🎉", "/É/Ω/é/.Trash", "/."]
     },
     {
       "name": "random 74",
-      "input": [
-        "/x y",
-        "ß/Ω/🎉/É",
-        "/x y",
-        "/É",
-        "/x y",
-        "/É/x y/́/Volumes"
-      ],
-      "output": [
-        "/x y",
-        "ß/Ω/🎉/É",
-        "/É"
-      ]
+      "input": ["/x y", "ß/Ω/🎉/É", "/x y", "/É", "/x y", "/É/x y/́/Volumes"],
+      "output": ["/x y", "ß/Ω/🎉/É", "/É"]
     },
-    {
-      "name": "random 75",
-      "input": [
-        "/A//..",
-        "/..",
-        "/Ω/.Trash"
-      ],
-      "output": [
-        "/A//..",
-        "/..",
-        "/Ω/.Trash"
-      ]
-    },
+    {"name": "random 75", "input": ["/A//..", "/..", "/Ω/.Trash"], "output": ["/A//..", "/..", "/Ω/.Trash"]},
     {
       "name": "random 76",
-      "input": [
-        "/🎉/É",
-        "/🎉/Volumes/É/ab",
-        "/🎉/É",
-        "/🎉/Volumes/É/ab",
-        "/A/Ω/b"
-      ],
-      "output": [
-        "/🎉/É",
-        "/🎉/Volumes/É/ab",
-        "/A/Ω/b"
-      ]
+      "input": ["/🎉/É", "/🎉/Volumes/É/ab", "/🎉/É", "/🎉/Volumes/É/ab", "/A/Ω/b"],
+      "output": ["/🎉/É", "/🎉/Volumes/É/ab", "/A/Ω/b"]
     },
     {
       "name": "random 77",
-      "input": [
-        "/ß/ab/Users",
-        "/é",
-        "/ß/",
-        "/ß/É/É/É",
-        "/ß/ab/Users",
-        "/é/Ω/../É"
-      ],
-      "output": [
-        "/ß/ab/Users",
-        "/é",
-        "/ß/",
-        "/ß/É/É/É"
-      ]
+      "input": ["/ß/ab/Users", "/é", "/ß/", "/ß/É/É/É", "/ß/ab/Users", "/é/Ω/../É"],
+      "output": ["/ß/ab/Users", "/é", "/ß/", "/ß/É/É/É"]
     },
     {
       "name": "random 78",
@@ -1460,46 +448,15 @@
         "/.Trash//Users/Volumes/́/A",
         "/.Trash//Users/Volumes/Ω/b"
       ],
-      "output": [
-        "/.Trash//Users/Volumes"
-      ]
+      "output": ["/.Trash//Users/Volumes"]
     },
     {
       "name": "random 80",
-      "input": [
-        "/é/🎉",
-        "/é/🎉",
-        "/é/🎉/..",
-        "/é/🎉",
-        "/é/🎉//ß",
-        "/é/🎉/é/É",
-        "/é/🎉/b",
-        "/é/🎉/a/x y",
-        "/é/🎉"
-      ],
-      "output": [
-        "/é/🎉"
-      ]
+      "input": ["/é/🎉", "/é/🎉", "/é/🎉/..", "/é/🎉", "/é/🎉//ß", "/é/🎉/é/É", "/é/🎉/b", "/é/🎉/a/x y", "/é/🎉"],
+      "output": ["/é/🎉"]
     },
-    {
-      "name": "random 81",
-      "input": [
-        "/x y/Ω"
-      ],
-      "output": [
-        "/x y/Ω"
-      ]
-    },
-    {
-      "name": "random 82",
-      "input": [
-        "/Ω/.",
-        "/Ω"
-      ],
-      "output": [
-        "/Ω"
-      ]
-    },
+    {"name": "random 81", "input": ["/x y/Ω"], "output": ["/x y/Ω"]},
+    {"name": "random 82", "input": ["/Ω/.", "/Ω"], "output": ["/Ω"]},
     {
       "name": "random 83",
       "input": [
@@ -1512,30 +469,12 @@
         "b//é/../Volumes/É",
         "/é/́/x y/🎉"
       ],
-      "output": [
-        "b//é/é/Ω/́",
-        "/́/./x y",
-        "b//é/../Volumes/É",
-        "/é/́/x y/🎉"
-      ]
+      "output": ["b//é/é/Ω/́", "/́/./x y", "b//é/../Volumes/É", "/é/́/x y/🎉"]
     },
     {
       "name": "random 84",
-      "input": [
-        "/a",
-        "/é",
-        "/́/Ω/ß/Ω/Ω",
-        "/́/Ω/ß/Ω/Ω",
-        "/É/.Trash/Ω/b",
-        "/É/.Trash/Ω/b",
-        "/É"
-      ],
-      "output": [
-        "/a",
-        "/é",
-        "/́/Ω/ß/Ω/Ω",
-        "/É"
-      ]
+      "input": ["/a", "/é", "/́/Ω/ß/Ω/Ω", "/́/Ω/ß/Ω/Ω", "/É/.Trash/Ω/b", "/É/.Trash/Ω/b", "/É"],
+      "output": ["/a", "/é", "/́/Ω/ß/Ω/Ω", "/É"]
     },
     {
       "name": "random 85",
@@ -1549,59 +488,22 @@
         "/🎉/x y/Volumes/Ω",
         "/🎉/x y/Volumes/Ω"
       ],
-      "output": [
-        "/.Trash/A",
-        "/./Volumes/Ω/.Trash",
-        "/🎉/x y/Volumes/Ω",
-        "/b/Ω//b"
-      ]
+      "output": ["/.Trash/A", "/./Volumes/Ω/.Trash", "/🎉/x y/Volumes/Ω", "/b/Ω//b"]
     },
     {
       "name": "random 86",
-      "input": [
-        "/Volumes",
-        "/../b/x y/🎉",
-        "Users"
-      ],
-      "output": [
-        "/Volumes",
-        "/../b/x y/🎉",
-        "Users"
-      ]
+      "input": ["/Volumes", "/../b/x y/🎉", "Users"],
+      "output": ["/Volumes", "/../b/x y/🎉", "Users"]
     },
     {
       "name": "random 87",
-      "input": [
-        "/é/x y/Users",
-        "/Volumes/a/b",
-        "/é/x y/Users",
-        "/É/.Trash/é//a",
-        "/É/.Trash/́/ab"
-      ],
-      "output": [
-        "/é/x y/Users",
-        "/Volumes/a/b",
-        "/É/.Trash/é//a",
-        "/É/.Trash/́/ab"
-      ]
+      "input": ["/é/x y/Users", "/Volumes/a/b", "/é/x y/Users", "/É/.Trash/é//a", "/É/.Trash/́/ab"],
+      "output": ["/é/x y/Users", "/Volumes/a/b", "/É/.Trash/é//a", "/É/.Trash/́/ab"]
     },
     {
       "name": "random 88",
-      "input": [
-        "/..",
-        "/../SS/é/SS",
-        "/..",
-        "/../ab/.Trash",
-        "/..",
-        "/Ω/🎉/ß/",
-        "/Ω/🎉/ß",
-        "/..",
-        "/Ω/🎉/ß/x y/É"
-      ],
-      "output": [
-        "/..",
-        "/Ω/🎉/ß"
-      ]
+      "input": ["/..", "/../SS/é/SS", "/..", "/../ab/.Trash", "/..", "/Ω/🎉/ß/", "/Ω/🎉/ß", "/..", "/Ω/🎉/ß/x y/É"],
+      "output": ["/..", "/Ω/🎉/ß"]
     },
     {
       "name": "random 89",
@@ -1614,264 +516,72 @@
         "//é/é/Ω/Volumes",
         "//é/é/Ω/Ω/ab"
       ],
-      "output": [
-        "/ß/A/.Trash/A",
-        "//é/é",
-        "/x y/É/.Trash/x y/"
-      ]
+      "output": ["/ß/A/.Trash/A", "//é/é", "/x y/É/.Trash/x y/"]
     },
     {
       "name": "random 90",
-      "input": [
-        "/Ω",
-        "/Ω/Volumes/ß/..",
-        "/Ω",
-        "/Ω/Volumes/ß/..",
-        "/Ω//.Trash",
-        "/Ω/Volumes/ß/.."
-      ],
-      "output": [
-        "/Ω"
-      ]
+      "input": ["/Ω", "/Ω/Volumes/ß/..", "/Ω", "/Ω/Volumes/ß/..", "/Ω//.Trash", "/Ω/Volumes/ß/.."],
+      "output": ["/Ω"]
     },
-    {
-      "name": "random 91",
-      "input": [
-        "/É/ab",
-        "/.Trash/..",
-        "/SS/.Trash/",
-        "/",
-        "/SS/Volumes",
-        "/SS"
-      ],
-      "output": [
-        "/"
-      ]
-    },
+    {"name": "random 91", "input": ["/É/ab", "/.Trash/..", "/SS/.Trash/", "/", "/SS/Volumes", "/SS"], "output": ["/"]},
     {
       "name": "random 92",
-      "input": [
-        "/Volumes/ab/ab/a",
-        "/Volumes/ab/ab/a",
-        "/é/x y/ß/A/é",
-        "/a/../é/é",
-        "/é/x y/ß/A/é"
-      ],
-      "output": [
-        "/Volumes/ab/ab/a",
-        "/é/x y/ß/A/é",
-        "/a/../é/é"
-      ]
+      "input": ["/Volumes/ab/ab/a", "/Volumes/ab/ab/a", "/é/x y/ß/A/é", "/a/../é/é", "/é/x y/ß/A/é"],
+      "output": ["/Volumes/ab/ab/a", "/é/x y/ß/A/é", "/a/../é/é"]
     },
-    {
-      "name": "random 93",
-      "input": [
-        "/..",
-        "/🎉/ß/É/́/é/Volumes"
-      ],
-      "output": [
-        "/..",
-        "/🎉/ß/É/́/é/Volumes"
-      ]
-    },
-    {
-      "name": "random 94",
-      "input": [
-        "/É/a/b/Ω/a/Users/é",
-        "SS/É/ab/"
-      ],
-      "output": [
-        "/É/a/b/Ω/a/Users/é",
-        "SS/É/ab/"
-      ]
-    },
+    {"name": "random 93", "input": ["/..", "/🎉/ß/É/́/é/Volumes"], "output": ["/..", "/🎉/ß/É/́/é/Volumes"]},
+    {"name": "random 94", "input": ["/É/a/b/Ω/a/Users/é", "SS/É/ab/"], "output": ["/É/a/b/Ω/a/Users/é", "SS/É/ab/"]},
     {
       "name": "random 95",
-      "input": [
-        "/a/x y/",
-        "/ß/ab",
-        "/.",
-        "/ß/.Trash",
-        "/ß",
-        "/.",
-        "/ß",
-        "/ß"
-      ],
-      "output": [
-        "/a/x y/",
-        "/.",
-        "/ß"
-      ]
+      "input": ["/a/x y/", "/ß/ab", "/.", "/ß/.Trash", "/ß", "/.", "/ß", "/ß"],
+      "output": ["/a/x y/", "/.", "/ß"]
     },
     {
       "name": "random 96",
-      "input": [
-        "ab/../🎉/../Users",
-        "/Volumes/Ω/b/x y",
-        "ab/../🎉/../ß/A/a",
-        "/́/é//Users",
-        "ab/../🎉/..",
-        "/A"
-      ],
-      "output": [
-        "/Volumes/Ω/b/x y",
-        "/́/é//Users",
-        "ab/../🎉/..",
-        "/A"
-      ]
+      "input": ["ab/../🎉/../Users", "/Volumes/Ω/b/x y", "ab/../🎉/../ß/A/a", "/́/é//Users", "ab/../🎉/..", "/A"],
+      "output": ["/Volumes/Ω/b/x y", "/́/é//Users", "ab/../🎉/..", "/A"]
     },
-    {
-      "name": "random 97",
-      "input": [
-        "SS"
-      ],
-      "output": [
-        "SS"
-      ]
-    },
+    {"name": "random 97", "input": ["SS"], "output": ["SS"]},
     {
       "name": "random 98",
-      "input": [
-        "//é/SS",
-        "//é/SS/Volumes/b/ab",
-        "//é/SS",
-        "/ab/./É/b/🎉",
-        "//é/SS",
-        "/ab/./x y/É"
-      ],
-      "output": [
-        "//é/SS",
-        "/ab/./É/b/🎉",
-        "/ab/./x y/É"
-      ]
+      "input": ["//é/SS", "//é/SS/Volumes/b/ab", "//é/SS", "/ab/./É/b/🎉", "//é/SS", "/ab/./x y/É"],
+      "output": ["//é/SS", "/ab/./É/b/🎉", "/ab/./x y/É"]
     },
     {
       "name": "random 99",
-      "input": [
-        "/Volumes",
-        "/",
-        "/🎉/SS/🎉/É",
-        "/",
-        "/Volumes/Ω/b",
-        "/🎉/SS/🎉",
-        "/x y/é/Ω"
-      ],
-      "output": [
-        "/"
-      ]
+      "input": ["/Volumes", "/", "/🎉/SS/🎉/É", "/", "/Volumes/Ω/b", "/🎉/SS/🎉", "/x y/é/Ω"],
+      "output": ["/"]
     },
     {
       "name": "random 100",
-      "input": [
-        "//Users/ab/🎉",
-        "/Ω/../.",
-        "/Ω/a/b/a",
-        "/é/x y/a/Users/Ω/Volumes/SS",
-        "/Ω/",
-        "/Ω/́"
-      ],
-      "output": [
-        "//Users/ab/🎉",
-        "/Ω/../.",
-        "/Ω/a/b/a",
-        "/é/x y/a/Users/Ω/Volumes/SS",
-        "/Ω/",
-        "/Ω/́"
-      ]
+      "input": ["//Users/ab/🎉", "/Ω/../.", "/Ω/a/b/a", "/é/x y/a/Users/Ω/Volumes/SS", "/Ω/", "/Ω/́"],
+      "output": ["//Users/ab/🎉", "/Ω/../.", "/Ω/a/b/a", "/é/x y/a/Users/Ω/Volumes/SS", "/Ω/", "/Ω/́"]
     },
     {
       "name": "random 101",
-      "input": [
-        "/́/🎉",
-        "/́/🎉",
-        "é",
-        "/É/ß/..",
-        "/../A/x y",
-        "/x y",
-        "/../A/",
-        "/🎉/é/é/́",
-        "/a/A/́/́/"
-      ],
-      "output": [
-        "/́/🎉",
-        "é",
-        "/É/ß/..",
-        "/../A/x y",
-        "/x y",
-        "/../A/",
-        "/🎉/é/é/́",
-        "/a/A/́/́/"
-      ]
+      "input": ["/́/🎉", "/́/🎉", "é", "/É/ß/..", "/../A/x y", "/x y", "/../A/", "/🎉/é/é/́", "/a/A/́/́/"],
+      "output": ["/́/🎉", "é", "/É/ß/..", "/../A/x y", "/x y", "/../A/", "/🎉/é/é/́", "/a/A/́/́/"]
     },
-    {
-      "name": "random 102",
-      "input": [
-        "É/ß/Users/́",
-        "/é/x y/b"
-      ],
-      "output": [
-        "É/ß/Users/́",
-        "/é/x y/b"
-      ]
-    },
+    {"name": "random 102", "input": ["É/ß/Users/́", "/é/x y/b"], "output": ["É/ß/Users/́", "/é/x y/b"]},
     {
       "name": "random 103",
-      "input": [
-        "/./É/é/x y",
-        "/./É/é/x y",
-        "/./É/é/x y",
-        "/🎉/é/",
-        "/./É/é/x y",
-        "/🎉/é/b/Volumes/é",
-        "/./É/é/x y"
-      ],
-      "output": [
-        "/./É/é/x y",
-        "/🎉/é/",
-        "/🎉/é/b/Volumes/é"
-      ]
+      "input": ["/./É/é/x y", "/./É/é/x y", "/./É/é/x y", "/🎉/é/", "/./É/é/x y", "/🎉/é/b/Volumes/é", "/./É/é/x y"],
+      "output": ["/./É/é/x y", "/🎉/é/", "/🎉/é/b/Volumes/é"]
     },
     {
       "name": "random 104",
-      "input": [
-        "/b/Ω/é/é/É/Ω",
-        "/.Trash",
-        "/b/Ω/é/é/A/́"
-      ],
-      "output": [
-        "/b/Ω/é/é/É/Ω",
-        "/.Trash",
-        "/b/Ω/é/é/A/́"
-      ]
+      "input": ["/b/Ω/é/é/É/Ω", "/.Trash", "/b/Ω/é/é/A/́"],
+      "output": ["/b/Ω/é/é/É/Ω", "/.Trash", "/b/Ω/é/é/A/́"]
     },
     {
       "name": "random 105",
-      "input": [
-        "/./A/Volumes/🎉",
-        "/./A/Volumes/🎉",
-        "/./A/Volumes/🎉",
-        "/x y/ß/SS/É"
-      ],
-      "output": [
-        "/./A/Volumes/🎉",
-        "/x y/ß/SS/É"
-      ]
+      "input": ["/./A/Volumes/🎉", "/./A/Volumes/🎉", "/./A/Volumes/🎉", "/x y/ß/SS/É"],
+      "output": ["/./A/Volumes/🎉", "/x y/ß/SS/É"]
     },
     {
       "name": "random 106",
-      "input": [
-        "/Ω/ß",
-        "/a/🎉/Volumes/é/Users/ß",
-        "/É/🎉/SS/é",
-        "/Ω/ß/b/́",
-        "/Ω/ß",
-        "/Ω/ß/é"
-      ],
-      "output": [
-        "/Ω/ß",
-        "/a/🎉/Volumes/é/Users/ß",
-        "/É/🎉/SS/é"
-      ]
+      "input": ["/Ω/ß", "/a/🎉/Volumes/é/Users/ß", "/É/🎉/SS/é", "/Ω/ß/b/́", "/Ω/ß", "/Ω/ß/é"],
+      "output": ["/Ω/ß", "/a/🎉/Volumes/é/Users/ß", "/É/🎉/SS/é"]
     },
     {
       "name": "random 107",
@@ -1886,24 +596,9 @@
         "/ab/./SS/́/é",
         "/ab/./SS/Users/./A"
       ],
-      "output": [
-        "/ab/./SS/",
-        "/ab/./SS/́/é",
-        "/Ω",
-        "/ab/./SS/../Users/Ω",
-        "/ab/./SS/Users/b/Ω",
-        "/ab/./SS/Users/./A"
-      ]
+      "output": ["/ab/./SS/", "/ab/./SS/́/é", "/Ω", "/ab/./SS/../Users/Ω", "/ab/./SS/Users/b/Ω", "/ab/./SS/Users/./A"]
     },
-    {
-      "name": "random 108",
-      "input": [
-        "x y/Volumes"
-      ],
-      "output": [
-        "x y/Volumes"
-      ]
-    },
+    {"name": "random 108", "input": ["x y/Volumes"], "output": ["x y/Volumes"]},
     {
       "name": "random 109",
       "input": [
@@ -1915,11 +610,7 @@
         "/Volumes/ab/SS/ab",
         "/Users"
       ],
-      "output": [
-        "/Volumes/ab/SS/ab",
-        "/SS/É/ab",
-        "/Users"
-      ]
+      "output": ["/Volumes/ab/SS/ab", "/SS/É/ab", "/Users"]
     },
     {
       "name": "random 110",
@@ -1932,79 +623,24 @@
         "/ß",
         "/ß/x y/Volumes/Volumes"
       ],
-      "output": [
-        "/ß"
-      ]
+      "output": ["/ß"]
     },
     {
       "name": "random 111",
-      "input": [
-        "́",
-        "́",
-        "/Ω/ß/../é/a/Ω/É",
-        "/a/.Trash/É/",
-        "/Ω/ß/../é/x y",
-        "/é/x y",
-        "/Ω/ß/../é//É/é"
-      ],
-      "output": [
-        "́",
-        "/Ω/ß/../é/a/Ω/É",
-        "/a/.Trash/É/",
-        "/Ω/ß/../é/x y",
-        "/é/x y",
-        "/Ω/ß/../é//É/é"
-      ]
+      "input": ["́", "́", "/Ω/ß/../é/a/Ω/É", "/a/.Trash/É/", "/Ω/ß/../é/x y", "/é/x y", "/Ω/ß/../é//É/é"],
+      "output": ["́", "/Ω/ß/../é/a/Ω/É", "/a/.Trash/É/", "/Ω/ß/../é/x y", "/é/x y", "/Ω/ß/../é//É/é"]
     },
-    {
-      "name": "random 112",
-      "input": [
-        "/É/A/́",
-        "/Users/a/É/x y"
-      ],
-      "output": [
-        "/É/A/́",
-        "/Users/a/É/x y"
-      ]
-    },
-    {
-      "name": "random 113",
-      "input": [
-        "/Volumes/́/ß/🎉"
-      ],
-      "output": [
-        "/Volumes/́/ß/🎉"
-      ]
-    },
+    {"name": "random 112", "input": ["/É/A/́", "/Users/a/É/x y"], "output": ["/É/A/́", "/Users/a/É/x y"]},
+    {"name": "random 113", "input": ["/Volumes/́/ß/🎉"], "output": ["/Volumes/́/ß/🎉"]},
     {
       "name": "random 114",
-      "input": [
-        "/é/A/x y/🎉/🎉/x y/.Trash",
-        "/é/A/x y/🎉/🎉/x y/.Trash",
-        "/É",
-        "/é/A/x y/🎉/🎉/x y/.Trash",
-        "/é/Ω/Users"
-      ],
-      "output": [
-        "/é/A/x y/🎉/🎉/x y/.Trash",
-        "/É",
-        "/é/Ω/Users"
-      ]
+      "input": ["/é/A/x y/🎉/🎉/x y/.Trash", "/é/A/x y/🎉/🎉/x y/.Trash", "/É", "/é/A/x y/🎉/🎉/x y/.Trash", "/é/Ω/Users"],
+      "output": ["/é/A/x y/🎉/🎉/x y/.Trash", "/É", "/é/Ω/Users"]
     },
     {
       "name": "random 115",
-      "input": [
-        "/é/a/../🎉",
-        "/b/b/a/x y/.Trash/🎉",
-        "/Users/A/É/.",
-        "/é/a/../🎉",
-        "/Users/A/É"
-      ],
-      "output": [
-        "/é/a/../🎉",
-        "/b/b/a/x y/.Trash/🎉",
-        "/Users/A/É"
-      ]
+      "input": ["/é/a/../🎉", "/b/b/a/x y/.Trash/🎉", "/Users/A/É/.", "/é/a/../🎉", "/Users/A/É"],
+      "output": ["/é/a/../🎉", "/b/b/a/x y/.Trash/🎉", "/Users/A/É"]
     },
     {
       "name": "random 116",
@@ -2019,51 +655,18 @@
         "/..//Ω/SS",
         "/././x y"
       ],
-      "output": [
-        "/././x y",
-        "/..//Ω/SS",
-        "//🎉/Volumes/🎉/b"
-      ]
+      "output": ["/././x y", "/..//Ω/SS", "//🎉/Volumes/🎉/b"]
     },
     {
       "name": "random 117",
-      "input": [
-        "/́/a/./ab/Ω",
-        "/́/a/.",
-        "/ß/Ω/x y",
-        "/́/a/.",
-        "/́/a/.",
-        "/́/a/.",
-        "/́/a/./SS/Ω",
-        "/́/a/."
-      ],
-      "output": [
-        "/́/a/.",
-        "/ß/Ω/x y"
-      ]
+      "input": ["/́/a/./ab/Ω", "/́/a/.", "/ß/Ω/x y", "/́/a/.", "/́/a/.", "/́/a/.", "/́/a/./SS/Ω", "/́/a/."],
+      "output": ["/́/a/.", "/ß/Ω/x y"]
     },
-    {
-      "name": "random 118",
-      "input": [
-        "/Users/É/a/ab"
-      ],
-      "output": [
-        "/Users/É/a/ab"
-      ]
-    },
+    {"name": "random 118", "input": ["/Users/É/a/ab"], "output": ["/Users/É/a/ab"]},
     {
       "name": "random 119",
-      "input": [
-        "///é/🎉",
-        "///é/🎉/a",
-        "///é/🎉",
-        "/́/.",
-        "///é/🎉"
-      ],
-      "output": [
-        "///é/🎉",
-        "/́/."
-      ]
+      "input": ["///é/🎉", "///é/🎉/a", "///é/🎉", "/́/.", "///é/🎉"],
+      "output": ["///é/🎉", "/́/."]
     },
     {
       "name": "random 120",
@@ -2078,41 +681,13 @@
         "/ab/ab/b/ß",
         "/ab/ab/b/ß"
       ],
-      "output": [
-        "/ab/ab/b/ß",
-        "/./́/SS",
-        "/a/Ω/Users"
-      ]
+      "output": ["/ab/ab/b/ß", "/./́/SS", "/a/Ω/Users"]
     },
-    {
-      "name": "random 121",
-      "input": [
-        "/Volumes//ß"
-      ],
-      "output": [
-        "/Volumes//ß"
-      ]
-    },
+    {"name": "random 121", "input": ["/Volumes//ß"], "output": ["/Volumes//ß"]},
     {
       "name": "random 122",
-      "input": [
-        "/Volumes/SS",
-        "/b//́",
-        "/b/",
-        "/Volumes/SS",
-        "/É/SS",
-        "/b/../Ω",
-        "/Volumes",
-        "/b//́",
-        "/b/b/ab/SS"
-      ],
-      "output": [
-        "/b/",
-        "/É/SS",
-        "/b/../Ω",
-        "/Volumes",
-        "/b/b/ab/SS"
-      ]
+      "input": ["/Volumes/SS", "/b//́", "/b/", "/Volumes/SS", "/É/SS", "/b/../Ω", "/Volumes", "/b//́", "/b/b/ab/SS"],
+      "output": ["/b/", "/É/SS", "/b/../Ω", "/Volumes", "/b/b/ab/SS"]
     },
     {
       "name": "random 123",
@@ -2124,44 +699,17 @@
         "/.Trash/ab/Users",
         "x y/Users/Ω"
       ],
-      "output": [
-        "/a/x y/é/SS",
-        "/.Trash/ab",
-        "x y/Users/Ω"
-      ]
+      "output": ["/a/x y/é/SS", "/.Trash/ab", "x y/Users/Ω"]
     },
     {
       "name": "random 124",
-      "input": [
-        "/Users/SS/Volumes/.Trash/SS",
-        "/Ω/́/A/Ω",
-        "/Ω/́",
-        "/Ω/́/A/Ω",
-        "/Ω/́/ß/Ω/ab",
-        "/Ω/́",
-        "/Users/SS"
-      ],
-      "output": [
-        "/Ω/́",
-        "/Users/SS"
-      ]
+      "input": ["/Users/SS/Volumes/.Trash/SS", "/Ω/́/A/Ω", "/Ω/́", "/Ω/́/A/Ω", "/Ω/́/ß/Ω/ab", "/Ω/́", "/Users/SS"],
+      "output": ["/Ω/́", "/Users/SS"]
     },
     {
       "name": "random 125",
-      "input": [
-        "é/SS/🎉/ß",
-        "é/SS/ß/b/A",
-        "é/SS",
-        "é/SS",
-        "é/SS/b/é",
-        "é/SS/ß/b/A",
-        "é/SS/ß//é",
-        "é/SS",
-        "é/SS"
-      ],
-      "output": [
-        "é/SS"
-      ]
+      "input": ["é/SS/🎉/ß", "é/SS/ß/b/A", "é/SS", "é/SS", "é/SS/b/é", "é/SS/ß/b/A", "é/SS/ß//é", "é/SS", "é/SS"],
+      "output": ["é/SS"]
     },
     {
       "name": "random 126",
@@ -2175,83 +723,25 @@
         "/b/Ω/x y/.Trash/é/🎉/.Trash",
         "/."
       ],
-      "output": [
-        "/É/A",
-        "/b/Ω/x y/.Trash/é/🎉/.Trash",
-        "/b/Ω/x y/.Trash/a",
-        "/É/",
-        "/b/Ω/x y/.Trash/Volumes",
-        "/."
-      ]
+      "output": ["/É/A", "/b/Ω/x y/.Trash/é/🎉/.Trash", "/b/Ω/x y/.Trash/a", "/É/", "/b/Ω/x y/.Trash/Volumes", "/."]
     },
     {
       "name": "random 127",
-      "input": [
-        "/ab/SS/é/Users",
-        "/ab/SS/é/é/Volumes/a",
-        "/Ω",
-        "/ab/SS/é/é/🎉",
-        "/ab/SS/é",
-        "/ab/SS/é"
-      ],
-      "output": [
-        "/Ω",
-        "/ab/SS/é"
-      ]
+      "input": ["/ab/SS/é/Users", "/ab/SS/é/é/Volumes/a", "/Ω", "/ab/SS/é/é/🎉", "/ab/SS/é", "/ab/SS/é"],
+      "output": ["/Ω", "/ab/SS/é"]
     },
-    {
-      "name": "random 128",
-      "input": [
-        "🎉/A/Ω",
-        "/Ω//b"
-      ],
-      "output": [
-        "🎉/A/Ω",
-        "/Ω//b"
-      ]
-    },
+    {"name": "random 128", "input": ["🎉/A/Ω", "/Ω//b"], "output": ["🎉/A/Ω", "/Ω//b"]},
     {
       "name": "random 129",
-      "input": [
-        "/",
-        "/é//../Ω/./a",
-        "/ß/Ω/Volumes/Users/SS/ß",
-        "/é//../Ω/",
-        "/é//../Ω/é",
-        "/ß/Ω/Volumes",
-        "/é/Ω/́"
-      ],
-      "output": [
-        "/"
-      ]
+      "input": ["/", "/é//../Ω/./a", "/ß/Ω/Volumes/Users/SS/ß", "/é//../Ω/", "/é//../Ω/é", "/ß/Ω/Volumes", "/é/Ω/́"],
+      "output": ["/"]
     },
     {
       "name": "random 130",
-      "input": [
-        "/A",
-        "/ab/./x y",
-        "/A",
-        "/A/a/",
-        "/A/a",
-        "/é/Ω/É/Volumes/./.."
-      ],
-      "output": [
-        "/A",
-        "/ab/./x y",
-        "/é/Ω/É/Volumes/./.."
-      ]
+      "input": ["/A", "/ab/./x y", "/A", "/A/a/", "/A/a", "/é/Ω/É/Volumes/./.."],
+      "output": ["/A", "/ab/./x y", "/é/Ω/É/Volumes/./.."]
     },
-    {
-      "name": "random 131",
-      "input": [
-        "/Volumes/x y",
-        "/A/É/A/É"
-      ],
-      "output": [
-        "/Volumes/x y",
-        "/A/É/A/É"
-      ]
-    },
+    {"name": "random 131", "input": ["/Volumes/x y", "/A/É/A/É"], "output": ["/Volumes/x y", "/A/É/A/É"]},
     {
       "name": "random 132",
       "input": [
@@ -2263,52 +753,18 @@
         "/",
         "/Users/SS/É/É"
       ],
-      "output": [
-        "/"
-      ]
+      "output": ["/"]
     },
     {
       "name": "random 133",
-      "input": [
-        "/../b/.Trash/́/SS",
-        "/../b/.Trash/A",
-        "/../b/.Trash/Ω/Volumes/ab",
-        "/../b/.Trash/A"
-      ],
-      "output": [
-        "/../b/.Trash/́/SS",
-        "/../b/.Trash/A",
-        "/../b/.Trash/Ω/Volumes/ab"
-      ]
+      "input": ["/../b/.Trash/́/SS", "/../b/.Trash/A", "/../b/.Trash/Ω/Volumes/ab", "/../b/.Trash/A"],
+      "output": ["/../b/.Trash/́/SS", "/../b/.Trash/A", "/../b/.Trash/Ω/Volumes/ab"]
     },
-    {
-      "name": "random 134",
-      "input": [
-        "/",
-        "/ab",
-        "/ab",
-        "/Volumes/Ω"
-      ],
-      "output": [
-        "/"
-      ]
-    },
+    {"name": "random 134", "input": ["/", "/ab", "/ab", "/Volumes/Ω"], "output": ["/"]},
     {
       "name": "random 135",
-      "input": [
-        "/x y/́/A/Users",
-        "É",
-        "/x y/́/A/Users",
-        "É",
-        "/é/a/",
-        "/x y/́/A/Users/Volumes/é",
-        "É"
-      ],
-      "output": [
-        "/x y/́/A/Users",
-        "É",
-        "/é/a/"
-      ]
+      "input": ["/x y/́/A/Users", "É", "/x y/́/A/Users", "É", "/é/a/", "/x y/́/A/Users/Volumes/é", "É"],
+      "output": ["/x y/́/A/Users", "É", "/é/a/"]
     },
     {
       "name": "random 136",
@@ -2319,51 +775,22 @@
         "/.Trash/Users/É",
         "/.Trash/Users/É/é/A/a"
       ],
-      "output": [
-        "/.Trash/Users/É"
-      ]
+      "output": ["/.Trash/Users/É"]
     },
     {
       "name": "random 137",
-      "input": [
-        "/x y/",
-        "/x y/é/🎉",
-        "/x y/",
-        "/x y/",
-        "/x y/",
-        "/x y/x y/Ω"
-      ],
-      "output": [
-        "/x y/",
-        "/x y/é/🎉",
-        "/x y/x y/Ω"
-      ]
+      "input": ["/x y/", "/x y/é/🎉", "/x y/", "/x y/", "/x y/", "/x y/x y/Ω"],
+      "output": ["/x y/", "/x y/é/🎉", "/x y/x y/Ω"]
     },
     {
       "name": "random 138",
-      "input": [
-        ".Trash/́/..",
-        "//Volumes/ß/É/é/É",
-        "//Volumes/ß/É/Volumes/🎉/.",
-        "//Volumes/ß/É"
-      ],
-      "output": [
-        ".Trash/́/..",
-        "//Volumes/ß/É"
-      ]
+      "input": [".Trash/́/..", "//Volumes/ß/É/é/É", "//Volumes/ß/É/Volumes/🎉/.", "//Volumes/ß/É"],
+      "output": [".Trash/́/..", "//Volumes/ß/É"]
     },
     {
       "name": "random 139",
-      "input": [
-        "é/ß/./́/Ω/a",
-        "é/ß/./́/Ω/a",
-        "/..",
-        "/../ab/a"
-      ],
-      "output": [
-        "é/ß/./́/Ω/a",
-        "/.."
-      ]
+      "input": ["é/ß/./́/Ω/a", "é/ß/./́/Ω/a", "/..", "/../ab/a"],
+      "output": ["é/ß/./́/Ω/a", "/.."]
     },
     {
       "name": "random 140",
@@ -2378,41 +805,15 @@
         "A/Ω/b/a/.Trash",
         "A/Ω/b/a"
       ],
-      "output": [
-        "A/Ω/b/a",
-        "/"
-      ]
+      "output": ["A/Ω/b/a", "/"]
     },
     {
       "name": "random 141",
-      "input": [
-        "Volumes/́/Volumes/🎉/Users/x y",
-        "Volumes/́/Volumes/é/Users"
-      ],
-      "output": [
-        "Volumes/́/Volumes/🎉/Users/x y",
-        "Volumes/́/Volumes/é/Users"
-      ]
+      "input": ["Volumes/́/Volumes/🎉/Users/x y", "Volumes/́/Volumes/é/Users"],
+      "output": ["Volumes/́/Volumes/🎉/Users/x y", "Volumes/́/Volumes/é/Users"]
     },
-    {
-      "name": "random 142",
-      "input": [
-        "/a/SS/x y/é/"
-      ],
-      "output": [
-        "/a/SS/x y/é/"
-      ]
-    },
-    {
-      "name": "random 143",
-      "input": [
-        "é/é/Ω",
-        "é/é/Ω"
-      ],
-      "output": [
-        "é/é/Ω"
-      ]
-    },
+    {"name": "random 142", "input": ["/a/SS/x y/é/"], "output": ["/a/SS/x y/é/"]},
+    {"name": "random 143", "input": ["é/é/Ω", "é/é/Ω"], "output": ["é/é/Ω"]},
     {
       "name": "random 144",
       "input": [
@@ -2426,19 +827,9 @@
         "/ab/.Trash/Ω",
         "/ab/.Trash/Ω/a/Ω"
       ],
-      "output": [
-        "/ab/.Trash/Ω"
-      ]
+      "output": ["/ab/.Trash/Ω"]
     },
-    {
-      "name": "random 145",
-      "input": [
-        "/Ω/́/b/É/.Trash/🎉"
-      ],
-      "output": [
-        "/Ω/́/b/É/.Trash/🎉"
-      ]
-    },
+    {"name": "random 145", "input": ["/Ω/́/b/É/.Trash/🎉"], "output": ["/Ω/́/b/É/.Trash/🎉"]},
     {
       "name": "random 146",
       "input": [
@@ -2451,11 +842,7 @@
         "SS/x y/É/ab/́/́",
         "/b/.."
       ],
-      "output": [
-        "/./.Trash/ab/🎉",
-        "SS/x y/É",
-        "/b/.."
-      ]
+      "output": ["/./.Trash/ab/🎉", "SS/x y/É", "/b/.."]
     },
     {
       "name": "random 147",
@@ -2469,29 +856,12 @@
         "/b/ß/a",
         "/b/ß/a"
       ],
-      "output": [
-        "/Volumes/́/a/",
-        "/b/ß/a",
-        "/ß"
-      ]
+      "output": ["/Volumes/́/a/", "/b/ß/a", "/ß"]
     },
     {
       "name": "random 148",
-      "input": [
-        "/b/.Trash/é/",
-        "/SS",
-        "/SS",
-        "/SS",
-        "/b/.Trash/a",
-        "/Ω/./ß",
-        "/b/.Trash/a",
-        "/b/.Trash"
-      ],
-      "output": [
-        "/SS",
-        "/Ω/./ß",
-        "/b/.Trash"
-      ]
+      "input": ["/b/.Trash/é/", "/SS", "/SS", "/SS", "/b/.Trash/a", "/Ω/./ß", "/b/.Trash/a", "/b/.Trash"],
+      "output": ["/SS", "/Ω/./ß", "/b/.Trash"]
     },
     {
       "name": "random 149",
@@ -2536,39 +906,13 @@
         "/́/x y/Ω/é/ab"
       ]
     },
-    {
-      "name": "random 151",
-      "input": [
-        "/x y"
-      ],
-      "output": [
-        "/x y"
-      ]
-    },
+    {"name": "random 151", "input": ["/x y"], "output": ["/x y"]},
     {
       "name": "random 152",
-      "input": [
-        "/Users/x y/Ω/🎉/ß",
-        "/é/..",
-        "/Users/x y/Ω/🎉/ß",
-        "/.Trash",
-        "/Users/x y/Ω"
-      ],
-      "output": [
-        "/é/..",
-        "/.Trash",
-        "/Users/x y/Ω"
-      ]
+      "input": ["/Users/x y/Ω/🎉/ß", "/é/..", "/Users/x y/Ω/🎉/ß", "/.Trash", "/Users/x y/Ω"],
+      "output": ["/é/..", "/.Trash", "/Users/x y/Ω"]
     },
-    {
-      "name": "random 153",
-      "input": [
-        "/SS/́/../Users"
-      ],
-      "output": [
-        "/SS/́/../Users"
-      ]
-    },
+    {"name": "random 153", "input": ["/SS/́/../Users"], "output": ["/SS/́/../Users"]},
     {
       "name": "random 154",
       "input": [
@@ -2581,12 +925,7 @@
         "/é/.Trash/b/",
         "/é/.Trash/b/"
       ],
-      "output": [
-        "/é/.Trash/b/🎉",
-        "/é/.Trash/b/",
-        "/é/.Trash/b/É",
-        "/é/.Trash/b/ß/b"
-      ]
+      "output": ["/é/.Trash/b/🎉", "/é/.Trash/b/", "/é/.Trash/b/É", "/é/.Trash/b/ß/b"]
     },
     {
       "name": "random 155",
@@ -2600,15 +939,7 @@
         "/x y/Ω/Volumes/ab",
         "/../x y"
       ],
-      "output": [
-        "/A/ab/SS",
-        "/Volumes/é",
-        "/b/Ω/../é/ab",
-        "/x y/.",
-        "/ab/.Trash/a",
-        "/x y/Ω/Volumes/ab",
-        "/../x y"
-      ]
+      "output": ["/A/ab/SS", "/Volumes/é", "/b/Ω/../é/ab", "/x y/.", "/ab/.Trash/a", "/x y/Ω/Volumes/ab", "/../x y"]
     },
     {
       "name": "random 156",
@@ -2622,155 +953,46 @@
         ".././ab/",
         "ß/🎉/Ω/SS/"
       ],
-      "output": [
-        ".././Volumes",
-        ".././..",
-        "ß/🎉",
-        "/Users/🎉/../Users/A",
-        ".././ab/"
-      ]
+      "output": [".././Volumes", ".././..", "ß/🎉", "/Users/🎉/../Users/A", ".././ab/"]
     },
     {
       "name": "random 157",
-      "input": [
-        "/b/SS/ab/́",
-        "/b/SS/ab/́/Users/é",
-        "/b/SS/ab/́/́",
-        "/b/SS/ab/́"
-      ],
-      "output": [
-        "/b/SS/ab/́"
-      ]
+      "input": ["/b/SS/ab/́", "/b/SS/ab/́/Users/é", "/b/SS/ab/́/́", "/b/SS/ab/́"],
+      "output": ["/b/SS/ab/́"]
     },
     {
       "name": "random 158",
-      "input": [
-        "/ab",
-        "/A",
-        "/A",
-        "/ab",
-        "/ab",
-        "/ab",
-        "/A",
-        "/ab/b/x y/́"
-      ],
-      "output": [
-        "/ab",
-        "/A"
-      ]
+      "input": ["/ab", "/A", "/A", "/ab", "/ab", "/ab", "/A", "/ab/b/x y/́"],
+      "output": ["/ab", "/A"]
     },
     {
       "name": "random 159",
-      "input": [
-        "/́",
-        "/Volumes/..",
-        "/́",
-        "/ß/Ω/..",
-        "é/Ω/Volumes/é",
-        "/A/SS/a",
-        "/́",
-        "é"
-      ],
-      "output": [
-        "/́",
-        "/Volumes/..",
-        "/ß/Ω/..",
-        "/A/SS/a",
-        "é"
-      ]
+      "input": ["/́", "/Volumes/..", "/́", "/ß/Ω/..", "é/Ω/Volumes/é", "/A/SS/a", "/́", "é"],
+      "output": ["/́", "/Volumes/..", "/ß/Ω/..", "/A/SS/a", "é"]
     },
     {
       "name": "random 160",
-      "input": [
-        "/Ω/a/x y/Users/",
-        "x y/Ω/é/a",
-        "x y",
-        "x y/ß"
-      ],
-      "output": [
-        "/Ω/a/x y/Users/",
-        "x y"
-      ]
+      "input": ["/Ω/a/x y/Users/", "x y/Ω/é/a", "x y", "x y/ß"],
+      "output": ["/Ω/a/x y/Users/", "x y"]
     },
     {
       "name": "random 161",
-      "input": [
-        "/🎉",
-        "/Ω/Volumes",
-        "/🎉//Volumes/ß",
-        "/Ω/Volumes",
-        "/🎉/é/"
-      ],
-      "output": [
-        "/🎉",
-        "/Ω/Volumes"
-      ]
+      "input": ["/🎉", "/Ω/Volumes", "/🎉//Volumes/ß", "/Ω/Volumes", "/🎉/é/"],
+      "output": ["/🎉", "/Ω/Volumes"]
     },
-    {
-      "name": "random 162",
-      "input": [
-        "/ß/Ω/./",
-        "/.Trash",
-        "/ß/Ω/./"
-      ],
-      "output": [
-        "/ß/Ω/./",
-        "/.Trash"
-      ]
-    },
-    {
-      "name": "random 163",
-      "input": [
-        "/Ω/Volumes",
-        "/a/é/A",
-        "/a/é/A/x y"
-      ],
-      "output": [
-        "/Ω/Volumes",
-        "/a/é/A"
-      ]
-    },
+    {"name": "random 162", "input": ["/ß/Ω/./", "/.Trash", "/ß/Ω/./"], "output": ["/ß/Ω/./", "/.Trash"]},
+    {"name": "random 163", "input": ["/Ω/Volumes", "/a/é/A", "/a/é/A/x y"], "output": ["/Ω/Volumes", "/a/é/A"]},
     {
       "name": "random 164",
-      "input": [
-        "/Ω/",
-        "/../́/x y",
-        "/Users/Ω/🎉",
-        "/Users/Ω/🎉",
-        "/.."
-      ],
-      "output": [
-        "/Ω/",
-        "/Users/Ω/🎉",
-        "/.."
-      ]
+      "input": ["/Ω/", "/../́/x y", "/Users/Ω/🎉", "/Users/Ω/🎉", "/.."],
+      "output": ["/Ω/", "/Users/Ω/🎉", "/.."]
     },
     {
       "name": "random 165",
-      "input": [
-        "/Users",
-        "/x y/Users/🎉/SS/́",
-        "/x y/Users/🎉/SS/́",
-        "/x y/Users/🎉/SS",
-        "/Users/a/A/x y",
-        "/Volumes/Ω"
-      ],
-      "output": [
-        "/Users",
-        "/x y/Users/🎉/SS",
-        "/Volumes/Ω"
-      ]
+      "input": ["/Users", "/x y/Users/🎉/SS/́", "/x y/Users/🎉/SS/́", "/x y/Users/🎉/SS", "/Users/a/A/x y", "/Volumes/Ω"],
+      "output": ["/Users", "/x y/Users/🎉/SS", "/Volumes/Ω"]
     },
-    {
-      "name": "random 166",
-      "input": [
-        "/É/../x y/Users",
-        "/É/../x y/Users/SS/́/🎉"
-      ],
-      "output": [
-        "/É/../x y/Users"
-      ]
-    },
+    {"name": "random 166", "input": ["/É/../x y/Users", "/É/../x y/Users/SS/́/🎉"], "output": ["/É/../x y/Users"]},
     {
       "name": "random 167",
       "input": [
@@ -2782,13 +1004,7 @@
         "/.Trash/././é/SS/🎉",
         "/.Trash/././Ω/🎉/é"
       ],
-      "output": [
-        "É/Volumes",
-        "/Ω/́/́/🎉",
-        "/.Trash/././ab",
-        "/.Trash/././é/SS/🎉",
-        "/.Trash/././Ω/🎉/é"
-      ]
+      "output": ["É/Volumes", "/Ω/́/́/🎉", "/.Trash/././ab", "/.Trash/././é/SS/🎉", "/.Trash/././Ω/🎉/é"]
     },
     {
       "name": "random 168",
@@ -2800,117 +1016,38 @@
         "/Ω///.Trash/ab/🎉/SS",
         "/Ω///.Trash"
       ],
-      "output": [
-        "/Ω///.Trash"
-      ]
+      "output": ["/Ω///.Trash"]
     },
     {
       "name": "random 169",
-      "input": [
-        "/a/x y/",
-        "/a/x y/",
-        "/../",
-        "/é/ab/A/",
-        "/é/ab/A/",
-        "/../",
-        "/SS",
-        "/é/ab/A/é"
-      ],
-      "output": [
-        "/a/x y/",
-        "/../",
-        "/é/ab/A/",
-        "/SS",
-        "/é/ab/A/é"
-      ]
+      "input": ["/a/x y/", "/a/x y/", "/../", "/é/ab/A/", "/é/ab/A/", "/../", "/SS", "/é/ab/A/é"],
+      "output": ["/a/x y/", "/../", "/é/ab/A/", "/SS", "/é/ab/A/é"]
     },
     {
       "name": "random 170",
-      "input": [
-        "/.Trash/Ω/É/b/",
-        "/🎉/ß/É/Users",
-        "/🎉/́/É"
-      ],
-      "output": [
-        "/.Trash/Ω/É/b/",
-        "/🎉/ß/É/Users",
-        "/🎉/́/É"
-      ]
+      "input": ["/.Trash/Ω/É/b/", "/🎉/ß/É/Users", "/🎉/́/É"],
+      "output": ["/.Trash/Ω/É/b/", "/🎉/ß/É/Users", "/🎉/́/É"]
     },
     {
       "name": "random 171",
-      "input": [
-        "a/Ω/Ω/",
-        "a/Ω/Ω/",
-        "a/Ω/Ω/",
-        "a/Ω/Ω/",
-        "/Ω",
-        "a/Ω/Ω/ab/x y/.Trash",
-        "a/Ω/Ω/Ω"
-      ],
-      "output": [
-        "a/Ω/Ω/",
-        "/Ω",
-        "a/Ω/Ω/ab/x y/.Trash",
-        "a/Ω/Ω/Ω"
-      ]
+      "input": ["a/Ω/Ω/", "a/Ω/Ω/", "a/Ω/Ω/", "a/Ω/Ω/", "/Ω", "a/Ω/Ω/ab/x y/.Trash", "a/Ω/Ω/Ω"],
+      "output": ["a/Ω/Ω/", "/Ω", "a/Ω/Ω/ab/x y/.Trash", "a/Ω/Ω/Ω"]
     },
-    {
-      "name": "random 172",
-      "input": [
-        "//.Trash",
-        "//.Trash/Volumes/é"
-      ],
-      "output": [
-        "//.Trash"
-      ]
-    },
+    {"name": "random 172", "input": ["//.Trash", "//.Trash/Volumes/é"], "output": ["//.Trash"]},
     {
       "name": "random 173",
-      "input": [
-        "/b/é/é/É",
-        "/b/é/é/SS",
-        "/́/🎉/",
-        "/b/é/é/.Trash/é",
-        "/b/é/é",
-        "/b/é/é/́/SS/A"
-      ],
-      "output": [
-        "/́/🎉/",
-        "/b/é/é"
-      ]
+      "input": ["/b/é/é/É", "/b/é/é/SS", "/́/🎉/", "/b/é/é/.Trash/é", "/b/é/é", "/b/é/é/́/SS/A"],
+      "output": ["/́/🎉/", "/b/é/é"]
     },
     {
       "name": "random 174",
-      "input": [
-        "/́/ß",
-        "/́/ß/É/Ω/é",
-        "/́/ß",
-        "//́/Users/Ω",
-        "//́",
-        "/́/ß"
-      ],
-      "output": [
-        "/́/ß",
-        "//́"
-      ]
+      "input": ["/́/ß", "/́/ß/É/Ω/é", "/́/ß", "//́/Users/Ω", "//́", "/́/ß"],
+      "output": ["/́/ß", "//́"]
     },
     {
       "name": "random 175",
-      "input": [
-        "/..",
-        "/ab/A/./SS",
-        "/ab/A/.",
-        "/ab/A/./Ω/.Trash/é",
-        "/..",
-        "/..",
-        "/Volumes/é/b/SS"
-      ],
-      "output": [
-        "/..",
-        "/ab/A/.",
-        "/Volumes/é/b/SS"
-      ]
+      "input": ["/..", "/ab/A/./SS", "/ab/A/.", "/ab/A/./Ω/.Trash/é", "/..", "/..", "/Volumes/é/b/SS"],
+      "output": ["/..", "/ab/A/.", "/Volumes/é/b/SS"]
     },
     {
       "name": "random 176",
@@ -2923,116 +1060,34 @@
         "/Ω/Volumes/Users//.Trash",
         "/Ω/Volumes"
       ],
-      "output": [
-        "é/.Trash/",
-        "/Ω/Volumes"
-      ]
+      "output": ["é/.Trash/", "/Ω/Volumes"]
     },
-    {
-      "name": "random 177",
-      "input": [
-        "/",
-        "/SS/.Trash/́",
-        "//Ω/É"
-      ],
-      "output": [
-        "/"
-      ]
-    },
+    {"name": "random 177", "input": ["/", "/SS/.Trash/́", "//Ω/É"], "output": ["/"]},
     {
       "name": "random 178",
-      "input": [
-        "/A/Ω/Ω",
-        "/́",
-        "/A/Ω",
-        "/A/Ω/a/..",
-        "/A/Ω",
-        "/..",
-        "/A/Ω",
-        "/A/Ω/ab/Ω/🎉",
-        "/A/Ω"
-      ],
-      "output": [
-        "/́",
-        "/A/Ω",
-        "/.."
-      ]
+      "input": ["/A/Ω/Ω", "/́", "/A/Ω", "/A/Ω/a/..", "/A/Ω", "/..", "/A/Ω", "/A/Ω/ab/Ω/🎉", "/A/Ω"],
+      "output": ["/́", "/A/Ω", "/.."]
     },
     {
       "name": "random 179",
-      "input": [
-        "́/é/ab/./ß/É",
-        "́/é/ab/./SS",
-        "/A/é/é",
-        "́/é/ab/.",
-        "/x y/b",
-        "/Users/SS/.",
-        "́/é/ab/./é/A"
-      ],
-      "output": [
-        "/A/é/é",
-        "́/é/ab/.",
-        "/x y/b",
-        "/Users/SS/."
-      ]
+      "input": ["́/é/ab/./ß/É", "́/é/ab/./SS", "/A/é/é", "́/é/ab/.", "/x y/b", "/Users/SS/.", "́/é/ab/./é/A"],
+      "output": ["/A/é/é", "́/é/ab/.", "/x y/b", "/Users/SS/."]
     },
     {
       "name": "random 180",
-      "input": [
-        "/.Trash/🎉/.Trash",
-        "/.Trash/Ω",
-        "/.Trash/ab"
-      ],
-      "output": [
-        "/.Trash/🎉/.Trash",
-        "/.Trash/Ω",
-        "/.Trash/ab"
-      ]
+      "input": ["/.Trash/🎉/.Trash", "/.Trash/Ω", "/.Trash/ab"],
+      "output": ["/.Trash/🎉/.Trash", "/.Trash/Ω", "/.Trash/ab"]
     },
-    {
-      "name": "random 181",
-      "input": [
-        "/é/Ω",
-        "/é/."
-      ],
-      "output": [
-        "/é/Ω",
-        "/é/."
-      ]
-    },
+    {"name": "random 181", "input": ["/é/Ω", "/é/."], "output": ["/é/Ω", "/é/."]},
     {
       "name": "random 182",
-      "input": [
-        "..",
-        "..",
-        "../Ω/b",
-        "../A/b",
-        "..",
-        "/é/Users/",
-        "../Ω"
-      ],
-      "output": [
-        "..",
-        "/é/Users/"
-      ]
+      "input": ["..", "..", "../Ω/b", "../A/b", "..", "/é/Users/", "../Ω"],
+      "output": ["..", "/é/Users/"]
     },
     {
       "name": "random 183",
-      "input": [
-        "/🎉/ß/É/É",
-        "/🎉/ß/É/É",
-        "/Ω",
-        "/Ω/Ω/ab/ß",
-        "x y/x y/..",
-        "/Ω",
-        "/Ω/Ω/ab/ß",
-        "/🎉/ß/É/É"
-      ],
-      "output": [
-        "/🎉/ß/É/É",
-        "/Ω",
-        "x y/x y/.."
-      ]
+      "input": ["/🎉/ß/É/É", "/🎉/ß/É/É", "/Ω", "/Ω/Ω/ab/ß", "x y/x y/..", "/Ω", "/Ω/Ω/ab/ß", "/🎉/ß/É/É"],
+      "output": ["/🎉/ß/É/É", "/Ω", "x y/x y/.."]
     },
     {
       "name": "random 184",
@@ -3047,118 +1102,36 @@
         "/Volumes/Ω",
         "/Volumes/Ω"
       ],
-      "output": [
-        "/a/a/..",
-        "/Volumes/Ω"
-      ]
+      "output": ["/a/a/..", "/Volumes/Ω"]
     },
-    {
-      "name": "random 185",
-      "input": [
-        "/a"
-      ],
-      "output": [
-        "/a"
-      ]
-    },
-    {
-      "name": "random 186",
-      "input": [
-        "/Volumes/ß/Users/Volumes"
-      ],
-      "output": [
-        "/Volumes/ß/Users/Volumes"
-      ]
-    },
+    {"name": "random 185", "input": ["/a"], "output": ["/a"]},
+    {"name": "random 186", "input": ["/Volumes/ß/Users/Volumes"], "output": ["/Volumes/ß/Users/Volumes"]},
     {
       "name": "random 187",
-      "input": [
-        "/b/A",
-        "/ß/🎉/é/Volumes",
-        "/ß/🎉/é/Volumes",
-        "/ß/🎉/./ab/SS"
-      ],
-      "output": [
-        "/b/A",
-        "/ß/🎉/é/Volumes",
-        "/ß/🎉/./ab/SS"
-      ]
+      "input": ["/b/A", "/ß/🎉/é/Volumes", "/ß/🎉/é/Volumes", "/ß/🎉/./ab/SS"],
+      "output": ["/b/A", "/ß/🎉/é/Volumes", "/ß/🎉/./ab/SS"]
     },
     {
       "name": "random 188",
-      "input": [
-        "/b",
-        "/./🎉/../x y",
-        "/./a/.Trash/Ω",
-        "/.",
-        "/./🎉/../x y",
-        "/.",
-        "/./b/b/Volumes"
-      ],
-      "output": [
-        "/b",
-        "/."
-      ]
+      "input": ["/b", "/./🎉/../x y", "/./a/.Trash/Ω", "/.", "/./🎉/../x y", "/.", "/./b/b/Volumes"],
+      "output": ["/b", "/."]
     },
     {
       "name": "random 189",
-      "input": [
-        "/A/É/🎉/́",
-        "/A/ß",
-        "/A/É/",
-        "/é/./b",
-        "/Users",
-        "/SS/é/"
-      ],
-      "output": [
-        "/A/É/🎉/́",
-        "/A/ß",
-        "/A/É/",
-        "/é/./b",
-        "/Users",
-        "/SS/é/"
-      ]
+      "input": ["/A/É/🎉/́", "/A/ß", "/A/É/", "/é/./b", "/Users", "/SS/é/"],
+      "output": ["/A/É/🎉/́", "/A/ß", "/A/É/", "/é/./b", "/Users", "/SS/é/"]
     },
     {
       "name": "random 190",
-      "input": [
-        "/Users",
-        "/Users",
-        "/Users/a",
-        "/ß/é/b/..",
-        "/é/ab",
-        "/Users"
-      ],
-      "output": [
-        "/Users",
-        "/ß/é/b/..",
-        "/é/ab"
-      ]
+      "input": ["/Users", "/Users", "/Users/a", "/ß/é/b/..", "/é/ab", "/Users"],
+      "output": ["/Users", "/ß/é/b/..", "/é/ab"]
     },
     {
       "name": "random 191",
-      "input": [
-        "/../..",
-        "Users//",
-        "Users/é/.",
-        "Users/é/.",
-        "/../.."
-      ],
-      "output": [
-        "/../..",
-        "Users//",
-        "Users/é/."
-      ]
+      "input": ["/../..", "Users//", "Users/é/.", "Users/é/.", "/../.."],
+      "output": ["/../..", "Users//", "Users/é/."]
     },
-    {
-      "name": "random 192",
-      "input": [
-        "/Users"
-      ],
-      "output": [
-        "/Users"
-      ]
-    },
+    {"name": "random 192", "input": ["/Users"], "output": ["/Users"]},
     {
       "name": "random 193",
       "input": [
@@ -3184,22 +1157,8 @@
     },
     {
       "name": "random 194",
-      "input": [
-        "/Volumes/a/..",
-        "/Ω/A/Ω/Ω/A",
-        "/Ω/A/",
-        "/Ω/A/",
-        "/Ω/A/",
-        "/Ω/A/",
-        "/.Trash/́/Ω",
-        "/Ω/A/"
-      ],
-      "output": [
-        "/Volumes/a/..",
-        "/Ω/A/Ω/Ω/A",
-        "/Ω/A/",
-        "/.Trash/́/Ω"
-      ]
+      "input": ["/Volumes/a/..", "/Ω/A/Ω/Ω/A", "/Ω/A/", "/Ω/A/", "/Ω/A/", "/Ω/A/", "/.Trash/́/Ω", "/Ω/A/"],
+      "output": ["/Volumes/a/..", "/Ω/A/Ω/Ω/A", "/Ω/A/", "/.Trash/́/Ω"]
     },
     {
       "name": "random 195",
@@ -3213,119 +1172,35 @@
         "//Ω/ab/é/x y",
         "//Ω/ab/é/x y"
       ],
-      "output": [
-        "/́/é/Users/b",
-        "//Ω/ab",
-        "/A/Ω/"
-      ]
+      "output": ["/́/é/Users/b", "//Ω/ab", "/A/Ω/"]
     },
     {
       "name": "random 196",
-      "input": [
-        "/x y/Ω/A/.Trash",
-        ".Trash/./́/Users",
-        ".Trash/./́/Users"
-      ],
-      "output": [
-        "/x y/Ω/A/.Trash",
-        ".Trash/./́/Users"
-      ]
+      "input": ["/x y/Ω/A/.Trash", ".Trash/./́/Users", ".Trash/./́/Users"],
+      "output": ["/x y/Ω/A/.Trash", ".Trash/./́/Users"]
     },
     {
       "name": "random 197",
-      "input": [
-        "/ab/🎉/Users/É/Users",
-        "/ab/🎉/Users/É/Users",
-        "/../b/..",
-        "/Ω/ß/A/Ω",
-        "/../Ω/x y/b"
-      ],
-      "output": [
-        "/ab/🎉/Users/É/Users",
-        "/../b/..",
-        "/Ω/ß/A/Ω",
-        "/../Ω/x y/b"
-      ]
+      "input": ["/ab/🎉/Users/É/Users", "/ab/🎉/Users/É/Users", "/../b/..", "/Ω/ß/A/Ω", "/../Ω/x y/b"],
+      "output": ["/ab/🎉/Users/É/Users", "/../b/..", "/Ω/ß/A/Ω", "/../Ω/x y/b"]
     },
     {
       "name": "random 198",
-      "input": [
-        "/.",
-        "/́/É/b/ab",
-        "/Ω/é//É",
-        "/../Ω/a",
-        "/Ω/é//É",
-        "/Users/ß/a",
-        "/../..",
-        "/../../Volumes"
-      ],
-      "output": [
-        "/.",
-        "/́/É/b/ab",
-        "/Ω/é//É",
-        "/../Ω/a",
-        "/Users/ß/a",
-        "/../.."
-      ]
+      "input": ["/.", "/́/É/b/ab", "/Ω/é//É", "/../Ω/a", "/Ω/é//É", "/Users/ß/a", "/../..", "/../../Volumes"],
+      "output": ["/.", "/́/É/b/ab", "/Ω/é//É", "/../Ω/a", "/Users/ß/a", "/../.."]
     },
-    {
-      "name": "random 199",
-      "input": [
-        "/A/é/x y",
-        "/A/",
-        "/A/é/x y/SS",
-        "/A/é/x y/SS"
-      ],
-      "output": [
-        "/A/é/x y",
-        "/A/"
-      ]
-    },
+    {"name": "random 199", "input": ["/A/é/x y", "/A/", "/A/é/x y/SS", "/A/é/x y/SS"], "output": ["/A/é/x y", "/A/"]},
     {
       "name": "random 200",
-      "input": [
-        "/SS/🎉",
-        "/",
-        "/é/.Trash",
-        "/",
-        "/SS/🎉",
-        "/",
-        "/́/a",
-        "/SS/🎉/Users/",
-        "/SS/🎉/é/.Trash/"
-      ],
-      "output": [
-        "/"
-      ]
+      "input": ["/SS/🎉", "/", "/é/.Trash", "/", "/SS/🎉", "/", "/́/a", "/SS/🎉/Users/", "/SS/🎉/é/.Trash/"],
+      "output": ["/"]
     },
     {
       "name": "random 201",
-      "input": [
-        "/🎉/b/",
-        "/🎉/b/",
-        "/ß/x y/ß/.Trash/Ω",
-        "/Users/.Trash/É",
-        "/Users/.Trash/É",
-        "/A//É/é"
-      ],
-      "output": [
-        "/🎉/b/",
-        "/ß/x y/ß/.Trash/Ω",
-        "/Users/.Trash/É",
-        "/A//É/é"
-      ]
+      "input": ["/🎉/b/", "/🎉/b/", "/ß/x y/ß/.Trash/Ω", "/Users/.Trash/É", "/Users/.Trash/É", "/A//É/é"],
+      "output": ["/🎉/b/", "/ß/x y/ß/.Trash/Ω", "/Users/.Trash/É", "/A//É/é"]
     },
-    {
-      "name": "random 202",
-      "input": [
-        "/A/./SS",
-        "/A/./SS",
-        "/A/./SS/🎉/ab/."
-      ],
-      "output": [
-        "/A/./SS"
-      ]
-    },
+    {"name": "random 202", "input": ["/A/./SS", "/A/./SS", "/A/./SS/🎉/ab/."], "output": ["/A/./SS"]},
     {
       "name": "random 203",
       "input": [
@@ -3338,31 +1213,10 @@
         "/.Trash/../SS/Ω",
         "/SS"
       ],
-      "output": [
-        "/"
-      ]
+      "output": ["/"]
     },
-    {
-      "name": "random 204",
-      "input": [
-        "SS/É/SS/🎉",
-        "SS/É/SS/🎉"
-      ],
-      "output": [
-        "SS/É/SS/🎉"
-      ]
-    },
-    {
-      "name": "random 205",
-      "input": [
-        "/a/ß/Ω/é",
-        "/a/ß/../../Volumes"
-      ],
-      "output": [
-        "/a/ß/Ω/é",
-        "/a/ß/../../Volumes"
-      ]
-    },
+    {"name": "random 204", "input": ["SS/É/SS/🎉", "SS/É/SS/🎉"], "output": ["SS/É/SS/🎉"]},
+    {"name": "random 205", "input": ["/a/ß/Ω/é", "/a/ß/../../Volumes"], "output": ["/a/ß/Ω/é", "/a/ß/../../Volumes"]},
     {
       "name": "random 206",
       "input": [
@@ -3376,104 +1230,27 @@
         "/../Ω//ab",
         "/../Ω//ab"
       ],
-      "output": [
-        "/é",
-        "/A/A",
-        "/../Ω//ab"
-      ]
+      "output": ["/é", "/A/A", "/../Ω//ab"]
     },
-    {
-      "name": "random 207",
-      "input": [
-        "/.."
-      ],
-      "output": [
-        "/.."
-      ]
-    },
-    {
-      "name": "random 208",
-      "input": [
-        "//Ω/ab/é"
-      ],
-      "output": [
-        "//Ω/ab/é"
-      ]
-    },
+    {"name": "random 207", "input": ["/.."], "output": ["/.."]},
+    {"name": "random 208", "input": ["//Ω/ab/é"], "output": ["//Ω/ab/é"]},
     {
       "name": "random 209",
-      "input": [
-        "/É/A/./é/A",
-        "/Ω/Ω",
-        "/A/.Trash",
-        "/Ω/É/",
-        "/É/A/./é",
-        "/Ω",
-        "/É/A/./é/́/b/",
-        "/x y/ß/x y"
-      ],
-      "output": [
-        "/A/.Trash",
-        "/É/A/./é",
-        "/Ω",
-        "/x y/ß/x y"
-      ]
+      "input": ["/É/A/./é/A", "/Ω/Ω", "/A/.Trash", "/Ω/É/", "/É/A/./é", "/Ω", "/É/A/./é/́/b/", "/x y/ß/x y"],
+      "output": ["/A/.Trash", "/É/A/./é", "/Ω", "/x y/ß/x y"]
     },
     {
       "name": "random 210",
-      "input": [
-        "/ß",
-        "/é/é",
-        "/é/🎉/b/́",
-        "/ß",
-        "/é/🎉/b/́",
-        "/é/é/ß",
-        "/é/é/.Trash/🎉",
-        "/é/../b"
-      ],
-      "output": [
-        "/ß",
-        "/é/é",
-        "/é/🎉/b/́",
-        "/é/é/.Trash/🎉",
-        "/é/../b"
-      ]
+      "input": ["/ß", "/é/é", "/é/🎉/b/́", "/ß", "/é/🎉/b/́", "/é/é/ß", "/é/é/.Trash/🎉", "/é/../b"],
+      "output": ["/ß", "/é/é", "/é/🎉/b/́", "/é/é/.Trash/🎉", "/é/../b"]
     },
-    {
-      "name": "random 211",
-      "input": [
-        "́/ab/Ω/../ab"
-      ],
-      "output": [
-        "́/ab/Ω/../ab"
-      ]
-    },
+    {"name": "random 211", "input": ["́/ab/Ω/../ab"], "output": ["́/ab/Ω/../ab"]},
     {
       "name": "random 212",
-      "input": [
-        "/b/b/../é/x y",
-        "/b/b/../é/x y",
-        "/é/x y/b/",
-        "/b/b/../é/x y",
-        "/é/x y/b/.Trash/é/é",
-        "/b/b"
-      ],
-      "output": [
-        "/é/x y/b/",
-        "/é/x y/b/.Trash/é/é",
-        "/b/b"
-      ]
+      "input": ["/b/b/../é/x y", "/b/b/../é/x y", "/é/x y/b/", "/b/b/../é/x y", "/é/x y/b/.Trash/é/é", "/b/b"],
+      "output": ["/é/x y/b/", "/é/x y/b/.Trash/é/é", "/b/b"]
     },
-    {
-      "name": "random 213",
-      "input": [
-        "/🎉/SS/é/ß/A/b",
-        "/🎉/SS/é"
-      ],
-      "output": [
-        "/🎉/SS/é"
-      ]
-    },
+    {"name": "random 213", "input": ["/🎉/SS/é/ß/A/b", "/🎉/SS/é"], "output": ["/🎉/SS/é"]},
     {
       "name": "random 214",
       "input": [
@@ -3487,11 +1264,7 @@
         "/é",
         "/é/.."
       ],
-      "output": [
-        "/b/Users/A/..",
-        "x y/ab/x y/..",
-        "/é"
-      ]
+      "output": ["/b/Users/A/..", "x y/ab/x y/..", "/é"]
     },
     {
       "name": "random 215",
@@ -3506,47 +1279,14 @@
         "/..//A/ß",
         "//é/x y"
       ],
-      "output": [
-        "/́/Users/.",
-        "/..",
-        "//é/x y"
-      ]
+      "output": ["/́/Users/.", "/..", "//é/x y"]
     },
     {
       "name": "random 216",
-      "input": [
-        "/ß/é/́",
-        "/a/́/é",
-        "/.///ß",
-        "/ß/é/́",
-        "/./🎉/A",
-        "/./Ω/Ω",
-        "/./Ω/Ω",
-        "/./a",
-        "/./é"
-      ],
-      "output": [
-        "/ß/é/́",
-        "/a/́/é",
-        "/.///ß",
-        "/./🎉/A",
-        "/./Ω/Ω",
-        "/./a",
-        "/./é"
-      ]
+      "input": ["/ß/é/́", "/a/́/é", "/.///ß", "/ß/é/́", "/./🎉/A", "/./Ω/Ω", "/./Ω/Ω", "/./a", "/./é"],
+      "output": ["/ß/é/́", "/a/́/é", "/.///ß", "/./🎉/A", "/./Ω/Ω", "/./a", "/./é"]
     },
-    {
-      "name": "random 217",
-      "input": [
-        "/",
-        "/Ω",
-        "/",
-        "/"
-      ],
-      "output": [
-        "/"
-      ]
-    },
+    {"name": "random 217", "input": ["/", "/Ω", "/", "/"], "output": ["/"]},
     {
       "name": "random 218",
       "input": [
@@ -3560,103 +1300,20 @@
         "/a/ab/🎉/..",
         "/a/ab/ab/A"
       ],
-      "output": [
-        "/é/Volumes/Volumes/",
-        "/Volumes",
-        "/a/ab"
-      ]
+      "output": ["/é/Volumes/Volumes/", "/Volumes", "/a/ab"]
     },
     {
       "name": "random 219",
-      "input": [
-        "/Ω/é/.Trash",
-        "/Ω/é/.Trash/Ω/.",
-        "/.Trash/é/Ω",
-        "/Ω/SS",
-        "/a"
-      ],
-      "output": [
-        "/Ω/é/.Trash",
-        "/.Trash/é/Ω",
-        "/Ω/SS",
-        "/a"
-      ]
+      "input": ["/Ω/é/.Trash", "/Ω/é/.Trash/Ω/.", "/.Trash/é/Ω", "/Ω/SS", "/a"],
+      "output": ["/Ω/é/.Trash", "/.Trash/é/Ω", "/Ω/SS", "/a"]
     },
-    {
-      "name": "random 220",
-      "input": [
-        "/.//../SS/b",
-        "/.//../x y/Ω/ab"
-      ],
-      "output": [
-        "/.//../SS/b",
-        "/.//../x y/Ω/ab"
-      ]
-    },
-    {
-      "name": "random 221",
-      "input": [
-        "ab/..",
-        "/Ω/b"
-      ],
-      "output": [
-        "ab/..",
-        "/Ω/b"
-      ]
-    },
-    {
-      "name": "random 222",
-      "input": [
-        "a/é/É/🎉/ab/A",
-        "/Users/.",
-        "/Users/."
-      ],
-      "output": [
-        "a/é/É/🎉/ab/A",
-        "/Users/."
-      ]
-    },
-    {
-      "name": "random 223",
-      "input": [
-        "/Ω/../.Trash/ab/Ω/b/."
-      ],
-      "output": [
-        "/Ω/../.Trash/ab/Ω/b/."
-      ]
-    },
-    {
-      "name": "random 224",
-      "input": [
-        "/🎉/Ω/́/SS",
-        "🎉/ß/ß/🎉"
-      ],
-      "output": [
-        "/🎉/Ω/́/SS",
-        "🎉/ß/ß/🎉"
-      ]
-    },
-    {
-      "name": "random 225",
-      "input": [
-        "/a/Ω/É",
-        "/.Trash/A"
-      ],
-      "output": [
-        "/a/Ω/É",
-        "/.Trash/A"
-      ]
-    },
-    {
-      "name": "random 226",
-      "input": [
-        "/🎉",
-        "/🎉/É/Ω"
-      ],
-      "output": [
-        "/🎉"
-      ]
-    },
+    {"name": "random 220", "input": ["/.//../SS/b", "/.//../x y/Ω/ab"], "output": ["/.//../SS/b", "/.//../x y/Ω/ab"]},
+    {"name": "random 221", "input": ["ab/..", "/Ω/b"], "output": ["ab/..", "/Ω/b"]},
+    {"name": "random 222", "input": ["a/é/É/🎉/ab/A", "/Users/.", "/Users/."], "output": ["a/é/É/🎉/ab/A", "/Users/."]},
+    {"name": "random 223", "input": ["/Ω/../.Trash/ab/Ω/b/."], "output": ["/Ω/../.Trash/ab/Ω/b/."]},
+    {"name": "random 224", "input": ["/🎉/Ω/́/SS", "🎉/ß/ß/🎉"], "output": ["/🎉/Ω/́/SS", "🎉/ß/ß/🎉"]},
+    {"name": "random 225", "input": ["/a/Ω/É", "/.Trash/A"], "output": ["/a/Ω/É", "/.Trash/A"]},
+    {"name": "random 226", "input": ["/🎉", "/🎉/É/Ω"], "output": ["/🎉"]},
     {
       "name": "random 227",
       "input": [
@@ -3670,91 +1327,30 @@
         "/x y/x y/é/SS/ab",
         "/x y/x y/Volumes/.Trash/ß"
       ],
-      "output": [
-        "/x y/x y/",
-        "/x y/",
-        "/x y/x y/🎉",
-        "/Volumes",
-        "/x y/x y/é/SS/ab",
-        "/x y/x y/Volumes/.Trash/ß"
-      ]
+      "output": ["/x y/x y/", "/x y/", "/x y/x y/🎉", "/Volumes", "/x y/x y/é/SS/ab", "/x y/x y/Volumes/.Trash/ß"]
     },
     {
       "name": "random 228",
-      "input": [
-        "/Volumes",
-        "/́/ß",
-        "/́/ß/A",
-        "/é/🎉/É/🎉/́/.."
-      ],
-      "output": [
-        "/Volumes",
-        "/́/ß",
-        "/é/🎉/É/🎉/́/.."
-      ]
+      "input": ["/Volumes", "/́/ß", "/́/ß/A", "/é/🎉/É/🎉/́/.."],
+      "output": ["/Volumes", "/́/ß", "/é/🎉/É/🎉/́/.."]
     },
     {
       "name": "random 229",
-      "input": [
-        "/./x y/Volumes/Ω/Users",
-        "/Ω/x y"
-      ],
-      "output": [
-        "/./x y/Volumes/Ω/Users",
-        "/Ω/x y"
-      ]
+      "input": ["/./x y/Volumes/Ω/Users", "/Ω/x y"],
+      "output": ["/./x y/Volumes/Ω/Users", "/Ω/x y"]
     },
     {
       "name": "random 230",
-      "input": [
-        "/.",
-        "/b/ß/x y/b/ab/Ω",
-        "/🎉/.Trash/é/a",
-        "/b/ß/x y",
-        "é/A/ß/"
-      ],
-      "output": [
-        "/.",
-        "/🎉/.Trash/é/a",
-        "/b/ß/x y",
-        "é/A/ß/"
-      ]
+      "input": ["/.", "/b/ß/x y/b/ab/Ω", "/🎉/.Trash/é/a", "/b/ß/x y", "é/A/ß/"],
+      "output": ["/.", "/🎉/.Trash/é/a", "/b/ß/x y", "é/A/ß/"]
     },
-    {
-      "name": "random 231",
-      "input": [
-        "/a/x y/../.Trash"
-      ],
-      "output": [
-        "/a/x y/../.Trash"
-      ]
-    },
+    {"name": "random 231", "input": ["/a/x y/../.Trash"], "output": ["/a/x y/../.Trash"]},
     {
       "name": "random 232",
-      "input": [
-        "/Ω/x y",
-        "/Ω/x y/A",
-        "/Ω/x y/Ω",
-        "/Ω/x y/A",
-        "//ß/́/🎉"
-      ],
-      "output": [
-        "/Ω/x y",
-        "//ß/́/🎉"
-      ]
+      "input": ["/Ω/x y", "/Ω/x y/A", "/Ω/x y/Ω", "/Ω/x y/A", "//ß/́/🎉"],
+      "output": ["/Ω/x y", "//ß/́/🎉"]
     },
-    {
-      "name": "random 233",
-      "input": [
-        "/ß",
-        "/Ω/a/ß/SS/",
-        "/ß"
-      ],
-      "output": [
-        "/ß",
-        "/Ω/a/ß/SS/"
-      ]
-    },
+    {"name": "random 233", "input": ["/ß", "/Ω/a/ß/SS/", "/ß"], "output": ["/ß", "/Ω/a/ß/SS/"]},
     {
       "name": "random 234",
       "input": [
@@ -3767,76 +1363,23 @@
         "A/..",
         "A/.."
       ],
-      "output": [
-        "A/..",
-        "/A/ß/SS/Volumes"
-      ]
+      "output": ["A/..", "/A/ß/SS/Volumes"]
     },
     {
       "name": "random 235",
-      "input": [
-        "/A/",
-        "/A/b/Ω/Ω",
-        "/A/🎉",
-        "/A/A",
-        "/A/ab/Ω",
-        "../A/",
-        "/.Trash/ab/x y",
-        "../A/",
-        "/A/é"
-      ],
-      "output": [
-        "/A/",
-        "/A/b/Ω/Ω",
-        "/A/🎉",
-        "/A/A",
-        "/A/ab/Ω",
-        "../A/",
-        "/.Trash/ab/x y",
-        "/A/é"
-      ]
+      "input": ["/A/", "/A/b/Ω/Ω", "/A/🎉", "/A/A", "/A/ab/Ω", "../A/", "/.Trash/ab/x y", "../A/", "/A/é"],
+      "output": ["/A/", "/A/b/Ω/Ω", "/A/🎉", "/A/A", "/A/ab/Ω", "../A/", "/.Trash/ab/x y", "/A/é"]
     },
-    {
-      "name": "random 236",
-      "input": [
-        "/./́/SS",
-        "/.",
-        "/./../Ω",
-        "/././ab"
-      ],
-      "output": [
-        "/."
-      ]
-    },
+    {"name": "random 236", "input": ["/./́/SS", "/.", "/./../Ω", "/././ab"], "output": ["/."]},
     {
       "name": "random 237",
-      "input": [
-        "/ß/b/é/Ω",
-        "/É/Volumes/A",
-        "/É/Volumes/A",
-        "/ß/é",
-        "/É/Volumes/A",
-        "/.Trash/A"
-      ],
-      "output": [
-        "/ß/b/é/Ω",
-        "/É/Volumes/A",
-        "/ß/é",
-        "/.Trash/A"
-      ]
+      "input": ["/ß/b/é/Ω", "/É/Volumes/A", "/É/Volumes/A", "/ß/é", "/É/Volumes/A", "/.Trash/A"],
+      "output": ["/ß/b/é/Ω", "/É/Volumes/A", "/ß/é", "/.Trash/A"]
     },
     {
       "name": "random 238",
-      "input": [
-        "́/.Trash/ß/A/.",
-        "/./Ω/b/x y",
-        "́/.Trash/ß/A/.",
-        "/./Ω/b/x y/A/../Ω"
-      ],
-      "output": [
-        "́/.Trash/ß/A/.",
-        "/./Ω/b/x y"
-      ]
+      "input": ["́/.Trash/ß/A/.", "/./Ω/b/x y", "́/.Trash/ß/A/.", "/./Ω/b/x y/A/../Ω"],
+      "output": ["́/.Trash/ß/A/.", "/./Ω/b/x y"]
     },
     {
       "name": "random 239",
@@ -3849,22 +1392,9 @@
         "/a/É/é/A/É/Users/",
         "/a/É/é/A/É/Users/"
       ],
-      "output": [
-        "/a/É/é/A"
-      ]
+      "output": ["/a/É/é/A"]
     },
-    {
-      "name": "random 240",
-      "input": [
-        "/Ω/a",
-        "/Ω/a",
-        "/ab/Ω/x y/́"
-      ],
-      "output": [
-        "/Ω/a",
-        "/ab/Ω/x y/́"
-      ]
-    },
+    {"name": "random 240", "input": ["/Ω/a", "/Ω/a", "/ab/Ω/x y/́"], "output": ["/Ω/a", "/ab/Ω/x y/́"]},
     {
       "name": "random 241",
       "input": [
@@ -3877,10 +1407,7 @@
         "/é/é/🎉/A/a",
         "/é/é/🎉"
       ],
-      "output": [
-        "/é/é/🎉",
-        "é/ab/x y/Ω/a/b"
-      ]
+      "output": ["/é/é/🎉", "é/ab/x y/Ω/a/b"]
     },
     {
       "name": "random 242",
@@ -3894,26 +1421,12 @@
         "/Users/Users/../é/Volumes",
         "/Users/Users/.."
       ],
-      "output": [
-        "/Users/Users/..",
-        "/É/a/Users",
-        "/Users/é/ab/ß"
-      ]
+      "output": ["/Users/Users/..", "/É/a/Users", "/Users/é/ab/ß"]
     },
     {
       "name": "random 243",
-      "input": [
-        "/",
-        "A/É",
-        "/Volumes/x y/é",
-        "/.Trash/b",
-        "/Volumes/x y/ß/SS/x y",
-        "/ß/Users/ß"
-      ],
-      "output": [
-        "/",
-        "A/É"
-      ]
+      "input": ["/", "A/É", "/Volumes/x y/é", "/.Trash/b", "/Volumes/x y/ß/SS/x y", "/ß/Users/ß"],
+      "output": ["/", "A/É"]
     },
     {
       "name": "random 244",
@@ -3926,19 +1439,9 @@
         "/ab/a/́/../Users/é",
         "/ab/Ω/Users/Volumes"
       ],
-      "output": [
-        "/ab"
-      ]
+      "output": ["/ab"]
     },
-    {
-      "name": "random 245",
-      "input": [
-        "Ω/ab/É"
-      ],
-      "output": [
-        "Ω/ab/É"
-      ]
-    },
+    {"name": "random 245", "input": ["Ω/ab/É"], "output": ["Ω/ab/É"]},
     {
       "name": "random 246",
       "input": [
@@ -3951,58 +1454,15 @@
         "/../Ω/́/É/́/é",
         "/../Ω/́/SS"
       ],
-      "output": [
-        "́/.Trash",
-        "/ab/b/./A/é/.",
-        "/ab/b/./A/.Trash/Volumes/x y",
-        "/../Ω/́/SS",
-        "/a",
-        "/../Ω/́/É/́/é"
-      ]
+      "output": ["́/.Trash", "/ab/b/./A/é/.", "/ab/b/./A/.Trash/Volumes/x y", "/../Ω/́/SS", "/a", "/../Ω/́/É/́/é"]
     },
     {
       "name": "random 247",
-      "input": [
-        "x y/A/a/Users",
-        "/ß/SS",
-        "/é/Ω/́/b",
-        "/ß/a/ab/ß",
-        "/é/Ω/é/Ω/b",
-        "/ab"
-      ],
-      "output": [
-        "x y/A/a/Users",
-        "/ß/SS",
-        "/é/Ω/́/b",
-        "/ß/a/ab/ß",
-        "/é/Ω/é/Ω/b",
-        "/ab"
-      ]
+      "input": ["x y/A/a/Users", "/ß/SS", "/é/Ω/́/b", "/ß/a/ab/ß", "/é/Ω/é/Ω/b", "/ab"],
+      "output": ["x y/A/a/Users", "/ß/SS", "/é/Ω/́/b", "/ß/a/ab/ß", "/é/Ω/é/Ω/b", "/ab"]
     },
-    {
-      "name": "random 248",
-      "input": [
-        "/Ω/Users/../É",
-        "/Ω/Users/../É",
-        "/Ω",
-        "/Ω/é/Volumes"
-      ],
-      "output": [
-        "/Ω"
-      ]
-    },
-    {
-      "name": "random 249",
-      "input": [
-        "/./A/é",
-        "/./A/é",
-        "/́/é/../a"
-      ],
-      "output": [
-        "/./A/é",
-        "/́/é/../a"
-      ]
-    },
+    {"name": "random 248", "input": ["/Ω/Users/../É", "/Ω/Users/../É", "/Ω", "/Ω/é/Volumes"], "output": ["/Ω"]},
+    {"name": "random 249", "input": ["/./A/é", "/./A/é", "/́/é/../a"], "output": ["/./A/é", "/́/é/../a"]},
     {
       "name": "random 250",
       "input": [
@@ -4014,30 +1474,13 @@
         "/x y/.Trash/Ω/..",
         "/x y/.Trash/Ω/../́"
       ],
-      "output": [
-        "/x y/.Trash/Ω/.."
-      ]
+      "output": ["/x y/.Trash/Ω/.."]
     },
-    {
-      "name": "random 251",
-      "input": [
-        "/x y/../é/🎉"
-      ],
-      "output": [
-        "/x y/../é/🎉"
-      ]
-    },
+    {"name": "random 251", "input": ["/x y/../é/🎉"], "output": ["/x y/../é/🎉"]},
     {
       "name": "random 252",
-      "input": [
-        "/a/Users/Users/a/b/ab",
-        "/a/Users/Users/a/b/ab",
-        "/a/Users/Users/a",
-        "/a/Users/Users/a"
-      ],
-      "output": [
-        "/a/Users/Users/a"
-      ]
+      "input": ["/a/Users/Users/a/b/ab", "/a/Users/Users/a/b/ab", "/a/Users/Users/a", "/a/Users/Users/a"],
+      "output": ["/a/Users/Users/a"]
     },
     {
       "name": "random 253",
@@ -4052,14 +1495,7 @@
         "/ß/Users/Volumes/Ω/Ω",
         "/x y/b"
       ],
-      "output": [
-        "/x y/b",
-        "/x y/ß/ab",
-        "/x y/SS/a/.Trash",
-        "/b/x y",
-        "/x y/A/SS",
-        "/ß/Users/Volumes/Ω/Ω"
-      ]
+      "output": ["/x y/b", "/x y/ß/ab", "/x y/SS/a/.Trash", "/b/x y", "/x y/A/SS", "/ß/Users/Volumes/Ω/Ω"]
     },
     {
       "name": "random 254",
@@ -4094,27 +1530,12 @@
         "/Volumes/Ω/.",
         "/Volumes/Ω/."
       ],
-      "output": [
-        "/Volumes/Ω/.",
-        "/Users/.Trash"
-      ]
+      "output": ["/Volumes/Ω/.", "/Users/.Trash"]
     },
     {
       "name": "random 256",
-      "input": [
-        "/ab/é",
-        "Ω/🎉/́/Ω",
-        "/.Trash/́/🎉/Ω/A",
-        "/.",
-        "Ω/🎉/a/Users/ab"
-      ],
-      "output": [
-        "/ab/é",
-        "Ω/🎉/́/Ω",
-        "/.Trash/́/🎉/Ω/A",
-        "/.",
-        "Ω/🎉/a/Users/ab"
-      ]
+      "input": ["/ab/é", "Ω/🎉/́/Ω", "/.Trash/́/🎉/Ω/A", "/.", "Ω/🎉/a/Users/ab"],
+      "output": ["/ab/é", "Ω/🎉/́/Ω", "/.Trash/́/🎉/Ω/A", "/.", "Ω/🎉/a/Users/ab"]
     },
     {
       "name": "random 257",
@@ -4137,141 +1558,42 @@
         "/é/.Trash/É/b/é/.Trash"
       ]
     },
-    {
-      "name": "random 258",
-      "input": [
-        "/.."
-      ],
-      "output": [
-        "/.."
-      ]
-    },
+    {"name": "random 258", "input": ["/.."], "output": ["/.."]},
     {
       "name": "random 259",
-      "input": [
-        "/x y",
-        "/x y",
-        "/./x y/x y",
-        "/Users/./🎉/ß",
-        "/./x y",
-        "/./x y/x y/é",
-        "/./Ω/x y/.."
-      ],
-      "output": [
-        "/x y",
-        "/Users/./🎉/ß",
-        "/./x y",
-        "/./Ω/x y/.."
-      ]
+      "input": ["/x y", "/x y", "/./x y/x y", "/Users/./🎉/ß", "/./x y", "/./x y/x y/é", "/./Ω/x y/.."],
+      "output": ["/x y", "/Users/./🎉/ß", "/./x y", "/./Ω/x y/.."]
     },
     {
       "name": "random 260",
-      "input": [
-        "/Users/Ω",
-        "/Users/Ω",
-        "/Ω/é",
-        "/x y/🎉/Ω/́",
-        "/Ω/é",
-        "/a/a",
-        "Ω/🎉/Users",
-        "/x y/🎉/Ω/́/ab/Ω"
-      ],
-      "output": [
-        "/Users/Ω",
-        "/Ω/é",
-        "/x y/🎉/Ω/́",
-        "/a/a",
-        "Ω/🎉/Users"
-      ]
+      "input": ["/Users/Ω", "/Users/Ω", "/Ω/é", "/x y/🎉/Ω/́", "/Ω/é", "/a/a", "Ω/🎉/Users", "/x y/🎉/Ω/́/ab/Ω"],
+      "output": ["/Users/Ω", "/Ω/é", "/x y/🎉/Ω/́", "/a/a", "Ω/🎉/Users"]
     },
-    {
-      "name": "random 261",
-      "input": [
-        "/A/x y",
-        "/A/x y/É",
-        "/A/x y/a/a/Users"
-      ],
-      "output": [
-        "/A/x y"
-      ]
-    },
+    {"name": "random 261", "input": ["/A/x y", "/A/x y/É", "/A/x y/a/a/Users"], "output": ["/A/x y"]},
     {
       "name": "random 262",
-      "input": [
-        "/SS/🎉/ab",
-        "/SS/🎉/ab/.Trash/é/é",
-        "/x y/Users/ß/ab/ab"
-      ],
-      "output": [
-        "/SS/🎉/ab",
-        "/x y/Users/ß/ab/ab"
-      ]
+      "input": ["/SS/🎉/ab", "/SS/🎉/ab/.Trash/é/é", "/x y/Users/ß/ab/ab"],
+      "output": ["/SS/🎉/ab", "/x y/Users/ß/ab/ab"]
     },
     {
       "name": "random 263",
-      "input": [
-        "/ß/SS/a",
-        "🎉",
-        "/ß/SS/a/ab",
-        "/ß/🎉",
-        "/SS//"
-      ],
-      "output": [
-        "/ß/SS/a",
-        "🎉",
-        "/ß/🎉",
-        "/SS//"
-      ]
+      "input": ["/ß/SS/a", "🎉", "/ß/SS/a/ab", "/ß/🎉", "/SS//"],
+      "output": ["/ß/SS/a", "🎉", "/ß/🎉", "/SS//"]
     },
     {
       "name": "random 264",
-      "input": [
-        "/A/é/SS/é",
-        "/../Ω",
-        "/SS/SS/Users",
-        "/A/é/SS/é",
-        "/A/é/SS/é/é/x y",
-        "/SS/SS/Users/a"
-      ],
-      "output": [
-        "/A/é/SS/é",
-        "/../Ω",
-        "/SS/SS/Users"
-      ]
+      "input": ["/A/é/SS/é", "/../Ω", "/SS/SS/Users", "/A/é/SS/é", "/A/é/SS/é/é/x y", "/SS/SS/Users/a"],
+      "output": ["/A/é/SS/é", "/../Ω", "/SS/SS/Users"]
     },
     {
       "name": "random 265",
-      "input": [
-        "/Ω/Users/",
-        "/.Trash",
-        "/Ω/Users/",
-        "/.Trash",
-        "/ab/é/🎉",
-        "/.Trash",
-        "/.Trash",
-        "/.Trash"
-      ],
-      "output": [
-        "/Ω/Users/",
-        "/.Trash",
-        "/ab/é/🎉"
-      ]
+      "input": ["/Ω/Users/", "/.Trash", "/Ω/Users/", "/.Trash", "/ab/é/🎉", "/.Trash", "/.Trash", "/.Trash"],
+      "output": ["/Ω/Users/", "/.Trash", "/ab/é/🎉"]
     },
     {
       "name": "random 266",
-      "input": [
-        "/SS/ß/ß/ß",
-        "/SS/ß/ß/ß",
-        "/a/Users",
-        "/a/Users",
-        "/é/b/../Users",
-        "/é/b/../Users/Ω/Users"
-      ],
-      "output": [
-        "/SS/ß/ß/ß",
-        "/a/Users",
-        "/é/b/../Users"
-      ]
+      "input": ["/SS/ß/ß/ß", "/SS/ß/ß/ß", "/a/Users", "/a/Users", "/é/b/../Users", "/é/b/../Users/Ω/Users"],
+      "output": ["/SS/ß/ß/ß", "/a/Users", "/é/b/../Users"]
     },
     {
       "name": "random 267",
@@ -4294,32 +1616,10 @@
     },
     {
       "name": "random 268",
-      "input": [
-        "/́/SS/Volumes/",
-        "/Ω",
-        "/Ω/ab",
-        "/Ω/a/ab",
-        "/é/.Trash",
-        "/́/SS/Volumes/",
-        "/Ω/Volumes"
-      ],
-      "output": [
-        "/́/SS/Volumes/",
-        "/Ω",
-        "/Ω/a/ab",
-        "/é/.Trash",
-        "/Ω/Volumes"
-      ]
+      "input": ["/́/SS/Volumes/", "/Ω", "/Ω/ab", "/Ω/a/ab", "/é/.Trash", "/́/SS/Volumes/", "/Ω/Volumes"],
+      "output": ["/́/SS/Volumes/", "/Ω", "/Ω/a/ab", "/é/.Trash", "/Ω/Volumes"]
     },
-    {
-      "name": "random 269",
-      "input": [
-        "/x y/b/É/.Trash//a/Ω"
-      ],
-      "output": [
-        "/x y/b/É/.Trash//a/Ω"
-      ]
-    },
+    {"name": "random 269", "input": ["/x y/b/É/.Trash//a/Ω"], "output": ["/x y/b/É/.Trash//a/Ω"]},
     {
       "name": "random 270",
       "input": [
@@ -4333,15 +1633,7 @@
         "/a/x y/b",
         "/../../é/SS/🎉/b"
       ],
-      "output": [
-        "/́/Ω/x y",
-        "/a",
-        "/../../é/",
-        "🎉/🎉/b",
-        "/../../é/ß/ß/A",
-        "/́/é//́",
-        "/../../é/SS/🎉/b"
-      ]
+      "output": ["/́/Ω/x y", "/a", "/../../é/", "🎉/🎉/b", "/../../é/ß/ß/A", "/́/é//́", "/../../é/SS/🎉/b"]
     },
     {
       "name": "random 271",
@@ -4369,20 +1661,8 @@
     },
     {
       "name": "random 272",
-      "input": [
-        "/a/a",
-        "./Volumes/a/a",
-        "/a/a",
-        "./Volumes/a/a",
-        "./Volumes/a/a",
-        "./Volumes/a/a",
-        "/É/.Trash/ab/SS"
-      ],
-      "output": [
-        "/a/a",
-        "./Volumes/a/a",
-        "/É/.Trash/ab/SS"
-      ]
+      "input": ["/a/a", "./Volumes/a/a", "/a/a", "./Volumes/a/a", "./Volumes/a/a", "./Volumes/a/a", "/É/.Trash/ab/SS"],
+      "output": ["/a/a", "./Volumes/a/a", "/É/.Trash/ab/SS"]
     },
     {
       "name": "random 273",
@@ -4396,299 +1676,70 @@
         "/Ω/Volumes/Users/b",
         "/é/É/Users/.Trash"
       ],
-      "output": [
-        "/é/É/Users/.Trash",
-        "/Users/b",
-        "/Ω/Volumes/Users/b"
-      ]
+      "output": ["/é/É/Users/.Trash", "/Users/b", "/Ω/Volumes/Users/b"]
     },
     {
       "name": "random 274",
-      "input": [
-        "/..",
-        "/..",
-        "/Ω/x y",
-        "/Ω/x y/Ω",
-        "/..",
-        "/SS",
-        "/SS",
-        "/.."
-      ],
-      "output": [
-        "/..",
-        "/Ω/x y",
-        "/SS"
-      ]
+      "input": ["/..", "/..", "/Ω/x y", "/Ω/x y/Ω", "/..", "/SS", "/SS", "/.."],
+      "output": ["/..", "/Ω/x y", "/SS"]
     },
     {
       "name": "random 275",
-      "input": [
-        "/SS/A/",
-        "/b/É/Ω/.Trash/A/",
-        "/b/É/Ω/.Trash/A/",
-        "/b/É/Ω/.Trash/A/",
-        "/x y/́",
-        "/b/É/Ω/.Trash/A/"
-      ],
-      "output": [
-        "/SS/A/",
-        "/b/É/Ω/.Trash/A/",
-        "/x y/́"
-      ]
+      "input": ["/SS/A/", "/b/É/Ω/.Trash/A/", "/b/É/Ω/.Trash/A/", "/b/É/Ω/.Trash/A/", "/x y/́", "/b/É/Ω/.Trash/A/"],
+      "output": ["/SS/A/", "/b/É/Ω/.Trash/A/", "/x y/́"]
     },
-    {
-      "name": "random 276",
-      "input": [
-        "/a/Ω/.Trash"
-      ],
-      "output": [
-        "/a/Ω/.Trash"
-      ]
-    },
-    {
-      "name": "random 277",
-      "input": [
-        "Volumes/"
-      ],
-      "output": [
-        "Volumes/"
-      ]
-    },
+    {"name": "random 276", "input": ["/a/Ω/.Trash"], "output": ["/a/Ω/.Trash"]},
+    {"name": "random 277", "input": ["Volumes/"], "output": ["Volumes/"]},
     {
       "name": "random 278",
-      "input": [
-        "/É/..",
-        "/é/SS/",
-        "/é/SS/ab",
-        "/é/SS/",
-        "/é/SS/a/́",
-        "/É/..",
-        "/A/ß/́"
-      ],
-      "output": [
-        "/É/..",
-        "/é/SS/",
-        "/é/SS/ab",
-        "/é/SS/a/́",
-        "/A/ß/́"
-      ]
+      "input": ["/É/..", "/é/SS/", "/é/SS/ab", "/é/SS/", "/é/SS/a/́", "/É/..", "/A/ß/́"],
+      "output": ["/É/..", "/é/SS/", "/é/SS/ab", "/é/SS/a/́", "/A/ß/́"]
     },
-    {
-      "name": "random 279",
-      "input": [
-        "/.Trash/",
-        "/.Trash/",
-        "/.Trash/",
-        "//"
-      ],
-      "output": [
-        "/.Trash/",
-        "//"
-      ]
-    },
-    {
-      "name": "random 280",
-      "input": [
-        "/a/Users/x y/.Trash",
-        "/a/Users/x y/.Trash"
-      ],
-      "output": [
-        "/a/Users/x y/.Trash"
-      ]
-    },
-    {
-      "name": "random 281",
-      "input": [
-        "/É/ab",
-        "/",
-        "/",
-        "/é/ab/Ω",
-        "/ab/́",
-        "/",
-        "/Ω/Ω/ab",
-        "/"
-      ],
-      "output": [
-        "/"
-      ]
-    },
+    {"name": "random 279", "input": ["/.Trash/", "/.Trash/", "/.Trash/", "//"], "output": ["/.Trash/", "//"]},
+    {"name": "random 280", "input": ["/a/Users/x y/.Trash", "/a/Users/x y/.Trash"], "output": ["/a/Users/x y/.Trash"]},
+    {"name": "random 281", "input": ["/É/ab", "/", "/", "/é/ab/Ω", "/ab/́", "/", "/Ω/Ω/ab", "/"], "output": ["/"]},
     {
       "name": "random 282",
-      "input": [
-        "/A/./é/../..",
-        "/A/./é/../x y/🎉",
-        "/A/./é/..",
-        "/A/./é/../🎉/.Trash",
-        "/A/./é/../ß",
-        "/A/./é/.."
-      ],
-      "output": [
-        "/A/./é/.."
-      ]
+      "input": ["/A/./é/../..", "/A/./é/../x y/🎉", "/A/./é/..", "/A/./é/../🎉/.Trash", "/A/./é/../ß", "/A/./é/.."],
+      "output": ["/A/./é/.."]
     },
     {
       "name": "random 283",
-      "input": [
-        "́",
-        "́",
-        "/ß/Ω/É/a",
-        "/ß/Ω/É/A",
-        "́",
-        "/ß/Ω/É/é/Ω/",
-        "/ß/Ω/É",
-        "/ß/Ω/É",
-        "́"
-      ],
-      "output": [
-        "́",
-        "/ß/Ω/É"
-      ]
+      "input": ["́", "́", "/ß/Ω/É/a", "/ß/Ω/É/A", "́", "/ß/Ω/É/é/Ω/", "/ß/Ω/É", "/ß/Ω/É", "́"],
+      "output": ["́", "/ß/Ω/É"]
     },
     {
       "name": "random 284",
-      "input": [
-        "/Users/́/.",
-        "/Users/́/.",
-        "/Users/́/.",
-        "/Users/́/./ß/🎉/",
-        "/Users/́/./🎉",
-        "/Users/́/."
-      ],
-      "output": [
-        "/Users/́/."
-      ]
+      "input": ["/Users/́/.", "/Users/́/.", "/Users/́/.", "/Users/́/./ß/🎉/", "/Users/́/./🎉", "/Users/́/."],
+      "output": ["/Users/́/."]
     },
-    {
-      "name": "random 285",
-      "input": [
-        "//Ω"
-      ],
-      "output": [
-        "//Ω"
-      ]
-    },
-    {
-      "name": "random 286",
-      "input": [
-        "/🎉/ab",
-        "/🎉/x y/Ω/Volumes"
-      ],
-      "output": [
-        "/🎉/ab",
-        "/🎉/x y/Ω/Volumes"
-      ]
-    },
-    {
-      "name": "random 287",
-      "input": [
-        "Volumes/b/é",
-        "/.",
-        "/Ω",
-        "/Ω"
-      ],
-      "output": [
-        "Volumes/b/é",
-        "/.",
-        "/Ω"
-      ]
-    },
-    {
-      "name": "random 288",
-      "input": [
-        "/Ω/b/Volumes",
-        "/Ω/b"
-      ],
-      "output": [
-        "/Ω/b"
-      ]
-    },
-    {
-      "name": "random 289",
-      "input": [
-        "/a//́/🎉/x y"
-      ],
-      "output": [
-        "/a//́/🎉/x y"
-      ]
-    },
+    {"name": "random 285", "input": ["//Ω"], "output": ["//Ω"]},
+    {"name": "random 286", "input": ["/🎉/ab", "/🎉/x y/Ω/Volumes"], "output": ["/🎉/ab", "/🎉/x y/Ω/Volumes"]},
+    {"name": "random 287", "input": ["Volumes/b/é", "/.", "/Ω", "/Ω"], "output": ["Volumes/b/é", "/.", "/Ω"]},
+    {"name": "random 288", "input": ["/Ω/b/Volumes", "/Ω/b"], "output": ["/Ω/b"]},
+    {"name": "random 289", "input": ["/a//́/🎉/x y"], "output": ["/a//́/🎉/x y"]},
     {
       "name": "random 290",
-      "input": [
-        "/Ω/ab/.Trash/É/ß",
-        "ß/́/🎉",
-        "/Users/a/Ω",
-        "/Ω/ab/.Trash",
-        "ß/́/🎉"
-      ],
-      "output": [
-        "ß/́/🎉",
-        "/Users/a/Ω",
-        "/Ω/ab/.Trash"
-      ]
+      "input": ["/Ω/ab/.Trash/É/ß", "ß/́/🎉", "/Users/a/Ω", "/Ω/ab/.Trash", "ß/́/🎉"],
+      "output": ["ß/́/🎉", "/Users/a/Ω", "/Ω/ab/.Trash"]
     },
     {
       "name": "random 291",
-      "input": [
-        "/é",
-        "/SS/ab/Users",
-        "/é/́",
-        "/Ω/.Trash/É/x y"
-      ],
-      "output": [
-        "/é",
-        "/SS/ab/Users",
-        "/Ω/.Trash/É/x y"
-      ]
+      "input": ["/é", "/SS/ab/Users", "/é/́", "/Ω/.Trash/É/x y"],
+      "output": ["/é", "/SS/ab/Users", "/Ω/.Trash/É/x y"]
     },
     {
       "name": "random 292",
-      "input": [
-        "Ω/ab",
-        "/́/A/ab",
-        "/́/A/ab/🎉/./🎉",
-        "/́/A/ab",
-        "/́/A/ab/b/Ω",
-        "/Users/x y/Users/.Trash",
-        "/́/A/ab"
-      ],
-      "output": [
-        "Ω/ab",
-        "/́/A/ab",
-        "/Users/x y/Users/.Trash"
-      ]
+      "input": ["Ω/ab", "/́/A/ab", "/́/A/ab/🎉/./🎉", "/́/A/ab", "/́/A/ab/b/Ω", "/Users/x y/Users/.Trash", "/́/A/ab"],
+      "output": ["Ω/ab", "/́/A/ab", "/Users/x y/Users/.Trash"]
     },
     {
       "name": "random 293",
-      "input": [
-        "/.Trash/A/b",
-        "/Volumes/Volumes/../ab",
-        "/Volumes/Volumes/../ab"
-      ],
-      "output": [
-        "/.Trash/A/b",
-        "/Volumes/Volumes/../ab"
-      ]
+      "input": ["/.Trash/A/b", "/Volumes/Volumes/../ab", "/Volumes/Volumes/../ab"],
+      "output": ["/.Trash/A/b", "/Volumes/Volumes/../ab"]
     },
-    {
-      "name": "random 294",
-      "input": [
-        "/🎉/",
-        "/🎉",
-        "/🎉/Ω/.Trash"
-      ],
-      "output": [
-        "/🎉"
-      ]
-    },
-    {
-      "name": "random 295",
-      "input": [
-        "/./x y"
-      ],
-      "output": [
-        "/./x y"
-      ]
-    },
+    {"name": "random 294", "input": ["/🎉/", "/🎉", "/🎉/Ω/.Trash"], "output": ["/🎉"]},
+    {"name": "random 295", "input": ["/./x y"], "output": ["/./x y"]},
     {
       "name": "random 296",
       "input": [
@@ -4700,28 +1751,12 @@
         "/ab/é",
         "/x y"
       ],
-      "output": [
-        "SS/́/Users/́/.Trash//..",
-        "/.Trash/Volumes",
-        "/É/A/x y/",
-        "/ab/é",
-        "/x y"
-      ]
+      "output": ["SS/́/Users/́/.Trash//..", "/.Trash/Volumes", "/É/A/x y/", "/ab/é", "/x y"]
     },
     {
       "name": "random 297",
-      "input": [
-        "/ab//ß/Volumes",
-        "/",
-        "/ß/é/x y/é",
-        "/ß/é/x y/é",
-        "/ß/é/x y/é",
-        "/ß/é/x y/é/Ω",
-        "/é/x y/SS"
-      ],
-      "output": [
-        "/"
-      ]
+      "input": ["/ab//ß/Volumes", "/", "/ß/é/x y/é", "/ß/é/x y/é", "/ß/é/x y/é", "/ß/é/x y/é/Ω", "/é/x y/SS"],
+      "output": ["/"]
     },
     {
       "name": "random 298",
@@ -4734,23 +1769,9 @@
         "/ab/ß/./A/Users/Ω",
         "/ab/ß/.//Volumes/"
       ],
-      "output": [
-        "/ab/ß/.",
-        "/.Trash/a/b"
-      ]
+      "output": ["/ab/ß/.", "/.Trash/a/b"]
     },
-    {
-      "name": "random 299",
-      "input": [
-        "/SS/Ω",
-        "/SS/Ω",
-        "/é/é/b/./x y/É"
-      ],
-      "output": [
-        "/SS/Ω",
-        "/é/é/b/./x y/É"
-      ]
-    },
+    {"name": "random 299", "input": ["/SS/Ω", "/SS/Ω", "/é/é/b/./x y/É"], "output": ["/SS/Ω", "/é/é/b/./x y/É"]},
     {
       "name": "random 300",
       "input": [
@@ -4763,93 +1784,26 @@
         "/é/é",
         "/Ω/Users/Users/Users"
       ],
-      "output": [
-        "/Ω/Users/Users/..",
-        "/é/é",
-        "/Ω/Users/Users/x y",
-        "/Ω/Users/Users/Users"
-      ]
+      "output": ["/Ω/Users/Users/..", "/é/é", "/Ω/Users/Users/x y", "/Ω/Users/Users/Users"]
     },
-    {
-      "name": "random 301",
-      "input": [
-        "/é/.Trash",
-        "/./Ω",
-        "/./Ω",
-        "/é",
-        "/Ω"
-      ],
-      "output": [
-        "/./Ω",
-        "/é",
-        "/Ω"
-      ]
-    },
+    {"name": "random 301", "input": ["/é/.Trash", "/./Ω", "/./Ω", "/é", "/Ω"], "output": ["/./Ω", "/é", "/Ω"]},
     {
       "name": "random 302",
-      "input": [
-        "/ß/É/./SS/é",
-        "/É/ß/.",
-        "/ß/É/.",
-        "/É/ß/.",
-        "/🎉/é/Ω/É",
-        "/ß/É/."
-      ],
-      "output": [
-        "/É/ß/.",
-        "/ß/É/.",
-        "/🎉/é/Ω/É"
-      ]
+      "input": ["/ß/É/./SS/é", "/É/ß/.", "/ß/É/.", "/É/ß/.", "/🎉/é/Ω/É", "/ß/É/."],
+      "output": ["/É/ß/.", "/ß/É/.", "/🎉/é/Ω/É"]
     },
-    {
-      "name": "random 303",
-      "input": [
-        "/SS/../"
-      ],
-      "output": [
-        "/SS/../"
-      ]
-    },
+    {"name": "random 303", "input": ["/SS/../"], "output": ["/SS/../"]},
     {
       "name": "random 304",
-      "input": [
-        "/.Trash/é/",
-        "/́/.Trash",
-        "/ß/A/Ω/É"
-      ],
-      "output": [
-        "/.Trash/é/",
-        "/́/.Trash",
-        "/ß/A/Ω/É"
-      ]
+      "input": ["/.Trash/é/", "/́/.Trash", "/ß/A/Ω/É"],
+      "output": ["/.Trash/é/", "/́/.Trash", "/ß/A/Ω/É"]
     },
     {
       "name": "random 305",
-      "input": [
-        "/Ω/Ω/Users",
-        "/Ω/Ω/Users",
-        ".././b/ß",
-        ".././b/ß",
-        "/Ω/é/./A/ab",
-        "/Ω/é",
-        "/b"
-      ],
-      "output": [
-        "/Ω/Ω/Users",
-        ".././b/ß",
-        "/Ω/é",
-        "/b"
-      ]
+      "input": ["/Ω/Ω/Users", "/Ω/Ω/Users", ".././b/ß", ".././b/ß", "/Ω/é/./A/ab", "/Ω/é", "/b"],
+      "output": ["/Ω/Ω/Users", ".././b/ß", "/Ω/é", "/b"]
     },
-    {
-      "name": "random 306",
-      "input": [
-        "/é/ß/x y/Ω"
-      ],
-      "output": [
-        "/é/ß/x y/Ω"
-      ]
-    },
+    {"name": "random 306", "input": ["/é/ß/x y/Ω"], "output": ["/é/ß/x y/Ω"]},
     {
       "name": "random 307",
       "input": [
@@ -4861,54 +1815,18 @@
         "/.Trash/a/Ω/é",
         "/.Trash/é/Users"
       ],
-      "output": [
-        "/Users/x y/Ω",
-        "/.Trash/x y/x y/a",
-        "/.Trash/",
-        "/.Trash/a/Ω/é",
-        "/.Trash/é/Users"
-      ]
+      "output": ["/Users/x y/Ω", "/.Trash/x y/x y/a", "/.Trash/", "/.Trash/a/Ω/é", "/.Trash/é/Users"]
     },
-    {
-      "name": "random 308",
-      "input": [
-        "/A/Users/Ω"
-      ],
-      "output": [
-        "/A/Users/Ω"
-      ]
-    },
+    {"name": "random 308", "input": ["/A/Users/Ω"], "output": ["/A/Users/Ω"]},
     {
       "name": "random 309",
-      "input": [
-        "/É/é",
-        "/É/a",
-        "/É/a",
-        "/É/a",
-        "/É/a",
-        "/É/a",
-        "/É/a"
-      ],
-      "output": [
-        "/É/é",
-        "/É/a"
-      ]
+      "input": ["/É/é", "/É/a", "/É/a", "/É/a", "/É/a", "/É/a", "/É/a"],
+      "output": ["/É/é", "/É/a"]
     },
     {
       "name": "random 310",
-      "input": [
-        "/a/A/Users",
-        "/x y/.Trash/Ω/́",
-        "/x y/.Trash/Ω/́",
-        "/..",
-        "/a/A/Users",
-        "/a/A/Users"
-      ],
-      "output": [
-        "/a/A/Users",
-        "/x y/.Trash/Ω/́",
-        "/.."
-      ]
+      "input": ["/a/A/Users", "/x y/.Trash/Ω/́", "/x y/.Trash/Ω/́", "/..", "/a/A/Users", "/a/A/Users"],
+      "output": ["/a/A/Users", "/x y/.Trash/Ω/́", "/.."]
     },
     {
       "name": "random 311",
@@ -4921,113 +1839,23 @@
         "/../Volumes/é/é",
         "/.Trash/.."
       ],
-      "output": [
-        "ab/É/..",
-        "/.Trash",
-        "/../Volumes/é/",
-        "/../Volumes/é/é"
-      ]
+      "output": ["ab/É/..", "/.Trash", "/../Volumes/é/", "/../Volumes/é/é"]
     },
-    {
-      "name": "random 312",
-      "input": [
-        "/ß/a/.Trash/ß/ab/é"
-      ],
-      "output": [
-        "/ß/a/.Trash/ß/ab/é"
-      ]
-    },
-    {
-      "name": "random 313",
-      "input": [
-        "/Ω//🎉",
-        "/./é/a",
-        "/x y/b",
-        "/"
-      ],
-      "output": [
-        "/"
-      ]
-    },
-    {
-      "name": "random 314",
-      "input": [
-        "/b",
-        "/é/.Trash/",
-        "/Volumes"
-      ],
-      "output": [
-        "/b",
-        "/é/.Trash/",
-        "/Volumes"
-      ]
-    },
+    {"name": "random 312", "input": ["/ß/a/.Trash/ß/ab/é"], "output": ["/ß/a/.Trash/ß/ab/é"]},
+    {"name": "random 313", "input": ["/Ω//🎉", "/./é/a", "/x y/b", "/"], "output": ["/"]},
+    {"name": "random 314", "input": ["/b", "/é/.Trash/", "/Volumes"], "output": ["/b", "/é/.Trash/", "/Volumes"]},
     {
       "name": "random 315",
-      "input": [
-        "/b/́/Users/É",
-        "/b/́/Users/É",
-        "/́/🎉/É/é",
-        "/A/../́/x y"
-      ],
-      "output": [
-        "/b/́/Users/É",
-        "/́/🎉/É/é",
-        "/A/../́/x y"
-      ]
+      "input": ["/b/́/Users/É", "/b/́/Users/É", "/́/🎉/É/é", "/A/../́/x y"],
+      "output": ["/b/́/Users/É", "/́/🎉/É/é", "/A/../́/x y"]
     },
-    {
-      "name": "random 316",
-      "input": [
-        "/é/́/ß/",
-        "/é/́/ß/",
-        "/.Trash/́"
-      ],
-      "output": [
-        "/é/́/ß/",
-        "/.Trash/́"
-      ]
-    },
+    {"name": "random 316", "input": ["/é/́/ß/", "/é/́/ß/", "/.Trash/́"], "output": ["/é/́/ß/", "/.Trash/́"]},
     {
       "name": "random 317",
-      "input": [
-        "ab",
-        "/́/A",
-        "/́/A",
-        "/́/A/",
-        "/́/A/",
-        "/́/A",
-        "Ω"
-      ],
-      "output": [
-        "ab",
-        "/́/A",
-        "Ω"
-      ]
+      "input": ["ab", "/́/A", "/́/A", "/́/A/", "/́/A/", "/́/A", "Ω"],
+      "output": ["ab", "/́/A", "Ω"]
     },
-    {
-      "name": "random 318",
-      "input": [
-        "/a/SS/Ω/A",
-        "/a/SS/Ω/A",
-        "/a/SS/Ω/A"
-      ],
-      "output": [
-        "/a/SS/Ω/A"
-      ]
-    },
-    {
-      "name": "random 319",
-      "input": [
-        "/ab",
-        "/ab",
-        "/",
-        "/ab/.Trash/x y",
-        "/ab"
-      ],
-      "output": [
-        "/"
-      ]
-    }
+    {"name": "random 318", "input": ["/a/SS/Ω/A", "/a/SS/Ω/A", "/a/SS/Ω/A"], "output": ["/a/SS/Ω/A"]},
+    {"name": "random 319", "input": ["/ab", "/ab", "/", "/ab/.Trash/x y", "/ab"], "output": ["/"]}
   ]
 }

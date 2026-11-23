@@ -2,31 +2,11 @@
   "cases": [
     {
       "name": "0: 6 bytes",
-      "input": {
-        "baseName": "report",
-        "suffix": " copy",
-        "extension": ".txt"
-      },
+      "input": {"baseName": "report", "suffix": " copy", "extension": ".txt"},
       "output": "report copy.txt"
     },
-    {
-      "name": "1: 0 bytes",
-      "input": {
-        "baseName": "",
-        "suffix": " copy",
-        "extension": ""
-      },
-      "output": " copy"
-    },
-    {
-      "name": "2: 0 bytes",
-      "input": {
-        "baseName": "",
-        "suffix": " copy",
-        "extension": ".txt"
-      },
-      "output": " copy.txt"
-    },
+    {"name": "1: 0 bytes", "input": {"baseName": "", "suffix": " copy", "extension": ""}, "output": " copy"},
+    {"name": "2: 0 bytes", "input": {"baseName": "", "suffix": " copy", "extension": ".txt"}, "output": " copy.txt"},
     {
       "name": "3: 255 bytes",
       "input": {

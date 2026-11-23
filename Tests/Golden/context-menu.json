@@ -1,1075 +1,240 @@
 {
   "bases": {
     "content": {
-      "input": {
-        "kind": "items",
-        "surface": "content",
-        "options": {}
-      },
+      "input": {"kind": "items", "surface": "content", "options": {}},
       "output": [
-        {
-          "id": "open",
-          "label": "Open",
-          "icon": "openFile"
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openInViewer",
-          "label": "Open in Viewer",
-          "icon": "openFile"
-        },
-        {
-          "id": "openInNewTab",
-          "label": "Open in New Tab",
-          "icon": "openInNewTab"
-        },
-        {
-          "id": "openInNewWindow",
-          "label": "Open in New Window",
-          "icon": "openInNewWindow"
-        },
-        {
-          "id": "otherPane",
-          "label": "Other Pane",
-          "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "icon": "twoPanes",
-          "id": "openInOtherPane",
-          "label": "Open in Other Pane"
-        },
-        {
-          "id": "quickLook",
-          "label": "Quick Look",
-          "icon": "quickLook"
-        },
-        {
-          "id": "showOriginal",
-          "label": "Show Original",
-          "icon": "showOriginal"
-        },
-        {
-          "id": "edit",
-          "label": "Edit in Text Editor",
-          "icon": "edit"
-        },
-        {
-          "id": "showPackageContents",
-          "label": "Show Package Contents",
-          "icon": "showPackageContents"
-        },
-        {
-          "type": "separator",
-          "key": "separator-open"
-        },
-        {
-          "id": "showInfo",
-          "label": "Show Info",
-          "icon": "showInfo"
-        },
-        {
-          "id": "calculateSize",
-          "label": "Calculate Size",
-          "icon": "calculateSize"
-        },
-        {
-          "type": "separator",
-          "key": "separator-info"
-        },
-        {
-          "id": "cut",
-          "label": "Cut",
-          "icon": "cut"
-        },
-        {
-          "id": "copy",
-          "label": "Copy",
-          "icon": "copy"
-        },
-        {
-          "id": "addToCut",
-          "label": "Add to Cut Items",
-          "icon": "cut"
-        },
-        {
-          "id": "addToCopied",
-          "label": "Add to Copied Items",
-          "icon": "copy"
-        },
-        {
-          "id": "switchClipboardMode",
-          "label": "Copy Instead of Moving",
-          "icon": "copy"
-        },
-        {
-          "id": "removeFromClipboard",
-          "label": "Remove from Clipboard",
-          "icon": "removeFromClipboard"
-        },
-        {
-          "id": "paste",
-          "label": "Paste into Folder",
-          "icon": "paste"
-        },
-        {
-          "id": "copyPath",
-          "label": "Copy Path",
-          "icon": "copyPath"
-        },
-        {
-          "id": "copyContents",
-          "label": "Copy Contents",
-          "icon": "copyContents"
-        },
-        {
-          "type": "separator",
-          "key": "separator-clipboard"
-        },
-        {
-          "id": "rename",
-          "label": "Rename",
-          "icon": "rename"
-        },
-        {
-          "id": "duplicate",
-          "label": "Duplicate",
-          "icon": "duplicate"
-        },
-        {
-          "id": "makeAlias",
-          "label": "Make Alias",
-          "icon": "makeAlias"
-        },
-        {
-          "id": "move",
-          "label": "Move to…",
-          "icon": "move"
-        },
-        {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
-        },
-        {
-          "id": "newFolderWithSelection",
-          "label": "New Folder with Selection",
-          "icon": "newFolder"
-        },
-        {
-          "type": "separator",
-          "key": "separator-rename"
-        },
-        {
-          "id": "compress",
-          "label": "Compress",
-          "icon": "compress"
-        },
-        {
-          "id": "extract",
-          "label": "Extract",
-          "icon": "extract"
-        },
-        {
-          "id": "extractTo",
-          "label": "Extract To…",
-          "icon": "extract"
-        },
-        {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
-          "type": "separator",
-          "key": "separator-organize"
-        },
-        {
-          "id": "share",
-          "label": "Share…",
-          "icon": "share"
-        },
-        {
-          "id": "saveAsTemplate",
-          "label": "Save as Template",
-          "icon": "newFile"
-        },
-        {
-          "id": "toggleFavorite",
-          "label": "Add to Favorites",
-          "icon": "favorite"
-        },
-        {
-          "id": "terminal",
-          "label": "Open in Terminal",
-          "icon": "terminal"
-        },
-        {
-          "id": "showInFinder",
-          "label": "Show in Finder",
-          "icon": "showInFinder"
-        },
-        {
-          "type": "separator",
-          "key": "separator-apps"
-        },
-        {
-          "id": "trash",
-          "label": "Move to Trash",
-          "icon": "trash",
-          "destructive": true
-        }
+        {"id": "open", "label": "Open", "icon": "openFile"},
+        {"id": "openWith", "label": "Open With", "icon": "openWith", "hasSubmenu": true},
+        {"id": "openInViewer", "label": "Open in Viewer", "icon": "openFile"},
+        {"id": "openInNewTab", "label": "Open in New Tab", "icon": "openInNewTab"},
+        {"id": "openInNewWindow", "label": "Open in New Window", "icon": "openInNewWindow"},
+        {"id": "otherPane", "label": "Other Pane", "icon": "twoPanes", "hasSubmenu": true},
+        {"icon": "twoPanes", "id": "openInOtherPane", "label": "Open in Other Pane"},
+        {"id": "quickLook", "label": "Quick Look", "icon": "quickLook"},
+        {"id": "showOriginal", "label": "Show Original", "icon": "showOriginal"},
+        {"id": "edit", "label": "Edit in Text Editor", "icon": "edit"},
+        {"id": "showPackageContents", "label": "Show Package Contents", "icon": "showPackageContents"},
+        {"type": "separator", "key": "separator-open"},
+        {"id": "showInfo", "label": "Show Info", "icon": "showInfo"},
+        {"id": "calculateSize", "label": "Calculate Size", "icon": "calculateSize"},
+        {"type": "separator", "key": "separator-info"},
+        {"id": "cut", "label": "Cut", "icon": "cut"},
+        {"id": "copy", "label": "Copy", "icon": "copy"},
+        {"id": "addToCut", "label": "Add to Cut Items", "icon": "cut"},
+        {"id": "addToCopied", "label": "Add to Copied Items", "icon": "copy"},
+        {"id": "switchClipboardMode", "label": "Copy Instead of Moving", "icon": "copy"},
+        {"id": "removeFromClipboard", "label": "Remove from Clipboard", "icon": "removeFromClipboard"},
+        {"id": "paste", "label": "Paste into Folder", "icon": "paste"},
+        {"id": "copyPath", "label": "Copy Path", "icon": "copyPath"},
+        {"id": "copyContents", "label": "Copy Contents", "icon": "copyContents"},
+        {"type": "separator", "key": "separator-clipboard"},
+        {"id": "rename", "label": "Rename", "icon": "rename"},
+        {"id": "duplicate", "label": "Duplicate", "icon": "duplicate"},
+        {"id": "makeAlias", "label": "Make Alias", "icon": "makeAlias"},
+        {"id": "move", "label": "Move to…", "icon": "move"},
+        {"id": "newFolder", "label": "New Folder", "icon": "newFolder"},
+        {"id": "newFolderWithSelection", "label": "New Folder with Selection", "icon": "newFolder"},
+        {"type": "separator", "key": "separator-rename"},
+        {"id": "compress", "label": "Compress", "icon": "compress"},
+        {"id": "extract", "label": "Extract", "icon": "extract"},
+        {"id": "extractTo", "label": "Extract To…", "icon": "extract"},
+        {"id": "convertImages", "label": "Convert Images…", "icon": "convertImages"},
+        {"type": "separator", "key": "separator-organize"},
+        {"id": "share", "label": "Share…", "icon": "share"},
+        {"id": "saveAsTemplate", "label": "Save as Template", "icon": "newFile"},
+        {"id": "toggleFavorite", "label": "Add to Favorites", "icon": "favorite"},
+        {"id": "terminal", "label": "Open in Terminal", "icon": "terminal"},
+        {"id": "showInFinder", "label": "Show in Finder", "icon": "showInFinder"},
+        {"type": "separator", "key": "separator-apps"},
+        {"id": "trash", "label": "Move to Trash", "icon": "trash", "destructive": true}
       ]
     },
     "search": {
-      "input": {
-        "kind": "items",
-        "surface": "search",
-        "options": {}
-      },
+      "input": {"kind": "items", "surface": "search", "options": {}},
       "output": [
-        {
-          "id": "revealInFolder",
-          "label": "Reveal in Folder",
-          "icon": "revealInFolder"
-        },
-        {
-          "type": "separator",
-          "key": "separator-reveal"
-        },
-        {
-          "id": "open",
-          "label": "Open",
-          "icon": "openFile"
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openInViewer",
-          "label": "Open in Viewer",
-          "icon": "openFile"
-        },
-        {
-          "id": "openInNewTab",
-          "label": "Open in New Tab",
-          "icon": "openInNewTab"
-        },
-        {
-          "id": "openInNewWindow",
-          "label": "Open in New Window",
-          "icon": "openInNewWindow"
-        },
-        {
-          "id": "otherPane",
-          "label": "Other Pane",
-          "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "icon": "twoPanes",
-          "id": "openInOtherPane",
-          "label": "Open in Other Pane"
-        },
-        {
-          "id": "quickLook",
-          "label": "Quick Look",
-          "icon": "quickLook"
-        },
-        {
-          "id": "showOriginal",
-          "label": "Show Original",
-          "icon": "showOriginal"
-        },
-        {
-          "id": "edit",
-          "label": "Edit in Text Editor",
-          "icon": "edit"
-        },
-        {
-          "id": "showPackageContents",
-          "label": "Show Package Contents",
-          "icon": "showPackageContents"
-        },
-        {
-          "type": "separator",
-          "key": "separator-open"
-        },
-        {
-          "id": "showInfo",
-          "label": "Show Info",
-          "icon": "showInfo"
-        },
-        {
-          "id": "calculateSize",
-          "label": "Calculate Size",
-          "icon": "calculateSize"
-        },
-        {
-          "type": "separator",
-          "key": "separator-info"
-        },
-        {
-          "id": "cut",
-          "label": "Cut",
-          "icon": "cut"
-        },
-        {
-          "id": "copy",
-          "label": "Copy",
-          "icon": "copy"
-        },
-        {
-          "id": "addToCut",
-          "label": "Add to Cut Items",
-          "icon": "cut"
-        },
-        {
-          "id": "addToCopied",
-          "label": "Add to Copied Items",
-          "icon": "copy"
-        },
-        {
-          "id": "switchClipboardMode",
-          "label": "Copy Instead of Moving",
-          "icon": "copy"
-        },
-        {
-          "id": "removeFromClipboard",
-          "label": "Remove from Clipboard",
-          "icon": "removeFromClipboard"
-        },
-        {
-          "id": "paste",
-          "label": "Paste into Folder",
-          "icon": "paste"
-        },
-        {
-          "id": "copyPath",
-          "label": "Copy Path",
-          "icon": "copyPath"
-        },
-        {
-          "id": "copyContents",
-          "label": "Copy Contents",
-          "icon": "copyContents"
-        },
-        {
-          "type": "separator",
-          "key": "separator-clipboard"
-        },
-        {
-          "id": "rename",
-          "label": "Rename",
-          "icon": "rename"
-        },
-        {
-          "id": "duplicate",
-          "label": "Duplicate",
-          "icon": "duplicate"
-        },
-        {
-          "id": "makeAlias",
-          "label": "Make Alias",
-          "icon": "makeAlias"
-        },
-        {
-          "id": "move",
-          "label": "Move to…",
-          "icon": "move"
-        },
-        {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
-        },
-        {
-          "id": "newFolderWithSelection",
-          "label": "New Folder with Selection",
-          "icon": "newFolder"
-        },
-        {
-          "type": "separator",
-          "key": "separator-rename"
-        },
-        {
-          "id": "compress",
-          "label": "Compress",
-          "icon": "compress"
-        },
-        {
-          "id": "extract",
-          "label": "Extract",
-          "icon": "extract"
-        },
-        {
-          "id": "extractTo",
-          "label": "Extract To…",
-          "icon": "extract"
-        },
-        {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
-          "type": "separator",
-          "key": "separator-organize"
-        },
-        {
-          "id": "share",
-          "label": "Share…",
-          "icon": "share"
-        },
-        {
-          "id": "saveAsTemplate",
-          "label": "Save as Template",
-          "icon": "newFile"
-        },
-        {
-          "id": "toggleFavorite",
-          "label": "Add to Favorites",
-          "icon": "favorite"
-        },
-        {
-          "id": "terminal",
-          "label": "Open in Terminal",
-          "icon": "terminal"
-        },
-        {
-          "id": "showInFinder",
-          "label": "Show in Finder",
-          "icon": "showInFinder"
-        },
-        {
-          "type": "separator",
-          "key": "separator-apps"
-        },
-        {
-          "id": "trash",
-          "label": "Move to Trash",
-          "icon": "trash",
-          "destructive": true
-        }
+        {"id": "revealInFolder", "label": "Reveal in Folder", "icon": "revealInFolder"},
+        {"type": "separator", "key": "separator-reveal"},
+        {"id": "open", "label": "Open", "icon": "openFile"},
+        {"id": "openWith", "label": "Open With", "icon": "openWith", "hasSubmenu": true},
+        {"id": "openInViewer", "label": "Open in Viewer", "icon": "openFile"},
+        {"id": "openInNewTab", "label": "Open in New Tab", "icon": "openInNewTab"},
+        {"id": "openInNewWindow", "label": "Open in New Window", "icon": "openInNewWindow"},
+        {"id": "otherPane", "label": "Other Pane", "icon": "twoPanes", "hasSubmenu": true},
+        {"icon": "twoPanes", "id": "openInOtherPane", "label": "Open in Other Pane"},
+        {"id": "quickLook", "label": "Quick Look", "icon": "quickLook"},
+        {"id": "showOriginal", "label": "Show Original", "icon": "showOriginal"},
+        {"id": "edit", "label": "Edit in Text Editor", "icon": "edit"},
+        {"id": "showPackageContents", "label": "Show Package Contents", "icon": "showPackageContents"},
+        {"type": "separator", "key": "separator-open"},
+        {"id": "showInfo", "label": "Show Info", "icon": "showInfo"},
+        {"id": "calculateSize", "label": "Calculate Size", "icon": "calculateSize"},
+        {"type": "separator", "key": "separator-info"},
+        {"id": "cut", "label": "Cut", "icon": "cut"},
+        {"id": "copy", "label": "Copy", "icon": "copy"},
+        {"id": "addToCut", "label": "Add to Cut Items", "icon": "cut"},
+        {"id": "addToCopied", "label": "Add to Copied Items", "icon": "copy"},
+        {"id": "switchClipboardMode", "label": "Copy Instead of Moving", "icon": "copy"},
+        {"id": "removeFromClipboard", "label": "Remove from Clipboard", "icon": "removeFromClipboard"},
+        {"id": "paste", "label": "Paste into Folder", "icon": "paste"},
+        {"id": "copyPath", "label": "Copy Path", "icon": "copyPath"},
+        {"id": "copyContents", "label": "Copy Contents", "icon": "copyContents"},
+        {"type": "separator", "key": "separator-clipboard"},
+        {"id": "rename", "label": "Rename", "icon": "rename"},
+        {"id": "duplicate", "label": "Duplicate", "icon": "duplicate"},
+        {"id": "makeAlias", "label": "Make Alias", "icon": "makeAlias"},
+        {"id": "move", "label": "Move to…", "icon": "move"},
+        {"id": "newFolder", "label": "New Folder", "icon": "newFolder"},
+        {"id": "newFolderWithSelection", "label": "New Folder with Selection", "icon": "newFolder"},
+        {"type": "separator", "key": "separator-rename"},
+        {"id": "compress", "label": "Compress", "icon": "compress"},
+        {"id": "extract", "label": "Extract", "icon": "extract"},
+        {"id": "extractTo", "label": "Extract To…", "icon": "extract"},
+        {"id": "convertImages", "label": "Convert Images…", "icon": "convertImages"},
+        {"type": "separator", "key": "separator-organize"},
+        {"id": "share", "label": "Share…", "icon": "share"},
+        {"id": "saveAsTemplate", "label": "Save as Template", "icon": "newFile"},
+        {"id": "toggleFavorite", "label": "Add to Favorites", "icon": "favorite"},
+        {"id": "terminal", "label": "Open in Terminal", "icon": "terminal"},
+        {"id": "showInFinder", "label": "Show in Finder", "icon": "showInFinder"},
+        {"type": "separator", "key": "separator-apps"},
+        {"id": "trash", "label": "Move to Trash", "icon": "trash", "destructive": true}
       ]
     },
     "treeFolder": {
-      "input": {
-        "kind": "items",
-        "surface": "treeFolder",
-        "options": {}
-      },
+      "input": {"kind": "items", "surface": "treeFolder", "options": {}},
       "output": [
-        {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
-        },
-        {
-          "type": "separator",
-          "key": "separator-tree-new"
-        },
-        {
-          "id": "openInNewTab",
-          "label": "Open in New Tab",
-          "icon": "openInNewTab"
-        },
-        {
-          "id": "openInNewWindow",
-          "label": "Open in New Window",
-          "icon": "openInNewWindow"
-        },
-        {
-          "id": "openInOtherPane",
-          "label": "Open in Other Pane",
-          "icon": "twoPanes"
-        },
-        {
-          "id": "rootTreeHere",
-          "label": "Use as Tree Root",
-          "icon": "rootTreeHere"
-        },
-        {
-          "type": "separator",
-          "key": "separator-tree-open"
-        },
-        {
-          "id": "showInfo",
-          "label": "Show Info",
-          "icon": "showInfo"
-        },
-        {
-          "id": "calculateSize",
-          "label": "Calculate Size",
-          "icon": "calculateSize"
-        },
-        {
-          "type": "separator",
-          "key": "separator-tree-info"
-        },
-        {
-          "id": "cut",
-          "label": "Cut",
-          "icon": "cut"
-        },
-        {
-          "id": "copy",
-          "label": "Copy",
-          "icon": "copy"
-        },
-        {
-          "id": "addToCut",
-          "label": "Add to Cut Items",
-          "icon": "cut"
-        },
-        {
-          "id": "addToCopied",
-          "label": "Add to Copied Items",
-          "icon": "copy"
-        },
-        {
-          "id": "switchClipboardMode",
-          "label": "Copy Instead of Moving",
-          "icon": "copy"
-        },
-        {
-          "id": "removeFromClipboard",
-          "label": "Remove from Clipboard",
-          "icon": "removeFromClipboard"
-        },
-        {
-          "id": "paste",
-          "label": "Paste into Folder",
-          "icon": "paste"
-        },
-        {
-          "id": "copyPath",
-          "label": "Copy Path",
-          "icon": "copyPath"
-        },
-        {
-          "type": "separator",
-          "key": "separator-tree-clipboard"
-        },
-        {
-          "id": "rename",
-          "label": "Rename",
-          "icon": "rename"
-        },
-        {
-          "id": "duplicate",
-          "label": "Duplicate",
-          "icon": "duplicate"
-        },
-        {
-          "id": "makeAlias",
-          "label": "Make Alias",
-          "icon": "makeAlias"
-        },
-        {
-          "id": "move",
-          "label": "Move to…",
-          "icon": "move"
-        },
-        {
-          "type": "separator",
-          "key": "separator-tree-organize"
-        },
-        {
-          "id": "toggleFavorite",
-          "label": "Add to Favorites",
-          "icon": "favorite"
-        },
-        {
-          "id": "terminal",
-          "label": "Open in Terminal",
-          "icon": "terminal"
-        },
-        {
-          "id": "showInFinder",
-          "label": "Show in Finder",
-          "icon": "showInFinder"
-        },
-        {
-          "type": "separator",
-          "key": "separator-tree-apps"
-        },
-        {
-          "id": "trash",
-          "label": "Move to Trash",
-          "icon": "trash",
-          "destructive": true
-        },
-        {
-          "id": "deleteImmediately",
-          "label": "Delete Immediately…",
-          "icon": "deleteImmediately",
-          "destructive": true
-        }
+        {"id": "newFolder", "label": "New Folder", "icon": "newFolder"},
+        {"type": "separator", "key": "separator-tree-new"},
+        {"id": "openInNewTab", "label": "Open in New Tab", "icon": "openInNewTab"},
+        {"id": "openInNewWindow", "label": "Open in New Window", "icon": "openInNewWindow"},
+        {"id": "openInOtherPane", "label": "Open in Other Pane", "icon": "twoPanes"},
+        {"id": "rootTreeHere", "label": "Use as Tree Root", "icon": "rootTreeHere"},
+        {"type": "separator", "key": "separator-tree-open"},
+        {"id": "showInfo", "label": "Show Info", "icon": "showInfo"},
+        {"id": "calculateSize", "label": "Calculate Size", "icon": "calculateSize"},
+        {"type": "separator", "key": "separator-tree-info"},
+        {"id": "cut", "label": "Cut", "icon": "cut"},
+        {"id": "copy", "label": "Copy", "icon": "copy"},
+        {"id": "addToCut", "label": "Add to Cut Items", "icon": "cut"},
+        {"id": "addToCopied", "label": "Add to Copied Items", "icon": "copy"},
+        {"id": "switchClipboardMode", "label": "Copy Instead of Moving", "icon": "copy"},
+        {"id": "removeFromClipboard", "label": "Remove from Clipboard", "icon": "removeFromClipboard"},
+        {"id": "paste", "label": "Paste into Folder", "icon": "paste"},
+        {"id": "copyPath", "label": "Copy Path", "icon": "copyPath"},
+        {"type": "separator", "key": "separator-tree-clipboard"},
+        {"id": "rename", "label": "Rename", "icon": "rename"},
+        {"id": "duplicate", "label": "Duplicate", "icon": "duplicate"},
+        {"id": "makeAlias", "label": "Make Alias", "icon": "makeAlias"},
+        {"id": "move", "label": "Move to…", "icon": "move"},
+        {"type": "separator", "key": "separator-tree-organize"},
+        {"id": "toggleFavorite", "label": "Add to Favorites", "icon": "favorite"},
+        {"id": "terminal", "label": "Open in Terminal", "icon": "terminal"},
+        {"id": "showInFinder", "label": "Show in Finder", "icon": "showInFinder"},
+        {"type": "separator", "key": "separator-tree-apps"},
+        {"id": "trash", "label": "Move to Trash", "icon": "trash", "destructive": true},
+        {"id": "deleteImmediately", "label": "Delete Immediately…", "icon": "deleteImmediately", "destructive": true}
       ]
     },
     "favorite": {
-      "input": {
-        "kind": "items",
-        "surface": "favorite",
-        "options": {}
-      },
+      "input": {"kind": "items", "surface": "favorite", "options": {}},
       "output": [
-        {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
-        },
-        {
-          "type": "separator",
-          "key": "separator-favorite-new"
-        },
-        {
-          "id": "openInNewTab",
-          "label": "Open in New Tab",
-          "icon": "openInNewTab"
-        },
-        {
-          "id": "openInNewWindow",
-          "label": "Open in New Window",
-          "icon": "openInNewWindow"
-        },
-        {
-          "id": "openInOtherPane",
-          "label": "Open in Other Pane",
-          "icon": "twoPanes"
-        },
-        {
-          "id": "revealInTree",
-          "label": "Reveal in Tree",
-          "icon": "revealInTree"
-        },
-        {
-          "id": "rootTreeHere",
-          "label": "Use as Tree Root",
-          "icon": "rootTreeHere"
-        },
-        {
-          "type": "separator",
-          "key": "separator-favorite-eject"
-        },
-        {
-          "id": "eject",
-          "label": "Eject",
-          "icon": "eject"
-        },
-        {
-          "type": "separator",
-          "key": "separator-favorite-open"
-        },
-        {
-          "id": "showInfo",
-          "label": "Show Info",
-          "icon": "showInfo"
-        },
-        {
-          "id": "calculateSize",
-          "label": "Calculate Size",
-          "icon": "calculateSize"
-        },
-        {
-          "type": "separator",
-          "key": "separator-favorite-info"
-        },
-        {
-          "id": "paste",
-          "label": "Paste into Folder",
-          "icon": "paste"
-        },
-        {
-          "id": "copyPath",
-          "label": "Copy Path",
-          "icon": "copyPath"
-        },
-        {
-          "type": "separator",
-          "key": "separator-favorite-clipboard"
-        },
-        {
-          "id": "toggleFavorite",
-          "label": "Add to Favorites",
-          "icon": "favorite"
-        },
-        {
-          "type": "separator",
-          "key": "separator-favorite-toggle"
-        },
-        {
-          "id": "terminal",
-          "label": "Open in Terminal",
-          "icon": "terminal"
-        },
-        {
-          "id": "showInFinder",
-          "label": "Show in Finder",
-          "icon": "showInFinder"
-        },
-        {
-          "type": "separator",
-          "key": "separator-favorite-trash"
-        },
-        {
-          "id": "emptyTrash",
-          "label": "Empty Trash…",
-          "icon": "emptyTrash",
-          "destructive": true
-        }
+        {"id": "newFolder", "label": "New Folder", "icon": "newFolder"},
+        {"type": "separator", "key": "separator-favorite-new"},
+        {"id": "openInNewTab", "label": "Open in New Tab", "icon": "openInNewTab"},
+        {"id": "openInNewWindow", "label": "Open in New Window", "icon": "openInNewWindow"},
+        {"id": "openInOtherPane", "label": "Open in Other Pane", "icon": "twoPanes"},
+        {"id": "revealInTree", "label": "Reveal in Tree", "icon": "revealInTree"},
+        {"id": "rootTreeHere", "label": "Use as Tree Root", "icon": "rootTreeHere"},
+        {"type": "separator", "key": "separator-favorite-eject"},
+        {"id": "eject", "label": "Eject", "icon": "eject"},
+        {"type": "separator", "key": "separator-favorite-open"},
+        {"id": "showInfo", "label": "Show Info", "icon": "showInfo"},
+        {"id": "calculateSize", "label": "Calculate Size", "icon": "calculateSize"},
+        {"type": "separator", "key": "separator-favorite-info"},
+        {"id": "paste", "label": "Paste into Folder", "icon": "paste"},
+        {"id": "copyPath", "label": "Copy Path", "icon": "copyPath"},
+        {"type": "separator", "key": "separator-favorite-clipboard"},
+        {"id": "toggleFavorite", "label": "Add to Favorites", "icon": "favorite"},
+        {"type": "separator", "key": "separator-favorite-toggle"},
+        {"id": "terminal", "label": "Open in Terminal", "icon": "terminal"},
+        {"id": "showInFinder", "label": "Show in Finder", "icon": "showInFinder"},
+        {"type": "separator", "key": "separator-favorite-trash"},
+        {"id": "emptyTrash", "label": "Empty Trash…", "icon": "emptyTrash", "destructive": true}
       ]
     },
     "trash": {
-      "input": {
-        "kind": "items",
-        "surface": "trash",
-        "options": {}
-      },
+      "input": {"kind": "items", "surface": "trash", "options": {}},
       "output": [
-        {
-          "id": "open",
-          "label": "Open",
-          "icon": "openFile"
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openInViewer",
-          "label": "Open in Viewer",
-          "icon": "openFile"
-        },
-        {
-          "id": "openInNewTab",
-          "label": "Open in New Tab",
-          "icon": "openInNewTab"
-        },
-        {
-          "id": "openInNewWindow",
-          "label": "Open in New Window",
-          "icon": "openInNewWindow"
-        },
-        {
-          "id": "otherPane",
-          "label": "Other Pane",
-          "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "icon": "twoPanes",
-          "id": "openInOtherPane",
-          "label": "Open in Other Pane"
-        },
-        {
-          "id": "quickLook",
-          "label": "Quick Look",
-          "icon": "quickLook"
-        },
-        {
-          "id": "showOriginal",
-          "label": "Show Original",
-          "icon": "showOriginal"
-        },
-        {
-          "id": "edit",
-          "label": "Edit in Text Editor",
-          "icon": "edit"
-        },
-        {
-          "id": "showPackageContents",
-          "label": "Show Package Contents",
-          "icon": "showPackageContents"
-        },
-        {
-          "type": "separator",
-          "key": "separator-open"
-        },
-        {
-          "id": "showInfo",
-          "label": "Show Info",
-          "icon": "showInfo"
-        },
-        {
-          "id": "calculateSize",
-          "label": "Calculate Size",
-          "icon": "calculateSize"
-        },
-        {
-          "type": "separator",
-          "key": "separator-info"
-        },
-        {
-          "id": "cut",
-          "label": "Cut",
-          "icon": "cut"
-        },
-        {
-          "id": "copy",
-          "label": "Copy",
-          "icon": "copy"
-        },
-        {
-          "id": "addToCut",
-          "label": "Add to Cut Items",
-          "icon": "cut"
-        },
-        {
-          "id": "addToCopied",
-          "label": "Add to Copied Items",
-          "icon": "copy"
-        },
-        {
-          "id": "switchClipboardMode",
-          "label": "Copy Instead of Moving",
-          "icon": "copy"
-        },
-        {
-          "id": "removeFromClipboard",
-          "label": "Remove from Clipboard",
-          "icon": "removeFromClipboard"
-        },
-        {
-          "id": "paste",
-          "label": "Paste into Folder",
-          "icon": "paste"
-        },
-        {
-          "id": "copyPath",
-          "label": "Copy Path",
-          "icon": "copyPath"
-        },
-        {
-          "id": "copyContents",
-          "label": "Copy Contents",
-          "icon": "copyContents"
-        },
-        {
-          "type": "separator",
-          "key": "separator-clipboard"
-        },
-        {
-          "id": "rename",
-          "label": "Rename",
-          "icon": "rename"
-        },
-        {
-          "id": "duplicate",
-          "label": "Duplicate",
-          "icon": "duplicate"
-        },
-        {
-          "id": "makeAlias",
-          "label": "Make Alias",
-          "icon": "makeAlias"
-        },
-        {
-          "id": "move",
-          "label": "Move to…",
-          "icon": "move"
-        },
-        {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
-        },
-        {
-          "id": "newFolderWithSelection",
-          "label": "New Folder with Selection",
-          "icon": "newFolder"
-        },
-        {
-          "type": "separator",
-          "key": "separator-rename"
-        },
-        {
-          "id": "compress",
-          "label": "Compress",
-          "icon": "compress"
-        },
-        {
-          "id": "extract",
-          "label": "Extract",
-          "icon": "extract"
-        },
-        {
-          "id": "extractTo",
-          "label": "Extract To…",
-          "icon": "extract"
-        },
-        {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
-          "type": "separator",
-          "key": "separator-organize"
-        },
-        {
-          "id": "share",
-          "label": "Share…",
-          "icon": "share"
-        },
-        {
-          "id": "saveAsTemplate",
-          "label": "Save as Template",
-          "icon": "newFile"
-        },
-        {
-          "id": "toggleFavorite",
-          "label": "Add to Favorites",
-          "icon": "favorite"
-        },
-        {
-          "id": "terminal",
-          "label": "Open in Terminal",
-          "icon": "terminal"
-        },
-        {
-          "id": "showInFinder",
-          "label": "Show in Finder",
-          "icon": "showInFinder"
-        },
-        {
-          "type": "separator",
-          "key": "separator-apps"
-        },
-        {
-          "id": "trash",
-          "label": "Move to Trash",
-          "icon": "trash",
-          "destructive": true
-        },
-        {
-          "id": "deleteImmediately",
-          "label": "Delete Immediately…",
-          "icon": "deleteImmediately",
-          "destructive": true
-        }
+        {"id": "open", "label": "Open", "icon": "openFile"},
+        {"id": "openWith", "label": "Open With", "icon": "openWith", "hasSubmenu": true},
+        {"id": "openInViewer", "label": "Open in Viewer", "icon": "openFile"},
+        {"id": "openInNewTab", "label": "Open in New Tab", "icon": "openInNewTab"},
+        {"id": "openInNewWindow", "label": "Open in New Window", "icon": "openInNewWindow"},
+        {"id": "otherPane", "label": "Other Pane", "icon": "twoPanes", "hasSubmenu": true},
+        {"icon": "twoPanes", "id": "openInOtherPane", "label": "Open in Other Pane"},
+        {"id": "quickLook", "label": "Quick Look", "icon": "quickLook"},
+        {"id": "showOriginal", "label": "Show Original", "icon": "showOriginal"},
+        {"id": "edit", "label": "Edit in Text Editor", "icon": "edit"},
+        {"id": "showPackageContents", "label": "Show Package Contents", "icon": "showPackageContents"},
+        {"type": "separator", "key": "separator-open"},
+        {"id": "showInfo", "label": "Show Info", "icon": "showInfo"},
+        {"id": "calculateSize", "label": "Calculate Size", "icon": "calculateSize"},
+        {"type": "separator", "key": "separator-info"},
+        {"id": "cut", "label": "Cut", "icon": "cut"},
+        {"id": "copy", "label": "Copy", "icon": "copy"},
+        {"id": "addToCut", "label": "Add to Cut Items", "icon": "cut"},
+        {"id": "addToCopied", "label": "Add to Copied Items", "icon": "copy"},
+        {"id": "switchClipboardMode", "label": "Copy Instead of Moving", "icon": "copy"},
+        {"id": "removeFromClipboard", "label": "Remove from Clipboard", "icon": "removeFromClipboard"},
+        {"id": "paste", "label": "Paste into Folder", "icon": "paste"},
+        {"id": "copyPath", "label": "Copy Path", "icon": "copyPath"},
+        {"id": "copyContents", "label": "Copy Contents", "icon": "copyContents"},
+        {"type": "separator", "key": "separator-clipboard"},
+        {"id": "rename", "label": "Rename", "icon": "rename"},
+        {"id": "duplicate", "label": "Duplicate", "icon": "duplicate"},
+        {"id": "makeAlias", "label": "Make Alias", "icon": "makeAlias"},
+        {"id": "move", "label": "Move to…", "icon": "move"},
+        {"id": "newFolder", "label": "New Folder", "icon": "newFolder"},
+        {"id": "newFolderWithSelection", "label": "New Folder with Selection", "icon": "newFolder"},
+        {"type": "separator", "key": "separator-rename"},
+        {"id": "compress", "label": "Compress", "icon": "compress"},
+        {"id": "extract", "label": "Extract", "icon": "extract"},
+        {"id": "extractTo", "label": "Extract To…", "icon": "extract"},
+        {"id": "convertImages", "label": "Convert Images…", "icon": "convertImages"},
+        {"type": "separator", "key": "separator-organize"},
+        {"id": "share", "label": "Share…", "icon": "share"},
+        {"id": "saveAsTemplate", "label": "Save as Template", "icon": "newFile"},
+        {"id": "toggleFavorite", "label": "Add to Favorites", "icon": "favorite"},
+        {"id": "terminal", "label": "Open in Terminal", "icon": "terminal"},
+        {"id": "showInFinder", "label": "Show in Finder", "icon": "showInFinder"},
+        {"type": "separator", "key": "separator-apps"},
+        {"id": "trash", "label": "Move to Trash", "icon": "trash", "destructive": true},
+        {"id": "deleteImmediately", "label": "Delete Immediately…", "icon": "deleteImmediately", "destructive": true}
       ]
     },
     "background": {
-      "input": {
-        "kind": "items",
-        "surface": "background",
-        "options": {}
-      },
+      "input": {"kind": "items", "surface": "background", "options": {}},
       "output": [
-        {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
-        },
-        {
-          "id": "newFile",
-          "label": "New File",
-          "icon": "newFile",
-          "hasSubmenu": true
-        },
-        {
-          "type": "separator",
-          "key": "separator-background-organize"
-        },
-        {
-          "id": "showInfo",
-          "label": "Show Info",
-          "icon": "showInfo"
-        },
-        {
-          "id": "calculateSize",
-          "label": "Calculate Size",
-          "icon": "calculateSize"
-        },
-        {
-          "type": "separator",
-          "key": "separator-background-info"
-        },
-        {
-          "id": "paste",
-          "label": "Paste",
-          "icon": "paste"
-        },
-        {
-          "id": "pasteAsFile",
-          "label": "Paste as File",
-          "icon": "pasteAsFile"
-        },
-        {
-          "id": "copyPath",
-          "label": "Copy Path",
-          "icon": "copyPath"
-        },
-        {
-          "type": "separator",
-          "key": "separator-background-clipboard"
-        },
-        {
-          "id": "viewAs",
-          "label": "View As",
-          "icon": "viewAs",
-          "hasSubmenu": true
-        },
-        {
-          "id": "groupBy",
-          "label": "Group By",
-          "icon": "groupBy",
-          "hasSubmenu": true
-        },
-        {
-          "id": "sortBy",
-          "label": "Sort By",
-          "icon": "sortBy",
-          "hasSubmenu": true
-        },
-        {
-          "id": "folderView",
-          "label": "Folder View",
-          "icon": "folderView",
-          "hasSubmenu": true
-        },
-        {
-          "id": "otherPane",
-          "label": "Other Pane",
-          "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "type": "separator",
-          "key": "separator-background-view"
-        },
-        {
-          "id": "terminal",
-          "label": "Open in Terminal",
-          "icon": "terminal"
-        },
-        {
-          "id": "showInFinder",
-          "label": "Show in Finder",
-          "icon": "showInFinder"
-        },
-        {
-          "type": "separator",
-          "key": "separator-background-trash"
-        },
-        {
-          "id": "emptyTrash",
-          "label": "Empty Trash…",
-          "icon": "emptyTrash",
-          "destructive": true
-        }
+        {"id": "newFolder", "label": "New Folder", "icon": "newFolder"},
+        {"id": "newFile", "label": "New File", "icon": "newFile", "hasSubmenu": true},
+        {"type": "separator", "key": "separator-background-organize"},
+        {"id": "showInfo", "label": "Show Info", "icon": "showInfo"},
+        {"id": "calculateSize", "label": "Calculate Size", "icon": "calculateSize"},
+        {"type": "separator", "key": "separator-background-info"},
+        {"id": "paste", "label": "Paste", "icon": "paste"},
+        {"id": "pasteAsFile", "label": "Paste as File", "icon": "pasteAsFile"},
+        {"id": "copyPath", "label": "Copy Path", "icon": "copyPath"},
+        {"type": "separator", "key": "separator-background-clipboard"},
+        {"id": "viewAs", "label": "View As", "icon": "viewAs", "hasSubmenu": true},
+        {"id": "groupBy", "label": "Group By", "icon": "groupBy", "hasSubmenu": true},
+        {"id": "sortBy", "label": "Sort By", "icon": "sortBy", "hasSubmenu": true},
+        {"id": "folderView", "label": "Folder View", "icon": "folderView", "hasSubmenu": true},
+        {"id": "otherPane", "label": "Other Pane", "icon": "twoPanes", "hasSubmenu": true},
+        {"type": "separator", "key": "separator-background-view"},
+        {"id": "terminal", "label": "Open in Terminal", "icon": "terminal"},
+        {"id": "showInFinder", "label": "Show in Finder", "icon": "showInFinder"},
+        {"type": "separator", "key": "separator-background-trash"},
+        {"id": "emptyTrash", "label": "Empty Trash…", "icon": "emptyTrash", "destructive": true}
       ]
     }
   },
@@ -1077,33 +242,13 @@
     {
       "name": "content: remove from favorites",
       "base": "content",
-      "input": {
-        "kind": "items",
-        "surface": "content",
-        "options": {
-          "favoriteToggleLabel": "Remove from Favorites"
-        }
-      },
+      "input": {"kind": "items", "surface": "content", "options": {"favoriteToggleLabel": "Remove from Favorites"}},
       "changes": {
-        "$remove": [
-          {
-            "id": "toggleFavorite",
-            "label": "Add to Favorites",
-            "icon": "favorite"
-          }
-        ],
+        "$remove": [{"id": "toggleFavorite", "label": "Add to Favorites", "icon": "favorite"}],
         "$insert": [
           [
-            {
-              "id": "saveAsTemplate",
-              "label": "Save as Template",
-              "icon": "newFile"
-            },
-            {
-              "id": "toggleFavorite",
-              "label": "Remove from Favorites",
-              "icon": "favorite"
-            }
+            {"id": "saveAsTemplate", "label": "Save as Template", "icon": "newFile"},
+            {"id": "toggleFavorite", "label": "Remove from Favorites", "icon": "favorite"}
           ]
         ]
       }
@@ -1111,33 +256,13 @@
     {
       "name": "content: editor",
       "base": "content",
-      "input": {
-        "kind": "items",
-        "surface": "content",
-        "options": {
-          "textEditorName": "Visual Studio Code"
-        }
-      },
+      "input": {"kind": "items", "surface": "content", "options": {"textEditorName": "Visual Studio Code"}},
       "changes": {
-        "$remove": [
-          {
-            "id": "edit",
-            "label": "Edit in Text Editor",
-            "icon": "edit"
-          }
-        ],
+        "$remove": [{"id": "edit", "label": "Edit in Text Editor", "icon": "edit"}],
         "$insert": [
           [
-            {
-              "id": "showOriginal",
-              "label": "Show Original",
-              "icon": "showOriginal"
-            },
-            {
-              "id": "edit",
-              "label": "Edit in Visual Studio Code",
-              "icon": "edit"
-            }
+            {"id": "showOriginal", "label": "Show Original", "icon": "showOriginal"},
+            {"id": "edit", "label": "Edit in Visual Studio Code", "icon": "edit"}
           ]
         ]
       }
@@ -1145,62 +270,22 @@
     {
       "name": "content: targets a folder",
       "base": "content",
-      "input": {
-        "kind": "items",
-        "surface": "content",
-        "options": {
-          "targetsFolder": true
-        }
-      },
+      "input": {"kind": "items", "surface": "content", "options": {"targetsFolder": true}},
       "changes": {
-        "$remove": [
-          {
-            "id": "open",
-            "label": "Open",
-            "icon": "openFile"
-          }
-        ],
-        "$insert": [
-          [
-            null,
-            {
-              "id": "open",
-              "label": "Open",
-              "icon": "open"
-            }
-          ]
-        ]
+        "$remove": [{"id": "open", "label": "Open", "icon": "openFile"}],
+        "$insert": [[null, {"id": "open", "label": "Open", "icon": "open"}]]
       }
     },
     {
       "name": "content: several items",
       "base": "content",
-      "input": {
-        "kind": "items",
-        "surface": "content",
-        "options": {
-          "renameLabel": "Rename 1,204 Items…"
-        }
-      },
+      "input": {"kind": "items", "surface": "content", "options": {"renameLabel": "Rename 1,204 Items…"}},
       "changes": {
-        "$remove": [
-          {
-            "id": "rename",
-            "label": "Rename",
-            "icon": "rename"
-          }
-        ],
+        "$remove": [{"id": "rename", "label": "Rename", "icon": "rename"}],
         "$insert": [
           [
-            {
-              "type": "separator",
-              "key": "separator-clipboard"
-            },
-            {
-              "id": "rename",
-              "label": "Rename 1,204 Items…",
-              "icon": "rename"
-            }
+            {"type": "separator", "key": "separator-clipboard"},
+            {"id": "rename", "label": "Rename 1,204 Items…", "icon": "rename"}
           ]
         ]
       }
@@ -1208,13 +293,7 @@
     {
       "name": "content: eject",
       "base": "content",
-      "input": {
-        "kind": "items",
-        "surface": "content",
-        "options": {
-          "ejectLabel": "Eject “Backup”"
-        }
-      },
+      "input": {"kind": "items", "surface": "content", "options": {"ejectLabel": "Eject “Backup”"}},
       "changes": {}
     },
     {
@@ -1223,45 +302,20 @@
       "input": {
         "kind": "items",
         "surface": "content",
-        "options": {
-          "favoriteToggleLabel": null,
-          "textEditorName": null,
-          "renameLabel": null,
-          "ejectLabel": null
-        }
+        "options": {"favoriteToggleLabel": null, "textEditorName": null, "renameLabel": null, "ejectLabel": null}
       },
       "changes": {}
     },
     {
       "name": "search: remove from favorites",
       "base": "search",
-      "input": {
-        "kind": "items",
-        "surface": "search",
-        "options": {
-          "favoriteToggleLabel": "Remove from Favorites"
-        }
-      },
+      "input": {"kind": "items", "surface": "search", "options": {"favoriteToggleLabel": "Remove from Favorites"}},
       "changes": {
-        "$remove": [
-          {
-            "id": "toggleFavorite",
-            "label": "Add to Favorites",
-            "icon": "favorite"
-          }
-        ],
+        "$remove": [{"id": "toggleFavorite", "label": "Add to Favorites", "icon": "favorite"}],
         "$insert": [
           [
-            {
-              "id": "saveAsTemplate",
-              "label": "Save as Template",
-              "icon": "newFile"
-            },
-            {
-              "id": "toggleFavorite",
-              "label": "Remove from Favorites",
-              "icon": "favorite"
-            }
+            {"id": "saveAsTemplate", "label": "Save as Template", "icon": "newFile"},
+            {"id": "toggleFavorite", "label": "Remove from Favorites", "icon": "favorite"}
           ]
         ]
       }
@@ -1269,33 +323,13 @@
     {
       "name": "search: editor",
       "base": "search",
-      "input": {
-        "kind": "items",
-        "surface": "search",
-        "options": {
-          "textEditorName": "Visual Studio Code"
-        }
-      },
+      "input": {"kind": "items", "surface": "search", "options": {"textEditorName": "Visual Studio Code"}},
       "changes": {
-        "$remove": [
-          {
-            "id": "edit",
-            "label": "Edit in Text Editor",
-            "icon": "edit"
-          }
-        ],
+        "$remove": [{"id": "edit", "label": "Edit in Text Editor", "icon": "edit"}],
         "$insert": [
           [
-            {
-              "id": "showOriginal",
-              "label": "Show Original",
-              "icon": "showOriginal"
-            },
-            {
-              "id": "edit",
-              "label": "Edit in Visual Studio Code",
-              "icon": "edit"
-            }
+            {"id": "showOriginal", "label": "Show Original", "icon": "showOriginal"},
+            {"id": "edit", "label": "Edit in Visual Studio Code", "icon": "edit"}
           ]
         ]
       }
@@ -1303,65 +337,24 @@
     {
       "name": "search: targets a folder",
       "base": "search",
-      "input": {
-        "kind": "items",
-        "surface": "search",
-        "options": {
-          "targetsFolder": true
-        }
-      },
+      "input": {"kind": "items", "surface": "search", "options": {"targetsFolder": true}},
       "changes": {
-        "$remove": [
-          {
-            "id": "open",
-            "label": "Open",
-            "icon": "openFile"
-          }
-        ],
+        "$remove": [{"id": "open", "label": "Open", "icon": "openFile"}],
         "$insert": [
-          [
-            {
-              "type": "separator",
-              "key": "separator-reveal"
-            },
-            {
-              "id": "open",
-              "label": "Open",
-              "icon": "open"
-            }
-          ]
+          [{"type": "separator", "key": "separator-reveal"}, {"id": "open", "label": "Open", "icon": "open"}]
         ]
       }
     },
     {
       "name": "search: several items",
       "base": "search",
-      "input": {
-        "kind": "items",
-        "surface": "search",
-        "options": {
-          "renameLabel": "Rename 1,204 Items…"
-        }
-      },
+      "input": {"kind": "items", "surface": "search", "options": {"renameLabel": "Rename 1,204 Items…"}},
       "changes": {
-        "$remove": [
-          {
-            "id": "rename",
-            "label": "Rename",
-            "icon": "rename"
-          }
-        ],
+        "$remove": [{"id": "rename", "label": "Rename", "icon": "rename"}],
         "$insert": [
           [
-            {
-              "type": "separator",
-              "key": "separator-clipboard"
-            },
-            {
-              "id": "rename",
-              "label": "Rename 1,204 Items…",
-              "icon": "rename"
-            }
+            {"type": "separator", "key": "separator-clipboard"},
+            {"id": "rename", "label": "Rename 1,204 Items…", "icon": "rename"}
           ]
         ]
       }
@@ -1369,13 +362,7 @@
     {
       "name": "search: eject",
       "base": "search",
-      "input": {
-        "kind": "items",
-        "surface": "search",
-        "options": {
-          "ejectLabel": "Eject “Backup”"
-        }
-      },
+      "input": {"kind": "items", "surface": "search", "options": {"ejectLabel": "Eject “Backup”"}},
       "changes": {}
     },
     {
@@ -1384,44 +371,20 @@
       "input": {
         "kind": "items",
         "surface": "search",
-        "options": {
-          "favoriteToggleLabel": null,
-          "textEditorName": null,
-          "renameLabel": null,
-          "ejectLabel": null
-        }
+        "options": {"favoriteToggleLabel": null, "textEditorName": null, "renameLabel": null, "ejectLabel": null}
       },
       "changes": {}
     },
     {
       "name": "treeFolder: remove from favorites",
       "base": "treeFolder",
-      "input": {
-        "kind": "items",
-        "surface": "treeFolder",
-        "options": {
-          "favoriteToggleLabel": "Remove from Favorites"
-        }
-      },
+      "input": {"kind": "items", "surface": "treeFolder", "options": {"favoriteToggleLabel": "Remove from Favorites"}},
       "changes": {
-        "$remove": [
-          {
-            "id": "toggleFavorite",
-            "label": "Add to Favorites",
-            "icon": "favorite"
-          }
-        ],
+        "$remove": [{"id": "toggleFavorite", "label": "Add to Favorites", "icon": "favorite"}],
         "$insert": [
           [
-            {
-              "type": "separator",
-              "key": "separator-tree-organize"
-            },
-            {
-              "id": "toggleFavorite",
-              "label": "Remove from Favorites",
-              "icon": "favorite"
-            }
+            {"type": "separator", "key": "separator-tree-organize"},
+            {"id": "toggleFavorite", "label": "Remove from Favorites", "icon": "favorite"}
           ]
         ]
       }
@@ -1429,49 +392,25 @@
     {
       "name": "treeFolder: editor",
       "base": "treeFolder",
-      "input": {
-        "kind": "items",
-        "surface": "treeFolder",
-        "options": {
-          "textEditorName": "Visual Studio Code"
-        }
-      },
+      "input": {"kind": "items", "surface": "treeFolder", "options": {"textEditorName": "Visual Studio Code"}},
       "changes": {}
     },
     {
       "name": "treeFolder: targets a folder",
       "base": "treeFolder",
-      "input": {
-        "kind": "items",
-        "surface": "treeFolder",
-        "options": {
-          "targetsFolder": true
-        }
-      },
+      "input": {"kind": "items", "surface": "treeFolder", "options": {"targetsFolder": true}},
       "changes": {}
     },
     {
       "name": "treeFolder: several items",
       "base": "treeFolder",
-      "input": {
-        "kind": "items",
-        "surface": "treeFolder",
-        "options": {
-          "renameLabel": "Rename 1,204 Items…"
-        }
-      },
+      "input": {"kind": "items", "surface": "treeFolder", "options": {"renameLabel": "Rename 1,204 Items…"}},
       "changes": {}
     },
     {
       "name": "treeFolder: eject",
       "base": "treeFolder",
-      "input": {
-        "kind": "items",
-        "surface": "treeFolder",
-        "options": {
-          "ejectLabel": "Eject “Backup”"
-        }
-      },
+      "input": {"kind": "items", "surface": "treeFolder", "options": {"ejectLabel": "Eject “Backup”"}},
       "changes": {}
     },
     {
@@ -1480,44 +419,20 @@
       "input": {
         "kind": "items",
         "surface": "treeFolder",
-        "options": {
-          "favoriteToggleLabel": null,
-          "textEditorName": null,
-          "renameLabel": null,
-          "ejectLabel": null
-        }
+        "options": {"favoriteToggleLabel": null, "textEditorName": null, "renameLabel": null, "ejectLabel": null}
       },
       "changes": {}
     },
     {
       "name": "favorite: remove from favorites",
       "base": "favorite",
-      "input": {
-        "kind": "items",
-        "surface": "favorite",
-        "options": {
-          "favoriteToggleLabel": "Remove from Favorites"
-        }
-      },
+      "input": {"kind": "items", "surface": "favorite", "options": {"favoriteToggleLabel": "Remove from Favorites"}},
       "changes": {
-        "$remove": [
-          {
-            "id": "toggleFavorite",
-            "label": "Add to Favorites",
-            "icon": "favorite"
-          }
-        ],
+        "$remove": [{"id": "toggleFavorite", "label": "Add to Favorites", "icon": "favorite"}],
         "$insert": [
           [
-            {
-              "type": "separator",
-              "key": "separator-favorite-clipboard"
-            },
-            {
-              "id": "toggleFavorite",
-              "label": "Remove from Favorites",
-              "icon": "favorite"
-            }
+            {"type": "separator", "key": "separator-favorite-clipboard"},
+            {"id": "toggleFavorite", "label": "Remove from Favorites", "icon": "favorite"}
           ]
         ]
       }
@@ -1525,68 +440,31 @@
     {
       "name": "favorite: editor",
       "base": "favorite",
-      "input": {
-        "kind": "items",
-        "surface": "favorite",
-        "options": {
-          "textEditorName": "Visual Studio Code"
-        }
-      },
+      "input": {"kind": "items", "surface": "favorite", "options": {"textEditorName": "Visual Studio Code"}},
       "changes": {}
     },
     {
       "name": "favorite: targets a folder",
       "base": "favorite",
-      "input": {
-        "kind": "items",
-        "surface": "favorite",
-        "options": {
-          "targetsFolder": true
-        }
-      },
+      "input": {"kind": "items", "surface": "favorite", "options": {"targetsFolder": true}},
       "changes": {}
     },
     {
       "name": "favorite: several items",
       "base": "favorite",
-      "input": {
-        "kind": "items",
-        "surface": "favorite",
-        "options": {
-          "renameLabel": "Rename 1,204 Items…"
-        }
-      },
+      "input": {"kind": "items", "surface": "favorite", "options": {"renameLabel": "Rename 1,204 Items…"}},
       "changes": {}
     },
     {
       "name": "favorite: eject",
       "base": "favorite",
-      "input": {
-        "kind": "items",
-        "surface": "favorite",
-        "options": {
-          "ejectLabel": "Eject “Backup”"
-        }
-      },
+      "input": {"kind": "items", "surface": "favorite", "options": {"ejectLabel": "Eject “Backup”"}},
       "changes": {
-        "$remove": [
-          {
-            "id": "eject",
-            "label": "Eject",
-            "icon": "eject"
-          }
-        ],
+        "$remove": [{"id": "eject", "label": "Eject", "icon": "eject"}],
         "$insert": [
           [
-            {
-              "type": "separator",
-              "key": "separator-favorite-eject"
-            },
-            {
-              "id": "eject",
-              "label": "Eject “Backup”",
-              "icon": "eject"
-            }
+            {"type": "separator", "key": "separator-favorite-eject"},
+            {"id": "eject", "label": "Eject “Backup”", "icon": "eject"}
           ]
         ]
       }
@@ -1597,45 +475,20 @@
       "input": {
         "kind": "items",
         "surface": "favorite",
-        "options": {
-          "favoriteToggleLabel": null,
-          "textEditorName": null,
-          "renameLabel": null,
-          "ejectLabel": null
-        }
+        "options": {"favoriteToggleLabel": null, "textEditorName": null, "renameLabel": null, "ejectLabel": null}
       },
       "changes": {}
     },
     {
       "name": "trash: remove from favorites",
       "base": "trash",
-      "input": {
-        "kind": "items",
-        "surface": "trash",
-        "options": {
-          "favoriteToggleLabel": "Remove from Favorites"
-        }
-      },
+      "input": {"kind": "items", "surface": "trash", "options": {"favoriteToggleLabel": "Remove from Favorites"}},
       "changes": {
-        "$remove": [
-          {
-            "id": "toggleFavorite",
-            "label": "Add to Favorites",
-            "icon": "favorite"
-          }
-        ],
+        "$remove": [{"id": "toggleFavorite", "label": "Add to Favorites", "icon": "favorite"}],
         "$insert": [
           [
-            {
-              "id": "saveAsTemplate",
-              "label": "Save as Template",
-              "icon": "newFile"
-            },
-            {
-              "id": "toggleFavorite",
-              "label": "Remove from Favorites",
-              "icon": "favorite"
-            }
+            {"id": "saveAsTemplate", "label": "Save as Template", "icon": "newFile"},
+            {"id": "toggleFavorite", "label": "Remove from Favorites", "icon": "favorite"}
           ]
         ]
       }
@@ -1643,33 +496,13 @@
     {
       "name": "trash: editor",
       "base": "trash",
-      "input": {
-        "kind": "items",
-        "surface": "trash",
-        "options": {
-          "textEditorName": "Visual Studio Code"
-        }
-      },
+      "input": {"kind": "items", "surface": "trash", "options": {"textEditorName": "Visual Studio Code"}},
       "changes": {
-        "$remove": [
-          {
-            "id": "edit",
-            "label": "Edit in Text Editor",
-            "icon": "edit"
-          }
-        ],
+        "$remove": [{"id": "edit", "label": "Edit in Text Editor", "icon": "edit"}],
         "$insert": [
           [
-            {
-              "id": "showOriginal",
-              "label": "Show Original",
-              "icon": "showOriginal"
-            },
-            {
-              "id": "edit",
-              "label": "Edit in Visual Studio Code",
-              "icon": "edit"
-            }
+            {"id": "showOriginal", "label": "Show Original", "icon": "showOriginal"},
+            {"id": "edit", "label": "Edit in Visual Studio Code", "icon": "edit"}
           ]
         ]
       }
@@ -1677,62 +510,22 @@
     {
       "name": "trash: targets a folder",
       "base": "trash",
-      "input": {
-        "kind": "items",
-        "surface": "trash",
-        "options": {
-          "targetsFolder": true
-        }
-      },
+      "input": {"kind": "items", "surface": "trash", "options": {"targetsFolder": true}},
       "changes": {
-        "$remove": [
-          {
-            "id": "open",
-            "label": "Open",
-            "icon": "openFile"
-          }
-        ],
-        "$insert": [
-          [
-            null,
-            {
-              "id": "open",
-              "label": "Open",
-              "icon": "open"
-            }
-          ]
-        ]
+        "$remove": [{"id": "open", "label": "Open", "icon": "openFile"}],
+        "$insert": [[null, {"id": "open", "label": "Open", "icon": "open"}]]
       }
     },
     {
       "name": "trash: several items",
       "base": "trash",
-      "input": {
-        "kind": "items",
-        "surface": "trash",
-        "options": {
-          "renameLabel": "Rename 1,204 Items…"
-        }
-      },
+      "input": {"kind": "items", "surface": "trash", "options": {"renameLabel": "Rename 1,204 Items…"}},
       "changes": {
-        "$remove": [
-          {
-            "id": "rename",
-            "label": "Rename",
-            "icon": "rename"
-          }
-        ],
+        "$remove": [{"id": "rename", "label": "Rename", "icon": "rename"}],
         "$insert": [
           [
-            {
-              "type": "separator",
-              "key": "separator-clipboard"
-            },
-            {
-              "id": "rename",
-              "label": "Rename 1,204 Items…",
-              "icon": "rename"
-            }
+            {"type": "separator", "key": "separator-clipboard"},
+            {"id": "rename", "label": "Rename 1,204 Items…", "icon": "rename"}
           ]
         ]
       }
@@ -1740,13 +533,7 @@
     {
       "name": "trash: eject",
       "base": "trash",
-      "input": {
-        "kind": "items",
-        "surface": "trash",
-        "options": {
-          "ejectLabel": "Eject “Backup”"
-        }
-      },
+      "input": {"kind": "items", "surface": "trash", "options": {"ejectLabel": "Eject “Backup”"}},
       "changes": {}
     },
     {
@@ -1755,73 +542,38 @@
       "input": {
         "kind": "items",
         "surface": "trash",
-        "options": {
-          "favoriteToggleLabel": null,
-          "textEditorName": null,
-          "renameLabel": null,
-          "ejectLabel": null
-        }
+        "options": {"favoriteToggleLabel": null, "textEditorName": null, "renameLabel": null, "ejectLabel": null}
       },
       "changes": {}
     },
     {
       "name": "background: remove from favorites",
       "base": "background",
-      "input": {
-        "kind": "items",
-        "surface": "background",
-        "options": {
-          "favoriteToggleLabel": "Remove from Favorites"
-        }
-      },
+      "input": {"kind": "items", "surface": "background", "options": {"favoriteToggleLabel": "Remove from Favorites"}},
       "changes": {}
     },
     {
       "name": "background: editor",
       "base": "background",
-      "input": {
-        "kind": "items",
-        "surface": "background",
-        "options": {
-          "textEditorName": "Visual Studio Code"
-        }
-      },
+      "input": {"kind": "items", "surface": "background", "options": {"textEditorName": "Visual Studio Code"}},
       "changes": {}
     },
     {
       "name": "background: targets a folder",
       "base": "background",
-      "input": {
-        "kind": "items",
-        "surface": "background",
-        "options": {
-          "targetsFolder": true
-        }
-      },
+      "input": {"kind": "items", "surface": "background", "options": {"targetsFolder": true}},
       "changes": {}
     },
     {
       "name": "background: several items",
       "base": "background",
-      "input": {
-        "kind": "items",
-        "surface": "background",
-        "options": {
-          "renameLabel": "Rename 1,204 Items…"
-        }
-      },
+      "input": {"kind": "items", "surface": "background", "options": {"renameLabel": "Rename 1,204 Items…"}},
       "changes": {}
     },
     {
       "name": "background: eject",
       "base": "background",
-      "input": {
-        "kind": "items",
-        "surface": "background",
-        "options": {
-          "ejectLabel": "Eject “Backup”"
-        }
-      },
+      "input": {"kind": "items", "surface": "background", "options": {"ejectLabel": "Eject “Backup”"}},
       "changes": {}
     },
     {
@@ -1830,12 +582,7 @@
       "input": {
         "kind": "items",
         "surface": "background",
-        "options": {
-          "favoriteToggleLabel": null,
-          "textEditorName": null,
-          "renameLabel": null,
-          "ejectLabel": null
-        }
+        "options": {"favoriteToggleLabel": null, "textEditorName": null, "renameLabel": null, "ejectLabel": null}
       },
       "changes": {}
     },
@@ -7468,11 +6215,7 @@
           "mainView": "explorer",
           "selectedTreeTargetKind": null
         },
-        "shortcutOverrides": {
-          "saveAsTemplate": [
-            "Ctrl+Cmd+T"
-          ]
-        }
+        "shortcutOverrides": {"saveAsTemplate": ["Ctrl+Cmd+T"]}
       },
       "output": "⌃⌘T"
     },
@@ -7489,11 +6232,7 @@
           "mainView": "explorer",
           "selectedTreeTargetKind": "filesystemFolder"
         },
-        "shortcutOverrides": {
-          "saveAsTemplate": [
-            "Ctrl+Cmd+T"
-          ]
-        }
+        "shortcutOverrides": {"saveAsTemplate": ["Ctrl+Cmd+T"]}
       },
       "output": null
     },

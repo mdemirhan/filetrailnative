@@ -2,9 +2,7 @@
   "cases": [
     {
       "name": "names",
-      "input": {
-        "directory": "names"
-      },
+      "input": {"directory": "names"},
       "output": {
         "byName": [
           {
@@ -234,90 +232,18 @@
           }
         ],
         "tree": [
-          {
-            "path": "names/dots",
-            "name": "dots",
-            "kind": "directory",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
-            "path": "names/emoji",
-            "name": "emoji",
-            "kind": "directory",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
-            "path": "names/icons",
-            "name": "icons",
-            "kind": "directory",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
-            "path": "names/links",
-            "name": "links",
-            "kind": "directory",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
-            "path": "names/localized",
-            "name": "localized",
-            "kind": "directory",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
-            "path": "names/locked",
-            "name": "locked",
-            "kind": "directory",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
-            "path": "names/long",
-            "name": "long",
-            "kind": "directory",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
-            "path": "names/nfc",
-            "name": "nfc",
-            "kind": "directory",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
-            "path": "names/nfd",
-            "name": "nfd",
-            "kind": "directory",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
-            "path": "names/packages",
-            "name": "packages",
-            "kind": "directory",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
-            "path": "names/similar",
-            "name": "similar",
-            "kind": "directory",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
-            "path": "names/spaces",
-            "name": "spaces",
-            "kind": "directory",
-            "isHidden": false,
-            "isSymlink": false
-          }
+          {"path": "names/dots", "name": "dots", "kind": "directory", "isHidden": false, "isSymlink": false},
+          {"path": "names/emoji", "name": "emoji", "kind": "directory", "isHidden": false, "isSymlink": false},
+          {"path": "names/icons", "name": "icons", "kind": "directory", "isHidden": false, "isSymlink": false},
+          {"path": "names/links", "name": "links", "kind": "directory", "isHidden": false, "isSymlink": false},
+          {"path": "names/localized", "name": "localized", "kind": "directory", "isHidden": false, "isSymlink": false},
+          {"path": "names/locked", "name": "locked", "kind": "directory", "isHidden": false, "isSymlink": false},
+          {"path": "names/long", "name": "long", "kind": "directory", "isHidden": false, "isSymlink": false},
+          {"path": "names/nfc", "name": "nfc", "kind": "directory", "isHidden": false, "isSymlink": false},
+          {"path": "names/nfd", "name": "nfd", "kind": "directory", "isHidden": false, "isSymlink": false},
+          {"path": "names/packages", "name": "packages", "kind": "directory", "isHidden": false, "isSymlink": false},
+          {"path": "names/similar", "name": "similar", "kind": "directory", "isHidden": false, "isSymlink": false},
+          {"path": "names/spaces", "name": "spaces", "kind": "directory", "isHidden": false, "isSymlink": false}
         ],
         "properties": [
           {
@@ -468,9 +394,7 @@
     },
     {
       "name": "names/dots",
-      "input": {
-        "directory": "names/dots"
-      },
+      "input": {"directory": "names/dots"},
       "output": {
         "byName": [
           {
@@ -547,13 +471,7 @@
           }
         ],
         "tree": [
-          {
-            "path": "names/dots/.config",
-            "name": ".config",
-            "kind": "directory",
-            "isHidden": true,
-            "isSymlink": false
-          }
+          {"path": "names/dots/.config", "name": ".config", "kind": "directory", "isHidden": true, "isSymlink": false}
         ],
         "properties": [
           {
@@ -605,9 +523,7 @@
     },
     {
       "name": "names/dots/.config",
-      "input": {
-        "directory": "names/dots/.config"
-      },
+      "input": {"directory": "names/dots/.config"},
       "output": {
         "byName": [
           {
@@ -648,9 +564,7 @@
     },
     {
       "name": "names/emoji",
-      "input": {
-        "directory": "names/emoji"
-      },
+      "input": {"directory": "names/emoji"},
       "output": {
         "byName": [
           {
@@ -747,9 +661,7 @@
     },
     {
       "name": "names/icons",
-      "input": {
-        "directory": "names/icons"
-      },
+      "input": {"directory": "names/icons"},
       "output": {
         "byName": [
           {
@@ -790,9 +702,7 @@
     },
     {
       "name": "names/links",
-      "input": {
-        "directory": "names/links"
-      },
+      "input": {"directory": "names/links"},
       "output": {
         "byName": [
           {
@@ -988,9 +898,7 @@
     },
     {
       "name": "names/links/target folder",
-      "input": {
-        "directory": "names/links/target folder"
-      },
+      "input": {"directory": "names/links/target folder"},
       "output": {
         "byName": [
           {
@@ -1031,9 +939,7 @@
     },
     {
       "name": "names/localized",
-      "input": {
-        "directory": "names/localized"
-      },
+      "input": {"directory": "names/localized"},
       "output": {
         "byName": [
           {
@@ -1082,9 +988,7 @@
     },
     {
       "name": "names/localized/Applications",
-      "input": {
-        "directory": "names/localized/Applications"
-      },
+      "input": {"directory": "names/localized/Applications"},
       "output": {
         "byName": [
           {
@@ -1155,9 +1059,7 @@
     },
     {
       "name": "names/locked",
-      "input": {
-        "directory": "names/locked"
-      },
+      "input": {"directory": "names/locked"},
       "output": {
         "byName": [
           {
@@ -1198,9 +1100,7 @@
     },
     {
       "name": "names/long",
-      "input": {
-        "directory": "names/long"
-      },
+      "input": {"directory": "names/long"},
       "output": {
         "byName": [
           {
@@ -1269,9 +1169,7 @@
     },
     {
       "name": "names/nfc",
-      "input": {
-        "directory": "names/nfc"
-      },
+      "input": {"directory": "names/nfc"},
       "output": {
         "byName": [
           {
@@ -1312,9 +1210,7 @@
     },
     {
       "name": "names/nfd",
-      "input": {
-        "directory": "names/nfd"
-      },
+      "input": {"directory": "names/nfd"},
       "output": {
         "byName": [
           {
@@ -1355,9 +1251,7 @@
     },
     {
       "name": "names/packages",
-      "input": {
-        "directory": "names/packages"
-      },
+      "input": {"directory": "names/packages"},
       "output": {
         "byName": [
           {
@@ -1426,9 +1320,7 @@
     },
     {
       "name": "names/packages/Sample.app",
-      "input": {
-        "directory": "names/packages/Sample.app"
-      },
+      "input": {"directory": "names/packages/Sample.app"},
       "output": {
         "byName": [
           {
@@ -1477,9 +1369,7 @@
     },
     {
       "name": "names/packages/Sample.app/Contents",
-      "input": {
-        "directory": "names/packages/Sample.app/Contents"
-      },
+      "input": {"directory": "names/packages/Sample.app/Contents"},
       "output": {
         "byName": [
           {
@@ -1591,9 +1481,7 @@
     },
     {
       "name": "names/packages/Sample.app/Contents/MacOS",
-      "input": {
-        "directory": "names/packages/Sample.app/Contents/MacOS"
-      },
+      "input": {"directory": "names/packages/Sample.app/Contents/MacOS"},
       "output": {
         "byName": [
           {
@@ -1636,9 +1524,7 @@
     },
     {
       "name": "names/packages/Sample.app/Contents/Resources",
-      "input": {
-        "directory": "names/packages/Sample.app/Contents/Resources"
-      },
+      "input": {"directory": "names/packages/Sample.app/Contents/Resources"},
       "output": {
         "byName": [
           {
@@ -1679,9 +1565,7 @@
     },
     {
       "name": "names/packages/Slides.key",
-      "input": {
-        "directory": "names/packages/Slides.key"
-      },
+      "input": {"directory": "names/packages/Slides.key"},
       "output": {
         "byName": [
           {
@@ -1793,9 +1677,7 @@
     },
     {
       "name": "names/packages/Slides.key/Data",
-      "input": {
-        "directory": "names/packages/Slides.key/Data"
-      },
+      "input": {"directory": "names/packages/Slides.key/Data"},
       "output": {
         "byName": [
           {
@@ -1836,9 +1718,7 @@
     },
     {
       "name": "names/packages/Slides.key/Index",
-      "input": {
-        "directory": "names/packages/Slides.key/Index"
-      },
+      "input": {"directory": "names/packages/Slides.key/Index"},
       "output": {
         "byName": [
           {
@@ -1879,9 +1759,7 @@
     },
     {
       "name": "names/similar",
-      "input": {
-        "directory": "names/similar"
-      },
+      "input": {"directory": "names/similar"},
       "output": {
         "byName": [
           {
@@ -1978,9 +1856,7 @@
     },
     {
       "name": "names/spaces",
-      "input": {
-        "directory": "names/spaces"
-      },
+      "input": {"directory": "names/spaces"},
       "output": {
         "byName": [
           {
@@ -2077,9 +1953,7 @@
     },
     {
       "name": "lighthouse",
-      "input": {
-        "directory": "lighthouse"
-      },
+      "input": {"directory": "lighthouse"},
       "output": {
         "byName": [
           {
@@ -2158,9 +2032,7 @@
     },
     {
       "name": "lighthouse/Lighthouse",
-      "input": {
-        "directory": "lighthouse/Lighthouse"
-      },
+      "input": {"directory": "lighthouse/Lighthouse"},
       "output": {
         "byName": [
           {
@@ -2710,9 +2582,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app"},
       "output": {
         "byName": [
           {
@@ -2866,9 +2736,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app/dist",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app/dist"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app/dist"},
       "output": {
         "byName": [
           {
@@ -2945,9 +2813,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app/dist/assets",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app/dist/assets"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app/dist/assets"},
       "output": {
         "byName": [
           {
@@ -3016,9 +2882,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app/node_modules",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app/node_modules"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app/node_modules"},
       "output": {
         "byName": [
           {
@@ -3207,9 +3071,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app/node_modules/eslint",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app/node_modules/eslint"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app/node_modules/eslint"},
       "output": {
         "byName": [
           {
@@ -3314,9 +3176,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app/node_modules/eslint/lib",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app/node_modules/eslint/lib"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app/node_modules/eslint/lib"},
       "output": {
         "byName": [
           {
@@ -3357,9 +3217,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app/node_modules/react",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app/node_modules/react"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app/node_modules/react"},
       "output": {
         "byName": [
           {
@@ -3464,9 +3322,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app/node_modules/react/lib",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app/node_modules/react/lib"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app/node_modules/react/lib"},
       "output": {
         "byName": [
           {
@@ -3507,9 +3363,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app/node_modules/react-dom",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app/node_modules/react-dom"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app/node_modules/react-dom"},
       "output": {
         "byName": [
           {
@@ -3614,9 +3468,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app/node_modules/react-dom/lib",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app/node_modules/react-dom/lib"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app/node_modules/react-dom/lib"},
       "output": {
         "byName": [
           {
@@ -3657,9 +3509,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app/node_modules/typescript",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app/node_modules/typescript"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app/node_modules/typescript"},
       "output": {
         "byName": [
           {
@@ -3764,9 +3614,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app/node_modules/typescript/lib",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app/node_modules/typescript/lib"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app/node_modules/typescript/lib"},
       "output": {
         "byName": [
           {
@@ -3807,9 +3655,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app/node_modules/vite",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app/node_modules/vite"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app/node_modules/vite"},
       "output": {
         "byName": [
           {
@@ -3914,9 +3760,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app/node_modules/vite/lib",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app/node_modules/vite/lib"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app/node_modules/vite/lib"},
       "output": {
         "byName": [
           {
@@ -3957,9 +3801,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app/src",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app/src"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app/src"},
       "output": {
         "byName": [
           {
@@ -4106,9 +3948,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app/src/components",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app/src/components"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app/src/components"},
       "output": {
         "byName": [
           {
@@ -4513,9 +4353,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app/src/lib",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app/src/lib"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app/src/lib"},
       "output": {
         "byName": [
           {
@@ -4640,9 +4478,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app/src/pages",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app/src/pages"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app/src/pages"},
       "output": {
         "byName": [
           {
@@ -4767,9 +4603,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app/tests",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app/tests"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app/tests"},
       "output": {
         "byName": [
           {
@@ -4853,9 +4687,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app/tests/e2e",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app/tests/e2e"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app/tests/e2e"},
       "output": {
         "byName": [
           {
@@ -4924,9 +4756,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/app/tests/fixtures",
-      "input": {
-        "directory": "lighthouse/Lighthouse/app/tests/fixtures"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/app/tests/fixtures"},
       "output": {
         "byName": [
           {
@@ -4995,9 +4825,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/data",
-      "input": {
-        "directory": "lighthouse/Lighthouse/data"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/data"},
       "output": {
         "byName": [
           {
@@ -5102,9 +4930,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/data/exports",
-      "input": {
-        "directory": "lighthouse/Lighthouse/data/exports"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/data/exports"},
       "output": {
         "byName": [
           {
@@ -5201,9 +5027,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/design",
-      "input": {
-        "directory": "lighthouse/Lighthouse/design"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/design"},
       "output": {
         "byName": [
           {
@@ -5308,9 +5132,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/design/screens",
-      "input": {
-        "directory": "lighthouse/Lighthouse/design/screens"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/design/screens"},
       "output": {
         "byName": [
           {
@@ -5463,9 +5285,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/docs",
-      "input": {
-        "directory": "lighthouse/Lighthouse/docs"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/docs"},
       "output": {
         "byName": [
           {
@@ -5562,9 +5382,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/infra",
-      "input": {
-        "directory": "lighthouse/Lighthouse/infra"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/infra"},
       "output": {
         "byName": [
           {
@@ -5633,9 +5451,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/mobile",
-      "input": {
-        "directory": "lighthouse/Lighthouse/mobile"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/mobile"},
       "output": {
         "byName": [
           {
@@ -5747,9 +5563,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/mobile/android",
-      "input": {
-        "directory": "lighthouse/Lighthouse/mobile/android"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/mobile/android"},
       "output": {
         "byName": [
           {
@@ -5790,9 +5604,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/mobile/ios",
-      "input": {
-        "directory": "lighthouse/Lighthouse/mobile/ios"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/mobile/ios"},
       "output": {
         "byName": [
           {
@@ -5833,9 +5645,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/mobile/ios/Lighthouse.xcodeproj",
-      "input": {
-        "directory": "lighthouse/Lighthouse/mobile/ios/Lighthouse.xcodeproj"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/mobile/ios/Lighthouse.xcodeproj"},
       "output": {
         "byName": [
           {
@@ -5876,9 +5686,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/photos",
-      "input": {
-        "directory": "lighthouse/Lighthouse/photos"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/photos"},
       "output": {
         "byName": [
           {
@@ -6543,9 +6351,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/photos/raw",
-      "input": {
-        "directory": "lighthouse/Lighthouse/photos/raw"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/photos/raw"},
       "output": {
         "byName": [
           {
@@ -6670,9 +6476,7 @@
     },
     {
       "name": "lighthouse/Lighthouse/scripts",
-      "input": {
-        "directory": "lighthouse/Lighthouse/scripts"
-      },
+      "input": {"directory": "lighthouse/Lighthouse/scripts"},
       "output": {
         "byName": [
           {

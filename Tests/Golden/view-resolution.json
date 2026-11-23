@@ -1,10 +1,7 @@
 {
   "bases": {
     "1 no view": {
-      "input": {
-        "views": [],
-        "folder": "/u/a"
-      },
+      "input": {"views": [], "folder": "/u/a"},
       "output": {
         "view": "icons · pane",
         "groupBy": "none · pane",
@@ -15,18 +12,7 @@
       }
     },
     "2 own view keeping View": {
-      "input": {
-        "views": [
-          {
-            "path": "/u/a",
-            "subfolders": false,
-            "keeps": {
-              "view": "details"
-            }
-          }
-        ],
-        "folder": "/u/a"
-      },
+      "input": {"views": [{"path": "/u/a", "subfolders": false, "keeps": {"view": "details"}}], "folder": "/u/a"},
       "output": {
         "view": "details · folderView",
         "groupBy": "none · pane",
@@ -45,21 +31,10 @@
             "keeps": {
               "view": "details",
               "groupBy": "kind",
-              "sort": {
-                "by": "modified",
-                "direction": "desc"
-              },
+              "sort": {"by": "modified", "direction": "desc"},
               "foldersFirst": false,
-              "columns": {
-                "visibility": {
-                  "kind": false
-                }
-              },
-              "size": {
-                "iconSizes": {
-                  "standard": 96
-                }
-              }
+              "columns": {"visibility": {"kind": false}},
+              "size": {"iconSizes": {"standard": 96}}
             }
           }
         ],
@@ -80,13 +55,7 @@
           {
             "path": "/u",
             "subfolders": true,
-            "keeps": {
-              "view": "details",
-              "sort": {
-                "by": "modified",
-                "direction": "desc"
-              }
-            }
+            "keeps": {"view": "details", "sort": {"by": "modified", "direction": "desc"}}
           }
         ],
         "folder": "/u/a"
@@ -109,30 +78,13 @@
             "keeps": {
               "view": "details",
               "groupBy": "kind",
-              "sort": {
-                "by": "modified",
-                "direction": "desc"
-              },
+              "sort": {"by": "modified", "direction": "desc"},
               "foldersFirst": false,
-              "columns": {
-                "visibility": {
-                  "kind": false
-                }
-              },
-              "size": {
-                "iconSizes": {
-                  "standard": 96
-                }
-              }
+              "columns": {"visibility": {"kind": false}},
+              "size": {"iconSizes": {"standard": 96}}
             }
           },
-          {
-            "path": "/u/a",
-            "subfolders": false,
-            "keeps": {
-              "view": "previews"
-            }
-          }
+          {"path": "/u/a", "subfolders": false, "keeps": {"view": "previews"}}
         ],
         "folder": "/u/a"
       },
@@ -154,28 +106,13 @@
             "keeps": {
               "view": "details",
               "groupBy": "kind",
-              "sort": {
-                "by": "modified",
-                "direction": "desc"
-              },
+              "sort": {"by": "modified", "direction": "desc"},
               "foldersFirst": false,
-              "columns": {
-                "visibility": {
-                  "kind": false
-                }
-              },
-              "size": {
-                "iconSizes": {
-                  "standard": 96
-                }
-              }
+              "columns": {"visibility": {"kind": false}},
+              "size": {"iconSizes": {"standard": 96}}
             }
           },
-          {
-            "path": "/u/a",
-            "subfolders": true,
-            "keeps": {}
-          }
+          {"path": "/u/a", "subfolders": true, "keeps": {}}
         ],
         "folder": "/u/a/b"
       },
@@ -191,24 +128,8 @@
     "7 the grandparent's past a parent that covers nothing": {
       "input": {
         "views": [
-          {
-            "path": "/u",
-            "subfolders": true,
-            "keeps": {
-              "view": "details",
-              "foldersFirst": false
-            }
-          },
-          {
-            "path": "/u/a",
-            "subfolders": false,
-            "keeps": {
-              "sort": {
-                "by": "modified",
-                "direction": "desc"
-              }
-            }
-          }
+          {"path": "/u", "subfolders": true, "keeps": {"view": "details", "foldersFirst": false}},
+          {"path": "/u/a", "subfolders": false, "keeps": {"sort": {"by": "modified", "direction": "desc"}}}
         ],
         "folder": "/u/a/b"
       },
@@ -227,19 +148,11 @@
           {
             "path": "/u/a",
             "subfolders": false,
-            "keeps": {
-              "view": "details",
-              "sort": {
-                "by": "modified",
-                "direction": "desc"
-              }
-            }
+            "keeps": {"view": "details", "sort": {"by": "modified", "direction": "desc"}}
           }
         ],
         "folder": "/u/a",
-        "unsaved": {
-          "view": "list"
-        }
+        "unsaved": {"view": "list"}
       },
       "output": {
         "view": "list · changeOnScreen",
@@ -251,13 +164,7 @@
       }
     },
     "9 no view, one waiting on screen": {
-      "input": {
-        "views": [],
-        "folder": "/u/a",
-        "unsaved": {
-          "view": "list"
-        }
-      },
+      "input": {"views": [], "folder": "/u/a", "unsaved": {"view": "list"}},
       "output": {
         "view": "list · changeOnScreen",
         "groupBy": "none · pane",

@@ -74,18 +74,9 @@
       }
     },
     "45: random 45": {
-      "input": {
-        "value": [
-          {
-            "id": "back"
-          }
-        ]
-      },
+      "input": {"value": [{"id": "back"}]},
       "output": {
-        "sanitized": [
-          "title",
-          "search"
-        ],
+        "sanitized": ["title", "search"],
         "palette": [
           "back",
           "forward",
@@ -139,137 +130,36 @@
     }
   },
   "cases": [
-    {
-      "name": "1: empty list",
-      "base": "45: random 45",
-      "input": {
-        "value": []
-      },
-      "changes": {}
-    },
-    {
-      "name": "2: not a list",
-      "base": "45: random 45",
-      "input": {
-        "value": "back"
-      },
-      "changes": {}
-    },
-    {
-      "name": "3: null",
-      "base": "45: random 45",
-      "input": {
-        "value": null
-      },
-      "changes": {}
-    },
-    {
-      "name": "4: object",
-      "base": "45: random 45",
-      "input": {
-        "value": {
-          "back": true
-        }
-      },
-      "changes": {}
-    },
+    {"name": "1: empty list", "base": "45: random 45", "input": {"value": []}, "changes": {}},
+    {"name": "2: not a list", "base": "45: random 45", "input": {"value": "back"}, "changes": {}},
+    {"name": "3: null", "base": "45: random 45", "input": {"value": null}, "changes": {}},
+    {"name": "4: object", "base": "45: random 45", "input": {"value": {"back": true}}, "changes": {}},
     {
       "name": "5: only separators",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "topSeparator",
-          "topSeparator",
-          "topSeparator"
-        ]
-      },
-      "changes": {
-        "sanitized": [
-          "topSeparator",
-          "topSeparator",
-          "topSeparator",
-          "title",
-          "search"
-        ]
-      }
+      "input": {"value": ["topSeparator", "topSeparator", "topSeparator"]},
+      "changes": {"sanitized": ["topSeparator", "topSeparator", "topSeparator", "title", "search"]}
     },
     {
       "name": "6: repeated items",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "back",
-          "back",
-          "forward",
-          "back",
-          "title",
-          "title"
-        ]
-      },
-      "changes": {
-        "sanitized": [
-          "back",
-          "forward",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "back",
-            "forward"
-          ]
-        }
-      }
+      "input": {"value": ["back", "back", "forward", "back", "title", "title"]},
+      "changes": {"sanitized": ["back", "forward", "title", "search"], "palette": {"$remove": ["back", "forward"]}}
     },
     {
       "name": "7: required items first",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
-        ]
-      },
+      "input": {"value": ["title", "clipboard", "search", "viewOptions"]},
       "changes": {
-        "sanitized": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
-        ],
-        "palette": {
-          "$remove": [
-            "viewOptions",
-            "clipboard"
-          ]
-        }
+        "sanitized": ["title", "clipboard", "search", "viewOptions"],
+        "palette": {"$remove": ["viewOptions", "clipboard"]}
       }
     },
     {
       "name": "8: unknown items",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "nope",
-          "back",
-          "BACK",
-          "back "
-        ]
-      },
-      "changes": {
-        "sanitized": [
-          "back",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "back"
-          ]
-        }
-      }
+      "input": {"value": ["nope", "back", "BACK", "back "]},
+      "changes": {"sanitized": ["back", "title", "search"], "palette": {"$remove": ["back"]}}
     },
     {
       "name": "9: every item",
@@ -514,32 +404,10 @@
     {
       "name": "11: separator in the middle",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "back",
-          "topSeparator",
-          "forward",
-          "topSeparator",
-          "up"
-        ]
-      },
+      "input": {"value": ["back", "topSeparator", "forward", "topSeparator", "up"]},
       "changes": {
-        "sanitized": [
-          "back",
-          "topSeparator",
-          "forward",
-          "topSeparator",
-          "up",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "back",
-            "forward",
-            "up"
-          ]
-        }
+        "sanitized": ["back", "topSeparator", "forward", "topSeparator", "up", "title", "search"],
+        "palette": {"$remove": ["back", "forward", "up"]}
       }
     },
     {
@@ -645,16 +513,7 @@
         }
       }
     },
-    {
-      "name": "14: random 14",
-      "base": "45: random 45",
-      "input": {
-        "value": [
-          []
-        ]
-      },
-      "changes": {}
-    },
+    {"name": "14: random 14", "base": "45: random 45", "input": {"value": [[]]}, "changes": {}},
     {
       "name": "15: random 15",
       "base": "0: default",
@@ -676,19 +535,11 @@
           "renameSelection",
           "topSeparator",
           "search",
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "trashSelection",
           "showInFinder",
-          [
-            "back "
-          ],
-          [
-            null
-          ],
+          ["back "],
+          [null],
           "topSeparator",
           "viewOptions",
           "copyPath",
@@ -706,16 +557,12 @@
           "folderTree",
           "topSeparator",
           "topSeparator",
-          [
-            "back "
-          ],
+          ["back "],
           "viewOptions",
           "foldersFirst",
           "newFolder",
           "topSeparator",
-          [
-            []
-          ],
+          [[]],
           "topSeparator"
         ]
       },
@@ -768,12 +615,7 @@
             "copyPath",
             "help"
           ],
-          "$insert": [
-            [
-              null,
-              "forward"
-            ]
-          ]
+          "$insert": [[null, "forward"]]
         }
       }
     },
@@ -810,14 +652,8 @@
           1,
           "settings",
           "topSeparator",
-          [
-            1,
-            2,
-            3
-          ],
-          [
-            "title"
-          ],
+          [1, 2, 3],
+          ["title"],
           "showInFinder",
           false,
           "openSelection",
@@ -891,9 +727,7 @@
           "cutSelection",
           "foldersFirst",
           "topSeparator",
-          [
-            "back "
-          ],
+          ["back "],
           "openSelection",
           "search",
           "pasteSelection",
@@ -902,18 +736,14 @@
           "trashSelection",
           "forward",
           "topSeparator",
-          [
-            "back "
-          ],
+          ["back "],
           0,
           "calculateSize",
           "title",
           "topSeparator",
           "launchMissiles",
           "up",
-          [
-            []
-          ]
+          [[]]
         ]
       },
       "changes": {
@@ -1060,9 +890,7 @@
           "pasteSelection",
           "calculateSize",
           "openSelection",
-          [
-            "title"
-          ],
+          ["title"],
           "hidden",
           "view",
           "showInFinder",
@@ -1085,11 +913,7 @@
           "up",
           "editSelection",
           "infoRow",
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           "pasteSelection"
         ]
       },
@@ -1157,9 +981,7 @@
           "up",
           "topSeparator",
           "editSelection",
-          [
-            "back "
-          ],
+          ["back "],
           "viewOptions",
           "cutSelection",
           "moveSelection",
@@ -1229,16 +1051,10 @@
           "launchMissiles",
           "revealInFolder",
           "infoRow",
-          [
-            []
-          ],
+          [[]],
           "refresh",
-          {
-            "back": true
-          },
-          {
-            "back": true
-          },
+          {"back": true},
+          {"back": true},
           "moveSelection",
           "theme",
           "openInTerminal",
@@ -1247,14 +1063,10 @@
           "back",
           "copyPath",
           "refresh",
-          {
-            "back": true
-          },
+          {"back": true},
           "copySelection",
           "copySelection",
-          [
-            "back"
-          ],
+          ["back"],
           "topSeparator",
           "viewOptions",
           "topSeparator",
@@ -1312,16 +1124,7 @@
             "theme",
             "settings"
           ],
-          "$insert": [
-            [
-              "newTab",
-              "view"
-            ],
-            [
-              "pasteAsFile",
-              "clipboard"
-            ]
-          ]
+          "$insert": [["newTab", "view"], ["pasteAsFile", "clipboard"]]
         }
       }
     },
@@ -1337,9 +1140,7 @@
           "showInFinder",
           "pasteSelection",
           "copySelection",
-          [
-            "back"
-          ],
+          ["back"],
           "up",
           "openSelection",
           "openSelection",
@@ -1350,9 +1151,7 @@
           "topSeparator",
           "openInTerminal",
           "up",
-          {
-            "back": true
-          }
+          {"back": true}
         ]
       },
       "changes": {
@@ -1402,23 +1201,15 @@
           "help",
           "launchMissiles",
           "newTab",
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "topSeparator",
           "topSeparator",
-          [
-            null
-          ],
+          [null],
           "revealInFolder",
           "folderTree",
           "goToFolder",
           "duplicateSelection",
-          [
-            " back"
-          ],
+          [" back"],
           "clipboard",
           "refresh",
           "help",
@@ -1489,17 +1280,11 @@
           "newTab",
           "up",
           "renameSelection",
-          [
-            "title"
-          ],
+          ["title"],
           "refresh",
           "forward",
           "calculateSize",
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           "renameSelection",
           "hidden",
           "editSelection",
@@ -1575,17 +1360,13 @@
         "value": [
           "openSelection",
           "newFolder",
-          [
-            "BACK"
-          ],
+          ["BACK"],
           "newTab",
           "renameSelection",
           true,
           "view",
           "pasteSelection",
-          [
-            []
-          ],
+          [[]],
           "topSeparator",
           "foldersFirst",
           "view",
@@ -1655,17 +1436,7 @@
     {
       "name": "26: random 26",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "forward",
-          "topSeparator",
-          "view",
-          "renameSelection",
-          "up",
-          "quickLook",
-          "back"
-        ]
-      },
+      "input": {"value": ["forward", "topSeparator", "view", "renameSelection", "up", "quickLook", "back"]},
       "changes": {
         "sanitized": [
           "forward",
@@ -1678,16 +1449,7 @@
           "title",
           "search"
         ],
-        "palette": {
-          "$remove": [
-            "back",
-            "forward",
-            "up",
-            "view",
-            "quickLook",
-            "renameSelection"
-          ]
-        }
+        "palette": {"$remove": ["back", "forward", "up", "view", "quickLook", "renameSelection"]}
       }
     },
     {
@@ -1708,9 +1470,7 @@
           "newTab",
           "clipboard",
           -1,
-          [
-            []
-          ]
+          [[]]
         ]
       },
       "changes": {
@@ -1728,15 +1488,7 @@
           "search"
         ],
         "palette": {
-          "$remove": [
-            "back",
-            "forward",
-            "newTab",
-            "renameSelection",
-            "pasteSelection",
-            "clipboard",
-            "calculateSize"
-          ]
+          "$remove": ["back", "forward", "newTab", "renameSelection", "pasteSelection", "clipboard", "calculateSize"]
         }
       }
     },
@@ -1754,9 +1506,7 @@
           "newFolder",
           "foldersFirst",
           "topSeparator",
-          {
-            "back": true
-          },
+          {"back": true},
           "calculateSize",
           "refresh",
           "openInTerminal",
@@ -1777,19 +1527,13 @@
           "back",
           "settings",
           "help",
-          [
-            []
-          ],
+          [[]],
           "duplicateSelection",
           "openInTerminal",
           "refresh",
-          [
-            " back"
-          ],
+          [" back"],
           "settings",
-          [
-            "title"
-          ],
+          ["title"],
           "infoPanel",
           "sort"
         ]
@@ -1839,16 +1583,7 @@
             "settings",
             "help"
           ],
-          "$insert": [
-            [
-              null,
-              "forward"
-            ],
-            [
-              "pasteAsFile",
-              "clipboard"
-            ]
-          ]
+          "$insert": [[null, "forward"], ["pasteAsFile", "clipboard"]]
         }
       }
     },
@@ -1868,9 +1603,7 @@
           false,
           "revealInFolder",
           "title",
-          [
-            []
-          ],
+          [[]],
           "title",
           "topSeparator",
           "",
@@ -1884,11 +1617,7 @@
           "topSeparator",
           0,
           "newTab",
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           "search",
           "title",
           "topSeparator",
@@ -1956,16 +1685,12 @@
           "",
           0,
           "search",
-          [
-            null
-          ],
+          [null],
           "viewOptions",
           "newFolder",
           "topSeparator",
           "launchMissiles",
-          [
-            "title"
-          ],
+          ["title"],
           "viewOptions",
           "sort",
           "infoRow",
@@ -1974,9 +1699,7 @@
           "quickLook",
           "topSeparator",
           "up",
-          [
-            "back "
-          ],
+          ["back "],
           1,
           -1,
           "viewOptions",
@@ -1984,9 +1707,7 @@
           "sort",
           "newTab",
           1,
-          [
-            " back"
-          ],
+          [" back"],
           "showInFinder"
         ]
       },
@@ -2026,21 +1747,15 @@
       "base": "45: random 45",
       "input": {
         "value": [
-          [
-            "back "
-          ],
+          ["back "],
           "search",
           "refresh",
           "pasteSelection",
           "viewOptions",
-          {
-            "back": true
-          },
+          {"back": true},
           "quickLook",
           "infoRow",
-          [
-            "title"
-          ],
+          ["title"],
           "search",
           "back",
           "refresh",
@@ -2050,11 +1765,7 @@
           "cutSelection",
           "infoRow",
           {},
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           "showInFinder",
           "copyPath",
           "hidden",
@@ -2065,9 +1776,7 @@
           "foldersFirst",
           "trashSelection",
           "moveSelection",
-          {
-            "back": true
-          },
+          {"back": true},
           "moveSelection",
           "copySelection",
           "newTab"
@@ -2121,16 +1830,7 @@
         }
       }
     },
-    {
-      "name": "32: random 32",
-      "base": "45: random 45",
-      "input": {
-        "value": [
-          "back "
-        ]
-      },
-      "changes": {}
-    },
+    {"name": "32: random 32", "base": "45: random 45", "input": {"value": ["back "]}, "changes": {}},
     {
       "name": "33: random 33",
       "base": "45: random 45",
@@ -2157,35 +1857,21 @@
           "quickLook",
           "pasteSelection",
           0,
-          [
-            "back"
-          ],
+          ["back"],
           "view",
           "goToFolder",
           "topSeparator",
-          [
-            "title"
-          ],
+          ["title"],
           "topSeparator",
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "copySelection",
           "moveSelection",
           "calculateSize",
           "hidden",
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "title",
           "cutSelection",
-          {
-            "back": true
-          },
+          {"back": true},
           "theme",
           "back",
           "calculateSize"
@@ -2254,11 +1940,7 @@
           "trashSelection",
           "forward",
           false,
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "up",
           "theme",
           "openSelection",
@@ -2307,16 +1989,10 @@
         "value": [
           "viewOptions",
           "openSelection",
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           "foldersFirst",
           "topSeparator",
-          [
-            " back"
-          ],
+          [" back"],
           "infoPanel",
           "copyPath",
           true,
@@ -2389,9 +2065,7 @@
           "search",
           "moveSelection",
           "title",
-          [
-            "back "
-          ],
+          ["back "],
           "up",
           "trashSelection",
           "viewOptions",
@@ -2400,9 +2074,7 @@
           "search",
           "infoRow",
           "topSeparator",
-          [
-            "back "
-          ],
+          ["back "],
           "copySelection",
           -1,
           "moveSelection",
@@ -2462,9 +2134,7 @@
         "value": [
           "trashSelection",
           "folderTree",
-          [
-            "title"
-          ],
+          ["title"],
           "title",
           "duplicateSelection",
           "openSelection",
@@ -2476,9 +2146,7 @@
           "title",
           "forward",
           "hidden",
-          {
-            "back": true
-          },
+          {"back": true},
           "newTab",
           "openInTerminal",
           "refresh",
@@ -2493,9 +2161,7 @@
           "theme",
           "title",
           "duplicateSelection",
-          {
-            "back": true
-          },
+          {"back": true},
           "topSeparator",
           "topSeparator",
           "launchMissiles",
@@ -2576,12 +2242,8 @@
           "topSeparator",
           "up",
           1,
-          [
-            " back"
-          ],
-          [
-            "back"
-          ],
+          [" back"],
+          ["back"],
           "forward",
           0,
           "calculateSize",
@@ -2628,25 +2290,8 @@
     {
       "name": "39: random 39",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "newFolder",
-          1,
-          "newFolder"
-        ]
-      },
-      "changes": {
-        "sanitized": [
-          "newFolder",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "newFolder"
-          ]
-        }
-      }
+      "input": {"value": ["newFolder", 1, "newFolder"]},
+      "changes": {"sanitized": ["newFolder", "title", "search"], "palette": {"$remove": ["newFolder"]}}
     },
     {
       "name": "40: random 40",
@@ -2657,14 +2302,10 @@
           "foldersFirst",
           "",
           "back",
-          [
-            "back"
-          ],
+          ["back"],
           "back",
           "copySelection",
-          {
-            "back": true
-          },
+          {"back": true},
           "title",
           "forward",
           "foldersFirst",
@@ -2677,9 +2318,7 @@
           "moveSelection",
           "hidden",
           "forward",
-          [
-            null
-          ],
+          [null],
           "openSelection",
           "forward",
           "theme",
@@ -2791,35 +2430,13 @@
     {
       "name": "42: random 42",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "quickLook",
-          "infoRow"
-        ]
-      },
+      "input": {"value": ["quickLook", "infoRow"]},
       "changes": {
-        "sanitized": [
-          "quickLook",
-          "infoRow",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "infoRow",
-            "quickLook"
-          ]
-        }
+        "sanitized": ["quickLook", "infoRow", "title", "search"],
+        "palette": {"$remove": ["infoRow", "quickLook"]}
       }
     },
-    {
-      "name": "43: random 43",
-      "base": "45: random 45",
-      "input": {
-        "value": "launchMissiles"
-      },
-      "changes": {}
-    },
+    {"name": "43: random 43", "base": "45: random 45", "input": {"value": "launchMissiles"}, "changes": {}},
     {
       "name": "44: random 44",
       "base": "45: random 45",
@@ -2932,9 +2549,7 @@
           "theme",
           "goToFolder",
           "back",
-          [
-            " back"
-          ],
+          [" back"],
           "newTab",
           "up",
           "help",
@@ -3006,16 +2621,7 @@
             "settings",
             "help"
           ],
-          "$insert": [
-            [
-              null,
-              "forward"
-            ],
-            [
-              "groupBy",
-              "viewOptions"
-            ]
-          ]
+          "$insert": [[null, "forward"], ["groupBy", "viewOptions"]]
         }
       }
     },
@@ -3045,14 +2651,7 @@
           "title",
           "search"
         ],
-        "palette": {
-          "$remove": [
-            "viewOptions",
-            "moveSelection",
-            "clipboard",
-            "copyPath"
-          ]
-        }
+        "palette": {"$remove": ["viewOptions", "moveSelection", "clipboard", "copyPath"]}
       }
     },
     {
@@ -3084,20 +2683,12 @@
           false,
           "moveSelection",
           {},
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "showInFinder",
-          [
-            " back"
-          ],
+          [" back"],
           "duplicateSelection",
           "infoPanel",
-          [
-            "BACK"
-          ],
+          ["BACK"],
           "launchMissiles",
           1,
           "goToFolder",
@@ -3159,9 +2750,7 @@
       "input": {
         "value": [
           "view",
-          [
-            []
-          ],
+          [[]],
           "viewOptions",
           "title",
           "forward",
@@ -3181,11 +2770,7 @@
           "editSelection",
           "topSeparator",
           "folderTree",
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "newFolder",
           "topSeparator",
           "folderTree",
@@ -3246,32 +2831,10 @@
     {
       "name": "50: random 50",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "topSeparator",
-          0,
-          "foldersFirst",
-          "revealInFolder",
-          "revealInFolder",
-          "cutSelection"
-        ]
-      },
+      "input": {"value": ["topSeparator", 0, "foldersFirst", "revealInFolder", "revealInFolder", "cutSelection"]},
       "changes": {
-        "sanitized": [
-          "topSeparator",
-          "foldersFirst",
-          "revealInFolder",
-          "cutSelection",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "foldersFirst",
-            "cutSelection",
-            "revealInFolder"
-          ]
-        }
+        "sanitized": ["topSeparator", "foldersFirst", "revealInFolder", "cutSelection", "title", "search"],
+        "palette": {"$remove": ["foldersFirst", "cutSelection", "revealInFolder"]}
       }
     },
     {
@@ -3279,9 +2842,7 @@
       "base": "45: random 45",
       "input": {
         "value": [
-          [
-            "BACK"
-          ],
+          ["BACK"],
           "moveSelection",
           "settings",
           "viewOptions",
@@ -3301,9 +2862,7 @@
           "openInTerminal",
           "folderTree",
           "viewOptions",
-          [
-            null
-          ],
+          [null],
           "help",
           "moveSelection",
           "goToFolder",
@@ -3372,16 +2931,7 @@
         }
       }
     },
-    {
-      "name": "52: random 52",
-      "base": "45: random 45",
-      "input": {
-        "value": [
-          "title"
-        ]
-      },
-      "changes": {}
-    },
+    {"name": "52: random 52", "base": "45: random 45", "input": {"value": ["title"]}, "changes": {}},
     {
       "name": "53: random 53",
       "base": "45: random 45",
@@ -3390,18 +2940,12 @@
           "back",
           "settings",
           "trashSelection",
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           "forward",
           true,
           "pasteSelection",
           "topSeparator",
-          [
-            []
-          ],
+          [[]],
           -1,
           "up",
           "topSeparator",
@@ -3428,15 +2972,7 @@
           "search"
         ],
         "palette": {
-          "$remove": [
-            "back",
-            "forward",
-            "up",
-            "trashSelection",
-            "cutSelection",
-            "pasteSelection",
-            "settings"
-          ]
+          "$remove": ["back", "forward", "up", "trashSelection", "cutSelection", "pasteSelection", "settings"]
         }
       }
     },
@@ -3477,9 +3013,7 @@
           "openInTerminal",
           "back",
           "topSeparator",
-          {
-            "back": true
-          },
+          {"back": true},
           "copyPath"
         ]
       },
@@ -3537,34 +3071,10 @@
     {
       "name": "55: random 55",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "theme",
-          "infoPanel",
-          "clipboard",
-          "revealInFolder",
-          "folderTree"
-        ]
-      },
+      "input": {"value": ["theme", "infoPanel", "clipboard", "revealInFolder", "folderTree"]},
       "changes": {
-        "sanitized": [
-          "theme",
-          "infoPanel",
-          "clipboard",
-          "revealInFolder",
-          "folderTree",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "folderTree",
-            "infoPanel",
-            "clipboard",
-            "revealInFolder",
-            "theme"
-          ]
-        }
+        "sanitized": ["theme", "infoPanel", "clipboard", "revealInFolder", "folderTree", "title", "search"],
+        "palette": {"$remove": ["folderTree", "infoPanel", "clipboard", "revealInFolder", "theme"]}
       }
     },
     {
@@ -3576,26 +3086,18 @@
           "topSeparator",
           "infoRow",
           "topSeparator",
-          [
-            "title"
-          ],
+          ["title"],
           "revealInFolder",
           "refresh",
           "goToFolder",
           "hidden",
           "copySelection",
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           "topSeparator",
           "folderTree",
           "clipboard",
           "settings",
-          {
-            "back": true
-          },
+          {"back": true},
           "sort",
           "sort",
           "title",
@@ -3747,18 +3249,12 @@
           "settings",
           true,
           "renameSelection",
-          [
-            null
-          ],
+          [null],
           "moveSelection",
           "foldersFirst",
           "topSeparator",
           "openSelection",
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           "back",
           "up",
           "calculateSize",
@@ -3767,15 +3263,9 @@
           "up",
           "renameSelection",
           "openSelection",
-          [
-            null
-          ],
+          [null],
           "openSelection",
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "calculateSize",
           "title",
           "calculateSize",
@@ -3820,26 +3310,8 @@
     {
       "name": "59: random 59",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          [
-            " back"
-          ],
-          "forward"
-        ]
-      },
-      "changes": {
-        "sanitized": [
-          "forward",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "forward"
-          ]
-        }
-      }
+      "input": {"value": [[" back"], "forward"]},
+      "changes": {"sanitized": ["forward", "title", "search"], "palette": {"$remove": ["forward"]}}
     },
     {
       "name": "60: random 60",
@@ -3852,27 +3324,17 @@
           "search",
           "up",
           {},
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           "theme",
           true,
           "cutSelection",
           "forward",
           "help",
           "foldersFirst",
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           "back",
           "hidden",
-          [
-            []
-          ],
+          [[]],
           "goToFolder",
           "foldersFirst",
           "newFolder",
@@ -3936,11 +3398,7 @@
           "view",
           "foldersFirst",
           "clipboard",
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           "cutSelection",
           "refresh",
           "settings",
@@ -3953,9 +3411,7 @@
           "pasteSelection",
           "trashSelection",
           "topSeparator",
-          [
-            null
-          ],
+          [null],
           "hidden",
           "topSeparator",
           "quickLook",
@@ -4014,9 +3470,7 @@
       "input": {
         "value": [
           "revealInFolder",
-          [
-            "back "
-          ],
+          ["back "],
           "openSelection",
           "folderTree",
           "copySelection",
@@ -4047,11 +3501,7 @@
           "openSelection",
           "pasteSelection",
           "newTab",
-          [
-            1,
-            2,
-            3
-          ]
+          [1, 2, 3]
         ]
       },
       "changes": {
@@ -4111,9 +3561,7 @@
           "renameSelection",
           "editSelection",
           "topSeparator",
-          {
-            "back": true
-          },
+          {"back": true},
           "search",
           "newTab",
           "duplicateSelection",
@@ -4126,12 +3574,8 @@
           "duplicateSelection",
           "clipboard",
           "foldersFirst",
-          [
-            []
-          ],
-          [
-            null
-          ],
+          [[]],
+          [null],
           [],
           "title",
           "foldersFirst",
@@ -4185,9 +3629,7 @@
           "topSeparator",
           "editSelection",
           "newTab",
-          [
-            "title"
-          ],
+          ["title"],
           "search",
           "openInTerminal",
           -1,
@@ -4211,11 +3653,7 @@
           false,
           "showInFinder",
           "copyPath",
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "title",
           "openSelection",
           "topSeparator",
@@ -4284,26 +3722,10 @@
     {
       "name": "65: random 65",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          [],
-          "trashSelection",
-          -1,
-          "topSeparator"
-        ]
-      },
+      "input": {"value": [[], "trashSelection", -1, "topSeparator"]},
       "changes": {
-        "sanitized": [
-          "trashSelection",
-          "topSeparator",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "trashSelection"
-          ]
-        }
+        "sanitized": ["trashSelection", "topSeparator", "title", "search"],
+        "palette": {"$remove": ["trashSelection"]}
       }
     },
     {
@@ -4325,9 +3747,7 @@
           "refresh",
           "up",
           "showInFinder",
-          [
-            []
-          ],
+          [[]],
           "trashSelection",
           "search",
           "hidden",
@@ -4384,9 +3804,7 @@
           "title",
           "refresh",
           "infoRow",
-          [
-            []
-          ],
+          [[]],
           "copyPath",
           "up"
         ]
@@ -4406,17 +3824,7 @@
           "search"
         ],
         "palette": {
-          "$remove": [
-            "back",
-            "up",
-            "refresh",
-            "newTab",
-            "sort",
-            "infoRow",
-            "pasteSelection",
-            "clipboard",
-            "copyPath"
-          ]
+          "$remove": ["back", "up", "refresh", "newTab", "sort", "infoRow", "pasteSelection", "clipboard", "copyPath"]
         }
       }
     },
@@ -4432,11 +3840,7 @@
           "infoRow",
           "showInFinder",
           "foldersFirst",
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           "quickLook"
         ]
       },
@@ -4495,9 +3899,7 @@
           "view",
           "openSelection",
           true,
-          [
-            "BACK"
-          ],
+          ["BACK"],
           "back",
           "",
           "newFolder",
@@ -4510,9 +3912,7 @@
           "revealInFolder",
           "pasteSelection",
           "revealInFolder",
-          [
-            " back"
-          ],
+          [" back"],
           "clipboard"
         ]
       },
@@ -4578,9 +3978,7 @@
           "revealInFolder",
           "topSeparator",
           "calculateSize",
-          [
-            "title"
-          ],
+          ["title"],
           "copySelection",
           "view",
           "trashSelection",
@@ -4638,29 +4036,10 @@
     {
       "name": "71: random 71",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          [
-            "back"
-          ],
-          "search",
-          "launchMissiles",
-          "topSeparator",
-          "showInFinder"
-        ]
-      },
+      "input": {"value": [["back"], "search", "launchMissiles", "topSeparator", "showInFinder"]},
       "changes": {
-        "sanitized": [
-          "search",
-          "topSeparator",
-          "showInFinder",
-          "title"
-        ],
-        "palette": {
-          "$remove": [
-            "showInFinder"
-          ]
-        }
+        "sanitized": ["search", "topSeparator", "showInFinder", "title"],
+        "palette": {"$remove": ["showInFinder"]}
       }
     },
     {
@@ -4710,14 +4089,7 @@
         }
       }
     },
-    {
-      "name": "73: random 73",
-      "base": "45: random 45",
-      "input": {
-        "value": 1
-      },
-      "changes": {}
-    },
+    {"name": "73: random 73", "base": "45: random 45", "input": {"value": 1}, "changes": {}},
     {
       "name": "74: random 74",
       "base": "45: random 45",
@@ -4748,9 +4120,7 @@
           "openSelection",
           "openInTerminal",
           "revealInFolder",
-          {
-            "back": true
-          },
+          {"back": true},
           "revealInFolder"
         ]
       },
@@ -4806,11 +4176,7 @@
           "infoPanel",
           "editSelection",
           "view",
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           "editSelection",
           "clipboard",
           "refresh",
@@ -4818,9 +4184,7 @@
           "newFolder",
           "up",
           "forward",
-          [
-            "title"
-          ],
+          ["title"],
           "title",
           "openInTerminal",
           "calculateSize",
@@ -4829,9 +4193,7 @@
           "topSeparator",
           "openInTerminal",
           "topSeparator",
-          [
-            null
-          ],
+          [null],
           "newFolder",
           "calculateSize",
           "",
@@ -4970,15 +4332,11 @@
           "quickLook",
           "foldersFirst",
           "renameSelection",
-          [
-            "title"
-          ],
+          ["title"],
           1,
           "openInTerminal",
           "duplicateSelection",
-          [
-            "back"
-          ],
+          ["back"],
           "topSeparator",
           "search"
         ]
@@ -5023,24 +4381,18 @@
       "input": {
         "value": [
           "topSeparator",
-          [
-            null
-          ],
+          [null],
           "help",
           "theme",
           "topSeparator",
           {},
-          [
-            " back"
-          ],
+          [" back"],
           "calculateSize",
           "duplicateSelection",
           false,
           "sort",
           "refresh",
-          [
-            null
-          ],
+          [null],
           "infoRow",
           "cutSelection",
           "view",
@@ -5051,9 +4403,7 @@
           "pasteSelection",
           "sort",
           "settings",
-          [
-            " back"
-          ],
+          [" back"],
           "editSelection",
           "newTab",
           "theme",
@@ -5062,11 +4412,7 @@
           "refresh",
           "settings",
           "cutSelection",
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "",
           "revealInFolder",
           "infoRow",
@@ -5124,23 +4470,14 @@
         }
       }
     },
-    {
-      "name": "79: random 79",
-      "base": "45: random 45",
-      "input": {
-        "value": "topSeparator"
-      },
-      "changes": {}
-    },
+    {"name": "79: random 79", "base": "45: random 45", "input": {"value": "topSeparator"}, "changes": {}},
     {
       "name": "80: random 80",
       "base": "45: random 45",
       "input": {
         "value": [
           "newFolder",
-          {
-            "back": true
-          },
+          {"back": true},
           "back",
           "editSelection",
           "moveSelection",
@@ -5224,15 +4561,11 @@
         "value": [
           -1,
           "folderTree",
-          [
-            "BACK"
-          ],
+          ["BACK"],
           "theme",
           "hidden",
           "renameSelection",
-          [
-            " back"
-          ],
+          [" back"],
           "topSeparator",
           "hidden",
           "folderTree",
@@ -5307,89 +4640,28 @@
     {
       "name": "82: random 82",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "topSeparator",
-          "copySelection",
-          {}
-        ]
-      },
+      "input": {"value": ["topSeparator", "copySelection", {}]},
       "changes": {
-        "sanitized": [
-          "topSeparator",
-          "copySelection",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "copySelection"
-          ]
-        }
+        "sanitized": ["topSeparator", "copySelection", "title", "search"],
+        "palette": {"$remove": ["copySelection"]}
       }
     },
     {
       "name": "83: random 83",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "launchMissiles",
-          "revealInFolder",
-          "theme",
-          "viewOptions",
-          [
-            "BACK"
-          ]
-        ]
-      },
+      "input": {"value": ["launchMissiles", "revealInFolder", "theme", "viewOptions", ["BACK"]]},
       "changes": {
-        "sanitized": [
-          "revealInFolder",
-          "theme",
-          "viewOptions",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "viewOptions",
-            "revealInFolder",
-            "theme"
-          ]
-        }
+        "sanitized": ["revealInFolder", "theme", "viewOptions", "title", "search"],
+        "palette": {"$remove": ["viewOptions", "revealInFolder", "theme"]}
       }
     },
     {
       "name": "84: random 84",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "trashSelection"
-        ]
-      },
-      "changes": {
-        "sanitized": [
-          "trashSelection",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "trashSelection"
-          ]
-        }
-      }
+      "input": {"value": ["trashSelection"]},
+      "changes": {"sanitized": ["trashSelection", "title", "search"], "palette": {"$remove": ["trashSelection"]}}
     },
-    {
-      "name": "85: random 85",
-      "base": "45: random 45",
-      "input": {
-        "value": [
-          null
-        ]
-      },
-      "changes": {}
-    },
+    {"name": "85: random 85", "base": "45: random 45", "input": {"value": [null]}, "changes": {}},
     {
       "name": "86: random 86",
       "base": "45: random 45",
@@ -5410,11 +4682,7 @@
           "newFolder",
           "calculateSize",
           "folderTree",
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           []
         ]
       },
@@ -5456,17 +4724,11 @@
         "value": [
           "newTab",
           "trashSelection",
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           "sort",
           "title",
           "showInFinder",
-          [
-            "title"
-          ],
+          ["title"],
           -1,
           "pasteSelection",
           "topSeparator",
@@ -5505,34 +4767,10 @@
     {
       "name": "88: random 88",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "back",
-          "help",
-          "topSeparator",
-          "back",
-          "title",
-          [],
-          {},
-          {},
-          "topSeparator"
-        ]
-      },
+      "input": {"value": ["back", "help", "topSeparator", "back", "title", [], {}, {}, "topSeparator"]},
       "changes": {
-        "sanitized": [
-          "back",
-          "help",
-          "topSeparator",
-          "title",
-          "topSeparator",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "back",
-            "help"
-          ]
-        }
+        "sanitized": ["back", "help", "topSeparator", "title", "topSeparator", "search"],
+        "palette": {"$remove": ["back", "help"]}
       }
     },
     {
@@ -5545,9 +4783,7 @@
           "newTab",
           "theme",
           "topSeparator",
-          [
-            "back"
-          ],
+          ["back"],
           "topSeparator",
           "help",
           "topSeparator",
@@ -5563,19 +4799,13 @@
           "topSeparator",
           "infoPanel",
           "view",
-          {
-            "back": true
-          },
-          [
-            " back"
-          ],
+          {"back": true},
+          [" back"],
           "view",
           "topSeparator",
           "settings",
           "copySelection",
-          [
-            "back "
-          ],
+          ["back "],
           "revealInFolder",
           "forward",
           "trashSelection",
@@ -5584,13 +4814,9 @@
           "calculateSize",
           "settings",
           "refresh",
-          [
-            "title"
-          ],
+          ["title"],
           "topSeparator",
-          [
-            []
-          ],
+          [[]],
           "copySelection",
           "infoRow",
           "openSelection",
@@ -5669,9 +4895,7 @@
           "back",
           "copyPath",
           "folderTree",
-          [
-            "title"
-          ],
+          ["title"],
           "topSeparator",
           "help",
           "theme",
@@ -5772,24 +4996,18 @@
           "duplicateSelection",
           "topSeparator",
           "refresh",
-          {
-            "back": true
-          },
+          {"back": true},
           1,
           "hidden",
           "up",
           "folderTree",
           "trashSelection",
-          [
-            "back"
-          ],
+          ["back"],
           "back",
           "newTab",
           "editSelection",
           "theme",
-          [
-            "title"
-          ],
+          ["title"],
           "duplicateSelection",
           "theme",
           "moveSelection",
@@ -5910,9 +5128,7 @@
           "goToFolder",
           "newFolder",
           "newTab",
-          [
-            []
-          ],
+          [[]],
           "duplicateSelection",
           "topSeparator"
         ]
@@ -5974,9 +5190,7 @@
       "input": {
         "value": [
           1.5,
-          [
-            []
-          ],
+          [[]],
           "up",
           "revealInFolder",
           "topSeparator",
@@ -5984,11 +5198,7 @@
           "clipboard",
           "topSeparator",
           "back",
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           "topSeparator",
           null,
           "calculateSize",
@@ -5997,15 +5207,11 @@
           "sort",
           "newFolder",
           "renameSelection",
-          [
-            "title"
-          ],
+          ["title"],
           -1,
           "clipboard",
           "topSeparator",
-          [
-            "BACK"
-          ],
+          ["BACK"],
           "topSeparator",
           "copyPath",
           "duplicateSelection",
@@ -6071,16 +5277,7 @@
             "settings",
             "help"
           ],
-          "$insert": [
-            [
-              "refresh",
-              "view"
-            ],
-            [
-              "compactSearch",
-              "folderTree"
-            ]
-          ]
+          "$insert": [["refresh", "view"], ["compactSearch", "folderTree"]]
         }
       }
     },
@@ -6089,9 +5286,7 @@
       "base": "45: random 45",
       "input": {
         "value": [
-          [
-            []
-          ],
+          [[]],
           "topSeparator",
           "view",
           "quickLook",
@@ -6102,9 +5297,7 @@
           1,
           "theme",
           1.5,
-          [
-            " back"
-          ],
+          [" back"],
           "revealInFolder",
           false,
           "search",
@@ -6119,11 +5312,7 @@
           "folderTree",
           "topSeparator",
           "help",
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "topSeparator",
           "view",
           null,
@@ -6202,9 +5391,7 @@
           "moveSelection",
           "infoRow",
           "sort",
-          [
-            " back"
-          ],
+          [" back"],
           "pasteSelection",
           "copySelection",
           "view",
@@ -6214,9 +5401,7 @@
           "view",
           "hidden",
           "pasteSelection",
-          {
-            "back": true
-          }
+          {"back": true}
         ]
       },
       "changes": {
@@ -6274,9 +5459,7 @@
           "clipboard",
           "quickLook",
           "trashSelection",
-          [
-            "back "
-          ],
+          ["back "],
           "search",
           "moveSelection",
           "pasteSelection",
@@ -6288,9 +5471,7 @@
           "copyPath",
           "calculateSize",
           "moveSelection",
-          [
-            "back "
-          ]
+          ["back "]
         ]
       },
       "changes": {
@@ -6334,25 +5515,10 @@
     {
       "name": "97: random 97",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "topSeparator",
-          "search",
-          "pasteSelection"
-        ]
-      },
+      "input": {"value": ["topSeparator", "search", "pasteSelection"]},
       "changes": {
-        "sanitized": [
-          "topSeparator",
-          "search",
-          "pasteSelection",
-          "title"
-        ],
-        "palette": {
-          "$remove": [
-            "pasteSelection"
-          ]
-        }
+        "sanitized": ["topSeparator", "search", "pasteSelection", "title"],
+        "palette": {"$remove": ["pasteSelection"]}
       }
     },
     {
@@ -6362,38 +5528,18 @@
         "value": [
           "title",
           "forward",
-          [
-            "back"
-          ],
+          ["back"],
           "goToFolder",
           "up",
           "renameSelection",
           "copyPath",
           "goToFolder",
-          [
-            "title"
-          ]
+          ["title"]
         ]
       },
       "changes": {
-        "sanitized": [
-          "title",
-          "forward",
-          "goToFolder",
-          "up",
-          "renameSelection",
-          "copyPath",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "forward",
-            "up",
-            "goToFolder",
-            "renameSelection",
-            "copyPath"
-          ]
-        }
+        "sanitized": ["title", "forward", "goToFolder", "up", "renameSelection", "copyPath", "search"],
+        "palette": {"$remove": ["forward", "up", "goToFolder", "renameSelection", "copyPath"]}
       }
     },
     {
@@ -6410,20 +5556,14 @@
           "launchMissiles",
           "foldersFirst",
           "hidden",
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           "back",
           "foldersFirst",
           "goToFolder",
           "",
           "showInFinder",
           "copyPath",
-          {
-            "back": true
-          },
+          {"back": true},
           "newFolder",
           "openInTerminal",
           "back",
@@ -6432,14 +5572,10 @@
           "editSelection",
           "back",
           "openInTerminal",
-          [
-            "BACK"
-          ],
+          ["BACK"],
           "clipboard",
           "calculateSize",
-          {
-            "back": true
-          },
+          {"back": true},
           "settings",
           "infoPanel",
           "openSelection",
@@ -6514,9 +5650,7 @@
           "forward",
           "title",
           "theme",
-          {
-            "back": true
-          },
+          {"back": true},
           "openSelection",
           "topSeparator",
           "title",
@@ -6532,11 +5666,7 @@
           true,
           "newTab",
           "back",
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "revealInFolder",
           "topSeparator",
           "copySelection",
@@ -6654,9 +5784,7 @@
           "newFolder",
           "title",
           "openInTerminal",
-          [
-            []
-          ],
+          [[]],
           "topSeparator",
           "openInTerminal",
           "forward",
@@ -6670,9 +5798,7 @@
           "topSeparator",
           "topSeparator",
           "topSeparator",
-          [
-            " back"
-          ],
+          [" back"],
           "pasteSelection",
           "forward",
           {},
@@ -6742,14 +5868,8 @@
         "value": [
           "copySelection",
           "settings",
-          [
-            "title"
-          ],
-          [
-            1,
-            2,
-            3
-          ],
+          ["title"],
+          [1, 2, 3],
           "renameSelection",
           "title",
           "foldersFirst",
@@ -6760,9 +5880,7 @@
           "search",
           "help",
           "folderTree",
-          [
-            "BACK"
-          ],
+          ["BACK"],
           "theme",
           "folderTree",
           "viewOptions",
@@ -6777,9 +5895,7 @@
           "folderTree",
           "theme",
           "topSeparator",
-          [
-            "back "
-          ],
+          ["back "],
           "infoRow",
           "copySelection",
           "back",
@@ -6915,15 +6031,11 @@
       "base": "45: random 45",
       "input": {
         "value": [
-          [
-            "title"
-          ],
+          ["title"],
           "infoPanel",
           "title",
           "sort",
-          [
-            "back"
-          ],
+          ["back"],
           "moveSelection",
           "sort",
           "revealInFolder",
@@ -7053,13 +6165,9 @@
           "cutSelection",
           "copySelection",
           "revealInFolder",
-          [
-            "back"
-          ],
+          ["back"],
           "copySelection",
-          [
-            "back "
-          ],
+          ["back "],
           "back",
           "newFolder",
           "copySelection",
@@ -7101,9 +6209,7 @@
       "input": {
         "value": [
           "newTab",
-          {
-            "back": true
-          },
+          {"back": true},
           "openInTerminal",
           "openSelection",
           "back",
@@ -7150,24 +6256,8 @@
         }
       }
     },
-    {
-      "name": "109: random 109",
-      "base": "45: random 45",
-      "input": {
-        "value": [
-          " back"
-        ]
-      },
-      "changes": {}
-    },
-    {
-      "name": "110: random 110",
-      "base": "45: random 45",
-      "input": {
-        "value": "title"
-      },
-      "changes": {}
-    },
+    {"name": "109: random 109", "base": "45: random 45", "input": {"value": [" back"]}, "changes": {}},
+    {"name": "110: random 110", "base": "45: random 45", "input": {"value": "title"}, "changes": {}},
     {
       "name": "111: random 111",
       "base": "45: random 45",
@@ -7191,9 +6281,7 @@
           "copySelection",
           "up",
           "help",
-          [
-            []
-          ],
+          [[]],
           "quickLook",
           "infoRow",
           "pasteSelection"
@@ -7244,84 +6332,28 @@
     {
       "name": "112: random 112",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "infoRow",
-          [
-            "BACK"
-          ],
-          "hidden",
-          "renameSelection"
-        ]
-      },
+      "input": {"value": ["infoRow", ["BACK"], "hidden", "renameSelection"]},
       "changes": {
-        "sanitized": [
-          "infoRow",
-          "hidden",
-          "renameSelection",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "hidden",
-            "infoRow",
-            "renameSelection"
-          ]
-        }
+        "sanitized": ["infoRow", "hidden", "renameSelection", "title", "search"],
+        "palette": {"$remove": ["hidden", "infoRow", "renameSelection"]}
       }
     },
     {
       "name": "113: random 113",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "title",
-          "infoPanel",
-          "openInTerminal",
-          false
-        ]
-      },
+      "input": {"value": ["title", "infoPanel", "openInTerminal", false]},
       "changes": {
-        "sanitized": [
-          "title",
-          "infoPanel",
-          "openInTerminal",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "infoPanel",
-            "openInTerminal"
-          ]
-        }
+        "sanitized": ["title", "infoPanel", "openInTerminal", "search"],
+        "palette": {"$remove": ["infoPanel", "openInTerminal"]}
       }
     },
     {
       "name": "114: random 114",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "cutSelection",
-          "quickLook",
-          "pasteSelection"
-        ]
-      },
+      "input": {"value": ["cutSelection", "quickLook", "pasteSelection"]},
       "changes": {
-        "sanitized": [
-          "cutSelection",
-          "quickLook",
-          "pasteSelection",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "quickLook",
-            "cutSelection",
-            "pasteSelection"
-          ]
-        }
+        "sanitized": ["cutSelection", "quickLook", "pasteSelection", "title", "search"],
+        "palette": {"$remove": ["quickLook", "cutSelection", "pasteSelection"]}
       }
     },
     {
@@ -7330,9 +6362,7 @@
       "input": {
         "value": [
           "clipboard",
-          [
-            null
-          ],
+          [null],
           "topSeparator",
           "showInFinder",
           "cutSelection",
@@ -7341,15 +6371,11 @@
           "title",
           "topSeparator",
           "calculateSize",
-          [
-            "back "
-          ],
+          ["back "],
           "title",
           "topSeparator",
           "help",
-          [
-            null
-          ],
+          [null],
           "pasteSelection",
           "newTab",
           "forward",
@@ -7413,14 +6439,7 @@
         }
       }
     },
-    {
-      "name": "116: random 116",
-      "base": "45: random 45",
-      "input": {
-        "value": true
-      },
-      "changes": {}
-    },
+    {"name": "116: random 116", "base": "45: random 45", "input": {"value": true}, "changes": {}},
     {
       "name": "117: random 117",
       "base": "45: random 45",
@@ -7433,15 +6452,9 @@
           "view",
           "topSeparator",
           "renameSelection",
-          [
-            " back"
-          ],
-          [
-            "back"
-          ],
-          [
-            "back"
-          ],
+          [" back"],
+          ["back"],
+          ["back"],
           "revealInFolder",
           "infoPanel",
           "infoRow",
@@ -7450,12 +6463,8 @@
           "cutSelection",
           "openInTerminal",
           "newTab",
-          [
-            " back"
-          ],
-          [
-            "BACK"
-          ],
+          [" back"],
+          ["BACK"],
           "trashSelection",
           "calculateSize",
           "up",
@@ -7472,17 +6481,13 @@
           "topSeparator",
           "topSeparator",
           "duplicateSelection",
-          [
-            []
-          ],
+          [[]],
           "clipboard",
           "topSeparator",
           "topSeparator",
           "topSeparator",
           "editSelection",
-          [
-            " back"
-          ],
+          [" back"],
           "cutSelection"
         ]
       },
@@ -7557,9 +6562,7 @@
           "topSeparator",
           "moveSelection",
           "openSelection",
-          [
-            "back "
-          ],
+          ["back "],
           1.5,
           "trashSelection",
           "foldersFirst",
@@ -7580,12 +6583,8 @@
           "settings",
           "topSeparator",
           "infoRow",
-          [
-            "back "
-          ],
-          [
-            "back"
-          ],
+          ["back "],
+          ["back"],
           "goToFolder",
           "trashSelection",
           "openInTerminal",
@@ -7656,20 +6655,14 @@
           "openSelection",
           "trashSelection",
           "newFolder",
-          [
-            "title"
-          ],
+          ["title"],
           "openSelection",
           "topSeparator",
           "foldersFirst",
           "trashSelection",
-          [
-            null
-          ],
+          [null],
           "foldersFirst",
-          [
-            "back"
-          ],
+          ["back"],
           "copyPath",
           "topSeparator",
           "search",
@@ -7755,26 +6748,18 @@
           "pasteSelection",
           "sort",
           "cutSelection",
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "trashSelection",
           {},
           "openInTerminal",
           "renameSelection",
           [],
-          {
-            "back": true
-          },
+          {"back": true},
           "calculateSize",
           "openInTerminal",
           "newFolder",
           "settings",
-          [
-            "BACK"
-          ],
+          ["BACK"],
           "showInFinder",
           "clipboard",
           true,
@@ -7820,23 +6805,8 @@
     {
       "name": "121: random 121",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "calculateSize"
-        ]
-      },
-      "changes": {
-        "sanitized": [
-          "calculateSize",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "calculateSize"
-          ]
-        }
-      }
+      "input": {"value": ["calculateSize"]},
+      "changes": {"sanitized": ["calculateSize", "title", "search"], "palette": {"$remove": ["calculateSize"]}}
     },
     {
       "name": "122: random 122",
@@ -7861,22 +6831,16 @@
           "topSeparator",
           "newTab",
           "clipboard",
-          [
-            []
-          ],
+          [[]],
           "moveSelection",
           "openSelection",
           "back",
-          [
-            "title"
-          ],
+          ["title"],
           "",
           [],
           "back",
           "forward",
-          [
-            "back "
-          ],
+          ["back "],
           "viewOptions"
         ]
       },
@@ -7937,36 +6901,24 @@
           "hidden",
           "settings",
           "topSeparator",
-          {
-            "back": true
-          },
+          {"back": true},
           [],
           "duplicateSelection",
           1,
           "topSeparator",
           "goToFolder",
-          [
-            "back "
-          ],
+          ["back "],
           "showInFinder",
           "infoRow",
           "openSelection",
           "topSeparator",
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "refresh",
           "settings",
           "viewOptions",
           "editSelection",
           "topSeparator",
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "openInTerminal",
           "copySelection",
           "clipboard"
@@ -8020,39 +6972,20 @@
     {
       "name": "124: random 124",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "folderTree"
-        ]
-      },
-      "changes": {
-        "sanitized": [
-          "folderTree",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "folderTree"
-          ]
-        }
-      }
+      "input": {"value": ["folderTree"]},
+      "changes": {"sanitized": ["folderTree", "title", "search"], "palette": {"$remove": ["folderTree"]}}
     },
     {
       "name": "125: random 125",
       "base": "45: random 45",
       "input": {
         "value": [
-          [
-            "title"
-          ],
+          ["title"],
           "openSelection",
           true,
           "search",
           "title",
-          [
-            "back "
-          ],
+          ["back "],
           "openInTerminal",
           "forward",
           0,
@@ -8060,9 +6993,7 @@
           1.5,
           "settings",
           "topSeparator",
-          [
-            " back"
-          ],
+          [" back"],
           "infoRow",
           "search",
           "copySelection",
@@ -8126,28 +7057,10 @@
     {
       "name": "126: random 126",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "openSelection",
-          "copyPath",
-          "quickLook"
-        ]
-      },
+      "input": {"value": ["openSelection", "copyPath", "quickLook"]},
       "changes": {
-        "sanitized": [
-          "openSelection",
-          "copyPath",
-          "quickLook",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "openSelection",
-            "quickLook",
-            "copyPath"
-          ]
-        }
+        "sanitized": ["openSelection", "copyPath", "quickLook", "title", "search"],
+        "palette": {"$remove": ["openSelection", "quickLook", "copyPath"]}
       }
     },
     {
@@ -8168,15 +7081,11 @@
           "settings",
           "back",
           "search",
-          [
-            "title"
-          ],
+          ["title"],
           "search",
           "folderTree",
           "trashSelection",
-          [
-            "back"
-          ],
+          ["back"],
           "refresh",
           "theme",
           true,
@@ -8240,9 +7149,7 @@
           "revealInFolder",
           "topSeparator",
           "showInFinder",
-          [
-            " back"
-          ],
+          [" back"],
           "quickLook",
           "trashSelection"
         ]
@@ -8259,15 +7166,7 @@
           "trashSelection",
           "search"
         ],
-        "palette": {
-          "$remove": [
-            "forward",
-            "quickLook",
-            "trashSelection",
-            "revealInFolder",
-            "showInFinder"
-          ]
-        }
+        "palette": {"$remove": ["forward", "quickLook", "trashSelection", "revealInFolder", "showInFinder"]}
       }
     },
     {
@@ -8288,9 +7187,7 @@
           "topSeparator",
           "copyPath",
           "foldersFirst",
-          [
-            []
-          ],
+          [[]],
           "topSeparator",
           "moveSelection",
           "copyPath",
@@ -8301,17 +7198,11 @@
           "topSeparator",
           "editSelection",
           "copyPath",
-          [
-            "title"
-          ],
+          ["title"],
           "duplicateSelection",
           "newFolder",
-          [
-            "title"
-          ],
-          [
-            "back"
-          ],
+          ["title"],
+          ["back"],
           "goToFolder",
           "refresh",
           "topSeparator",
@@ -8379,27 +7270,10 @@
     {
       "name": "130: random 130",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "topSeparator"
-        ]
-      },
-      "changes": {
-        "sanitized": [
-          "topSeparator",
-          "title",
-          "search"
-        ]
-      }
+      "input": {"value": ["topSeparator"]},
+      "changes": {"sanitized": ["topSeparator", "title", "search"]}
     },
-    {
-      "name": "131: random 131",
-      "base": "45: random 45",
-      "input": {
-        "value": 1
-      },
-      "changes": {}
-    },
+    {"name": "131: random 131", "base": "45: random 45", "input": {"value": 1}, "changes": {}},
     {
       "name": "132: random 132",
       "base": "45: random 45",
@@ -8413,16 +7287,12 @@
           "quickLook",
           "openInTerminal",
           "help",
-          {
-            "back": true
-          },
+          {"back": true},
           "topSeparator",
           -1,
           1,
           "revealInFolder",
-          [
-            null
-          ],
+          [null],
           "goToFolder",
           "search",
           "quickLook",
@@ -8492,25 +7362,10 @@
     {
       "name": "133: random 133",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "revealInFolder",
-          "topSeparator",
-          "launchMissiles"
-        ]
-      },
+      "input": {"value": ["revealInFolder", "topSeparator", "launchMissiles"]},
       "changes": {
-        "sanitized": [
-          "revealInFolder",
-          "topSeparator",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "revealInFolder"
-          ]
-        }
+        "sanitized": ["revealInFolder", "topSeparator", "title", "search"],
+        "palette": {"$remove": ["revealInFolder"]}
       }
     },
     {
@@ -8523,9 +7378,7 @@
           "back",
           "newTab",
           "title",
-          [
-            " back"
-          ],
+          [" back"],
           "pasteSelection",
           [],
           "openSelection",
@@ -8590,28 +7443,18 @@
           "up",
           "openSelection",
           "revealInFolder",
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "copySelection",
           "clipboard",
           "revealInFolder",
           "up",
-          [
-            []
-          ],
+          [[]],
           "copyPath",
           "newFolder",
           "moveSelection",
           "quickLook",
           "cutSelection",
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           "openSelection",
           "revealInFolder",
           "renameSelection",
@@ -8620,9 +7463,7 @@
           "sort",
           "calculateSize",
           "copyPath",
-          [
-            " back"
-          ],
+          [" back"],
           false,
           "showInFinder",
           0,
@@ -8630,9 +7471,7 @@
           "quickLook",
           "copyPath",
           "goToFolder",
-          [
-            " back"
-          ],
+          [" back"],
           "copyPath",
           "topSeparator",
           "title",
@@ -8698,11 +7537,7 @@
       "base": "45: random 45",
       "input": {
         "value": [
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           "launchMissiles",
           "title",
           {},
@@ -8763,14 +7598,7 @@
         }
       }
     },
-    {
-      "name": "137: random 137",
-      "base": "45: random 45",
-      "input": {
-        "value": "launchMissiles"
-      },
-      "changes": {}
-    },
+    {"name": "137: random 137", "base": "45: random 45", "input": {"value": "launchMissiles"}, "changes": {}},
     {
       "name": "138: random 138",
       "base": "45: random 45",
@@ -8780,21 +7608,13 @@
           "title",
           "pasteSelection",
           {},
-          [
-            {
-              "id": "back"
-            }
-          ],
-          [
-            "BACK"
-          ],
+          [{"id": "back"}],
+          ["BACK"],
           "revealInFolder",
           "revealInFolder",
           "refresh",
           "settings",
-          [
-            "back "
-          ],
+          ["back "],
           "foldersFirst",
           "title",
           "hidden",
@@ -8810,9 +7630,7 @@
           "view",
           "refresh",
           "renameSelection",
-          [
-            " back"
-          ],
+          [" back"],
           "showInFinder",
           "showInFinder",
           "back",
@@ -8897,73 +7715,23 @@
           "hidden",
           "search"
         ],
-        "palette": {
-          "$remove": [
-            "hidden",
-            "revealInFolder",
-            "copyPath",
-            "calculateSize",
-            "settings"
-          ]
-        }
+        "palette": {"$remove": ["hidden", "revealInFolder", "copyPath", "calculateSize", "settings"]}
       }
     },
     {
       "name": "140: random 140",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "topSeparator",
-          "newTab",
-          "topSeparator",
-          "infoPanel",
-          false
-        ]
-      },
+      "input": {"value": ["topSeparator", "newTab", "topSeparator", "infoPanel", false]},
       "changes": {
-        "sanitized": [
-          "topSeparator",
-          "newTab",
-          "topSeparator",
-          "infoPanel",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "newTab",
-            "infoPanel"
-          ]
-        }
+        "sanitized": ["topSeparator", "newTab", "topSeparator", "infoPanel", "title", "search"],
+        "palette": {"$remove": ["newTab", "infoPanel"]}
       }
     },
     {
       "name": "141: random 141",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "topSeparator",
-          "hidden",
-          [
-            {
-              "id": "back"
-            }
-          ]
-        ]
-      },
-      "changes": {
-        "sanitized": [
-          "topSeparator",
-          "hidden",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "hidden"
-          ]
-        }
-      }
+      "input": {"value": ["topSeparator", "hidden", [{"id": "back"}]]},
+      "changes": {"sanitized": ["topSeparator", "hidden", "title", "search"], "palette": {"$remove": ["hidden"]}}
     },
     {
       "name": "142: random 142",
@@ -8976,9 +7744,7 @@
           "up",
           "launchMissiles",
           null,
-          [
-            null
-          ],
+          [null],
           "pasteSelection",
           "title",
           "moveSelection",
@@ -8993,9 +7759,7 @@
           "help",
           "openInTerminal",
           "topSeparator",
-          {
-            "back": true
-          },
+          {"back": true},
           "newTab",
           "sort"
         ]
@@ -9053,9 +7817,7 @@
           "folderTree",
           "trashSelection",
           "topSeparator",
-          [
-            "BACK"
-          ],
+          ["BACK"],
           "viewOptions",
           "topSeparator",
           "settings",
@@ -9076,24 +7838,16 @@
           [],
           "cutSelection",
           "refresh",
-          [
-            "title"
-          ],
+          ["title"],
           "calculateSize",
-          [
-            "BACK"
-          ],
+          ["BACK"],
           "topSeparator",
           "duplicateSelection",
           {},
           "back",
           "",
           "topSeparator",
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "duplicateSelection",
           "settings",
           "help",
@@ -9156,30 +7910,10 @@
     {
       "name": "144: random 144",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "infoPanel",
-          "openSelection",
-          "topSeparator",
-          "duplicateSelection"
-        ]
-      },
+      "input": {"value": ["infoPanel", "openSelection", "topSeparator", "duplicateSelection"]},
       "changes": {
-        "sanitized": [
-          "infoPanel",
-          "openSelection",
-          "topSeparator",
-          "duplicateSelection",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "infoPanel",
-            "openSelection",
-            "duplicateSelection"
-          ]
-        }
+        "sanitized": ["infoPanel", "openSelection", "topSeparator", "duplicateSelection", "title", "search"],
+        "palette": {"$remove": ["infoPanel", "openSelection", "duplicateSelection"]}
       }
     },
     {
@@ -9189,9 +7923,7 @@
         "value": [
           "topSeparator",
           "topSeparator",
-          [
-            []
-          ],
+          [[]],
           "sort",
           "revealInFolder",
           [],
@@ -9213,17 +7945,11 @@
           "hidden",
           "pasteSelection",
           "clipboard",
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           -1,
           "infoRow",
           "title",
-          [
-            " back"
-          ],
+          [" back"],
           "topSeparator",
           "newFolder",
           "viewOptions",
@@ -9278,9 +8004,7 @@
       "base": "45: random 45",
       "input": {
         "value": [
-          [
-            "back "
-          ],
+          ["back "],
           "topSeparator",
           "calculateSize",
           "title",
@@ -9291,20 +8015,14 @@
           "folderTree",
           "settings",
           "topSeparator",
-          [
-            "back"
-          ],
+          ["back"],
           "back",
           "revealInFolder",
           "foldersFirst",
           "cutSelection",
           "quickLook",
           "openInTerminal",
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           "topSeparator",
           "copyPath",
           "view",
@@ -9321,9 +8039,7 @@
           "openInTerminal",
           "newTab",
           "newFolder",
-          [
-            []
-          ],
+          [[]],
           {}
         ]
       },
@@ -9380,28 +8096,8 @@
         }
       }
     },
-    {
-      "name": "147: random 147",
-      "base": "45: random 45",
-      "input": {
-        "value": {
-          "back": true
-        }
-      },
-      "changes": {}
-    },
-    {
-      "name": "148: random 148",
-      "base": "45: random 45",
-      "input": {
-        "value": [
-          1,
-          2,
-          3
-        ]
-      },
-      "changes": {}
-    },
+    {"name": "147: random 147", "base": "45: random 45", "input": {"value": {"back": true}}, "changes": {}},
+    {"name": "148: random 148", "base": "45: random 45", "input": {"value": [1, 2, 3]}, "changes": {}},
     {
       "name": "149: random 149",
       "base": "0: default",
@@ -9414,17 +8110,13 @@
           "hidden",
           "search",
           "topSeparator",
-          [
-            "BACK"
-          ],
+          ["BACK"],
           "openInTerminal",
           "settings",
           "editSelection",
           "editSelection",
           "hidden",
-          [
-            []
-          ],
+          [[]],
           "infoRow",
           "clipboard",
           "folderTree",
@@ -9503,97 +8195,27 @@
             "settings",
             "help"
           ],
-          "$insert": [
-            [
-              "newTab",
-              "view"
-            ],
-            [
-              "foldersFirst",
-              "viewOptions"
-            ]
-          ]
+          "$insert": [["newTab", "view"], ["foldersFirst", "viewOptions"]]
         }
       }
     },
-    {
-      "name": "150: random 150",
-      "base": "45: random 45",
-      "input": {
-        "value": [
-          "BACK"
-        ]
-      },
-      "changes": {}
-    },
+    {"name": "150: random 150", "base": "45: random 45", "input": {"value": ["BACK"]}, "changes": {}},
     {
       "name": "151: random 151",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "up",
-          "settings",
-          "renameSelection",
-          "infoPanel"
-        ]
-      },
+      "input": {"value": ["up", "settings", "renameSelection", "infoPanel"]},
       "changes": {
-        "sanitized": [
-          "up",
-          "settings",
-          "renameSelection",
-          "infoPanel",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "up",
-            "infoPanel",
-            "renameSelection",
-            "settings"
-          ]
-        }
+        "sanitized": ["up", "settings", "renameSelection", "infoPanel", "title", "search"],
+        "palette": {"$remove": ["up", "infoPanel", "renameSelection", "settings"]}
       }
     },
     {
       "name": "152: random 152",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "infoRow",
-          "up",
-          "title",
-          "help",
-          [
-            []
-          ],
-          1,
-          "refresh",
-          "topSeparator",
-          "back"
-        ]
-      },
+      "input": {"value": ["infoRow", "up", "title", "help", [[]], 1, "refresh", "topSeparator", "back"]},
       "changes": {
-        "sanitized": [
-          "infoRow",
-          "up",
-          "title",
-          "help",
-          "refresh",
-          "topSeparator",
-          "back",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "back",
-            "up",
-            "refresh",
-            "infoRow",
-            "help"
-          ]
-        }
+        "sanitized": ["infoRow", "up", "title", "help", "refresh", "topSeparator", "back", "search"],
+        "palette": {"$remove": ["back", "up", "refresh", "infoRow", "help"]}
       }
     },
     {
@@ -9601,18 +8223,10 @@
       "base": "45: random 45",
       "input": {
         "value": [
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "editSelection",
-          [
-            "title"
-          ],
-          {
-            "back": true
-          },
+          ["title"],
+          {"back": true},
           "topSeparator",
           "topSeparator",
           "cutSelection",
@@ -9621,9 +8235,7 @@
           "search",
           "editSelection",
           {},
-          [
-            "back "
-          ],
+          ["back "],
           "hidden",
           "newTab",
           [],
@@ -9634,9 +8246,7 @@
           "moveSelection",
           "topSeparator",
           "topSeparator",
-          [
-            "back "
-          ],
+          ["back "],
           "topSeparator",
           "editSelection",
           "goToFolder",
@@ -9651,9 +8261,7 @@
           "editSelection",
           "back",
           "topSeparator",
-          [
-            "back "
-          ]
+          ["back "]
         ]
       },
       "changes": {
@@ -9709,9 +8317,7 @@
         "value": [
           "theme",
           null,
-          [
-            "back"
-          ],
+          ["back"],
           "openInTerminal",
           "topSeparator",
           "openInTerminal",
@@ -9720,15 +8326,11 @@
           "refresh",
           "refresh",
           "forward",
-          [
-            "BACK"
-          ],
+          ["BACK"],
           "copySelection",
           "settings",
           null,
-          [
-            null
-          ],
+          [null],
           "clipboard",
           true,
           "infoRow",
@@ -9800,54 +8402,14 @@
     {
       "name": "155: random 155",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "back",
-          "newFolder",
-          "moveSelection",
-          "newTab",
-          "up"
-        ]
-      },
+      "input": {"value": ["back", "newFolder", "moveSelection", "newTab", "up"]},
       "changes": {
-        "sanitized": [
-          "back",
-          "newFolder",
-          "moveSelection",
-          "newTab",
-          "up",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "back",
-            "up",
-            "newTab",
-            "newFolder",
-            "moveSelection"
-          ]
-        }
+        "sanitized": ["back", "newFolder", "moveSelection", "newTab", "up", "title", "search"],
+        "palette": {"$remove": ["back", "up", "newTab", "newFolder", "moveSelection"]}
       }
     },
-    {
-      "name": "156: random 156",
-      "base": "45: random 45",
-      "input": {
-        "value": [
-          " back"
-        ]
-      },
-      "changes": {}
-    },
-    {
-      "name": "157: random 157",
-      "base": "45: random 45",
-      "input": {
-        "value": "title"
-      },
-      "changes": {}
-    },
+    {"name": "156: random 156", "base": "45: random 45", "input": {"value": [" back"]}, "changes": {}},
+    {"name": "157: random 157", "base": "45: random 45", "input": {"value": "title"}, "changes": {}},
     {
       "name": "158: random 158",
       "base": "45: random 45",
@@ -9855,24 +8417,18 @@
         "value": [
           "openInTerminal",
           "topSeparator",
-          [
-            null
-          ],
+          [null],
           "newTab",
           "title",
           "editSelection",
           "help",
-          [
-            "back "
-          ],
+          ["back "],
           false,
           "topSeparator",
           "refresh",
           "trashSelection",
           "title",
-          [
-            null
-          ],
+          [null],
           "quickLook"
         ]
       },
@@ -9891,30 +8447,11 @@
           "search"
         ],
         "palette": {
-          "$remove": [
-            "refresh",
-            "newTab",
-            "quickLook",
-            "editSelection",
-            "trashSelection",
-            "openInTerminal",
-            "help"
-          ]
+          "$remove": ["refresh", "newTab", "quickLook", "editSelection", "trashSelection", "openInTerminal", "help"]
         }
       }
     },
-    {
-      "name": "159: random 159",
-      "base": "45: random 45",
-      "input": {
-        "value": [
-          1,
-          2,
-          3
-        ]
-      },
-      "changes": {}
-    },
+    {"name": "159: random 159", "base": "45: random 45", "input": {"value": [1, 2, 3]}, "changes": {}},
     {
       "name": "160: random 160",
       "base": "0: default",
@@ -9930,9 +8467,7 @@
           "cutSelection",
           "viewOptions",
           "editSelection",
-          [
-            "title"
-          ],
+          ["title"],
           "duplicateSelection",
           "newFolder",
           "topSeparator",
@@ -10000,12 +8535,7 @@
             "openInTerminal",
             "theme"
           ],
-          "$insert": [
-            [
-              "newTab",
-              "view"
-            ]
-          ]
+          "$insert": [["newTab", "view"]]
         }
       }
     },
@@ -10021,11 +8551,7 @@
           "hidden",
           "goToFolder",
           "topSeparator",
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "viewOptions",
           "forward",
           -1,
@@ -10085,9 +8611,7 @@
       "input": {
         "value": [
           "forward",
-          [
-            " back"
-          ],
+          [" back"],
           "trashSelection",
           "calculateSize",
           "newTab",
@@ -10110,11 +8634,7 @@
           "topSeparator",
           [],
           "hidden",
-          [
-            1,
-            2,
-            3
-          ],
+          [1, 2, 3],
           "trashSelection",
           "hidden",
           "sort",
@@ -10133,9 +8653,7 @@
           "title",
           "duplicateSelection",
           "clipboard",
-          [
-            " back"
-          ],
+          [" back"],
           "hidden"
         ]
       },
@@ -10211,9 +8729,7 @@
           "topSeparator",
           1,
           "calculateSize",
-          [
-            []
-          ],
+          [[]],
           "back",
           "refresh",
           "editSelection",
@@ -10263,75 +8779,25 @@
         }
       }
     },
-    {
-      "name": "164: random 164",
-      "base": "45: random 45",
-      "input": {
-        "value": 0
-      },
-      "changes": {}
-    },
+    {"name": "164: random 164", "base": "45: random 45", "input": {"value": 0}, "changes": {}},
     {
       "name": "165: random 165",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          [
-            "title"
-          ],
-          "help",
-          "refresh",
-          "moveSelection"
-        ]
-      },
+      "input": {"value": [["title"], "help", "refresh", "moveSelection"]},
       "changes": {
-        "sanitized": [
-          "help",
-          "refresh",
-          "moveSelection",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "refresh",
-            "moveSelection",
-            "help"
-          ]
-        }
+        "sanitized": ["help", "refresh", "moveSelection", "title", "search"],
+        "palette": {"$remove": ["refresh", "moveSelection", "help"]}
       }
     },
     {
       "name": "166: random 166",
       "base": "45: random 45",
       "input": {
-        "value": [
-          [
-            null
-          ],
-          "title",
-          "editSelection",
-          "duplicateSelection",
-          "theme",
-          "editSelection",
-          "editSelection"
-        ]
+        "value": [[null], "title", "editSelection", "duplicateSelection", "theme", "editSelection", "editSelection"]
       },
       "changes": {
-        "sanitized": [
-          "title",
-          "editSelection",
-          "duplicateSelection",
-          "theme",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "editSelection",
-            "duplicateSelection",
-            "theme"
-          ]
-        }
+        "sanitized": ["title", "editSelection", "duplicateSelection", "theme", "search"],
+        "palette": {"$remove": ["editSelection", "duplicateSelection", "theme"]}
       }
     },
     {
@@ -10386,14 +8852,7 @@
         }
       }
     },
-    {
-      "name": "168: random 168",
-      "base": "45: random 45",
-      "input": {
-        "value": []
-      },
-      "changes": {}
-    },
+    {"name": "168: random 168", "base": "45: random 45", "input": {"value": []}, "changes": {}},
     {
       "name": "169: random 169",
       "base": "45: random 45",
@@ -10402,12 +8861,8 @@
           "topSeparator",
           "refresh",
           "topSeparator",
-          [
-            "back "
-          ],
-          [
-            "back "
-          ],
+          ["back "],
+          ["back "],
           "topSeparator",
           "renameSelection",
           "openSelection",
@@ -10457,23 +8912,8 @@
     {
       "name": "170: random 170",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "help"
-        ]
-      },
-      "changes": {
-        "sanitized": [
-          "help",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "help"
-          ]
-        }
-      }
+      "input": {"value": ["help"]},
+      "changes": {"sanitized": ["help", "title", "search"], "palette": {"$remove": ["help"]}}
     },
     {
       "name": "171: random 171",
@@ -10493,9 +8933,7 @@
           "openInTerminal",
           false,
           "trashSelection",
-          [
-            " back"
-          ],
+          [" back"],
           "moveSelection",
           "search",
           "title",
@@ -10507,9 +8945,7 @@
           "copyPath",
           "clipboard",
           "search",
-          [
-            "title"
-          ],
+          ["title"],
           "topSeparator",
           "editSelection",
           "topSeparator",
@@ -10574,34 +9010,10 @@
     {
       "name": "172: random 172",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "editSelection",
-          "view",
-          "quickLook",
-          "viewOptions",
-          "theme"
-        ]
-      },
+      "input": {"value": ["editSelection", "view", "quickLook", "viewOptions", "theme"]},
       "changes": {
-        "sanitized": [
-          "editSelection",
-          "view",
-          "quickLook",
-          "viewOptions",
-          "theme",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "view",
-            "viewOptions",
-            "quickLook",
-            "editSelection",
-            "theme"
-          ]
-        }
+        "sanitized": ["editSelection", "view", "quickLook", "viewOptions", "theme", "title", "search"],
+        "palette": {"$remove": ["view", "viewOptions", "quickLook", "editSelection", "theme"]}
       }
     },
     {
@@ -10612,13 +9024,9 @@
           "topSeparator",
           "quickLook",
           "settings",
-          [
-            "title"
-          ],
+          ["title"],
           "cutSelection",
-          [
-            "title"
-          ],
+          ["title"],
           "topSeparator",
           "theme",
           "goToFolder",
@@ -10626,9 +9034,7 @@
           "sort",
           "openInTerminal",
           null,
-          [
-            "BACK"
-          ],
+          ["BACK"],
           "copySelection",
           "hidden",
           "renameSelection",
@@ -10643,24 +9049,16 @@
           "topSeparator",
           "topSeparator",
           1,
-          [
-            " back"
-          ],
+          [" back"],
           "back",
           "sort",
           "infoRow",
           "quickLook",
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           null,
           "copyPath",
           "moveSelection",
-          [
-            " back"
-          ],
+          [" back"],
           "editSelection",
           "forward",
           "clipboard",
@@ -10726,26 +9124,8 @@
         }
       }
     },
-    {
-      "name": "174: random 174",
-      "base": "45: random 45",
-      "input": {
-        "value": "back"
-      },
-      "changes": {}
-    },
-    {
-      "name": "175: random 175",
-      "base": "45: random 45",
-      "input": {
-        "value": [
-          {
-            "id": "back"
-          }
-        ]
-      },
-      "changes": {}
-    },
+    {"name": "174: random 174", "base": "45: random 45", "input": {"value": "back"}, "changes": {}},
+    {"name": "175: random 175", "base": "45: random 45", "input": {"value": [{"id": "back"}]}, "changes": {}},
     {
       "name": "176: random 176",
       "base": "45: random 45",
@@ -10817,18 +9197,12 @@
       "input": {
         "value": [
           "view",
-          {
-            "back": true
-          },
-          [
-            "title"
-          ],
+          {"back": true},
+          ["title"],
           "settings",
           "topSeparator",
           "folderTree",
-          [
-            []
-          ],
+          [[]],
           "refresh",
           "openSelection",
           "editSelection",
@@ -10836,11 +9210,7 @@
           "cutSelection",
           "topSeparator",
           "topSeparator",
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "topSeparator",
           "topSeparator",
           true,
@@ -10848,9 +9218,7 @@
           "foldersFirst",
           "renameSelection",
           true,
-          [
-            "back"
-          ],
+          ["back"],
           "topSeparator",
           "view",
           "newFolder",
@@ -10912,9 +9280,7 @@
           "infoRow",
           "help",
           "foldersFirst",
-          [
-            null
-          ],
+          [null],
           "topSeparator",
           "topSeparator",
           "pasteSelection",
@@ -10934,15 +9300,7 @@
           "title",
           "search"
         ],
-        "palette": {
-          "$remove": [
-            "foldersFirst",
-            "infoPanel",
-            "infoRow",
-            "pasteSelection",
-            "help"
-          ]
-        }
+        "palette": {"$remove": ["foldersFirst", "infoPanel", "infoRow", "pasteSelection", "help"]}
       }
     },
     {
@@ -10968,15 +9326,11 @@
           "foldersFirst",
           "theme",
           "renameSelection",
-          {
-            "back": true
-          },
+          {"back": true},
           "back",
           "infoRow",
           "search",
-          [
-            " back"
-          ],
+          [" back"],
           "openInTerminal",
           "topSeparator",
           "help",
@@ -11070,9 +9424,7 @@
           "calculateSize",
           1,
           "topSeparator",
-          [
-            []
-          ],
+          [[]],
           "goToFolder",
           "title",
           "pasteSelection",
@@ -11127,16 +9479,7 @@
             "calculateSize",
             "settings"
           ],
-          "$insert": [
-            [
-              null,
-              "back"
-            ],
-            [
-              "duplicatePane",
-              "infoPanel"
-            ]
-          ]
+          "$insert": [[null, "back"], ["duplicatePane", "infoPanel"]]
         }
       }
     },
@@ -11151,9 +9494,7 @@
           "duplicateSelection",
           "pasteSelection",
           "copySelection",
-          [
-            "back"
-          ],
+          ["back"],
           "openInTerminal",
           "revealInFolder",
           "infoPanel",
@@ -11163,9 +9504,7 @@
           "title",
           "infoRow",
           "topSeparator",
-          [
-            " back"
-          ],
+          [" back"],
           "foldersFirst",
           "theme",
           "settings",
@@ -11221,9 +9560,7 @@
           "hidden",
           {},
           {},
-          [
-            "back"
-          ],
+          ["back"],
           "help",
           "revealInFolder",
           0,
@@ -11302,9 +9639,7 @@
           "pasteSelection",
           "topSeparator",
           "viewOptions",
-          [
-            "title"
-          ],
+          ["title"],
           "copySelection",
           "topSeparator",
           "infoRow",
@@ -11372,40 +9707,11 @@
       "name": "184: random 184",
       "base": "45: random 45",
       "input": {
-        "value": [
-          "clipboard",
-          "copyPath",
-          "sort",
-          [
-            null
-          ],
-          "newFolder",
-          "newFolder",
-          "openInTerminal",
-          "viewOptions"
-        ]
+        "value": ["clipboard", "copyPath", "sort", [null], "newFolder", "newFolder", "openInTerminal", "viewOptions"]
       },
       "changes": {
-        "sanitized": [
-          "clipboard",
-          "copyPath",
-          "sort",
-          "newFolder",
-          "openInTerminal",
-          "viewOptions",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "sort",
-            "viewOptions",
-            "newFolder",
-            "clipboard",
-            "openInTerminal",
-            "copyPath"
-          ]
-        }
+        "sanitized": ["clipboard", "copyPath", "sort", "newFolder", "openInTerminal", "viewOptions", "title", "search"],
+        "palette": {"$remove": ["sort", "viewOptions", "newFolder", "clipboard", "openInTerminal", "copyPath"]}
       }
     },
     {
@@ -11413,9 +9719,7 @@
       "base": "45: random 45",
       "input": {
         "value": [
-          [
-            []
-          ],
+          [[]],
           "up",
           "topSeparator",
           "infoPanel",
@@ -11432,9 +9736,7 @@
           "copySelection",
           "editSelection",
           "pasteSelection",
-          [
-            "back"
-          ],
+          ["back"],
           "openInTerminal",
           "pasteSelection",
           "openInTerminal",
@@ -11525,31 +9827,8 @@
     {
       "name": "186: random 186",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          [
-            "BACK"
-          ],
-          "topSeparator",
-          "view",
-          [
-            "back"
-          ]
-        ]
-      },
-      "changes": {
-        "sanitized": [
-          "topSeparator",
-          "view",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "view"
-          ]
-        }
-      }
+      "input": {"value": [["BACK"], "topSeparator", "view", ["back"]]},
+      "changes": {"sanitized": ["topSeparator", "view", "title", "search"], "palette": {"$remove": ["view"]}}
     },
     {
       "name": "187: random 187",
@@ -11557,16 +9836,10 @@
       "input": {
         "value": [
           "theme",
-          [
-            null
-          ],
-          [
-            []
-          ],
+          [null],
+          [[]],
           true,
-          {
-            "back": true
-          },
+          {"back": true},
           "copySelection",
           "topSeparator",
           "topSeparator",
@@ -11582,9 +9855,7 @@
           "view",
           "goToFolder",
           "search",
-          [
-            []
-          ],
+          [[]],
           "infoPanel",
           "title",
           [],
@@ -11630,59 +9901,17 @@
     {
       "name": "188: random 188",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "editSelection"
-        ]
-      },
-      "changes": {
-        "sanitized": [
-          "editSelection",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "editSelection"
-          ]
-        }
-      }
+      "input": {"value": ["editSelection"]},
+      "changes": {"sanitized": ["editSelection", "title", "search"], "palette": {"$remove": ["editSelection"]}}
     },
-    {
-      "name": "189: random 189",
-      "base": "45: random 45",
-      "input": {
-        "value": "back"
-      },
-      "changes": {}
-    },
+    {"name": "189: random 189", "base": "45: random 45", "input": {"value": "back"}, "changes": {}},
     {
       "name": "190: random 190",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "calculateSize",
-          "topSeparator",
-          "pasteSelection",
-          "forward"
-        ]
-      },
+      "input": {"value": ["calculateSize", "topSeparator", "pasteSelection", "forward"]},
       "changes": {
-        "sanitized": [
-          "calculateSize",
-          "topSeparator",
-          "pasteSelection",
-          "forward",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "forward",
-            "pasteSelection",
-            "calculateSize"
-          ]
-        }
+        "sanitized": ["calculateSize", "topSeparator", "pasteSelection", "forward", "title", "search"],
+        "palette": {"$remove": ["forward", "pasteSelection", "calculateSize"]}
       }
     },
     {
@@ -11690,9 +9919,7 @@
       "base": "45: random 45",
       "input": {
         "value": [
-          {
-            "back": true
-          },
+          {"back": true},
           "topSeparator",
           "sort",
           "title",
@@ -11705,19 +9932,11 @@
           "viewOptions",
           "hidden",
           "pasteSelection",
-          [
-            " back"
-          ],
-          [
-            " back"
-          ],
+          [" back"],
+          [" back"],
           "quickLook",
-          [
-            " back"
-          ],
-          [
-            "title"
-          ],
+          [" back"],
+          ["title"],
           "calculateSize",
           "back",
           "up",
@@ -11798,15 +10017,7 @@
           "title",
           "search"
         ],
-        "palette": {
-          "$remove": [
-            "back",
-            "folderTree",
-            "renameSelection",
-            "duplicateSelection",
-            "cutSelection"
-          ]
-        }
+        "palette": {"$remove": ["back", "folderTree", "renameSelection", "duplicateSelection", "cutSelection"]}
       }
     },
     {
@@ -11861,24 +10072,18 @@
           1.5,
           "infoPanel",
           null,
-          {
-            "back": true
-          },
+          {"back": true},
           "clipboard",
           "showInFinder",
           "topSeparator",
           "topSeparator",
           "renameSelection",
-          [
-            "back "
-          ],
+          ["back "],
           "quickLook",
           "showInFinder",
           "launchMissiles",
           "topSeparator",
-          [
-            "title"
-          ],
+          ["title"],
           false,
           "renameSelection",
           "launchMissiles",
@@ -11889,9 +10094,7 @@
           "openInTerminal",
           "foldersFirst",
           "infoRow",
-          [
-            " back"
-          ],
+          [" back"],
           "topSeparator",
           "topSeparator",
           -1,
@@ -11902,9 +10105,7 @@
           "calculateSize",
           false,
           "openSelection",
-          [
-            "BACK"
-          ],
+          ["BACK"],
           "topSeparator"
         ]
       },
@@ -11954,25 +10155,10 @@
     {
       "name": "195: random 195",
       "base": "45: random 45",
-      "input": {
-        "value": [
-          "renameSelection",
-          "help"
-        ]
-      },
+      "input": {"value": ["renameSelection", "help"]},
       "changes": {
-        "sanitized": [
-          "renameSelection",
-          "help",
-          "title",
-          "search"
-        ],
-        "palette": {
-          "$remove": [
-            "renameSelection",
-            "help"
-          ]
-        }
+        "sanitized": ["renameSelection", "help", "title", "search"],
+        "palette": {"$remove": ["renameSelection", "help"]}
       }
     },
     {
@@ -12009,9 +10195,7 @@
           "help",
           null,
           1.5,
-          [
-            "title"
-          ],
+          ["title"],
           "back",
           "infoPanel",
           "newFolder",
@@ -12023,11 +10207,7 @@
           "theme",
           1,
           "calculateSize",
-          [
-            {
-              "id": "back"
-            }
-          ]
+          [{"id": "back"}]
         ]
       },
       "changes": {
@@ -12171,9 +10351,7 @@
           "foldersFirst",
           "moveSelection",
           "revealInFolder",
-          [
-            "back"
-          ],
+          ["back"],
           "renameSelection",
           "showInFinder",
           "topSeparator",
@@ -12218,11 +10396,7 @@
           "topSeparator",
           "back",
           "duplicateSelection",
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "trashSelection",
           "editSelection",
           1.5,
@@ -12236,25 +10410,17 @@
           "refresh",
           "back",
           "moveSelection",
-          [
-            {
-              "id": "back"
-            }
-          ],
+          [{"id": "back"}],
           "showInFinder",
           "duplicateSelection",
           "topSeparator",
           "up",
           "duplicateSelection",
           "refresh",
-          [
-            "title"
-          ],
+          ["title"],
           "calculateSize",
           "settings",
-          [
-            " back"
-          ],
+          [" back"],
           "newTab",
           "help"
         ]

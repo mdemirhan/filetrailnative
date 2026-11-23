@@ -5,46 +5,18 @@
       "input": {
         "name": "folder Replace by copy, crashed after journal write 1 of 3",
         "tree": [
-          {
-            "path": "source/f/a.txt",
-            "kind": "file",
-            "content": "new a\n"
-          },
-          {
-            "path": "source/f/sub/b.txt",
-            "kind": "file",
-            "content": "new b\n"
-          },
-          {
-            "path": "destination/f/a.txt",
-            "kind": "file",
-            "content": "old\n"
-          },
-          {
-            "path": "destination/f/only.txt",
-            "kind": "file",
-            "content": "destination/f/only.txt\n"
-          }
+          {"path": "source/f/a.txt", "kind": "file", "content": "new a\n"},
+          {"path": "source/f/sub/b.txt", "kind": "file", "content": "new b\n"},
+          {"path": "destination/f/a.txt", "kind": "file", "content": "old\n"},
+          {"path": "destination/f/only.txt", "kind": "file", "content": "destination/f/only.txt\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "copy", "sources": ["source/f"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
         "stopAt": null,
-        "crashAt": {
-          "journalWrite": 1
-        },
+        "crashAt": {"journalWrite": 1},
         "changes": [],
         "trash": true,
         "volumes": {},
@@ -52,27 +24,9 @@
       },
       "output": {
         "after": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/.f.filetrail-~1"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/.f.filetrail-~1"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
           {
             "acl": false,
             "flags": [],
@@ -91,20 +45,8 @@
             "sha256": "55352865640ab3142251908ae92f77697cbe9a24c8be3fac2c291e5e47a0888a",
             "size": 23
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -114,13 +56,7 @@
             "sha256": "77981ea7ac834d42c8597b6879cf9e934679a54e817b2cd2ef461160026d7714",
             "size": 6
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f/sub"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f/sub"},
           {
             "acl": false,
             "flags": [],
@@ -132,20 +68,8 @@
           }
         ],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
           {
             "acl": false,
             "flags": [],
@@ -164,20 +88,8 @@
             "sha256": "55352865640ab3142251908ae92f77697cbe9a24c8be3fac2c291e5e47a0888a",
             "size": 23
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -187,13 +99,7 @@
             "sha256": "77981ea7ac834d42c8597b6879cf9e934679a54e817b2cd2ef461160026d7714",
             "size": 6
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f/sub"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f/sub"},
           {
             "acl": false,
             "flags": [],
@@ -247,10 +153,7 @@
             "kind": "journal",
             "write": 1
           },
-          {
-            "afterJournalWrite": 1,
-            "kind": "crash"
-          }
+          {"afterJournalWrite": 1, "kind": "crash"}
         ],
         "journal": [
           {
@@ -264,20 +167,8 @@
         ],
         "recovery": {
           "after": [
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination"
-            },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination/f"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
             {
               "acl": false,
               "flags": [],
@@ -296,20 +187,8 @@
               "sha256": "55352865640ab3142251908ae92f77697cbe9a24c8be3fac2c291e5e47a0888a",
               "size": 23
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source"
-            },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source/f"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
             {
               "acl": false,
               "flags": [],
@@ -319,13 +198,7 @@
               "sha256": "77981ea7ac834d42c8597b6879cf9e934679a54e817b2cd2ef461160026d7714",
               "size": 6
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source/f/sub"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f/sub"},
             {
               "acl": false,
               "flags": [],
@@ -340,11 +213,7 @@
           "journal": [],
           "log": [
             {
-              "details": {
-                "outcome": "removed_copy",
-                "path": null,
-                "stagingPath": "$ROOT/destination/.f.filetrail-~1"
-              },
+              "details": {"outcome": "removed_copy", "path": null, "stagingPath": "$ROOT/destination/.f.filetrail-~1"},
               "level": "info",
               "message": "[filetrail] recovered an interrupted replace"
             }
@@ -362,46 +231,18 @@
       "input": {
         "name": "folder Replace by copy, crashed after journal write 2 of 3",
         "tree": [
-          {
-            "path": "source/f/a.txt",
-            "kind": "file",
-            "content": "new a\n"
-          },
-          {
-            "path": "source/f/sub/b.txt",
-            "kind": "file",
-            "content": "new b\n"
-          },
-          {
-            "path": "destination/f/a.txt",
-            "kind": "file",
-            "content": "old\n"
-          },
-          {
-            "path": "destination/f/only.txt",
-            "kind": "file",
-            "content": "destination/f/only.txt\n"
-          }
+          {"path": "source/f/a.txt", "kind": "file", "content": "new a\n"},
+          {"path": "source/f/sub/b.txt", "kind": "file", "content": "new b\n"},
+          {"path": "destination/f/a.txt", "kind": "file", "content": "old\n"},
+          {"path": "destination/f/only.txt", "kind": "file", "content": "destination/f/only.txt\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "copy", "sources": ["source/f"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
         "stopAt": null,
-        "crashAt": {
-          "journalWrite": 2
-        },
+        "crashAt": {"journalWrite": 2},
         "changes": [],
         "trash": true,
         "volumes": {},
@@ -409,20 +250,8 @@
       },
       "output": {
         "after": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/.f.filetrail-~1"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/.f.filetrail-~1"},
           {
             "acl": false,
             "flags": [],
@@ -432,13 +261,7 @@
             "sha256": "77981ea7ac834d42c8597b6879cf9e934679a54e817b2cd2ef461160026d7714",
             "size": 6
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/.f.filetrail-~1/sub"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/.f.filetrail-~1/sub"},
           {
             "acl": false,
             "flags": [],
@@ -448,13 +271,7 @@
             "sha256": "ab1a29c10ccb9ceec5a9e4453f1aaf261b81869eaadbf3426e378a99347b08af",
             "size": 6
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
           {
             "acl": false,
             "flags": [],
@@ -473,20 +290,8 @@
             "sha256": "55352865640ab3142251908ae92f77697cbe9a24c8be3fac2c291e5e47a0888a",
             "size": 23
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -496,13 +301,7 @@
             "sha256": "77981ea7ac834d42c8597b6879cf9e934679a54e817b2cd2ef461160026d7714",
             "size": 6
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f/sub"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f/sub"},
           {
             "acl": false,
             "flags": [],
@@ -514,20 +313,8 @@
           }
         ],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
           {
             "acl": false,
             "flags": [],
@@ -546,20 +333,8 @@
             "sha256": "55352865640ab3142251908ae92f77697cbe9a24c8be3fac2c291e5e47a0888a",
             "size": 23
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -569,13 +344,7 @@
             "sha256": "77981ea7ac834d42c8597b6879cf9e934679a54e817b2cd2ef461160026d7714",
             "size": 6
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f/sub"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f/sub"},
           {
             "acl": false,
             "flags": [],
@@ -699,10 +468,7 @@
             "kind": "journal",
             "write": 2
           },
-          {
-            "afterJournalWrite": 2,
-            "kind": "crash"
-          }
+          {"afterJournalWrite": 2, "kind": "crash"}
         ],
         "journal": [
           {
@@ -716,20 +482,8 @@
         ],
         "recovery": {
           "after": [
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination"
-            },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination/f"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
             {
               "acl": false,
               "flags": [],
@@ -748,20 +502,8 @@
               "sha256": "55352865640ab3142251908ae92f77697cbe9a24c8be3fac2c291e5e47a0888a",
               "size": 23
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source"
-            },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source/f"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
             {
               "acl": false,
               "flags": [],
@@ -771,13 +513,7 @@
               "sha256": "77981ea7ac834d42c8597b6879cf9e934679a54e817b2cd2ef461160026d7714",
               "size": 6
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source/f/sub"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f/sub"},
             {
               "acl": false,
               "flags": [],
@@ -792,11 +528,7 @@
           "journal": [],
           "log": [
             {
-              "details": {
-                "outcome": "removed_copy",
-                "path": null,
-                "stagingPath": "$ROOT/destination/.f.filetrail-~1"
-              },
+              "details": {"outcome": "removed_copy", "path": null, "stagingPath": "$ROOT/destination/.f.filetrail-~1"},
               "level": "info",
               "message": "[filetrail] recovered an interrupted replace"
             }
@@ -814,46 +546,18 @@
       "input": {
         "name": "folder Replace by copy, crashed after journal write 3 of 3",
         "tree": [
-          {
-            "path": "source/f/a.txt",
-            "kind": "file",
-            "content": "new a\n"
-          },
-          {
-            "path": "source/f/sub/b.txt",
-            "kind": "file",
-            "content": "new b\n"
-          },
-          {
-            "path": "destination/f/a.txt",
-            "kind": "file",
-            "content": "old\n"
-          },
-          {
-            "path": "destination/f/only.txt",
-            "kind": "file",
-            "content": "destination/f/only.txt\n"
-          }
+          {"path": "source/f/a.txt", "kind": "file", "content": "new a\n"},
+          {"path": "source/f/sub/b.txt", "kind": "file", "content": "new b\n"},
+          {"path": "destination/f/a.txt", "kind": "file", "content": "old\n"},
+          {"path": "destination/f/only.txt", "kind": "file", "content": "destination/f/only.txt\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "copy", "sources": ["source/f"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
         "stopAt": null,
-        "crashAt": {
-          "journalWrite": 3
-        },
+        "crashAt": {"journalWrite": 3},
         "changes": [],
         "trash": true,
         "volumes": {},
@@ -861,20 +565,8 @@
       },
       "output": {
         "after": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
           {
             "acl": false,
             "flags": [],
@@ -884,13 +576,7 @@
             "sha256": "77981ea7ac834d42c8597b6879cf9e934679a54e817b2cd2ef461160026d7714",
             "size": 6
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f/sub"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f/sub"},
           {
             "acl": false,
             "flags": [],
@@ -900,20 +586,8 @@
             "sha256": "ab1a29c10ccb9ceec5a9e4453f1aaf261b81869eaadbf3426e378a99347b08af",
             "size": 6
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -923,13 +597,7 @@
             "sha256": "77981ea7ac834d42c8597b6879cf9e934679a54e817b2cd2ef461160026d7714",
             "size": 6
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f/sub"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f/sub"},
           {
             "acl": false,
             "flags": [],
@@ -941,20 +609,8 @@
           }
         ],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
           {
             "acl": false,
             "flags": [],
@@ -973,20 +629,8 @@
             "sha256": "55352865640ab3142251908ae92f77697cbe9a24c8be3fac2c291e5e47a0888a",
             "size": 23
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -996,13 +640,7 @@
             "sha256": "77981ea7ac834d42c8597b6879cf9e934679a54e817b2cd2ef461160026d7714",
             "size": 6
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f/sub"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f/sub"},
           {
             "acl": false,
             "flags": [],
@@ -1126,33 +764,14 @@
             "kind": "journal",
             "write": 2
           },
-          {
-            "entries": [],
-            "kind": "journal",
-            "write": 3
-          },
-          {
-            "afterJournalWrite": 3,
-            "kind": "crash"
-          }
+          {"entries": [], "kind": "journal", "write": 3},
+          {"afterJournalWrite": 3, "kind": "crash"}
         ],
         "journal": [],
         "recovery": {
           "after": [
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination"
-            },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination/f"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
             {
               "acl": false,
               "flags": [],
@@ -1162,13 +781,7 @@
               "sha256": "77981ea7ac834d42c8597b6879cf9e934679a54e817b2cd2ef461160026d7714",
               "size": 6
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination/f/sub"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f/sub"},
             {
               "acl": false,
               "flags": [],
@@ -1178,20 +791,8 @@
               "sha256": "ab1a29c10ccb9ceec5a9e4453f1aaf261b81869eaadbf3426e378a99347b08af",
               "size": 6
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source"
-            },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source/f"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
             {
               "acl": false,
               "flags": [],
@@ -1201,13 +802,7 @@
               "sha256": "77981ea7ac834d42c8597b6879cf9e934679a54e817b2cd2ef461160026d7714",
               "size": 6
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source/f/sub"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f/sub"},
             {
               "acl": false,
               "flags": [],
@@ -1223,13 +818,7 @@
           "log": [],
           "notices": [],
           "trash": [
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "1-f"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "1-f"},
             {
               "acl": false,
               "flags": [],
@@ -1252,13 +841,7 @@
         },
         "result": null,
         "trash": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "1-f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "1-f"},
           {
             "acl": false,
             "flags": [],
@@ -1286,36 +869,16 @@
       "input": {
         "name": "folder Replace by a move on the same disk, crashed after journal write 1 of 2",
         "tree": [
-          {
-            "path": "source/f/a.txt",
-            "kind": "file",
-            "content": "new a\n"
-          },
-          {
-            "path": "destination/f/old.txt",
-            "kind": "file",
-            "content": "destination/f/old.txt\n"
-          }
+          {"path": "source/f/a.txt", "kind": "file", "content": "new a\n"},
+          {"path": "destination/f/old.txt", "kind": "file", "content": "destination/f/old.txt\n"}
         ],
-        "paste": {
-          "mode": "cut",
-          "sources": [
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "cut", "sources": ["source/f"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
         "stopAt": null,
-        "crashAt": {
-          "journalWrite": 1
-        },
+        "crashAt": {"journalWrite": 1},
         "changes": [],
         "trash": true,
         "volumes": {},
@@ -1323,20 +886,8 @@
       },
       "output": {
         "after": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
           {
             "acl": false,
             "flags": [],
@@ -1346,20 +897,8 @@
             "sha256": "7273d34f3ad4979af9b3d2aa6d4912bee8b8ee67f1fcbd94eab76a10e7ec3ef2",
             "size": 22
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -1371,20 +910,8 @@
           }
         ],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
           {
             "acl": false,
             "flags": [],
@@ -1394,20 +921,8 @@
             "sha256": "7273d34f3ad4979af9b3d2aa6d4912bee8b8ee67f1fcbd94eab76a10e7ec3ef2",
             "size": 22
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -1461,10 +976,7 @@
             "kind": "journal",
             "write": 1
           },
-          {
-            "afterJournalWrite": 1,
-            "kind": "crash"
-          }
+          {"afterJournalWrite": 1, "kind": "crash"}
         ],
         "journal": [
           {
@@ -1478,20 +990,8 @@
         ],
         "recovery": {
           "after": [
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination"
-            },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination/f"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
             {
               "acl": false,
               "flags": [],
@@ -1501,20 +1001,8 @@
               "sha256": "7273d34f3ad4979af9b3d2aa6d4912bee8b8ee67f1fcbd94eab76a10e7ec3ef2",
               "size": 22
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source"
-            },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source/f"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
             {
               "acl": false,
               "flags": [],
@@ -1529,11 +1017,7 @@
           "journal": [],
           "log": [
             {
-              "details": {
-                "outcome": "nothing_left",
-                "path": null,
-                "stagingPath": "$ROOT/destination/.f.filetrail-~1"
-              },
+              "details": {"outcome": "nothing_left", "path": null, "stagingPath": "$ROOT/destination/.f.filetrail-~1"},
               "level": "info",
               "message": "[filetrail] recovered an interrupted replace"
             }
@@ -1551,36 +1035,16 @@
       "input": {
         "name": "folder Replace by a move on the same disk, crashed after journal write 2 of 2",
         "tree": [
-          {
-            "path": "source/f/a.txt",
-            "kind": "file",
-            "content": "new a\n"
-          },
-          {
-            "path": "destination/f/old.txt",
-            "kind": "file",
-            "content": "destination/f/old.txt\n"
-          }
+          {"path": "source/f/a.txt", "kind": "file", "content": "new a\n"},
+          {"path": "destination/f/old.txt", "kind": "file", "content": "destination/f/old.txt\n"}
         ],
-        "paste": {
-          "mode": "cut",
-          "sources": [
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "cut", "sources": ["source/f"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
         "stopAt": null,
-        "crashAt": {
-          "journalWrite": 2
-        },
+        "crashAt": {"journalWrite": 2},
         "changes": [],
         "trash": true,
         "volumes": {},
@@ -1588,20 +1052,8 @@
       },
       "output": {
         "after": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
           {
             "acl": false,
             "flags": [],
@@ -1611,29 +1063,11 @@
             "sha256": "77981ea7ac834d42c8597b6879cf9e934679a54e817b2cd2ef461160026d7714",
             "size": 6
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          }
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"}
         ],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
           {
             "acl": false,
             "flags": [],
@@ -1643,20 +1077,8 @@
             "sha256": "7273d34f3ad4979af9b3d2aa6d4912bee8b8ee67f1fcbd94eab76a10e7ec3ef2",
             "size": 22
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -1710,33 +1132,14 @@
             "kind": "journal",
             "write": 1
           },
-          {
-            "entries": [],
-            "kind": "journal",
-            "write": 2
-          },
-          {
-            "afterJournalWrite": 2,
-            "kind": "crash"
-          }
+          {"entries": [], "kind": "journal", "write": 2},
+          {"afterJournalWrite": 2, "kind": "crash"}
         ],
         "journal": [],
         "recovery": {
           "after": [
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination"
-            },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination/f"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
             {
               "acl": false,
               "flags": [],
@@ -1746,26 +1149,14 @@
               "sha256": "77981ea7ac834d42c8597b6879cf9e934679a54e817b2cd2ef461160026d7714",
               "size": 6
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source"
-            }
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"}
           ],
           "finished": [],
           "journal": [],
           "log": [],
           "notices": [],
           "trash": [
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "1-f"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "1-f"},
             {
               "acl": false,
               "flags": [],
@@ -1779,13 +1170,7 @@
         },
         "result": null,
         "trash": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "1-f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "1-f"},
           {
             "acl": false,
             "flags": [],
@@ -1804,36 +1189,16 @@
       "input": {
         "name": "file Replace by copy, crashed after journal write 1 of 3",
         "tree": [
-          {
-            "path": "source/a.txt",
-            "kind": "file",
-            "content": "new\n"
-          },
-          {
-            "path": "destination/a.txt",
-            "kind": "file",
-            "content": "old\n"
-          }
+          {"path": "source/a.txt", "kind": "file", "content": "new\n"},
+          {"path": "destination/a.txt", "kind": "file", "content": "old\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/a.txt"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "copy", "sources": ["source/a.txt"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
         "stopAt": null,
-        "crashAt": {
-          "journalWrite": 1
-        },
+        "crashAt": {"journalWrite": 1},
         "changes": [],
         "trash": true,
         "volumes": {},
@@ -1841,13 +1206,7 @@
       },
       "output": {
         "after": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
           {
             "acl": false,
             "flags": [],
@@ -1857,13 +1216,7 @@
             "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -1875,13 +1228,7 @@
           }
         ],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
           {
             "acl": false,
             "flags": [],
@@ -1891,13 +1238,7 @@
             "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -1951,10 +1292,7 @@
             "kind": "journal",
             "write": 1
           },
-          {
-            "afterJournalWrite": 1,
-            "kind": "crash"
-          }
+          {"afterJournalWrite": 1, "kind": "crash"}
         ],
         "journal": [
           {
@@ -1968,13 +1306,7 @@
         ],
         "recovery": {
           "after": [
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
             {
               "acl": false,
               "flags": [],
@@ -1984,13 +1316,7 @@
               "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
               "size": 4
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
             {
               "acl": false,
               "flags": [],
@@ -2027,36 +1353,16 @@
       "input": {
         "name": "file Replace by copy, crashed after journal write 2 of 3",
         "tree": [
-          {
-            "path": "source/a.txt",
-            "kind": "file",
-            "content": "new\n"
-          },
-          {
-            "path": "destination/a.txt",
-            "kind": "file",
-            "content": "old\n"
-          }
+          {"path": "source/a.txt", "kind": "file", "content": "new\n"},
+          {"path": "destination/a.txt", "kind": "file", "content": "old\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/a.txt"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "copy", "sources": ["source/a.txt"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
         "stopAt": null,
-        "crashAt": {
-          "journalWrite": 2
-        },
+        "crashAt": {"journalWrite": 2},
         "changes": [],
         "trash": true,
         "volumes": {},
@@ -2064,13 +1370,7 @@
       },
       "output": {
         "after": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
           {
             "acl": false,
             "flags": [],
@@ -2089,13 +1389,7 @@
             "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -2107,13 +1401,7 @@
           }
         ],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
           {
             "acl": false,
             "flags": [],
@@ -2123,13 +1411,7 @@
             "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -2211,10 +1493,7 @@
             "kind": "journal",
             "write": 2
           },
-          {
-            "afterJournalWrite": 2,
-            "kind": "crash"
-          }
+          {"afterJournalWrite": 2, "kind": "crash"}
         ],
         "journal": [
           {
@@ -2228,13 +1507,7 @@
         ],
         "recovery": {
           "after": [
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
             {
               "acl": false,
               "flags": [],
@@ -2244,13 +1517,7 @@
               "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
               "size": 4
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
             {
               "acl": false,
               "flags": [],
@@ -2287,36 +1554,16 @@
       "input": {
         "name": "file Replace by copy, crashed after journal write 3 of 3",
         "tree": [
-          {
-            "path": "source/a.txt",
-            "kind": "file",
-            "content": "new\n"
-          },
-          {
-            "path": "destination/a.txt",
-            "kind": "file",
-            "content": "old\n"
-          }
+          {"path": "source/a.txt", "kind": "file", "content": "new\n"},
+          {"path": "destination/a.txt", "kind": "file", "content": "old\n"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/a.txt"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "overwrite",
-          "directory": "overwrite",
-          "mismatch": "overwrite"
-        },
+        "paste": {"mode": "copy", "sources": ["source/a.txt"], "destination": "destination"},
+        "policy": {"file": "overwrite", "directory": "overwrite", "mismatch": "overwrite"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
         "stopAt": null,
-        "crashAt": {
-          "journalWrite": 3
-        },
+        "crashAt": {"journalWrite": 3},
         "changes": [],
         "trash": true,
         "volumes": {},
@@ -2324,13 +1571,7 @@
       },
       "output": {
         "after": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
           {
             "acl": false,
             "flags": [],
@@ -2340,13 +1581,7 @@
             "sha256": "7aa7a5359173d05b63cfd682e3c38487f3cb4f7f1d60659fe59fab1505977d4c",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -2358,13 +1593,7 @@
           }
         ],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
           {
             "acl": false,
             "flags": [],
@@ -2374,13 +1603,7 @@
             "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
             "size": 4
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
           {
             "acl": false,
             "flags": [],
@@ -2462,26 +1685,13 @@
             "kind": "journal",
             "write": 2
           },
-          {
-            "entries": [],
-            "kind": "journal",
-            "write": 3
-          },
-          {
-            "afterJournalWrite": 3,
-            "kind": "crash"
-          }
+          {"entries": [], "kind": "journal", "write": 3},
+          {"afterJournalWrite": 3, "kind": "crash"}
         ],
         "journal": [],
         "recovery": {
           "after": [
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
             {
               "acl": false,
               "flags": [],
@@ -2491,13 +1701,7 @@
               "sha256": "7aa7a5359173d05b63cfd682e3c38487f3cb4f7f1d60659fe59fab1505977d4c",
               "size": 4
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
             {
               "acl": false,
               "flags": [],
@@ -2544,40 +1748,17 @@
       "input": {
         "name": "folder copied whole under a hidden name, crashed after journal write 1 of 3",
         "tree": [
-          {
-            "path": "source/f/a.txt",
-            "kind": "file",
-            "content": "source/f/a.txt\n"
-          },
-          {
-            "path": "source/f/sub/b.txt",
-            "kind": "file",
-            "content": "source/f/sub/b.txt\n"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/f/a.txt", "kind": "file", "content": "source/f/a.txt\n"},
+          {"path": "source/f/sub/b.txt", "kind": "file", "content": "source/f/sub/b.txt\n"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "skip",
-          "directory": "skip",
-          "mismatch": "skip"
-        },
+        "paste": {"mode": "copy", "sources": ["source/f"], "destination": "destination"},
+        "policy": {"file": "skip", "directory": "skip", "mismatch": "skip"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
         "stopAt": null,
-        "crashAt": {
-          "journalWrite": 1
-        },
+        "crashAt": {"journalWrite": 1},
         "changes": [],
         "trash": true,
         "volumes": {},
@@ -2585,34 +1766,10 @@
       },
       "output": {
         "after": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/.f.filetrail-~1"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/.f.filetrail-~1"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -2622,13 +1779,7 @@
             "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
             "size": 15
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f/sub"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f/sub"},
           {
             "acl": false,
             "flags": [],
@@ -2640,27 +1791,9 @@
           }
         ],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -2670,13 +1803,7 @@
             "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
             "size": 15
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f/sub"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f/sub"},
           {
             "acl": false,
             "flags": [],
@@ -2730,10 +1857,7 @@
             "kind": "journal",
             "write": 1
           },
-          {
-            "afterJournalWrite": 1,
-            "kind": "crash"
-          }
+          {"afterJournalWrite": 1, "kind": "crash"}
         ],
         "journal": [
           {
@@ -2747,27 +1871,9 @@
         ],
         "recovery": {
           "after": [
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination"
-            },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source"
-            },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source/f"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
             {
               "acl": false,
               "flags": [],
@@ -2777,13 +1883,7 @@
               "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
               "size": 15
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source/f/sub"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f/sub"},
             {
               "acl": false,
               "flags": [],
@@ -2798,11 +1898,7 @@
           "journal": [],
           "log": [
             {
-              "details": {
-                "outcome": "removed_copy",
-                "path": null,
-                "stagingPath": "$ROOT/destination/.f.filetrail-~1"
-              },
+              "details": {"outcome": "removed_copy", "path": null, "stagingPath": "$ROOT/destination/.f.filetrail-~1"},
               "level": "info",
               "message": "[filetrail] recovered an interrupted replace"
             }
@@ -2820,40 +1916,17 @@
       "input": {
         "name": "folder copied whole under a hidden name, crashed after journal write 2 of 3",
         "tree": [
-          {
-            "path": "source/f/a.txt",
-            "kind": "file",
-            "content": "source/f/a.txt\n"
-          },
-          {
-            "path": "source/f/sub/b.txt",
-            "kind": "file",
-            "content": "source/f/sub/b.txt\n"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/f/a.txt", "kind": "file", "content": "source/f/a.txt\n"},
+          {"path": "source/f/sub/b.txt", "kind": "file", "content": "source/f/sub/b.txt\n"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "skip",
-          "directory": "skip",
-          "mismatch": "skip"
-        },
+        "paste": {"mode": "copy", "sources": ["source/f"], "destination": "destination"},
+        "policy": {"file": "skip", "directory": "skip", "mismatch": "skip"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
         "stopAt": null,
-        "crashAt": {
-          "journalWrite": 2
-        },
+        "crashAt": {"journalWrite": 2},
         "changes": [],
         "trash": true,
         "volumes": {},
@@ -2861,20 +1934,8 @@
       },
       "output": {
         "after": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/.f.filetrail-~1"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/.f.filetrail-~1"},
           {
             "acl": false,
             "flags": [],
@@ -2884,13 +1945,7 @@
             "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
             "size": 15
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/.f.filetrail-~1/sub"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/.f.filetrail-~1/sub"},
           {
             "acl": false,
             "flags": [],
@@ -2900,20 +1955,8 @@
             "sha256": "ec41d5c605acb5bd0a2b15b639ed7989babdd697b3793bb9f08793af4ad221f6",
             "size": 19
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -2923,13 +1966,7 @@
             "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
             "size": 15
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f/sub"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f/sub"},
           {
             "acl": false,
             "flags": [],
@@ -2941,27 +1978,9 @@
           }
         ],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -2971,13 +1990,7 @@
             "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
             "size": 15
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f/sub"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f/sub"},
           {
             "acl": false,
             "flags": [],
@@ -3101,10 +2114,7 @@
             "kind": "journal",
             "write": 2
           },
-          {
-            "afterJournalWrite": 2,
-            "kind": "crash"
-          }
+          {"afterJournalWrite": 2, "kind": "crash"}
         ],
         "journal": [
           {
@@ -3118,20 +2128,8 @@
         ],
         "recovery": {
           "after": [
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination"
-            },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination/f"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
             {
               "acl": false,
               "flags": [],
@@ -3141,13 +2139,7 @@
               "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
               "size": 15
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination/f/sub"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f/sub"},
             {
               "acl": false,
               "flags": [],
@@ -3157,20 +2149,8 @@
               "sha256": "ec41d5c605acb5bd0a2b15b639ed7989babdd697b3793bb9f08793af4ad221f6",
               "size": 19
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source"
-            },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source/f"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
             {
               "acl": false,
               "flags": [],
@@ -3180,13 +2160,7 @@
               "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
               "size": 15
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source/f/sub"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f/sub"},
             {
               "acl": false,
               "flags": [],
@@ -3223,40 +2197,17 @@
       "input": {
         "name": "folder copied whole under a hidden name, crashed after journal write 3 of 3",
         "tree": [
-          {
-            "path": "source/f/a.txt",
-            "kind": "file",
-            "content": "source/f/a.txt\n"
-          },
-          {
-            "path": "source/f/sub/b.txt",
-            "kind": "file",
-            "content": "source/f/sub/b.txt\n"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/f/a.txt", "kind": "file", "content": "source/f/a.txt\n"},
+          {"path": "source/f/sub/b.txt", "kind": "file", "content": "source/f/sub/b.txt\n"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "copy",
-          "sources": [
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "skip",
-          "directory": "skip",
-          "mismatch": "skip"
-        },
+        "paste": {"mode": "copy", "sources": ["source/f"], "destination": "destination"},
+        "policy": {"file": "skip", "directory": "skip", "mismatch": "skip"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
         "stopAt": null,
-        "crashAt": {
-          "journalWrite": 3
-        },
+        "crashAt": {"journalWrite": 3},
         "changes": [],
         "trash": true,
         "volumes": {},
@@ -3264,20 +2215,8 @@
       },
       "output": {
         "after": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
           {
             "acl": false,
             "flags": [],
@@ -3287,13 +2226,7 @@
             "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
             "size": 15
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f/sub"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f/sub"},
           {
             "acl": false,
             "flags": [],
@@ -3303,20 +2236,8 @@
             "sha256": "ec41d5c605acb5bd0a2b15b639ed7989babdd697b3793bb9f08793af4ad221f6",
             "size": 19
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -3326,13 +2247,7 @@
             "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
             "size": 15
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f/sub"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f/sub"},
           {
             "acl": false,
             "flags": [],
@@ -3344,27 +2259,9 @@
           }
         ],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -3374,13 +2271,7 @@
             "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
             "size": 15
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f/sub"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f/sub"},
           {
             "acl": false,
             "flags": [],
@@ -3504,33 +2395,14 @@
             "kind": "journal",
             "write": 2
           },
-          {
-            "entries": [],
-            "kind": "journal",
-            "write": 3
-          },
-          {
-            "afterJournalWrite": 3,
-            "kind": "crash"
-          }
+          {"entries": [], "kind": "journal", "write": 3},
+          {"afterJournalWrite": 3, "kind": "crash"}
         ],
         "journal": [],
         "recovery": {
           "after": [
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination"
-            },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination/f"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
             {
               "acl": false,
               "flags": [],
@@ -3540,13 +2412,7 @@
               "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
               "size": 15
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination/f/sub"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f/sub"},
             {
               "acl": false,
               "flags": [],
@@ -3556,20 +2422,8 @@
               "sha256": "ec41d5c605acb5bd0a2b15b639ed7989babdd697b3793bb9f08793af4ad221f6",
               "size": 19
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source"
-            },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source/f"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
             {
               "acl": false,
               "flags": [],
@@ -3579,13 +2433,7 @@
               "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
               "size": 15
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source/f/sub"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f/sub"},
             {
               "acl": false,
               "flags": [],
@@ -3612,77 +2460,28 @@
       "input": {
         "name": "folder moved to another disk, crashed after journal write 1 of 3",
         "tree": [
-          {
-            "path": "source/f/a.txt",
-            "kind": "file",
-            "content": "source/f/a.txt\n"
-          },
-          {
-            "path": "source/f/b.txt",
-            "kind": "file",
-            "content": "source/f/b.txt\n"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/f/a.txt", "kind": "file", "content": "source/f/a.txt\n"},
+          {"path": "source/f/b.txt", "kind": "file", "content": "source/f/b.txt\n"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "cut",
-          "sources": [
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "skip",
-          "directory": "skip",
-          "mismatch": "skip"
-        },
+        "paste": {"mode": "cut", "sources": ["source/f"], "destination": "destination"},
+        "policy": {"file": "skip", "directory": "skip", "mismatch": "skip"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
         "stopAt": null,
-        "crashAt": {
-          "journalWrite": 1
-        },
+        "crashAt": {"journalWrite": 1},
         "changes": [],
         "trash": true,
-        "volumes": {
-          "destination": "apfs"
-        },
+        "volumes": {"destination": "apfs"},
         "volumesWithoutTrash": []
       },
       "output": {
         "after": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/.f.filetrail-~1"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/.f.filetrail-~1"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -3703,27 +2502,9 @@
           }
         ],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -3787,10 +2568,7 @@
             "kind": "journal",
             "write": 1
           },
-          {
-            "afterJournalWrite": 1,
-            "kind": "crash"
-          }
+          {"afterJournalWrite": 1, "kind": "crash"}
         ],
         "journal": [
           {
@@ -3805,27 +2583,9 @@
         ],
         "recovery": {
           "after": [
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination"
-            },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source"
-            },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source/f"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
             {
               "acl": false,
               "flags": [],
@@ -3849,11 +2609,7 @@
           "journal": [],
           "log": [
             {
-              "details": {
-                "outcome": "removed_copy",
-                "path": null,
-                "stagingPath": "$ROOT/destination/.f.filetrail-~1"
-              },
+              "details": {"outcome": "removed_copy", "path": null, "stagingPath": "$ROOT/destination/.f.filetrail-~1"},
               "level": "info",
               "message": "[filetrail] recovered an interrupted replace"
             }
@@ -3871,63 +2627,26 @@
       "input": {
         "name": "folder moved to another disk, crashed after journal write 2 of 3",
         "tree": [
-          {
-            "path": "source/f/a.txt",
-            "kind": "file",
-            "content": "source/f/a.txt\n"
-          },
-          {
-            "path": "source/f/b.txt",
-            "kind": "file",
-            "content": "source/f/b.txt\n"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/f/a.txt", "kind": "file", "content": "source/f/a.txt\n"},
+          {"path": "source/f/b.txt", "kind": "file", "content": "source/f/b.txt\n"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "cut",
-          "sources": [
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "skip",
-          "directory": "skip",
-          "mismatch": "skip"
-        },
+        "paste": {"mode": "cut", "sources": ["source/f"], "destination": "destination"},
+        "policy": {"file": "skip", "directory": "skip", "mismatch": "skip"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
         "stopAt": null,
-        "crashAt": {
-          "journalWrite": 2
-        },
+        "crashAt": {"journalWrite": 2},
         "changes": [],
         "trash": true,
-        "volumes": {
-          "destination": "apfs"
-        },
+        "volumes": {"destination": "apfs"},
         "volumesWithoutTrash": []
       },
       "output": {
         "after": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/.f.filetrail-~1"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/.f.filetrail-~1"},
           {
             "acl": false,
             "flags": [],
@@ -3946,20 +2665,8 @@
             "sha256": "0ad61cf1e63ea67c655601e33160312e922e0d90d6bf8831063af79e87b80166",
             "size": 15
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -3980,27 +2687,9 @@
           }
         ],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -4121,10 +2810,7 @@
             "kind": "journal",
             "write": 2
           },
-          {
-            "afterJournalWrite": 2,
-            "kind": "crash"
-          }
+          {"afterJournalWrite": 2, "kind": "crash"}
         ],
         "journal": [
           {
@@ -4139,20 +2825,8 @@
         ],
         "recovery": {
           "after": [
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination"
-            },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination/f"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
             {
               "acl": false,
               "flags": [],
@@ -4171,20 +2845,8 @@
               "sha256": "0ad61cf1e63ea67c655601e33160312e922e0d90d6bf8831063af79e87b80166",
               "size": 15
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source"
-            },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source/f"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
             {
               "acl": false,
               "flags": [],
@@ -4232,63 +2894,26 @@
       "input": {
         "name": "folder moved to another disk, crashed after journal write 3 of 3",
         "tree": [
-          {
-            "path": "source/f/a.txt",
-            "kind": "file",
-            "content": "source/f/a.txt\n"
-          },
-          {
-            "path": "source/f/b.txt",
-            "kind": "file",
-            "content": "source/f/b.txt\n"
-          },
-          {
-            "path": "destination",
-            "kind": "dir"
-          }
+          {"path": "source/f/a.txt", "kind": "file", "content": "source/f/a.txt\n"},
+          {"path": "source/f/b.txt", "kind": "file", "content": "source/f/b.txt\n"},
+          {"path": "destination", "kind": "dir"}
         ],
-        "paste": {
-          "mode": "cut",
-          "sources": [
-            "source/f"
-          ],
-          "destination": "destination"
-        },
-        "policy": {
-          "file": "skip",
-          "directory": "skip",
-          "mismatch": "skip"
-        },
+        "paste": {"mode": "cut", "sources": ["source/f"], "destination": "destination"},
+        "policy": {"file": "skip", "directory": "skip", "mismatch": "skip"},
         "overrides": [],
         "answers": [],
         "applyToRemaining": [],
         "stopAt": null,
-        "crashAt": {
-          "journalWrite": 3
-        },
+        "crashAt": {"journalWrite": 3},
         "changes": [],
         "trash": true,
-        "volumes": {
-          "destination": "apfs"
-        },
+        "volumes": {"destination": "apfs"},
         "volumesWithoutTrash": []
       },
       "output": {
         "after": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
           {
             "acl": false,
             "flags": [],
@@ -4307,36 +2932,12 @@
             "sha256": "0ad61cf1e63ea67c655601e33160312e922e0d90d6bf8831063af79e87b80166",
             "size": 15
           },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          }
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"}
         ],
         "before": [
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "destination"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source"
-          },
-          {
-            "acl": false,
-            "flags": [],
-            "kind": "dir",
-            "mode": "0755",
-            "path": "source/f"
-          },
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+          {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
           {
             "acl": false,
             "flags": [],
@@ -4457,33 +3058,14 @@
             "kind": "journal",
             "write": 2
           },
-          {
-            "entries": [],
-            "kind": "journal",
-            "write": 3
-          },
-          {
-            "afterJournalWrite": 3,
-            "kind": "crash"
-          }
+          {"entries": [], "kind": "journal", "write": 3},
+          {"afterJournalWrite": 3, "kind": "crash"}
         ],
         "journal": [],
         "recovery": {
           "after": [
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination"
-            },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "destination/f"
-            },
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination"},
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "destination/f"},
             {
               "acl": false,
               "flags": [],
@@ -4502,13 +3084,7 @@
               "sha256": "0ad61cf1e63ea67c655601e33160312e922e0d90d6bf8831063af79e87b80166",
               "size": 15
             },
-            {
-              "acl": false,
-              "flags": [],
-              "kind": "dir",
-              "mode": "0755",
-              "path": "source"
-            }
+            {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"}
           ],
           "finished": [],
           "journal": [],

@@ -2,10 +2,7 @@
   "cases": [
     {
       "name": "constants regular",
-      "input": {
-        "op": "constants",
-        "compact": false
-      },
+      "input": {"op": "constants", "compact": false},
       "output": {
         "iconSize": 64,
         "cellMinWidth": 104,
@@ -21,3371 +18,616 @@
     },
     {
       "name": "css",
-      "input": {
-        "op": "css"
-      },
-      "output": {
-        "itemPaddingTop": 5,
-        "iconBox": 72,
-        "labelWidth": 102,
-        "labelGap": 4
-      }
-    },
-    {
-      "name": "columns r 3 0",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 0
-      },
-      "output": 1
-    },
-    {
-      "name": "columns r 4 -40",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": -40
-      },
-      "output": 1
-    },
-    {
-      "name": "columns r 5 1",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1
-      },
-      "output": 1
-    },
-    {
-      "name": "columns r 6 31",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 31
-      },
-      "output": 1
-    },
-    {
-      "name": "columns r 7 32",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 32
-      },
-      "output": 1
-    },
-    {
-      "name": "columns r 8 60",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 60
-      },
-      "output": 1
-    },
-    {
-      "name": "columns r 9 1000",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1000
-      },
-      "output": 9
-    },
-    {
-      "name": "columns r 10 344",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 344
-      },
-      "output": 3
-    },
-    {
-      "name": "columns r 11 343",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 343
-      },
-      "output": 2
-    },
-    {
-      "name": "columns r 12 135",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 135
-      },
-      "output": 1
-    },
-    {
-      "name": "columns r 13 136",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 136
-      },
-      "output": 1
-    },
-    {
-      "name": "columns r 14 136.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 136.5
-      },
-      "output": 1
-    },
-    {
-      "name": "columns r 15 239",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 239
-      },
-      "output": 1
-    },
-    {
-      "name": "columns r 16 240",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 240
-      },
-      "output": 2
-    },
-    {
-      "name": "columns r 17 240.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 240.5
-      },
-      "output": 2
-    },
-    {
-      "name": "columns r 18 343",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 343
-      },
-      "output": 2
-    },
-    {
-      "name": "columns r 19 344",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 344
-      },
-      "output": 3
-    },
-    {
-      "name": "columns r 20 344.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 344.5
-      },
-      "output": 3
-    },
-    {
-      "name": "columns r 21 447",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 447
-      },
-      "output": 3
-    },
-    {
-      "name": "columns r 22 448",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 448
-      },
-      "output": 4
-    },
-    {
-      "name": "columns r 23 448.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 448.5
-      },
-      "output": 4
-    },
-    {
-      "name": "columns r 24 551",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 551
-      },
-      "output": 4
-    },
-    {
-      "name": "columns r 25 552",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 552
-      },
-      "output": 5
-    },
-    {
-      "name": "columns r 26 552.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 552.5
-      },
-      "output": 5
-    },
-    {
-      "name": "columns r 27 655",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 655
-      },
-      "output": 5
-    },
-    {
-      "name": "columns r 28 656",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 656
-      },
-      "output": 6
-    },
-    {
-      "name": "columns r 29 656.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 656.5
-      },
-      "output": 6
-    },
-    {
-      "name": "columns r 30 759",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 759
-      },
-      "output": 6
-    },
-    {
-      "name": "columns r 31 760",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 760
-      },
-      "output": 7
-    },
-    {
-      "name": "columns r 32 760.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 760.5
-      },
-      "output": 7
-    },
-    {
-      "name": "columns r 33 863",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 863
-      },
-      "output": 7
-    },
-    {
-      "name": "columns r 34 864",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 864
-      },
-      "output": 8
-    },
-    {
-      "name": "columns r 35 864.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 864.5
-      },
-      "output": 8
-    },
-    {
-      "name": "columns r 36 967",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 967
-      },
-      "output": 8
-    },
-    {
-      "name": "columns r 37 968",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 968
-      },
-      "output": 9
-    },
-    {
-      "name": "columns r 38 968.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 968.5
-      },
-      "output": 9
-    },
-    {
-      "name": "columns r 39 1071",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1071
-      },
-      "output": 9
-    },
-    {
-      "name": "columns r 40 1072",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1072
-      },
-      "output": 10
-    },
-    {
-      "name": "columns r 41 1072.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1072.5
-      },
-      "output": 10
-    },
-    {
-      "name": "columns r 42 1175",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1175
-      },
-      "output": 10
-    },
-    {
-      "name": "columns r 43 1176",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1176
-      },
-      "output": 11
-    },
-    {
-      "name": "columns r 44 1176.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1176.5
-      },
-      "output": 11
-    },
-    {
-      "name": "columns r 45 1279",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1279
-      },
-      "output": 11
-    },
-    {
-      "name": "columns r 46 1280",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1280
-      },
-      "output": 12
-    },
-    {
-      "name": "columns r 47 1280.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1280.5
-      },
-      "output": 12
-    },
-    {
-      "name": "columns r 48 1383",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1383
-      },
-      "output": 12
-    },
-    {
-      "name": "columns r 49 1384",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1384
-      },
-      "output": 13
-    },
-    {
-      "name": "columns r 50 1384.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1384.5
-      },
-      "output": 13
-    },
-    {
-      "name": "columns r 51 1487",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1487
-      },
-      "output": 13
-    },
-    {
-      "name": "columns r 52 1488",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1488
-      },
-      "output": 14
-    },
-    {
-      "name": "columns r 53 1488.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1488.5
-      },
-      "output": 14
-    },
-    {
-      "name": "columns r 54 2193.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2193.5
-      },
-      "output": 20
-    },
-    {
-      "name": "columns r 55 285",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 285
-      },
-      "output": 2
-    },
-    {
-      "name": "columns r 56 2652",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2652
-      },
-      "output": 25
-    },
-    {
-      "name": "columns r 57 1289",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1289
-      },
-      "output": 12
-    },
-    {
-      "name": "columns r 58 2344",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2344
-      },
-      "output": 22
-    },
-    {
-      "name": "columns r 59 651",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 651
-      },
-      "output": 5
-    },
-    {
-      "name": "columns r 60 1220.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1220.5
-      },
-      "output": 11
-    },
-    {
-      "name": "columns r 61 2979",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2979
-      },
-      "output": 28
-    },
-    {
-      "name": "columns r 62 133.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 133.5
-      },
-      "output": 1
-    },
-    {
-      "name": "columns r 63 1225",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1225
-      },
-      "output": 11
-    },
-    {
-      "name": "columns r 64 2276",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2276
-      },
-      "output": 21
-    },
-    {
-      "name": "columns r 65 1386.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1386.5
-      },
-      "output": 13
-    },
-    {
-      "name": "columns r 66 1032.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1032.5
-      },
-      "output": 9
-    },
-    {
-      "name": "columns r 67 96.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 96.5
-      },
-      "output": 1
-    },
-    {
-      "name": "columns r 68 1172",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1172
-      },
-      "output": 10
-    },
-    {
-      "name": "columns r 69 1477",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1477
-      },
-      "output": 13
-    },
-    {
-      "name": "columns r 70 2556",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2556
-      },
-      "output": 24
-    },
-    {
-      "name": "columns r 71 1339",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1339
-      },
-      "output": 12
-    },
-    {
-      "name": "columns r 72 823",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 823
-      },
-      "output": 7
-    },
-    {
-      "name": "columns r 73 2057",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2057
-      },
-      "output": 19
-    },
-    {
-      "name": "columns r 74 2445",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2445
-      },
-      "output": 23
-    },
-    {
-      "name": "columns r 75 2152",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2152
-      },
-      "output": 20
-    },
-    {
-      "name": "columns r 76 420",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 420
-      },
-      "output": 3
-    },
-    {
-      "name": "columns r 77 1028",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1028
-      },
-      "output": 9
-    },
-    {
-      "name": "columns r 78 2049.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2049.5
-      },
-      "output": 19
-    },
-    {
-      "name": "columns r 79 1791",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1791
-      },
-      "output": 16
-    },
-    {
-      "name": "columns r 80 2740",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2740
-      },
-      "output": 26
-    },
-    {
-      "name": "columns r 81 2733",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2733
-      },
-      "output": 25
-    },
-    {
-      "name": "columns r 82 889.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 889.5
-      },
-      "output": 8
-    },
-    {
-      "name": "columns r 83 335",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 335
-      },
-      "output": 2
-    },
-    {
-      "name": "columns r 84 603",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 603
-      },
-      "output": 5
-    },
-    {
-      "name": "columns r 85 1284",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1284
-      },
-      "output": 12
-    },
-    {
-      "name": "columns r 86 2500",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2500
-      },
-      "output": 23
-    },
-    {
-      "name": "columns r 87 944",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 944
-      },
-      "output": 8
-    },
-    {
-      "name": "columns r 88 765",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 765
-      },
-      "output": 7
-    },
-    {
-      "name": "columns r 89 1479",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1479
-      },
-      "output": 13
-    },
-    {
-      "name": "columns r 90 936",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 936
-      },
-      "output": 8
-    },
-    {
-      "name": "columns r 91 1865.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1865.5
-      },
-      "output": 17
-    },
-    {
-      "name": "columns r 92 2509",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2509
-      },
-      "output": 23
-    },
-    {
-      "name": "columns r 93 325",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 325
-      },
-      "output": 2
-    },
-    {
-      "name": "columns r 94 350",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 350
-      },
-      "output": 3
-    },
-    {
-      "name": "columns r 95 2382",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2382
-      },
-      "output": 22
-    },
-    {
-      "name": "columns r 96 680",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 680
-      },
-      "output": 6
-    },
-    {
-      "name": "columns r 97 2112",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2112
-      },
-      "output": 20
-    },
-    {
-      "name": "columns r 98 1816",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1816
-      },
-      "output": 17
-    },
-    {
-      "name": "columns r 99 1693",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1693
-      },
-      "output": 15
-    },
-    {
-      "name": "columns r 100 2188.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2188.5
-      },
-      "output": 20
-    },
-    {
-      "name": "columns r 101 534",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 534
-      },
-      "output": 4
-    },
-    {
-      "name": "columns r 102 1548",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1548
-      },
-      "output": 14
-    },
-    {
-      "name": "columns r 103 822.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 822.5
-      },
-      "output": 7
-    },
-    {
-      "name": "columns r 104 1994",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1994
-      },
-      "output": 18
-    },
-    {
-      "name": "columns r 105 2086",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2086
-      },
-      "output": 19
-    },
-    {
-      "name": "columns r 106 2379",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2379
-      },
-      "output": 22
-    },
-    {
-      "name": "columns r 107 2622.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2622.5
-      },
-      "output": 24
-    },
-    {
-      "name": "columns r 108 1391",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1391
-      },
-      "output": 13
-    },
-    {
-      "name": "columns r 109 572",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 572
-      },
-      "output": 5
-    },
-    {
-      "name": "columns r 110 2586",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 2586
-      },
-      "output": 24
-    },
-    {
-      "name": "columns r 111 161",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 161
-      },
-      "output": 1
-    },
-    {
-      "name": "columns r 112 1211.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1211.5
-      },
-      "output": 11
-    },
-    {
-      "name": "columns r 113 1114.5",
-      "input": {
-        "op": "columns",
-        "compact": false,
-        "width": 1114.5
-      },
-      "output": 10
-    },
+      "input": {"op": "css"},
+      "output": {"itemPaddingTop": 5, "iconBox": 72, "labelWidth": 102, "labelGap": 4}
+    },
+    {"name": "columns r 3 0", "input": {"op": "columns", "compact": false, "width": 0}, "output": 1},
+    {"name": "columns r 4 -40", "input": {"op": "columns", "compact": false, "width": -40}, "output": 1},
+    {"name": "columns r 5 1", "input": {"op": "columns", "compact": false, "width": 1}, "output": 1},
+    {"name": "columns r 6 31", "input": {"op": "columns", "compact": false, "width": 31}, "output": 1},
+    {"name": "columns r 7 32", "input": {"op": "columns", "compact": false, "width": 32}, "output": 1},
+    {"name": "columns r 8 60", "input": {"op": "columns", "compact": false, "width": 60}, "output": 1},
+    {"name": "columns r 9 1000", "input": {"op": "columns", "compact": false, "width": 1000}, "output": 9},
+    {"name": "columns r 10 344", "input": {"op": "columns", "compact": false, "width": 344}, "output": 3},
+    {"name": "columns r 11 343", "input": {"op": "columns", "compact": false, "width": 343}, "output": 2},
+    {"name": "columns r 12 135", "input": {"op": "columns", "compact": false, "width": 135}, "output": 1},
+    {"name": "columns r 13 136", "input": {"op": "columns", "compact": false, "width": 136}, "output": 1},
+    {"name": "columns r 14 136.5", "input": {"op": "columns", "compact": false, "width": 136.5}, "output": 1},
+    {"name": "columns r 15 239", "input": {"op": "columns", "compact": false, "width": 239}, "output": 1},
+    {"name": "columns r 16 240", "input": {"op": "columns", "compact": false, "width": 240}, "output": 2},
+    {"name": "columns r 17 240.5", "input": {"op": "columns", "compact": false, "width": 240.5}, "output": 2},
+    {"name": "columns r 18 343", "input": {"op": "columns", "compact": false, "width": 343}, "output": 2},
+    {"name": "columns r 19 344", "input": {"op": "columns", "compact": false, "width": 344}, "output": 3},
+    {"name": "columns r 20 344.5", "input": {"op": "columns", "compact": false, "width": 344.5}, "output": 3},
+    {"name": "columns r 21 447", "input": {"op": "columns", "compact": false, "width": 447}, "output": 3},
+    {"name": "columns r 22 448", "input": {"op": "columns", "compact": false, "width": 448}, "output": 4},
+    {"name": "columns r 23 448.5", "input": {"op": "columns", "compact": false, "width": 448.5}, "output": 4},
+    {"name": "columns r 24 551", "input": {"op": "columns", "compact": false, "width": 551}, "output": 4},
+    {"name": "columns r 25 552", "input": {"op": "columns", "compact": false, "width": 552}, "output": 5},
+    {"name": "columns r 26 552.5", "input": {"op": "columns", "compact": false, "width": 552.5}, "output": 5},
+    {"name": "columns r 27 655", "input": {"op": "columns", "compact": false, "width": 655}, "output": 5},
+    {"name": "columns r 28 656", "input": {"op": "columns", "compact": false, "width": 656}, "output": 6},
+    {"name": "columns r 29 656.5", "input": {"op": "columns", "compact": false, "width": 656.5}, "output": 6},
+    {"name": "columns r 30 759", "input": {"op": "columns", "compact": false, "width": 759}, "output": 6},
+    {"name": "columns r 31 760", "input": {"op": "columns", "compact": false, "width": 760}, "output": 7},
+    {"name": "columns r 32 760.5", "input": {"op": "columns", "compact": false, "width": 760.5}, "output": 7},
+    {"name": "columns r 33 863", "input": {"op": "columns", "compact": false, "width": 863}, "output": 7},
+    {"name": "columns r 34 864", "input": {"op": "columns", "compact": false, "width": 864}, "output": 8},
+    {"name": "columns r 35 864.5", "input": {"op": "columns", "compact": false, "width": 864.5}, "output": 8},
+    {"name": "columns r 36 967", "input": {"op": "columns", "compact": false, "width": 967}, "output": 8},
+    {"name": "columns r 37 968", "input": {"op": "columns", "compact": false, "width": 968}, "output": 9},
+    {"name": "columns r 38 968.5", "input": {"op": "columns", "compact": false, "width": 968.5}, "output": 9},
+    {"name": "columns r 39 1071", "input": {"op": "columns", "compact": false, "width": 1071}, "output": 9},
+    {"name": "columns r 40 1072", "input": {"op": "columns", "compact": false, "width": 1072}, "output": 10},
+    {"name": "columns r 41 1072.5", "input": {"op": "columns", "compact": false, "width": 1072.5}, "output": 10},
+    {"name": "columns r 42 1175", "input": {"op": "columns", "compact": false, "width": 1175}, "output": 10},
+    {"name": "columns r 43 1176", "input": {"op": "columns", "compact": false, "width": 1176}, "output": 11},
+    {"name": "columns r 44 1176.5", "input": {"op": "columns", "compact": false, "width": 1176.5}, "output": 11},
+    {"name": "columns r 45 1279", "input": {"op": "columns", "compact": false, "width": 1279}, "output": 11},
+    {"name": "columns r 46 1280", "input": {"op": "columns", "compact": false, "width": 1280}, "output": 12},
+    {"name": "columns r 47 1280.5", "input": {"op": "columns", "compact": false, "width": 1280.5}, "output": 12},
+    {"name": "columns r 48 1383", "input": {"op": "columns", "compact": false, "width": 1383}, "output": 12},
+    {"name": "columns r 49 1384", "input": {"op": "columns", "compact": false, "width": 1384}, "output": 13},
+    {"name": "columns r 50 1384.5", "input": {"op": "columns", "compact": false, "width": 1384.5}, "output": 13},
+    {"name": "columns r 51 1487", "input": {"op": "columns", "compact": false, "width": 1487}, "output": 13},
+    {"name": "columns r 52 1488", "input": {"op": "columns", "compact": false, "width": 1488}, "output": 14},
+    {"name": "columns r 53 1488.5", "input": {"op": "columns", "compact": false, "width": 1488.5}, "output": 14},
+    {"name": "columns r 54 2193.5", "input": {"op": "columns", "compact": false, "width": 2193.5}, "output": 20},
+    {"name": "columns r 55 285", "input": {"op": "columns", "compact": false, "width": 285}, "output": 2},
+    {"name": "columns r 56 2652", "input": {"op": "columns", "compact": false, "width": 2652}, "output": 25},
+    {"name": "columns r 57 1289", "input": {"op": "columns", "compact": false, "width": 1289}, "output": 12},
+    {"name": "columns r 58 2344", "input": {"op": "columns", "compact": false, "width": 2344}, "output": 22},
+    {"name": "columns r 59 651", "input": {"op": "columns", "compact": false, "width": 651}, "output": 5},
+    {"name": "columns r 60 1220.5", "input": {"op": "columns", "compact": false, "width": 1220.5}, "output": 11},
+    {"name": "columns r 61 2979", "input": {"op": "columns", "compact": false, "width": 2979}, "output": 28},
+    {"name": "columns r 62 133.5", "input": {"op": "columns", "compact": false, "width": 133.5}, "output": 1},
+    {"name": "columns r 63 1225", "input": {"op": "columns", "compact": false, "width": 1225}, "output": 11},
+    {"name": "columns r 64 2276", "input": {"op": "columns", "compact": false, "width": 2276}, "output": 21},
+    {"name": "columns r 65 1386.5", "input": {"op": "columns", "compact": false, "width": 1386.5}, "output": 13},
+    {"name": "columns r 66 1032.5", "input": {"op": "columns", "compact": false, "width": 1032.5}, "output": 9},
+    {"name": "columns r 67 96.5", "input": {"op": "columns", "compact": false, "width": 96.5}, "output": 1},
+    {"name": "columns r 68 1172", "input": {"op": "columns", "compact": false, "width": 1172}, "output": 10},
+    {"name": "columns r 69 1477", "input": {"op": "columns", "compact": false, "width": 1477}, "output": 13},
+    {"name": "columns r 70 2556", "input": {"op": "columns", "compact": false, "width": 2556}, "output": 24},
+    {"name": "columns r 71 1339", "input": {"op": "columns", "compact": false, "width": 1339}, "output": 12},
+    {"name": "columns r 72 823", "input": {"op": "columns", "compact": false, "width": 823}, "output": 7},
+    {"name": "columns r 73 2057", "input": {"op": "columns", "compact": false, "width": 2057}, "output": 19},
+    {"name": "columns r 74 2445", "input": {"op": "columns", "compact": false, "width": 2445}, "output": 23},
+    {"name": "columns r 75 2152", "input": {"op": "columns", "compact": false, "width": 2152}, "output": 20},
+    {"name": "columns r 76 420", "input": {"op": "columns", "compact": false, "width": 420}, "output": 3},
+    {"name": "columns r 77 1028", "input": {"op": "columns", "compact": false, "width": 1028}, "output": 9},
+    {"name": "columns r 78 2049.5", "input": {"op": "columns", "compact": false, "width": 2049.5}, "output": 19},
+    {"name": "columns r 79 1791", "input": {"op": "columns", "compact": false, "width": 1791}, "output": 16},
+    {"name": "columns r 80 2740", "input": {"op": "columns", "compact": false, "width": 2740}, "output": 26},
+    {"name": "columns r 81 2733", "input": {"op": "columns", "compact": false, "width": 2733}, "output": 25},
+    {"name": "columns r 82 889.5", "input": {"op": "columns", "compact": false, "width": 889.5}, "output": 8},
+    {"name": "columns r 83 335", "input": {"op": "columns", "compact": false, "width": 335}, "output": 2},
+    {"name": "columns r 84 603", "input": {"op": "columns", "compact": false, "width": 603}, "output": 5},
+    {"name": "columns r 85 1284", "input": {"op": "columns", "compact": false, "width": 1284}, "output": 12},
+    {"name": "columns r 86 2500", "input": {"op": "columns", "compact": false, "width": 2500}, "output": 23},
+    {"name": "columns r 87 944", "input": {"op": "columns", "compact": false, "width": 944}, "output": 8},
+    {"name": "columns r 88 765", "input": {"op": "columns", "compact": false, "width": 765}, "output": 7},
+    {"name": "columns r 89 1479", "input": {"op": "columns", "compact": false, "width": 1479}, "output": 13},
+    {"name": "columns r 90 936", "input": {"op": "columns", "compact": false, "width": 936}, "output": 8},
+    {"name": "columns r 91 1865.5", "input": {"op": "columns", "compact": false, "width": 1865.5}, "output": 17},
+    {"name": "columns r 92 2509", "input": {"op": "columns", "compact": false, "width": 2509}, "output": 23},
+    {"name": "columns r 93 325", "input": {"op": "columns", "compact": false, "width": 325}, "output": 2},
+    {"name": "columns r 94 350", "input": {"op": "columns", "compact": false, "width": 350}, "output": 3},
+    {"name": "columns r 95 2382", "input": {"op": "columns", "compact": false, "width": 2382}, "output": 22},
+    {"name": "columns r 96 680", "input": {"op": "columns", "compact": false, "width": 680}, "output": 6},
+    {"name": "columns r 97 2112", "input": {"op": "columns", "compact": false, "width": 2112}, "output": 20},
+    {"name": "columns r 98 1816", "input": {"op": "columns", "compact": false, "width": 1816}, "output": 17},
+    {"name": "columns r 99 1693", "input": {"op": "columns", "compact": false, "width": 1693}, "output": 15},
+    {"name": "columns r 100 2188.5", "input": {"op": "columns", "compact": false, "width": 2188.5}, "output": 20},
+    {"name": "columns r 101 534", "input": {"op": "columns", "compact": false, "width": 534}, "output": 4},
+    {"name": "columns r 102 1548", "input": {"op": "columns", "compact": false, "width": 1548}, "output": 14},
+    {"name": "columns r 103 822.5", "input": {"op": "columns", "compact": false, "width": 822.5}, "output": 7},
+    {"name": "columns r 104 1994", "input": {"op": "columns", "compact": false, "width": 1994}, "output": 18},
+    {"name": "columns r 105 2086", "input": {"op": "columns", "compact": false, "width": 2086}, "output": 19},
+    {"name": "columns r 106 2379", "input": {"op": "columns", "compact": false, "width": 2379}, "output": 22},
+    {"name": "columns r 107 2622.5", "input": {"op": "columns", "compact": false, "width": 2622.5}, "output": 24},
+    {"name": "columns r 108 1391", "input": {"op": "columns", "compact": false, "width": 1391}, "output": 13},
+    {"name": "columns r 109 572", "input": {"op": "columns", "compact": false, "width": 572}, "output": 5},
+    {"name": "columns r 110 2586", "input": {"op": "columns", "compact": false, "width": 2586}, "output": 24},
+    {"name": "columns r 111 161", "input": {"op": "columns", "compact": false, "width": 161}, "output": 1},
+    {"name": "columns r 112 1211.5", "input": {"op": "columns", "compact": false, "width": 1211.5}, "output": 11},
+    {"name": "columns r 113 1114.5", "input": {"op": "columns", "compact": false, "width": 1114.5}, "output": 10},
     {
       "name": "places 0",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 832,
-        "itemCount": 13
-      },
+      "input": {"op": "places", "compact": false, "width": 832, "itemCount": 13},
       "output": [
-        [
-          0,
-          0,
-          21.143,
-          10
-        ],
-        [
-          1,
-          0,
-          135.429,
-          10
-        ],
-        [
-          2,
-          0,
-          249.714,
-          10
-        ],
-        [
-          3,
-          0,
-          364,
-          10
-        ],
-        [
-          4,
-          0,
-          478.286,
-          10
-        ],
-        [
-          5,
-          0,
-          592.571,
-          10
-        ],
-        [
-          6,
-          0,
-          706.857,
-          10
-        ],
-        [
-          0,
-          1,
-          21.143,
-          126
-        ],
-        [
-          1,
-          1,
-          135.429,
-          126
-        ],
-        [
-          2,
-          1,
-          249.714,
-          126
-        ],
-        [
-          3,
-          1,
-          364,
-          126
-        ],
-        [
-          4,
-          1,
-          478.286,
-          126
-        ],
-        [
-          5,
-          1,
-          592.571,
-          126
-        ]
+        [0, 0, 21.143, 10],
+        [1, 0, 135.429, 10],
+        [2, 0, 249.714, 10],
+        [3, 0, 364, 10],
+        [4, 0, 478.286, 10],
+        [5, 0, 592.571, 10],
+        [6, 0, 706.857, 10],
+        [0, 1, 21.143, 126],
+        [1, 1, 135.429, 126],
+        [2, 1, 249.714, 126],
+        [3, 1, 364, 126],
+        [4, 1, 478.286, 126],
+        [5, 1, 592.571, 126]
       ]
     },
     {
       "name": "places 1",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 1072,
-        "itemCount": 2
-      },
-      "output": [
-        [
-          0,
-          0,
-          16,
-          10
-        ],
-        [
-          1,
-          0,
-          120,
-          10
-        ]
-      ]
+      "input": {"op": "places", "compact": false, "width": 1072, "itemCount": 2},
+      "output": [[0, 0, 16, 10], [1, 0, 120, 10]]
     },
     {
       "name": "places 6",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 1104,
-        "itemCount": 13
-      },
+      "input": {"op": "places", "compact": false, "width": 1104, "itemCount": 13},
       "output": [
-        [
-          0,
-          0,
-          17.6,
-          10
-        ],
-        [
-          1,
-          0,
-          124.8,
-          10
-        ],
-        [
-          2,
-          0,
-          232,
-          10
-        ],
-        [
-          3,
-          0,
-          339.2,
-          10
-        ],
-        [
-          4,
-          0,
-          446.4,
-          10
-        ],
-        [
-          5,
-          0,
-          553.6,
-          10
-        ],
-        [
-          6,
-          0,
-          660.8,
-          10
-        ],
-        [
-          7,
-          0,
-          768,
-          10
-        ],
-        [
-          8,
-          0,
-          875.2,
-          10
-        ],
-        [
-          9,
-          0,
-          982.4,
-          10
-        ],
-        [
-          0,
-          1,
-          17.6,
-          126
-        ],
-        [
-          1,
-          1,
-          124.8,
-          126
-        ],
-        [
-          2,
-          1,
-          232,
-          126
-        ]
+        [0, 0, 17.6, 10],
+        [1, 0, 124.8, 10],
+        [2, 0, 232, 10],
+        [3, 0, 339.2, 10],
+        [4, 0, 446.4, 10],
+        [5, 0, 553.6, 10],
+        [6, 0, 660.8, 10],
+        [7, 0, 768, 10],
+        [8, 0, 875.2, 10],
+        [9, 0, 982.4, 10],
+        [0, 1, 17.6, 126],
+        [1, 1, 124.8, 126],
+        [2, 1, 232, 126]
       ]
     },
     {
       "name": "places 8",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 3,
-        "itemCount": 28
-      },
+      "input": {"op": "places", "compact": false, "width": 3, "itemCount": 28},
       "output": [
-        [
-          0,
-          0,
-          -36,
-          10
-        ],
-        [
-          0,
-          1,
-          -36,
-          126
-        ],
-        [
-          0,
-          2,
-          -36,
-          242
-        ],
-        [
-          0,
-          3,
-          -36,
-          358
-        ],
-        [
-          0,
-          4,
-          -36,
-          474
-        ],
-        [
-          0,
-          5,
-          -36,
-          590
-        ],
-        [
-          0,
-          6,
-          -36,
-          706
-        ],
-        [
-          0,
-          7,
-          -36,
-          822
-        ],
-        [
-          0,
-          8,
-          -36,
-          938
-        ],
-        [
-          0,
-          9,
-          -36,
-          1054
-        ],
-        [
-          0,
-          10,
-          -36,
-          1170
-        ],
-        [
-          0,
-          11,
-          -36,
-          1286
-        ],
-        [
-          0,
-          12,
-          -36,
-          1402
-        ],
-        [
-          0,
-          13,
-          -36,
-          1518
-        ],
-        [
-          0,
-          14,
-          -36,
-          1634
-        ],
-        [
-          0,
-          15,
-          -36,
-          1750
-        ],
-        [
-          0,
-          16,
-          -36,
-          1866
-        ],
-        [
-          0,
-          17,
-          -36,
-          1982
-        ],
-        [
-          0,
-          18,
-          -36,
-          2098
-        ],
-        [
-          0,
-          19,
-          -36,
-          2214
-        ],
-        [
-          0,
-          20,
-          -36,
-          2330
-        ],
-        [
-          0,
-          21,
-          -36,
-          2446
-        ],
-        [
-          0,
-          22,
-          -36,
-          2562
-        ],
-        [
-          0,
-          23,
-          -36,
-          2678
-        ],
-        [
-          0,
-          24,
-          -36,
-          2794
-        ],
-        [
-          0,
-          25,
-          -36,
-          2910
-        ],
-        [
-          0,
-          26,
-          -36,
-          3026
-        ],
-        [
-          0,
-          27,
-          -36,
-          3142
-        ]
+        [0, 0, -36, 10],
+        [0, 1, -36, 126],
+        [0, 2, -36, 242],
+        [0, 3, -36, 358],
+        [0, 4, -36, 474],
+        [0, 5, -36, 590],
+        [0, 6, -36, 706],
+        [0, 7, -36, 822],
+        [0, 8, -36, 938],
+        [0, 9, -36, 1054],
+        [0, 10, -36, 1170],
+        [0, 11, -36, 1286],
+        [0, 12, -36, 1402],
+        [0, 13, -36, 1518],
+        [0, 14, -36, 1634],
+        [0, 15, -36, 1750],
+        [0, 16, -36, 1866],
+        [0, 17, -36, 1982],
+        [0, 18, -36, 2098],
+        [0, 19, -36, 2214],
+        [0, 20, -36, 2330],
+        [0, 21, -36, 2446],
+        [0, 22, -36, 2562],
+        [0, 23, -36, 2678],
+        [0, 24, -36, 2794],
+        [0, 25, -36, 2910],
+        [0, 26, -36, 3026],
+        [0, 27, -36, 3142]
       ]
     },
     {
       "name": "places 10",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 372,
-        "itemCount": 7
-      },
+      "input": {"op": "places", "compact": false, "width": 372, "itemCount": 7},
       "output": [
-        [
-          0,
-          0,
-          20.667,
-          10
-        ],
-        [
-          1,
-          0,
-          134,
-          10
-        ],
-        [
-          2,
-          0,
-          247.333,
-          10
-        ],
-        [
-          0,
-          1,
-          20.667,
-          126
-        ],
-        [
-          1,
-          1,
-          134,
-          126
-        ],
-        [
-          2,
-          1,
-          247.333,
-          126
-        ],
-        [
-          0,
-          2,
-          20.667,
-          242
-        ]
+        [0, 0, 20.667, 10],
+        [1, 0, 134, 10],
+        [2, 0, 247.333, 10],
+        [0, 1, 20.667, 126],
+        [1, 1, 134, 126],
+        [2, 1, 247.333, 126],
+        [0, 2, 20.667, 242]
       ]
     },
     {
       "name": "places 12",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 1099,
-        "itemCount": 25
-      },
+      "input": {"op": "places", "compact": false, "width": 1099, "itemCount": 25},
       "output": [
-        [
-          0,
-          0,
-          17.35,
-          10
-        ],
-        [
-          1,
-          0,
-          124.05,
-          10
-        ],
-        [
-          2,
-          0,
-          230.75,
-          10
-        ],
-        [
-          3,
-          0,
-          337.45,
-          10
-        ],
-        [
-          4,
-          0,
-          444.15,
-          10
-        ],
-        [
-          5,
-          0,
-          550.85,
-          10
-        ],
-        [
-          6,
-          0,
-          657.55,
-          10
-        ],
-        [
-          7,
-          0,
-          764.25,
-          10
-        ],
-        [
-          8,
-          0,
-          870.95,
-          10
-        ],
-        [
-          9,
-          0,
-          977.65,
-          10
-        ],
-        [
-          0,
-          1,
-          17.35,
-          126
-        ],
-        [
-          1,
-          1,
-          124.05,
-          126
-        ],
-        [
-          2,
-          1,
-          230.75,
-          126
-        ],
-        [
-          3,
-          1,
-          337.45,
-          126
-        ],
-        [
-          4,
-          1,
-          444.15,
-          126
-        ],
-        [
-          5,
-          1,
-          550.85,
-          126
-        ],
-        [
-          6,
-          1,
-          657.55,
-          126
-        ],
-        [
-          7,
-          1,
-          764.25,
-          126
-        ],
-        [
-          8,
-          1,
-          870.95,
-          126
-        ],
-        [
-          9,
-          1,
-          977.65,
-          126
-        ],
-        [
-          0,
-          2,
-          17.35,
-          242
-        ],
-        [
-          1,
-          2,
-          124.05,
-          242
-        ],
-        [
-          2,
-          2,
-          230.75,
-          242
-        ],
-        [
-          3,
-          2,
-          337.45,
-          242
-        ],
-        [
-          4,
-          2,
-          444.15,
-          242
-        ]
+        [0, 0, 17.35, 10],
+        [1, 0, 124.05, 10],
+        [2, 0, 230.75, 10],
+        [3, 0, 337.45, 10],
+        [4, 0, 444.15, 10],
+        [5, 0, 550.85, 10],
+        [6, 0, 657.55, 10],
+        [7, 0, 764.25, 10],
+        [8, 0, 870.95, 10],
+        [9, 0, 977.65, 10],
+        [0, 1, 17.35, 126],
+        [1, 1, 124.05, 126],
+        [2, 1, 230.75, 126],
+        [3, 1, 337.45, 126],
+        [4, 1, 444.15, 126],
+        [5, 1, 550.85, 126],
+        [6, 1, 657.55, 126],
+        [7, 1, 764.25, 126],
+        [8, 1, 870.95, 126],
+        [9, 1, 977.65, 126],
+        [0, 2, 17.35, 242],
+        [1, 2, 124.05, 242],
+        [2, 2, 230.75, 242],
+        [3, 2, 337.45, 242],
+        [4, 2, 444.15, 242]
       ]
     },
     {
       "name": "places 13",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 173,
-        "itemCount": 13
-      },
+      "input": {"op": "places", "compact": false, "width": 173, "itemCount": 13},
       "output": [
-        [
-          0,
-          0,
-          34.5,
-          10
-        ],
-        [
-          0,
-          1,
-          34.5,
-          126
-        ],
-        [
-          0,
-          2,
-          34.5,
-          242
-        ],
-        [
-          0,
-          3,
-          34.5,
-          358
-        ],
-        [
-          0,
-          4,
-          34.5,
-          474
-        ],
-        [
-          0,
-          5,
-          34.5,
-          590
-        ],
-        [
-          0,
-          6,
-          34.5,
-          706
-        ],
-        [
-          0,
-          7,
-          34.5,
-          822
-        ],
-        [
-          0,
-          8,
-          34.5,
-          938
-        ],
-        [
-          0,
-          9,
-          34.5,
-          1054
-        ],
-        [
-          0,
-          10,
-          34.5,
-          1170
-        ],
-        [
-          0,
-          11,
-          34.5,
-          1286
-        ],
-        [
-          0,
-          12,
-          34.5,
-          1402
-        ]
+        [0, 0, 34.5, 10],
+        [0, 1, 34.5, 126],
+        [0, 2, 34.5, 242],
+        [0, 3, 34.5, 358],
+        [0, 4, 34.5, 474],
+        [0, 5, 34.5, 590],
+        [0, 6, 34.5, 706],
+        [0, 7, 34.5, 822],
+        [0, 8, 34.5, 938],
+        [0, 9, 34.5, 1054],
+        [0, 10, 34.5, 1170],
+        [0, 11, 34.5, 1286],
+        [0, 12, 34.5, 1402]
       ]
     },
     {
       "name": "places 17",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 158,
-        "itemCount": 13
-      },
+      "input": {"op": "places", "compact": false, "width": 158, "itemCount": 13},
       "output": [
-        [
-          0,
-          0,
-          27,
-          10
-        ],
-        [
-          0,
-          1,
-          27,
-          126
-        ],
-        [
-          0,
-          2,
-          27,
-          242
-        ],
-        [
-          0,
-          3,
-          27,
-          358
-        ],
-        [
-          0,
-          4,
-          27,
-          474
-        ],
-        [
-          0,
-          5,
-          27,
-          590
-        ],
-        [
-          0,
-          6,
-          27,
-          706
-        ],
-        [
-          0,
-          7,
-          27,
-          822
-        ],
-        [
-          0,
-          8,
-          27,
-          938
-        ],
-        [
-          0,
-          9,
-          27,
-          1054
-        ],
-        [
-          0,
-          10,
-          27,
-          1170
-        ],
-        [
-          0,
-          11,
-          27,
-          1286
-        ],
-        [
-          0,
-          12,
-          27,
-          1402
-        ]
+        [0, 0, 27, 10],
+        [0, 1, 27, 126],
+        [0, 2, 27, 242],
+        [0, 3, 27, 358],
+        [0, 4, 27, 474],
+        [0, 5, 27, 590],
+        [0, 6, 27, 706],
+        [0, 7, 27, 822],
+        [0, 8, 27, 938],
+        [0, 9, 27, 1054],
+        [0, 10, 27, 1170],
+        [0, 11, 27, 1286],
+        [0, 12, 27, 1402]
       ]
     },
     {
       "name": "places 18",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 804,
-        "itemCount": 13
-      },
+      "input": {"op": "places", "compact": false, "width": 804, "itemCount": 13},
       "output": [
-        [
-          0,
-          0,
-          19.143,
-          10
-        ],
-        [
-          1,
-          0,
-          129.429,
-          10
-        ],
-        [
-          2,
-          0,
-          239.714,
-          10
-        ],
-        [
-          3,
-          0,
-          350,
-          10
-        ],
-        [
-          4,
-          0,
-          460.286,
-          10
-        ],
-        [
-          5,
-          0,
-          570.571,
-          10
-        ],
-        [
-          6,
-          0,
-          680.857,
-          10
-        ],
-        [
-          0,
-          1,
-          19.143,
-          126
-        ],
-        [
-          1,
-          1,
-          129.429,
-          126
-        ],
-        [
-          2,
-          1,
-          239.714,
-          126
-        ],
-        [
-          3,
-          1,
-          350,
-          126
-        ],
-        [
-          4,
-          1,
-          460.286,
-          126
-        ],
-        [
-          5,
-          1,
-          570.571,
-          126
-        ]
+        [0, 0, 19.143, 10],
+        [1, 0, 129.429, 10],
+        [2, 0, 239.714, 10],
+        [3, 0, 350, 10],
+        [4, 0, 460.286, 10],
+        [5, 0, 570.571, 10],
+        [6, 0, 680.857, 10],
+        [0, 1, 19.143, 126],
+        [1, 1, 129.429, 126],
+        [2, 1, 239.714, 126],
+        [3, 1, 350, 126],
+        [4, 1, 460.286, 126],
+        [5, 1, 570.571, 126]
       ]
     },
     {
       "name": "places 19",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 1593,
-        "itemCount": 13
-      },
+      "input": {"op": "places", "compact": false, "width": 1593, "itemCount": 13},
       "output": [
-        [
-          0,
-          0,
-          16.033,
-          10
-        ],
-        [
-          1,
-          0,
-          120.1,
-          10
-        ],
-        [
-          2,
-          0,
-          224.167,
-          10
-        ],
-        [
-          3,
-          0,
-          328.233,
-          10
-        ],
-        [
-          4,
-          0,
-          432.3,
-          10
-        ],
-        [
-          5,
-          0,
-          536.367,
-          10
-        ],
-        [
-          6,
-          0,
-          640.433,
-          10
-        ],
-        [
-          7,
-          0,
-          744.5,
-          10
-        ],
-        [
-          8,
-          0,
-          848.567,
-          10
-        ],
-        [
-          9,
-          0,
-          952.633,
-          10
-        ],
-        [
-          10,
-          0,
-          1056.7,
-          10
-        ],
-        [
-          11,
-          0,
-          1160.767,
-          10
-        ],
-        [
-          12,
-          0,
-          1264.833,
-          10
-        ]
+        [0, 0, 16.033, 10],
+        [1, 0, 120.1, 10],
+        [2, 0, 224.167, 10],
+        [3, 0, 328.233, 10],
+        [4, 0, 432.3, 10],
+        [5, 0, 536.367, 10],
+        [6, 0, 640.433, 10],
+        [7, 0, 744.5, 10],
+        [8, 0, 848.567, 10],
+        [9, 0, 952.633, 10],
+        [10, 0, 1056.7, 10],
+        [11, 0, 1160.767, 10],
+        [12, 0, 1264.833, 10]
       ]
     },
     {
       "name": "places 20",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 145,
-        "itemCount": 13
-      },
+      "input": {"op": "places", "compact": false, "width": 145, "itemCount": 13},
       "output": [
-        [
-          0,
-          0,
-          20.5,
-          10
-        ],
-        [
-          0,
-          1,
-          20.5,
-          126
-        ],
-        [
-          0,
-          2,
-          20.5,
-          242
-        ],
-        [
-          0,
-          3,
-          20.5,
-          358
-        ],
-        [
-          0,
-          4,
-          20.5,
-          474
-        ],
-        [
-          0,
-          5,
-          20.5,
-          590
-        ],
-        [
-          0,
-          6,
-          20.5,
-          706
-        ],
-        [
-          0,
-          7,
-          20.5,
-          822
-        ],
-        [
-          0,
-          8,
-          20.5,
-          938
-        ],
-        [
-          0,
-          9,
-          20.5,
-          1054
-        ],
-        [
-          0,
-          10,
-          20.5,
-          1170
-        ],
-        [
-          0,
-          11,
-          20.5,
-          1286
-        ],
-        [
-          0,
-          12,
-          20.5,
-          1402
-        ]
+        [0, 0, 20.5, 10],
+        [0, 1, 20.5, 126],
+        [0, 2, 20.5, 242],
+        [0, 3, 20.5, 358],
+        [0, 4, 20.5, 474],
+        [0, 5, 20.5, 590],
+        [0, 6, 20.5, 706],
+        [0, 7, 20.5, 822],
+        [0, 8, 20.5, 938],
+        [0, 9, 20.5, 1054],
+        [0, 10, 20.5, 1170],
+        [0, 11, 20.5, 1286],
+        [0, 12, 20.5, 1402]
       ]
     },
     {
       "name": "places 21",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 53,
-        "itemCount": 27
-      },
+      "input": {"op": "places", "compact": false, "width": 53, "itemCount": 27},
       "output": [
-        [
-          0,
-          0,
-          -25.5,
-          10
-        ],
-        [
-          0,
-          1,
-          -25.5,
-          126
-        ],
-        [
-          0,
-          2,
-          -25.5,
-          242
-        ],
-        [
-          0,
-          3,
-          -25.5,
-          358
-        ],
-        [
-          0,
-          4,
-          -25.5,
-          474
-        ],
-        [
-          0,
-          5,
-          -25.5,
-          590
-        ],
-        [
-          0,
-          6,
-          -25.5,
-          706
-        ],
-        [
-          0,
-          7,
-          -25.5,
-          822
-        ],
-        [
-          0,
-          8,
-          -25.5,
-          938
-        ],
-        [
-          0,
-          9,
-          -25.5,
-          1054
-        ],
-        [
-          0,
-          10,
-          -25.5,
-          1170
-        ],
-        [
-          0,
-          11,
-          -25.5,
-          1286
-        ],
-        [
-          0,
-          12,
-          -25.5,
-          1402
-        ],
-        [
-          0,
-          13,
-          -25.5,
-          1518
-        ],
-        [
-          0,
-          14,
-          -25.5,
-          1634
-        ],
-        [
-          0,
-          15,
-          -25.5,
-          1750
-        ],
-        [
-          0,
-          16,
-          -25.5,
-          1866
-        ],
-        [
-          0,
-          17,
-          -25.5,
-          1982
-        ],
-        [
-          0,
-          18,
-          -25.5,
-          2098
-        ],
-        [
-          0,
-          19,
-          -25.5,
-          2214
-        ],
-        [
-          0,
-          20,
-          -25.5,
-          2330
-        ],
-        [
-          0,
-          21,
-          -25.5,
-          2446
-        ],
-        [
-          0,
-          22,
-          -25.5,
-          2562
-        ],
-        [
-          0,
-          23,
-          -25.5,
-          2678
-        ],
-        [
-          0,
-          24,
-          -25.5,
-          2794
-        ],
-        [
-          0,
-          25,
-          -25.5,
-          2910
-        ],
-        [
-          0,
-          26,
-          -25.5,
-          3026
-        ]
+        [0, 0, -25.5, 10],
+        [0, 1, -25.5, 126],
+        [0, 2, -25.5, 242],
+        [0, 3, -25.5, 358],
+        [0, 4, -25.5, 474],
+        [0, 5, -25.5, 590],
+        [0, 6, -25.5, 706],
+        [0, 7, -25.5, 822],
+        [0, 8, -25.5, 938],
+        [0, 9, -25.5, 1054],
+        [0, 10, -25.5, 1170],
+        [0, 11, -25.5, 1286],
+        [0, 12, -25.5, 1402],
+        [0, 13, -25.5, 1518],
+        [0, 14, -25.5, 1634],
+        [0, 15, -25.5, 1750],
+        [0, 16, -25.5, 1866],
+        [0, 17, -25.5, 1982],
+        [0, 18, -25.5, 2098],
+        [0, 19, -25.5, 2214],
+        [0, 20, -25.5, 2330],
+        [0, 21, -25.5, 2446],
+        [0, 22, -25.5, 2562],
+        [0, 23, -25.5, 2678],
+        [0, 24, -25.5, 2794],
+        [0, 25, -25.5, 2910],
+        [0, 26, -25.5, 3026]
       ]
     },
     {
       "name": "places 22",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 112,
-        "itemCount": 22
-      },
+      "input": {"op": "places", "compact": false, "width": 112, "itemCount": 22},
       "output": [
-        [
-          0,
-          0,
-          4,
-          10
-        ],
-        [
-          0,
-          1,
-          4,
-          126
-        ],
-        [
-          0,
-          2,
-          4,
-          242
-        ],
-        [
-          0,
-          3,
-          4,
-          358
-        ],
-        [
-          0,
-          4,
-          4,
-          474
-        ],
-        [
-          0,
-          5,
-          4,
-          590
-        ],
-        [
-          0,
-          6,
-          4,
-          706
-        ],
-        [
-          0,
-          7,
-          4,
-          822
-        ],
-        [
-          0,
-          8,
-          4,
-          938
-        ],
-        [
-          0,
-          9,
-          4,
-          1054
-        ],
-        [
-          0,
-          10,
-          4,
-          1170
-        ],
-        [
-          0,
-          11,
-          4,
-          1286
-        ],
-        [
-          0,
-          12,
-          4,
-          1402
-        ],
-        [
-          0,
-          13,
-          4,
-          1518
-        ],
-        [
-          0,
-          14,
-          4,
-          1634
-        ],
-        [
-          0,
-          15,
-          4,
-          1750
-        ],
-        [
-          0,
-          16,
-          4,
-          1866
-        ],
-        [
-          0,
-          17,
-          4,
-          1982
-        ],
-        [
-          0,
-          18,
-          4,
-          2098
-        ],
-        [
-          0,
-          19,
-          4,
-          2214
-        ],
-        [
-          0,
-          20,
-          4,
-          2330
-        ],
-        [
-          0,
-          21,
-          4,
-          2446
-        ]
+        [0, 0, 4, 10],
+        [0, 1, 4, 126],
+        [0, 2, 4, 242],
+        [0, 3, 4, 358],
+        [0, 4, 4, 474],
+        [0, 5, 4, 590],
+        [0, 6, 4, 706],
+        [0, 7, 4, 822],
+        [0, 8, 4, 938],
+        [0, 9, 4, 1054],
+        [0, 10, 4, 1170],
+        [0, 11, 4, 1286],
+        [0, 12, 4, 1402],
+        [0, 13, 4, 1518],
+        [0, 14, 4, 1634],
+        [0, 15, 4, 1750],
+        [0, 16, 4, 1866],
+        [0, 17, 4, 1982],
+        [0, 18, 4, 2098],
+        [0, 19, 4, 2214],
+        [0, 20, 4, 2330],
+        [0, 21, 4, 2446]
       ]
     },
     {
       "name": "places 23",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 465,
-        "itemCount": 24
-      },
+      "input": {"op": "places", "compact": false, "width": 465, "itemCount": 24},
       "output": [
-        [
-          0,
-          0,
-          18.125,
-          10
-        ],
-        [
-          1,
-          0,
-          126.375,
-          10
-        ],
-        [
-          2,
-          0,
-          234.625,
-          10
-        ],
-        [
-          3,
-          0,
-          342.875,
-          10
-        ],
-        [
-          0,
-          1,
-          18.125,
-          126
-        ],
-        [
-          1,
-          1,
-          126.375,
-          126
-        ],
-        [
-          2,
-          1,
-          234.625,
-          126
-        ],
-        [
-          3,
-          1,
-          342.875,
-          126
-        ],
-        [
-          0,
-          2,
-          18.125,
-          242
-        ],
-        [
-          1,
-          2,
-          126.375,
-          242
-        ],
-        [
-          2,
-          2,
-          234.625,
-          242
-        ],
-        [
-          3,
-          2,
-          342.875,
-          242
-        ],
-        [
-          0,
-          3,
-          18.125,
-          358
-        ],
-        [
-          1,
-          3,
-          126.375,
-          358
-        ],
-        [
-          2,
-          3,
-          234.625,
-          358
-        ],
-        [
-          3,
-          3,
-          342.875,
-          358
-        ],
-        [
-          0,
-          4,
-          18.125,
-          474
-        ],
-        [
-          1,
-          4,
-          126.375,
-          474
-        ],
-        [
-          2,
-          4,
-          234.625,
-          474
-        ],
-        [
-          3,
-          4,
-          342.875,
-          474
-        ],
-        [
-          0,
-          5,
-          18.125,
-          590
-        ],
-        [
-          1,
-          5,
-          126.375,
-          590
-        ],
-        [
-          2,
-          5,
-          234.625,
-          590
-        ],
-        [
-          3,
-          5,
-          342.875,
-          590
-        ]
+        [0, 0, 18.125, 10],
+        [1, 0, 126.375, 10],
+        [2, 0, 234.625, 10],
+        [3, 0, 342.875, 10],
+        [0, 1, 18.125, 126],
+        [1, 1, 126.375, 126],
+        [2, 1, 234.625, 126],
+        [3, 1, 342.875, 126],
+        [0, 2, 18.125, 242],
+        [1, 2, 126.375, 242],
+        [2, 2, 234.625, 242],
+        [3, 2, 342.875, 242],
+        [0, 3, 18.125, 358],
+        [1, 3, 126.375, 358],
+        [2, 3, 234.625, 358],
+        [3, 3, 342.875, 358],
+        [0, 4, 18.125, 474],
+        [1, 4, 126.375, 474],
+        [2, 4, 234.625, 474],
+        [3, 4, 342.875, 474],
+        [0, 5, 18.125, 590],
+        [1, 5, 126.375, 590],
+        [2, 5, 234.625, 590],
+        [3, 5, 342.875, 590]
       ]
     },
     {
       "name": "places 24",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 2172,
-        "itemCount": 2
-      },
-      "output": [
-        [
-          0,
-          0,
-          17.5,
-          10
-        ],
-        [
-          1,
-          0,
-          124.5,
-          10
-        ]
-      ]
+      "input": {"op": "places", "compact": false, "width": 2172, "itemCount": 2},
+      "output": [[0, 0, 17.5, 10], [1, 0, 124.5, 10]]
     },
     {
       "name": "places 28",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 864,
-        "itemCount": 20
-      },
+      "input": {"op": "places", "compact": false, "width": 864, "itemCount": 20},
       "output": [
-        [
-          0,
-          0,
-          16,
-          10
-        ],
-        [
-          1,
-          0,
-          120,
-          10
-        ],
-        [
-          2,
-          0,
-          224,
-          10
-        ],
-        [
-          3,
-          0,
-          328,
-          10
-        ],
-        [
-          4,
-          0,
-          432,
-          10
-        ],
-        [
-          5,
-          0,
-          536,
-          10
-        ],
-        [
-          6,
-          0,
-          640,
-          10
-        ],
-        [
-          7,
-          0,
-          744,
-          10
-        ],
-        [
-          0,
-          1,
-          16,
-          126
-        ],
-        [
-          1,
-          1,
-          120,
-          126
-        ],
-        [
-          2,
-          1,
-          224,
-          126
-        ],
-        [
-          3,
-          1,
-          328,
-          126
-        ],
-        [
-          4,
-          1,
-          432,
-          126
-        ],
-        [
-          5,
-          1,
-          536,
-          126
-        ],
-        [
-          6,
-          1,
-          640,
-          126
-        ],
-        [
-          7,
-          1,
-          744,
-          126
-        ],
-        [
-          0,
-          2,
-          16,
-          242
-        ],
-        [
-          1,
-          2,
-          120,
-          242
-        ],
-        [
-          2,
-          2,
-          224,
-          242
-        ],
-        [
-          3,
-          2,
-          328,
-          242
-        ]
+        [0, 0, 16, 10],
+        [1, 0, 120, 10],
+        [2, 0, 224, 10],
+        [3, 0, 328, 10],
+        [4, 0, 432, 10],
+        [5, 0, 536, 10],
+        [6, 0, 640, 10],
+        [7, 0, 744, 10],
+        [0, 1, 16, 126],
+        [1, 1, 120, 126],
+        [2, 1, 224, 126],
+        [3, 1, 328, 126],
+        [4, 1, 432, 126],
+        [5, 1, 536, 126],
+        [6, 1, 640, 126],
+        [7, 1, 744, 126],
+        [0, 2, 16, 242],
+        [1, 2, 120, 242],
+        [2, 2, 224, 242],
+        [3, 2, 328, 242]
       ]
     },
-    {
-      "name": "places 29",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 190,
-        "itemCount": 0
-      },
-      "output": []
-    },
-    {
-      "name": "places 30",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 91,
-        "itemCount": 0
-      },
-      "output": []
-    },
+    {"name": "places 29", "input": {"op": "places", "compact": false, "width": 190, "itemCount": 0}, "output": []},
+    {"name": "places 30", "input": {"op": "places", "compact": false, "width": 91, "itemCount": 0}, "output": []},
     {
       "name": "places 32",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 49,
-        "itemCount": 7
-      },
+      "input": {"op": "places", "compact": false, "width": 49, "itemCount": 7},
       "output": [
-        [
-          0,
-          0,
-          -27.5,
-          10
-        ],
-        [
-          0,
-          1,
-          -27.5,
-          126
-        ],
-        [
-          0,
-          2,
-          -27.5,
-          242
-        ],
-        [
-          0,
-          3,
-          -27.5,
-          358
-        ],
-        [
-          0,
-          4,
-          -27.5,
-          474
-        ],
-        [
-          0,
-          5,
-          -27.5,
-          590
-        ],
-        [
-          0,
-          6,
-          -27.5,
-          706
-        ]
+        [0, 0, -27.5, 10],
+        [0, 1, -27.5, 126],
+        [0, 2, -27.5, 242],
+        [0, 3, -27.5, 358],
+        [0, 4, -27.5, 474],
+        [0, 5, -27.5, 590],
+        [0, 6, -27.5, 706]
       ]
     },
     {
       "name": "places 33",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 9,
-        "itemCount": 1
-      },
-      "output": [
-        [
-          0,
-          0,
-          -36,
-          10
-        ]
-      ]
+      "input": {"op": "places", "compact": false, "width": 9, "itemCount": 1},
+      "output": [[0, 0, -36, 10]]
     },
     {
       "name": "places 36",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 84,
-        "itemCount": 7
-      },
+      "input": {"op": "places", "compact": false, "width": 84, "itemCount": 7},
       "output": [
-        [
-          0,
-          0,
-          -10,
-          10
-        ],
-        [
-          0,
-          1,
-          -10,
-          126
-        ],
-        [
-          0,
-          2,
-          -10,
-          242
-        ],
-        [
-          0,
-          3,
-          -10,
-          358
-        ],
-        [
-          0,
-          4,
-          -10,
-          474
-        ],
-        [
-          0,
-          5,
-          -10,
-          590
-        ],
-        [
-          0,
-          6,
-          -10,
-          706
-        ]
+        [0, 0, -10, 10],
+        [0, 1, -10, 126],
+        [0, 2, -10, 242],
+        [0, 3, -10, 358],
+        [0, 4, -10, 474],
+        [0, 5, -10, 590],
+        [0, 6, -10, 706]
       ]
     },
     {
       "name": "places 40",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 1312,
-        "itemCount": 13
-      },
+      "input": {"op": "places", "compact": false, "width": 1312, "itemCount": 13},
       "output": [
-        [
-          0,
-          0,
-          17.333,
-          10
-        ],
-        [
-          1,
-          0,
-          124,
-          10
-        ],
-        [
-          2,
-          0,
-          230.667,
-          10
-        ],
-        [
-          3,
-          0,
-          337.333,
-          10
-        ],
-        [
-          4,
-          0,
-          444,
-          10
-        ],
-        [
-          5,
-          0,
-          550.667,
-          10
-        ],
-        [
-          6,
-          0,
-          657.333,
-          10
-        ],
-        [
-          7,
-          0,
-          764,
-          10
-        ],
-        [
-          8,
-          0,
-          870.667,
-          10
-        ],
-        [
-          9,
-          0,
-          977.333,
-          10
-        ],
-        [
-          10,
-          0,
-          1084,
-          10
-        ],
-        [
-          11,
-          0,
-          1190.667,
-          10
-        ],
-        [
-          0,
-          1,
-          17.333,
-          126
-        ]
+        [0, 0, 17.333, 10],
+        [1, 0, 124, 10],
+        [2, 0, 230.667, 10],
+        [3, 0, 337.333, 10],
+        [4, 0, 444, 10],
+        [5, 0, 550.667, 10],
+        [6, 0, 657.333, 10],
+        [7, 0, 764, 10],
+        [8, 0, 870.667, 10],
+        [9, 0, 977.333, 10],
+        [10, 0, 1084, 10],
+        [11, 0, 1190.667, 10],
+        [0, 1, 17.333, 126]
       ]
     },
     {
       "name": "places 42",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 96,
-        "itemCount": 2
-      },
-      "output": [
-        [
-          0,
-          0,
-          -4,
-          10
-        ],
-        [
-          0,
-          1,
-          -4,
-          126
-        ]
-      ]
+      "input": {"op": "places", "compact": false, "width": 96, "itemCount": 2},
+      "output": [[0, 0, -4, 10], [0, 1, -4, 126]]
     },
     {
       "name": "places 49",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 1280,
-        "itemCount": 1
-      },
-      "output": [
-        [
-          0,
-          0,
-          16,
-          10
-        ]
-      ]
+      "input": {"op": "places", "compact": false, "width": 1280, "itemCount": 1},
+      "output": [[0, 0, 16, 10]]
     },
     {
       "name": "places 57",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 1072,
-        "itemCount": 2
-      },
-      "output": [
-        [
-          0,
-          0,
-          16,
-          10
-        ],
-        [
-          1,
-          0,
-          120,
-          10
-        ]
-      ]
+      "input": {"op": "places", "compact": false, "width": 1072, "itemCount": 2},
+      "output": [[0, 0, 16, 10], [1, 0, 120, 10]]
     },
     {
       "name": "places 62",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 2271,
-        "itemCount": 11
-      },
+      "input": {"op": "places", "compact": false, "width": 2271, "itemCount": 11},
       "output": [
-        [
-          0,
-          0,
-          17.31,
-          10
-        ],
-        [
-          1,
-          0,
-          123.929,
-          10
-        ],
-        [
-          2,
-          0,
-          230.548,
-          10
-        ],
-        [
-          3,
-          0,
-          337.167,
-          10
-        ],
-        [
-          4,
-          0,
-          443.786,
-          10
-        ],
-        [
-          5,
-          0,
-          550.405,
-          10
-        ],
-        [
-          6,
-          0,
-          657.024,
-          10
-        ],
-        [
-          7,
-          0,
-          763.643,
-          10
-        ],
-        [
-          8,
-          0,
-          870.262,
-          10
-        ],
-        [
-          9,
-          0,
-          976.881,
-          10
-        ],
-        [
-          10,
-          0,
-          1083.5,
-          10
-        ]
+        [0, 0, 17.31, 10],
+        [1, 0, 123.929, 10],
+        [2, 0, 230.548, 10],
+        [3, 0, 337.167, 10],
+        [4, 0, 443.786, 10],
+        [5, 0, 550.405, 10],
+        [6, 0, 657.024, 10],
+        [7, 0, 763.643, 10],
+        [8, 0, 870.262, 10],
+        [9, 0, 976.881, 10],
+        [10, 0, 1083.5, 10]
       ]
     },
     {
       "name": "places 63",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 101,
-        "itemCount": 13
-      },
+      "input": {"op": "places", "compact": false, "width": 101, "itemCount": 13},
       "output": [
-        [
-          0,
-          0,
-          -1.5,
-          10
-        ],
-        [
-          0,
-          1,
-          -1.5,
-          126
-        ],
-        [
-          0,
-          2,
-          -1.5,
-          242
-        ],
-        [
-          0,
-          3,
-          -1.5,
-          358
-        ],
-        [
-          0,
-          4,
-          -1.5,
-          474
-        ],
-        [
-          0,
-          5,
-          -1.5,
-          590
-        ],
-        [
-          0,
-          6,
-          -1.5,
-          706
-        ],
-        [
-          0,
-          7,
-          -1.5,
-          822
-        ],
-        [
-          0,
-          8,
-          -1.5,
-          938
-        ],
-        [
-          0,
-          9,
-          -1.5,
-          1054
-        ],
-        [
-          0,
-          10,
-          -1.5,
-          1170
-        ],
-        [
-          0,
-          11,
-          -1.5,
-          1286
-        ],
-        [
-          0,
-          12,
-          -1.5,
-          1402
-        ]
+        [0, 0, -1.5, 10],
+        [0, 1, -1.5, 126],
+        [0, 2, -1.5, 242],
+        [0, 3, -1.5, 358],
+        [0, 4, -1.5, 474],
+        [0, 5, -1.5, 590],
+        [0, 6, -1.5, 706],
+        [0, 7, -1.5, 822],
+        [0, 8, -1.5, 938],
+        [0, 9, -1.5, 1054],
+        [0, 10, -1.5, 1170],
+        [0, 11, -1.5, 1286],
+        [0, 12, -1.5, 1402]
       ]
     },
-    {
-      "name": "places 64",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 25,
-        "itemCount": 0
-      },
-      "output": []
-    },
+    {"name": "places 64", "input": {"op": "places", "compact": false, "width": 25, "itemCount": 0}, "output": []},
     {
       "name": "places 65",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 470,
-        "itemCount": 7
-      },
+      "input": {"op": "places", "compact": false, "width": 470, "itemCount": 7},
       "output": [
-        [
-          0,
-          0,
-          18.75,
-          10
-        ],
-        [
-          1,
-          0,
-          128.25,
-          10
-        ],
-        [
-          2,
-          0,
-          237.75,
-          10
-        ],
-        [
-          3,
-          0,
-          347.25,
-          10
-        ],
-        [
-          0,
-          1,
-          18.75,
-          126
-        ],
-        [
-          1,
-          1,
-          128.25,
-          126
-        ],
-        [
-          2,
-          1,
-          237.75,
-          126
-        ]
+        [0, 0, 18.75, 10],
+        [1, 0, 128.25, 10],
+        [2, 0, 237.75, 10],
+        [3, 0, 347.25, 10],
+        [0, 1, 18.75, 126],
+        [1, 1, 128.25, 126],
+        [2, 1, 237.75, 126]
       ]
     },
     {
       "name": "places 73",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 621,
-        "itemCount": 2
-      },
-      "output": [
-        [
-          0,
-          0,
-          22.9,
-          10
-        ],
-        [
-          1,
-          0,
-          140.7,
-          10
-        ]
-      ]
+      "input": {"op": "places", "compact": false, "width": 621, "itemCount": 2},
+      "output": [[0, 0, 22.9, 10], [1, 0, 140.7, 10]]
     },
     {
       "name": "places 76",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 183,
-        "itemCount": 8
-      },
+      "input": {"op": "places", "compact": false, "width": 183, "itemCount": 8},
       "output": [
-        [
-          0,
-          0,
-          39.5,
-          10
-        ],
-        [
-          0,
-          1,
-          39.5,
-          126
-        ],
-        [
-          0,
-          2,
-          39.5,
-          242
-        ],
-        [
-          0,
-          3,
-          39.5,
-          358
-        ],
-        [
-          0,
-          4,
-          39.5,
-          474
-        ],
-        [
-          0,
-          5,
-          39.5,
-          590
-        ],
-        [
-          0,
-          6,
-          39.5,
-          706
-        ],
-        [
-          0,
-          7,
-          39.5,
-          822
-        ]
+        [0, 0, 39.5, 10],
+        [0, 1, 39.5, 126],
+        [0, 2, 39.5, 242],
+        [0, 3, 39.5, 358],
+        [0, 4, 39.5, 474],
+        [0, 5, 39.5, 590],
+        [0, 6, 39.5, 706],
+        [0, 7, 39.5, 822]
       ]
     },
     {
       "name": "places 77",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 1280,
-        "itemCount": 7
-      },
+      "input": {"op": "places", "compact": false, "width": 1280, "itemCount": 7},
       "output": [
-        [
-          0,
-          0,
-          16,
-          10
-        ],
-        [
-          1,
-          0,
-          120,
-          10
-        ],
-        [
-          2,
-          0,
-          224,
-          10
-        ],
-        [
-          3,
-          0,
-          328,
-          10
-        ],
-        [
-          4,
-          0,
-          432,
-          10
-        ],
-        [
-          5,
-          0,
-          536,
-          10
-        ],
-        [
-          6,
-          0,
-          640,
-          10
-        ]
+        [0, 0, 16, 10],
+        [1, 0, 120, 10],
+        [2, 0, 224, 10],
+        [3, 0, 328, 10],
+        [4, 0, 432, 10],
+        [5, 0, 536, 10],
+        [6, 0, 640, 10]
       ]
     },
     {
       "name": "places 78",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 95,
-        "itemCount": 1
-      },
-      "output": [
-        [
-          0,
-          0,
-          -4.5,
-          10
-        ]
-      ]
+      "input": {"op": "places", "compact": false, "width": 95, "itemCount": 1},
+      "output": [[0, 0, -4.5, 10]]
     },
     {
       "name": "places 79",
-      "input": {
-        "op": "places",
-        "compact": false,
-        "width": 65,
-        "itemCount": 1
-      },
-      "output": [
-        [
-          0,
-          0,
-          -19.5,
-          10
-        ]
-      ]
+      "input": {"op": "places", "compact": false, "width": 65, "itemCount": 1},
+      "output": [[0, 0, -19.5, 10]]
     },
     {
       "name": "reveal original 305",
