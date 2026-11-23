@@ -1054,6 +1054,45 @@ extension ExplorerWindowlessTests {
             #expect(viewer.textView.selectedRange().location > 0)
         }
 
+        // The text of a Word document can be selected, as a PDF's can: Quick Look turns selecting off in the web view it
+        // shows one in, and the viewer turns it on again, for the next document too.
+        @Test func aWordDocumentsTextCanBeSelected() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            for (name, words) in [("w1.docx", "First document's words"), ("w2.docx", "Second document's words")] {
+                let text = NSAttributedString(string: words + ".\nAnother paragraph.\n")
+                let data = try text.data(
+                    from: NSRange(location: 0, length: text.length),
+                    documentAttributes: [.documentType: NSAttributedString.DocumentType.officeOpenXML])
+                try data.write(to: harness.folder.appending(name))
+            }
+            let tab = try await tabWithFiles(harness)
+            let pane = tab.activePane
+            let (w1, w2) = (real(harness, "w1.docx"), real(harness, "w2.docx"))
+            #expect(await waitUntil { pane.content.listedEntry(at: w2) != nil })
+            select(w1, in: tab)
+            tab.perform(.viewFile)
+            let viewer = try #require(pane.viewer)
+            #expect(await waitUntil { viewer.hasKeyboard && viewer.quickLook.webView != nil }, "\(shown(viewer))")
+            func selected() async -> String {
+                guard let web = viewer.quickLook.webView else { return "" }
+                return (try? await web.evaluateJavaScript("window.getSelection().toString()") as? String) ?? ""
+            }
+            func selectsAll(_ words: String) async -> Bool {
+                for _ in 0..<40 {
+                    if viewer.hasKeyboard, viewer.performEdit(.editSelectAll), await selected().contains(words) {
+                        return true
+                    }
+                    try? await Task.sleep(for: .milliseconds(100))
+                }
+                return false
+            }
+            #expect(await selectsAll("First document's words"))
+            tab.stepFile(by: 1)
+            #expect(await waitUntil { viewer.path == w2 })
+            #expect(await selectsAll("Second document's words"))
+        }
+
         /// A PDF of `pages` US Letter pages, each with its number.
         private func writePDF(pages: Int, to url: URL) throws {
             var box = CGRect(x: 0, y: 0, width: 612, height: 792)

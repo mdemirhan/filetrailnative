@@ -39,10 +39,26 @@ final class QuickLookHost: NSView {
             addSubview(made)
             preview = made
             loadObservation = QuickLookLoadObservation(made) { [weak self] key in
-                if key == QuickLookLoadObservation.pageKey { self?.onPageChange() } else { self?.onLoad() }
+                if key == QuickLookLoadObservation.pageKey { self?.onPageChange() } else { self?.loaded() }
             }
         }
         preview?.previewItem = item as NSURL
+    }
+
+    private func loaded() {
+        allowSelecting()
+        onLoad()
+    }
+
+    /// Quick Look gives the web view it shows a Word document, a spreadsheet or HTML in a style sheet of its own that
+    /// turns off selecting the text (`-webkit-user-select: none !important`, which no style of the page's can undo)
+    /// and keeps the arrow pointer over it. It is taken out, so the text can be selected and copied, as a PDF's can (the
+    /// owner, 2026-11-23). Asked first, as Quick Look's other calls are: without it the text stays as Quick Look has it.
+    private func allowSelecting() {
+        guard let controller = webView?.configuration.userContentController else { return }
+        let remove = NSSelectorFromString("_removeAllUserStyleSheets")
+        guard controller.responds(to: remove) else { return }
+        controller.perform(remove)
     }
 
     private func closePreview() {
@@ -89,7 +105,7 @@ final class QuickLookHost: NSView {
     }
 
     /// A web view Quick Look shows the file in: a Word document, a spreadsheet, HTML.
-    private var webView: WKWebView? { preview.flatMap { Self.first(WKWebView.self, in: $0) } }
+    var webView: WKWebView? { preview.flatMap { Self.first(WKWebView.self, in: $0) } }
     /// A scroll view Quick Look shows the file in: RTF, an archive's list.
     private var scrollView: NSScrollView? { preview.flatMap { Self.first(NSScrollView.self, in: $0) } }
 
