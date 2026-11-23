@@ -1,9 +1,11 @@
 import AppKit
 import FTFileSystem
 import FTFoundation
+import PDFKit
 import UniformTypeIdentifiers
 
-/// A file as the viewer reads it. Unchecked for its picture, which is made off the main actor and only read on it.
+/// A file as the viewer reads it. Unchecked for its picture and its PDF, which are made off the main actor and only read
+/// on it.
 struct ViewerFile: @unchecked Sendable {
     enum Content: Sendable {
         case text(String, TextFormat, TextLanguage, Indentation?)
@@ -22,6 +24,8 @@ struct ViewerFile: @unchecked Sendable {
     let size: Int64
     /// A picture's image, read with the file.
     var image: NSImage?
+    /// A PDF's pages, read with the file; none for one locked with a password, which Quick Look shows and asks for.
+    var pdf: PDFDocument?
     /// The file as what it is, to find it again where it is moved or renamed; nil for one that can't be read.
     var identity: ViewerFileIdentity?
 
@@ -69,6 +73,8 @@ struct ViewerFile: @unchecked Sendable {
             var picture = file(.other)
             if type.conforms(to: .image), let image = NSImage(contentsOf: url), image.isValid {
                 picture.image = image
+            } else if type.conforms(to: .pdf), let pdf = PDFDocument(url: url), !pdf.isLocked, pdf.pageCount > 0 {
+                picture.pdf = pdf
             }
             return picture
         }

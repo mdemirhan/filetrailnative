@@ -1,6 +1,7 @@
 import AppKit
 import FTFoundation
 import Foundation
+import PDFKit
 import Testing
 
 @testable import FTAppKit
@@ -666,7 +667,13 @@ extension ExplorerWindowlessTests {
             tab.perform(.viewFile)
             let direct = try #require(pane.viewer)
             #expect(await waitUntil { direct.quickLook.preview != nil })
-            #expect(window.firstResponder === direct.view)
+            #expect(
+                await waitUntil {
+                    direct.hasKeyboard
+                        && direct.quickLook.preview.map {
+                            (window.firstResponder as? NSView)?.isDescendant(of: $0) == true
+                        } == true
+                })
             try escape()
             #expect(await waitUntil { pane.viewer == nil })
 
@@ -688,7 +695,13 @@ extension ExplorerWindowlessTests {
             #expect(viewer.textHasKeyboard)
             tab.stepFile(by: 1)
             #expect(await waitUntil { viewer.path == c && viewer.quickLook.preview != nil })
-            #expect(window.firstResponder === viewer.view)
+            #expect(
+                await waitUntil {
+                    viewer.hasKeyboard
+                        && viewer.quickLook.preview.map {
+                            (window.firstResponder as? NSView)?.isDescendant(of: $0) == true
+                        } == true
+                })
             try press("\u{1B}", 53)
             #expect(await waitUntil { pane.viewer == nil })
             #expect(pane.content.selection.paths == [c])
@@ -699,7 +712,13 @@ extension ExplorerWindowlessTests {
             let beside = try #require(besidePane.viewer)
             #expect(await waitUntil { beside.quickLook.preview != nil })
             tab.focusPane(besidePane)
-            #expect(window.firstResponder === beside.view)
+            #expect(
+                await waitUntil {
+                    beside.hasKeyboard
+                        && beside.quickLook.preview.map {
+                            (window.firstResponder as? NSView)?.isDescendant(of: $0) == true
+                        } == true
+                })
             try press("\t", 48)
             #expect(!beside.hasKeyboard)
             tab.focusPane(besidePane)
@@ -862,6 +881,97 @@ extension ExplorerWindowlessTests {
             let saved = tab.snapshot
             #expect(saved.secondPane?.pane.viewer?.mode == .following)
             #expect(saved.viewer == nil)
+        }
+
+        /// A PDF of `pages` US Letter pages, each with its number.
+        private func writePDF(pages: Int, to url: URL) throws {
+            var box = CGRect(x: 0, y: 0, width: 612, height: 792)
+            let context = try #require(CGContext(url as CFURL, mediaBox: &box, nil))
+            for page in 1...pages {
+                context.beginPDFPage(nil)
+                let line = CTLineCreateWithAttributedString(
+                    NSAttributedString(string: "Page \(page)", attributes: [.font: NSFont.systemFont(ofSize: 48)]))
+                context.textPosition = CGPoint(x: 72, y: 700)
+                CTLineDraw(line, context)
+                context.endPDFPage()
+            }
+            context.closePDF()
+        }
+
+        /// A PDF is drawn by the viewer itself: it takes the keyboard as it opens at the pane's width, the size commands
+        /// zoom it and Zoom to Fit shows a whole page, ← and → step its pages, the half-page keys move it, and Tab goes
+        /// on to the next pane. Nothing else the viewer shows zooms.
+        @Test func aPDFTakesTheKeyboardZoomsAndStepsItsPages() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            try writePDF(pages: 3, to: harness.folder.appending("d.pdf"))
+            let tab = try await tabWithFiles(harness)
+            let pane = tab.activePane
+            let d = real(harness, "d.pdf")
+            #expect(await waitUntil { pane.content.listedEntry(at: d) != nil })
+            let window = try #require(tab.window)
+            #expect(!tab.canPerform(.zoomToFit))
+
+            select(d, in: tab)
+            tab.perform(.viewFile)
+            let viewer = try #require(pane.viewer)
+            #expect(await waitUntil { viewer.pdfView.document?.pageCount == 3 })
+            let pdf = viewer.pdfView
+            #expect(await waitUntil { window.firstResponder === pdf })
+            window.layoutIfNeeded()
+            #expect(pdf.fit == .width)
+            #expect(tab.menuState.fileShown)
+            #expect(tab.canPerform(.increaseSize) && tab.canPerform(.decreaseSize) && tab.canPerform(.zoomToFit))
+
+            let opened = pdf.scaleFactor
+            tab.perform(.increaseSize)
+            #expect(pdf.scaleFactor > opened)
+            tab.perform(.resetSize)
+            #expect(pdf.isActualSize)
+            #expect(!tab.canPerform(.resetSize))
+            tab.perform(.zoomToFit)
+            #expect(pdf.fitsPage)
+            #expect(!tab.canPerform(.zoomToFit))
+            let pageRoom = pdf.bounds.height
+            let pageHeight = try #require(pdf.document?.page(at: 0)).bounds(for: .mediaBox).height * pdf.scaleFactor
+            #expect(pageHeight <= pageRoom)
+
+            func send(_ characters: String, _ ignoring: String, _ keyCode: UInt16, _ flags: NSEvent.ModifierFlags = [])
+                throws
+            {
+                window.sendEvent(
+                    try #require(
+                        NSEvent.keyEvent(
+                            with: .keyDown, location: .zero, modifierFlags: flags, timestamp: 0,
+                            windowNumber: window.windowNumber, context: nil, characters: characters,
+                            charactersIgnoringModifiers: ignoring, isARepeat: false, keyCode: keyCode)))
+            }
+            func page() -> Int { pdf.currentPage.flatMap { pdf.document?.index(for: $0) } ?? -1 }
+            let right = String(UnicodeScalar(UInt16(NSRightArrowFunctionKey))!)
+            let left = String(UnicodeScalar(UInt16(NSLeftArrowFunctionKey))!)
+            try send(right, right, 124, [.function, .numericPad])
+            #expect(await waitUntil { page() == 1 })
+            try send(left, left, 123, [.function, .numericPad])
+            #expect(await waitUntil { page() == 0 })
+
+            let clip = try #require(pdf.documentView?.enclosingScrollView?.contentView)
+            let top = clip.bounds.origin.y
+            try send("\u{4}", "d", 2, [.control])
+            #expect(abs(clip.bounds.origin.y - top) >= clip.bounds.height / 2 - 1)
+            // ⌘=, ⌘+'s other key, which the menu doesn't listen for.
+            let fitted = pdf.scaleFactor
+            try send("=", "=", 24, [.command])
+            #expect(pdf.scaleFactor > fitted)
+
+            try send("\t", "\t", 48)
+            #expect(!viewer.hasKeyboard)
+
+            // Text doesn't zoom.
+            tab.focusPane(pane)
+            tab.stepFile(by: -1)
+            #expect(await waitUntil { viewer.isText })
+            #expect(!tab.canPerform(.increaseSize) && !tab.canPerform(.zoomToFit))
+            #expect(viewer.pdfView.document == nil)
         }
     }
 }

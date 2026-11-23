@@ -195,10 +195,12 @@ enum ApplicationMenuBuilder {
             showPreviews.submenu = previewsMenu
             menu.addItem(showPreviews)
             menu.addItem(.separator())
-            // Named for the view on screen once the menu is synced: "Make Icons Bigger", "Make Columns Wider".
+            // Named for the view on screen once the menu is synced: "Make Icons Bigger", "Make Columns Wider"; "Zoom In"
+            // while the pane shows a file.
             menu.addItem(context.command(.increaseSize, "Make Bigger"))
             menu.addItem(context.command(.decreaseSize, "Make Smaller"))
             menu.addItem(context.command(.resetSize, "Default Size"))
+            menu.addItem(context.command(.zoomToFit, "Zoom to Fit"))
             menu.addItem(.separator())
             // Above Sort By, as in Finder's View Options: None, the fields in the columns' order, Folder for search
             // results, then the groups' direction.

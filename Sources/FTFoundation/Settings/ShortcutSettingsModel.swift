@@ -48,7 +48,7 @@ public enum ShortcutSettingsText {
         case .openSelectedItem: "Does what a double-click does."
         case .toggleFavorite: "Removes the folder when it is a favorite already."
         case .increaseSize, .decreaseSize, .resetSize:
-            "The icons in the Icons view, the columns in the Compact List, the previews in Previews."
+            "The icons in the Icons view, the columns in the Compact List, the previews in Previews; a PDF or a document a pane shows zooms."
         case .closePane: "Closes the tab when it has one pane."
         case .closeTab: "Closes the tab with both its panes."
         case .duplicatePane: "Opens a copy of this pane beside it, in place of the other pane if there is one."

@@ -139,13 +139,18 @@ struct HelpContentTests {
         #expect(HelpContent.search("nothing matches this").isEmpty)
     }
 
-    // The content leaves out the zoom rows
-    @Test func leavesOutTheZoomRows() {
-        let texts = HelpContent.topics.flatMap { topic in
-            [topic.intro] + topic.sections.flatMap { $0.rows.map(\.description) + $0.rows.map(\.label) }
+    // The app has no zoom of its own window or text: Help speaks of zoom only for a file a pane shows, a PDF or a
+    // document
+    @Test func speaksOfZoomOnlyForAFileShown() {
+        let texts =
+            HelpContent.topics.flatMap { topic in
+                [topic.intro] + topic.sections.flatMap { $0.rows.map(\.description) + $0.rows.map(\.label) }
+            } + HelpContent.shortcutItems.map(\.description)
+        let zooms = texts.filter { $0.lowercased().contains("zoom") }
+        #expect(!zooms.isEmpty)
+        for text in zooms {
+            #expect(["file", "pdf", "document"].contains { text.lowercased().contains($0) }, "\(text)")
         }
-        #expect(!texts.contains { $0.lowercased().contains("zoom") })
-        #expect(!HelpContent.shortcutItems.contains { $0.description.lowercased().contains("zoom") })
     }
 
     @Test func splitsASentenceIntoPlainTextAndCode() {

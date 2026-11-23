@@ -138,6 +138,7 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case increaseSize
     case decreaseSize
     case resetSize
+    case zoomToFit
     case groupByNone
     case groupByName
     case groupByModified
@@ -513,6 +514,9 @@ extension ShortcutCommands {
             menuPath: "View > Make Smaller"),
         ShortcutCommandDefinition(
             id: .resetSize, label: "Default Size", group: .view, defaults: ["Cmd+0"], menuPath: "View > Default Size"),
+        // Preview's key for the same command.
+        ShortcutCommandDefinition(
+            id: .zoomToFit, label: "Zoom to Fit", group: .view, defaults: ["Cmd+9"], menuPath: "View > Zoom to Fit"),
         ShortcutCommandDefinition(
             id: .groupByNone, label: "Group by None", group: .view, defaults: [],
             menuPath: "View > Group By > None"),

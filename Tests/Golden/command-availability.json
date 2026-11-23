@@ -75,7 +75,8 @@
           "showOriginal",
           "sortByFolder",
           "trashSelection",
-          "viewFile"
+          "viewFile",
+          "zoomToFit"
         ],
         "newTab": null,
         "favorite": "/Users/me/Documents",
@@ -258,7 +259,8 @@
           "viewAsIcons",
           "viewAsList",
           "viewAsPreviews",
-          "viewFile"
+          "viewFile",
+          "zoomToFit"
         ],
         "newTab": null,
         "favorite": null,
@@ -363,7 +365,8 @@
           "trashSelection",
           "undo",
           "updateFolderView",
-          "viewFile"
+          "viewFile",
+          "zoomToFit"
         ],
         "newTab": null,
         "favorite": null,
@@ -540,7 +543,8 @@
           "viewAsIcons",
           "viewAsList",
           "viewAsPreviews",
-          "viewFile"
+          "viewFile",
+          "zoomToFit"
         ],
         "newTab": null,
         "favorite": null,
@@ -629,7 +633,8 @@
           "sortByFolder",
           "toggleFavorite",
           "trashSelection",
-          "viewFile"
+          "viewFile",
+          "zoomToFit"
         ],
         "newTab": null,
         "favorite": null,
@@ -711,7 +716,8 @@
           "showOriginal",
           "sortByFolder",
           "toggleFavorite",
-          "viewFile"
+          "viewFile",
+          "zoomToFit"
         ],
         "newTab": null,
         "favorite": null,

@@ -2,8 +2,8 @@ import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// A file shown in a pane: its text with colors, read or edited, or Quick Look's preview of a file that isn't text. It
-/// takes the place of the pane's list (`ContentPaneController.showViewer`).
+/// A file shown in a pane: its text with colors, read or edited, a picture, a PDF, or Quick Look's preview of a file that
+/// is none of these. It takes the place of the pane's list (`ContentPaneController.showViewer`).
 @MainActor
 final class TextViewerController: NSViewController, NSTextViewDelegate {
     typealias Mode = ViewerPreference.Mode
@@ -115,8 +115,9 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     var previewText: NSAttributedString { previewView.attributedString() }
     let quickLook = QuickLookHost()
     private let message = ViewerMessageView()
-    /// A picture is drawn by the viewer itself; other files that aren't text by Quick Look's view.
+    /// A picture and a PDF are drawn by the viewer itself; other files that aren't text by Quick Look's view.
     private let imageView = NSImageView()
+    let pdfView = ViewerPDFView()
 
     /// `opensForEditing`: its pane's Read or Edit.
     init(mode: Mode, settings: TextViewerSettings, opensForEditing: Bool) {
@@ -217,8 +218,13 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         body.addSubview(previewScroll)
         body.addSubview(message)
         body.addSubview(imageView)
+        body.addSubview(pdfView)
         body.addSubview(quickLook)
         quickLook.isHidden = true
+        pdfView.isHidden = true
+        pdfView.setAccessibilityIdentifier("textViewer.pdf")
+        pdfView.onChange = { [weak self] in self?.refreshChrome() }
+        quickLook.onLoad = { [weak self] in self?.quickLookLoaded() }
         imageView.imageScaling = .scaleProportionallyDown
         imageView.isHidden = true
         imageView.setAccessibilityIdentifier("textViewer.image")
@@ -265,29 +271,102 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     /// Whether the keyboard is in the viewer but not in its text, its preview or its find bar.
     private var keyboardOutsideText: Bool {
         guard let responder = view.window?.firstResponder as? NSView else { return false }
-        return responder === view || responder.isDescendant(of: quickLook) || responder.isDescendant(of: imageView)
+        return responder === view || keyboardInPages || responder.isDescendant(of: imageView)
             || responder.isDescendant(of: message)
     }
 
-    /// What takes the keyboard when the pane is focused: the text or its Preview while it shows, else the viewer itself,
-    /// so Esc and Tab still reach it over a picture, Quick Look's preview or a message.
+    /// Whether the keyboard is in a PDF or in Quick Look's preview, which take the page keys, ← and → from the viewer.
+    private var keyboardInPages: Bool {
+        guard let responder = view.window?.firstResponder as? NSView else { return false }
+        return responder.isDescendant(of: pdfView) || responder.isDescendant(of: quickLook)
+    }
+
+    /// What takes the keyboard when the pane is focused: the text or its Preview while it shows, a PDF, Quick Look's
+    /// preview, else the viewer itself, so Esc and Tab still reach it over a picture or a message.
     var keyboardView: NSView {
         if !scrollView.isHidden { return textView }
         if !previewScroll.isHidden { return previewView }
+        if !pdfView.isHidden { return pdfView }
+        if !quickLook.isHidden, let preview = quickLook.keyboardView { return preview }
         return view
     }
 
-    /// A page or part of one in the text shown, the source or the Preview: in Edit the caret moves with it. False when
-    /// no text shows.
+    /// Quick Look shows what it made of the file: the keyboard goes on into it if the viewer had it, and the zoom
+    /// commands say whether it zooms.
+    private func quickLookLoaded() {
+        if !quickLook.isHidden, let window = view.window, let responder = window.firstResponder as? NSView,
+            responder === view || responder === quickLook.preview
+        {
+            window.makeFirstResponder(keyboardView)
+        }
+        refreshChrome()
+    }
+
+    /// A page or part of one in what is shown: the source or the Preview, where in Edit the caret moves with it, a PDF,
+    /// or Quick Look's preview, where a presentation steps a slide. False when nothing shown scrolls.
     @discardableResult
     func page(_ pages: CGFloat) -> Bool {
         if !scrollView.isHidden {
             textView.page(pages)
         } else if !previewScroll.isHidden {
             previewView.page(pages)
+        } else if !pdfView.isHidden {
+            pdfView.scroll(pages: pages)
+        } else if !quickLook.isHidden {
+            return quickLook.scroll(pages: pages)
         } else {
             return false
         }
+        return true
+    }
+
+    // MARK: Zoom
+
+    /// Which zoom commands would change what shows: a PDF's, or Quick Look's preview of a document it draws as a web
+    /// page or as text. Nil for anything else, for which they are dimmed.
+    var zoomSteps: Set<ViewerZoom>? {
+        if !pdfView.isHidden, pdfView.document != nil {
+            var steps = Set<ViewerZoom>()
+            if pdfView.canZoomInNow { steps.insert(.zoomIn) }
+            if pdfView.canZoomOutNow { steps.insert(.zoomOut) }
+            if !pdfView.isActualSize { steps.insert(.actualSize) }
+            if !pdfView.fitsPage { steps.insert(.fit) }
+            return steps
+        }
+        if !quickLook.isHidden, let magnification = quickLook.magnification {
+            let range = QuickLookHost.magnifications
+            var steps = Set<ViewerZoom>()
+            if magnification < range.upperBound - 0.001 { steps.insert(.zoomIn) }
+            if magnification > range.lowerBound + 0.001 { steps.insert(.zoomOut) }
+            // Quick Look shows the page at the pane's width: as it is, it is both its actual size and its fit.
+            if abs(magnification - 1) > 0.001 { steps.formUnion([.actualSize, .fit]) }
+            return steps
+        }
+        return nil
+    }
+
+    /// Zoom In, Zoom Out, Actual Size or Zoom to Fit on what shows; false when it doesn't zoom or is there already.
+    @discardableResult
+    func zoom(_ zoom: ViewerZoom) -> Bool {
+        guard zoomSteps?.contains(zoom) == true else { return false }
+        if !pdfView.isHidden {
+            switch zoom {
+            case .zoomIn: pdfView.zoomInStep()
+            case .zoomOut: pdfView.zoomOutStep()
+            case .actualSize: pdfView.actualSize()
+            case .fit: pdfView.fitPage()
+            }
+        } else if let magnification = quickLook.magnification {
+            let step = QuickLookHost.magnificationStep
+            let wanted: CGFloat =
+                switch zoom {
+                case .zoomIn: magnification * step
+                case .zoomOut: magnification / step
+                case .actualSize, .fit: 1
+                }
+            _ = quickLook.setMagnification(wanted)
+        }
+        refreshChrome()
         return true
     }
 
@@ -391,6 +470,12 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
             if let image = file.image {
                 imageView.image = image
                 showBody(.image)
+            } else if let pdf = file.pdf {
+                // Shown before its pages are set, so it has the pane's width to fit them to.
+                let again = keepingPlace && !pdfView.isHidden
+                showBody(.pdf)
+                layoutViews()
+                pdfView.show(pdf, keepingPlace: again)
             } else {
                 showBody(.quickLook)
             }
@@ -419,19 +504,21 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         coloring.recolorAll()
     }
 
-    private enum Body { case text, preview, quickLook, image, message }
+    private enum Body { case text, preview, quickLook, image, pdf, message }
 
     private func showBody(_ shown: Body) {
-        // Hiding the text or the Preview takes the keyboard from it: the viewer keeps it.
+        // Hiding the text, the Preview, a PDF or Quick Look's preview takes the keyboard from it: the viewer keeps it.
         let keyboard =
             view.window.map {
                 $0.firstResponder === textView || $0.firstResponder === previewView || $0.firstResponder === view
-            } ?? false
+            } ?? false || keyboardInPages
         scrollView.isHidden = shown != .text
         previewScroll.isHidden = shown != .preview
         message.isHidden = shown != .message
         imageView.isHidden = shown != .image
         if shown != .image { imageView.image = nil }
+        pdfView.isHidden = shown != .pdf
+        if shown != .pdf { pdfView.document = nil }
         if shown == .preview { renderPreview() }
         let quickLookItem = shown == .quickLook ? filePath.map { DiskPath($0).url(isDirectory: false) } : nil
         quickLook.item = quickLookItem
@@ -698,6 +785,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
 
     private func perform(_ action: ViewerHeaderView.Action) {
         switch action {
+        case .zoom(let change): zoom(change)
         case .previous: onPrevious()
         case .next: onNext()
         case .follow(let on): onFollowChange(on)
@@ -714,6 +802,64 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
             change(&next)
             settings = next
             onSettingsChange(next)
+        }
+    }
+
+    /// A key pressed while the keyboard is in a PDF or Quick Look's preview, before the view with it sees the key: the
+    /// app's page and half-page keys move the pages, → and ← step a page or a slide, Tab goes on to the next pane and
+    /// Esc closes the viewer. Each view would take these for something else, or for nothing. False for any other key,
+    /// and when the keyboard is elsewhere.
+    func pagesKey(_ event: NSEvent) -> Bool {
+        guard event.type == .keyDown, keyboardInPages else { return false }
+        let command = commandForKey(event)
+        if let pages = Self.pages(of: command) {
+            if !page(pages) { NSSound.beep() }
+            return true
+        }
+        // The zoom keys the menu doesn't listen for (⌘=, ⌘+'s other key) would reach the window only through the view
+        // with the keyboard, which keeps them.
+        if let command, let id = AppCommand(rawValue: command.rawValue), let zoom = ViewerZoom(id) {
+            if !self.zoom(zoom) { NSSound.beep() }
+            return true
+        }
+        let flags = event.modifierFlags.intersection([.command, .option, .shift, .control])
+        switch Self.pageStep(event) {
+        case .tab where flags.isEmpty || flags == .shift:
+            // On to the next pane, as from the text: a web view would keep Tab for its links.
+            onTab()
+            return true
+        case .forward where flags.isEmpty, .back where flags.isEmpty:
+            let forward = Self.pageStep(event) == .forward
+            if !pdfView.isHidden { return pdfView.stepPage(forward: forward) }
+            return quickLook.step(by: forward ? 1 : -1)
+        case .escape where flags.isEmpty:
+            return cancel()
+        default:
+            return false
+        }
+    }
+
+    private enum PageStep { case forward, back, tab, escape }
+
+    /// How far the app's page and half-page keys move what is shown.
+    private static func pages(of command: ShortcutCommandID?) -> CGFloat? {
+        switch command {
+        case .pageDown: 1
+        case .pageUp: -1
+        case .halfPageDown: 0.5
+        case .halfPageUp: -0.5
+        default: nil
+        }
+    }
+
+    /// → and ← step a PDF's pages and a presentation's slides; Tab and Shift-Tab go on to the next pane; Esc.
+    private static func pageStep(_ event: NSEvent) -> PageStep? {
+        switch event.charactersIgnoringModifiers?.unicodeScalars.first.map({ Int($0.value) }) {
+        case NSRightArrowFunctionKey: .forward
+        case NSLeftArrowFunctionKey: .back
+        case 0x09, 0x19: .tab
+        case 0x1B: .escape
+        default: nil
         }
     }
 
@@ -1009,10 +1155,14 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
                 isEditing: isEditing, isDirty: isDirty, hasPreview: isText && language.hasPreview,
                 showsPreview: showsPreview, languageID: language.id,
                 position: position.map { ViewerHeaderView.Position(index: $0.index, count: $0.count) },
-                settings: settings,
+                settings: settings, zoom: zoomSteps,
                 keys: ViewerHeaderView.Keys(
                     save: keyLabel(.saveViewerFile), next: keyLabel(.nextViewerFile),
-                    previous: keyLabel(.previousViewerFile))))
+                    previous: keyLabel(.previousViewerFile),
+                    zoom: Dictionary(
+                        uniqueKeysWithValues: ViewerZoom.allCases.compactMap { zoom in
+                            keyLabel(zoom.command).map { (zoom, $0) }
+                        }))))
         refreshFooter()
         onStateChange()
         view.needsLayout = true
@@ -1037,6 +1187,11 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
             if let indentation { parts.append(indentation.label) }
             if !coloring.colorsOn, language.grammar.colors { parts.append("Colors off for a file this large") }
         } else if let file, case .other = file.content {
+            if !pdfView.isHidden, let document = pdfView.document, document.pageCount > 0 {
+                let index = pdfView.currentPage.map { document.index(for: $0) } ?? 0
+                parts.append("Page \(FormatLocale.count(index + 1)) of \(FormatLocale.count(document.pageCount))")
+                parts.append("\(Int((pdfView.scaleFactor * 100).rounded()))%")
+            }
             parts.append(SizeText.size(file.size))
         }
         let status = parts.joined(separator: " · ")
@@ -1057,7 +1212,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         }
         let bodyHeight = max(0, bounds.height - top)
         body.frame = NSRect(x: 0, y: top, width: bounds.width, height: bodyHeight)
-        for child in [scrollView, previewScroll, message, quickLook] as [NSView] { child.frame = body.bounds }
+        for child in [scrollView, previewScroll, message, quickLook, pdfView] as [NSView] { child.frame = body.bounds }
         imageView.frame = body.bounds.insetBy(dx: 16, dy: 16)
         scrollView.tile()
         // What is on screen once the text has its size: a first layout may have shown none of it.

@@ -520,6 +520,13 @@ extension MainWindowController {
 
     var activePaneShowsFile: Bool { activePane.viewer != nil }
 
+    /// A key for a PDF or Quick Look's preview a viewer shows with the keyboard in it, taken before the view with the
+    /// keyboard sees it (`TextViewerController.pagesKey`).
+    func viewerPagesKey(_ event: NSEvent) -> Bool {
+        guard !isDialogOpen else { return false }
+        return panes.contains { $0.viewer?.pagesKey(event) == true }
+    }
+
     /// A press in the viewer whose view is `root`: its pane becomes the active one, and the viewer takes the keyboard
     /// unless something in it (its text, its find bar) has it already.
     func viewerPressed(_ root: NSView) {

@@ -102,6 +102,7 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case increaseSize
     case decreaseSize
     case resetSize
+    case zoomToFit
     case groupByNone
     case groupByName
     case groupByModified

@@ -490,6 +490,33 @@ struct CommandAvailabilityTests {
         #expect(elapsed < 1)
     }
 
+    // While the pane shows a file, the size commands zoom it as far as it zooms, whatever the folder's view allows, and
+    // Zoom to Fit runs only then.
+    @Test func theSizeCommandsZoomAFileThePaneShows() {
+        let sizes: [AppCommand] = [.increaseSize, .decreaseSize, .resetSize]
+        let folder = Self.context { $0.viewSizeSteps = .unavailable }
+        #expect(sizes.allSatisfy { !Self.run($0, folder) })
+        #expect(!Self.run(.zoomToFit, folder))
+        let roomy = Self.context { $0.viewSizeSteps = ViewSize.Steps(bigger: true, smaller: true, reset: true) }
+        #expect(sizes.allSatisfy { Self.run($0, roomy) })
+        #expect(!Self.run(.zoomToFit, Self.context { $0.fileZoom = [.zoomToFit] }))
+
+        let pdf = Self.context {
+            $0.paneShowsFile = true
+            $0.viewSizeSteps = .unavailable
+            $0.fileZoom = [.increaseSize, .decreaseSize, .zoomToFit]
+        }
+        #expect(Self.run(.increaseSize, pdf) && Self.run(.decreaseSize, pdf) && Self.run(.zoomToFit, pdf))
+        #expect(!Self.run(.resetSize, pdf))
+        // Text, a picture: nothing zooms.
+        let text = Self.context {
+            $0.paneShowsFile = true
+            $0.viewSizeSteps = ViewSize.Steps(bigger: true, smaller: true, reset: true)
+        }
+        #expect(sizes.allSatisfy { !Self.run($0, text) })
+        #expect(!Self.run(.zoomToFit, text))
+    }
+
     @Test func theTrashAndEjectRules() {
         let inTrash = Self.context {
             $0.homePath = "/Users/demo"

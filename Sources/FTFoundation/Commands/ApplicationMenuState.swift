@@ -44,6 +44,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
     /// How many items on the clipboard ⌘V would move, and how many it would copy, which Paste and Move Items Here say.
     public var clipboardCutCount: Int
     public var clipboardCopiedCount: Int
+    /// The active pane shows a file: the size commands zoom it, and are named so.
+    public var fileShown = false
 
     public init(
         disabledCommands: [AppCommand] = [], viewMode: ExplorerViewMode = .list,
@@ -93,7 +95,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         copyContentsGuess: CopyContentsGuess? = nil, compressTitle: String? = nil, convertImagesCount: Int = 0,
         folderViewRemembered: Bool = false, shownColumns: Set<OptionalDetailColumnKey> = [],
         shownSearchColumns: Set<OptionalSearchColumnKey>? = nil,
-        clipboardCutCount: Int = 0, clipboardCopiedCount: Int = 0,
+        clipboardCutCount: Int = 0, clipboardCopiedCount: Int = 0, fileShown: Bool = false,
         canRun: (AppCommand) -> Bool
     ) -> ApplicationMenuState {
         // A text field's Undo and Redo are always there, even in a dialog or while a file operation runs: they only
@@ -115,6 +117,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         state.shownSearchColumns = shownSearchColumns
         state.groupBy = groupBy
         state.groupReversed = groupReversed
+        state.fileShown = fileShown
         return state
     }
 }
@@ -309,7 +312,9 @@ public enum ApplicationMenu {
                 ClipboardTexts.moveItemsHereTitle(count: isEnabled(type) ? clipboardCount : 0)
             // With no explorer window to act on, no view is named.
             case .increaseSize, .decreaseSize, .resetSize:
-                ApplicationMenu.sizeTitle(type, viewMode: window.explorerFocused ? state.viewMode : .details)
+                window.explorerFocused && state.fileShown
+                    ? ApplicationMenu.zoomTitle(type)
+                    : ApplicationMenu.sizeTitle(type, viewMode: window.explorerFocused ? state.viewMode : .details)
             default: nil
             }
         }
@@ -381,6 +386,16 @@ public enum ApplicationMenu {
         guard itemID.hasPrefix(templatePrefix) else { return nil }
         let name = String(itemID.dropFirst(templatePrefix.count))
         return name.isEmpty ? nil : name
+    }
+
+    /// The size commands while the active pane shows a file, which they zoom: a PDF, a document Quick Look draws.
+    public static func zoomTitle(_ command: AppCommand) -> String? {
+        switch command {
+        case .increaseSize: "Zoom In"
+        case .decreaseSize: "Zoom Out"
+        case .resetSize: "Actual Size"
+        default: nil
+        }
     }
 
     /// The size commands name what they change in the view on screen: the icons in the Icons view, the columns in the

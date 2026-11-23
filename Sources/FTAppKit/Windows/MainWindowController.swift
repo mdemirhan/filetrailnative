@@ -121,6 +121,7 @@ final class ExplorerTabWindow: NSWindow {
         if firstClickGate.keepsBack(event, in: self) { return }
         if WindowEventRouting.intercept(event, in: self) { return }
         if WindowOverlayView.existing(in: self)?.forward(event) == true { return }
+        if event.type == .keyDown, explorerTab?.viewerPagesKey(event) == true { return }
         // A press anywhere in a file a pane shows (Quick Look's preview, its bar, its buttons) makes that pane the
         // active one, as a click in its list does: most of the viewer takes no keyboard of its own.
         if event.type == .leftMouseDown || event.type == .rightMouseDown,
@@ -1734,7 +1735,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             folderViewRemembered: activePane.shownFolderView?.isOwnSaved == true,
             shownColumns: shownColumns, shownSearchColumns: shownSearchColumns,
             clipboardCutCount: services.clipboard.contents.cutPaths.count,
-            clipboardCopiedCount: services.clipboard.contents.copiedPaths.count
+            clipboardCopiedCount: services.clipboard.contents.copiedPaths.count,
+            fileShown: context.paneShowsFile
         ) { CommandAvailability.canRun($0, context) }
     }
 
@@ -2049,8 +2051,13 @@ extension MainWindowController: ExplorerWindowHandle {
             content.showPreviews(count: count)
             if shownViewMode != .previews { setMode(.previews) }
             content.flashViewSize()
-        case .increaseSize, .decreaseSize, .resetSize:
-            if let change = ViewSize.Change(command) { content.stepViewSize(change) }
+        case .increaseSize, .decreaseSize, .resetSize, .zoomToFit:
+            // A file the pane shows zooms; the folder's view isn't on screen.
+            if activePane.viewer != nil {
+                if let zoom = ViewerZoom(command), commandViewer?.zoom(zoom) != true { NSSound.beep() }
+            } else if let change = ViewSize.Change(command) {
+                content.stepViewSize(change)
+            }
         // Search results have groups of their own (`searchGroupBy`); the pane sees to which.
         case .groupByNone, .groupByName, .groupByModified, .groupByCreated, .groupByLastOpened, .groupByAdded,
             .groupBySize, .groupByKind, .groupByTags, .groupByFolder:
@@ -2370,6 +2377,8 @@ extension MainWindowController: ExplorerWindowContext {
                 unsaved: activePane.shownFolderView?.hasUnsavedChanges == true))
         context.listIsGrouped = activePane.activeGroupBy != .none
         context.paneShowsFile = activePane.viewer != nil
+        context.fileZoom = Set(
+            (commandViewer?.zoomSteps ?? []).compactMap { AppCommand(rawValue: $0.command.rawValue) })
         return context
     }
 

@@ -358,17 +358,22 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews (Cmd+= also works)"
+            "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, narrower columns, or more and smaller previews"
+            "description": "Smaller icons, narrower columns, more smaller previews, or zoom out of a file"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons, columns or previews back to their default size"
+            "description": "Icons, columns or previews at their default size, a file at actual size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+9",
+            "description": "Fit a whole page of the PDF a pane shows in the pane"
           },
           {
             "group": "views",
@@ -688,7 +693,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews (Cmd+= also works)"
+                  "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown (Cmd+= also works)"
                 }
               ],
               "topic": "views",
@@ -1123,6 +1128,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "PDFs and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -1673,17 +1679,22 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews (Cmd+= also works)"
+            "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, narrower columns, or more and smaller previews"
+            "description": "Smaller icons, narrower columns, more smaller previews, or zoom out of a file"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons, columns or previews back to their default size"
+            "description": "Icons, columns or previews at their default size, a file at actual size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+9",
+            "description": "Fit a whole page of the PDF a pane shows in the pane"
           },
           {
             "group": "views",
@@ -2011,7 +2022,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews (Cmd+= also works)"
+                  "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown (Cmd+= also works)"
                 }
               ],
               "topic": "views",
@@ -2446,6 +2457,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "PDFs and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -3005,7 +3017,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews (Cmd+= also works)"
+                  "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown (Cmd+= also works)"
                 }
               ],
               "topic": "views",
@@ -3434,6 +3446,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "PDFs and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -3709,7 +3722,7 @@
             {
               "group": "views",
               "shortcut": "Cmd+Plus",
-              "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews (Cmd+= also works)"
+              "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown (Cmd+= also works)"
             }
           ],
           "$insert": [
@@ -4474,6 +4487,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "PDFs and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -5059,7 +5073,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews (Cmd+= also works)"
+                  "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown (Cmd+= also works)"
                 }
               ],
               "topic": "views",
@@ -5487,6 +5501,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
+                ["Opening", "PDFs and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -6212,7 +6227,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews (Cmd+= also works)"
+                  "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown (Cmd+= also works)"
                 }
               ],
               "topic": "views",
@@ -6533,6 +6548,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
+                ["Opening", "PDFs and documents in the viewer"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
                 ["Copying and moving", "Image or text as a file"],
@@ -6775,7 +6791,7 @@
             {
               "group": "views",
               "shortcut": "Cmd+Plus",
-              "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews (Cmd+= also works)"
+              "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown (Cmd+= also works)"
             }
           ],
           "$insert": [
@@ -6800,7 +6816,7 @@
               {
                 "group": "views",
                 "shortcut": "Cmd+=",
-                "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews"
+                "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown"
               }
             ]
           ]
@@ -7513,6 +7529,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "PDFs and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -7798,8 +7815,8 @@
             [
               {
                 "group": "views",
-                "shortcut": "Cmd+0",
-                "description": "Icons, columns or previews back to their default size"
+                "shortcut": "Cmd+9",
+                "description": "Fit a whole page of the PDF a pane shows in the pane"
               },
               {"group": "views", "shortcut": "Cmd+;", "description": "Order the list by size"}
             ]
@@ -8100,7 +8117,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews (Cmd+= also works)"
+                  "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown (Cmd+= also works)"
                 }
               ],
               "topic": "views",
@@ -8529,6 +8546,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "PDFs and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -9181,7 +9199,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews (Cmd+= also works)"
+                  "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown (Cmd+= also works)"
                 }
               ],
               "topic": "views",
@@ -9603,6 +9621,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
+                ["Opening", "PDFs and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -10174,7 +10193,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews (Cmd+= also works)"
+                  "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown (Cmd+= also works)"
                 }
               ],
               "topic": "views",
@@ -10603,6 +10622,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "PDFs and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -10891,7 +10911,7 @@
             {
               "group": "views",
               "shortcut": "Cmd+Plus",
-              "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews (Cmd+= also works)"
+              "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown (Cmd+= also works)"
             }
           ],
           "$insert": [
@@ -10924,14 +10944,14 @@
               {
                 "group": "views",
                 "shortcut": "Cmd+=",
-                "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews"
+                "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown"
               }
             ],
             [
               {
                 "group": "views",
-                "shortcut": "Cmd+0",
-                "description": "Icons, columns or previews back to their default size"
+                "shortcut": "Cmd+9",
+                "description": "Fit a whole page of the PDF a pane shows in the pane"
               },
               {
                 "group": "views",
@@ -11654,6 +11674,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "PDFs and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -11942,7 +11963,7 @@
             {
               "group": "views",
               "shortcut": "Cmd+Plus",
-              "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews (Cmd+= also works)"
+              "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown (Cmd+= also works)"
             }
           ],
           "$insert": [
@@ -11995,7 +12016,7 @@
               {
                 "group": "views",
                 "shortcut": "Cmd+Plus",
-                "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews"
+                "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown"
               }
             ],
             [
@@ -12289,7 +12310,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews"
+                  "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown"
                 }
               ],
               "topic": "views",
@@ -12714,6 +12735,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "PDFs and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -13319,7 +13341,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews (Cmd+= also works)"
+                  "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown (Cmd+= also works)"
                 }
               ],
               "topic": "views",
@@ -13748,6 +13770,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "PDFs and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -14077,8 +14100,8 @@
             [
               {
                 "group": "views",
-                "shortcut": "Cmd+0",
-                "description": "Icons, columns or previews back to their default size"
+                "shortcut": "Cmd+9",
+                "description": "Fit a whole page of the PDF a pane shows in the pane"
               },
               {
                 "group": "views",
@@ -14364,7 +14387,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews (Cmd+= also works)"
+                  "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown (Cmd+= also works)"
                 }
               ],
               "topic": "views",
@@ -14777,6 +14800,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "PDFs and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
@@ -15152,7 +15176,7 @@
             {
               "group": "views",
               "shortcut": "Cmd+Plus",
-              "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews (Cmd+= also works)"
+              "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown (Cmd+= also works)"
             }
           ],
           "$insert": [
@@ -15213,7 +15237,7 @@
               {
                 "group": "views",
                 "shortcut": "Cmd+=",
-                "description": "Bigger icons, wider columns in the Compact List, or fewer and larger previews"
+                "description": "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown"
               }
             ]
           ]
@@ -15972,6 +15996,7 @@
               "topic": "files",
               "rows": [
                 ["Opening", "Quick Look"],
+                ["Opening", "PDFs and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],

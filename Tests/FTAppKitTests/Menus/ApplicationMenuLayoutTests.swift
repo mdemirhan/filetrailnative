@@ -50,7 +50,8 @@ import Testing
             titles(submenu(main, "View")) == [
                 "as Icons", "as List", "as Compact List", "as Previews", "Show Previews", "-", "Make Bigger",
                 "Make Smaller",
-                "Default Size", "-", "Group By", "Sort By", "Folders First", "Hidden Files", "Columns", "-",
+                "Default Size", "Zoom to Fit", "-", "Group By", "Sort By", "Folders First", "Hidden Files", "Columns",
+                "-",
                 "Pin Filter", "Refresh",
                 "-", "Hide Folder Tree", "Info Panel", "Info Row", "-", "Two Panes", "Duplicate Pane", "Swap Panes",
                 "Make Panes Equal Width", "-", "Customize Toolbar…", "Command Palette…",
@@ -336,6 +337,7 @@ import Testing
             ("View", "Make Bigger", "Command++", .increaseSize),
             ("View", "Make Smaller", "Command+-", .decreaseSize),
             ("View", "Default Size", "Command+0", .resetSize),
+            ("View", "Zoom to Fit", "Command+9", .zoomToFit),
             ("View", "Folders First", nil, .toggleFoldersFirst),
             ("View", "Hidden Files", "Command+Shift+.", .toggleHiddenFiles),
             ("View", "Info Panel", "Command+I", .toggleInfoPanel),

@@ -228,6 +228,11 @@ extension HelpContent {
                                 "Open in Viewer shows the selected file's text in its pane, with colors for code, to read or to edit and save, as you last chose in that pane; Back goes back to the list. Open in Other Pane shows it in the other pane instead, which then follows the list's selection unless Follow was turned off there, and asks to save edits before it moves on. What else it does is in its bar: Read or Edit, Save, Follow, and its ⋯ menu, which names its keys."
                         ),
                         HelpRow(
+                            label: "PDFs and documents in the viewer",
+                            description:
+                                "A PDF, a Word document, a presentation or a spreadsheet takes the keyboard as it opens: the arrows, Space, {pageDown} and {halfPageDown} move it, and ← and → go to the next or previous page or slide. {increaseSize} and {decreaseSize} zoom in and out of a PDF or a document (a presentation's slides stay at the pane's size), {resetSize} shows it at its actual size, and {zoomToFit} fits a whole page of a PDF in the pane."
+                        ),
+                        HelpRow(
                             label: "Open in Terminal",
                             description:
                                 "{openInTerminal} opens a terminal window in the selected folder, or the folder you are in when nothing is selected. Settings → Files chooses the terminal app."
@@ -935,10 +940,14 @@ extension HelpContent {
         HelpShortcutItem(group: .views, .command(.showPreviews1), "View as previews, one file at a time"),
         HelpShortcutItem(
             group: .views, .command(.increaseSize),
-            "Bigger icons, wider columns in the Compact List, or fewer and larger previews"),
+            "Bigger icons, wider columns, fewer larger previews, or zoom in on a file shown"),
         HelpShortcutItem(
-            group: .views, .command(.decreaseSize), "Smaller icons, narrower columns, or more and smaller previews"),
-        HelpShortcutItem(group: .views, .command(.resetSize), "Icons, columns or previews back to their default size"),
+            group: .views, .command(.decreaseSize),
+            "Smaller icons, narrower columns, more smaller previews, or zoom out of a file"),
+        HelpShortcutItem(
+            group: .views, .command(.resetSize),
+            "Icons, columns or previews at their default size, a file at actual size"),
+        HelpShortcutItem(group: .views, .command(.zoomToFit), "Fit a whole page of the PDF a pane shows in the pane"),
         HelpShortcutItem(group: .views, .command(.groupByNone), "Show the list without groups"),
         HelpShortcutItem(group: .views, .command(.groupByName), "Group the list by the first letter of each name"),
         HelpShortcutItem(

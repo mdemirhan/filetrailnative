@@ -19,7 +19,11 @@ final class ViewerHeaderView: NSView {
         var languageID: String
         var position: Position?
         var settings: TextViewerSettings
-        /// The keys chosen in Settings → Shortcuts for Save, Next File and Previous File, as the menu writes them.
+        /// Which of Zoom In, Zoom Out, Actual Size and Zoom to Fit would change a PDF or Quick Look's preview; nil for
+        /// a file that doesn't zoom, whose menu has none of them.
+        var zoom: Set<ViewerZoom>?
+        /// The keys chosen in Settings → Shortcuts for Save, Next File, Previous File and the zoom, as the menu writes
+        /// them.
         var keys = Keys()
     }
 
@@ -27,6 +31,7 @@ final class ViewerHeaderView: NSView {
         var save: String?
         var next: String?
         var previous: String?
+        var zoom: [ViewerZoom: String] = [:]
     }
 
     struct Position: Equatable {
@@ -43,6 +48,7 @@ final class ViewerHeaderView: NSView {
         case preview(Bool)
         case language(String)
         case find
+        case zoom(ViewerZoom)
         case openInEditor, close
         case settings((inout TextViewerSettings) -> Void)
     }
@@ -118,7 +124,7 @@ final class ViewerHeaderView: NSView {
 
         menuButton.controlSize = .regular
         menuButton.bezelStyle = .push
-        menuButton.toolTip = "Save, other files, find, language and the viewer’s look"
+        menuButton.toolTip = "Save, other files, find, zoom, language and the viewer’s look"
         menuButton.setAccessibilityIdentifier("textViewer.menu")
         menuButton.setAccessibilityLabel("Viewer")
         addSubview(menuButton)
@@ -201,6 +207,12 @@ final class ViewerHeaderView: NSView {
                 language.submenu?.addItem(item)
             }
             menu.addItem(language)
+        }
+        if let zoom = state.zoom {
+            menu.addItem(.separator())
+            for each in ViewerZoom.allCases {
+                add(each.title, .zoom(each), key: state.keys.zoom[each], enabled: zoom.contains(each))
+            }
         }
         menu.addItem(.separator())
         menu.addItem(appearanceItem(state.settings))

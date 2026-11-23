@@ -165,6 +165,11 @@ struct ApplicationMenuTests {
                 Self.stateOf($0.rawValue, Self.initial, none).title
             }
                 == ["Make Bigger", "Make Smaller", "Default Size"])
+        // While the pane shows a file they zoom it, in any view.
+        state.viewMode = .icons
+        state.fileShown = true
+        #expect(titles(state) == ["Zoom In", "Zoom Out", "Actual Size"])
+        #expect(Self.stateOf("zoomToFit", state).title == nil)
     }
 
     @Test func turnsTheFilesUndoAndRedoOnOnlyWhenThereIsSomethingToDo() {

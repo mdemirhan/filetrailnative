@@ -109,6 +109,9 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
     /// The active pane shows a file in place of its folder (Open in Viewer): what acts on the folder or its items
     /// waits, as neither is on screen.
     public var paneShowsFile = false
+    /// Which of Make Bigger, Make Smaller, Default Size and Zoom to Fit would zoom the file the pane shows, a PDF or a
+    /// document Quick Look draws: they act on it in place of the folder's view while it shows.
+    public var fileZoom: Set<AppCommand> = []
 
     public init(
         shortcutContext: ShortcutContext = ShortcutContext(), currentPath: String = "",
@@ -374,7 +377,7 @@ public enum CommandAvailability {
         if ShortcutPolicy.treeFocusBucket(of: command) == .contentOnly { return true }
         switch command {
         case .viewAsIcons, .viewAsList, .viewAsDetails, .viewAsPreviews, .showPreviews9, .showPreviews4, .showPreviews2,
-            .showPreviews1, .increaseSize, .decreaseSize, .resetSize, .groupByNone, .groupByName, .groupByModified,
+            .showPreviews1, .groupByNone, .groupByName, .groupByModified,
             .groupByCreated, .groupByLastOpened, .groupByAdded, .groupBySize, .groupByKind, .groupByTags,
             .groupByFolder, .reverseGroupOrder, .sortByName, .sortByFolder, .sortByModified, .sortByCreated,
             .sortByAdded, .sortByLastOpened, .sortBySize, .sortByKind, .toggleFoldersFirst, .toggleHiddenFiles,
@@ -411,6 +414,13 @@ public enum CommandAvailability {
         }
         if context.paneShowsFile, waitsWhileAFileShows(command) {
             return false
+        }
+        // The size commands zoom a file the pane shows, and Zoom to Fit does nothing else.
+        if context.paneShowsFile, ViewSize.Change(command) != nil {
+            return context.fileZoom.contains(command)
+        }
+        if command == .zoomToFit {
+            return context.paneShowsFile && context.fileZoom.contains(command)
         }
         let focusedPane = context.shortcutContext.focusedPane
         let selectedCount = context.selectedPathsInViewOrder.count

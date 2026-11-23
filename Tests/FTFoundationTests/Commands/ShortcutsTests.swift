@@ -456,6 +456,7 @@ struct ShortcutsTests {
             (.viewAsPreviews, ["Cmd+4"]), (.showPreviews9, []), (.showPreviews4, []), (.showPreviews2, []),
             (.showPreviews1, []),
             (.increaseSize, ["Cmd+Plus", "Cmd+="]), (.decreaseSize, ["Cmd+-"]), (.resetSize, ["Cmd+0"]),
+            (.zoomToFit, ["Cmd+9"]),
             (.toggleHiddenFiles, ["Cmd+Shift+."]), (.togglePinFilter, []), (.toggleFolderTree, ["Ctrl+Cmd+S"]),
             (.toggleInfoPanel, ["Cmd+I"]),
             (.toggleInfoRow, ["Cmd+Shift+I"]), (.openHelp, ["?"]),
@@ -487,7 +488,8 @@ struct ShortcutsTests {
         }
     }
 
-    // There is no zoom of the whole window. ⌘+, ⌘- and ⌘0 change the size of the icons or the columns; ⌘+ is pressed
+    // There is no zoom of the whole window. ⌘+, ⌘- and ⌘0 change the size of the icons or the columns, or zoom a file a
+    // pane shows; ⌘+ is pressed
     // as ⌘= on most keyboards, which is its other key.
     @Test func zoomHasNoCommandsAndItsKeysSizeTheView() {
         #expect(ShortcutCommandID(rawValue: "zoomIn") == nil)
