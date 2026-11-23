@@ -201,10 +201,14 @@ extension BrowserPane {
             shown.detailColumnOrder = columns.order
             shown.detailColumnWidths = columns.widths
         }
-        if let sizes = folderViewShown(.size)?.size {
-            shown.iconSizes = sizes.iconSizes
-            shown.compactListWidths = sizes.compactListWidths
-            shown.previewCounts = sizes.previewCounts
+        // Each view's size apart: a tab view may hold one view's and leave the others to the folder's view.
+        for size in ViewSizeKind.allCases {
+            guard let sizes = folderViewShown(size) else { continue }
+            switch size {
+            case .icons: shown.iconSizes = sizes.iconSizes
+            case .compactList: shown.compactListWidths = sizes.compactListWidths
+            case .previews: shown.previewCounts = sizes.previewCounts
+            }
         }
         return shown
     }

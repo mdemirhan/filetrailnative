@@ -14,11 +14,19 @@ import FTFoundation
 /// each row, then down.
 @MainActor
 class SavedViewSheet: DialogPanelView {
-    static var width: Double { FolderViewPopover.width + 40 }
+    class var width: Double { FolderViewPopover.width + 40 }
     static let margin = 20.0
+    /// A sheet with a sidebar: its width, and the gap between it and the rows beside it.
+    static let sidebarWidth = 176.0
+    static let sidebarGap = 20.0
     /// Room left under the sheet, above the window's bottom edge.
     static let bottomInset = 24.0
     var contentWidth: Double { Self.width - 2 * Self.margin }
+    /// How wide a card of rows is: the sheet's content, or the room beside the sidebar.
+    var rowsWidth: Double { contentWidth }
+    /// Where every row's control starts, from the row's left edge: Folder View Options' column, or one with room for
+    /// longer titles.
+    var controlColumn: Double { FolderViewPopover.controlColumn }
     /// What the sheet's controls are identified by: `tabViewOptions`, `windowViewOptions`.
     let identifierPrefix: String
     /// "tab view", "window view": what the sheet saves, as its words say it.
@@ -145,12 +153,18 @@ class SavedViewSheet: DialogPanelView {
     }
 
     /// Along each row, left to right, then down: a row's controls are centered on one line, though not all of a
-    /// height. A hidden row has nothing in it; the pane chooser counts as a control.
+    /// height. A hidden row has nothing in it; a segmented control counts as a control. A sidebar's list comes right
+    /// after the Name, before the rows of the part it shows, as its arrow keys choose the part.
     override func focusOrder() -> [NSView] {
         var found = Self.focusable(in: self)
+        var sidebars: [NSView] = []
         func visit(_ view: NSView) {
             guard !view.isHidden else { return }
             if let segmented = view as? NSSegmentedControl, segmented.isEnabled { found.append(segmented) }
+            if let sidebar = view as? SheetSidebar {
+                sidebars.append(sidebar.list)
+                return
+            }
             for child in view.subviews { visit(child) }
         }
         visit(self)
@@ -165,7 +179,10 @@ class SavedViewSheet: DialogPanelView {
                 rows.append([item])
             }
         }
-        return rows.flatMap { row in row.sorted { $0.1.minX < $1.1.minX }.map(\.0) }
+        var order = rows.flatMap { row in row.sorted { $0.1.minX < $1.1.minX }.map(\.0) }
+        let afterName = order.firstIndex(of: nameBox).map { $0 + 1 } ?? 0
+        order.insert(contentsOf: sidebars, at: afterName)
+        return order
     }
 
     /// A control Tab lands on is scrolled into view.
@@ -309,7 +326,7 @@ class SavedViewSheet: DialogPanelView {
         let field = NSTextField(wrappingLabelWithString: text)
         field.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
         field.textColor = .secondaryLabelColor
-        field.preferredMaxLayoutWidth = fullWidth ? contentWidth : contentWidth - FolderViewPopover.controlColumn
+        field.preferredMaxLayoutWidth = fullWidth ? rowsWidth : rowsWidth - controlColumn
         return field
     }
 
@@ -366,7 +383,44 @@ class SavedViewSheet: DialogPanelView {
 
     /// Rows with a hairline between each two shown, as Folder View Options groups them.
     func card(_ rows: [NSView]) -> SheetCard {
-        SheetCard(rows: rows, width: contentWidth)
+        SheetCard(rows: rows, width: rowsWidth)
+    }
+
+    /// The header with the Name at its end, and under it the line saying a name is taken: for a sheet with a sidebar.
+    func addHeaderWithName(symbol: String, title: String, subtitle: NSTextField) {
+        let header = header(symbol: symbol, title: title, subtitle: subtitle)
+        let name = label("Name")
+        nameBox.translatesAutoresizingMaskIntoConstraints = false
+        nameBox.widthAnchor.constraint(equalToConstant: 240).isActive = true
+        let row = NSStackView()
+        row.orientation = .horizontal
+        row.spacing = 8
+        row.setViews([header], in: .leading)
+        row.setViews([name, nameBox], in: .trailing)
+        add(row, after: 4)
+        add(nameNote, after: 10)
+    }
+
+    /// The sidebar and the page beside it, its height that of the tallest page, so the sheet keeps one height
+    /// whichever part is shown.
+    func sidebarBody(_ sidebar: SheetSidebar, pages: [NSView]) -> SheetBody {
+        SheetBody(sidebar: sidebar, pages: pages, pageWidth: rowsWidth, gap: Self.sidebarGap)
+    }
+
+    /// A page of a sheet with a sidebar: what it is for, then its parts, top down.
+    func page(_ note: String, _ parts: [(view: NSView, after: Double)]) -> NSStackView {
+        let page = NSStackView()
+        page.orientation = .vertical
+        page.alignment = .leading
+        page.spacing = 6
+        let line = self.note(note, fullWidth: true)
+        page.addArrangedSubview(line)
+        page.setCustomSpacing(10, after: line)
+        for part in parts {
+            page.addArrangedSubview(part.view)
+            page.setCustomSpacing(part.after, after: part.view)
+        }
+        return page
     }
 
     /// A setting's row: a checkbox titled with its name and its control in the controls' column.
@@ -412,7 +466,7 @@ class SavedViewSheet: DialogPanelView {
                 control.leadingAnchor.constraint(greaterThanOrEqualTo: leading.trailingAnchor, constant: 12).isActive =
                     true
             } else {
-                control.leadingAnchor.constraint(equalTo: row.leadingAnchor, constant: FolderViewPopover.controlColumn)
+                control.leadingAnchor.constraint(equalTo: row.leadingAnchor, constant: controlColumn)
                     .isActive = true
                 leading.trailingAnchor.constraint(lessThanOrEqualTo: control.leadingAnchor, constant: -8).isActive =
                     true
@@ -453,6 +507,186 @@ class SavedViewSheet: DialogPanelView {
 
     static func set(_ view: NSView, hidden: Bool) {
         if view.isHidden != hidden { view.isHidden = hidden }
+    }
+}
+
+/// A sheet's parts in a source list, under headings, one chosen at a time: its rows show beside it.
+@MainActor
+final class SheetSidebar: NSScrollView, NSTableViewDataSource, NSTableViewDelegate {
+    enum Row: Equatable {
+        case heading(String)
+        case item(id: String, title: String, symbol: String)
+    }
+
+    private let table = NSTableView()
+    /// The list the keyboard goes to.
+    var list: NSView { table }
+    private(set) var rows: [Row] = []
+    /// The item chosen, by its id.
+    private(set) var selectedID: String?
+    var chosen: (String) -> Void = { _ in }
+
+    init(identifier: String) {
+        super.init(frame: .zero)
+        let column = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("part"))
+        table.addTableColumn(column)
+        table.headerView = nil
+        // Plain, with the selection drawn by its rows: a source list's vibrant selection doesn't belong on a sheet's
+        // glass.
+        table.style = .plain
+        table.selectionHighlightStyle = .regular
+        table.rowHeight = 26
+        table.backgroundColor = .clear
+        table.floatsGroupRows = false
+        table.focusRingType = .none
+        table.intercellSpacing = NSSize(width: 0, height: 2)
+        table.dataSource = self
+        table.delegate = self
+        table.setAccessibilityIdentifier(identifier)
+        table.setAccessibilityLabel("Parts")
+        documentView = table
+        hasVerticalScroller = false
+        drawsBackground = false
+        borderType = .noBorder
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    /// `rows`, with the item `id` chosen (the first item when none is `id`). The list is made again only when the
+    /// rows changed.
+    func show(_ rows: [Row], selected id: String) {
+        if rows != self.rows {
+            self.rows = rows
+            table.reloadData()
+        }
+        let index =
+            rows.firstIndex { if case .item(let item, _, _) = $0 { item == id } else { false } }
+            ?? rows.firstIndex { if case .item = $0 { true } else { false } }
+        selectedID = index.flatMap { if case .item(let item, _, _) = rows[$0] { item } else { nil } }
+        if let index, table.selectedRow != index {
+            table.selectRowIndexes(IndexSet(integer: index), byExtendingSelection: false)
+        }
+    }
+
+    func numberOfRows(in tableView: NSTableView) -> Int { rows.count }
+
+    /// The chosen part is drawn by the row itself, a tint the title stays readable on, in the sheet's glass as in a
+    /// window.
+    func tableView(_ tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? { SheetSidebarRow() }
+
+    func tableView(_ tableView: NSTableView, isGroupRow row: Int) -> Bool {
+        if case .heading = rows[row] { true } else { false }
+    }
+
+    func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
+        if case .item = rows[row] { true } else { false }
+    }
+
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        let cell = NSTableCellView()
+        let text = NSTextField(labelWithString: "")
+        text.translatesAutoresizingMaskIntoConstraints = false
+        text.lineBreakMode = .byTruncatingTail
+        cell.addSubview(text)
+        cell.textField = text
+        switch rows[row] {
+        case .heading(let title):
+            text.stringValue = title
+            text.font = .systemFont(ofSize: NSFont.smallSystemFontSize, weight: .semibold)
+            text.textColor = .secondaryLabelColor
+            NSLayoutConstraint.activate([
+                text.leadingAnchor.constraint(equalTo: cell.leadingAnchor, constant: 2),
+                text.trailingAnchor.constraint(lessThanOrEqualTo: cell.trailingAnchor),
+                text.centerYAnchor.constraint(equalTo: cell.centerYAnchor),
+            ])
+        case .item(let id, let title, let symbol):
+            text.stringValue = title
+            let icon = NSImageView(
+                image: NSImage(systemSymbolName: symbol, accessibilityDescription: nil) ?? NSImage())
+            icon.translatesAutoresizingMaskIntoConstraints = false
+            icon.contentTintColor = .controlAccentColor
+            cell.addSubview(icon)
+            cell.imageView = icon
+            cell.setAccessibilityIdentifier("\(table.accessibilityIdentifier()).\(id)")
+            NSLayoutConstraint.activate([
+                icon.leadingAnchor.constraint(equalTo: cell.leadingAnchor, constant: 2),
+                icon.centerYAnchor.constraint(equalTo: cell.centerYAnchor),
+                icon.widthAnchor.constraint(equalToConstant: 18),
+                text.leadingAnchor.constraint(equalTo: icon.trailingAnchor, constant: 6),
+                text.trailingAnchor.constraint(lessThanOrEqualTo: cell.trailingAnchor),
+                text.centerYAnchor.constraint(equalTo: cell.centerYAnchor),
+            ])
+        }
+        return cell
+    }
+
+    func tableViewSelectionDidChange(_ notification: Notification) {
+        let row = table.selectedRow
+        guard rows.indices.contains(row), case .item(let id, _, _) = rows[row], id != selectedID else { return }
+        selectedID = id
+        chosen(id)
+    }
+}
+
+/// A row of a sheet's sidebar: chosen, a rounded tint of the accent color under its title.
+final class SheetSidebarRow: NSTableRowView {
+    override var isEmphasized: Bool {
+        get { false }
+        set {}
+    }
+
+    override func drawSelection(in dirtyRect: NSRect) {
+        guard selectionHighlightStyle != .none else { return }
+        NSColor.controlAccentColor.withAlphaComponent(0.18).setFill()
+        NSBezierPath(roundedRect: bounds.insetBy(dx: 0, dy: 1), xRadius: 6, yRadius: 6).fill()
+    }
+
+    override var interiorBackgroundStyle: NSView.BackgroundStyle { .normal }
+}
+
+/// A sidebar and, beside it, the page of the part chosen: every page is made once, and the others are hidden. As tall
+/// as the tallest page, so choosing another part doesn't change the sheet's height.
+@MainActor
+final class SheetBody: NSView {
+    let sidebar: SheetSidebar
+    let pages: [NSView]
+    private var height: NSLayoutConstraint!
+
+    init(sidebar: SheetSidebar, pages: [NSView], pageWidth: Double, gap: Double) {
+        self.sidebar = sidebar
+        self.pages = pages
+        super.init(frame: .zero)
+        translatesAutoresizingMaskIntoConstraints = false
+        sidebar.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(sidebar)
+        NSLayoutConstraint.activate([
+            sidebar.leadingAnchor.constraint(equalTo: leadingAnchor),
+            sidebar.topAnchor.constraint(equalTo: topAnchor),
+            sidebar.bottomAnchor.constraint(equalTo: bottomAnchor),
+            sidebar.widthAnchor.constraint(equalToConstant: SavedViewSheet.sidebarWidth),
+        ])
+        for page in pages {
+            page.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(page)
+            NSLayoutConstraint.activate([
+                page.leadingAnchor.constraint(equalTo: sidebar.trailingAnchor, constant: gap),
+                page.topAnchor.constraint(equalTo: topAnchor),
+                page.widthAnchor.constraint(equalToConstant: pageWidth),
+            ])
+        }
+        height = heightAnchor.constraint(equalToConstant: 100)
+        height.isActive = true
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    /// Shows the page at `index`, and holds the body to the tallest page as they are now.
+    func show(page index: Int) {
+        for (place, page) in pages.enumerated() where page.isHidden != (place != index) {
+            page.isHidden = place != index
+        }
+        let tallest = ceil(pages.map(\.fittingSize.height).max() ?? 100)
+        if height.constant != tallest { height.constant = tallest }
     }
 }
 

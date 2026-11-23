@@ -251,7 +251,7 @@ extension ExplorerWindowlessTests {
             var checked = draft.active
             checked.keep(.sort, true)
             #expect(
-                checked.keeps(viewerAllowed: false).view
+                checked.keeps.view
                     == FolderViewKeeps(view: .previews, sort: FolderViewSort(by: .size, direction: .desc)))
         }
 
@@ -529,10 +529,10 @@ extension ExplorerWindowlessTests {
             TabView(id: id, name: "View \(id)", keeps: keeps)
         }
 
-        // A pane of two can show the viewer: the sheet offers Viewer in either pane's View, with Follow and Read or
-        // Edit, and the tab view applied opens the viewer beside the other's list, showing what it selects, the
-        // keyboard left in the list. Saved again from the tab, the viewer is what that pane keeps; a tab view giving
-        // the pane a view of a folder closes it.
+        // A pane of two can open the viewer: the sheet's Opens the Viewer applies in either of two panes only, and
+        // the tab view applied opens the viewer beside the other's list, showing what it selects, as the pane's Read
+        // or Edit now says, the keyboard left in the list. Saved again from the tab, that pane opens the viewer; a tab
+        // view giving the pane a view of a folder and no viewer closes it.
         @Test func aTabViewOpensTheViewerBesideTheOtherPane() async throws {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }
@@ -540,15 +540,18 @@ extension ExplorerWindowlessTests {
             let note = harness.folder.appending("note.txt").path
             tab.perform(.saveTabView)
             var sheet = try SheetInput.tabSheet(tab)
+            let opens = try #require(
+                SheetInput.control("tabViewOptions.keep.Opens the Viewer", in: sheet, as: NSButton.self))
             let view = try #require(SheetInput.control("tabViewOptions.view", in: sheet, as: NSPopUpButton.self))
             #expect(!view.itemTitles.contains("Viewer"))
+            #expect(opens.isEnabled)
             try SheetInput.choose("Two", in: "tabViewOptions.panes", of: sheet)
-            #expect(view.itemTitles.last == "Viewer")
+            #expect(opens.isEnabled)
             sheet.onCancel()
 
             tab.updatePreferences {
                 $0.tabViews = [
-                    viewerView("v", TabViewKeeps(panes: 2, right: PaneKeeps(viewer: PaneViewer(editing: true)))),
+                    viewerView("v", TabViewKeeps(panes: 2, right: PaneKeeps(opensViewer: true, viewerEditing: true))),
                     viewerView("l", TabViewKeeps(panes: 2, right: PaneKeeps(view: FolderViewKeeps(view: .details)))),
                 ]
             }
@@ -564,7 +567,10 @@ extension ExplorerWindowlessTests {
             #expect(tab.activePane === tab.panes[0])
             tab.perform(.saveTabView)
             sheet = try SheetInput.tabSheet(tab)
-            #expect(sheet.draft.keeps.right?.viewer == PaneViewer(follows: true, editing: true))
+            #expect(sheet.draft.keeps.right?.opensViewer == true)
+            // Its Read or Edit is the pane's own now.
+            #expect(sheet.draft.right.viewer == PaneViewer(follows: true, editing: true))
+            #expect(tab.panes[1].viewerDefaults == PaneViewer(follows: true, editing: true))
             sheet.onCancel()
 
             tab.applyTabView(id: "l")
@@ -581,7 +587,7 @@ extension ExplorerWindowlessTests {
             let note = harness.folder.appending("note.txt").path
             tab.updatePreferences {
                 $0.tabViews = [
-                    viewerView("v", TabViewKeeps(panes: 2, right: PaneKeeps(viewer: PaneViewer(editing: true)))),
+                    viewerView("v", TabViewKeeps(panes: 2, right: PaneKeeps(opensViewer: true, viewerEditing: true))),
                     viewerView("l", TabViewKeeps(panes: 2, right: PaneKeeps(view: FolderViewKeeps(view: .details)))),
                 ]
             }
@@ -629,7 +635,7 @@ extension ExplorerWindowlessTests {
                     viewerView(
                         "v",
                         TabViewKeeps(
-                            panes: 2, left: PaneKeeps(viewer: PaneViewer()), right: PaneKeeps(folder: beta)))
+                            panes: 2, left: PaneKeeps(opensViewer: true), right: PaneKeeps(folder: beta)))
                 ]
             }
             tab.applyTabView(id: "v")
@@ -671,7 +677,7 @@ extension ExplorerWindowlessTests {
             let note = harness.folder.appending("note.txt").path
             tab.updatePreferences {
                 $0.tabViews = [
-                    viewerView("v", TabViewKeeps(panes: 2, right: PaneKeeps(viewer: PaneViewer(editing: true)))),
+                    viewerView("v", TabViewKeeps(panes: 2, right: PaneKeeps(opensViewer: true, viewerEditing: true))),
                     viewerView("one", TabViewKeeps(panes: 1, forgetsSecondPane: true)),
                 ]
             }
@@ -699,8 +705,9 @@ extension ExplorerWindowlessTests {
             #expect(try String(contentsOfFile: note, encoding: .utf8) == "x")
         }
 
-        // One list and one viewer: a tab view giving one pane the viewer closes the other pane's.
-        @Test func aViewerInTheOtherPaneGivesWay() async throws {
+        // With a viewer, not a list, in the other pane, a pane's viewer has nothing to follow: it opens over its own
+        // list on the file selected there, and the other pane's stays.
+        @Test func aViewerOpensInPlaceWhereThereIsNoListToFollow() async throws {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }
             let tab = try await harness.open()
@@ -708,10 +715,47 @@ extension ExplorerWindowlessTests {
             tab.openFileInOtherPane(note)
             #expect(await waitUntil { tab.panes.count == 2 && tab.panes[1].viewer != nil })
             tab.updatePreferences {
-                $0.tabViews = [viewerView("v", TabViewKeeps(panes: 2, left: PaneKeeps(viewer: PaneViewer())))]
+                $0.tabViews = [viewerView("v", TabViewKeeps(panes: 2, left: PaneKeeps(opensViewer: true)))]
             }
+            tab.panes[0].content.select(paths: [note])
             tab.applyTabView(id: "v")
-            #expect(await waitUntil { tab.panes[1].viewer == nil && tab.panes[0].viewer != nil })
+            #expect(
+                await waitUntil {
+                    tab.panes[0].viewer?.mode == .inPlace
+                        && tab.panes[0].viewer?.path.map { samePath($0, note) } == true
+                })
+            #expect(tab.panes[1].viewer?.mode == .following)
+        }
+
+        // A tab view of one pane opens the viewer over its list, on the file selected as a step of Back, read or
+        // edited as it says; with nothing selected, the viewer opens with nothing in it.
+        @Test func aOnePaneTabViewOpensTheViewerInPlace() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            let note = harness.folder.appending("note.txt").path
+            tab.updatePreferences {
+                $0.tabViews = [
+                    viewerView("one", TabViewKeeps(panes: 1, pane: PaneKeeps(opensViewer: true, viewerEditing: true)))
+                ]
+            }
+            let pane = tab.panes[0]
+            pane.content.select(paths: [note])
+            tab.applyTabView(id: "one")
+            #expect(
+                await waitUntil {
+                    pane.viewer?.mode == .inPlace && pane.viewer?.path.map { samePath($0, note) } == true
+                })
+            let viewer = try #require(pane.viewer)
+            #expect(await waitUntil { viewer.isEditing })
+            #expect(pane.navigationHistory.current.map { samePath($0, note) } == true)
+            #expect(pane.viewerDefaults.editing)
+
+            #expect(await tab.closeViewer(in: pane))
+            pane.content.select(paths: [])
+            tab.applyTabView(id: "one")
+            #expect(await waitUntil { pane.viewer?.mode == .inPlace })
+            #expect(pane.viewer?.path == nil)
         }
 
         // A second pane closed in another folder than the list's comes back with the viewer the tab view gives it:
@@ -727,7 +771,7 @@ extension ExplorerWindowlessTests {
                         "v",
                         TabViewKeeps(
                             panes: 2, divider: .share(0.2), left: PaneKeeps(view: FolderViewKeeps(view: .details)),
-                            right: PaneKeeps(viewer: PaneViewer())))
+                            right: PaneKeeps(opensViewer: true)))
                 ]
             }
             tab.applyTabView(id: "v")

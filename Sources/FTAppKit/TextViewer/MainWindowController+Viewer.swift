@@ -25,11 +25,8 @@ extension MainWindowController {
     /// The one file selected in the active pane, when it is one a viewer shows.
     var selectedViewableFile: String? {
         let pane = activePane
-        guard pane.viewer == nil, pane.content.selection.paths.count == 1, let path = leadPath(of: pane),
-            let entry = pane.content.listedEntry(at: path),
-            AliasOriginals.shared.commandKind(entry).isEditableFile
-        else { return nil }
-        return path
+        guard pane.viewer == nil else { return nil }
+        return selectedFile(of: pane)
     }
 
     // MARK: Open in Viewer
@@ -127,7 +124,7 @@ extension MainWindowController {
                     guard await viewer.confirmLeave() else { return }
                 }
                 guard let self else { return }
-                viewer.mode = .following
+                viewer.mode = target.viewerDefaults.follows ? .following : .pinned
                 viewer.position = nil
                 if !Self.isShown(path, in: viewer) { viewer.show(path) }
                 self.commandsChanged()
@@ -136,7 +133,7 @@ extension MainWindowController {
         }
         let folder = ExplorerTabs.parentDirectoryPath(path) ?? target.shownFolderPath
         if !samePath(target.shownFolderPath, folder) { target.go(to: folder, cause: .viewersFolder) }
-        openViewer(in: target, mode: .following, path: path, focus: false)
+        openViewer(in: target, mode: target.viewerDefaults.follows ? .following : .pinned, path: path, focus: false)
         focusPane(source)
         notify(.panels)
     }
@@ -177,6 +174,32 @@ extension MainWindowController {
             follow(with: viewer, mode: mode, beside: list)
             viewer.show(leadPath(of: list), editing: setting.editing)
         }
+    }
+
+    /// A tab view's viewer over the pane's own list: the file selected there, in place of the folder, as Open in
+    /// Viewer shows it (a step of Back and Forward), read or edited as `setting` says; with no file selected, the
+    /// viewer opens with nothing in it, and Esc shows the list. A viewer the pane shows already stays, with its file
+    /// and its edits. In the active pane the viewer takes the keyboard from the list it covers, as Open in Viewer's
+    /// does.
+    func showTabViewViewerInPlace(_ setting: PaneViewer, in pane: BrowserPane) {
+        guard pane.viewer == nil else { return }
+        let path = selectedFile(of: pane)
+        if let path { pane.navigationHistory.record(path, mode: .push) }
+        let viewer = makeViewer(in: pane, mode: .inPlace)
+        let focus = pane === activePane
+        if focus { window?.makeFirstResponder(viewer.view) }
+        viewer.show(path, focus: focus, editing: setting.editing)
+        updatePosition(of: viewer, in: pane)
+        if path != nil { paneChanged(.history, in: pane) }
+        notify(.panels)
+    }
+
+    /// The one file `pane` selects, when it is one a viewer shows.
+    private func selectedFile(of pane: BrowserPane) -> String? {
+        guard pane.content.selection.paths.count == 1, let path = leadPath(of: pane),
+            let entry = pane.content.listedEntry(at: path), AliasOriginals.shared.commandKind(entry).isEditableFile
+        else { return nil }
+        return path
     }
 
     /// `viewer` follows `list` as `mode` says, the keyboard in the list.
@@ -232,6 +255,11 @@ extension MainWindowController {
     /// Follow, in the bar of a viewer beside the list: on shows the list's selection again, after asking about
     /// edits; off keeps the file on screen whatever the list selects.
     private func setFollow(_ on: Bool, viewer: TextViewerController) {
+        // The pane's from then on: a viewer opened in it after starts the same way.
+        if let pane = panes.first(where: { $0.viewer === viewer }) {
+            pane.setViewSize { $0.viewerFollows = on }
+            group?.tabChanged(self)
+        }
         guard on else {
             viewer.mode = .pinned
             commandsChanged()
@@ -259,7 +287,8 @@ extension MainWindowController {
     }
 
     private func makeViewer(in pane: BrowserPane, mode: TextViewerController.Mode) -> TextViewerController {
-        let viewer = TextViewerController(mode: mode, settings: preferences.textViewerSettings)
+        let viewer = TextViewerController(
+            mode: mode, settings: preferences.textViewerSettings, opensForEditing: pane.viewerDefaults.editing)
         _ = viewer.view
         viewer.onClose = { [weak self, weak pane] in
             guard let self, let pane else { return }
@@ -273,7 +302,17 @@ extension MainWindowController {
         }
         viewer.onStateChange = { [weak self] in self?.commandsChanged() }
         viewer.onSettingsChange = { [weak self] settings in
-            self?.updatePreferences { $0.textViewerSettings = settings }
+            // Read or Edit is the panes' (`onEditingChosen`): the viewer's look leaves the app's as it is.
+            self?.updatePreferences {
+                let editing = $0.textViewerSettings.opensForEditing
+                $0.textViewerSettings = settings
+                $0.textViewerSettings.opensForEditing = editing
+            }
+        }
+        viewer.onEditingChosen = { [weak self, weak pane] editing in
+            guard let pane else { return }
+            pane.changeOwnSettings { $0.viewerEditing = editing }
+            if let self { self.group?.tabChanged(self) }
         }
         viewer.onOpenInEditor = { [weak self] path in self?.openInTextEditor(path) }
         viewer.onFocusChange = { [weak self] in self?.commandsChanged() }

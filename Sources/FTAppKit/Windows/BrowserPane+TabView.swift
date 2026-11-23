@@ -30,6 +30,39 @@ extension BrowserPane {
         return true
     }
 
+    /// One view's size is changed by hand in the folder on screen: as `changedByHand(.size)`, but only that view's
+    /// size is no longer the tab view's.
+    @discardableResult
+    func changedByHand(_ size: ViewSizeKind) -> Bool {
+        guard let override = tabViewOverride, override.holds(in: folderPath), override.covers(size) else {
+            return true
+        }
+        tabViewOverride = override.without(size)
+        return true
+    }
+
+    /// The folder's view as on screen where it decides `size`: it keeps the sizes, and no tab view's override holds
+    /// for that view's size here. Nil where the pane's own size shows.
+    func folderViewShown(_ size: ViewSizeKind) -> FolderViewSizes? {
+        guard let shown = folderView?.shown, let sizes = shown.size else { return nil }
+        if tabViewOverrideHolds, let override = tabViewOverride, override.covers(size) { return nil }
+        return sizes
+    }
+
+    /// How a viewer in this pane starts: its own Follow and Read or Edit, or, before it has its own, the app's.
+    var viewerDefaults: PaneViewer {
+        guard let own = viewSizes ?? tab.map({ PaneViewSizes($0.preferences) }) else { return PaneViewer() }
+        return PaneViewer(follows: own.viewerFollows, editing: own.viewerEditing)
+    }
+
+    /// A tab view's Follow and Read or Edit for this pane: its own from then on, and the app's Read or Edit, as one
+    /// chosen by hand is.
+    func takeViewerDefaults(_ keeps: PaneKeeps) {
+        if let editing = keeps.viewerEditing { changeOwnSettings { $0.viewerEditing = editing } }
+        if let follows = keeps.viewerFollows { setViewSize { $0.viewerFollows = follows } }
+        if let editing = keeps.viewerEditing, let viewer, viewer.mode != .inPlace { viewer.opensForEditing = editing }
+    }
+
     /// A Folder View command or Folder View Options in this pane: the override ends first, so what they show and save
     /// is the folder's view, not the tab view laid over it.
     func endTabViewOverride() {
@@ -80,6 +113,7 @@ extension BrowserPane {
         }
         return PaneState(
             folder: folderLetGo ? nil : folderPath, settings: settings, viewer: viewer,
+            viewerInPlace: self.viewer?.mode == .inPlace, viewerDefaults: viewerDefaults,
             searchResults: searchResultsState)
     }
 
@@ -115,8 +149,8 @@ extension BrowserPane {
 
     /// The settings a tab view keeps of this pane, taken as a change by hand would take them, but into what the pane
     /// carries whatever the folder's view keeps: the view, order, grouping and Folders First are the pane's; columns
-    /// and sizes the pane's own and the app's from now on, as ones set by hand are.
-    func takeTabViewSettings(_ keeps: FolderViewKeeps) {
+    /// and each view's size kept the pane's own and the app's from now on, as ones set by hand are.
+    func takeTabViewSettings(_ keeps: FolderViewKeeps, sizes: ViewSizesKeeps?) {
         if let view = keeps.view { viewMode = view }
         if let field = keeps.groupBy {
             groupBy = field
@@ -134,11 +168,11 @@ extension BrowserPane {
                 $0.detailColumnWidths = columns.widths
             }
         }
-        if let size = keeps.size {
+        if let sizes {
             changeOwnSettings {
-                $0.iconSizes = size.iconSizes
-                $0.compactListWidths = size.compactListWidths
-                $0.previewCounts = size.previewCounts
+                if let icons = sizes.iconSizes { $0.iconSizes = icons }
+                if let widths = sizes.compactListWidths { $0.compactListWidths = widths }
+                if let counts = sizes.previewCounts { $0.previewCounts = counts }
             }
         }
     }

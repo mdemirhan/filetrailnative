@@ -18,6 +18,7 @@ enum AppStateJSON {
         "searchGroupReversed",
     ]
     private static let windowKeys = ["id", "bounds", "session"]
+    private static let paneKeepsKeys = ["folder", "view", "folderViews"]
     private static let columnKeys = ["modified", "size", "kind", "created", "added", "lastOpened", "permissions"]
 
     private static let orders: [String: [String]] = [
@@ -38,7 +39,7 @@ enum AppStateJSON {
             "detailColumnWidths", "searchIconSizes", "searchCompactListWidths", "searchPreviewCounts",
             "searchColumns", "searchColumnOrder", "searchColumnWidths", "searchResultsSortBy",
             "searchResultsSortDirection", "searchPatternMode", "searchMatchScope", "searchRecursive",
-            "searchSkipGitFolders", "searchSkipGitIgnored",
+            "searchSkipGitFolders", "searchSkipGitIgnored", "viewerEditing", "viewerFollows",
         ],
         "detailColumns": columnKeys,
         "searchColumns": ["folder"] + columnKeys,
@@ -58,9 +59,9 @@ enum AppStateJSON {
         "tabViews": ["id", "name", "keeps"],
         "windowViews": ["id", "name", "tabs", "frontTab", "size", "folderTreeOpen", "propertiesOpen"],
         "keeps": ["panes", "divider", "includeHidden", "left", "right", "pane"],
-        "left": ["folder", "view", "folderViews"],
-        "right": ["folder", "view", "folderViews"],
-        "pane": ["folder", "view", "folderViews"],
+        "left": paneKeepsKeys,
+        "right": paneKeepsKeys,
+        "pane": paneKeepsKeys,
     ]
 
     // MARK: Writer

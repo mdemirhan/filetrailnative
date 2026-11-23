@@ -596,6 +596,10 @@ public struct PaneViewSizes: Codable, Equatable, Sendable {
     public var searchRecursive: Bool
     public var searchSkipGitFolders: Bool
     public var searchSkipGitIgnored: Bool
+    /// How a viewer in the pane starts: Read or Edit (the app's is the one chosen last in any pane) and Follow (the
+    /// pane's alone; on until turned off).
+    public var viewerEditing: Bool
+    public var viewerFollows: Bool
 
     /// The app's own: those set last.
     public init(_ preferences: AppPreferences) {
@@ -618,6 +622,8 @@ public struct PaneViewSizes: Codable, Equatable, Sendable {
         searchRecursive = preferences.searchRecursive
         searchSkipGitFolders = preferences.searchSkipGitFolders
         searchSkipGitIgnored = preferences.searchSkipGitIgnored
+        viewerEditing = preferences.textViewerSettings.opensForEditing
+        viewerFollows = true
     }
 
     /// `preferences` with what differs between `before` and these set to these: what a change from `before` writes
@@ -661,6 +667,8 @@ public struct PaneViewSizes: Codable, Equatable, Sendable {
         take(\.searchRecursive, \.searchRecursive)
         take(\.searchSkipGitFolders, \.searchSkipGitFolders)
         take(\.searchSkipGitIgnored, \.searchSkipGitIgnored)
+        // Follow is the pane's alone: the app has none.
+        if before.viewerEditing != viewerEditing { next.textViewerSettings.opensForEditing = viewerEditing }
         return next
     }
 

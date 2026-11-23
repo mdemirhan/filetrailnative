@@ -16,17 +16,23 @@ public struct TabViewDraft: Equatable, Sendable {
         case custom
     }
 
-    /// One pane's rows: its folder, the six settings with their values and whether each is kept, and the
-    /// folder-views choice.
+    /// One pane's rows: its folder, the settings with their values and whether each is kept, each view's size, the
+    /// viewer's rows, the folder-views choice and its search results' view.
     public struct Pane: Equatable, Sendable {
         public var keepsFolder: Bool
         public var folder: String?
-        /// Every setting set: the value each row shows.
+        /// Every setting set: the value each row shows. Its sizes are every view's.
         public var values: FolderViewKeeps
+        /// The settings kept, never Size: each view's size is kept apart, in `sizesKept`.
         public var kept: Set<FolderViewSetting>
+        public var sizesKept: Set<ViewSizeKind>
         public var folderViews: FolderViewsChoice
-        /// The View row's choice is Viewer, with how it follows and opens; nil: one of the folder's views, `values`'.
-        public var viewer: PaneViewer?
+        /// Opens the Viewer, over the pane's own list.
+        public var opensViewer: Bool
+        /// The viewer's Follow and Read or Edit as the rows show them, and whether each is kept.
+        public var viewer: PaneViewer
+        public var keepsFollows: Bool
+        public var keepsEditing: Bool
         /// How the pane shows search results, as it does now or as the tab view being edited keeps it; kept whole
         /// where checked.
         public var keepsSearchResults: Bool
@@ -37,28 +43,33 @@ public struct TabViewDraft: Equatable, Sendable {
             folder = keeps?.folder ?? state.folder
             var values = state.settings
             for setting in keeps?.view.kept ?? [] { values.take(setting, from: keeps?.view ?? FolderViewKeeps()) }
+            if let sizes = keeps?.sizes, let now = values.size { values.size = sizes.applied(to: now) }
             self.values = values
-            kept = Set(keeps?.view.kept ?? [])
+            kept = Set(keeps?.view.kept ?? []).subtracting([.size])
+            sizesKept = Set(keeps?.sizes?.kept ?? [])
             folderViews = keeps?.choice ?? .folderFirst
+            opensViewer = keeps?.opensViewer == true
+            viewer = PaneViewer(
+                follows: keeps?.viewerFollows ?? state.viewerDefaults.follows,
+                editing: keeps?.viewerEditing ?? state.viewerDefaults.editing)
+            keepsFollows = keeps?.viewerFollows != nil
+            keepsEditing = keeps?.viewerEditing != nil
             keepsSearchResults = keeps?.searchResults != nil
             searchResults = keeps?.searchResults ?? state.searchResults
-            if let viewer = keeps?.viewer {
-                self.viewer = viewer
-                kept.insert(.view)
-            } else {
-                // A view kept is the view the pane gets; else the row shows what the pane shows now.
-                self.viewer = keeps?.view.view == nil ? state.viewer : nil
-            }
         }
 
-        /// What it keeps: the folder where checked, each setting checked with its value, and the choice; or the viewer
-        /// alone, where `viewerAllowed` and View is checked with Viewer chosen.
-        public func keeps(viewerAllowed: Bool) -> PaneKeeps {
-            if viewerAllowed, kept.contains(.view), let viewer { return PaneKeeps(viewer: viewer) }
+        /// What it keeps: the folder where checked, each setting and each view's size checked with its value, the
+        /// viewer's rows where checked, and the choice.
+        public var keeps: PaneKeeps {
             var view = FolderViewKeeps()
-            for setting in FolderViewSetting.allCases where kept.contains(setting) { view.take(setting, from: values) }
+            for setting in FolderViewSetting.allCases where kept.contains(setting) && setting != .size {
+                view.take(setting, from: values)
+            }
+            let sizes = values.size.map { ViewSizesKeeps($0, only: sizesKept) }
             return PaneKeeps(
-                folder: keepsFolder ? folder : nil, view: view, folderViews: folderViews,
+                folder: keepsFolder ? folder : nil, view: view, sizes: sizes, folderViews: folderViews,
+                opensViewer: opensViewer, viewerFollows: keepsFollows ? viewer.follows : nil,
+                viewerEditing: keepsEditing ? viewer.editing : nil,
                 searchResults: keepsSearchResults ? searchResults : nil)
         }
 
@@ -67,10 +78,21 @@ public struct TabViewDraft: Equatable, Sendable {
             if on { kept.insert(setting) } else { kept.remove(setting) }
         }
 
+        /// Keep `size` or not.
+        public mutating func keep(_ size: ViewSizeKind, _ on: Bool) {
+            if on { sizesKept.insert(size) } else { sizesKept.remove(size) }
+        }
+
         /// A value chosen in a row: it is kept from then on, as choosing in Folder View Options keeps it.
         public mutating func set(_ setting: FolderViewSetting, _ change: (inout FolderViewKeeps) -> Void) {
             change(&values)
             kept.insert(setting)
+        }
+
+        /// A size chosen for a view at `density`: kept from then on.
+        public mutating func set(_ size: ViewSizeKind, _ value: Int, at density: Density) {
+            values.size?[size][density] = value
+            sizesKept.insert(size)
         }
     }
 
@@ -158,8 +180,9 @@ public struct TabViewDraft: Equatable, Sendable {
             panes = tab.panes.count
             forgetsSecondPane = false
             let viewOnly = { (state: PaneState) in
-                state.viewer.map { PaneKeeps(viewer: $0) }
-                    ?? PaneKeeps(view: FolderViewKeeps(view: state.settings.view))
+                PaneKeeps(
+                    view: FolderViewKeeps(view: state.settings.view),
+                    opensViewer: state.viewer != nil || state.viewerInPlace)
             }
             left = Pane(state: leftState, keeps: viewOnly(leftState))
             right = Pane(state: rightState, keeps: viewOnly(rightState))
@@ -209,20 +232,9 @@ public struct TabViewDraft: Equatable, Sendable {
         }
     }
 
-    /// Whether a group's View row offers Viewer: in either of two panes, beside the other's list.
-    public static func offersViewer(_ group: PaneGroup) -> Bool { group == .left || group == .right }
-
-    /// The pane group shows the viewer (`viewer`) or a view of its folder (nil, `values`'), kept from then on. One pane
-    /// of two shows the viewer: choosing it in one gives the other back its folder.
-    public mutating func setViewer(_ group: PaneGroup, _ viewer: PaneViewer?) {
-        self[group].viewer = viewer
-        self[group].kept.insert(.view)
-        guard viewer != nil else { return }
-        switch group {
-        case .left: right.viewer = nil
-        case .right: left.viewer = nil
-        case .onePane, .activePane: break
-        }
+    /// Opens the Viewer for a pane group, or not: in any pane, each on its own.
+    public mutating func setOpensViewer(_ group: PaneGroup, _ on: Bool) {
+        self[group].opensViewer = on
     }
 
     /// The divider as Save keeps it.
@@ -242,8 +254,8 @@ public struct TabViewDraft: Equatable, Sendable {
         return TabViewKeeps(
             panes: keepsPanes ? panes : nil, forgetsSecondPane: keepsPanes && panes == 1 && forgetsSecondPane,
             divider: two && keepsDivider ? dividerKept : nil,
-            includeHidden: keepsHidden ? hidden : nil, left: two ? left.keeps(viewerAllowed: true) : nil,
-            right: two ? right.keeps(viewerAllowed: true) : nil, pane: two ? nil : active.keeps(viewerAllowed: false))
+            includeHidden: keepsHidden ? hidden : nil, left: two ? left.keeps : nil, right: two ? right.keeps : nil,
+            pane: two ? nil : active.keeps)
     }
 
     /// Reset: nothing kept, each value left as it shows.
@@ -256,6 +268,10 @@ public struct TabViewDraft: Equatable, Sendable {
             var pane = self[group]
             pane.keepsFolder = false
             pane.kept = []
+            pane.sizesKept = []
+            pane.opensViewer = false
+            pane.keepsFollows = false
+            pane.keepsEditing = false
             pane.folderViews = .folderFirst
             pane.keepsSearchResults = false
             self[group] = pane
@@ -279,6 +295,15 @@ public enum SavedViewText {
         return parts
     }
 
+    /// A view's size as the list of tab views says it.
+    public static func sizeName(_ size: ViewSizeKind) -> String {
+        switch size {
+        case .icons: "icon size"
+        case .compactList: "column width"
+        case .previews: "previews at a time"
+        }
+    }
+
     /// A divider as the sheet and the list say it.
     public static func dividerText(_ divider: TabViewKeeps.Divider) -> String {
         switch divider {
@@ -291,23 +316,22 @@ public enum SavedViewText {
 
     private static func paneParts(_ pane: PaneKeeps?, _ prefix: String) -> [String] {
         guard let pane else { return [] }
-        if let viewer = pane.viewer {
-            return [
-                prefix + (viewer.follows ? "Viewer, following the selection" : "Viewer, on the file selected"),
-                prefix + (viewer.editing ? "edit" : "read"),
-            ]
-        }
         var parts: [String] = []
         if let folder = pane.folder { parts.append(prefix + "opens \u{201C}\(NodePath.basename(folder))\u{201D}") }
         let view = pane.view
         if let mode = view.view { parts.append(prefix + mode.menuName) }
+        if pane.opensViewer == true { parts.append(prefix + "viewer") }
+        if let follows = pane.viewerFollows {
+            parts.append(prefix + (follows ? "viewer follows the selection" : "viewer stays on its file"))
+        }
+        if let editing = pane.viewerEditing { parts.append(prefix + (editing ? "edit" : "read")) }
         if let groupBy = view.groupBy {
             parts.append(prefix + (groupBy == .none ? "no groups" : "grouped by \(groupBy.title.lowercased())"))
         }
         if let sort = view.sort { parts.append(prefix + "by \(sort.by.title.lowercased())") }
         if let first = view.foldersFirst { parts.append(prefix + (first ? "folders first" : "folders mixed in")) }
         if view.columns != nil { parts.append(prefix + "columns") }
-        if view.size != nil { parts.append(prefix + "sizes") }
+        for size in pane.sizes?.kept ?? [] { parts.append(prefix + sizeName(size)) }
         if let results = pane.searchResults { parts.append(prefix + "search view: " + results.summary) }
         switch pane.choice {
         case .folderFirst: break

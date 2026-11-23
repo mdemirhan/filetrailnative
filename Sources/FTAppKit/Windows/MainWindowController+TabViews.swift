@@ -236,7 +236,9 @@ extension MainWindowController {
     /// back.
     var tabViewState: TabState {
         let closed = closedSecondPane.map { closed in
-            PaneState(folder: closed.start.path, settings: activePane.tabViewState.settings)
+            PaneState(
+                folder: closed.start.path, settings: activePane.tabViewState.settings,
+                viewerDefaults: activePane.viewerDefaults)
         }
         return TabState(
             panes: panes.map(\.tabViewState), active: activePaneIndex, split: workspace.paneSplit,
@@ -279,20 +281,19 @@ extension MainWindowController {
         var viewers: [(index: Int, setting: PaneViewer)] = []
         for (index, paneKeeps) in given where panes.indices.contains(index) {
             let pane = panes[index]
-            if let viewer = paneKeeps.viewer {
-                viewers.append((index, viewer))
-                continue
-            }
+            pane.takeViewerDefaults(paneKeeps)
+            // The viewer opens over the pane's list, which takes the rest as any pane does.
+            if let viewer = applied.viewers[index] { viewers.append((index, viewer)) }
             let before = pane.shownOrder
             pane.tabViewOverride = nil
             pane.arrivingTabViewOverride = nil
-            pane.takeTabViewSettings(paneKeeps.view)
+            pane.takeTabViewSettings(paneKeeps.view, sizes: paneKeeps.sizes)
             if let results = paneKeeps.searchResults { pane.takeSearchResultsView(results) }
             let override = paneKeeps.choice == .folderFirst ? nil : paneKeeps
             if let folder = paneKeeps.folder, DiskPath(folder) != DiskPath(pane.folderPath) || pane.folderLetGo {
                 // The override waits for the folder to arrive, and holds there by the path its listing gives.
                 pane.arrivingTabViewOverride = override.map {
-                    TabViewOverride(folder: folder, choice: $0.choice, kept: Set($0.view.kept))
+                    TabViewOverride(folder: folder, choice: $0.choice, keeps: $0)
                 }
                 // The view and columns now carried show as the folder arrives: arriving in a folder with no view of
                 // its own shows nothing new by itself.
@@ -301,17 +302,22 @@ extension MainWindowController {
                 pane.go(to: folder, cause: .command)
             } else {
                 pane.tabViewOverride = override.map {
-                    TabViewOverride(folder: pane.folderPath, choice: $0.choice, kept: Set($0.view.kept))
+                    TabViewOverride(folder: pane.folderPath, choice: $0.choice, keeps: $0)
                 }
                 pane.showTabViewSettings(orderBefore: before)
             }
         }
-        // A viewer goes in once the list beside it has taken its folder and settings: it shows what that list selects
-        // there. Each list's navigation is under way by now.
+        // A viewer goes in once its own pane, and the list beside it it follows, have taken their folders and
+        // settings: it shows what a list selects there, and its pane going to its folder would close it. Each
+        // navigation is under way by now.
         for (index, setting) in viewers {
-            showViewerWhenListSettles(
-                setting, in: panes[index], beside: panes[index == 0 ? 1 : 0],
-                after: closing[index == 0 ? 1 : 0])
+            if applied.viewersInPlace.contains(index) {
+                showViewerInPlaceWhenSettled(setting, in: panes[index])
+            } else {
+                showViewerWhenListSettles(
+                    setting, in: panes[index], beside: panes[index == 0 ? 1 : 0],
+                    after: closing[index == 0 ? 1 : 0])
+            }
         }
         group?.tabChanged(self)
     }
@@ -329,10 +335,12 @@ extension MainWindowController {
             else { return nil }
             return (pane, list)
         }
-        let show = { [weak self, weak list] in
-            list?.whenNavigationSettles {
-                guard let (pane, list) = stillApplies() else { return }
-                self?.showTabViewViewer(setting, in: pane, beside: list)
+        let show = { [weak self, weak pane, weak list] in
+            pane?.whenNavigationSettles {
+                list?.whenNavigationSettles {
+                    guard let (pane, list) = stillApplies() else { return }
+                    self?.showTabViewViewer(setting, in: pane, beside: list)
+                }
             }
         }
         guard let closing else {
@@ -342,6 +350,18 @@ extension MainWindowController {
         Task {
             guard await closing.value, stillApplies() != nil else { return }
             show()
+        }
+    }
+
+    /// `setting` shown over `pane`'s own list once it has settled in its folder. Nothing happens if the pane has gone
+    /// from the tab, or another tab view was applied meanwhile.
+    private func showViewerInPlaceWhenSettled(_ setting: PaneViewer, in pane: BrowserPane) {
+        let number = tabViewApplyNumber
+        pane.whenNavigationSettles { [weak self, weak pane] in
+            guard let self, let pane, number == tabViewApplyNumber, panes.contains(where: { $0 === pane }) else {
+                return
+            }
+            showTabViewViewerInPlace(setting, in: pane)
         }
     }
 

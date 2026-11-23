@@ -49,6 +49,10 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     /// What the menus show changed: the file, Read or Edit, unsaved edits, the mode.
     var onStateChange: () -> Void = {}
     var onSettingsChange: (TextViewerSettings) -> Void = { _ in }
+    /// Read or Edit chosen by hand: the pane's from then on.
+    var onEditingChosen: (Bool) -> Void = { _ in }
+    /// What a file opens to, Edit or Read, where nothing else says: its pane's.
+    var opensForEditing: Bool
     var onOpenInEditor: (String) -> Void = { _ in }
     var onFocusChange: () -> Void = {}
     /// The line, column, language and format, for the pane's bottom bar.
@@ -106,9 +110,11 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     /// A picture is drawn by the viewer itself; other files that aren't text by Quick Look's view.
     private let imageView = NSImageView()
 
-    init(mode: Mode, settings: TextViewerSettings) {
+    /// `opensForEditing`: its pane's Read or Edit.
+    init(mode: Mode, settings: TextViewerSettings, opensForEditing: Bool) {
         self.mode = mode
         self.settings = settings
+        self.opensForEditing = opensForEditing
         let storage = NSTextStorage()
         let manager = NSLayoutManager()
         manager.allowsNonContiguousLayout = true
@@ -289,9 +295,9 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
 
     /// Shows `path`, read off the main actor; nil shows nothing. A file already shown with edits is the caller's to ask
     /// about first (`confirmLeave`).
-    /// `editing`: Read or Edit; nil for the one chosen last.
+    /// `editing`: Read or Edit; nil for the pane's.
     func show(_ path: String?, focus: Bool = false, editing: Bool? = nil) {
-        let editing = editing ?? settings.opensForEditing
+        let editing = editing ?? opensForEditing
         loadNumber += 1
         let number = loadNumber
         stopWatching?()
@@ -464,11 +470,11 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
 
     // MARK: Read and Edit
 
-    /// Read or Edit. `chosen`: by the person, so the next file opens the same way.
+    /// Read or Edit. `chosen`: by the person, so the next file the pane opens opens the same way.
     func setEditing(_ editing: Bool, focus: Bool = true, chosen: Bool = false) {
-        if chosen && settings.opensForEditing != editing {
-            settings.opensForEditing = editing
-            onSettingsChange(settings)
+        if chosen {
+            opensForEditing = editing
+            onEditingChosen(editing)
         }
         guard isText, editing != isEditing else { return }
         isEditing = editing

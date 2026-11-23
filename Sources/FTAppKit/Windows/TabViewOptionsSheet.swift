@@ -1,25 +1,34 @@
-// Tab View Options: the sheet that saves a tab view, laid out as Folder View Options is
+// Tab View Options: the sheet that saves a tab view, its parts in a sidebar
 import AppKit
 import FTFoundation
 
-/// The sheet over a tab that saves what it keeps as a tab view, or changes one saved. Its rows are Folder View
-/// Options' (a checkbox titled with each setting, its control in a column that starts at the same place in every row,
-/// the fifth row following the view chosen in its group), with the tab's own rows and each pane's folder and folder
-/// views on top. A value chosen is kept from then on. With two panes kept, one pane's rows show at a time, chosen
-/// above them, so the sheet keeps its height; either pane can show the viewer beside the other's list instead, with
-/// the viewer's own Follow and Read or Edit.
+/// The sheet over a tab that saves what it keeps as a tab view, or changes one saved. The Name is in its header; a
+/// sidebar lists its parts (the tab, then each pane's Folder, View, Viewer and Search Results, under the pane), and one part's
+/// rows show beside it. The sheet is as tall as its tallest part, so it keeps one height whichever is shown. Its rows
+/// are Folder View Options' (a checkbox titled with each setting and its control in a column that starts at the same
+/// place in every row). A value chosen is kept from then on.
 ///
-/// Its controls are made once; `refresh` shows the draft in them, hiding the rows that don't apply.
+/// Its controls are made once; `refresh` shows the draft in them. The pane parts' controls are one set, showing the
+/// pane chosen in the sidebar.
 @MainActor
 final class TabViewOptionsSheet: SavedViewSheet {
+    override class var width: Double { 720 }
+    override var rowsWidth: Double { contentWidth - Self.sidebarWidth - Self.sidebarGap }
+    override var controlColumn: Double { 150 }
+
     private(set) var draft: TabViewDraft
     /// The tab views kept, to say which name is taken and to choose one by name.
     private let saved: [TabView]
     private let density: Density
     /// A saved tab view over this tab, for one chosen by its name.
     private let load: (TabView) -> TabViewDraft
-    /// The pane group shown while two are kept.
+    /// Whether the sheet is for a tab view being edited: Columns then reads "as saved".
+    private let editing: Bool
+
+    /// The pane whose parts show, and which of its parts; or the tab's own part.
+    enum Part: String, CaseIterable { case tab, folder, view, viewer, search }
     private(set) var shownGroup = TabViewDraft.PaneGroup.left
+    private(set) var shownPart = Part.view
 
     /// Save, with the name typed and what is kept.
     var onSave: (TabViewDraft) -> Void = { _ in }
@@ -29,7 +38,7 @@ final class TabViewOptionsSheet: SavedViewSheet {
     /// What the pop-ups whose items change offer now, in their order.
     private var dividerChoices: [TabViewDraft.Divider] = []
     private var folderPaths: [String] = []
-    private var sizeValues: [Int] = []
+    private var sizeValues: [ViewSizeKind: [Int]] = [:]
 
     private static let modes = ExplorerViewMode.menuOrder
     private static let groupFields = [GroupByPreference.none] + GroupByPreference.menuOrder
@@ -43,7 +52,15 @@ final class TabViewOptionsSheet: SavedViewSheet {
         (.notUsed, "Not Used", "A folder\u{2019}s own view isn\u{2019}t used in the folder this tab view opens."),
     ]
 
-    // MARK: The tab's rows
+    private let subtitle = NSTextField(labelWithString: "")
+    private lazy var sidebar: SheetSidebar = {
+        let sidebar = SheetSidebar(identifier: "tabViewOptions.parts")
+        sidebar.chosen = { [weak self] id in self?.partChosen(id) }
+        return sidebar
+    }()
+    private lazy var body = sidebarBody(sidebar, pages: [tabPage, folderPage, viewPage, viewerPage, searchPage])
+
+    // MARK: The tab's part
 
     private lazy var panesPopUp = popUp(["One", "Two"], label: "Panes", id: "panes") { [weak self] index in
         self?.change {
@@ -71,6 +88,8 @@ final class TabViewOptionsSheet: SavedViewSheet {
         return row(indented(lines), nil, height: 50)
     }()
     private lazy var tabCard = card([panesRow.view, forgetRow, dividerRow.view, hiddenRow.view])
+    private lazy var tabPage = page(
+        "What the tab view sets for the tab. Rows left unchecked stay as the tab has them.", [(tabCard, 0)])
 
     private lazy var dividerPopUp = popUp(label: "Divider", id: "divider") { [weak self] index in
         guard let self, dividerChoices.indices.contains(index) else { return }
@@ -111,20 +130,7 @@ final class TabViewOptionsSheet: SavedViewSheet {
         self?.change { $0.keepsHidden = on }
     }
 
-    // MARK: Which pane's rows
-
-    private lazy var paneChooser: NSSegmentedControl = {
-        let chooser = NSSegmentedControl(
-            labels: ["Left Pane", "Right Pane"], trackingMode: .selectOne, target: self,
-            action: #selector(groupChosen(_:)))
-        chooser.setAccessibilityIdentifier("tabViewOptions.pane")
-        chooser.setAccessibilityLabel("Pane")
-        return chooser
-    }()
-    private lazy var paneTitle = sectionTitle("")
-    private lazy var paneNote = note("", fullWidth: true)
-
-    // MARK: A pane's rows
+    // MARK: A pane's Folder
 
     private lazy var folderPopUp = popUp(label: "Folder", width: 220, id: "folder") { [weak self] index in
         self?.folderChosen(index)
@@ -133,20 +139,34 @@ final class TabViewOptionsSheet: SavedViewSheet {
     private lazy var folderRow = keepRow("Folder", NSStackView(views: [folderPopUp, folderNote])) { [weak self] on in
         self?.changePane { $0.keepsFolder = on }
     }
-
-    private lazy var viewPopUp = popUp(label: "View", id: "view") { [weak self] index in
-        guard let self else { return }
-        let group = shownGroup
-        change { draft in
-            if Self.modes.indices.contains(index) {
-                draft.setViewer(group, nil)
-                draft[group].set(.view) { $0.view = Self.modes[index] }
-            } else {
-                draft.setViewer(group, draft[group].viewer ?? PaneViewer())
-            }
-        }
+    private lazy var folderViewsPopUp = popUp(
+        Self.folderViewsChoices.map(\.title), label: "Folder Views", id: "folderViews"
+    ) { [weak self] index in
+        self?.changePane { $0.folderViews = Self.folderViewsChoices[index].choice }
     }
-    private lazy var viewRow = keepRow("View", viewPopUp) { [weak self] on in self?.changePane { $0.keep(.view, on) } }
+    private lazy var folderViewsDetail: NSTextField = {
+        let field = note("")
+        field.setAccessibilityIdentifier("tabViewOptions.folderViewsDetail")
+        return field
+    }()
+    private lazy var folderViewsRow: NSView = {
+        let lines = NSStackView(views: [folderViewsPopUp, folderViewsDetail])
+        lines.orientation = .vertical
+        lines.alignment = .leading
+        lines.spacing = 4
+        return row(indented(label("Folder Views")), lines, height: 60)
+    }()
+    private lazy var folderPage = page("", [(card([folderRow.view, folderViewsRow]), 0)])
+
+    // MARK: A pane's View
+
+    private lazy var viewPopUp = popUp(Self.modes.map(\.menuName), label: "Starts In", id: "view") {
+        [weak self] index in
+        self?.changePane { $0.set(.view) { $0.view = Self.modes[index] } }
+    }
+    private lazy var viewRow = keepRow("Starts In", viewPopUp) { [weak self] on in
+        self?.changePane { $0.keep(.view, on) }
+    }
 
     private lazy var groupPopUp = popUp(Self.groupFields.map(\.title), label: "Group By", id: "groupBy") {
         [weak self] index in
@@ -163,8 +183,7 @@ final class TabViewOptionsSheet: SavedViewSheet {
     ) { [weak self] index in
         self?.changePane { $0.set(.groupBy) { $0.groupReversed = index == 1 ? true : nil } }
     }
-    private lazy var groupRow = keepRow(Self.title(of: .groupBy), pair(groupPopUp, groupOrderPopUp)) {
-        [weak self] on in
+    private lazy var groupRow = keepRow("Group By", pair(groupPopUp, groupOrderPopUp)) { [weak self] on in
         self?.changePane { $0.keep(.groupBy, on) }
     }
 
@@ -183,7 +202,7 @@ final class TabViewOptionsSheet: SavedViewSheet {
             pane.set(.sort) { $0.sort = FolderViewSort(by: by, direction: index == 0 ? .asc : .desc) }
         }
     }
-    private lazy var sortRow = keepRow(Self.title(of: .sort), pair(sortPopUp, sortOrderPopUp)) { [weak self] on in
+    private lazy var sortRow = keepRow("Sort By", pair(sortPopUp, sortOrderPopUp)) { [weak self] on in
         self?.changePane { $0.keep(.sort, on) }
     }
 
@@ -192,49 +211,97 @@ final class TabViewOptionsSheet: SavedViewSheet {
     ) { [weak self] index in
         self?.changePane { $0.set(.foldersFirst) { $0.foldersFirst = index == 0 } }
     }
-    private lazy var firstRow = keepRow(Self.title(of: .foldersFirst), firstPopUp) { [weak self] on in
+    private lazy var firstRow = keepRow("Folders First", firstPopUp) { [weak self] on in
         self?.changePane { $0.keep(.foldersFirst, on) }
     }
 
-    /// The List's columns: the checkbox's title on a line of its own, and under it what is kept.
-    private lazy var columnsBox: ClosureButton = {
-        let box = ClosureButton(checkboxWithTitle: Self.title(of: .columns)) { [weak self] box in
-            self?.changePane { $0.keep(.columns, box.state == .on) }
-        }
-        box.setAccessibilityIdentifier("tabViewOptions.keep.\(Self.title(of: .columns))")
-        return box
-    }()
-    private lazy var columnsDetail: NSTextField = {
-        let field = NSTextField(labelWithString: "As the List\u{2019}s header shows them now")
+    /// Each view's size: the pop-up and the row, by the view.
+    private lazy var sizePopUps: [ViewSizeKind: ClosurePopUp] = Dictionary(
+        uniqueKeysWithValues: ViewSizeKind.allCases.map { size in
+            let popup = popUp(label: Self.sizeTitle(size), id: "size.\(size.rawValue)") { [weak self] index in
+                guard let self, let value = sizeValues[size]?[index] else { return }
+                let density = density
+                changePane { $0.set(size, value, at: density) }
+            }
+            return (size, popup)
+        })
+    private lazy var sizeRows: [ViewSizeKind: KeepRow] = Dictionary(
+        uniqueKeysWithValues: ViewSizeKind.allCases.map { size in
+            let row = keepRow(Self.sizeTitle(size), sizePopUps[size]!) { [weak self] on in
+                self?.changePane { $0.keep(size, on) }
+            }
+            return (size, row)
+        })
+
+    /// The List's columns: which show, in order, as the pane has them now or as saved, under the checkbox's title.
+    private lazy var columnsNames: NSTextField = {
+        let field = NSTextField(wrappingLabelWithString: "")
         field.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
+        field.preferredMaxLayoutWidth = rowsWidth - controlColumn
+        field.setAccessibilityIdentifier("tabViewOptions.columns")
         return field
     }()
-    private lazy var columnsRow: NSView = {
-        let lines = NSStackView(views: [columnsBox, indented(columnsDetail)])
+    private lazy var columnsSource: NSTextField = {
+        let field = NSTextField(labelWithString: "")
+        field.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
+        field.textColor = .tertiaryLabelColor
+        return field
+    }()
+    private lazy var columnsRow: KeepRow = {
+        let lines = NSStackView(views: [columnsNames, columnsSource])
         lines.orientation = .vertical
         lines.alignment = .leading
-        lines.spacing = 2
-        return row(lines, nil, height: 50)
+        lines.spacing = 1
+        return keepRow("Columns", lines) { [weak self] on in self?.changePane { $0.keep(.columns, on) } }
     }()
 
-    private lazy var sizePopUp = popUp(label: "Size", id: "size") { [weak self] index in
-        guard let self, sizeValues.indices.contains(index) else { return }
-        let value = sizeValues[index]
-        let density = density
-        changePane { pane in
-            let mode = pane.values.view ?? .details
-            pane.set(.size) { keeps in
-                switch mode {
-                case .icons: keeps.size?.iconSizes[density] = value
-                case .list: keeps.size?.compactListWidths[density] = value
-                default: keeps.size?.previewCounts[density] = value
-                }
-            }
+    /// Opens the Viewer, with what it opens beside.
+    private lazy var opensViewerDetail = note("")
+    private lazy var opensViewerRow = keepRow("Opens the Viewer", opensViewerDetail) { [weak self] on in
+        guard let self else { return }
+        let group = shownGroup
+        change { $0.setOpensViewer(group, on) }
+    }
+    private lazy var editPopUp = popUp(["Read", "Edit"], label: "Read or Edit", id: "readEdit") { [weak self] index in
+        self?.changePane {
+            $0.viewer.editing = index == 1
+            $0.keepsEditing = true
         }
     }
-    private lazy var sizeRow = keepRow("Size", sizePopUp) { [weak self] on in self?.changePane { $0.keep(.size, on) } }
+    private lazy var editRow = keepRow("Read or Edit", editPopUp) { [weak self] on in
+        self?.changePane { $0.keepsEditing = on }
+    }
+    private lazy var followPopUp = popUp(["On", "Off"], label: "Follow", id: "follow") { [weak self] index in
+        self?.changePane {
+            $0.viewer.follows = index == 0
+            $0.keepsFollows = true
+        }
+    }
+    private lazy var followRow = keepRow("Follow", followPopUp) { [weak self] on in
+        self?.changePane { $0.keepsFollows = on }
+    }
 
-    /// The pane's search view, how it shows search results, kept whole: the checkbox, and under it what it keeps.
+    private lazy var viewPage = page(
+        "",
+        [
+            (card([viewRow.view]), 12),
+            (sectionTitle("In Every View"), 2),
+            (card([groupRow.view, sortRow.view, firstRow.view]), 12),
+            (sectionTitle("Each View\u{2019}s Options"), 2),
+            (
+                card([
+                    sizeRows[.icons]!.view, columnsRow.view, sizeRows[.compactList]!.view,
+                    sizeRows[.previews]!.view,
+                ]), 12
+            ),
+        ])
+
+    // MARK: A pane's Viewer
+
+    private lazy var viewerPage = page("", [(card([opensViewerRow.view, editRow.view, followRow.view]), 0)])
+
+    // MARK: A pane's Search Results
+
     private lazy var searchResultsBox: ClosureButton = {
         let box = ClosureButton(checkboxWithTitle: "Search View") { [weak self] box in
             self?.changePane { $0.keepsSearchResults = box.state == .on }
@@ -243,10 +310,9 @@ final class TabViewOptionsSheet: SavedViewSheet {
         return box
     }()
     private lazy var searchResultsDetail: NSTextField = {
-        let field = NSTextField(
-            wrappingLabelWithString: "Saves how search results are shown: view, sort, groups, columns and sizes")
+        let field = NSTextField(wrappingLabelWithString: "")
         field.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
-        field.preferredMaxLayoutWidth = contentWidth - 20
+        field.preferredMaxLayoutWidth = rowsWidth - 20
         field.setAccessibilityIdentifier("tabViewOptions.searchResultsDetail")
         return field
     }()
@@ -257,52 +323,12 @@ final class TabViewOptionsSheet: SavedViewSheet {
         lines.spacing = 2
         return row(lines, nil, height: 50)
     }()
-
-    // MARK: The viewer's rows
-
-    private lazy var followPopUp = popUp(["On", "Off"], label: "Follow", id: "follow") { [weak self] index in
-        self?.changeViewer { $0.follows = index == 0 }
-    }
-    private lazy var followRow = plainRow("Follow", followPopUp, indented: true)
-    private lazy var readEditPopUp = popUp(["Read", "Edit"], label: "Read or Edit", id: "readEdit") {
-        [weak self] index in
-        self?.changeViewer { $0.editing = index == 1 }
-    }
-    private lazy var readEditRow = plainRow("Read or Edit", readEditPopUp, indented: true)
-    private lazy var viewerNote = note("")
-    private lazy var viewerNoteRow = row(NSView(), viewerNote, height: 30)
-
-    private lazy var paneCard = card([
-        folderRow.view, viewRow.view, groupRow.view, sortRow.view, firstRow.view, columnsRow, sizeRow.view,
-        searchResultsRow, followRow, readEditRow, viewerNoteRow,
-    ])
-
-    // MARK: Folder views
-
-    private lazy var folderViewsPopUp = popUp(
-        Self.folderViewsChoices.map(\.title), label: "Folder Views", id: "folderViews"
-    ) { [weak self] index in
-        self?.changePane { $0.folderViews = Self.folderViewsChoices[index].choice }
-    }
-    private lazy var folderViewsDetail: NSTextField = {
-        let field = NSTextField(wrappingLabelWithString: "")
-        field.preferredMaxLayoutWidth = contentWidth - 190
-        field.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
-        field.textColor = .secondaryLabelColor
-        return field
-    }()
-    private lazy var folderViewsRow: NSView = {
-        let texts = NSStackView(views: [label("Folder Views"), folderViewsDetail])
-        texts.orientation = .vertical
-        texts.alignment = .leading
-        texts.spacing = 1
-        return row(texts, folderViewsPopUp, atEnd: true, height: 50)
-    }()
+    private lazy var searchPage = page("", [(card([searchResultsRow]), 0)])
 
     // MARK: Made once
 
-    /// `startsOn`: the pane group shown first while two are kept, the pane the keyboard is in. `load`: a saved tab
-    /// view over this tab, for one chosen by its name.
+    /// `startsOn`: the pane shown first while two are kept, the pane the keyboard is in. `load`: a saved tab view over
+    /// this tab, for one chosen by its name.
     init(
         draft: TabViewDraft, saved: [TabView], density: Density, subtitle: String,
         startsOn: TabViewDraft.PaneGroup = .left, load: @escaping (TabView) -> TabViewDraft
@@ -311,22 +337,14 @@ final class TabViewOptionsSheet: SavedViewSheet {
         self.saved = saved
         self.density = density
         self.load = load
+        editing = draft.editingID != nil
         shownGroup = draft.paneGroups.contains(startsOn) ? startsOn : draft.paneGroups[0]
         super.init(
             identifierPrefix: "tabViewOptions", kind: "tab view", names: saved.map(\.name), name: draft.name,
             placeholder: "Tab view name")
-        add(
-            header(
-                symbol: "rectangle.split.2x1", title: "Tab View Options",
-                subtitle: NSTextField(labelWithString: subtitle)))
-        addName()
-        add(sectionTitle("Keep for This Tab"), after: 2)
-        add(tabCard, after: 10)
-        add(paneChooser, fullWidth: false, after: 4)
-        add(paneTitle, after: 4)
-        add(paneNote, after: 6)
-        add(paneCard, after: 8)
-        add(folderViewsRow, after: 8)
+        self.subtitle.stringValue = subtitle
+        addHeaderWithName(symbol: "rectangle.split.2x1", title: "Tab View Options", subtitle: self.subtitle)
+        add(body, after: 14)
         addSummary()
         let reset = ClosureButton(title: "Reset") { [weak self] in self?.change { $0.reset() } }
         reset.bezelStyle = .push
@@ -376,24 +394,23 @@ final class TabViewOptionsSheet: SavedViewSheet {
         refresh()
     }
 
-    /// The rows of the pane group shown changed.
+    /// The rows of the pane shown changed.
     private func changePane(_ edit: (inout TabViewDraft.Pane) -> Void) {
         let group = shownGroup
         change { edit(&$0[group]) }
     }
 
-    /// The viewer of the pane group shown changed: Follow or Read or Edit.
-    private func changeViewer(_ edit: (inout PaneViewer) -> Void) {
-        let group = shownGroup
-        change { draft in
-            var viewer = draft[group].viewer ?? PaneViewer()
-            edit(&viewer)
-            draft.setViewer(group, viewer)
+    /// A part chosen in the sidebar: "tab", or a pane's ("left.view").
+    private func partChosen(_ id: String) {
+        let pieces = id.split(separator: ".").map(String.init)
+        if pieces.count == 2, let part = Part(rawValue: pieces[1]),
+            let group = draft.paneGroups.first(where: { Self.key(of: $0) == pieces[0] })
+        {
+            shownGroup = group
+            shownPart = part
+        } else {
+            shownPart = .tab
         }
-    }
-
-    @objc private func groupChosen(_ control: NSSegmentedControl) {
-        shownGroup = control.selectedSegment == 1 ? .right : .left
         refresh()
     }
 
@@ -423,23 +440,38 @@ final class TabViewOptionsSheet: SavedViewSheet {
 
     // MARK: Showing the draft
 
-    /// Every control shows the draft and the pane group shown. Nothing is made or taken away; a field being typed in
-    /// keeps what is typed.
+    /// Every control shows the draft and the part shown. Nothing is made or taken away; a field being typed in keeps
+    /// what is typed.
     private func refresh() {
         if !draft.paneGroups.contains(shownGroup) { shownGroup = draft.paneGroups[0] }
         refreshName(draft.name)
+        refreshSidebar()
         refreshTabRows()
-        refreshPaneHeader()
         let pane = draft[shownGroup]
-        let showsViewer = TabViewDraft.offersViewer(shownGroup) && pane.viewer != nil
-        refreshView(pane, showsViewer: showsViewer)
-        refreshFolder(pane, shown: !showsViewer)
-        refreshSettings(pane, shown: !showsViewer)
-        refreshSearchResults(pane, shown: !showsViewer)
-        refreshViewer(pane, shown: showsViewer)
-        refreshFolderViews(pane, shown: !showsViewer)
+        refreshFolder(pane)
+        refreshView(pane)
+        refreshSettings(pane)
+        refreshSizes(pane)
+        refreshViewer(pane)
+        refreshSearchResults(pane)
+        body.show(page: Part.allCases.firstIndex(of: shownPart) ?? 0)
         Self.set(summary, SavedViewText.parts(draft.keeps).joined(separator: " \u{00B7} "))
         contentChanged()
+    }
+
+    private func refreshSidebar() {
+        var rows: [SheetSidebar.Row] = [.item(id: "tab", title: "Tab", symbol: "macwindow")]
+        for group in draft.paneGroups {
+            let key = Self.key(of: group)
+            rows += [
+                .heading(group.title),
+                .item(id: "\(key).folder", title: "Folder", symbol: "folder"),
+                .item(id: "\(key).view", title: "View", symbol: "square.grid.2x2"),
+                .item(id: "\(key).viewer", title: "Viewer", symbol: "doc.text"),
+                .item(id: "\(key).search", title: "Search Results", symbol: "magnifyingglass"),
+            ]
+        }
+        sidebar.show(rows, selected: shownPart == .tab ? "tab" : "\(Self.key(of: shownGroup)).\(shownPart.rawValue)")
     }
 
     private func refreshTabRows() {
@@ -473,37 +505,11 @@ final class TabViewOptionsSheet: SavedViewSheet {
         hiddenRow.show(kept: draft.keepsHidden)
     }
 
-    private func refreshPaneHeader() {
-        let groups = draft.paneGroups
-        Self.set(paneChooser, hidden: groups.count != 2)
-        let segment = shownGroup == .right ? 1 : 0
-        if paneChooser.selectedSegment != segment { paneChooser.selectedSegment = segment }
-        Self.set(paneTitle, hidden: groups.count == 2)
-        Self.set(paneTitle, groups[0].title)
-        Self.set(paneNote, Self.groupNote(shownGroup))
-    }
-
-    private func refreshView(_ pane: TabViewDraft.Pane, showsViewer: Bool) {
-        let offersViewer = TabViewDraft.offersViewer(shownGroup)
-        Self.show(
-            viewPopUp, titles: Self.modes.map(\.menuName) + (offersViewer ? ["Viewer"] : []),
-            selected: showsViewer ? Self.modes.count : Self.modes.firstIndex(of: pane.values.view ?? .details) ?? 0
-        ) { popup in
-            for (index, mode) in Self.modes.enumerated() {
-                popup.item(at: index)?.image = NSImage(
-                    systemSymbolName: Self.symbol(of: mode), accessibilityDescription: nil)
-            }
-            if popup.numberOfItems > Self.modes.count {
-                popup.item(at: Self.modes.count)?.image = NSImage(
-                    systemSymbolName: "doc.text", accessibilityDescription: nil)
-            }
+    private func refreshFolder(_ pane: TabViewDraft.Pane) {
+        if let line = folderPage.arrangedSubviews.first as? NSTextField {
+            let pane = Self.paneWords(shownGroup)
+            Self.set(line, "Where \(pane) goes, and how folders with a view of their own show in it.")
         }
-        viewRow.show(kept: pane.kept.contains(.view))
-    }
-
-    private func refreshFolder(_ pane: TabViewDraft.Pane, shown: Bool) {
-        paneCard.set(folderRow.view, shown: shown)
-        guard shown else { return }
         var paths = draft.foldersNow.map(\.path)
         var titles = draft.foldersNow.map { "\(NodePath.basename($0.path)) \u{2014} \($0.pane)" }
         if let folder = pane.folder, !paths.contains(folder) {
@@ -517,18 +523,31 @@ final class TabViewOptionsSheet: SavedViewSheet {
         Self.set(folderPopUp, hidden: !pane.keepsFolder)
         Self.set(folderNote, hidden: pane.keepsFolder)
         folderRow.show(kept: pane.keepsFolder, dims: false)
+        let choice = Self.folderViewsChoices.firstIndex { $0.choice == pane.folderViews } ?? 0
+        folderViewsPopUp.selectItem(at: choice)
+        Self.set(folderViewsDetail, Self.folderViewsChoices[choice].detail)
     }
 
-    /// Group By, Sort By, Folders First and the fifth row: the List's columns, or the size the view has.
-    private func refreshSettings(_ pane: TabViewDraft.Pane, shown: Bool) {
-        for row in [groupRow, sortRow, firstRow] { paneCard.set(row.view, shown: shown) }
-        let values = pane.values
-        let mode = values.view ?? .details
-        let showsColumns = shown && (mode == .details || values.size == nil)
-        paneCard.set(columnsRow, shown: showsColumns)
-        paneCard.set(sizeRow.view, shown: shown && !showsColumns)
-        guard shown else { return }
+    private func refreshView(_ pane: TabViewDraft.Pane) {
+        if let line = viewPage.arrangedSubviews.first as? NSTextField {
+            let pane = Self.paneWords(shownGroup)
+            Self.set(line, "What \(pane) starts with. Rows left unchecked stay as the pane has them.")
+        }
+        Self.show(
+            viewPopUp, titles: Self.modes.map(\.menuName),
+            selected: Self.modes.firstIndex(of: pane.values.view ?? .details) ?? 0
+        ) { popup in
+            for (index, mode) in Self.modes.enumerated() {
+                popup.item(at: index)?.image = NSImage(
+                    systemSymbolName: Self.symbol(of: mode), accessibilityDescription: nil)
+            }
+        }
+        viewRow.show(kept: pane.kept.contains(.view))
+    }
 
+    /// Group By, Sort By and Folders First: the pane's, in every view.
+    private func refreshSettings(_ pane: TabViewDraft.Pane) {
+        let values = pane.values
         let grouped = values.groupBy ?? .none
         groupPopUp.selectItem(at: Self.groupFields.firstIndex(of: grouped) ?? 0)
         groupOrderPopUp.selectItem(at: values.groupReversed == true ? 1 : 0)
@@ -541,92 +560,95 @@ final class TabViewOptionsSheet: SavedViewSheet {
         sortRow.show(kept: pane.kept.contains(.sort))
         firstPopUp.selectItem(at: values.foldersFirst == false ? 1 : 0)
         firstRow.show(kept: pane.kept.contains(.foldersFirst))
+    }
 
-        let columnsKept = pane.kept.contains(.columns)
-        columnsBox.state = columnsKept ? .on : .off
-        columnsDetail.textColor = columnsKept ? .secondaryLabelColor : .tertiaryLabelColor
-        guard !showsColumns, let size = values.size else { return }
-        let now =
-            switch mode {
-            case .icons: size.iconSizes[density]
-            case .list: size.compactListWidths[density]
-            default: size.previewCounts[density]
-            }
-        let choices = FolderViewPopover.sizeChoices(mode, current: now)
-        sizeValues = choices.map(\.value)
-        Self.show(sizePopUp, titles: choices.map(\.title), selected: choices.firstIndex { $0.value == now } ?? 0)
-        let title = Self.sizeTitle(mode)
-        if sizeRow.box.title != title {
-            sizeRow.box.title = title
-            sizeRow.box.setAccessibilityIdentifier("tabViewOptions.keep.\(title)")
-            sizePopUp.setAccessibilityLabel(title)
+    /// Each view's options: its size, and the List's columns.
+    private func refreshSizes(_ pane: TabViewDraft.Pane) {
+        for size in ViewSizeKind.allCases {
+            guard let popup = sizePopUps[size], let row = sizeRows[size] else { continue }
+            let now = pane.values.size?[size][density] ?? size.defaults[density]
+            let choices = FolderViewPopover.sizeChoices(size.view, current: now)
+            sizeValues[size] = choices.map(\.value)
+            Self.show(popup, titles: choices.map(\.title), selected: choices.firstIndex { $0.value == now } ?? 0)
+            row.show(kept: pane.sizesKept.contains(size))
         }
-        sizeRow.show(kept: pane.kept.contains(.size))
+        let columns = pane.values.columns
+        let names =
+            ["Name"]
+            + (columns.map { columns in
+                columns.order.filter { columns.visibility[$0] }.compactMap {
+                    DetailColumnKey(rawValue: $0.rawValue)?.label
+                }
+            } ?? [])
+        Self.set(columnsNames, names.joined(separator: ", "))
+        let kept = pane.kept.contains(.columns)
+        Self.set(columnsSource, editing && kept ? "As saved" : "As this pane has them now")
+        columnsRow.show(kept: kept, dims: false)
+        columnsNames.textColor = kept ? .labelColor : .secondaryLabelColor
     }
 
-    private func refreshSearchResults(_ pane: TabViewDraft.Pane, shown: Bool) {
-        paneCard.set(searchResultsRow, shown: shown)
-        guard shown else { return }
-        let state: NSControl.StateValue = pane.keepsSearchResults ? .on : .off
-        if searchResultsBox.state != state { searchResultsBox.state = state }
-        searchResultsDetail.textColor = pane.keepsSearchResults ? .secondaryLabelColor : .tertiaryLabelColor
-    }
-
-    private func refreshViewer(_ pane: TabViewDraft.Pane, shown: Bool) {
-        for row in [followRow, readEditRow, viewerNoteRow] { paneCard.set(row, shown: shown) }
-        guard shown, let viewer = pane.viewer else { return }
-        followPopUp.selectItem(at: viewer.follows ? 0 : 1)
-        readEditPopUp.selectItem(at: viewer.editing ? 1 : 0)
-        let kept = pane.kept.contains(.view)
-        SavedViewSheet.enable(followPopUp, kept)
-        SavedViewSheet.enable(readEditPopUp, kept)
+    /// Opens the Viewer (in one of two panes only), Read or Edit and Follow.
+    private func refreshViewer(_ pane: TabViewDraft.Pane) {
+        if let line = viewerPage.arrangedSubviews.first as? NSTextField {
+            let pane = Self.paneWords(shownGroup)
+            Self.set(line, "How a viewer in \(pane) starts. Rows left unchecked stay as the pane has them.")
+        }
+        // What it shows: with two panes, the other pane's selection while Follow is on and that pane shows a list.
+        let two = shownGroup == .left || shownGroup == .right
         let other = shownGroup == .left ? "right" : "left"
         Self.set(
-            viewerNote,
-            viewer.follows
-                ? "Shows the file the \(other) pane selects, as the selection moves."
-                : "Shows the file the \(other) pane selects as the tab view is applied, and stays on it.")
+            opensViewerDetail,
+            two
+                ? "Over this pane\u{2019}s list: with Follow on, the file the \(other) pane\u{2019}s list selects; "
+                    + "else the file selected here."
+                : "Over this pane\u{2019}s list, on the file selected in it.")
+        opensViewerRow.show(kept: pane.opensViewer, dims: false)
+        editPopUp.selectItem(at: pane.viewer.editing ? 1 : 0)
+        editRow.show(kept: pane.keepsEditing)
+        followPopUp.selectItem(at: pane.viewer.follows ? 0 : 1)
+        followRow.show(kept: pane.keepsFollows)
     }
 
-    private func refreshFolderViews(_ pane: TabViewDraft.Pane, shown: Bool) {
-        Self.set(folderViewsRow, hidden: !shown)
-        guard shown else { return }
-        let choice = Self.folderViewsChoices.firstIndex { $0.choice == pane.folderViews } ?? 0
-        folderViewsPopUp.selectItem(at: choice)
-        Self.set(folderViewsDetail, Self.folderViewsChoices[choice].detail)
+    private func refreshSearchResults(_ pane: TabViewDraft.Pane) {
+        if let line = searchPage.arrangedSubviews.first as? NSTextField {
+            Self.set(line, "How \(Self.paneWords(shownGroup)) shows search results, kept whole.")
+        }
+        let state: NSControl.StateValue = pane.keepsSearchResults ? .on : .off
+        if searchResultsBox.state != state { searchResultsBox.state = state }
+        Self.set(
+            searchResultsDetail,
+            "View, sort, groups, columns and sizes, "
+                + (editing && pane.keepsSearchResults ? "as saved." : "as results show in this pane now."))
+        searchResultsDetail.textColor = pane.keepsSearchResults ? .secondaryLabelColor : .tertiaryLabelColor
     }
 
     // MARK: Words
 
-    /// What a pane group's rows do.
-    static func groupNote(_ group: TabViewDraft.PaneGroup) -> String {
+    /// A pane group as the sidebar's ids name it.
+    private static func key(of group: TabViewDraft.PaneGroup) -> String {
         switch group {
-        case .left, .right:
-            "What the tab view sets in the pane chosen above. Rows left unchecked stay as the pane has them."
-        case .onePane: "What the tab view sets in the pane. Rows left unchecked stay as the pane has them."
-        case .activePane:
-            "Panes isn\u{2019}t kept: these go to the pane that is active as the tab view is applied. Rows left "
-                + "unchecked stay as the pane has them."
+        case .left: "left"
+        case .right: "right"
+        case .onePane: "pane"
+        case .activePane: "active"
         }
     }
 
-    static func title(of setting: FolderViewSetting) -> String {
-        switch setting {
-        case .view: "View"
-        case .groupBy: "Group By"
-        case .sort: "Sort By"
-        case .foldersFirst: "Folders First"
-        case .columns: "Column Visibility, Order and Sizes"
-        case .size: "Size"
+    /// A pane group as a page's first line says it.
+    static func paneWords(_ group: TabViewDraft.PaneGroup) -> String {
+        switch group {
+        case .left: "the left pane"
+        case .right: "the right pane"
+        case .onePane: "the pane"
+        case .activePane: "the pane that is active as the tab view is applied"
         }
     }
 
-    static func sizeTitle(_ mode: ExplorerViewMode) -> String {
-        switch mode {
+    static func sizeTitle(_ size: ViewSizeKind) -> String {
+        switch size {
         case .icons: "Icon Size"
-        case .list: "Column Width"
-        case .previews: "Previews"
-        case .details: "Size"
+        case .compactList: "Column Width"
+        case .previews: "Previews at a Time"
         }
     }
 
@@ -641,8 +663,9 @@ final class TabViewOptionsSheet: SavedViewSheet {
 
     #if DEBUG
         func changeForTesting(_ edit: (inout TabViewDraft) -> Void) { change(edit) }
-        func showGroupForTesting(_ group: TabViewDraft.PaneGroup) {
+        func showGroupForTesting(_ group: TabViewDraft.PaneGroup, part: Part = .view) {
             shownGroup = group
+            shownPart = part
             refresh()
         }
     #endif

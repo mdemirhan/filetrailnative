@@ -2,12 +2,16 @@
 import AppKit
 import FTFoundation
 
-/// The sheet over a window that saves it as a window view: how many tabs, the tab view each opens with (or none),
-/// the tab in front, and under "Keep for This Window" the window's size (as now, saved, typed, maximized or full
-/// screen), folder tree and Info panel, each kept only if checked. What a tab looks like is its tab view's: the sheet
-/// doesn't repeat Tab View Options. Its controls are made once; `refresh` shows the draft in them.
+/// The sheet over a window that saves it as a window view, its two parts in a sidebar as Tab View Options has them:
+/// Tabs (how many, the tab view each opens with, or none, and the tab in front) and Window (the window's size, as now,
+/// saved, typed, maximized or full screen, its folder tree and Info panel, each kept only if checked). What a tab
+/// looks like is its tab view's: the sheet doesn't repeat Tab View Options. Its controls are made once; `refresh`
+/// shows the draft in them.
 @MainActor
 final class WindowViewOptionsSheet: SavedViewSheet {
+    override class var width: Double { 640 }
+    override var rowsWidth: Double { contentWidth - Self.sidebarWidth - Self.sidebarGap }
+
     private(set) var draft: WindowViewDraft
     private let saved: [WindowView]
     private let tabViews: [TabView]
@@ -29,6 +33,26 @@ final class WindowViewOptionsSheet: SavedViewSheet {
     private var tabsLaidOut = 0
 
     private let subtitle = NSTextField(labelWithString: "")
+
+    /// The sheet's parts: the window's tabs, and the window's own.
+    enum Part: String, CaseIterable { case tabs, window }
+    private(set) var shownPart = Part.tabs
+    private lazy var sidebar: SheetSidebar = {
+        let sidebar = SheetSidebar(identifier: "windowViewOptions.parts")
+        sidebar.chosen = { [weak self] id in
+            guard let self, let part = Part(rawValue: id) else { return }
+            shownPart = part
+            refresh()
+        }
+        return sidebar
+    }()
+    private lazy var tabsPage = page(
+        "How many tabs the window opens with, the tab view each takes, and the tab in front.",
+        [(card([plainRow("Number of Tabs", countPopUp), tabScroll, plainRow("Front Tab", frontPopUp)]), 0)])
+    private lazy var windowPage = page(
+        "What the window keeps of its own. What isn\u{2019}t checked comes from the window you open it from.",
+        [(windowCard, 0)])
+    private lazy var body = sidebarBody(sidebar, pages: [tabsPage, windowPage])
 
     // MARK: Tabs
 
@@ -148,13 +172,8 @@ final class WindowViewOptionsSheet: SavedViewSheet {
         super.init(
             identifierPrefix: "windowViewOptions", kind: "window view", names: saved.map(\.name), name: draft.name,
             placeholder: "Window view name")
-        add(header(symbol: "macwindow", title: "Window View Options", subtitle: subtitle))
-        addName()
-        add(sectionTitle("Tabs"), after: 2)
-        add(card([plainRow("Number of Tabs", countPopUp), tabScroll, plainRow("Front Tab", frontPopUp)]), after: 10)
-        add(sectionTitle("Keep for This Window"), after: 2)
-        add(windowCard, after: 4)
-        add(note("What isn\u{2019}t checked comes from the window you open it from.", fullWidth: true), after: 8)
+        addHeaderWithName(symbol: "macwindow", title: "Window View Options", subtitle: subtitle)
+        add(body, after: 14)
         addSummary()
         setFooter(manageTitle: "All Window Views\u{2026}")
         refresh()
@@ -212,6 +231,12 @@ final class WindowViewOptionsSheet: SavedViewSheet {
         treeRow.show(kept: draft.keepsFolderTree)
         infoPopUp.selectItem(at: draft.propertiesOpen ? 0 : 1)
         infoRow.show(kept: draft.keepsInfoPanel)
+        sidebar.show(
+            [
+                .item(id: Part.tabs.rawValue, title: "Tabs", symbol: "square.stack"),
+                .item(id: Part.window.rawValue, title: "Window", symbol: "macwindow"),
+            ], selected: shownPart.rawValue)
+        body.show(page: Part.allCases.firstIndex(of: shownPart) ?? 0)
         let view = draft.windowView(id: draft.editingID ?? "")
         Self.set(summary, SavedViewText.parts(view, tabViews: tabViews).joined(separator: " \u{00B7} "))
         contentChanged()
@@ -232,7 +257,7 @@ final class WindowViewOptionsSheet: SavedViewSheet {
         let listHeight = rows * FolderViewPopover.rowHeight + rows - 1
         let shown = Double(min(count, Self.tabsShown))
         tabScrollHeight.constant = shown * FolderViewPopover.rowHeight + shown - 1
-        tabDocument.frame = NSRect(x: 0, y: 0, width: contentWidth, height: listHeight)
+        tabDocument.frame = NSRect(x: 0, y: 0, width: rowsWidth, height: listHeight)
         tabList.frame = tabDocument.bounds
     }
 
@@ -274,6 +299,10 @@ final class WindowViewOptionsSheet: SavedViewSheet {
 
     #if DEBUG
         func changeForTesting(_ edit: (inout WindowViewDraft) -> Void) { change(edit) }
+        func showPartForTesting(_ part: Part) {
+            shownPart = part
+            refresh()
+        }
         var tabRowsShown: Int { tabRows.filter { !$0.row.isHidden }.count }
         var tabListHeight: Double { tabScrollHeight.constant }
     #endif

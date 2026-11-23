@@ -60,40 +60,76 @@ struct TabViewsTests {
         #expect(TabViewKeeps(pane: PaneKeeps()).isEmpty)
     }
 
-    // A pane showing the viewer keeps nothing else; only one of two panes can, the left's when both ask, and never the
-    // pane of one or the active pane.
-    @Test func theViewerIsOneOfTwoPanesAndKeepsNothingElse() throws {
-        let viewer = PaneViewer(follows: false, editing: true)
-        let alone = PaneKeeps(
-            folder: "/a", view: FolderViewKeeps(view: .details), folderViews: .notUsed, viewer: viewer)
-        #expect(alone == PaneKeeps(viewer: viewer))
-        #expect(!alone.isEmpty)
+    // Any pane can open the viewer and keep the rest for the list behind it: one pane, either of two, or both.
+    @Test func anyPaneOpensTheViewer() throws {
         let both = TabViewKeeps(
-            panes: 2, left: PaneKeeps(viewer: viewer),
-            right: PaneKeeps(view: FolderViewKeeps(view: .details), viewer: PaneViewer()))
-        #expect(both.left?.viewer == viewer)
-        // The right's viewer goes; what it kept as a list is kept.
-        #expect(both.right == nil)
-        let right = TabViewKeeps(panes: 2, right: PaneKeeps(viewer: viewer))
-        #expect(right.right?.viewer == viewer)
-        #expect(TabViewKeeps(panes: 1, pane: PaneKeeps(viewer: viewer)) == TabViewKeeps(panes: 1))
-        #expect(TabViewKeeps(pane: PaneKeeps(viewer: viewer)).isEmpty)
-        // Read back as written; a viewer's parts not read are Follow on, Read.
-        let data = try JSONEncoder().encode(right)
-        #expect(try JSONDecoder().decode(TabViewKeeps.self, from: data) == right)
-        let partial = Data(#"{"panes": 2, "right": {"viewer": {}}}"#.utf8)
-        #expect(try JSONDecoder().decode(TabViewKeeps.self, from: partial).right?.viewer == PaneViewer())
+            panes: 2, left: PaneKeeps(opensViewer: true, viewerEditing: true),
+            right: PaneKeeps(view: FolderViewKeeps(view: .details), opensViewer: true))
+        #expect(both.left == PaneKeeps(opensViewer: true, viewerEditing: true))
+        #expect(both.right == PaneKeeps(view: FolderViewKeeps(view: .details), opensViewer: true))
+        let right = TabViewKeeps(
+            panes: 2, right: PaneKeeps(folder: "/a", view: FolderViewKeeps(view: .icons), opensViewer: true))
+        #expect(right.right?.opensViewer == true && right.right?.folder == "/a")
+        #expect(TabViewKeeps(panes: 1, pane: PaneKeeps(opensViewer: true)).pane == PaneKeeps(opensViewer: true))
+        #expect(TabViewKeeps(pane: PaneKeeps(opensViewer: true)).pane == PaneKeeps(opensViewer: true))
+        #expect(TabViewKeeps(pane: PaneKeeps(viewerFollows: false)).pane == PaneKeeps(viewerFollows: false))
+        // Read back as written.
+        let data = try JSONEncoder().encode(both)
+        #expect(try JSONDecoder().decode(TabViewKeeps.self, from: data) == both)
     }
 
-    // Applied, a viewer is the pane's and its settings stay; a pane given a view of a folder closes its viewer.
-    @Test func aViewerIsAppliedAndAViewOfAFolderClosesOne() {
+    // A tab view saved when the viewer was a choice of View, which kept nothing else, reads as opening the viewer with
+    // its Follow and Read or Edit; one that kept the sizes together keeps every view's.
+    @Test func tabViewsSavedBeforeReadAsTheyWorked() throws {
+        let viewer = Data(
+            #"{"panes": 2, "right": {"viewer": {"follows": false, "editing": true}, "folder": "/a"}}"#.utf8)
+        let read = try JSONDecoder().decode(TabViewKeeps.self, from: viewer)
+        #expect(read.right == PaneKeeps(folder: "/a", opensViewer: true, viewerFollows: false, viewerEditing: true))
+        let partial = Data(#"{"panes": 2, "right": {"viewer": {}}}"#.utf8)
+        #expect(
+            try JSONDecoder().decode(TabViewKeeps.self, from: partial).right
+                == PaneKeeps(opensViewer: true, viewerFollows: true, viewerEditing: false))
+        let sizes = Data(
+            #"{"pane": {"view": {"view": "icons", "size": {"iconSizes": {"standard": 96, "finder": 80}}}}}"#.utf8)
+        let pane = try #require(try JSONDecoder().decode(TabViewKeeps.self, from: sizes).pane)
+        #expect(pane.view == FolderViewKeeps(view: .icons))
+        #expect(pane.sizes?.kept == [.icons, .compactList, .previews])
+        #expect(pane.sizes?.iconSizes == DensitySizes(standard: 96, finder: 80))
+        #expect(pane.sizes?.compactListWidths == .compactListDefaults)
+    }
+
+    // Applied, a viewer starts as the pane's own Follow and Read or Edit, with what the tab view keeps of them over
+    // those, which are the pane's from then on; the list behind it takes the rest. Following, with a list in the
+    // other pane, it shows beside that list; otherwise it shows its own list's file in place. A pane given a view of a
+    // folder and no viewer closes its viewer.
+    @Test func aViewerOpensBesideTheOtherListOrInPlace() {
         var tab = Self.tab(["/a", "/b"])
-        let applied = Self.apply(TabViewKeeps(panes: 2, right: PaneKeeps(viewer: PaneViewer(editing: true))), tab)
-        #expect(applied.viewers == [1: PaneViewer(editing: true)])
-        #expect(applied.tab.panes[1].viewer == PaneViewer(editing: true))
-        #expect(applied.tab.panes[1].settings == tab.panes[1].settings)
-        #expect(applied.tab.panes[1].folder == "/b")
+        tab.panes[1].viewerDefaults = PaneViewer(follows: true, editing: false)
+        let applied = Self.apply(
+            TabViewKeeps(
+                panes: 2,
+                right: PaneKeeps(
+                    folder: "/c", view: FolderViewKeeps(view: .details), opensViewer: true, viewerEditing: true)),
+            tab)
+        #expect(applied.viewers == [1: PaneViewer(follows: true, editing: true)])
+        #expect(applied.viewersInPlace.isEmpty)
+        #expect(applied.tab.panes[1].viewer == PaneViewer(follows: true, editing: true))
+        #expect(applied.tab.panes[1].viewerDefaults == PaneViewer(follows: true, editing: true))
+        #expect(applied.tab.panes[1].settings.view == .details)
+        #expect(applied.tab.panes[1].folder == "/c")
+        #expect(applied.panesMoved == [1])
         #expect(applied.viewersClosed.isEmpty)
+
+        // Follow off: its own list's file, in place.
+        let pinned = Self.apply(TabViewKeeps(panes: 2, right: PaneKeeps(opensViewer: true, viewerFollows: false)), tab)
+        #expect(pinned.viewersInPlace == [1] && pinned.tab.panes[1].viewerInPlace && pinned.tab.panes[1].viewer == nil)
+        // Both panes: neither has a list to follow, so both show in place.
+        let both = Self.apply(
+            TabViewKeeps(panes: 2, left: PaneKeeps(opensViewer: true), right: PaneKeeps(opensViewer: true)), tab)
+        #expect(both.viewersInPlace == [0, 1])
+        // One pane: in place.
+        let one = Self.apply(TabViewKeeps(panes: 1, pane: PaneKeeps(opensViewer: true)), Self.tab(["/a"]))
+        #expect(one.viewers.keys.sorted() == [0] && one.viewersInPlace == [0])
 
         tab.panes[1].viewer = PaneViewer()
         let list = Self.apply(TabViewKeeps(panes: 2, right: PaneKeeps(view: FolderViewKeeps(view: .details))), tab)
@@ -103,6 +139,30 @@ struct TabViewsTests {
         let sorted = Self.apply(
             TabViewKeeps(panes: 2, right: PaneKeeps(view: FolderViewKeeps(foldersFirst: false))), tab)
         #expect(sorted.viewersClosed.isEmpty)
+        // The left pane opening one, following: the right shows a viewer, not a list, so the left's shows in place,
+        // and the right's stays.
+        let left = Self.apply(TabViewKeeps(panes: 2, left: PaneKeeps(opensViewer: true)), tab)
+        #expect(left.viewersInPlace == [0] && left.viewersClosed.isEmpty)
+    }
+
+    // Each view's size is applied on its own; under Tab View First, the override holds only the sizes kept.
+    @Test func eachViewsSizeIsAppliedOnItsOwn() {
+        let tab = Self.tab(["/a"])
+        let keeps = TabViewKeeps(
+            pane: PaneKeeps(
+                sizes: ViewSizesKeeps(iconSizes: DensitySizes(standard: 112, finder: 96)), folderViews: .tabViewFirst))
+        let applied = Self.apply(keeps, tab)
+        let before = tab.panes[0].settings.size
+        #expect(applied.tab.panes[0].settings.size?.iconSizes == DensitySizes(standard: 112, finder: 96))
+        #expect(applied.tab.panes[0].settings.size?.compactListWidths == before?.compactListWidths)
+        #expect(applied.tab.panes[0].settings.size?.previewCounts == before?.previewCounts)
+        let override = applied.overrides[0]
+        #expect(override?.kept == [.size] && override?.sizes == [.icons])
+        #expect(override?.covers(.size) == true && override?.covers(ViewSizeKind.icons) == true)
+        #expect(override?.covers(ViewSizeKind.previews) == false)
+        // Changed by hand, one view's size lets go of that one alone; the last one lets go of the override.
+        #expect(override?.without(ViewSizeKind.previews) == override)
+        #expect(override?.without(ViewSizeKind.icons) == nil)
     }
 
     @Test func aDividerIsKeptWithinWhatADragAllows() {

@@ -144,6 +144,8 @@ public enum PreferencesSanitizer {
         sizes.searchRecursive = bool(record, "searchRecursive", sizes.searchRecursive)
         sizes.searchSkipGitFolders = bool(record, "searchSkipGitFolders", sizes.searchSkipGitFolders)
         sizes.searchSkipGitIgnored = bool(record, "searchSkipGitIgnored", sizes.searchSkipGitIgnored)
+        sizes.viewerEditing = bool(record, "viewerEditing", sizes.viewerEditing)
+        sizes.viewerFollows = bool(record, "viewerFollows", sizes.viewerFollows)
         return sizes
     }
 

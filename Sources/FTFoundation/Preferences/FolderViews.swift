@@ -96,24 +96,144 @@ public struct FolderViewSizes: Codable, Equatable, Sendable {
     /// is as it first is.
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        func sizes(_ key: CodingKeys, _ defaults: DensitySizes, _ valid: (Double) -> Int) -> DensitySizes {
-            var sizes = defaults
-            guard let saved = try? container.nestedContainer(keyedBy: FolderViewFileKey.self, forKey: key) else {
-                return sizes
-            }
-            for density in Density.allCases {
-                if let size = try? saved.decode(Double.self, forKey: FolderViewFileKey(density.rawValue)) {
-                    sizes[density] = valid(size)
-                }
-            }
-            return sizes
+        func read(_ size: ViewSizeKind, _ key: CodingKeys) -> DensitySizes {
+            ViewSizeKind.read(size, from: container, key) ?? size.defaults
         }
         self.init(
-            iconSizes: sizes(.iconSizes, .iconDefaults) { AppPreferenceLimits.clampIconSize($0) },
-            compactListWidths: sizes(.compactListWidths, .compactListDefaults) {
-                AppPreferenceLimits.clampPaneWidth($0, AppPreferenceLimits.compactListWidthRange)
-            },
-            previewCounts: sizes(.previewCounts, .previewCountDefaults) { PreviewGrid.valid(read: $0) })
+            iconSizes: read(.icons, .iconSizes), compactListWidths: read(.compactList, .compactListWidths),
+            previewCounts: read(.previews, .previewCounts))
+    }
+
+    public subscript(size: ViewSizeKind) -> DensitySizes {
+        get {
+            switch size {
+            case .icons: iconSizes
+            case .compactList: compactListWidths
+            case .previews: previewCounts
+            }
+        }
+        set {
+            switch size {
+            case .icons: iconSizes = newValue
+            case .compactList: compactListWidths = newValue
+            case .previews: previewCounts = newValue
+            }
+        }
+    }
+}
+
+/// One view's own size: the Icons view's icon size, the Compact List's column width, the Previews count. A tab view
+/// keeps each apart; a folder's view keeps the three together. (The List's are its columns' widths.)
+public enum ViewSizeKind: String, CaseIterable, Sendable, Hashable {
+    case icons, compactList, previews
+
+    /// The view it is the size of.
+    public var view: ExplorerViewMode {
+        switch self {
+        case .icons: .icons
+        case .compactList: .list
+        case .previews: .previews
+        }
+    }
+
+    /// The size of `view`; nil for the List, whose sizes are its columns' widths.
+    public init?(_ view: ExplorerViewMode) {
+        guard let size = Self.allCases.first(where: { $0.view == view }) else { return nil }
+        self = size
+    }
+
+    /// As it first is.
+    public var defaults: DensitySizes {
+        switch self {
+        case .icons: .iconDefaults
+        case .compactList: .compactListDefaults
+        case .previews: .previewCountDefaults
+        }
+    }
+
+    /// A size from a file, held to what it can be.
+    public func valid(_ size: Double) -> Int {
+        switch self {
+        case .icons: AppPreferenceLimits.clampIconSize(size)
+        case .compactList: AppPreferenceLimits.clampPaneWidth(size, AppPreferenceLimits.compactListWidthRange)
+        case .previews: PreviewGrid.valid(read: size)
+        }
+    }
+
+    /// `size` read density by density from `key` of `container`, each checked; a density the file doesn't have is as
+    /// it first is. Nil when the file has no such key.
+    static func read<Key: CodingKey>(_ size: ViewSizeKind, from container: KeyedDecodingContainer<Key>, _ key: Key)
+        -> DensitySizes?
+    {
+        guard let saved = try? container.nestedContainer(keyedBy: FolderViewFileKey.self, forKey: key) else {
+            return nil
+        }
+        var sizes = size.defaults
+        for density in Density.allCases {
+            if let value = try? saved.decode(Double.self, forKey: FolderViewFileKey(density.rawValue)) {
+                sizes[density] = size.valid(value)
+            }
+        }
+        return sizes
+    }
+}
+
+/// The views' sizes a tab view keeps, each only if kept: nil follows the pane.
+public struct ViewSizesKeeps: Codable, Equatable, Sendable {
+    public var iconSizes: DensitySizes?
+    public var compactListWidths: DensitySizes?
+    public var previewCounts: DensitySizes?
+
+    public init(
+        iconSizes: DensitySizes? = nil, compactListWidths: DensitySizes? = nil, previewCounts: DensitySizes? = nil
+    ) {
+        self.iconSizes = iconSizes
+        self.compactListWidths = compactListWidths
+        self.previewCounts = previewCounts
+    }
+
+    /// The sizes in `only` as `sizes` has them.
+    public init(_ sizes: FolderViewSizes, only: Set<ViewSizeKind> = Set(ViewSizeKind.allCases)) {
+        self.init()
+        for size in only { self[size] = sizes[size] }
+    }
+
+    /// Size by size, each checked as a folder's view's are; one the file doesn't have isn't kept.
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            iconSizes: ViewSizeKind.read(.icons, from: container, .iconSizes),
+            compactListWidths: ViewSizeKind.read(.compactList, from: container, .compactListWidths),
+            previewCounts: ViewSizeKind.read(.previews, from: container, .previewCounts))
+    }
+
+    public subscript(size: ViewSizeKind) -> DensitySizes? {
+        get {
+            switch size {
+            case .icons: iconSizes
+            case .compactList: compactListWidths
+            case .previews: previewCounts
+            }
+        }
+        set {
+            switch size {
+            case .icons: iconSizes = newValue
+            case .compactList: compactListWidths = newValue
+            case .previews: previewCounts = newValue
+            }
+        }
+    }
+
+    /// The sizes kept, in the order the sheet lists them.
+    public var kept: [ViewSizeKind] { ViewSizeKind.allCases.filter { self[$0] != nil } }
+
+    public var isEmpty: Bool { kept.isEmpty }
+
+    /// `sizes` with the ones kept here in place of theirs.
+    public func applied(to sizes: FolderViewSizes) -> FolderViewSizes {
+        var next = sizes
+        for size in kept { next[size] = self[size] ?? next[size] }
+        return next
     }
 }
 

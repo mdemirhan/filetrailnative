@@ -57,6 +57,7 @@ extension ExplorerWindowlessTests {
             let tab = try await harness.open()
             tab.perform(.saveWindowView)
             let sheet = try SheetInput.windowSheet(tab)
+            sheet.showPartForTesting(.window)
             try SheetInput.click("windowViewOptions.keep.Size", in: sheet)
             try SheetInput.choose("Custom", in: "windowViewOptions.size", of: sheet)
             let width = try #require(SheetInput.control("windowViewOptions.width", in: sheet, as: NSTextField.self))
@@ -91,6 +92,7 @@ extension ExplorerWindowlessTests {
             tab.openSecondPane()
             tab.perform(.saveTabView)
             let sheet = try SheetInput.tabSheet(tab)
+            sheet.showGroupForTesting(.left, part: .tab)
             try SheetInput.click("tabViewOptions.keep.Divider", in: sheet)
             try SheetInput.choose("Custom", in: "tabViewOptions.divider", of: sheet)
             let field = try #require(SheetInput.control("tabViewOptions.customShare", in: sheet, as: NSTextField.self))
@@ -112,12 +114,13 @@ extension ExplorerWindowlessTests {
             let tab = try await harness.open()
             tab.perform(.saveTabView)
             let sheet = try SheetInput.tabSheet(tab)
+            sheet.showGroupForTesting(.onePane, part: .tab)
             let forget = try #require(SheetInput.control("tabViewOptions.forgetSecondPane", in: sheet))
             #expect(!forget.isHiddenOrHasHiddenAncestor)
-            #expect(SheetInput.tabOrder(sheet).prefix(4).last == "tabViewOptions.forgetSecondPane")
-            // Space checks the box Tab has reached.
+            #expect(SheetInput.tabOrder(sheet).prefix(5).last == "tabViewOptions.forgetSecondPane")
+            // Space checks the box Tab has reached, past the parts' list.
             SheetInput.focus(sheet.nameBox, in: tab.window)
-            try SheetInput.press(["Tab", "Tab", "Tab"], in: tab.window)
+            try SheetInput.press(["Tab", "Tab", "Tab", "Tab"], in: tab.window)
             #expect(sheet.focusedControl?.accessibilityIdentifier() == "tabViewOptions.forgetSecondPane")
             try SheetInput.press(["Space"], in: tab.window)
             #expect(sheet.draft.keeps.forgetsSecondPane == true)
@@ -141,35 +144,52 @@ extension ExplorerWindowlessTests {
             tab.perform(.saveTabView)
             let sheet = try SheetInput.tabSheet(tab)
             try SheetInput.choose("Icons", in: "tabViewOptions.view", of: sheet)
+            // The left pane's View: the name, the parts, then the rows; a row not kept has its control dimmed.
             #expect(
                 SheetInput.tabOrder(sheet) == [
-                    "tabViewOptions.name", "tabViewOptions.keep.Panes", "tabViewOptions.panes",
-                    "tabViewOptions.keep.Divider", "tabViewOptions.keep.Hidden Files", "tabViewOptions.pane",
-                    "tabViewOptions.keep.Folder", "tabViewOptions.keep.View", "tabViewOptions.view",
-                    "tabViewOptions.keep.Group By", "tabViewOptions.keep.Sort By", "tabViewOptions.keep.Folders First",
-                    "tabViewOptions.keep.Icon Size", "tabViewOptions.keep.Search View", "tabViewOptions.folderViews",
-                    "tabViewOptions.reset",
+                    "tabViewOptions.name", "tabViewOptions.parts", "tabViewOptions.keep.Starts In",
+                    "tabViewOptions.view", "tabViewOptions.keep.Group By", "tabViewOptions.keep.Sort By",
+                    "tabViewOptions.keep.Folders First", "tabViewOptions.keep.Icon Size", "tabViewOptions.keep.Columns",
+                    "tabViewOptions.keep.Column Width", "tabViewOptions.keep.Previews at a Time",
+                    "tabViewOptions.reset", "tabViewOptions.manage", "tabViewOptions.cancel", "tabViewOptions.save",
+                ])
+            // Every view's options show, whatever view the pane starts in.
+            try SheetInput.choose("List", in: "tabViewOptions.view", of: sheet)
+            #expect(SheetInput.tabOrder(sheet).contains("tabViewOptions.keep.Icon Size"))
+            sheet.showGroupForTesting(.left, part: .tab)
+            #expect(
+                SheetInput.tabOrder(sheet) == [
+                    "tabViewOptions.name", "tabViewOptions.parts", "tabViewOptions.keep.Panes", "tabViewOptions.panes",
+                    "tabViewOptions.keep.Divider", "tabViewOptions.keep.Hidden Files", "tabViewOptions.reset",
                     "tabViewOptions.manage", "tabViewOptions.cancel", "tabViewOptions.save",
                 ])
-            try SheetInput.choose("List", in: "tabViewOptions.view", of: sheet)
-            let list = SheetInput.tabOrder(sheet)
-            #expect(list.contains("tabViewOptions.keep.Column Visibility, Order and Sizes"))
-            #expect(!list.contains("tabViewOptions.keep.Icon Size"))
-            try SheetInput.choose("Viewer", in: "tabViewOptions.view", of: sheet)
-            let viewer = SheetInput.tabOrder(sheet)
-            #expect(viewer.contains("tabViewOptions.follow") && viewer.contains("tabViewOptions.readEdit"))
-            for hidden in ["tabViewOptions.keep.Folder", "tabViewOptions.keep.Group By", "tabViewOptions.folderViews"] {
-                #expect(!viewer.contains(hidden), "\(hidden) is shown with the viewer")
-            }
+            sheet.showGroupForTesting(.right, part: .viewer)
+            #expect(
+                SheetInput.tabOrder(sheet) == [
+                    "tabViewOptions.name", "tabViewOptions.parts", "tabViewOptions.keep.Opens the Viewer",
+                    "tabViewOptions.keep.Read or Edit", "tabViewOptions.keep.Follow", "tabViewOptions.reset",
+                    "tabViewOptions.manage", "tabViewOptions.cancel", "tabViewOptions.save",
+                ])
+            // With one pane too, the pane can open the viewer.
+            try SheetInput.choose("One", in: "tabViewOptions.panes", of: sheet)
+            sheet.showGroupForTesting(.onePane, part: .viewer)
+            #expect(SheetInput.tabOrder(sheet).contains("tabViewOptions.keep.Opens the Viewer"))
             sheet.onCancel()
 
             tab.perform(.saveWindowView)
             let windowSheet = try SheetInput.windowSheet(tab)
             #expect(
                 SheetInput.tabOrder(windowSheet) == [
-                    "windowViewOptions.name", "windowViewOptions.count", "windowViewOptions.tab1",
-                    "windowViewOptions.front", "windowViewOptions.keep.Size", "windowViewOptions.keep.Folder Tree",
-                    "windowViewOptions.keep.Info Panel", "windowViewOptions.manage", "windowViewOptions.cancel",
+                    "windowViewOptions.name", "windowViewOptions.parts", "windowViewOptions.count",
+                    "windowViewOptions.tab1", "windowViewOptions.front", "windowViewOptions.manage",
+                    "windowViewOptions.cancel",
+                ])
+            windowSheet.showPartForTesting(.window)
+            #expect(
+                SheetInput.tabOrder(windowSheet) == [
+                    "windowViewOptions.name", "windowViewOptions.parts", "windowViewOptions.keep.Size",
+                    "windowViewOptions.keep.Folder Tree", "windowViewOptions.keep.Info Panel",
+                    "windowViewOptions.manage", "windowViewOptions.cancel",
                 ])
             // Save is dimmed, and passed by, until there is a name.
             SheetInput.focus(windowSheet.nameBox, in: tab.window)
@@ -325,7 +345,9 @@ extension ExplorerWindowlessTests {
             sheet.showGroupForTesting(.right)
             try SheetInput.choose("List", in: "tabViewOptions.view", of: sheet)
             try SheetInput.choose("Icons", in: "tabViewOptions.view", of: sheet)
-            try SheetInput.choose("Viewer", in: "tabViewOptions.view", of: sheet)
+            sheet.showGroupForTesting(.right, part: .viewer)
+            try SheetInput.click("tabViewOptions.keep.Opens the Viewer", in: sheet)
+            sheet.showGroupForTesting(.right, part: .tab)
             try SheetInput.choose("One", in: "tabViewOptions.panes", of: sheet)
             try SheetInput.click("tabViewOptions.keep.Panes", in: sheet)
             try SheetInput.click("tabViewOptions.reset", in: sheet)
@@ -484,10 +506,12 @@ enum SheetInput {
         return nil
     }
 
-    /// Every control under `root`, as objects: the same set once nothing was made again.
+    /// Every control under `root`, as objects: the same set once nothing was made again. The sidebar's rows are left
+    /// out: its list makes those as it shows them, and they hold nothing typed.
     static func controlIdentities(in root: NSView) -> Set<ObjectIdentifier> {
         var found = Set<ObjectIdentifier>()
         func visit(_ view: NSView) {
+            if view is SheetSidebar { return }
             if view is NSControl { found.insert(ObjectIdentifier(view)) }
             for child in view.subviews { visit(child) }
         }

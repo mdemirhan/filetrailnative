@@ -368,6 +368,25 @@ struct AppStateReaderTests {
         #expect(state.preferences?.treeWidth == 300)
     }
 
+    // A pane's Read or Edit and Follow are read back with it; a pane saved before it had them starts at the app's
+    // Read or Edit, with Follow on.
+    @Test func aPanesReadOrEditAndFollowAreReadBack() {
+        let state = Self.read(
+            """
+            {"preferences": {"textViewerSettings": {"opensForEditing": true}},
+             "windows": [{"id": "window-a",
+                          "session": {"openTabs": [{"path": "/Users/demo/a",
+                                                    "viewSizes": {"viewerEditing": false, "viewerFollows": false}},
+                                                   {"path": "/Users/demo/b", "viewSizes": {"iconSizes": {"standard": 96}}},
+                                                   {"path": "/Users/demo/c", "viewSizes": {"viewerFollows": "no"}}]}}]}
+            """)
+        let tabs = state.windows?.first?.session.openTabs ?? []
+        #expect(tabs.count == 3)
+        #expect(tabs[0].viewSizes?.viewerEditing == false && tabs[0].viewSizes?.viewerFollows == false)
+        #expect(tabs[1].viewSizes?.viewerEditing == true && tabs[1].viewSizes?.viewerFollows == true)
+        #expect(tabs[2].viewSizes?.viewerFollows == true)
+    }
+
     // A window kept the List's column widths before each pane had its own: a pane saved with its sizes but without
     // widths takes its window's, as it showed them, and one saved without sizes starts from the app's when it is
     // first read. The window's session keeps none from then on; the app's are those set last.

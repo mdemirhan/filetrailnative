@@ -36,12 +36,13 @@ struct SearchResultsKeepsTests {
         #expect(draft.keeps == saved.keeps)
     }
 
-    @Test func itIsReadBackAsWrittenAndAViewerKeepsNone() throws {
+    @Test func itIsReadBackAsWrittenAndKeptBesideAViewer() throws {
         let keeps = PaneKeeps(searchResults: Self.results)
         let read = try JSONDecoder().decode(PaneKeeps.self, from: JSONEncoder().encode(keeps))
         #expect(read == keeps)
         #expect(!keeps.isEmpty)
-        #expect(PaneKeeps(viewer: PaneViewer(), searchResults: Self.results).searchResults == nil)
+        // A pane that opens the viewer keeps its search view for the list behind it.
+        #expect(PaneKeeps(opensViewer: true, searchResults: Self.results).searchResults == Self.results)
     }
 
     // A file changed by hand: each part is checked as a pane's own is, and the rest is kept.
@@ -91,5 +92,26 @@ struct SearchResultsKeepsTests {
         #expect(written.detailColumns == after.detailColumns)
         #expect(written.searchColumns == app.searchColumns)
         #expect(written.iconSizes == app.iconSizes)
+    }
+
+    // A pane's Read or Edit starts at the app's, the one chosen last, and a change of it is the app's too; its Follow
+    // starts on and is the pane's alone.
+    @Test func aPanesReadOrEditIsTheAppsTooAndItsFollowItsOwn() {
+        var app = AppPreferences.defaults()
+        app.textViewerSettings.opensForEditing = true
+        let before = PaneViewSizes(app)
+        #expect(before.viewerEditing && before.viewerFollows)
+        var after = before
+        after.viewerEditing = false
+        after.viewerFollows = false
+        let written = after.changes(from: before, appliedTo: app)
+        #expect(!written.textViewerSettings.opensForEditing)
+        #expect(written.textViewerSettings == AppPreferences.defaults().textViewerSettings)
+        // Nothing changed of Read or Edit: the app's stays as another pane set it.
+        var other = app
+        other.textViewerSettings.opensForEditing = false
+        var followOnly = before
+        followOnly.viewerFollows = false
+        #expect(!followOnly.changes(from: before, appliedTo: other).textViewerSettings.opensForEditing)
     }
 }

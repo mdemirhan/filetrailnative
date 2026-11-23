@@ -133,6 +133,40 @@ extension ExplorerWindowlessTests {
             #expect(back.mode == .following)
         }
 
+        // Read or Edit and Follow are the pane's: chosen by hand in a viewer, the next viewer in that pane starts the
+        // same way, whatever another pane chose since; Read or Edit chosen is the app's too, what a new pane starts at.
+        @Test func readOrEditAndFollowAreThePanes() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await tabWithFiles(harness)
+            let list = tab.activePane
+            select(real(harness, "a.swift"), in: tab)
+            tab.perform(.openSelectionInOtherPane)
+            let viewerPane = try #require(tab.otherPane)
+            let viewer = try #require(viewerPane.viewer)
+            #expect(await waitUntil { viewer.isText })
+            viewer.onFollowChange(false)
+            viewer.setEditing(true, chosen: true)
+            #expect(viewer.mode == .pinned)
+            #expect(viewerPane.viewerDefaults == PaneViewer(follows: false, editing: true))
+            #expect(await waitUntil { tab.preferences.textViewerSettings.opensForEditing })
+            // Read chosen since in another pane is the app's now, but this pane keeps Edit.
+            tab.updatePreferences { $0.textViewerSettings.opensForEditing = false }
+
+            #expect(await tab.closeViewer(in: viewerPane))
+            tab.focusPane(list)
+            select(real(harness, "b.json"), in: tab)
+            tab.perform(.openSelectionInOtherPane)
+            let again = try #require(viewerPane.viewer)
+            #expect(again.mode == .pinned)
+            #expect(await waitUntil { again.path == real(harness, "b.json") && again.isText })
+            #expect(again.isEditing)
+            // Not following, it stays on its file as the list's selection moves.
+            select(real(harness, "a.swift"), in: tab)
+            try? await Task.sleep(for: .milliseconds(400))
+            #expect(again.path == real(harness, "b.json"))
+        }
+
         // A following viewer's pane closed with Two Panes and opened again comes back following the list as it is
         // now: it shows the file selected since, and the list keeps that selection when it reads its folder again,
         // where the pane showed the file it was closed on and the list's next read selected that one again.
