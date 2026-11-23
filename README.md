@@ -62,7 +62,7 @@ A way of working can be saved and given back in one step. A tab view keeps what 
 Quick Look shows a file but doesn't let you change it, and opening an editor takes you away from the folder. In File Trail, Space or ⇧⌘E shows the selected file in place of the folder, in color for about 60 languages and formats; switch to Edit to change it, and ⌘S saves. Show it in the other pane instead (⌥⌘↓) and it follows the list: move from file to file and each one appears beside it.
 
 - **More than text.** Markdown shows as it reads, pictures as pictures, and anything else as Quick Look shows it.
-- **Part of browsing.** Back returns to the folder with the file selected, ⌥⌘] and ⌥⌘[ step to the next and previous file, and the file asks before unsaved edits are lost.
+- **Part of browsing.** Back returns to the folder with the file selected, ⌥→ and ⌥← step to the next and previous file, and the file asks before unsaved edits are lost.
 - **Your way to read.** Light and dark themes of its own, the text size, line numbers, wrapped lines and Find are in the viewer's ⋯ menu.
 
 ## Cut, copy and paste, gathered from many folders

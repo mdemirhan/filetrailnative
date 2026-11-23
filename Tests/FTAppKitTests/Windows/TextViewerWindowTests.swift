@@ -421,7 +421,9 @@ extension ExplorerWindowlessTests {
         @Test func theMarkdownPreviewTakesTheKeysOfTheTextInRead() async throws {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }
-            let paragraphs = (0..<300).map { "Paragraph \($0) of the notes." }
+            // Enough that twelve pages down leave more than half a page below, in a pane of any height: 300 ended
+            // within half a page of the bottom in a taller pane, and the half page there was cut short.
+            let paragraphs = (0..<900).map { "Paragraph \($0) of the notes." }
             try ("# Notes\n\n" + paragraphs.joined(separator: "\n\n") + "\n").write(
                 to: harness.folder.appending("notes.md"), atomically: true, encoding: .utf8)
             let tab = try await tabWithFiles(harness)
@@ -845,7 +847,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { viewer.isText })
             tab.focusPane(pane)
             #expect(viewer.keyLabel(.nextViewerFile) == "⌥⌘N")
-            #expect(viewer.keyLabel(.previousViewerFile) == "⌥⌘[")
+            #expect(viewer.keyLabel(.previousViewerFile) == "⌥←")
             let window = try #require(tab.window)
             func press(_ key: String, _ keyCode: UInt16, _ flags: NSEvent.ModifierFlags) throws -> Bool {
                 let event = try #require(
@@ -870,6 +872,53 @@ extension ExplorerWindowlessTests {
             #expect(viewer.isDirty)
             #expect(try press("S", 1, [.command, .shift]))
             #expect(!viewer.isDirty)
+        }
+
+        // ⌥→ and ⌥← step through the folder's files in Read, from the text and from a file Quick Look shows, before
+        // the view with the keyboard can take them; in Edit they move the caret by a word.
+        @Test func optionArrowsStepTheFilesInReadAndMoveByWordInEdit() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            try Data([0, 1, 2, 3, 0, 0xFF, 0xFE, 0]).write(to: harness.folder.appending("c.bin"))
+            let tab = try await tabWithFiles(harness)
+            let pane = tab.activePane
+            let (a, b, c) = (real(harness, "a.swift"), real(harness, "b.json"), real(harness, "c.bin"))
+            #expect(await waitUntil { pane.content.listedEntry(at: c) != nil })
+            let window = try #require(tab.window)
+            func optionArrow(right: Bool) throws {
+                let scalar = try #require(UnicodeScalar(right ? NSRightArrowFunctionKey : NSLeftArrowFunctionKey))
+                let event = try #require(
+                    NSEvent.keyEvent(
+                        with: .keyDown, location: .zero, modifierFlags: [.option, .function, .numericPad],
+                        timestamp: 0, windowNumber: window.windowNumber, context: nil, characters: String(scalar),
+                        charactersIgnoringModifiers: String(scalar), isARepeat: false, keyCode: right ? 124 : 123))
+                window.sendEvent(event)
+            }
+            select(a, in: tab)
+            tab.perform(.viewFile)
+            let viewer = try #require(pane.viewer)
+            #expect(await waitUntil { viewer.isText })
+            tab.focusPane(pane)
+            #expect(viewer.textHasKeyboard)
+            #expect(identified("textViewer.next", in: viewer.view).first?.toolTip == "Next File (⌥→)")
+            #expect(identified("textViewer.previous", in: viewer.view).first?.toolTip == "Previous File (⌥←)")
+
+            try optionArrow(right: true)
+            #expect(await waitUntil { viewer.path == b && viewer.isText }, "\(shown(viewer))")
+            try optionArrow(right: true)
+            #expect(await waitUntil { viewer.path == c && viewer.quickLook.preview != nil }, "\(shown(viewer))")
+            #expect(await waitUntil { viewer.hasKeyboard })
+            try optionArrow(right: false)
+            #expect(await waitUntil { viewer.path == b && viewer.isText }, "\(shown(viewer))")
+
+            // In Edit the text keeps them.
+            viewer.setEditing(true)
+            #expect(viewer.textHasKeyboard)
+            viewer.textView.setSelectedRange(NSRange(location: 0, length: 0))
+            try optionArrow(right: true)
+            try await Task.sleep(for: .milliseconds(300))
+            #expect(viewer.path == b)
+            #expect(viewer.textView.selectedRange().location > 0)
         }
 
         @Test func aTabsSnapshotKeepsItsViewers() async throws {

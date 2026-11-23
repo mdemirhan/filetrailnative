@@ -225,13 +225,13 @@
           {"group": "files", "shortcut": "Cmd+S", "description": "Save the file the viewer shows, in its pane"},
           {
             "group": "files",
-            "shortcut": "Cmd+Option+]",
-            "description": "Show the next file of the folder, in a file shown in place"
+            "shortcut": "Option+Right",
+            "description": "Show the next file of the folder, in a file shown in place (Cmd+Option+] also works)"
           },
           {
             "group": "files",
-            "shortcut": "Cmd+Option+[",
-            "description": "Show the previous file of the folder, in a file shown in place"
+            "shortcut": "Option+Left",
+            "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
           },
           {
             "group": "files",
@@ -833,13 +833,13 @@
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+]",
-                  "description": "Show the next file of the folder, in a file shown in place"
+                  "shortcut": "Option+Right",
+                  "description": "Show the next file of the folder, in a file shown in place (Cmd+Option+] also works)"
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+[",
-                  "description": "Show the previous file of the folder, in a file shown in place"
+                  "shortcut": "Option+Left",
+                  "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
                 },
                 {
                   "group": "files",
@@ -1561,13 +1561,13 @@
           {"group": "files", "shortcut": "Cmd+S", "description": "Save the file the viewer shows, in its pane"},
           {
             "group": "files",
-            "shortcut": "Cmd+Option+]",
-            "description": "Show the next file of the folder, in a file shown in place"
+            "shortcut": "Option+Right",
+            "description": "Show the next file of the folder, in a file shown in place (Cmd+Option+] also works)"
           },
           {
             "group": "files",
-            "shortcut": "Cmd+Option+[",
-            "description": "Show the previous file of the folder, in a file shown in place"
+            "shortcut": "Option+Left",
+            "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
           },
           {
             "group": "files",
@@ -2166,13 +2166,13 @@
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+]",
-                  "description": "Show the next file of the folder, in a file shown in place"
+                  "shortcut": "Option+Right",
+                  "description": "Show the next file of the folder, in a file shown in place (Cmd+Option+] also works)"
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+[",
-                  "description": "Show the previous file of the folder, in a file shown in place"
+                  "shortcut": "Option+Left",
+                  "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
                 },
                 {
                   "group": "files",
@@ -2733,8 +2733,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Option+[",
-                "description": "Show the previous file of the folder, in a file shown in place"
+                "shortcut": "Option+Left",
+                "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
               },
               {
                 "group": "files",
@@ -3170,13 +3170,13 @@
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+]",
-                  "description": "Show the next file of the folder, in a file shown in place"
+                  "shortcut": "Option+Right",
+                  "description": "Show the next file of the folder, in a file shown in place (Cmd+Option+] also works)"
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+[",
-                  "description": "Show the previous file of the folder, in a file shown in place"
+                  "shortcut": "Option+Left",
+                  "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
                 },
                 {
                   "group": "files",
@@ -4210,13 +4210,13 @@
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+]",
-                  "description": "Show the next file of the folder, in a file shown in place"
+                  "shortcut": "Option+Right",
+                  "description": "Show the next file of the folder, in a file shown in place (Cmd+Option+] also works)"
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+[",
-                  "description": "Show the previous file of the folder, in a file shown in place"
+                  "shortcut": "Option+Left",
+                  "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
                 },
                 {
                   "group": "files",
@@ -4789,8 +4789,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Option+[",
-                "description": "Show the previous file of the folder, in a file shown in place"
+                "shortcut": "Option+Left",
+                "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
               },
               {
                 "group": "files",
@@ -5226,13 +5226,13 @@
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+]",
-                  "description": "Show the next file of the folder, in a file shown in place"
+                  "shortcut": "Option+Right",
+                  "description": "Show the next file of the folder, in a file shown in place (Cmd+Option+] also works)"
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+[",
-                  "description": "Show the previous file of the folder, in a file shown in place"
+                  "shortcut": "Option+Left",
+                  "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
                 },
                 {
                   "group": "files",
@@ -6019,8 +6019,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Option+[",
-                "description": "Show the previous file of the folder, in a file shown in place"
+                "shortcut": "Option+Left",
+                "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
               },
               {
                 "group": "files",
@@ -6335,13 +6335,13 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+]",
-                  "description": "Show the next file of the folder, in a file shown in place"
+                  "shortcut": "Option+Right",
+                  "description": "Show the next file of the folder, in a file shown in place (Cmd+Option+] also works)"
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+[",
-                  "description": "Show the previous file of the folder, in a file shown in place"
+                  "shortcut": "Option+Left",
+                  "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
                 },
                 {
                   "group": "files",
@@ -7253,13 +7253,13 @@
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+]",
-                  "description": "Show the next file of the folder, in a file shown in place"
+                  "shortcut": "Option+Right",
+                  "description": "Show the next file of the folder, in a file shown in place (Cmd+Option+] also works)"
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+[",
-                  "description": "Show the previous file of the folder, in a file shown in place"
+                  "shortcut": "Option+Left",
+                  "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
                 },
                 {
                   "group": "files",
@@ -7832,8 +7832,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Option+[",
-                "description": "Show the previous file of the folder, in a file shown in place"
+                "shortcut": "Option+Left",
+                "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
               },
               {
                 "group": "files",
@@ -8281,13 +8281,13 @@
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+]",
-                  "description": "Show the next file of the folder, in a file shown in place"
+                  "shortcut": "Option+Right",
+                  "description": "Show the next file of the folder, in a file shown in place (Cmd+Option+] also works)"
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+[",
-                  "description": "Show the previous file of the folder, in a file shown in place"
+                  "shortcut": "Option+Left",
+                  "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
                 },
                 {
                   "group": "files",
@@ -8910,8 +8910,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Option+[",
-                "description": "Show the previous file of the folder, in a file shown in place"
+                "shortcut": "Option+Left",
+                "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
               },
               {
                 "group": "files",
@@ -9359,13 +9359,13 @@
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+]",
-                  "description": "Show the next file of the folder, in a file shown in place"
+                  "shortcut": "Option+Right",
+                  "description": "Show the next file of the folder, in a file shown in place (Cmd+Option+] also works)"
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+[",
-                  "description": "Show the previous file of the folder, in a file shown in place"
+                  "shortcut": "Option+Left",
+                  "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
                 },
                 {
                   "group": "files",
@@ -9913,8 +9913,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Option+[",
-                "description": "Show the previous file of the folder, in a file shown in place"
+                "shortcut": "Option+Left",
+                "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
               },
               {
                 "group": "files",
@@ -10355,13 +10355,13 @@
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+]",
-                  "description": "Show the next file of the folder, in a file shown in place"
+                  "shortcut": "Option+Right",
+                  "description": "Show the next file of the folder, in a file shown in place (Cmd+Option+] also works)"
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+[",
-                  "description": "Show the previous file of the folder, in a file shown in place"
+                  "shortcut": "Option+Left",
+                  "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
                 },
                 {
                   "group": "files",
@@ -10961,8 +10961,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Option+[",
-                "description": "Show the previous file of the folder, in a file shown in place"
+                "shortcut": "Option+Left",
+                "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
               },
               {
                 "group": "files",
@@ -11418,13 +11418,13 @@
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+]",
-                  "description": "Show the next file of the folder, in a file shown in place"
+                  "shortcut": "Option+Right",
+                  "description": "Show the next file of the folder, in a file shown in place (Cmd+Option+] also works)"
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+[",
-                  "description": "Show the previous file of the folder, in a file shown in place"
+                  "shortcut": "Option+Left",
+                  "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
                 },
                 {
                   "group": "files",
@@ -12470,13 +12470,13 @@
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+]",
-                  "description": "Show the next file of the folder, in a file shown in place"
+                  "shortcut": "Option+Right",
+                  "description": "Show the next file of the folder, in a file shown in place (Cmd+Option+] also works)"
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+[",
-                  "description": "Show the previous file of the folder, in a file shown in place"
+                  "shortcut": "Option+Left",
+                  "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
                 },
                 {
                   "group": "files",
@@ -13066,8 +13066,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Option+[",
-                "description": "Show the previous file of the folder, in a file shown in place"
+                "shortcut": "Option+Left",
+                "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
               },
               {
                 "group": "files",
@@ -13515,13 +13515,13 @@
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+]",
-                  "description": "Show the next file of the folder, in a file shown in place"
+                  "shortcut": "Option+Right",
+                  "description": "Show the next file of the folder, in a file shown in place (Cmd+Option+] also works)"
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+[",
-                  "description": "Show the previous file of the folder, in a file shown in place"
+                  "shortcut": "Option+Left",
+                  "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
                 },
                 {
                   "group": "files",
@@ -14123,8 +14123,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Option+[",
-                "description": "Show the previous file of the folder, in a file shown in place"
+                "shortcut": "Option+Left",
+                "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
               },
               {
                 "group": "files",
@@ -14556,13 +14556,13 @@
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+]",
-                  "description": "Show the next file of the folder, in a file shown in place"
+                  "shortcut": "Option+Right",
+                  "description": "Show the next file of the folder, in a file shown in place (Cmd+Option+] also works)"
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+[",
-                  "description": "Show the previous file of the folder, in a file shown in place"
+                  "shortcut": "Option+Left",
+                  "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
                 },
                 {
                   "group": "files",
@@ -15270,8 +15270,8 @@
             [
               {
                 "group": "files",
-                "shortcut": "Cmd+Option+[",
-                "description": "Show the previous file of the folder, in a file shown in place"
+                "shortcut": "Option+Left",
+                "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
               },
               {
                 "group": "files",
@@ -15750,13 +15750,13 @@
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+]",
-                  "description": "Show the next file of the folder, in a file shown in place"
+                  "shortcut": "Option+Right",
+                  "description": "Show the next file of the folder, in a file shown in place (Cmd+Option+] also works)"
                 },
                 {
                   "group": "files",
-                  "shortcut": "Cmd+Option+[",
-                  "description": "Show the previous file of the folder, in a file shown in place"
+                  "shortcut": "Option+Left",
+                  "description": "Show the previous file of the folder, in a file shown in place (Cmd+Option+[ also works)"
                 },
                 {
                   "group": "files",

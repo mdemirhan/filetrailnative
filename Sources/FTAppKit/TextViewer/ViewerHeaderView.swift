@@ -94,8 +94,8 @@ final class ViewerHeaderView: NSView {
         positionLabel.setAccessibilityIdentifier("textViewer.position")
         for label in [nameLabel, editedLabel, positionLabel] { addSubview(label) }
 
-        configure(previousButton, symbol: "chevron.up", tip: "Previous File (⌥⌘[)", action: #selector(previous))
-        configure(nextButton, symbol: "chevron.down", tip: "Next File (⌥⌘])", action: #selector(next))
+        configure(previousButton, symbol: "arrow.left", tip: "Previous File", action: #selector(previous))
+        configure(nextButton, symbol: "arrow.right", tip: "Next File", action: #selector(next))
         previousButton.setAccessibilityIdentifier("textViewer.previous")
         nextButton.setAccessibilityIdentifier("textViewer.next")
         followButton.target = self
@@ -157,6 +157,9 @@ final class ViewerHeaderView: NSView {
         previousButton.isHidden = !inPlace || next.position == nil
         nextButton.isHidden = previousButton.isHidden
         positionLabel.isHidden = previousButton.isHidden
+        // The keys the buttons have now, chosen in Settings.
+        previousButton.toolTip = Tooltips.format("Previous File", shortcutLabel: next.keys.previous)
+        nextButton.toolTip = Tooltips.format("Next File", shortcutLabel: next.keys.next)
         if let position = next.position {
             positionLabel.stringValue =
                 "\(FormatLocale.count(position.index + 1)) of \(FormatLocale.count(position.count))"

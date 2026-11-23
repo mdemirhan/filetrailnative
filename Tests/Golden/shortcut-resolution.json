@@ -165,8 +165,8 @@
           "openHelp": ["?"],
           "openKeyboardShortcuts": [],
           "saveViewerFile": ["Cmd+S"],
-          "nextViewerFile": ["Cmd+Option+]"],
-          "previousViewerFile": ["Cmd+Option+["],
+          "nextViewerFile": ["Option+Right", "Cmd+Option+]"],
+          "previousViewerFile": ["Option+Left", "Cmd+Option+["],
           "deselectAll": ["Cmd+Option+A"],
           "invertSelection": [],
           "newFolderWithSelection": ["Ctrl+Cmd+N"],
@@ -263,7 +263,9 @@
           ["Cmd+Shift+P", "showCommandPalette"],
           ["?", "openHelp"],
           ["Cmd+S", "saveViewerFile"],
+          ["Option+Right", "nextViewerFile"],
           ["Cmd+Option+]", "nextViewerFile"],
+          ["Option+Left", "previousViewerFile"],
           ["Cmd+Option+[", "previousViewerFile"]
         ],
         "sanitized": {},
@@ -2489,7 +2491,8 @@
           "customizeToolbar": ["Cmd+K"],
           "openLocationSheet": [],
           "pageDown": [],
-          "resetSize": []
+          "resetSize": [],
+          "previousViewerFile": ["Cmd+Option+["]
         },
         "commandByShortcut": {
           "$remove": [
@@ -2498,7 +2501,8 @@
             ["PageDown", "pageDown"],
             ["Ctrl+U", "halfPageUp"],
             ["Ctrl+D", "halfPageDown"],
-            ["Cmd+0", "resetSize"]
+            ["Cmd+0", "resetSize"],
+            ["Option+Left", "previousViewerFile"]
           ],
           "$insert": [
             [null, ["PageDown", "halfPageDown"]],
@@ -2515,7 +2519,8 @@
           "halfPageDown": ["PageDown", "Cmd+0"],
           "resetSize": [],
           "sortBySize": ["Cmd+Shift+G", "Option+Left"],
-          "customizeToolbar": ["Cmd+K"]
+          "customizeToolbar": ["Cmd+K"],
+          "previousViewerFile": ["Cmd+Option+["]
         },
         "probes": [
           {

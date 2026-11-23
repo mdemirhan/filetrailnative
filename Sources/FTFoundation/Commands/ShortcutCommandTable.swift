@@ -646,9 +646,9 @@ extension ShortcutCommands {
         // The viewer's own keys, taken while it has the keyboard; its ⋯ menu shows them.
         ShortcutCommandDefinition(id: .saveViewerFile, label: "Save File", group: .viewer, defaults: ["Cmd+S"]),
         ShortcutCommandDefinition(
-            id: .nextViewerFile, label: "Next File", group: .viewer, defaults: ["Cmd+Option+]"]),
+            id: .nextViewerFile, label: "Next File", group: .viewer, defaults: ["Option+Right", "Cmd+Option+]"]),
         ShortcutCommandDefinition(
-            id: .previousViewerFile, label: "Previous File", group: .viewer, defaults: ["Cmd+Option+["]),
+            id: .previousViewerFile, label: "Previous File", group: .viewer, defaults: ["Option+Left", "Cmd+Option+["]),
         ShortcutCommandDefinition(id: .undo, label: "Undo", group: .standard, defaults: ["Cmd+Z"], fixed: true),
         ShortcutCommandDefinition(id: .redo, label: "Redo", group: .standard, defaults: ["Cmd+Shift+Z"], fixed: true),
         ShortcutCommandDefinition(id: .cut, label: "Cut", group: .standard, defaults: ["Cmd+X"], fixed: true),

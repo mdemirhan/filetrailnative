@@ -989,6 +989,12 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
             if !self.zoom(zoom) { NSSound.beep() }
             return true
         }
+        // Next File and Previous File, ⌥→ and ⌥←, from whatever shows the file: before a movie or Quick Look's preview
+        // can take the key for something else.
+        if let step = fileStep(command, event), hasKeyboard {
+            step()
+            return true
+        }
         guard keyboardInPages else { return false }
         if let pages = Self.pages(of: command) {
             if !page(pages) { NSSound.beep() }
@@ -1057,22 +1063,38 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         }
     }
 
-    /// ⌘S, ⌘F, and for a file in place ⌥⌘] and ⌥⌘[, while the keyboard is in the viewer.
+    /// Next File or Previous File for a file in place, if `command` is one of them and the key is the viewer's now: a
+    /// key text uses for itself (⌥← and ⌥→ move by word) stays with text being edited, the file's in Edit or the find
+    /// bar's.
+    private func fileStep(_ command: ShortcutCommandID?, _ event: NSEvent) -> (() -> Void)? {
+        guard mode == .inPlace else { return nil }
+        let step: () -> Void
+        switch command {
+        case .nextViewerFile: step = onNext
+        case .previousViewerFile: step = onPrevious
+        default: return nil
+        }
+        if let text = view.window?.firstResponder as? NSTextView, text.isEditable,
+            let pressed = Shortcuts.fromKeyboardEvent(ContentKeyboard.shortcutEvent(event)),
+            Shortcuts.isTextEditingShortcut(pressed)
+        {
+            return nil
+        }
+        return step
+    }
+
+    /// ⌘S, ⌘F, and for a file in place Next File and Previous File, while the keyboard is in the viewer.
     private func handleKey(_ event: NSEvent) -> Bool {
         let flags = event.modifierFlags.intersection([.command, .option, .shift, .control])
         let key = event.charactersIgnoringModifiers?.lowercased() ?? ""
-        switch commandForKey(event) {
-        case .saveViewerFile:
+        let command = commandForKey(event)
+        if command == .saveViewerFile {
             if isDirty { save() } else { NSSound.beep() }
             return true
-        case .nextViewerFile where mode == .inPlace:
-            onNext()
+        }
+        if let step = fileStep(command, event) {
+            step()
             return true
-        case .previousViewerFile where mode == .inPlace:
-            onPrevious()
-            return true
-        default:
-            break
         }
         switch (flags, key) {
         case ([], "\u{1b}") where keyboardOutsideText:
