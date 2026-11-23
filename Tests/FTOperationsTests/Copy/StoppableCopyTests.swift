@@ -175,7 +175,7 @@ struct StoppableCopyTests {
 
         #expect(count.withLock { $0 } == 1)
         #expect(stop.onStop {} == nil)
-        #expect(StopError().message == "This operation was aborted")
-        #expect(describeCopyPasteError(StopError()) == "This operation was aborted")
+        #expect(StopError().message == "Stopped.")
+        #expect(describeCopyPasteError(StopError()) == "Stopped.")
     }
 }

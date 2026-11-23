@@ -39,7 +39,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // Show Info's target is previewed, not the selection under it.
+        // Get Info's target is previewed, not the selection under it.
         @Test func quickLookPreviewsShowInfosTarget() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

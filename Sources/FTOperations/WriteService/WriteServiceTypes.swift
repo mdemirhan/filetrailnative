@@ -103,12 +103,18 @@ public struct CopyPasteAnalysisIssue: Codable, Equatable, Sendable {
     public var message: String
     public var sourcePath: String?
     public var destinationPath: String?
+    /// For two items that would land on one name: the other item, whose name is the same or differs only in case.
+    public var otherSourcePath: String?
 
-    public init(code: CopyPastePlanIssueCode, message: String, sourcePath: String?, destinationPath: String?) {
+    public init(
+        code: CopyPastePlanIssueCode, message: String, sourcePath: String?, destinationPath: String?,
+        otherSourcePath: String? = nil
+    ) {
         self.code = code
         self.message = message
         self.sourcePath = sourcePath
         self.destinationPath = destinationPath
+        self.otherSourcePath = otherSourcePath
     }
 }
 

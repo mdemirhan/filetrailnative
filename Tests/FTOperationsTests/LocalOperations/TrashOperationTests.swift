@@ -47,7 +47,7 @@ import Testing
         )
         #expect(end.result?.items.map(\.status) == [.completed, .failed, .completed])
         // A known system error keeps its own plain sentence.
-        #expect(end.result?.items[1].error == "You don't have permission to access this item.")
+        #expect(end.result?.items[1].error == "You don’t have permission to access this item.")
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
@@ -91,14 +91,14 @@ import Testing
                 try await coordinator.trash(paths: [path], window: TestWindow())
             }
             if path.hasPrefix("/") {
-                #expect(deleting?.message.hasSuffix(" can't be deleted.") == true, "\(path)")
-                #expect(trashing?.message.hasSuffix(" can't be moved to the Trash.") == true, "\(path)")
+                #expect(deleting?.message.hasSuffix(" can’t be deleted.") == true, "\(path)")
+                #expect(trashing?.message.hasSuffix(" can’t be moved to the Trash.") == true, "\(path)")
             } else {
                 #expect(deleting?.message == "Expected an absolute path.")
                 #expect(trashing?.message == "Expected an absolute path.")
             }
         }
-        await #expect(throws: WriteCoordinatorError("“Backup” can't be deleted.")) {
+        await #expect(throws: WriteCoordinatorError("“Backup” can’t be deleted.")) {
             try await coordinator.deleteImmediately(paths: ["/Volumes/Backup"], window: TestWindow())
         }
         #expect(fileSystem.calls.rm.isEmpty)
@@ -174,7 +174,7 @@ import Testing
             let error = #expect(throws: WriteCoordinatorError.self, "\(path)") {
                 try WriteGuards.assertNotSystemLocation([path], verb: "deleted", fileSystem: disk, homePath: home)
             }
-            #expect(error?.message.contains("can't be deleted") == true, "\(path)")
+            #expect(error?.message.contains("can’t be deleted") == true, "\(path)")
         }
         // An ordinary folder is fine, however it is reached.
         try withTemporaryDirectory(prefix: "filetrail-guard") { folder in
@@ -190,7 +190,7 @@ import Testing
                     [volume.path], verb: "moved to the Trash", fileSystem: NativeWriteFileSystem(),
                     homePath: NSHomeDirectory())
             }
-            #expect(error?.message.hasSuffix("is a disk, so it can't be moved to the Trash.") == true)
+            #expect(error?.message.hasSuffix("is a disk, so it can’t be moved to the Trash.") == true)
         }
     }
 
@@ -206,7 +206,7 @@ import Testing
         let error = await #expect(throws: WriteCoordinatorError.self) {
             try await coordinator.analyze(request(.cut), window: TestWindow(), signal: StopSignal())
         }
-        #expect(error?.message.hasSuffix("can't be moved.") == true)
+        #expect(error?.message.hasSuffix("can’t be moved.") == true)
         #expect(service.calls.analyze.isEmpty)
         #expect(
             try await coordinator.analyze(request(.copy), window: TestWindow(), signal: StopSignal()).analysisId
@@ -222,17 +222,17 @@ import Testing
             writeService: service, fileSystem: fileSystem, options: WriteCoordinatorOptions(homePath: "/Users/someone"))
         let window = TestWindow()
 
-        await #expect(throws: WriteCoordinatorError("“Desktop” can't be renamed.")) {
+        await #expect(throws: WriteCoordinatorError("“Desktop” can’t be renamed.")) {
             try await coordinator.rename(
                 sourcePath: "/Users/someone/Desktop", destinationName: "Old Desktop", window: window)
         }
-        await #expect(throws: WriteCoordinatorError("“Documents” can't be moved to the Trash.")) {
+        await #expect(throws: WriteCoordinatorError("“Documents” can’t be moved to the Trash.")) {
             try await coordinator.trash(paths: ["/Users/someone/Documents"], window: window)
         }
-        await #expect(throws: WriteCoordinatorError("“someone” can't be deleted.")) {
+        await #expect(throws: WriteCoordinatorError("“someone” can’t be deleted.")) {
             try await coordinator.deleteImmediately(paths: ["/Users/someone"], window: window)
         }
-        await #expect(throws: WriteCoordinatorError("“Pictures” can't be moved.")) {
+        await #expect(throws: WriteCoordinatorError("“Pictures” can’t be moved.")) {
             try await coordinator.analyze(
                 CopyPasteAnalysisRequest(
                     mode: .cut, sourcePaths: ["/Users/someone/Pictures"], destinationDirectoryPath: "/Volumes/Backup"),
@@ -246,7 +246,7 @@ import Testing
     @Test func refusesToRenameTheHomeFoldersOwnFolders() async throws {
         let coordinator = WriteCoordinator.local(.stub())
 
-        await #expect(throws: WriteCoordinatorError("“Desktop” can't be renamed.")) {
+        await #expect(throws: WriteCoordinatorError("“Desktop” can’t be renamed.")) {
             try await coordinator.rename(
                 sourcePath: NodePath.join(NSHomeDirectory(), "Desktop"), destinationName: "Old Desktop",
                 window: TestWindow())
@@ -266,7 +266,7 @@ import Testing
         let end = await window.ended("write-op-1")
 
         #expect(end.status == .failed)
-        #expect(end.result?.error == "You don't have permission to access this item.")
+        #expect(end.result?.error == "You don’t have permission to access this item.")
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
@@ -317,7 +317,7 @@ import Testing
                 try await coordinator.deleteImmediately(
                     paths: ["/Users/demo/.Trash/old.txt", path], window: TestWindow())
             }
-            #expect(error?.message.hasSuffix("isn't in the Trash, so it can't be deleted immediately.") == true)
+            #expect(error?.message.hasSuffix("isn’t in the Trash, so it can’t be deleted immediately.") == true)
         }
         #expect(fileSystem.calls.rm.isEmpty)
         await coordinator.shutDown(maxWaitMs: 0)
@@ -353,7 +353,7 @@ import Testing
         let error = await #expect(throws: WriteCoordinatorError.self) {
             try await coordinator.deleteImmediately(paths: ["/Volumes/Share/other.txt"], window: TestWindow())
         }
-        #expect(error?.message.contains("isn't in the Trash") == true)
+        #expect(error?.message.contains("isn’t in the Trash") == true)
         #expect(
             try await coordinator.deleteImmediately(paths: ["/Volumes/Share/a.txt"], window: window)
                 == WriteOperationHandle(operationId: "write-op-2", status: .queued))
@@ -414,7 +414,7 @@ import Testing
         #expect(end.result?.items.map(\.status) == [.completed, .failed, .failed, .failed, .failed, .failed])
         #expect(end.result?.items.map(\.noTrash) == [false, false, false, true, false, true])
         #expect(
-            end.result?.items[1].error == "“locked.txt” is locked. Unlock it in Finder's Get Info and try again.")
+            end.result?.items[1].error == "“locked.txt” is locked. Unlock it in Finder’s Get Info and try again.")
         #expect(end.result?.items[2].error == "“busy.txt” couldn’t be moved to the trash.")
         #expect(end.result?.items[3].error == "“a.txt” couldn’t be moved to the Trash because its disk has no Trash.")
         #expect(end.result?.items[5].error == "“b.txt” couldn’t be moved to the Trash because its disk has no Trash.")
@@ -424,7 +424,7 @@ import Testing
             let error = await #expect(throws: WriteCoordinatorError.self) {
                 try await coordinator.deleteImmediately(paths: [path], window: window)
             }
-            #expect(error?.message.hasSuffix("isn't in the Trash, so it can't be deleted immediately.") == true)
+            #expect(error?.message.hasSuffix("isn’t in the Trash, so it can’t be deleted immediately.") == true)
         }
         let noTrash = ["/Volumes/USB/a.txt", "/Volumes/Share/b.txt"]
         #expect(
@@ -453,7 +453,7 @@ import Testing
             try write(root.appending("a.txt").path, "never asked about")
 
             await #expect(
-                throws: WriteCoordinatorError("“a.txt” changed after you were asked about it, so it wasn't deleted.")
+                throws: WriteCoordinatorError("“a.txt” changed after you were asked about it, so it wasn’t deleted.")
             ) {
                 try await coordinator.deleteImmediately(paths: [root.appending("a.txt").path], window: window)
             }
@@ -482,7 +482,7 @@ import Testing
 
         looks.mutate { $0 = (2_000, ["b.txt"]) }
         await #expect(
-            throws: WriteCoordinatorError("“Project” changed after you were asked about it, so it wasn't deleted.")
+            throws: WriteCoordinatorError("“Project” changed after you were asked about it, so it wasn’t deleted.")
         ) {
             try await coordinator.deleteImmediately(paths: ["/Volumes/Share/Project"], window: window)
         }
@@ -509,7 +509,7 @@ import Testing
                 try await coordinator.deleteImmediately(
                     paths: [root.appending(".Trash/link/report.txt").path], window: TestWindow())
             }
-            #expect(error?.message.contains("isn't in the Trash") == true)
+            #expect(error?.message.contains("isn’t in the Trash") == true)
             #expect(try read(root.appending("Work/report.txt").path) == "keep")
             await coordinator.shutDown(maxWaitMs: 0)
         }

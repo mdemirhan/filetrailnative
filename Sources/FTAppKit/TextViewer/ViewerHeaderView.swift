@@ -234,7 +234,7 @@ final class ViewerHeaderView: NSView {
         add("Wrap Lines", .settings { $0.wrapLines.toggle() }, on: state.settings.wrapLines)
         add("Line Numbers", .settings { $0.lineNumbers.toggle() }, on: state.settings.lineNumbers)
         menu.addItem(.separator())
-        add("Open in Text Editor", .openInEditor)
+        add("Edit in Text Editor", .openInEditor)
         add("Close Viewer", .close, key: "⎋")
         return menu
     }
@@ -394,10 +394,12 @@ final class ViewerConflictBar: NSView {
     static let height = 34.0
     var onKeepMine: () -> Void = {}
     var onUseDisk: () -> Void = {}
-    private static let changedText = "Another app changed this file. Your edits haven’t been saved."
+    /// Keep My Edits only puts the bar away: the next Save writes the edits over the other app's change.
+    private static let changedText =
+        "Another app changed this file while you were editing it. Saving your edits replaces that version."
     private let label = FlushTextField(labelWithString: changedText)
-    private let useDisk = NSButton(title: "Use the File on Disk", target: nil, action: nil)
-    private let keepMine = NSButton(title: "Keep Mine", target: nil, action: nil)
+    private let useDisk = NSButton(title: "Use Their Version", target: nil, action: nil)
+    private let keepMine = NSButton(title: "Keep My Edits", target: nil, action: nil)
 
     override init(frame: NSRect) {
         super.init(frame: frame)
@@ -426,10 +428,12 @@ final class ViewerConflictBar: NSView {
         switch kind {
         case .changed:
             label.stringValue = Self.changedText
+            label.toolTip = Self.changedText
             useDisk.isHidden = false
             keepMine.isHidden = false
         case .gone(let text):
             label.stringValue = text
+            label.toolTip = text
             useDisk.isHidden = true
             keepMine.isHidden = true
         }
@@ -474,7 +478,7 @@ final class ViewerMessageView: NSView {
     private let icon = NSImageView()
     private let title = FlushTextField(labelWithString: "")
     private let detail = FlushTextField(wrappingLabelWithString: "")
-    private let button = NSButton(title: "Open in Text Editor", target: nil, action: nil)
+    private let button = NSButton(title: "Edit in Text Editor", target: nil, action: nil)
 
     override init(frame: NSRect) {
         super.init(frame: frame)

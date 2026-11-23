@@ -145,41 +145,41 @@ struct ClipboardTextsTests {
     @Test func namesWhatIsRunningAndTheItemItIsOn() {
         #expect(
             ClipboardTexts.dragRefusedWhileBusy(action: .paste, currentSourcePath: "/Users/demo/Photos")
-                == "Can't drag while \u{201C}Photos\u{201D} is being copied")
+                == "Can\u{2019}t drag while \u{201C}Photos\u{201D} is being copied")
         #expect(
             ClipboardTexts.dragRefusedWhileBusy(action: .moveTo, currentSourcePath: nil)
-                == "Can't drag while items are being moved")
+                == "Can\u{2019}t drag while items are being moved")
         #expect(
             ClipboardTexts.dragRefusedWhileBusy(action: .trash, currentSourcePath: "/Users/demo/a.txt")
-                == "Can't drag while \u{201C}a.txt\u{201D} is being moved to the Trash")
+                == "Can\u{2019}t drag while \u{201C}a.txt\u{201D} is being moved to the Trash")
         #expect(
             ClipboardTexts.dragRefusedWhileBusy(action: .deleteImmediately, currentSourcePath: nil)
-                == "Can't drag while items are being deleted")
+                == "Can\u{2019}t drag while items are being deleted")
         #expect(
             ClipboardTexts.dragRefusedWhileBusy(action: .rename, currentSourcePath: "/Users/demo/a.txt")
-                == "Can't drag while \u{201C}a.txt\u{201D} is being renamed")
+                == "Can\u{2019}t drag while \u{201C}a.txt\u{201D} is being renamed")
         #expect(
             ClipboardTexts.dragRefusedWhileBusy(action: .newFolder, currentSourcePath: nil)
-                == "Can't drag while a folder is being made")
+                == "Can\u{2019}t drag while a folder is being made")
     }
 
     // An Undo or Redo is named as such, not taken for a copy.
     @Test func namesAnUndoOrRedoRunning() {
         #expect(
             ClipboardTexts.dragRefusedWhileBusy(action: .undo, currentSourcePath: "/Users/demo/a.txt")
-                == "Can't drag while an Undo is running")
+                == "Can\u{2019}t drag while an Undo is running")
         #expect(
             ClipboardTexts.dragRefusedWhileBusy(action: .redo, currentSourcePath: nil, drop: true)
-                == "Can't drop while a Redo is running")
+                == "Can\u{2019}t drop while a Redo is running")
     }
 
     @Test func saysADropCantBeMadeForADragFromAnotherApp() {
         #expect(
             ClipboardTexts.dragRefusedWhileBusy(action: .paste, currentSourcePath: "/Users/demo/Photos", drop: true)
-                == "Can't drop while \u{201C}Photos\u{201D} is being copied")
+                == "Can\u{2019}t drop while \u{201C}Photos\u{201D} is being copied")
         #expect(
             ClipboardTexts.dragRefusedWhileBusy(action: .newFolder, currentSourcePath: nil, drop: true)
-                == "Can't drop while a folder is being made")
+                == "Can\u{2019}t drop while a folder is being made")
     }
 
     @Test func namesTheItemsAnAnalysisIssueIsAbout() {
@@ -200,11 +200,31 @@ struct ClipboardTextsTests {
                 == "\u{201C}x\u{201D} is already in \u{201C}Target\u{201D}.")
         #expect(
             ClipboardTexts.issueMessage([issue("parent_into_child", "/a/x")], destinationDirectoryPath: dest, cut: true)
-                == "\u{201C}x\u{201D} can't be moved into a folder inside itself.")
+                == "\u{201C}x\u{201D} can\u{2019}t be moved into a folder inside itself.")
         #expect(
             ClipboardTexts.issueMessage(
                 [issue("other", "/a/x", "It broke.")], destinationDirectoryPath: dest, cut: false)
                 == "It broke.")
+        func clash(_ source: String, _ other: String) -> ClipboardTexts.Issue {
+            ClipboardTexts.Issue(
+                code: "duplicate_destination_name", sourcePath: source,
+                destinationPath: "\(dest)/\((source as NSString).lastPathComponent)", message: "",
+                otherSourcePath: other)
+        }
+        #expect(
+            ClipboardTexts.issueMessage(
+                [clash("/b/photo.jpg", "/a/photo.jpg")], destinationDirectoryPath: dest, cut: false)
+                == "Two of the items are named \u{201C}photo.jpg\u{201D}, so one would replace the other.")
+        #expect(
+            ClipboardTexts.issueMessage(
+                [clash("/b/photo.jpg", "/a/Photo.jpg")], destinationDirectoryPath: dest, cut: false)
+                == "\u{201C}Photo.jpg\u{201D} and \u{201C}photo.jpg\u{201D} would be pasted as one item, as "
+                + "\u{201C}Target\u{201D} doesn\u{2019}t tell upper and lower case apart.")
+        // One name written in either Unicode form is the same name.
+        #expect(
+            ClipboardTexts.issueMessage(
+                [clash("/b/Cafe\u{301}.txt", "/a/Caf\u{E9}.txt")], destinationDirectoryPath: dest, cut: false)
+                == "Two of the items are named \u{201C}Cafe\u{301}.txt\u{201D}, so one would replace the other.")
         #expect(
             ClipboardTexts.issueMessage([], destinationDirectoryPath: dest, cut: false)
                 == "File Trail couldn\u{2019}t finish checking the items. Nothing was changed.")
@@ -311,7 +331,7 @@ struct ClipboardTextsTests {
         #expect(WriteEndNotices.toast(write(.trash, .completed))?.title == "Moved to Trash")
         #expect(WriteEndNotices.toast(write(.deleteImmediately, .completed))?.title == "Deleted")
         #expect(WriteEndNotices.toast(write(.duplicate, .completed)) == nil)
-        #expect(WriteEndNotices.toast(write(.moveTo, .cancelled, completed: 0))?.title == "Move cancelled")
+        #expect(WriteEndNotices.toast(write(.moveTo, .cancelled, completed: 0))?.title == "Move stopped")
         #expect(WriteEndNotices.needsResultSheet(write(.paste, .failed)))
         #expect(WriteEndNotices.needsResultSheet(write(.paste, .cancelled, completed: 1)))
         #expect(!WriteEndNotices.needsResultSheet(write(.paste, .cancelled, completed: 0)))

@@ -119,11 +119,14 @@ struct SwiftAnalysisEngine: ExecAnalysisEngine {
             "destinationDirectoryPath": .string(report.destinationDirectoryPath),
             "nodes": .array(report.nodes.map(json)),
             "issues": .array(
-                report.issues.map {
-                    .object([
-                        "code": .string($0.code.rawValue), "message": .string($0.message),
-                        "sourcePath": optional($0.sourcePath), "destinationPath": optional($0.destinationPath),
-                    ])
+                report.issues.map { issue in
+                    var fields: [String: JSONValue] = [
+                        "code": .string(issue.code.rawValue), "message": .string(issue.message),
+                        "sourcePath": optional(issue.sourcePath), "destinationPath": optional(issue.destinationPath),
+                    ]
+                    // The other item that claims the name, kept only where there is one.
+                    if let other = issue.otherSourcePath { fields["otherSourcePath"] = .string(other) }
+                    return .object(fields)
                 }),
             "warnings": .array(warnings(report)),
             "summary": .object([

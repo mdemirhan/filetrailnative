@@ -6,35 +6,35 @@ import Foundation
 public enum CopyPasteErrors {
     /// The reason for each errno that has one of its own; the error's message for any other.
     public static let errnoMessages: [Int32: String] = [
-        ENOSPC: "There isn't enough free space on the destination disk.",
-        EDQUOT: "The destination's storage quota is full.",
-        EACCES: "You don't have permission to access this item.",
-        EPERM: "You don't have permission to access this item.",
+        ENOSPC: "There isn’t enough free space on the destination disk.",
+        EDQUOT: "The destination’s storage quota is full.",
+        EACCES: "You don’t have permission to access this item.",
+        EPERM: "You don’t have permission to access this item.",
         EROFS: "The destination is read-only.",
         ENAMETOOLONG: "The name is too long.",
         ENOENT: "The item no longer exists.",
         EEXIST: "An item with this name already exists.",
-        ENOTEMPTY: "The folder isn't empty.",
+        ENOTEMPTY: "The folder isn’t empty.",
         EBUSY: "The item is in use.",
         EIO: "A disk error occurred.",
-        EXDEV: "The item can't be moved directly to a different disk.",
+        EXDEV: "The item can’t be moved directly to a different disk.",
         // Also the write service's own error for removing a folder as if it were a file.
         EISDIR: "A folder is in the way where a file was expected.",
-        ENOTDIR: "Part of the path isn't a folder any more.",
-        ENOTSUP: "This volume doesn't support this operation.",
-        EOPNOTSUPP: "This volume doesn't support this operation.",
-        EINVAL: "This volume doesn't accept this name or operation.",
-        ELOOP: "The item's location loops back on itself through symbolic links.",
-        EFBIG: "The file is too large for this volume.",
+        ENOTDIR: "Part of the path isn’t a folder any more.",
+        ENOTSUP: "This disk can’t do this.",
+        EOPNOTSUPP: "This disk can’t do this.",
+        EINVAL: "This disk doesn’t accept this name.",
+        ELOOP: "The item’s location loops back on itself through symbolic links.",
+        EFBIG: "The file is too large for this disk.",
         EMFILE: "Too many files are open. Close some apps and try again.",
         ENFILE: "Too many files are open. Close some apps and try again.",
-        ETIMEDOUT: "The volume took too long to respond.",
-        EINTR: "The operation was interrupted. Try again.",
+        ETIMEDOUT: "The disk took too long to respond.",
+        EINTR: "It was interrupted. Try again.",
         EAGAIN: "The item is temporarily unavailable. Try again.",
-        ENXIO: "The disk isn't available.",
-        ENODEV: "The disk isn't available.",
-        ENOMEM: "There isn't enough memory to finish this.",
-        ESTALE: "The network volume went away. Reconnect it and try again.",
+        ENXIO: "The disk isn’t available.",
+        ENODEV: "The disk isn’t available.",
+        ENOMEM: "There isn’t enough memory to finish this.",
+        ESTALE: "The server went away. Reconnect to it and try again.",
     ]
 
     // BSD flags that stop an item from being renamed, moved, changed or deleted. UF_IMMUTABLE is Finder's
@@ -75,5 +75,5 @@ public func findLockedRefusal(_ getFlags: ((String) throws -> UInt32)?, _ error:
 public func lockedMessage(_ path: String) -> String {
     let scalars = Array(path.unicodeScalars)
     let name = scalars.lastIndex(of: "/").map { String(String.UnicodeScalarView(scalars[($0 + 1)...])) } ?? path
-    return "“\(name.isEmpty ? path : name)” is locked. Unlock it in Finder's Get Info and try again."
+    return "“\(name.isEmpty ? path : name)” is locked. Unlock it in Finder’s Get Info and try again."
 }

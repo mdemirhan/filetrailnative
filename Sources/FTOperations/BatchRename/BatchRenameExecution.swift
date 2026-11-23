@@ -207,7 +207,7 @@ public enum BatchRenameExecution {
                 if holdsHiddenItem(item.sourcePath) {
                     results[index] = failed(
                         item,
-                        "\u{201C}\(item.sourceName)\u{201D} wasn't renamed because an item in it is still under a hidden name."
+                        "\u{201C}\(item.sourceName)\u{201D} wasn\u{2019}t renamed because an item in it is still under a hidden name."
                     )
                 } else {
                     level.append(index)
@@ -231,7 +231,7 @@ public enum BatchRenameExecution {
                     // Nothing of this depth is renamed: an item moved aside now could be stranded.
                     for index in level where results[index] == nil {
                         results[index] = failed(
-                            planned[index], "It wasn't renamed. \(describeCopyPasteError(error))")
+                            planned[index], "It wasn\u{2019}t renamed. \(describeCopyPasteError(error))")
                     }
                     continue
                 }
@@ -272,7 +272,7 @@ public enum BatchRenameExecution {
                 if (cancelled || signal.isStopped) && !finishesSwap {
                     cancelled = true
                     results[index] = leaveUnrenamed(
-                        fileSystem, item, status: .cancelled, error: "Not started because the operation was stopped.",
+                        fileSystem, item, status: .cancelled, error: "The rename was stopped first.",
                         skipReason: nil)
                     followRenamed(item)
                     continue

@@ -138,7 +138,7 @@ struct CopyPasteNamesTests {
         let error = #expect(throws: CopyPasteNames.NoFreeName.self) {
             try CopyPasteNames.resolveDuplicateName(sourceName: "x.txt", in: "/target", exists: { _ in true })
         }
-        #expect(error?.description == "Couldn't find a free name for \u{201C}x.txt\u{201D}.")
+        #expect(error?.description == "Couldn’t find a free name for \u{201C}x.txt\u{201D}.")
     }
 
     @Test func skipsNamesTheSamePasteHasClaimed() throws {

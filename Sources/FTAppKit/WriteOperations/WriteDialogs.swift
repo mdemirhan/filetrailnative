@@ -37,7 +37,7 @@ enum WriteStartAction: Equatable, Sendable {
 /// are an alert drawn in the window (`InWindowAlerts`); with no window to draw in, a plain alert with the same words.
 @MainActor
 struct WriteDialogs {
-    static let busyMessage = "Another file operation is running. Try again when it has finished."
+    static let busyMessage = "File Trail is still working on other items. Try again when it has finished."
 
     /// Shows a warning with `title` and `message` on `window` (or on its own, with none).
     var show: (_ title: String, _ message: String, _ window: NSWindow?) -> Void = { title, message, window in

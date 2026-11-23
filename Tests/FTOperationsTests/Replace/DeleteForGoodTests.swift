@@ -44,7 +44,7 @@ struct DeleteForGoodTests {
             #expect(item?.status == .failed)
             #expect(
                 item?.error
-                    == "\u{201C}F\u{201D} couldn't be looked through, so it wasn't deleted for good and nothing was replaced."
+                    == "\u{201C}F\u{201D} couldn’t be looked through, so it wasn’t deleted for good and nothing was replaced."
             )
             Darwin.chmod(dst + "/F/closed", 0o755)
             #expect(Disk.list(dst) == ["F"])

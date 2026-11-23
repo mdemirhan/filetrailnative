@@ -91,7 +91,8 @@ public enum PermissionText {
             symbolic: symbolic, octal: String(repeating: "0", count: max(0, 3 - octal.count)) + octal)
     }
 
-    /// Finder phrases permissions from the owner's point of view; the octal code stays visible.
+    /// The owner's access, said to be the owner's ("Owner: Read & Write"): the person looking may not be the owner.
+    /// The octal code stays visible beside it.
     public static func ownerAccess(symbolic: String) -> String {
         let units = Array(symbolic.utf16)
         let owner =
@@ -100,10 +101,10 @@ public enum PermissionText {
         let ownerText = JSString.string(owner)
         let canRead = ownerText.contains("r")
         let canWrite = ownerText.contains("w")
-        if canRead && canWrite { return "Read & Write" }
-        if canRead { return "Read only" }
-        if canWrite { return "Write only" }
-        return "No access"
+        if canRead && canWrite { return "Owner: Read & Write" }
+        if canRead { return "Owner: Read only" }
+        if canWrite { return "Owner: Write only" }
+        return "Owner: No access"
     }
 }
 

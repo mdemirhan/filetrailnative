@@ -109,7 +109,7 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
         tree.outline.setAccessibilityIdentifier("sidebar.tree.outline")
         tree.setAccessibilityIdentifier("sidebar.tree")
         sections.outline.setAccessibilityLabel("Favorites and Locations")
-        tree.outline.setAccessibilityLabel("Folders")
+        tree.outline.setAccessibilityLabel("Folder Tree")
         foldersHeader.setAccessibilityIdentifier("sidebar.foldersHeader")
         foldersTitle.setAccessibilityIdentifier("sidebar.foldersTitle")
         foldersHeader.addSubview(foldersTitle)

@@ -125,7 +125,7 @@ struct UndoRecordingCoordinatorTests {
     @Test func cantUndoANewFolderWhenWhetherItsDiskHasATrashCantBeTold() async throws {
         try await withUndoFolder { root, trashDir in
             let (coordinator, finished, window) = setUp(
-                root, trashDir, diskHasTrash: { _ in throw OperationError("The mount table couldn't be read.") })
+                root, trashDir, diskHasTrash: { _ in throw OperationError("The mount table couldn’t be read.") })
             let ended = try await end(
                 coordinator.createFolder(parentDirectoryPath: root, folderName: "New", window: window), window)
             #expect(ended.status == .completed)
@@ -283,7 +283,7 @@ struct UndoRecordingCoordinatorTests {
             #expect(terminal.result?.items.first?.status == .failed)
             #expect(
                 terminal.result?.items.first?.error
-                    == "“share.txt” changed after you were asked about it, so it wasn't deleted.")
+                    == "“share.txt” changed after you were asked about it, so it wasn’t deleted.")
             #expect(try UndoDisk.read(path) == "never asked about")
             #expect(finished.all.isEmpty)
             await coordinator.shutDown()

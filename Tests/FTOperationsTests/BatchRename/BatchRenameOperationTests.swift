@@ -275,7 +275,7 @@ private func rename(
             #expect(end.result?.items.map(\.status) == [.failed, .completed])
             #expect(
                 end.result?.items.first?.error
-                    == "“locked.txt” is locked. Unlock it in Finder's Get Info and try again.")
+                    == "“locked.txt” is locked. Unlock it in Finder’s Get Info and try again.")
             #expect(try visibleNames(root) == ["b.txt", "locked.txt"])
         }
     }
@@ -289,7 +289,7 @@ private func rename(
             defer { chmod(folder, 0o755) }
             let (end, _) = try await rename(folder, [("a.txt", "b.txt")])
             #expect(end.status == .failed)
-            #expect(end.result?.items.first?.error == "You don't have permission to access this item.")
+            #expect(end.result?.items.first?.error == "You don’t have permission to access this item.")
             #expect(try names(folder) == ["a.txt"])
         }
     }
@@ -386,9 +386,9 @@ private func rename(
             }
             #expect(
                 await refusal(one("\(home)/.Trash", "x"), home: home)
-                    == "The Trash folder is a protected system directory and cannot be modified.")
-            #expect(await refusal(one("\(home)/Documents", "x"), home: home) == "“Documents” can't be renamed.")
-            #expect(await refusal(one("/Applications", "Apps")) == "“Applications” can't be renamed.")
+                    == "The Trash itself can\u{2019}t be moved, renamed or deleted.")
+            #expect(await refusal(one("\(home)/Documents", "x"), home: home) == "“Documents” can’t be renamed.")
+            #expect(await refusal(one("/Applications", "Apps")) == "“Applications” can’t be renamed.")
         }
     }
 

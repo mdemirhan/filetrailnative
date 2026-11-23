@@ -216,7 +216,7 @@ public final class OpenWithCatalog: @unchecked Sendable {
     /// packages and apps.
     public func setDefaultApplication(appPath: String, contentType: String) async throws {
         guard !contentType.isEmpty, let type = UTType(contentType) else {
-            throw SetDefaultFailure(message: "That kind of file isn't known to macOS.")
+            throw SetDefaultFailure(message: "That kind of file isn\u{2019}t known to macOS.")
         }
         // Folders, packages and apps are left as they are: changing what opens every folder would take them all
         // away from Finder.
@@ -243,7 +243,7 @@ public final class OpenWithCatalog: @unchecked Sendable {
             }
             let timer = Task {
                 try? await Task.sleep(for: limit)
-                answer(.failure(SetDefaultFailure(message: "macOS didn't answer.")))
+                answer(.failure(SetDefaultFailure(message: "macOS didn\u{2019}t answer.")))
             }
             Task {
                 do {

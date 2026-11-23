@@ -1247,7 +1247,7 @@
             "status": "problem",
             "proposedName": ".",
             "segments": [{"text": ".", "changed": true}],
-            "problem": {"kind": "invalid", "message": "\".\" is not a valid name."}
+            "problem": {"kind": "invalid", "message": "“.” can’t be used as a name."}
           }
         ],
         "renameCount": 0,

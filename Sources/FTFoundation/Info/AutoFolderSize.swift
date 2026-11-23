@@ -5,10 +5,10 @@ public enum AutoFolderSize {
     /// Info panel and the Info Row both wait it out: they share one measurement.
     public static let delayMilliseconds = 500.0
 
-    /// The folder the Info panel or the Info Row measures by itself: the item Show Info put in the panel (`showInfoPath`,
+    /// The folder the Info panel or the Info Row measures by itself: the item Get Info put in the panel (`showInfoPath`,
     /// once the panel shows it as `infoItem`), else the one item selected, else, with nothing selected, the folder on
     /// screen (`shownFolder`), however it was opened. It is measured when it is the home folder, a folder in it, or a
-    /// bundle anywhere. The row shows the selection, never Show Info's item; with both open, the panel's item is measured.
+    /// bundle anywhere. The row shows the selection, never Get Info's item; with both open, the panel's item is measured.
     public static func path(
         infoPanelOpen: Bool, infoRowOpen: Bool = false, selectedPaths: [String],
         selected: (path: String, kind: EntryKind)?, shownFolder: (path: String, kind: EntryKind)? = nil,

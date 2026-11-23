@@ -7021,6 +7021,7 @@
               "code": "duplicate_destination_name",
               "destinationPath": "$ROOT/destination/f/read.txt",
               "message": "$ROOT/source/f/read.txt and $ROOT/source/f/Read.txt would both be pasted as read.txt, because the destination doesn't tell upper and lower case apart.",
+              "otherSourcePath": "$ROOT/source/f/Read.txt",
               "sourcePath": "$ROOT/source/f/read.txt"
             }
           ],
@@ -7423,6 +7424,7 @@
               "code": "duplicate_destination_name",
               "destinationPath": "$ROOT/destination/x.txt",
               "message": "$ROOT/source/x.txt and $ROOT/source/X.txt would both be pasted as x.txt.",
+              "otherSourcePath": "$ROOT/source/X.txt",
               "sourcePath": "$ROOT/source/x.txt"
             }
           ],

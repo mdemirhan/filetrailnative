@@ -99,8 +99,8 @@ The [README](../README.md) is about what is different from Finder. This page lis
 
 - **Icons** shows Quick Look previews of photos, PDFs and other documents, at the size you set.
 - **List** has columns for date, size and kind, and optionally date created, date added, date last opened and permissions. Right-click a column heading, or choose View ▸ Columns, to show or hide columns, and drag a heading to move its column. Each column keeps the width you give it, in each pane apart.
-- **Folder views**: a folder can keep its own view, order, columns and size, for itself or for every folder inside it. Changes you make there show at once but are kept only with Save (View ▸ Folder View ▸ Update Folder View), and a small symbol in the status bar shows whether a folder has a view of its own and opens its options.
-- **Folder Views** (View ▸ Folder View ▸ Manage Folder Views…) lists every folder with a view of its own, opens it, and removes its view, with or without those of the folders inside it.
+- **Folder views**: a folder can keep its own view, order, columns and size, for itself or for every folder inside it. Changes you make there show at once but are kept only with Save (Layout ▸ Update Folder View), and a small symbol in the status bar shows whether a folder has a view of its own and opens its options.
+- **Folder Views** (Layout ▸ Manage Folder Views…) lists every folder with a view of its own, opens it, and removes its view, with or without those of the folders inside it.
 - **Compact List** packs a folder into columns of names.
 - **Sizes**: a slider in the status bar, and View ▸ Make Bigger, Make Smaller and Default Size (⌘+, ⌘- and ⌘0), set the icon size, the Compact List's column width and how many previews show. Each pane keeps its own.
 - **Previews (⌘4)** fills the pane with 9, 4, 2 or 1 large previews, each in its own proportions. View ▸ Show Previews switches to it at the count you pick from any view, search results too, with the selected file on screen.
@@ -127,7 +127,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
 - **Folder sizes**: ask for a folder's size and it is measured with every folder inside it, in one pass. Sorted by Size, each row of the List gets a bar. Sizes you ask for are measured one after another, ahead of those measured by themselves and never stopping each other; a size measured in one window shows in all of them.
 - **A size is of what could be measured**: folders that change while they are measured are left out, and folders File Trail has no permission to read count as empty, as in Finder. Changes made outside File Trail leave a size as it was until you measure again, with Calculate Size or the refresh button beside it. A size waiting for another to finish says "Waiting…".
 - **Sizes only where you ask**: nothing is measured while you browse, so a large folder opens at once. With the Info panel or the Info Row open, the folder they show is measured by itself when it is in your home folder; Settings can turn that off.
-- **Activity**: while something runs in the background, a ring at the end of the toolbar's title shows it, filling as a file operation goes on, with "+2" when more runs or waits; a click lists them, the file operation and the folder sizes being measured or waiting, each with Stop.
+- **Activity**: while something runs in the background, a ring at the end of the toolbar's title shows it, filling as a copy, move or delete goes on, with "+2" when more runs or waits; a click lists them, the file operation and the folder sizes being measured or waiting, each with Stop.
 - **The Activity list keeps its rows in place** while it is open: one that ended stays where it was, dimmed, saying how it ended, so Stop is never under the wrong row.
 - **The Info panel** shows the selected item's preview, kind, size, dates and permissions, with Open, Open With and quick actions. The **Info Row** shows the same along the bottom.
 

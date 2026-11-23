@@ -24,7 +24,7 @@ public enum ItemNames {
         }
         let scalars = Array(trimmed.unicodeScalars)
         if scalars == ["."] || scalars == [".", "."] {
-            return "\"\(trimmed)\" is not a valid name."
+            return "\u{201C}\(trimmed)\u{201D} can\u{2019}t be used as a name."
         }
         // "\" is an ordinary character on macOS (Finder allows it): only "/" separates folders.
         if scalars.contains(where: { $0 == "/" || $0 == "\0" }) {

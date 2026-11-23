@@ -186,11 +186,11 @@ public enum WriteEndNotices {
         if write.status == .cancelled {
             let title: String =
                 switch write.action {
-                case .moveTo: "Move cancelled"
-                case .copyTo: "Copy cancelled"
-                case .trash: "Move to Trash cancelled"
-                case .deleteImmediately: "Delete cancelled"
-                default: "Paste cancelled"
+                case .moveTo: "Move stopped"
+                case .copyTo: "Copy stopped"
+                case .trash: "Move to Trash stopped"
+                case .deleteImmediately: "Delete stopped"
+                default: "Paste stopped"
                 }
             return WriteEndToast(kind: .info, title: title, message: summary)
         }

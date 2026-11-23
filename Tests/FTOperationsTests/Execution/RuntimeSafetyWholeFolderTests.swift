@@ -69,7 +69,7 @@ struct WholeFolderTests {
             let run = try await runPaste(mode: .copy, sources: [f.src + "/F"], into: f.dst, fileSystem: fileSystem)
 
             #expect(run.result?.status == .failed)
-            #expect(run.result?.items.first?.error == "You don't have permission to access this item.")
+            #expect(run.result?.items.first?.error == "You don’t have permission to access this item.")
             #expect(Disk.list(f.dst) == [])
         }
     }
@@ -83,7 +83,7 @@ struct WholeFolderTests {
             #expect(run.result?.status == .failed)
             #expect(
                 run.result?.items.first?.error
-                    == "\u{201C}Talk.key\u{201D} wasn't moved because some items in it were skipped or couldn't be copied. Nothing in it was moved."
+                    == "\u{201C}Talk.key\u{201D} wasn’t moved because some items in it were skipped or couldn’t be copied. Nothing in it was moved."
             )
             #expect(run.result?.items.filter { $0.status == .failed }.count == 2)
             #expect(Disk.list(f.dst) == [])
@@ -99,7 +99,7 @@ struct WholeFolderTests {
 
             #expect(
                 run.result?.items.first?.error
-                    == "\u{201C}Talk.key\u{201D} wasn't copied because some items in it were skipped or couldn't be copied."
+                    == "\u{201C}Talk.key\u{201D} wasn’t copied because some items in it were skipped or couldn’t be copied."
             )
             #expect(Disk.list(f.dst) == [])
         }
@@ -176,7 +176,7 @@ struct WholeFolderTests {
 
             #expect(
                 run.result?.items.first?.error
-                    == "\u{201C}Talk.key\u{201D} wasn't copied because some items in it were skipped or couldn't be copied."
+                    == "\u{201C}Talk.key\u{201D} wasn’t copied because some items in it were skipped or couldn’t be copied."
             )
             #expect(Disk.list(f.dst) == [])
         }
@@ -216,7 +216,7 @@ struct WholeFolderTests {
             #expect(Disk.list(f.dst + "/F") == ["readme.txt"])
             #expect(
                 run.result?.items.first { $0.sourcePath == f.src + "/F/Tool.app" }?.error
-                    == "\u{201C}Tool.app\u{201D} wasn't copied because some items in it were skipped or couldn't be copied."
+                    == "\u{201C}Tool.app\u{201D} wasn’t copied because some items in it were skipped or couldn’t be copied."
             )
         }
     }
@@ -541,7 +541,7 @@ struct AppleDoubleLookalikeTests {
 
             #expect(
                 run.result?.items.first { $0.sourcePath == f.src + "/F" }?.error
-                    == "\u{201C}._new\u{201D} was added to \u{201C}F\u{201D} after the copy began, so it wasn't copied."
+                    == "\u{201C}._new\u{201D} was added to \u{201C}F\u{201D} after the copy began, so it wasn’t copied."
             )
         }
     }
@@ -592,7 +592,7 @@ struct SmallerCasesTests {
 
             #expect(
                 run.result?.items.first?.error
-                    == "\u{201C}pipe\u{201D} is a special file (such as a pipe or a socket), which can't be copied.")
+                    == "\u{201C}pipe\u{201D} is a special file (such as a pipe or a socket), which can’t be copied.")
         }
     }
 

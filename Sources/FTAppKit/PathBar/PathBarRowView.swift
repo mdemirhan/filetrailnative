@@ -242,8 +242,10 @@ final class PathBarRowView: NSView {
 
     private func showSegments() {
         let name = startupDiskName()
+        let home = DiskPath.home.string
         pathBar.startupDiskName = name
-        pathBar.segments = PathBarModel.segments(path, homePath: DiskPath.home.string, startupDiskName: name)
+        pathBar.homePath = home
+        pathBar.segments = PathBarModel.segments(path, homePath: home, startupDiskName: name)
     }
 
     override func setFrameSize(_ newSize: NSSize) {

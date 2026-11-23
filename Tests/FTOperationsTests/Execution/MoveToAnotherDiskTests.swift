@@ -37,7 +37,7 @@ struct MoveToAnotherDiskTests {
             #expect(item?.status == .failed)
             #expect(
                 item?.error
-                    == "\u{201C}F\u{201D} wasn't moved because some items in it couldn't be copied. Nothing in it was moved."
+                    == "\u{201C}F\u{201D} wasn’t moved because some items in it couldn’t be copied. Nothing in it was moved."
             )
             #expect(Disk.list(dst) == [])
             #expect(Disk.list(src + "/F") == ["a.txt", "b.txt", "sub"])

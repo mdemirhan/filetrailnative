@@ -50,13 +50,14 @@ public enum FavoriteLabel {
         homePath.isEmpty ? "" : "\(homePath)/.Trash"
     }
 
-    /// Home, Applications, Trash, the startup disk's name, or the folder's own name.
+    /// Home, Applications, Trash (the home folder's or a disk's, as its tab says), the startup disk's name, or the
+    /// folder's own name.
     public static func label(
         for path: String, homePath: String, startupDiskName: String = VolumePaths.defaultStartupDiskName
     ) -> String {
         if JSString.equals(path, homePath) { return "Home" }
         if JSString.equals(path, "/Applications") { return "Applications" }
-        if JSString.equals(path, trashPath(homePath: homePath)) { return "Trash" }
+        if Paths.isTrashFolder(path, homePath: homePath) { return "Trash" }
         if JSString.equals(path, "/") { return startupDiskName }
         return PathText.leafName(path)
     }

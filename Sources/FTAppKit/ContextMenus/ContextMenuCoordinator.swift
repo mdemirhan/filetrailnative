@@ -22,7 +22,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
     var fileOperation: (ContextMenuActionID, ContextMenuSubject) -> Void = { _, _ in }
     /// Search results' "Reveal in Folder".
     var revealSearchResult: (String) -> Void = { _ in }
-    /// Show Info for a path: the tab points its Info panel at it. Without one, the panel only opens.
+    /// Get Info for a path: the tab points its Info panel at it. Without one, the panel only opens.
     var showInfo: ((String) -> Void)?
     /// What the clipboard holds, for Paste (the window fills it; the app's shared clipboard by default).
     var clipboardSourcePaths: () -> [String] = { [] }

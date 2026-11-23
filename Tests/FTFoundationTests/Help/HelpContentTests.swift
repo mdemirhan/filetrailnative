@@ -70,7 +70,7 @@ struct HelpContentTests {
             shown.first { $0.description.hasPrefix("Show the selected items in a Finder") }?.shortcut == "Cmd+Shift+J")
         #expect(
             shown.first { $0.shortcut == "Cmd+=" }?.description
-                == "Copy the selected items' paths as text (Cmd++ also works)")
+                == "Copy the selected items’ paths as text (Cmd++ also works)")
         // A sentence names the key, or the menu item when the command has no key.
         #expect(
             HelpContent.fillShortcutMentions("{goBack} goes back; {newTab} opens a tab.", display)

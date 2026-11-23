@@ -55,7 +55,7 @@ public struct ReviewSheetText: Equatable, Sendable {
             }
         } else {
             message =
-                "This is a large operation (\(ReviewCount.pluralize(report.summary.totalNodeCount, "item")) in total)."
+                "That\u{2019}s \(ReviewCount.pluralize(report.summary.totalNodeCount, "item")) in all, counting what is in the folders."
         }
         replacing = summary.replaced > 0
         merging = summary.merged > 0

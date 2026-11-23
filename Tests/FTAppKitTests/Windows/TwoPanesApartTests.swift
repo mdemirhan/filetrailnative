@@ -39,7 +39,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: The Info panel
 
-        // A change from outside read in the other pane (a download landing in its folder) leaves Show Info's item, and
+        // A change from outside read in the other pane (a download landing in its folder) leaves Get Info's item, and
         // the active item isn't asked for again; the tree still marks both panes' folders.
         @Test func anOutsideChangeInTheOtherPaneKeepsShowInfosItem() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -64,7 +64,7 @@ extension ExplorerWindowlessTests {
             #expect(tab.sidebarController.paneFolders == [real(harness), real(harness, "Alpha")])
         }
 
-        // The other pane opening a folder (⌥-click in the tree, Show Folder in Other Pane) leaves Show Info's item and
+        // The other pane opening a folder (⌥-click in the tree, Show Folder in Other Pane) leaves Get Info's item and
         // asks nothing again; the tree marks the folder it went to.
         @Test func theOtherPaneOpeningAFolderKeepsShowInfosItem() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -89,7 +89,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { info.targetOverride == nil })
         }
 
-        // Closing the other pane changes nothing of the active one: Show Info's item stays, its properties aren't
+        // Closing the other pane changes nothing of the active one: Get Info's item stays, its properties aren't
         // asked for again, and the sidebar's row stays where it was, whichever side the active pane was on.
         @Test(arguments: [false, true]) func closingTheOtherPaneLeavesWhatFollowsTheActivePane(rightActive: Bool)
             async throws
@@ -435,7 +435,7 @@ extension ExplorerWindowlessTests {
                 title: toolbar.titleView?.field.stringValue, search: tab.searchField?.stringValue)
         }
 
-        /// The Info panel describes `path` (Show Info), its properties read once.
+        /// The Info panel describes `path` (Get Info), its properties read once.
         private func showingInfo(_ tab: MainWindowController, _ path: String, _ harness: ExplorerHarness) async throws
             -> (InfoController, Int)
         {
@@ -446,7 +446,7 @@ extension ExplorerWindowlessTests {
             return (info, info.propertiesLoad.requests)
         }
 
-        // The other pane going Back and Forward leaves the toolbar's Back and Forward the active pane's, and Show Info's
+        // The other pane going Back and Forward leaves the toolbar's Back and Forward the active pane's, and Get Info's
         // item with nothing asked again; the active pane's own Back still moves them.
         @Test func theOtherPaneGoingBackAndForwardLeavesTheToolbarAndTheInfoPanel() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -516,7 +516,7 @@ extension ExplorerWindowlessTests {
             #expect(toolbarShows(tab).view == .list)
         }
 
-        // Items selected in the other pane (as a copy to it selects what arrived) leave Show Info's item, with nothing
+        // Items selected in the other pane (as a copy to it selects what arrived) leave Get Info's item, with nothing
         // asked again; a selection in the active pane still lets it go.
         @Test func aSelectionInTheOtherPaneLeavesShowInfosItem() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -540,7 +540,7 @@ extension ExplorerWindowlessTests {
         }
 
         // A search starting and ending in the other pane (its results put away by a folder opened there) leaves the
-        // toolbar's search field, title and view the active pane's, and Show Info's item; the tab still shows the
+        // toolbar's search field, title and view the active pane's, and Get Info's item; the tab still shows the
         // magnifier for it, and a search in the active pane still tells them.
         @Test func aSearchInTheOtherPaneLeavesTheToolbarsSearchField() async throws {
             let harness = try ExplorerHarness.windowless()

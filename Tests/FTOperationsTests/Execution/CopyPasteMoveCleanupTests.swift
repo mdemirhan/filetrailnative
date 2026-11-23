@@ -10,7 +10,7 @@ import os
 struct CopyPasteMoveCleanupTests {
     private static let skip = CopyPastePolicy(file: .skip, directory: .skip, mismatch: .skip)
     private static let copyNotWhole =
-        "It changed while it was being moved, or its copy didn't come out whole, so the original was kept."
+        "It changed while it was being moved, or its copy didn’t come out whole, so the original was kept."
 
     /// A folder on another disk (dev 2): moving it copies it, then removes the originals.
     private func folderOnAnotherDisk() -> MockWriteServiceFileSystem {
@@ -122,7 +122,7 @@ struct CopyPasteMoveCleanupTests {
         #expect(result.items.map(\.status) == [.failed])
         #expect(
             result.items.map(\.error) == [
-                "It was copied, but the original couldn't be checked, so it was kept. A disk error occurred."
+                "It was copied, but the original couldn’t be checked, so it was kept. A disk error occurred."
             ])
     }
 
@@ -227,7 +227,7 @@ struct CopyPasteMoveCleanupTests {
             result.items.contains {
                 $0.sourcePath == "/source/dir/a.txt" && $0.sourceKind == .directory && $0.status == .failed
                     && $0.error
-                        == "Its items were moved, but the folder's own information (such as its tags) couldn't all be copied, so the original \u{201C}a.txt\u{201D} was kept."
+                        == "Its items were moved, but the folder’s own information (such as its tags) couldn’t all be copied, so the original \u{201C}a.txt\u{201D} was kept."
             })
     }
 
@@ -271,7 +271,7 @@ struct CopyPasteMoveCleanupTests {
             has(
                 result, "/source/dir/sub", .failed,
                 error:
-                    "Its items were moved, but the folder's own information (such as its tags) couldn't all be copied, so the original \u{201C}sub\u{201D} was kept."
+                    "Its items were moved, but the folder’s own information (such as its tags) couldn’t all be copied, so the original \u{201C}sub\u{201D} was kept."
             ))
     }
 }

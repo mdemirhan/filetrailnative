@@ -250,7 +250,7 @@ struct UndoNamesLockedTests {
             try lock("\(root)/a.txt")
             let redone = try await t.undo(.redo)
             #expect(items(redone).map(\.status) == [.failed])
-            #expect(items(redone).first?.error == "“a.txt” is locked. Unlock it in Finder's Get Info and try again.")
+            #expect(items(redone).first?.error == "“a.txt” is locked. Unlock it in Finder’s Get Info and try again.")
             #expect(try isLockedOnDisk("\(root)/a.txt"))
             await t.shutDown()
         }
@@ -276,8 +276,8 @@ struct UndoNamesLockedTests {
             #expect(items(ended).first?.note == true)
             #expect(
                 items(ended).first?.error
-                    == "“a copy.txt” was moved, but its lock or permissions couldn't be put back. Set them in Finder's Get Info."
-                    + " “a copy.txt” is in the Trash, but the Trash didn't say where, so Redo can't bring it back."
+                    == "“a copy.txt” was moved, but its lock or permissions couldn’t be put back. Set them in Finder’s Get Info."
+                    + " “a copy.txt” is in the Trash, but the Trash didn’t say where, so Redo can’t bring it back."
             )
             await t.shutDown()
         }
@@ -305,7 +305,7 @@ struct UndoNamesLockedTests {
             #expect(items(ended).first?.note == true)
             #expect(
                 items(ended).first?.error
-                    == "“a copy.txt” was moved, but its lock or permissions couldn't be put back. Set them in Finder's Get Info."
+                    == "“a copy.txt” was moved, but its lock or permissions couldn’t be put back. Set them in Finder’s Get Info."
             )
             // Done all the same: the other command is next.
             #expect(t.history.top(direction) == nil)
@@ -367,7 +367,7 @@ struct UndoNamesLockedTests {
             let undone = try await t.undo()
             #expect(items(undone).map(\.status) == [.failed])
             #expect(
-                items(undone).first?.error?.hasSuffix(" “F” couldn't be locked again. Lock it in Finder's Get Info.")
+                items(undone).first?.error?.hasSuffix(" “F” couldn’t be locked again. Lock it in Finder’s Get Info.")
                     == true)
             await t.shutDown()
         }

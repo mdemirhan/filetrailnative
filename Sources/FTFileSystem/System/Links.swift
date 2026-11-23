@@ -5,7 +5,7 @@ import Foundation
 ///
 /// An alias is a file that holds where its original is, found again after the original is moved or renamed; a
 /// symbolic link holds a path. Opening either, or looking at what is in it, reaches the original; everything else
-/// (Rename, Copy, Compress, Show Info) acts on the alias or the link itself, as in Finder.
+/// (Rename, Copy, Compress, Get Info) acts on the alias or the link itself, as in Finder.
 public enum Links {
     /// Whether the file at `path` is a Finder alias. A symbolic link isn't one, though the system's own check says it
     /// is.

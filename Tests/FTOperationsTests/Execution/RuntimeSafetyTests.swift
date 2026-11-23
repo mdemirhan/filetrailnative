@@ -299,7 +299,7 @@ struct GoingOnAfterTheSourceChangedTests {
             #expect(run.result?.status == .failed)
             #expect(
                 run.result?.items.first?.error
-                    == "\u{201C}notes\u{201D} is no longer a folder, so it can't be merged and was left.")
+                    == "\u{201C}notes\u{201D} is no longer a folder, so it can’t be merged and was left.")
             #expect(Disk.list(f.dst + "/notes") == [])
         }
     }
@@ -341,7 +341,7 @@ struct AddedAfterTheReviewTests {
             #expect(run.result?.status == .partial)
             #expect(
                 run.result?.items.first { $0.sourcePath == f.src + "/F" }?.error
-                    == "\u{201C}late.txt\u{201D} was added to \u{201C}F\u{201D} after the copy began, so it wasn't copied."
+                    == "\u{201C}late.txt\u{201D} was added to \u{201C}F\u{201D} after the copy began, so it wasn’t copied."
             )
             #expect(Disk.list(f.dst + "/F") == ["a.txt"])
         }
@@ -487,7 +487,7 @@ struct WhatIsPickedTests {
             #expect(run.result?.status == .failed)
             #expect(
                 run.result?.items.map(\.error) == [
-                    "The folder \u{201C}dst\u{201D} couldn't be read. A disk error occurred."
+                    "The folder \u{201C}dst\u{201D} couldn’t be read. A disk error occurred."
                 ])
         }
     }

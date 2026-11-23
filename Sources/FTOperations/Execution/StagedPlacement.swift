@@ -116,7 +116,7 @@ func stageThenPlace(
         } else if stagingIsOurs {
             if !recordIncomplete(journal, journalEntry, recordedComplete) {
                 throw OperationError(
-                    "The copy of \u{201C}\(basenameOf(finalPath))\u{201D} couldn't be cleared away yet.")
+                    "The copy of \u{201C}\(basenameOf(finalPath))\u{201D} couldn\u{2019}t be cleared away yet.")
             }
             recordedComplete = false
             try removeOwnStaging(fileSystem, temporaryPath)
@@ -233,7 +233,7 @@ func stageThenPlace(
             return ExecuteNodeResult(
                 itemStatus: .failed, skipReason: nil,
                 error:
-                    "The old \u{201C}\(basenameOf(finalPath))\u{201D} was moved to the Trash, but the new one couldn't take its name, so it was saved as \u{201C}\(basenameOf(visiblePath))\u{201D}. \(describeCopyPasteError(error))",
+                    "The old \u{201C}\(basenameOf(finalPath))\u{201D} was moved to the Trash, but the new one couldn\u{2019}t take its name, so it was saved as \u{201C}\(basenameOf(visiblePath))\u{201D}. \(describeCopyPasteError(error))",
                 destinationPath: visiblePath, childItems: stagedChildItems.map { .item($0) })
         }
         restoreAfterMove(fileSystem, finalPath, stagedMode, stagedFlags)
@@ -246,7 +246,7 @@ func stageThenPlace(
             // back its lock and mode first, which the next start then carries over.
             restoreAfterMove(fileSystem, temporaryPath, stagedMode, stagedFlags)
             throw OperationError(
-                "The old \u{201C}\(basenameOf(finalPath))\u{201D} was moved to the Trash, but the new one couldn't be put in its place. It will be put there the next time File Trail starts. \(describeCopyPasteError(error))"
+                "The old \u{201C}\(basenameOf(finalPath))\u{201D} was moved to the Trash, but the new one couldn\u{2019}t be put in its place. It will be put there the next time File Trail starts. \(describeCopyPasteError(error))"
             )
         }
         do {
@@ -261,7 +261,7 @@ func stageThenPlace(
                 oldItemRemoved
                 ? " The old \u{201C}\(basenameOf(finalPath))\u{201D} was moved to the Trash." : ""
             throw OperationError(
-                "\u{201C}\(basenameOf(currentNode.node.sourcePath))\u{201D} wasn't replaced, and couldn't be put back where it was, so it is under the hidden name \u{201C}\(basenameOf(temporaryPath))\u{201D} in \u{201C}\(dirnameOf(temporaryPath))\u{201D} until File Trail starts again.\(oldTrashed) \(describeCopyPasteError(undoError))",
+                "\u{201C}\(basenameOf(currentNode.node.sourcePath))\u{201D} wasn\u{2019}t replaced, and couldn\u{2019}t be put back where it was, so it is under the hidden name \u{201C}\(basenameOf(temporaryPath))\u{201D} in \u{201C}\(dirnameOf(temporaryPath))\u{201D} until File Trail starts again.\(oldTrashed) \(describeCopyPasteError(undoError))",
                 cause: undoError)
         } catch {
             // A copy this paste made that can't be cleared away now is written down, and cleared at the next start.

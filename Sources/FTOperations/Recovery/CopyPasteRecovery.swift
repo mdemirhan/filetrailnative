@@ -89,7 +89,7 @@ public struct RecoveryOptions: Sendable {
     }
 }
 
-private let didntAnswer = "The disk didn't answer."
+private let didntAnswer = "The disk didn\u{2019}t answer."
 
 /// Finishes or undoes Replaces that were cut short (a crash, a power cut), so no item stays under the hidden name
 /// it was built under. Run once at start, before any paste.
@@ -269,7 +269,7 @@ private func recoverEntry(
                 if !folderIsThere(fileSystem, entry.sourcePath) {
                     // Its source's disk isn't connected: whether the original is there is said once it is.
                     return .unreachable(
-                        error: "The disk of \u{201C}\(basenameOf(entry.sourcePath))\u{201D} isn't connected.")
+                        error: "The disk of \u{201C}\(basenameOf(entry.sourcePath))\u{201D} isn\u{2019}t connected.")
                 }
             }
             return .nothingLeft
@@ -332,7 +332,7 @@ func folderIsOnAnotherDisk(_ path: String, disk: String?, _ diskId: (String) -> 
 
 /// What is said of an item whose own disk is away.
 private func diskNotConnected(_ path: String) -> String {
-    "The disk of \u{201C}\(basenameOf(path))\u{201D} isn't connected."
+    "The disk of \u{201C}\(basenameOf(path))\u{201D} isn\u{2019}t connected."
 }
 
 /// Whether the folder that held the hidden item at `path` is gone though its disk is connected: nothing is at the

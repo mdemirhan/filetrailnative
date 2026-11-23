@@ -15,7 +15,7 @@ extension MainWindowController {
         }
     }
 
-    /// `original` selected in its folder: Show Original, and the Original row of Show Info. The original is spelled as
+    /// `original` selected in its folder: Show Original, and the Original row of Get Info. The original is spelled as
     /// its disk spells it (`Links.original`, `realpath`), which is how the folder on screen and its rows are known.
     func revealOriginal(_ original: String) {
         // A disk has no folder to be selected in: it opens.

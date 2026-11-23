@@ -2,10 +2,10 @@ import FTFoundation
 import Foundation
 import os
 
-let notStartedMessage = "Not started because the operation was stopped."
+let notStartedMessage = "Not reached before the stop."
 /// The result sheet knows the items a full disk left by this reason.
 let diskFullNotStartedMessage = CopyPasteResultText.notStartedDiskFull
-let cancelledMessage = "Operation cancelled."
+let cancelledMessage = "Stopped."
 /// How many times one item may run into something new at its destination before the paste gives up on it (each
 /// time asks, or applies a standing answer).
 let maxRuntimeAttempts = 5

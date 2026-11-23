@@ -33,7 +33,7 @@ struct OtherDiskRecoveryTests {
 
         #expect(
             outcomes == [
-                ReplaceRecovery(entry: entry, outcome: .unreachable(error: "The disk of “x” isn't connected."))
+                ReplaceRecovery(entry: entry, outcome: .unreachable(error: "The disk of “x” isn’t connected."))
             ])
     }
 
@@ -62,7 +62,7 @@ struct OtherDiskRecoveryTests {
         entry.disk = nil
         let unknown = recoverPartialFiles([entry], secondStick(), options("stick-2"))
 
-        #expect(other.map(\.outcome) == [.unreachable(error: "The disk of “big.mov” isn't connected.")])
+        #expect(other.map(\.outcome) == [.unreachable(error: "The disk of “big.mov” isn’t connected.")])
         #expect(own.map(\.outcome) == [.nothingLeft])
         #expect(unknown.map(\.outcome) == [.nothingLeft])
     }
@@ -101,7 +101,7 @@ struct OtherDiskRecoveryTests {
             #expect(journal.entries().map(\.disk) == Array(repeating: "the-disk-there-before", count: 3))
             #expect(
                 atStart.notices == [
-                    "“a.txt” was being moved onto “stick”, which isn't connected. Connect it and File Trail puts “a.txt” in place; until then it is under the hidden name “.a.txt.filetrail-0123abcd” there."
+                    "“a.txt” was being moved onto “stick”, which isn’t connected. Connect it and File Trail puts “a.txt” in place; until then it is under the hidden name “.a.txt.filetrail-0123abcd” there."
                 ])
             #expect(later == RecoveryReport())
             #expect(Disk.list(folder) == ["keep.txt"])

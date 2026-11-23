@@ -14,13 +14,13 @@ func executeReplace(
     try assertDestinationDoesNotContainSource(currentNode, destination, fileSystem)
     if destination.kind == .directory && holdsAnyOf(fileSystem, finalPath, pastedItems(context)) {
         throw OperationError(
-            "Can't replace \u{201C}\(basenameOf(finalPath))\u{201D} because it contains another item being pasted.")
+            "Can’t replace “\(basenameOf(finalPath))” because it contains another item being pasted.")
     }
     // Pasting "/x/a.txt" over "/d/a.txt" while "/d/a.txt" is pasted too (search results): replacing it would take
     // away an item this paste still has to paste, or just pasted.
     if isAnyOf(fileSystem, finalPath, pastedItems(context)) {
         throw OperationError(
-            "Can't replace \u{201C}\(basenameOf(finalPath))\u{201D} because it is another item being pasted.")
+            "Can’t replace “\(basenameOf(finalPath))” because it is another item being pasted.")
     }
     // A folder a disk is mounted on, perhaps only since the review: what would go to the Trash, or be deleted for
     // good where there is no Trash, is everything on that disk. Refused before the pasted item is moved aside. The
@@ -29,7 +29,7 @@ func executeReplace(
         isMountPoint(destination, holderDev: (try? fileSystem.stat(dirnameOf(finalPath)))?.dev)
     {
         throw OperationError(
-            "Can't replace \u{201C}\(basenameOf(finalPath))\u{201D} because it is a disk mounted here.")
+            "Can’t replace “\(basenameOf(finalPath))” because it is a disk mounted here.")
     }
     // A locked item can't go to the Trash; found out now, before anything is written.
     if isLocked(context.getFlags, finalPath) {
@@ -39,7 +39,7 @@ func executeReplace(
     // last looked at is looked at, and asked about, again.
     if !isAsApproved(currentNode.node.destinationFingerprint, destination) {
         throw DestinationTakenError(
-            original: OperationError("\u{201C}\(basenameOf(finalPath))\u{201D} changed before it could be replaced."))
+            original: OperationError("“\(basenameOf(finalPath))” changed before it could be replaced."))
     }
 
     // A move that copies (to another disk) removes the originals only after the swap, and the copy is staged as a
@@ -61,7 +61,7 @@ func executeReplace(
                     return ExecuteNodeResult(
                         itemStatus: .failed, skipReason: nil,
                         error:
-                            "\u{201C}\(basenameOf(finalPath))\u{201D} wasn't replaced because some items inside couldn't be copied.",
+                            "“\(basenameOf(finalPath))” wasn’t replaced because some items inside couldn’t be copied.",
                         destinationPath: finalPath,
                         // Only the failures: everything else went away with the hidden copy.
                         childItems: items.filter { $0.status == .failed }.map { .item($0) })
@@ -74,7 +74,7 @@ func executeReplace(
                 return ExecuteNodeResult(
                     itemStatus: .failed, skipReason: nil,
                     error:
-                        "\u{201C}\(basenameOf(finalPath))\u{201D} wasn't replaced because \u{201C}\(basenameOf(skippedInside.sourcePath))\u{201D} in it changed and was skipped.",
+                        "“\(basenameOf(finalPath))” wasn’t replaced because “\(basenameOf(skippedInside.sourcePath))” in it changed and was skipped.",
                     destinationPath: finalPath, childItems: [])
             }))
 }
@@ -102,9 +102,9 @@ private func assertDestinationDoesNotContainSource(
         destination: destination)
     {
     case .same:
-        throw OperationError("\u{201C}\(name)\u{201D} is the item being pasted, so it can't replace itself.")
+        throw OperationError("“\(name)” is the item being pasted, so it can’t replace itself.")
     case .contains:
-        throw OperationError("Can't replace \u{201C}\(name)\u{201D} because it contains the item being pasted.")
+        throw OperationError("Can’t replace “\(name)” because it contains the item being pasted.")
     case nil:
         return
     }

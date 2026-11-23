@@ -97,7 +97,7 @@ struct FileWriteJournalTests {
                 run.result?.items.map { [$0.status.rawValue, $0.error ?? ""] } == [
                     [
                         "failed",
-                        "File Trail couldn't save its recovery information because the startup disk is full. Free some space there and try again.",
+                        "File Trail couldn’t save its recovery information because the startup disk is full. Free some space there and try again.",
                     ]
                 ])
             #expect(Disk.list(destination) == [])
@@ -117,7 +117,7 @@ struct FileWriteJournalTests {
             do {
                 try journal.add(entry(directory, "a"))
             } catch {
-                #expect(errorMessage(error) == "File Trail couldn't save its recovery information.")
+                #expect(errorMessage(error) == "File Trail couldn’t save its recovery information.")
             }
             // A temporary file that can't be made is the disk's own failure, said the same way.
             try Disk.makeDirectories(filePath + ".tmp")
@@ -125,7 +125,7 @@ struct FileWriteJournalTests {
                 try FileWriteJournal.open(filePath).add(entry(directory, "b"))
                 Issue.record("the write should have failed")
             } catch {
-                #expect(errorMessage(error) == "File Trail couldn't save its recovery information.")
+                #expect(errorMessage(error) == "File Trail couldn’t save its recovery information.")
             }
         }
     }

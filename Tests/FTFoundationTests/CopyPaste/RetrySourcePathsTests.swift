@@ -49,7 +49,7 @@ import Testing
                 "Already there, a different kind of item \u{B7} Replace Older left it",
                 "Already existed \u{B7} you chose Skip",
                 "Already there \u{B7} Add Missing left it",
-                "Skipped after it changed during the operation",
+                "Skipped after it changed during the paste",
             ])
         #expect(text.retryLabel == nil)
     }
@@ -63,7 +63,7 @@ import Testing
             }
             let failed = ResultItem(
                 sourcePath: "/src/8.txt", destinationPath: "/dest/8.txt", status: .failed,
-                error: "There isn't enough free space on the destination disk.")
+                error: "There isn’t enough free space on the destination disk.")
             let left = (9...20).map {
                 ResultItem(
                     sourcePath: "/src/\($0).txt", destinationPath: "/dest/\($0).txt", status: .cancelled, error: reason)
@@ -76,18 +76,34 @@ import Testing
         }
 
         let full = text(notStarted: "Not started because the destination disk is full.")
-        #expect(full.title == "Copied 7 of 20 items into \u{201C}dest\u{201D}")
-        #expect(full.message == "1 item couldn\u{2019}t be copied. 12 items weren't started because the disk is full.")
+        #expect(full.title == "Copied 7 of 20 items into “dest”")
+        #expect(full.message == "1 item couldn’t be copied. 12 items weren’t started because the disk is full.")
         #expect(rows(full) == Array(repeating: "Not started because the destination disk is full.", count: 12))
         #expect(full.retryLabel == "Retry 13 Items")
 
-        for reason in ["Not started because the operation was stopped.", nil] {
+        for reason in ["Not reached before the stop.", nil] {
             let stopped = text(notStarted: reason)
             #expect(
                 stopped.message
-                    == "1 item couldn\u{2019}t be copied. 12 items weren't started because the operation was stopped.")
-            #expect(rows(stopped) == Array(repeating: "The operation was stopped first.", count: 12))
+                    == "1 item couldn’t be copied. 12 items weren’t started because the copy was stopped.")
+            #expect(rows(stopped) == Array(repeating: "The copy was stopped first.", count: 12))
         }
+    }
+
+    // A paste that moves its items, all or some, says they couldn't be pasted: a cut item isn't copied. A paste
+    // that only copies says copied.
+    @Test func callsTheItemsOfAPasteThatMovesPasted() {
+        let items = [
+            ResultItem(sourcePath: "/src/a.txt", destinationPath: "/dest/a.txt", status: .completed),
+            ResultItem(sourcePath: "/src/b.txt", destinationPath: "/dest/b.txt", status: .failed, error: "It broke."),
+        ]
+        let moving = CopyPasteResultText(
+            action: .paste, targetPath: "/dest", error: nil, items: items, canRetry: true, moves: true)
+        #expect(moving.message == "1 item couldn’t be pasted.")
+        #expect(moving.sections.map(\.label) == ["Couldn’t paste"])
+        let copying = CopyPasteResultText(action: .paste, targetPath: "/dest", error: nil, items: items, canRetry: true)
+        #expect(copying.message == "1 item couldn’t be copied.")
+        #expect(copying.sections.map(\.label) == ["Couldn’t copy"])
     }
 
     @Test func doesNotConfuseASiblingWithASharedNamePrefixForAParent() {

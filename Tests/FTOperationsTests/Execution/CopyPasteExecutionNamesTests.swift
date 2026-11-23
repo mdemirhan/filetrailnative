@@ -46,7 +46,7 @@ struct CopyPasteExecutionNamesTests {
         #expect(item?.status == .failed)
         #expect(
             item?.error
-                == "\u{201C}a.txt\u{201D} wasn't pasted because another item of this paste has the same name on this disk, which doesn't tell upper and lower case apart."
+                == "\u{201C}a.txt\u{201D} wasn’t pasted because another item of this paste has the same name on this disk, which doesn’t tell upper and lower case apart."
         )
         #expect(fileSystem.trashed == [])
         // The move is given up whole: both originals stay where they were.
@@ -80,7 +80,7 @@ struct CopyPasteExecutionNamesTests {
         #expect(item?.status == .failed)
         #expect(
             item?.error
-                == "\u{201C}Strasse.txt\u{201D} wasn't pasted because another item of this paste has the same name on this disk, which doesn't tell upper and lower case apart."
+                == "\u{201C}Strasse.txt\u{201D} wasn’t pasted because another item of this paste has the same name on this disk, which doesn’t tell upper and lower case apart."
         )
         #expect(fileSystem.readNode("/target/Straße.txt")?.size == 5)
         #expect(fileSystem.trashed == [])
@@ -91,7 +91,7 @@ struct CopyPasteExecutionNamesTests {
 // merged, and is left where it was when a rename no longer does it.
 struct FolderRenamedWholeTests {
     private static let retry =
-        "\u{201C}Project\u{201D} wasn't moved because its destination changed after the move began. Try moving it again."
+        "\u{201C}Project\u{201D} wasn’t moved because its destination changed after the move began. Try moving it again."
 
     private func projectFolder() -> MockWriteServiceFileSystem {
         MockWriteServiceFileSystem([

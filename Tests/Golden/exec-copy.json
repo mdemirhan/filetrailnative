@@ -5937,7 +5937,7 @@
             },
             {
               "destinationPath": "$ROOT/destination/f/closed",
-              "error": "This folder couldn't be read, so it wasn't copied. You don't have permission to access this item.",
+              "error": "This folder couldn’t be read, so it wasn’t copied. You don’t have permission to access this item.",
               "skipReason": null,
               "sourceKind": "directory",
               "sourcePath": "$ROOT/source/f/closed",
@@ -8324,11 +8324,11 @@
         "recovery": null,
         "result": {
           "destinationDirectoryPath": "$ROOT/destination",
-          "error": "“a.txt” is locked. Unlock it in Finder's Get Info and try again.",
+          "error": "“a.txt” is locked. Unlock it in Finder’s Get Info and try again.",
           "items": [
             {
               "destinationPath": "$ROOT/destination/a.txt",
-              "error": "“a.txt” is locked. Unlock it in Finder's Get Info and try again.",
+              "error": "“a.txt” is locked. Unlock it in Finder’s Get Info and try again.",
               "skipReason": null,
               "sourceKind": "file",
               "sourcePath": "$ROOT/source/a.txt",
@@ -8453,11 +8453,11 @@
         "recovery": null,
         "result": {
           "destinationDirectoryPath": "$ROOT/destination",
-          "error": "Couldn't find a free name for “a.txt”.",
+          "error": "Couldn’t find a free name for “a.txt”.",
           "items": [
             {
               "destinationPath": "$ROOT/destination/a.txt",
-              "error": "Couldn't find a free name for “a.txt”.",
+              "error": "Couldn’t find a free name for “a.txt”.",
               "sourceKind": "file",
               "sourcePath": "$ROOT/source/a.txt",
               "status": "failed"

@@ -138,7 +138,7 @@ struct CopyPasteExecutionRenameTests {
         let events = await execute(fileSystem, operation, operationId: "rename-eperm-1")
 
         #expect(events.last?.status == .failed)
-        #expect(events.last?.result?.error == "You don't have permission to access this item.")
+        #expect(events.last?.result?.error == "You don’t have permission to access this item.")
         #expect(fileSystem.exists("/source/a.txt"))
         #expect(!fileSystem.exists("/target/a.txt"))
     }

@@ -131,7 +131,7 @@ import os
         let error = await #expect(throws: OpenWithCatalog.SetDefaultFailure.self) {
             try await OpenWithCatalog().setDefaultApplication(appPath: missingApp, contentType: "")
         }
-        #expect(error?.message == "That kind of file isn't known to macOS.")
+        #expect(error?.message == "That kind of file isn’t known to macOS.")
     }
 }
 
@@ -151,7 +151,7 @@ struct SettingTheDefaultAppTests {
         }
         catalog.setDefaultTimeLimit = .milliseconds(100)
 
-        await #expect(throws: OpenWithCatalog.SetDefaultFailure(message: "macOS didn't answer.")) {
+        await #expect(throws: OpenWithCatalog.SetDefaultFailure(message: "macOS didn’t answer.")) {
             try await catalog.setDefaultApplication(
                 appPath: "/Applications/TextEdit.app", contentType: "public.plain-text")
         }

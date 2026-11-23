@@ -135,7 +135,7 @@ struct CopyPasteVolumesTests {
                 let run = try await runPaste(mode: .cut, sources: [source], into: destination)
 
                 #expect(run.result?.status == .failed)
-                #expect(run.result?.items.first?.error == "There isn't enough free space on the destination disk.")
+                #expect(run.result?.items.first?.error == "There isn’t enough free space on the destination disk.")
                 #expect(visible(root.path + "/src") == ["big.bin"])
                 #expect(Disk.list(destination) == [])
             }

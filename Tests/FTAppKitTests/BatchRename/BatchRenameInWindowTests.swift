@@ -377,8 +377,11 @@ extension ExplorerWindowlessTests {
             select(opened, ["a.txt", "b.txt"])
             tab.renameSelected()
             #expect(tab.batchRenameSheet == nil)
-            #expect(opened.notices.titles == ["Couldn\u{2019}t Rename"])
-            #expect(opened.notices.messages == ["Another file operation is running. Try again when it has finished."])
+            #expect(opened.notices.titles == ["Couldn’t Rename"])
+            #expect(
+                opened.notices.messages == [
+                    "File Trail is still working on other items. Try again when it has finished."
+                ])
             // Every way in, Try Again too.
             tab.openBatchRenameSheet([BatchRenameTarget(path: opened.path("a.txt"), name: "a.txt", isFolder: false)])
             #expect(tab.batchRenameSheet == nil)
@@ -431,7 +434,7 @@ extension ExplorerWindowlessTests {
                     .partial,
                     [
                         (opened.path("b.txt"), opened.path("b-old.txt"), .completed, nil),
-                        (opened.path("Alpha"), opened.path("Alpha 2"), .failed, "\u{201C}Alpha\u{201D} is locked."),
+                        (opened.path("Alpha"), opened.path("Alpha 2"), .failed, "“Alpha” is locked."),
                     ]))
             let again = try await sheet(tab)
             #expect(again.titleLabel.stringValue == "Rename 1 Item")
@@ -476,8 +479,11 @@ extension ExplorerWindowlessTests {
             let release = try anotherWindowRuns(opened)
             addOld(sheet)
             #expect(tab.batchRenameSheet == nil)
-            #expect(opened.notices.titles == ["Couldn\u{2019}t Rename"])
-            #expect(opened.notices.messages == ["Another file operation is running. Try again when it has finished."])
+            #expect(opened.notices.titles == ["Couldn’t Rename"])
+            #expect(
+                opened.notices.messages == [
+                    "File Trail is still working on other items. Try again when it has finished."
+                ])
             #expect(opened.requests.all.isEmpty)
             release()
             await close(opened)

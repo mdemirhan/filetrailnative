@@ -232,9 +232,9 @@ struct EdgeCasesTests {
 
         #expect(attempts.value == 1)
         #expect(result.status == .failed)
-        #expect(result.error == "There isn't enough free space on the destination disk.")
+        #expect(result.error == "There isn’t enough free space on the destination disk.")
         #expect(result.items.map(\.status) == [.failed, .cancelled, .cancelled])
-        #expect(itemFor(result, "/source/a.txt")?.error == "There isn't enough free space on the destination disk.")
+        #expect(itemFor(result, "/source/a.txt")?.error == "There isn’t enough free space on the destination disk.")
         #expect(itemFor(result, "/source/c.txt")?.error == "Not started because the destination disk is full.")
         #expect(try fileSystem.readdir("/target") == [])
         // The result sheet knows the items left by that reason: it says the disk was full, not that the paste was
@@ -246,7 +246,7 @@ struct EdgeCasesTests {
                     sourcePath: $0.sourcePath, destinationPath: $0.destinationPath,
                     status: ResultItem.Status(rawValue: $0.status.rawValue) ?? .failed, error: $0.error)
             }, canRetry: true)
-        #expect(sheet.message == "1 item couldn\u{2019}t be copied. 2 items weren't started because the disk is full.")
+        #expect(sheet.message == "1 item couldn’t be copied. 2 items weren’t started because the disk is full.")
     }
 
     // A folder being copied when the disk filled up used to be put in place with what fitted, and the items after it
@@ -271,7 +271,7 @@ struct EdgeCasesTests {
         #expect(result.status == .failed)
         #expect(result.items.map(\.sourcePath) == ["/source/Docs", "/source/z.txt"])
         #expect(result.items.map(\.status) == [.failed, .cancelled])
-        #expect(itemFor(result, "/source/Docs")?.error == "There isn't enough free space on the destination disk.")
+        #expect(itemFor(result, "/source/Docs")?.error == "There isn’t enough free space on the destination disk.")
         #expect(itemFor(result, "/source/z.txt")?.error == "Not started because the destination disk is full.")
         #expect(try fileSystem.readdir("/target") == [])
         #expect(fileSystem.temporaryLeftovers() == [])
@@ -303,7 +303,7 @@ struct EdgeCasesTests {
 
         #expect(attempts.value == 2)
         #expect(result.status == .failed)
-        #expect(result.error == "There isn't enough free space on the destination disk.")
+        #expect(result.error == "There isn’t enough free space on the destination disk.")
         #expect(itemFor(result, "/source/z.txt")?.status == .cancelled)
         #expect(itemFor(result, "/source/z.txt")?.error == "Not started because the destination disk is full.")
     }
@@ -355,7 +355,7 @@ struct EdgeCasesTests {
         #expect(attempts.value == 2)
         #expect(result.status == .partial)
         #expect(result.items.map(\.status) == [.completed, .failed, .cancelled])
-        #expect(itemFor(result, "/source/b.txt")?.error == "There isn't enough free space on the destination disk.")
+        #expect(itemFor(result, "/source/b.txt")?.error == "There isn’t enough free space on the destination disk.")
         #expect(itemFor(result, "/source/c.txt")?.error == "Not started because the destination disk is full.")
         #expect(try fileSystem.readdir("/target") == ["a.txt"])
         #expect(try fileSystem.readdir("/source") == ["b.txt", "c.txt"])
@@ -487,7 +487,7 @@ struct EdgeCasesTests {
 
         #expect(
             itemFor(result, "/source/a.txt")?.error
-                == "The old \u{201C}a.txt\u{201D} was moved to the Trash, but the new one couldn't be put in its place. It will be put there the next time File Trail starts. A disk error occurred."
+                == "The old “a.txt” was moved to the Trash, but the new one couldn’t be put in its place. It will be put there the next time File Trail starts. A disk error occurred."
         )
         // The journal keeps it, so the next start puts it in place.
         #expect(journal.live.map(\.staged) == [true])
@@ -639,7 +639,7 @@ struct EdgeCasesTests {
         #expect(itemFor(result, "/source/Docs/Inner/b.txt")?.status == .failed)
         #expect(
             itemFor(result, "/source/Docs/Inner/b.txt")?.error
-                == "It was copied, but the original couldn't be removed. The item is in use.")
+                == "It was copied, but the original couldn’t be removed. The item is in use.")
         #expect(fileSystem.exists("/target/Docs/Inner/b.txt"))
         #expect(fileSystem.exists("/source/Docs/Inner/b.txt"))
         #expect(!fileSystem.exists("/source/Docs/a.txt"))
@@ -659,7 +659,7 @@ struct EdgeCasesTests {
 
         #expect(
             itemFor(result, "/source/Docs")?.error
-                == "2 items were added to \u{201C}Docs\u{201D} while it was being moved, so they were left in the original \u{201C}Docs\u{201D}."
+                == "2 items were added to “Docs” while it was being moved, so they were left in the original “Docs”."
         )
     }
 
@@ -684,7 +684,7 @@ struct EdgeCasesTests {
         #expect(itemFor(result, "/source/a.txt")?.status == .failed)
         #expect(
             itemFor(result, "/source/a.txt")?.error
-                == "\u{201C}a.txt\u{201D} is the item being pasted, so it can't replace itself.")
+                == "“a.txt” is the item being pasted, so it can’t replace itself.")
         #expect(fileSystem.trashed == [])
     }
 
@@ -725,6 +725,6 @@ struct EdgeCasesTests {
     @Test func treatsAnItemWhoseFlagsCantBeReadAsUnlocked() {
         #expect(!isLocked({ throw codedError(.errno(ENOENT), "ENOENT: \($0)") }, "/missing"))
         #expect(!isLocked(nil, "/a.txt"))
-        #expect(lockedMessage("/") == "\u{201C}/\u{201D} is locked. Unlock it in Finder's Get Info and try again.")
+        #expect(lockedMessage("/") == "“/” is locked. Unlock it in Finder’s Get Info and try again.")
     }
 }

@@ -116,7 +116,7 @@ struct ActivityViewTests {
         outcomes = ["op": .completed, "job": .stopped, "job-2": .failed]
         view.update([])
         #expect(rows().count == 3 && rows().allSatisfy(\.isEnded))
-        #expect(rows().map(\.endedDetail) == ["Done", "Stopped", "Couldn't calculate"])
+        #expect(rows().map(\.endedDetail) == ["Done", "Stopped", "Couldn’t calculate"])
 
         // Only the row of a measurement the app started by itself goes when it is no longer listed.
         var automatic = third

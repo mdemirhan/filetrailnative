@@ -139,7 +139,7 @@ import Testing
         #expect(between.scopeMenu.frame.width > 72 && between.scopeMenu.frame.width < longWidth)
     }
 
-    // "No matches" is drawn in the body size, at weight 500, in the primary text color.
+    // "No results" is drawn in the body size, at weight 500, in the primary text color.
     @Test func anEmptyStatesTitleIsTheContentStatesStrongText() throws {
         let state = ContentStateView(frame: NSRect(x: 0, y: 0, width: 600, height: 400))
         let theme = AppearanceModel.shared.theme

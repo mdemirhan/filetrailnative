@@ -57,7 +57,7 @@ func removeReplacedItem(
             ?? countItemsInside(fileSystem, node.destinationPath, dev: destination.dev)) : nil
     if destination.kind == .directory && approvedCount == nil {
         throw OperationError(
-            "\u{201C}\(basenameOf(node.destinationPath))\u{201D} couldn't be looked through, so it wasn't deleted for good and nothing was replaced."
+            "\u{201C}\(basenameOf(node.destinationPath))\u{201D} couldn\u{2019}t be looked through, so it wasn\u{2019}t deleted for good and nothing was replaced."
         )
     }
     let conflict = CopyPasteRuntimeConflict(
@@ -177,5 +177,5 @@ private func mountedInsideMessage(_ mountedPath: String, inside folderPath: Stri
         ? String(String.UnicodeScalarView(mountedPath.unicodeScalars.dropFirst(folderPath.unicodeScalars.count + 1)))
         : basenameOf(mountedPath)
     return
-        "\u{201C}\(within)\u{201D} is another disk, mounted inside \u{201C}\(folder)\u{201D}, so \u{201C}\(folder)\u{201D} wasn't deleted for good and nothing was replaced. Eject it and try again."
+        "\u{201C}\(within)\u{201D} is another disk, mounted inside \u{201C}\(folder)\u{201D}, so \u{201C}\(folder)\u{201D} wasn\u{2019}t deleted for good and nothing was replaced. Eject it and try again."
 }

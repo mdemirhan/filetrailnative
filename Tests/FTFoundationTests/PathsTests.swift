@@ -74,12 +74,12 @@ struct PathsTests {
     }
 
     @Test func refusesTheStartupDiskAndTheFoldersThatHoldTheSystem() {
-        #expect(Self.refusal("/") == "The startup disk can't be moved.")
-        #expect(Self.refusal("//") == "The startup disk can't be moved.")
-        #expect(Self.refusal("/Users") == "\u{201C}Users\u{201D} can't be moved.")
-        #expect(Self.refusal("/USERS/") == "\u{201C}USERS\u{201D} can't be moved.")
-        #expect(Self.refusal("/System/Volumes/Data", verb: "deleted") == "\u{201C}Data\u{201D} can't be deleted.")
-        #expect(Self.refusal("/private/../etc") == "\u{201C}etc\u{201D} can't be moved.")
+        #expect(Self.refusal("/") == "The startup disk can’t be moved.")
+        #expect(Self.refusal("//") == "The startup disk can’t be moved.")
+        #expect(Self.refusal("/Users") == "\u{201C}Users\u{201D} can’t be moved.")
+        #expect(Self.refusal("/USERS/") == "\u{201C}USERS\u{201D} can’t be moved.")
+        #expect(Self.refusal("/System/Volumes/Data", verb: "deleted") == "\u{201C}Data\u{201D} can’t be deleted.")
+        #expect(Self.refusal("/private/../etc") == "\u{201C}etc\u{201D} can’t be moved.")
     }
 
     @Test func refusesTheHomeFolderAndItsOwnFolders() {
@@ -94,10 +94,10 @@ struct PathsTests {
     }
 
     @Test func refusesAWholeDiskButNotWhatIsInIt() {
-        #expect(Self.refusal("/Volumes/USB") == "\u{201C}USB\u{201D} can't be moved.")
+        #expect(Self.refusal("/Volumes/USB") == "\u{201C}USB\u{201D} can’t be moved.")
         #expect(Self.refusal("/volumes/usb/") != nil)
         #expect(Self.refusal("/Volumes/USB/folder") == nil)
-        #expect(Self.refusal("/Volumes/") == "\u{201C}Volumes\u{201D} can't be moved.")
+        #expect(Self.refusal("/Volumes/") == "\u{201C}Volumes\u{201D} can’t be moved.")
     }
 
     @Test func wantsAnAbsolutePath() {

@@ -138,7 +138,7 @@ public enum CommandPalette {
     public static let menuItems: [MenuItem] = [
         MenuItem(
             id: "about", title: "About File Trail", place: "File Trail", group: .standard, run: .menuItem("about"),
-            help: "Show File Trail's version"),
+            help: "Show File Trail’s version"),
         MenuItem(
             id: "Show All", title: "Show All", place: "File Trail", group: .standard, run: .system(.showAll),
             help: "Show the windows of every app that was hidden"),
@@ -155,7 +155,7 @@ public enum CommandPalette {
             help: "Rename, edit, remove or reorder the window views, in the Views window"),
         MenuItem(
             id: "Bring All to Front", title: "Bring All to Front", place: "Window", group: .standard,
-            run: .system(.bringAllToFront), help: "Bring every File Trail window in front of other apps' windows"),
+            run: .system(.bringAllToFront), help: "Bring every File Trail window in front of other apps’ windows"),
     ]
 
     /// How a row of the table runs from the palette; nil for one it leaves out.
@@ -246,7 +246,7 @@ public enum CommandPalette {
             let itemID = ApplicationMenu.templateItemID(name)
             result.append(
                 CommandPaletteEntry(
-                    id: itemID, title: "New File \u{201C}\(name)\u{201D}", place: "File > New File", keys: [],
+                    id: itemID, title: "New File “\(name)”", place: "File > New File", keys: [],
                     enabled: newFileState?.enabled ?? true, group: .files, icon: .newFile, run: .menuItem(itemID),
                     help: "Make a copy of this template in the folder you are in, and name it"))
         }
@@ -255,7 +255,7 @@ public enum CommandPalette {
             let slots = TabViews.slotCommands
             result.append(
                 CommandPaletteEntry(
-                    id: itemID, title: "Tab View \u{201C}\(view.name)\u{201D}", place: "Layout > Tab Views",
+                    id: itemID, title: "Tab View “\(view.name)”", place: "Layout > Tab Views",
                     keys: slots.indices.contains(index) ? keys(bindings, slots[index]) : [],
                     enabled: states[itemID]?.enabled ?? true, group: .tabs, run: .menuItem(itemID),
                     help: "Give this tab what the tab view keeps"))
@@ -264,7 +264,7 @@ public enum CommandPalette {
             for inThisWindow in [false, true] {
                 let itemID = ApplicationMenu.windowViewItemID(view.id, inThisWindow: inThisWindow)
                 let slots = inThisWindow ? WindowViews.inThisWindowSlotCommands : WindowViews.slotCommands
-                let name = "Window View \u{201C}\(view.name)\u{201D}"
+                let name = "Window View “\(view.name)”"
                 result.append(
                     CommandPaletteEntry(
                         id: itemID, title: inThisWindow ? "\(name) in This Window" : name,
@@ -272,8 +272,8 @@ public enum CommandPalette {
                         keys: slots.indices.contains(index) ? keys(bindings, slots[index]) : [],
                         enabled: states[itemID]?.enabled ?? true, group: .tabs, run: .menuItem(itemID),
                         help: inThisWindow
-                            ? "Open the window view's tabs in place of this window's"
-                            : "Open the window view's tabs in a new window"))
+                            ? "Open the window view’s tabs in place of this window’s"
+                            : "Open the window view’s tabs in a new window"))
             }
         }
         for item in menuItems {

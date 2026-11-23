@@ -33,7 +33,7 @@ public enum InfoValue: Equatable, Sendable {
     case text(String)
     /// The folder size cell.
     case folderSize
-    /// "Read & Write" and the octal code, whose tooltip is the nine letters.
+    /// "Owner: Read & Write" and the octal code, whose tooltip is the nine letters.
     case permissions(words: String, octal: String, symbolic: String)
     /// A folder as a link; nil path is not shown as one.
     case whereLink(label: String, path: String)
@@ -92,7 +92,7 @@ public enum InfoPanelModel {
 
     /// The summary's rows: Contains when folders are among the items, Size and Where.
     public static func selectionRows(
-        _ selection: InfoSelection, hasFolderSize: Bool, folderSize: FolderSizeEntry?,
+        _ selection: InfoSelection, hasFolderSize: Bool, folderSize: FolderSizeEntry?, homePath: String = "",
         startupDiskName: String = VolumePaths.defaultStartupDiskName
     ) -> [InfoRow] {
         let size = selection.totalBytes.map { SizeText.size($0) }
@@ -108,7 +108,9 @@ public enum InfoPanelModel {
         if let parent = selection.parentPath {
             whereRow = InfoRow(
                 label: "Where",
-                value: .whereLink(label: PathBarModel.label(parent, startupDiskName: startupDiskName), path: parent),
+                value: .whereLink(
+                    label: PathBarModel.label(parent, homePath: homePath, startupDiskName: startupDiskName),
+                    path: parent),
                 muted: false)
         } else {
             whereRow = InfoRow(label: "Where", value: .text("Several folders"), muted: true)
@@ -136,7 +138,7 @@ public enum InfoPanelModel {
     /// subtitle is the kind, and the size when it is known.
     public static func itemContent(
         item: InfoItem, pending isPending: Bool, volume: InfoVolume?, isVolumeRoot: Bool, hasFolderSize: Bool,
-        folderSize: FolderSizeEntry?, opensWith: OpensWithState, dates: DateText = .shared,
+        folderSize: FolderSizeEntry?, opensWith: OpensWithState, dates: DateText = .shared, homePath: String = "",
         startupDiskName: String = VolumePaths.defaultStartupDiskName
     ) -> ItemContent {
         let isFile = item.kind == .file || item.kind == .symlinkFile
@@ -203,7 +205,8 @@ public enum InfoPanelModel {
                 InfoRow(
                     label: "Where",
                     value: .whereLink(
-                        label: PathBarModel.label(parent, startupDiskName: startupDiskName), path: parent),
+                        label: PathBarModel.label(parent, homePath: homePath, startupDiskName: startupDiskName),
+                        path: parent),
                     muted: false))
         } else {
             rows.append(InfoRow(label: "Where", value: .text("—"), muted: true))
@@ -215,7 +218,8 @@ public enum InfoPanelModel {
                 InfoRow(
                     label: "Original",
                     value: .originalLink(
-                        label: PathBarModel.label(path, startupDiskName: startupDiskName), path: path),
+                        label: PathBarModel.label(path, homePath: homePath, startupDiskName: startupDiskName),
+                        path: path),
                     muted: false))
         case .missing:
             rows.append(InfoRow(label: "Original", value: .text("Can\u{2019}t be found"), muted: true))

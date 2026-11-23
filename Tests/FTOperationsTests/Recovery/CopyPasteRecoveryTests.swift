@@ -48,7 +48,7 @@ struct ReplaceRecoveryAtStartTests {
             [entry], fileSystem, RecoveryOptions(answerWithinMs: hangWithinMs))
 
         #expect(Date().timeIntervalSince(started) < 10)
-        #expect(outcomes == [ReplaceRecovery(entry: entry, outcome: .unreachable(error: "The disk didn't answer."))])
+        #expect(outcomes == [ReplaceRecovery(entry: entry, outcome: .unreachable(error: "The disk didn’t answer."))])
         #expect(fileSystem.exists("/target/.a.txt.filetrail-0000abcd"))
         #expect(fileSystem.readNode("/target/a.txt")?.size == 2)
     }
@@ -102,7 +102,7 @@ struct PartialFileRemovalTests {
         hang.under(fileSystem, "/target")
         #expect(
             recoverPartialFiles([Self.entry], fileSystem, RecoveryOptions(answerWithinMs: hangWithinMs))
-                == [PartialFileRecovery(entry: Self.entry, outcome: .unreachable(error: "The disk didn't answer."))])
+                == [PartialFileRecovery(entry: Self.entry, outcome: .unreachable(error: "The disk didn’t answer."))])
         hang.release()
         fileSystem.lstatImpl = nil
         #expect(fileSystem.exists(Self.part))

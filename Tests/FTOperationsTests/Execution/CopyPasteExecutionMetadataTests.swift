@@ -109,7 +109,7 @@ struct CopyPasteExecutionMetadataTests {
         let events = await execute(fileSystem, operation, operationId: "native-error-1")
 
         #expect(events.last?.result?.status == .failed)
-        #expect(events.last?.result?.error == "You don't have permission to access this item.")
+        #expect(events.last?.result?.error == "You don’t have permission to access this item.")
     }
 
     @Test func utimesENOTSUPSilentlyIgnored() async throws {

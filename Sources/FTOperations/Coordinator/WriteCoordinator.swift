@@ -480,7 +480,7 @@ public final class WriteCoordinator {
                 false,
                 closing
                     ? "File Trail is quitting."
-                    : "The Trash can't be emptied while another operation is running. Try again when it has finished."
+                    : "The Trash can\u{2019}t be emptied while File Trail is still working on other items. Try again when it has finished."
             )
         }
         localSequence += 1

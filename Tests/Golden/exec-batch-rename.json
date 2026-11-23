@@ -3481,7 +3481,7 @@
           "items": [
             {
               "destinationPath": null,
-              "error": "“locked.txt” is locked. Unlock it in Finder's Get Info and try again.",
+              "error": "“locked.txt” is locked. Unlock it in Finder’s Get Info and try again.",
               "skipReason": null,
               "sourcePath": "$ROOT/trip/locked.txt",
               "status": "failed"
@@ -3616,7 +3616,7 @@
           "items": [
             {
               "destinationPath": null,
-              "error": "“a” is locked. Unlock it in Finder's Get Info and try again.",
+              "error": "“a” is locked. Unlock it in Finder’s Get Info and try again.",
               "skipReason": null,
               "sourcePath": "$ROOT/trip/a",
               "status": "failed"
@@ -3697,7 +3697,7 @@
           "items": [
             {
               "destinationPath": null,
-              "error": "You don't have permission to access this item.",
+              "error": "You don’t have permission to access this item.",
               "skipReason": null,
               "sourcePath": "$ROOT/trip/read-only/a.txt",
               "status": "failed"
@@ -3769,7 +3769,7 @@
           "items": [
             {
               "destinationPath": null,
-              "error": "“box” is locked. Unlock it in Finder's Get Info and try again.",
+              "error": "“box” is locked. Unlock it in Finder’s Get Info and try again.",
               "skipReason": null,
               "sourcePath": "$ROOT/trip/box/a.txt",
               "status": "failed"
@@ -4194,14 +4194,14 @@
           "items": [
             {
               "destinationPath": null,
-              "error": "Not started because the operation was stopped.",
+              "error": "The rename was stopped first.",
               "skipReason": null,
               "sourcePath": "$ROOT/trip/a",
               "status": "cancelled"
             },
             {
               "destinationPath": null,
-              "error": "Not started because the operation was stopped.",
+              "error": "The rename was stopped first.",
               "skipReason": null,
               "sourcePath": "$ROOT/trip/b",
               "status": "cancelled"
@@ -4354,7 +4354,7 @@
             },
             {
               "destinationPath": null,
-              "error": "Not started because the operation was stopped.",
+              "error": "The rename was stopped first.",
               "skipReason": null,
               "sourcePath": "$ROOT/trip/c",
               "status": "cancelled"
@@ -4578,14 +4578,14 @@
           "items": [
             {
               "destinationPath": null,
-              "error": "Not started because the operation was stopped.",
+              "error": "The rename was stopped first.",
               "skipReason": null,
               "sourcePath": "$ROOT/trip/a",
               "status": "cancelled"
             },
             {
               "destinationPath": null,
-              "error": "Not started because the operation was stopped.",
+              "error": "The rename was stopped first.",
               "skipReason": null,
               "sourcePath": "$ROOT/trip/b",
               "status": "cancelled"
@@ -4737,14 +4737,14 @@
             },
             {
               "destinationPath": null,
-              "error": "Not started because the operation was stopped.",
+              "error": "The rename was stopped first.",
               "skipReason": null,
               "sourcePath": "$ROOT/trip/a1",
               "status": "cancelled"
             },
             {
               "destinationPath": null,
-              "error": "Not started because the operation was stopped.",
+              "error": "The rename was stopped first.",
               "skipReason": null,
               "sourcePath": "$ROOT/trip/b1",
               "status": "cancelled"
@@ -4828,7 +4828,7 @@
           "items": [
             {
               "destinationPath": null,
-              "error": "Not started because the operation was stopped.",
+              "error": "The rename was stopped first.",
               "skipReason": null,
               "sourcePath": "$ROOT/trip/sub",
               "status": "cancelled"
@@ -5046,7 +5046,7 @@
               "takenAt": null
             },
             {
-              "cannotRename": "“locked.txt” is locked. Unlock it in Finder's Get Info and try again.",
+              "cannotRename": "“locked.txt” is locked. Unlock it in Finder’s Get Info and try again.",
               "createdAt": "set",
               "modifiedAt": "set",
               "path": "$ROOT/trip/locked.txt",

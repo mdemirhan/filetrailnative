@@ -177,9 +177,11 @@ final class CopyPasteResultPresenter: WriteResultPresenting {
         guard let window = tab.window, window.contentView != nil else { return }
         // An Undo is chosen again from the menu, with what it finds then.
         let canRetry = event.action != .undo && event.action != .redo
+        // A paste of cut items, or one that moved some and copied others.
+        let moves = result.mode == .cut || result.items.contains { $0.mode == .cut }
         let text = CopyPasteResultText(
             action: event.action, targetPath: result.targetPath, error: result.error,
-            items: result.items.map(ResultItem.init), canRetry: canRetry)
+            items: result.items.map(ResultItem.init), canRetry: canRetry, moves: moves)
         let sheet = CopyPasteResultSheet(text: text)
         let scrim = CopyPasteDialogs.present(sheet, placement: .sheet, on: tab, in: window)
         self.sheet = sheet

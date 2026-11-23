@@ -151,7 +151,7 @@ struct WriteRecoveryTests {
             // Only the moved item: an unfinished copy's original is in place.
             #expect(
                 report.notices == [
-                    "\u{201C}report.txt\u{201D} was being moved onto \u{201C}FileTrailNotConnected\u{201D}, which isn't connected. Connect it and File Trail puts \u{201C}report.txt\u{201D} in place; until then it is under the hidden name \u{201C}.moved.filetrail-00000001\u{201D} there."
+                    "\u{201C}report.txt\u{201D} was being moved onto \u{201C}FileTrailNotConnected\u{201D}, which isn’t connected. Connect it and File Trail puts \u{201C}report.txt\u{201D} in place; until then it is under the hidden name \u{201C}.moved.filetrail-00000001\u{201D} there."
                 ])
             #expect(journal.entries() == [.replace(unreachable), .replace(unfinishedCopy)])
         }

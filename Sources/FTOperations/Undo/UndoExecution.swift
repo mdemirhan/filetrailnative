@@ -326,7 +326,7 @@ public enum UndoExecution {
         let name = "\u{201C}\(NodePath.basename(path))\u{201D}"
         switch code {
         case .noTrash:
-            return "\(name) couldn't be moved to the Trash because its disk has no Trash."
+            return "\(name) couldn\u{2019}t be moved to the Trash because its disk has no Trash."
         case .errno(EROFS):
             return "\(name) is on a disk that can only be read."
         default:
@@ -482,7 +482,7 @@ public enum UndoExecution {
     /// An item an Undo moved that had its lock or permissions taken off, which couldn't be put back: said, though the
     /// move is done and nothing is left to do.
     private static func lostLockNote(_ path: String) -> String {
-        "\u{201C}\(NodePath.basename(path))\u{201D} was moved, but its lock or permissions couldn't be put back. Set them in Finder's Get Info."
+        "\u{201C}\(NodePath.basename(path))\u{201D} was moved, but its lock or permissions couldn\u{2019}t be put back. Set them in Finder\u{2019}s Get Info."
     }
 
     /// What to know about an item an Undo or Redo moved to the Trash: its lock or permissions that couldn't be put back,
@@ -499,7 +499,7 @@ public enum UndoExecution {
     static func trashLocationUnknownNote(_ path: String, _ direction: UndoDirection) -> String {
         let other = direction == .undo ? "Redo" : "Undo"
         let name = "\u{201C}\(NodePath.basename(path))\u{201D}"
-        return "\(name) is in the Trash, but the Trash didn't say where, so \(other) can't bring it back."
+        return "\(name) is in the Trash, but the Trash didn\u{2019}t say where, so \(other) can\u{2019}t bring it back."
     }
 
     /// A done item, with a note when there is something to know about it.
@@ -517,7 +517,7 @@ public enum UndoExecution {
             guard let sourcePath = item.sourcePath else { return item }
             var said = item
             said.error =
-                "\(item.error ?? "") \u{201C}\(NodePath.basename(sourcePath))\u{201D} couldn't be locked again. Lock it in Finder's Get Info."
+                "\(item.error ?? "") \u{201C}\(NodePath.basename(sourcePath))\u{201D} couldn\u{2019}t be locked again. Lock it in Finder\u{2019}s Get Info."
                 .trimmingCharacters(in: .whitespacesAndNewlines)
             return said
         }
@@ -741,7 +741,7 @@ public enum UndoExecution {
             items.append(
                 failedItem(
                     outcome.from, outcome.at,
-                    "\u{201C}\(NodePath.basename(outcome.from))\u{201D} is named \u{201C}\(NodePath.basename(outcome.at))\u{201D} for now, because \u{201C}\(NodePath.basename(outcome.wanted))\u{201D} couldn't be renamed out of its way."
+                    "\u{201C}\(NodePath.basename(outcome.from))\u{201D} is named \u{201C}\(NodePath.basename(outcome.at))\u{201D} for now, because \u{201C}\(NodePath.basename(outcome.wanted))\u{201D} couldn\u{2019}t be renamed out of its way."
                 ))
         }
         var moves: [WriteOperationItem] = []
@@ -809,15 +809,15 @@ public enum UndoExecution {
                 skippedItem(
                     move.from, move.to,
                     move.putBack
-                        ? "\u{201C}\(NodePath.basename(move.to))\u{201D} was left in the Trash, because the item in its place couldn't be moved away."
-                        : "\u{201C}\(NodePath.basename(move.from))\u{201D} was left as it is, because the step before it couldn't be \(verb)."
+                        ? "\u{201C}\(NodePath.basename(move.to))\u{201D} was left in the Trash, because the item in its place couldn\u{2019}t be moved away."
+                        : "\u{201C}\(NodePath.basename(move.from))\u{201D} was left as it is, because the step before it couldn\u{2019}t be \(verb)."
                 )
             ]
         case .trash(let trash):
             return [
                 skippedItem(
                     trash.path, nil,
-                    "\u{201C}\(NodePath.basename(trash.path))\u{201D} was left as it is, because the step before it couldn't be \(verb)."
+                    "\u{201C}\(NodePath.basename(trash.path))\u{201D} was left as it is, because the step before it couldn\u{2019}t be \(verb)."
                 )
             ]
         case .batch:

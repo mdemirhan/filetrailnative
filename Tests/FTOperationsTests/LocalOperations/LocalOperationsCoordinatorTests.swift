@@ -218,7 +218,7 @@ import Testing
         let refusal = await #expect(throws: WriteCoordinatorError.self) {
             try await coordinator.deleteImmediately(paths: ["/Volumes/Share/a.txt"], window: first)
         }
-        #expect(refusal?.message.contains("isn't in the Trash") == true)
+        #expect(refusal?.message.contains("isn’t in the Trash") == true)
         await coordinator.shutDown()
     }
 
@@ -249,7 +249,7 @@ import Testing
             try await coordinator.deleteImmediately(
                 paths: ["/Volumes/Share/a.txt", "/Volumes/Share/b.txt"], window: second)
         }
-        #expect(refusal?.message == "“a.txt” isn't in the Trash, so it can't be deleted immediately.")
+        #expect(refusal?.message == "“a.txt” isn’t in the Trash, so it can’t be deleted immediately.")
         #expect(fileSystem.calls.rm.isEmpty)
         await coordinator.shutDown()
     }
@@ -267,7 +267,7 @@ import Testing
         let refusal = await #expect(throws: WriteCoordinatorError.self) {
             try await coordinator.deleteImmediately(paths: ["/Volumes/Share/a.txt"], window: window)
         }
-        #expect(refusal?.message.contains("isn't in the Trash") == true)
+        #expect(refusal?.message.contains("isn’t in the Trash") == true)
         #expect(coordinator.itemsWithoutTrash.isEmpty)
         await coordinator.shutDown()
     }

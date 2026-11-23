@@ -34,7 +34,7 @@ struct InfoPanelModelTests {
         #expect(content.rows[2].value == .text("2.0 KB"))
         #expect(content.rows[3].value == .text("Mar 1, 2026, 9:00 AM"))
         #expect(
-            content.rows[5].value == .permissions(words: "Read & Write", octal: "644", symbolic: "rw-r--r--"))
+            content.rows[5].value == .permissions(words: "Owner: Read & Write", octal: "644", symbolic: "rw-r--r--"))
         #expect(content.rows[6].value == .whereLink(label: "demo", path: "/Users/demo"))
     }
 
@@ -287,7 +287,7 @@ struct InfoPanelModelTests {
         }
         #expect(path() == autoFolder.path)
         #expect(path(selected: [autoFolder.path, "/Users/demo/Music"]) == nil)
-        // The row shows the selection, whatever Show Info put in the closed panel.
+        // The row shows the selection, whatever Get Info put in the closed panel.
         let shown = (path: "/Users/demo/Music", kind: EntryKind.directory)
         #expect(path(showInfo: shown.path, item: shown) == autoFolder.path)
         // With both open, the panel's item.
@@ -312,12 +312,12 @@ struct InfoPanelModelTests {
         #expect(path(panel: false, row: false) == nil)
         #expect(path(folder: "/Applications") == nil)
         #expect(path(folder: "/Applications/Keynote.app", kind: .bundle) == "/Applications/Keynote.app")
-        // A selection, or Show Info's item in the panel, goes first.
+        // A selection, or Get Info's item in the panel, goes first.
         #expect(path(selected: ["/Users/demo/Music"]) == "/Users/demo/Music")
         #expect(path(selected: ["/Users/demo/Music", "/Users/demo/Movies"]) == nil)
         let shown = (path: "/Users/demo/Music", kind: EntryKind.directory)
         #expect(path(showInfo: shown.path, item: shown) == shown.path)
-        // The row alone shows the folder on screen, whatever Show Info put in the closed panel.
+        // The row alone shows the folder on screen, whatever Get Info put in the closed panel.
         #expect(path(panel: false, row: true, showInfo: shown.path, item: shown) == "/Users/demo")
     }
 

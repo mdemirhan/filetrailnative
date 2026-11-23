@@ -153,7 +153,7 @@ struct MovedFilesWrittenOutTests {
         #expect(result.status == .failed)
         #expect(
             result.items.allSatisfy {
-                $0.status == .failed && $0.error?.contains("couldn't be written out to the disk") == true
+                $0.status == .failed && $0.error?.contains("couldn’t be written out to the disk") == true
             })
     }
 
@@ -170,7 +170,7 @@ struct MovedFilesWrittenOutTests {
 
         #expect(named(result) == ["a.txt completed", "b.txt failed", "c.txt completed", "d.txt completed"])
         #expect(
-            result.items[1].error == "It was copied, but the original couldn't be removed. A disk error occurred.")
+            result.items[1].error == "It was copied, but the original couldn’t be removed. A disk error occurred.")
         #expect(fileSystem.exists("/source/b.txt") && fileSystem.exists("/target/b.txt"))
         #expect(!fileSystem.exists("/source/a.txt") && !fileSystem.exists("/source/d.txt"))
         #expect(result.status == .partial)
@@ -192,7 +192,7 @@ struct MovedFilesWrittenOutTests {
         #expect(named(result).first == "a.txt failed")
         #expect(
             result.items.first?.error
-                == "It changed while it was being moved, or its copy didn't come out whole, so the original was kept.")
+                == "It changed while it was being moved, or its copy didn’t come out whole, so the original was kept.")
         #expect(!fileSystem.exists("/source/b.txt"))
     }
 
@@ -354,7 +354,7 @@ struct MovedFilesWrittenOutTests {
             #expect(picked.count == Self.names.count + 1)
             #expect(
                 picked.allSatisfy {
-                    $0.status == .failed && $0.error?.contains("couldn't be written out to the disk") == true
+                    $0.status == .failed && $0.error?.contains("couldn’t be written out to the disk") == true
                 })
         }
     }
@@ -385,7 +385,7 @@ struct MovedFilesWrittenOutTests {
             #expect(run.result?.items.map(\.status) == [.failed])
             #expect(
                 run.result?.items.first?.error
-                    == "It was copied, but the copy couldn't be written out to the disk, so the original was kept. A disk error occurred."
+                    == "It was copied, but the copy couldn’t be written out to the disk, so the original was kept. A disk error occurred."
             )
         }
     }

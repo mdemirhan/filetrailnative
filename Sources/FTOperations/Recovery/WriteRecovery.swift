@@ -240,7 +240,7 @@ private func recoverReplaces(
             // is cleared up quietly once the disk is back.
             if entry.moved && !retry {
                 report.notices.append(
-                    "\u{201C}\(name)\u{201D} was being moved onto \u{201C}\(diskName(entry.stagingPath))\u{201D}, which isn't connected. Connect it and File Trail puts \u{201C}\(name)\u{201D} in place; until then it is under the hidden name \u{201C}\(basenameOf(entry.stagingPath))\u{201D} there."
+                    "\u{201C}\(name)\u{201D} was being moved onto \u{201C}\(diskName(entry.stagingPath))\u{201D}, which isn\u{2019}t connected. Connect it and File Trail puts \u{201C}\(name)\u{201D} in place; until then it is under the hidden name \u{201C}\(basenameOf(entry.stagingPath))\u{201D} there."
                 )
             }
             continue

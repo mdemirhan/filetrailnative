@@ -8,9 +8,9 @@ struct ActivityListTests {
         #expect(ActivityList.endedDetail(.fileOperation, .completed) == "Done")
         #expect(ActivityList.endedDetail(.folderSize, .completed) == "Done")
         #expect(ActivityList.endedDetail(.folderSize, .stopped) == "Stopped")
-        #expect(ActivityList.endedDetail(.fileOperation, .failed) == "Didn't finish")
+        #expect(ActivityList.endedDetail(.fileOperation, .failed) == "Didn’t finish")
         #expect(ActivityList.endedDetail(.fileOperation, .partly) == "Finished in part")
-        #expect(ActivityList.endedDetail(.folderSize, .failed) == "Couldn't calculate")
+        #expect(ActivityList.endedDetail(.folderSize, .failed) == "Couldn’t calculate")
         #expect(ActivityList.endedDetail(.fileOperation, nil) == "Ended")
     }
 

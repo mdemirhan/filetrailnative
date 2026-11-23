@@ -186,7 +186,7 @@ struct UndoStartTests {
             hanging.set(true)
             await #expect(
                 throws: WriteCoordinatorError(
-                    "A disk didn't answer while Undo looked at its items. Choose Undo again once it does.")
+                    "A disk didn’t answer while Undo looked at its items. Choose Undo again once it does.")
             ) {
                 try await t.coordinator.startUndo(ticket: prepared.ticket ?? "", window: t.window)
             }

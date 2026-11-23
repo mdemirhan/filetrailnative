@@ -27,7 +27,7 @@ struct ReviewChoicesMatrixTests {
         let text = ReviewSheetText(
             report, action: .paste, summary: CopyPasteReview.summarize(report, policy: policy, overrides: [:]))
         #expect(text.title == "Paste 1 item into \u{201C}dest\u{201D}?")
-        #expect(text.message == "This is a large operation (1,200 items in total).")
+        #expect(text.message == "That\u{2019}s 1,200 items in all, counting what is in the folders.")
         #expect(!text.hasConflicts)
     }
 

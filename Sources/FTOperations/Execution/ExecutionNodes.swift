@@ -90,7 +90,7 @@ private func executeStagedDirectory(
                     itemStatus: .failed, skipReason: nil,
                     error: isPackage
                         ? incompletePackageMessage(currentNode, mode)
-                        : "\u{201C}\(basenameOf(finalPath))\u{201D} wasn't moved because some items in it couldn't be copied. Nothing in it was moved.",
+                        : "“\(basenameOf(finalPath))” wasn’t moved because some items in it couldn’t be copied. Nothing in it was moved.",
                     destinationPath: finalPath,
                     // Only what wasn't done: everything else went away with the hidden copy.
                     childItems: incompleteItems.map { .item($0) })
@@ -127,27 +127,27 @@ private func assertCanRemoveFrom(_ fileSystem: some WriteServiceFileSystem, _ fo
         let code = errorCode(error)
         let item = basenameOf(itemPath)
         if code == .errno(EROFS) {
-            throw OperationError("\u{201C}\(item)\u{201D} wasn't moved, because its disk is read-only.")
+            throw OperationError("“\(item)” wasn’t moved, because its disk is read-only.")
         }
         if code == .errno(EACCES) || code == .errno(EPERM) {
             let what =
                 sameText(folderPath, itemPath)
-                ? "what is inside it" : "it from \u{201C}\(basenameOf(folderPath))\u{201D}"
+                ? "what is inside it" : "it from “\(basenameOf(folderPath))”"
             throw OperationError(
-                "\u{201C}\(item)\u{201D} wasn't moved, because you don't have permission to remove \(what).")
+                "“\(item)” wasn’t moved, because you don’t have permission to remove \(what).")
         }
         // Anything else (the folder just went away) is left for the move itself to report.
     }
 }
 
 func renameOnlyMessage(_ node: ResolvedCopyPasteNode) -> String {
-    "\u{201C}\(basenameOf(node.node.sourcePath))\u{201D} wasn't moved because its destination changed after the move began. Try moving it again."
+    "“\(basenameOf(node.node.sourcePath))” wasn’t moved because its destination changed after the move began. Try moving it again."
 }
 
 private func unreadableFolderMessage(_ mode: CopyPasteMode, _ reason: String?) -> String {
     let done = mode == .cut ? "moved" : "copied"
     let detail = reason.map { $0.isEmpty ? "" : " \($0)" } ?? ""
-    return "This folder couldn't be read, so it wasn't \(done).\(detail)"
+    return "This folder couldn’t be read, so it wasn’t \(done).\(detail)"
 }
 
 func canRenameForCut(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode) -> Bool {
@@ -452,8 +452,8 @@ func preserveTimestampsIfSupported(
 func incompletePackageMessage(_ node: ResolvedCopyPasteNode, _ mode: CopyPasteMode = .copy) -> String {
     let name = basenameOf(node.node.sourcePath)
     return mode == .cut
-        ? "\u{201C}\(name)\u{201D} wasn't moved because some items in it were skipped or couldn't be copied. Nothing in it was moved."
-        : "\u{201C}\(name)\u{201D} wasn't copied because some items in it were skipped or couldn't be copied."
+        ? "“\(name)” wasn’t moved because some items in it were skipped or couldn’t be copied. Nothing in it was moved."
+        : "“\(name)” wasn’t copied because some items in it were skipped or couldn’t be copied."
 }
 
 func tryRenameForCut(_ context: ExecutionContext, _ currentNode: ResolvedCopyPasteNode, _ source: NodeFingerprint)
@@ -494,13 +494,13 @@ func explainMissingFolder(_ fileSystem: some IdentityFileSystem, _ targetPath: S
     } catch let readError {
         // Not readable just now: it may well still be there.
         return OperationError(
-            "The folder \u{201C}\(basenameOf(dirnameOf(targetPath)))\u{201D} couldn't be read. \(describeCopyPasteError(readError))"
+            "The folder “\(basenameOf(dirnameOf(targetPath)))” couldn’t be read. \(describeCopyPasteError(readError))"
         )
     }
     return folder.exists
         ? error
         : OperationError(
-            "The folder \u{201C}\(basenameOf(dirnameOf(targetPath)))\u{201D} no longer exists.")
+            "The folder “\(basenameOf(dirnameOf(targetPath)))” no longer exists.")
 }
 
 /// rename(2) that never replaces anything at `to`: fails with EEXIST instead.

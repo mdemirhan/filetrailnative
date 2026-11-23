@@ -66,7 +66,7 @@ extension WriteCoordinator {
                 operation, startedAt: startedAt, folderPath: folderPath, paths: paths,
                 items: LocalWriteResults.notStartedItems(paths), completedItemCount: 0, cancelled: cancelled,
                 error: cancelled
-                    ? "Operation cancelled."
+                    ? "Stopped before anything was changed."
                     : LocalOperations.describeWriteError(
                         error, missing: NodePath.basename(NodePath.dirname(folderPath)),
                         existing: NodePath.basename(folderPath)),
@@ -137,7 +137,8 @@ extension WriteCoordinator {
         if completedItemCount == 0 {
             let removed = await LocalOperations.onDisk { (try? fileSystem.rmdir(folderPath)) != nil }
             if removed {
-                let error = cancelled ? "Operation cancelled." : (items.first { $0.status == .failed }?.error)
+                let error =
+                    cancelled ? "Stopped before anything was changed." : (items.first { $0.status == .failed }?.error)
                 finish(
                     operation, startedAt: startedAt, folderPath: folderPath, paths: paths, items: items,
                     completedItemCount: 0, cancelled: cancelled, error: error, undoLog: nil)

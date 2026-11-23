@@ -45,7 +45,7 @@ public struct InfoMetadata: Equatable, Sendable {
 }
 
 /// An item's properties (`ItemProperties`), or the preview made from the list.
-/// Where a symbolic link or an alias leads, as Show Info says.
+/// Where a symbolic link or an alias leads, as Get Info says.
 public enum InfoOriginal: Equatable, Sendable {
     case found(String)
     /// Deleted, or on a disk or a server not connected.
@@ -100,18 +100,22 @@ public enum InfoPreview {
     /// from what the file list already knows, so switching items updates in place instead of blanking.
     public static func resolve(
         path: String?, currentPath: String, entries: [InfoEntry], metadataByPath: [String: InfoMetadata],
-        properties: InfoItem?, startupDiskName: String = VolumePaths.defaultStartupDiskName
+        properties: InfoItem?, homePath: String = "", startupDiskName: String = VolumePaths.defaultStartupDiskName
     ) -> Resolved? {
         guard let path, !path.isEmpty else { return nil }
-        if let properties, properties.path == path { return Resolved(item: properties, pending: false) }
+        if var properties, properties.path == path {
+            properties.name = displayName(properties.path, name: properties.name, homePath: homePath)
+            return Resolved(item: properties, pending: false)
+        }
         let entry =
             entries.first { $0.path == path }
-            ?? (path == currentPath ? folderEntry(path, startupDiskName: startupDiskName) : nil)
+            ?? (path == currentPath ? folderEntry(path, homePath: homePath, startupDiskName: startupDiskName) : nil)
         guard let entry else { return nil }
         let metadata = metadataByPath[path]
         return Resolved(
             item: InfoItem(
-                path: entry.path, name: entry.name, fileExtension: entry.fileExtension, kind: entry.kind,
+                path: entry.path, name: displayName(entry.path, name: entry.name, homePath: homePath),
+                fileExtension: entry.fileExtension, kind: entry.kind,
                 kindLabel: metadata?.kindLabel
                     ?? fallbackKindLabel(kind: entry.kind, fileExtension: entry.fileExtension),
                 isHidden: entry.isHidden, isSymlink: entry.isSymlink, createdAt: metadata?.createdAt,
@@ -120,12 +124,18 @@ public enum InfoPreview {
             pending: true)
     }
 
-    /// A folder the list shows no row of; `/` has the startup disk's name.
+    /// A folder the list shows no row of, named as its tab is: `/` has the startup disk's name, a Trash folder "Trash".
     public static func folderEntry(
-        _ path: String, startupDiskName: String = VolumePaths.defaultStartupDiskName
+        _ path: String, homePath: String = "", startupDiskName: String = VolumePaths.defaultStartupDiskName
     ) -> InfoEntry {
-        let name = path.split(separator: "/", omittingEmptySubsequences: true).last.map(String.init) ?? startupDiskName
-        return InfoEntry(path: path, name: name, kind: .directory)
+        InfoEntry(
+            path: path, name: TabText.folderDisplayName(path, homePath: homePath, startupDiskName: startupDiskName),
+            kind: .directory)
+    }
+
+    /// An item's name in the info views: "Trash" for a Trash folder, as its tab and the path bar call it, else `name`.
+    public static func displayName(_ path: String, name: String, homePath: String) -> String {
+        Paths.isTrashFolder(path, homePath: homePath) ? "Trash" : name
     }
 
     /// The kind shown before the system's own description is known.

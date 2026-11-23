@@ -363,8 +363,8 @@ extension ShortcutCommands {
             id: .showFolderInOtherPane, label: "Show This Folder in Other Pane", group: .tabs, defaults: [],
             menuPath: "Go > Show This Folder in Other Pane"),
         ShortcutCommandDefinition(
-            id: .goToOtherPaneFolder, label: "Go to Other Pane's Folder", group: .tabs, defaults: [],
-            menuPath: "Go > Go to Other Pane's Folder"),
+            id: .goToOtherPaneFolder, label: "Go to Other Pane\u{2019}s Folder", group: .tabs, defaults: [],
+            menuPath: "Go > Go to Other Pane\u{2019}s Folder"),
         ShortcutCommandDefinition(
             id: .equalizePanes, label: "Make Panes Equal Width", group: .tabs, defaults: [],
             menuPath: "View > Make Panes Equal Width"),
@@ -607,22 +607,22 @@ extension ShortcutCommands {
             menuPath: "View > Columns > Permissions"),
         ShortcutCommandDefinition(
             id: .rememberFolderView, label: "Remember View for This Folder", group: .view, defaults: [],
-            menuPath: "View > Folder View > Remember View for This Folder"),
+            menuPath: "Layout > Remember View for This Folder"),
         ShortcutCommandDefinition(
             id: .updateFolderView, label: "Update Folder View", group: .view, defaults: [],
-            menuPath: "View > Folder View > Update Folder View"),
+            menuPath: "Layout > Update Folder View"),
         ShortcutCommandDefinition(
             id: .revertFolderView, label: "Revert to Saved View", group: .view, defaults: [],
-            menuPath: "View > Folder View > Revert to Saved View"),
+            menuPath: "Layout > Revert to Saved View"),
         ShortcutCommandDefinition(
             id: .folderViewOptions, label: "Folder View Options…", group: .view, defaults: ["Cmd+J"],
-            menuPath: "View > Folder View > Folder View Options…"),
+            menuPath: "Layout > Folder View Options…"),
         ShortcutCommandDefinition(
             id: .resetFolderView, label: "Reset Folder View", group: .view, defaults: [],
-            menuPath: "View > Folder View > Reset Folder View"),
+            menuPath: "Layout > Reset Folder View"),
         ShortcutCommandDefinition(
             id: .manageFolderViews, label: "Manage Folder Views…", group: .view, defaults: [],
-            menuPath: "View > Folder View > Manage Folder Views…"),
+            menuPath: "Layout > Manage Folder Views…"),
         ShortcutCommandDefinition(
             id: .togglePinFilter, label: "Pin Filter", group: .view, defaults: [], menuPath: "View > Pin Filter"),
         ShortcutCommandDefinition(

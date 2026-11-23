@@ -62,11 +62,11 @@ struct SizeTextTests {
     }
 
     @Test func describesTheOwnersAccess() {
-        #expect(PermissionText.ownerAccess(symbolic: "rw-r--r--") == "Read & Write")
-        #expect(PermissionText.ownerAccess(symbolic: "r--r--r--") == "Read only")
-        #expect(PermissionText.ownerAccess(symbolic: "-w-------") == "Write only")
-        #expect(PermissionText.ownerAccess(symbolic: "---rwxrwx") == "No access")
-        #expect(PermissionText.ownerAccess(symbolic: "") == "No access")
+        #expect(PermissionText.ownerAccess(symbolic: "rw-r--r--") == "Owner: Read & Write")
+        #expect(PermissionText.ownerAccess(symbolic: "r--r--r--") == "Owner: Read only")
+        #expect(PermissionText.ownerAccess(symbolic: "-w-------") == "Owner: Write only")
+        #expect(PermissionText.ownerAccess(symbolic: "---rwxrwx") == "Owner: No access")
+        #expect(PermissionText.ownerAccess(symbolic: "") == "Owner: No access")
     }
 
     @Test func preservesTheExtensionSeparatelyForDisplayTruncation() {

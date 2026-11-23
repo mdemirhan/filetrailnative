@@ -76,7 +76,7 @@ struct FolderSafetyTests {
             #expect(failed.map(\.sourcePath).contains(source + "/locked"))
             #expect(
                 failed.first { $0.sourcePath == source + "/locked" }?.error
-                    == "This folder couldn't be read, so it wasn't copied. You don't have permission to access this item."
+                    == "This folder couldn’t be read, so it wasn’t copied. You don’t have permission to access this item."
             )
         }
     }

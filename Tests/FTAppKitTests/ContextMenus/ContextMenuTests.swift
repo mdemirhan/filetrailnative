@@ -116,7 +116,7 @@ extension ExplorerWindowlessTests {
             let background = tab.contextMenus.contentMenu(for: nil)
             #expect(
                 titles(background) == [
-                    "New Folder", "New File", "-", "Show Info", "Calculate Size", "-", "Paste", "Copy Path", "-",
+                    "New Folder", "New File", "-", "Get Info", "Calculate Size", "-", "Paste", "Copy Path", "-",
                     "View As", "Group By", "Sort By", "Folder View", "-", "Open in Terminal", "Show in Finder",
                 ])
             // Group By's submenu: View ▸ Group By's items, the folder's fields.

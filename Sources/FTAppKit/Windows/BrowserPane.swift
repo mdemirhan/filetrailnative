@@ -134,7 +134,7 @@ final class BrowserPane {
     private var folderChanges = FolderChangeGate(maxChangedPaths: FolderWatches.maxChangedPaths)
     /// The changes waiting to be read.
     var pendingChange: FolderChangeGate.Pending? { folderChanges.pending }
-    /// A change from outside is being taken in: Show Info's item stays.
+    /// A change from outside is being taken in: Get Info's item stays.
     private(set) var isTakingInOutsideChange = false
     /// The folder visits the Go To box counts, of this pane's folders: each pane decides on the folders it opens, so
     /// one opened in the other pane never makes this pane's folder a pass-through, nor takes its use.
@@ -494,7 +494,7 @@ final class BrowserPane {
         updateFolderChanges { $0.changed(folderPath, changedPaths, $1) }
     }
 
-    /// The folder read again because the app asks, not because of a change from outside: Show Info's item goes.
+    /// The folder read again because the app asks, not because of a change from outside: Get Info's item goes.
     func readAgain() {
         if drivesSidebar { tab.infoController?.letShowInfosItemGo() }
         // Nothing is said to have changed: the rows keep the details they have, so a folder a write went into shows its

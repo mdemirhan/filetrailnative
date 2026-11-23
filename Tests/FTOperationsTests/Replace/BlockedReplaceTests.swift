@@ -33,6 +33,6 @@ struct BlockedReplaceTests {
         #expect(fileSystem.readNode("/d/a.txt")?.size == 7)
         let refused = itemFor(result, "/x/a.txt")
         #expect(refused?.status == .failed)
-        #expect(refused?.error == "Can't replace \u{201C}a.txt\u{201D} because it is another item being pasted.")
+        #expect(refused?.error == "Can’t replace \u{201C}a.txt\u{201D} because it is another item being pasted.")
     }
 }

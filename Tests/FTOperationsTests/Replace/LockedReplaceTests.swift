@@ -71,7 +71,7 @@ struct LockedReplaceTests {
             #expect(run.result?.items.first?.status == .failed)
             #expect(
                 run.result?.items.first?.error
-                    == "\u{201C}f.txt\u{201D} is locked. Unlock it in Finder's Get Info and try again.")
+                    == "\u{201C}f.txt\u{201D} is locked. Unlock it in Finder\u{2019}s Get Info and try again.")
             #expect(Disk.read(dst + "/f.txt") == "old")
             #expect(Disk.list(dst) == ["f.txt"])
             #expect(Disk.list(trash) == [])
@@ -94,7 +94,7 @@ struct LockedReplaceTests {
             #expect(run.result?.items.first?.status == .failed)
             #expect(
                 run.result?.items.first?.error
-                    == "\u{201C}f.txt\u{201D} is locked. Unlock it in Finder's Get Info and try again.")
+                    == "\u{201C}f.txt\u{201D} is locked. Unlock it in Finder\u{2019}s Get Info and try again.")
             #expect(Disk.read(disk + "/f.txt") == "old")
             #expect(Disk.list(otherTrash) == [])
             #expect(Disk.list(src) == ["f.txt"])
@@ -114,7 +114,7 @@ struct LockedReplaceTests {
             #expect(run.result?.items.first?.status == .failed)
             #expect(
                 run.result?.items.first?.error
-                    == "\u{201C}keep.txt\u{201D} is locked. Unlock it in Finder's Get Info and try again.")
+                    == "\u{201C}keep.txt\u{201D} is locked. Unlock it in Finder\u{2019}s Get Info and try again.")
             #expect(Disk.list(disk + "/Docs") == ["old.txt"])
             #expect(Disk.list(otherTrash) == [])
         }

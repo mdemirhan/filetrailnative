@@ -79,8 +79,9 @@ final class TabViewOptionsSheet: SavedViewSheet {
         return row(indented(lines), nil, height: 50)
     }()
     private lazy var tabCard = card([panesRow.view, forgetRow, dividerRow.view, hiddenRow.view])
-    private lazy var tabPage = page(
-        "What the tab view sets for the tab. Rows left unchecked stay as the tab has them.", [(tabCard, 0)])
+    private static let tabPageNote =
+        "What the tab view sets for the tab. Rows left unchecked stay as the tab has them."
+    private lazy var tabPage = page(Self.tabPageNote, [(tabCard, 0)])
 
     private lazy var dividerPopUp = popUp(label: "Divider", id: "divider") { [weak self] index in
         guard let self, dividerChoices.indices.contains(index) else { return }
@@ -449,6 +450,13 @@ final class TabViewOptionsSheet: SavedViewSheet {
     }
 
     private func refreshTabRows() {
+        // With the panes not kept, the pane pages are the active pane's: said once here, which one that is.
+        if let line = tabPage.arrangedSubviews.first as? NSTextField {
+            let activePane =
+                draft.paneGroups.contains(.activePane)
+                ? " The active pane is whichever pane is active when the tab view is applied." : ""
+            Self.set(line, Self.tabPageNote + activePane)
+        }
         panesPopUp.selectItem(at: draft.panes == 2 ? 1 : 0)
         panesRow.show(kept: draft.keepsPanes)
         tabCard.set(forgetRow, shown: draft.keepsPanes && draft.panes == 1)
@@ -570,9 +578,9 @@ final class TabViewOptionsSheet: SavedViewSheet {
         Self.set(
             opensViewerDetail,
             two
-                ? "Over this pane\u{2019}s list: with Follow on, the file the \(other) pane\u{2019}s list selects; "
-                    + "else the file selected here."
-                : "Over this pane\u{2019}s list, on the file selected in it.")
+                ? "Opens over this pane\u{2019}s list. With Follow on, it shows the file selected in the \(other) "
+                    + "pane; otherwise, the file selected here."
+                : "Opens over this pane\u{2019}s list, on the file selected in it.")
         opensViewerRow.show(kept: pane.opensViewer, dims: false)
         editPopUp.selectItem(at: pane.viewer.editing ? 1 : 0)
         editRow.show(kept: pane.keepsEditing)
@@ -611,7 +619,7 @@ final class TabViewOptionsSheet: SavedViewSheet {
         case .left: "the left pane"
         case .right: "the right pane"
         case .onePane: "the pane"
-        case .activePane: "the pane that is active as the tab view is applied"
+        case .activePane: "the active pane"
         }
     }
 

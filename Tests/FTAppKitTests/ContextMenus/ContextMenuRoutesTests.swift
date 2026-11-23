@@ -198,14 +198,14 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // MARK: Show Info
+        // MARK: Get Info
 
         // The panel opens on the item right-clicked, not the selection.
         @Test func showInfoOnARowDescribesThatRow() async throws {
             let window = try await open()
             let info = try #require(window.tab.infoController)
             window.select(["note.txt"])
-            try choose("Show Info", in: try contentMenu(window, ["Alpha"]))
+            try choose("Get Info", in: try contentMenu(window, ["Alpha"]))
             #expect(window.tab.panels.propertiesOpen)
             #expect(info.targetOverride == path(window, "Alpha"))
             #expect(await waitUntil { info.resolvedItemPath == path(window, "Alpha") })
@@ -217,12 +217,12 @@ extension ExplorerWindowlessTests {
             let window = try await open()
             let info = try #require(window.tab.infoController)
             window.select(["note.txt"])
-            try choose("Show Info", in: try treeMenu(window, "Beta"))
+            try choose("Get Info", in: try treeMenu(window, "Beta"))
             #expect(window.tab.panels.propertiesOpen)
             #expect(await waitUntil { info.resolvedItemPath == path(window, "Beta") })
-            try choose("Show Info", in: try favoriteMenu(window, path(window, "Alpha")))
+            try choose("Get Info", in: try favoriteMenu(window, path(window, "Alpha")))
             #expect(await waitUntil { info.resolvedItemPath == path(window, "Alpha") })
-            try choose("Show Info", in: try backgroundMenu(window))
+            try choose("Get Info", in: try backgroundMenu(window))
             #expect(info.targetOverride == window.tab.shownFolderPath)
             #expect(await waitUntil { info.resolvedItemPath == window.tab.shownFolderPath })
             await window.close()

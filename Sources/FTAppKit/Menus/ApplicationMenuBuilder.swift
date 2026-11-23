@@ -297,7 +297,7 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.goToPage, "Go to Page…"))
             menu.addItem(.separator())
             menu.addItem(context.command(.showFolderInOtherPane, "Show This Folder in Other Pane"))
-            menu.addItem(context.command(.goToOtherPaneFolder, "Go to Other Pane's Folder"))
+            menu.addItem(context.command(.goToOtherPaneFolder, "Go to Other Pane’s Folder"))
             menu.addItem(.separator())
             menu.addItem(context.command(.rootTreeAtSelection, "Use as Tree Root"))
         }

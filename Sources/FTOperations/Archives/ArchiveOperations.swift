@@ -88,7 +88,7 @@ extension WriteCoordinator {
                     items.append(
                         WriteOperationItem(
                             sourcePath: archivePath, destinationPath: nil, status: .cancelled,
-                            error: "Operation cancelled."))
+                            error: "Stopped before it was extracted."))
                     items += LocalWriteResults.notStartedItems(Array(archivePaths[(index + 1)...]))
                     break
                 }
@@ -190,7 +190,7 @@ extension WriteCoordinator {
                 status: .completed, error: nil, undoLog: endUndoLog(steps, anyMade: true))
         } catch {
             let cancelled = error is StopError || operation.signal.isStopped
-            let message = cancelled ? "Operation cancelled." : describeArchiveError(error)
+            let message = cancelled ? "Stopped before anything was changed." : describeArchiveError(error)
             emitEnd(
                 operation, startedAt: startedAt, targetPath: folder,
                 items: [

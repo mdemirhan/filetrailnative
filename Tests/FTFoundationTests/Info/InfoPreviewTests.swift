@@ -70,4 +70,17 @@ struct InfoPreviewTests {
     @Test func theRootFolderIsMacintoshHD() {
         #expect(InfoPreview.folderEntry("/").name == "Macintosh HD")
     }
+
+    @Test func aTrashFolderIsCalledTrashAsItsTabIs() throws {
+        let home = "/Users/demo"
+        #expect(InfoPreview.folderEntry("/Users/demo/.Trash", homePath: home).name == "Trash")
+        #expect(InfoPreview.folderEntry("/Volumes/Photos/.Trashes/501", homePath: home).name == "Trash")
+        #expect(InfoPreview.folderEntry("/Users/demo/.Trash2", homePath: home).name == ".Trash2")
+        let trash = InfoItem(path: "/Users/demo/.Trash", name: ".Trash", kind: .directory, kindLabel: "Folder")
+        let resolved = try #require(
+            InfoPreview.resolve(
+                path: trash.path, currentPath: home, entries: [], metadataByPath: [:], properties: trash,
+                homePath: home))
+        #expect(resolved.item.name == "Trash")
+    }
 }

@@ -483,7 +483,7 @@ final class WorkspaceView: NSView {
 final class WorkspaceSidebarColumn: NSView {
     fileprivate weak var workspace: WorkspaceView?
     let cell = WorkspaceCell()
-    let resizer = PaneResizerView(pane: .tree, identifier: "pane.resizer.tree", label: "Resize folders pane")
+    let resizer = PaneResizerView(pane: .tree, identifier: "pane.resizer.tree", label: "Resize Folder Tree")
 
     override init(frame: NSRect) {
         super.init(frame: frame)
@@ -528,7 +528,7 @@ final class WorkspaceInspectorColumn: NSView {
     fileprivate weak var workspace: WorkspaceView?
     let backdrop = ContentBackdrop()
     let resizer = PaneResizerView(
-        pane: .inspector, identifier: "pane.resizer.inspector", label: "Resize Info Panel pane")
+        pane: .inspector, identifier: "pane.resizer.inspector", label: "Resize Info Panel")
     let cell = WorkspaceCell()
     /// The band over this column: Finder's line goes across the panel too, and the pointer over either shows it.
     let band = WorkspaceBandPlace()

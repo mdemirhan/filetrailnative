@@ -64,9 +64,9 @@
 	<key>NSDownloadsFolderUsageDescription</key>
 	<string>File Trail shows the files in your Downloads folder.</string>
 	<key>NSNetworkVolumesUsageDescription</key>
-	<string>File Trail shows the files on network volumes.</string>
+	<string>File Trail shows the files on servers you connect to.</string>
 	<key>NSRemovableVolumesUsageDescription</key>
-	<string>File Trail shows the files on removable volumes.</string>
+	<string>File Trail shows the files on disks you connect.</string>
 	<key>NSHighResolutionCapable</key>
 	<true/>
 	<key>NSPrincipalClass</key>

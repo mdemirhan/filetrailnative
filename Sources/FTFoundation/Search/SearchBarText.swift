@@ -44,7 +44,7 @@ public enum SearchBarText {
     public static let doneTitle = "Close Search Results (Esc)"
     public static let doneName = "Close search results"
     public static let truncatedBanner =
-        "Showing the first \(FormatLocale.count(SearchLimits.resultLimit)) matches."
+        "Showing the first \(FormatLocale.count(SearchLimits.resultLimit)) results."
     /// A write put items inside the folder searched, which the results don't list.
     public static let mayBeMissingBanner = "Items added since this search may not be listed."
     public static let searchAgain = "Search Again"
@@ -142,7 +142,7 @@ public enum SearchResultsState: Equatable, Sendable {
         case .failed: "Search failed"
         case .searching: "Searching…"
         case .filteredOut(let query): "No results match \u{201C}\(query)\u{201D}"
-        case .noMatches: "No matches"
+        case .noMatches: "No results"
         }
     }
 

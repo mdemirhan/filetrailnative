@@ -24,8 +24,9 @@ public struct ArchiveError: CodedError, Equatable, Sendable {
                 "\u{201C}\(name)\u{201D} is protected with a password. File Trail can\u{2019}t open protected archives yet; Archive Utility can."
             case .empty:
                 "\u{201C}\(name)\u{201D} holds nothing to extract."
+            // Mostly a folder or a disk that refuses the mark on what is put in it: another folder may take it.
             case .notQuarantined:
-                "\u{201C}\(name)\u{201D} wasn\u{2019}t extracted: what is in it couldn\u{2019}t be marked as downloaded, as the archive is, so macOS wouldn\u{2019}t check it before it runs."
+                "\u{201C}\(name)\u{201D} wasn\u{2019}t extracted. Its items couldn\u{2019}t be marked as downloaded from the internet, as the archive is, so macOS couldn\u{2019}t check them before they open. Try extracting it into another folder, such as one on your Mac\u{2019}s own disk."
             }
     }
 }

@@ -455,7 +455,7 @@ struct UndoExecutionTests {
             try UndoDisk.remove("\(trashDir)/1-a.txt")
             let undone = try await t.undo()
             #expect(items(undone).map(\.status) == [.skipped])
-            #expect(items(undone).first?.error == "“a.txt” isn't in the Trash any more.")
+            #expect(items(undone).first?.error == "“a.txt” isn’t in the Trash any more.")
             await t.shutDown()
         }
     }
@@ -517,7 +517,7 @@ struct UndoExecutionTests {
             #expect(items(undone).map(\.status) == [.skipped, .skipped])
             #expect(
                 items(undone).last?.error
-                    == "“a.txt” was left in the Trash, because the item in its place couldn't be moved away.")
+                    == "“a.txt” was left in the Trash, because the item in its place couldn’t be moved away.")
             await t.shutDown()
         }
     }
@@ -681,7 +681,7 @@ struct UndoExecutionTests {
             let undone = try await t.undo()
             let items = undone.result?.items ?? []
             #expect(items.map(\.status) == [.skipped])
-            #expect(items.first?.error == "“a.txt” isn't in the Trash any more.")
+            #expect(items.first?.error == "“a.txt” isn’t in the Trash any more.")
             #expect(!UndoDisk.exists("\(root)/a.txt"))
             // The operation before that one is untouched by it, and undone as ever.
             #expect(t.history.menu().undo == "Rename")
@@ -782,7 +782,7 @@ struct UndoExecutionTests {
             try await t.trash("\(root)/a.txt")
             let undone = try await t.undo()
             #expect(items(undone).map(\.status) == [.skipped])
-            #expect(items(undone).first?.error == "“a.txt” isn't in the Trash any more.")
+            #expect(items(undone).first?.error == "“a.txt” isn’t in the Trash any more.")
             await t.shutDown()
         }
     }
@@ -844,7 +844,7 @@ struct UndoExecutionTests {
             let undone = try await t.undo()
             #expect(undone.status == .failed)
             #expect(items(undone).map(\.status) == [.failed])
-            #expect(items(undone).first?.error == "You don't have permission to access this item.")
+            #expect(items(undone).first?.error == "You don’t have permission to access this item.")
             #expect(UndoDisk.exists("\(root)/src/a copy.txt"))
             await t.shutDown()
         }
@@ -918,7 +918,7 @@ struct UndoExecutionTests {
 
     @Test(arguments: [
         (CopyPasteMode.copy, "“a.txt” was left in the Trash"),
-        (CopyPasteMode.cut, "“a.txt” was left as it is, because the step before it couldn't be redone."),
+        (CopyPasteMode.cut, "“a.txt” was left as it is, because the step before it couldn’t be redone."),
     ])
     func doesntRedoAReplacesSecondStepWhenItsFirstCantBe(mode: CopyPasteMode, message: String) async throws {
         try await withUndoFolder { root, trashDir in
@@ -961,7 +961,7 @@ struct UndoExecutionTests {
             #expect(items(undone).map(\.status) == [.skipped, .skipped])
             #expect(
                 items(undone).last?.error
-                    == "“made.txt” was left as it is, because the step before it couldn't be undone.")
+                    == "“made.txt” was left as it is, because the step before it couldn’t be undone.")
             #expect(UndoDisk.exists("\(root)/made.txt"))
             await t.shutDown()
         }

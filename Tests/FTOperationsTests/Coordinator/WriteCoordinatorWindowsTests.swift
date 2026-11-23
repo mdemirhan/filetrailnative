@@ -432,7 +432,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         let end = try await Coordinators.end(of: handle.operationId, in: window)
 
         #expect(end.status == .failed)
-        #expect(end.result?.error == "The operation stopped unexpectedly: The disk went away.")
+        #expect(end.result?.error == "New Folder stopped unexpectedly: The disk went away.")
         #expect(
             broadcasts.contains {
                 $0.0.operationId == handle.operationId && $0.0.status == .failed && $0.1 == ObjectIdentifier(window)
@@ -451,7 +451,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
             options: WriteCoordinatorOptions(
                 recordUndo: { finished.append($0) },
                 // Reading the mount table goes wrong.
-                diskHasTrash: { _ in throw OperationError("The mount table couldn't be read.") },
+                diskHasTrash: { _ in throw OperationError("The mount table couldn’t be read.") },
                 broadcastProgress: { event, _ in broadcasts.append(event) }, logError: log.log))
         let window = TestWindow()
         try await Coordinators.startPaste(coordinator, window)
@@ -556,7 +556,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
             #expect(meanwhile.refusal == .nothing)
             await #expect(
                 throws: WriteCoordinatorError(
-                    "A disk didn't answer while Undo looked at its items. Choose Undo again once it does.")
+                    "A disk didn’t answer while Undo looked at its items. Choose Undo again once it does.")
             ) {
                 _ = try await first.value
             }

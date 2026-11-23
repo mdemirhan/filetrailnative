@@ -92,6 +92,6 @@ import Testing
             ).message == "Finder got an error: The operation can\u{2019}t be completed.")
         #expect(
             LocalWriteRules.describeEmptyTrashFailure("  ").message
-                == "Finder didn't empty the Trash. Try again, or empty it in Finder.")
+                == "Finder didn\u{2019}t empty the Trash. Try again, or empty it in Finder.")
     }
 }

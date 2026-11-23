@@ -4,7 +4,7 @@ import Foundation
 /// The copy doesn't match its original as copied: the original grew (or shrank) while it was copied, or the copy
 /// came out short (or went away).
 let copyNotWholeMessage =
-    "It changed while it was being moved, or its copy didn't come out whole, so the original was kept."
+    "It changed while it was being moved, or its copy didn’t come out whole, so the original was kept."
 
 /// A move's copy written out to the disk before its original goes: nil when it is, else why the original is kept.
 /// Copied, the item may still be only in memory or in the drive's cache; deleted then, a power cut leaves it
@@ -14,7 +14,7 @@ func flushMovedCopy(_ fileSystem: some WriteServiceFileSystem, _ path: String, w
         try fileSystem.flushToDisk(path, wholeDisk: wholeDisk)
         return nil
     } catch {
-        return "It was copied, but the copy couldn't be written out to the disk, so the original was kept. "
+        return "It was copied, but the copy couldn’t be written out to the disk, so the original was kept. "
             + describeCopyPasteError(error)
     }
 }
@@ -245,7 +245,7 @@ func tryDeleteMovedSource(
         currentFingerprint = try captureFingerprintStrictly(fileSystem, sourcePath)
     } catch {
         // Not readable just now (a disk error, a network disk not answering): it may well still be there.
-        return "It was copied, but the original couldn't be checked, so it was kept. \(describeCopyPasteError(error))"
+        return "It was copied, but the original couldn’t be checked, so it was kept. \(describeCopyPasteError(error))"
     }
     if !currentFingerprint.exists {
         // Deleted by someone else meanwhile: nothing to do.
@@ -259,7 +259,7 @@ func tryDeleteMovedSource(
         try fileSystem.rm(sourcePath, recursive: false, force: false)
         return nil
     } catch {
-        return "It was copied, but the original couldn't be removed. \(describeCopyPasteError(error))"
+        return "It was copied, but the original couldn’t be removed. \(describeCopyPasteError(error))"
     }
 }
 
@@ -268,7 +268,7 @@ func tryDeleteMovedSource(
 func metadataKeptMessage(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode) -> String? {
     guard context.shared.metadataNotCopied.contains(NameKeys.Exact(node.node.sourcePath)) else { return nil }
     return
-        "Its items were moved, but the folder's own information (such as its tags) couldn't all be copied, so the original \u{201C}\(basenameOf(node.node.sourcePath))\u{201D} was kept."
+        "Its items were moved, but the folder’s own information (such as its tags) couldn’t all be copied, so the original “\(basenameOf(node.node.sourcePath))” was kept."
 }
 
 /// Removes an empty source folder once its items were moved: nil when done (or left on purpose), else why it
@@ -286,7 +286,7 @@ func tryRemoveEmptySourceDirectory(
         // Its permissions changed, or it was swapped for another folder: it isn't removed, and "moved" mustn't
         // hide that it is still there.
         return
-            "Its items were moved, but the original \u{201C}\(basenameOf(sourcePath))\u{201D} changed during the move, so it was kept."
+            "Its items were moved, but the original “\(basenameOf(sourcePath))” changed during the move, so it was kept."
     }
     do {
         // rmdir only removes an empty folder, so anything left inside (skipped items, or something added in the
@@ -302,7 +302,7 @@ func tryRemoveEmptySourceDirectory(
         if code == .errno(ENOTEMPTY) || code == .errno(EEXIST) {
             return describeLeftInMovedFolder(node, fileSystem, keptNames, onRemoved)
         }
-        return "Its items were moved, but the original folder couldn't be removed. \(describeCopyPasteError(error))"
+        return "Its items were moved, but the original folder couldn’t be removed. \(describeCopyPasteError(error))"
     }
 }
 
@@ -355,10 +355,10 @@ private func describeLeftInMovedFolder(
     let folder = basenameOf(sourcePath)
     let named =
         newItems.count == 1
-        ? "\u{201C}\(newItems[0])\u{201D} was" : "\(FormatLocale.count(newItems.count)) items were"
+        ? "“\(newItems[0])” was" : "\(FormatLocale.count(newItems.count)) items were"
     let left = newItems.count == 1 ? "it was" : "they were"
     return
-        "\(named) added to \u{201C}\(folder)\u{201D} while it was being moved, so \(left) left in the original \u{201C}\(folder)\u{201D}."
+        "\(named) added to “\(folder)” while it was being moved, so \(left) left in the original “\(folder)”."
 }
 
 /// Items put into a folder after the review were never part of the copy: they are named, as for a move, so
@@ -371,9 +371,9 @@ func describeAddedDuringCopy(_ node: ResolvedCopyPasteNode, _ fileSystem: some W
     let folder = basenameOf(node.node.sourcePath)
     let named =
         newItems.count == 1
-        ? "\u{201C}\(newItems[0])\u{201D} was" : "\(FormatLocale.count(newItems.count)) items were"
-    let copied = newItems.count == 1 ? "it wasn't" : "they weren't"
-    return "\(named) added to \u{201C}\(folder)\u{201D} after the copy began, so \(copied) copied."
+        ? "“\(newItems[0])” was" : "\(FormatLocale.count(newItems.count)) items were"
+    let copied = newItems.count == 1 ? "it wasn’t" : "they weren’t"
+    return "\(named) added to “\(folder)” after the copy began, so \(copied) copied."
 }
 
 private func findItemsAddedSinceReview(_ node: ResolvedCopyPasteNode, _ fileSystem: some WriteServiceFileSystem)

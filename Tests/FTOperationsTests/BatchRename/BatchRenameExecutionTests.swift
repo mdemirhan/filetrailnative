@@ -167,7 +167,7 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(result.items[1].destinationPath == "/trip/.tmp-1")
         #expect(
             result.items[1].error
-                == "You don't have permission to access this item. Another item has its old name now, so it is named “.tmp-1” (hidden)."
+                == "You don’t have permission to access this item. Another item has its old name now, so it is named “.tmp-1” (hidden)."
         )
         #expect(disk.names() == [".tmp-1", "a"])
     }
@@ -177,7 +177,7 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         disk.failures["renameExclusive:/trip/b->/trip/.tmp-0"] = errno(EACCES)
         let result = run(disk, request([("a", "b"), ("b", "c")]))
         #expect(result.items[1].status == .failed)
-        #expect(result.items[1].error == "You don't have permission to access this item.")
+        #expect(result.items[1].error == "You don’t have permission to access this item.")
         // "b" stayed, so "a" got the next free name.
         #expect(result.items[0] == completed("/trip/a", "/trip/b 2"))
         #expect(disk.names() == ["b", "b 2"])
@@ -203,7 +203,7 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(
             result.items.map(\.error) == [
                 "“gone.txt” no longer exists.",
-                "“locked.txt” is locked. Unlock it in Finder's Get Info and try again.",
+                "“locked.txt” is locked. Unlock it in Finder’s Get Info and try again.",
             ])
         #expect(result.completedItemCount == 0)
     }
@@ -492,7 +492,7 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         let journal = RenameJournal()
         let result = run(disk, request([("P/a", "b"), ("P/b", "a"), ("P", "Q")], folders: ["P"]), journal: journal)
         #expect(disk.names("/trip") == ["P"])
-        #expect(result.items[2].error == "“P” wasn't renamed because an item in it is still under a hidden name.")
+        #expect(result.items[2].error == "“P” wasn’t renamed because an item in it is still under a hidden name.")
         #expect(
             journal.liveEntries.map(\.items) == [
                 [.init(temporaryPath: "/trip/P/.tmp-0", originalPath: "/trip/P/a", newPath: "/trip/P/b")]
@@ -523,7 +523,7 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         let result = run(disk, request([("a", "b"), ("b", "a")]), journal: journal)
         #expect(disk.names() == ["a", "b"])
         #expect(result.items.map(\.status) == [.failed, .failed])
-        #expect(result.items.first?.error?.hasPrefix("It wasn't renamed. ") == true)
+        #expect(result.items.first?.error?.hasPrefix("It wasn’t renamed. ") == true)
     }
 }
 

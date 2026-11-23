@@ -42,7 +42,7 @@ extension ExplorerWindowlessTests {
             tab.notifications?.toasts.entries.map(\.title) ?? []
         }
 
-        private let refusal = "Can't drop while \u{201C}Photos\u{201D} is being copied"
+        private let refusal = "Can\u{2019}t drop while \u{201C}Photos\u{201D} is being copied"
 
         // The table asks its data source only when the row changes; every drag-over of a resting drag still reaches
         // the tab, as the Icons view's and the tree's do.

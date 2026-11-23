@@ -187,8 +187,9 @@ final class PathSeparatorView: NSView, TextStyleSource {
 
 /// The bar of segments: the path from the top of the disk, collapsing its middle behind "…" when the row is narrow.
 final class PathBarView: NSView {
-    /// What the separators call `/` ("Folders in …"); set before `segments`.
+    /// What the separators call `/` and the Trash ("Folders in …"); set before `segments`.
     var startupDiskName = VolumePaths.defaultStartupDiskName
+    var homePath = ""
     var segments: [PathbarSegment] = [] {
         didSet {
             guard segments != oldValue else { return }
@@ -272,7 +273,8 @@ final class PathBarView: NSView {
                 let separator = PathSeparatorView(isButton: parentSegment != nil)
                 if let segment = parentSegment {
                     let parent = PathBarModel.parentPath(segment.path)
-                    let label = "Folders in \(PathBarModel.label(parent, startupDiskName: startupDiskName))"
+                    let label =
+                        "Folders in \(PathBarModel.label(parent, homePath: homePath, startupDiskName: startupDiskName))"
                     separator.setAccessibilityLabel(label)
                     separator.toolTip = label
                     separator.onClick = { [weak self, weak separator] in

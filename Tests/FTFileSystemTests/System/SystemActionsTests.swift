@@ -186,10 +186,10 @@ private final class FakeSystem: @unchecked Sendable {
 
     @Test func reportsWhyOpenFailed() async {
         let system = FakeSystem()
-        system.failure = "Unable to find application named 'Gone'"
+        system.failure = "\u{201C}Gone\u{201D} can\u{2019}t be found. It may have been moved or deleted."
         let result = await SystemActions.openPaths(
             ["/a"], withApplication: "/Applications/Gone.app", opener: system.opener)
-        #expect(result == .failure("Unable to find application named 'Gone'"))
+        #expect(result == .failure("\u{201C}Gone\u{201D} can\u{2019}t be found. It may have been moved or deleted."))
     }
 
     @Test func refusesAnApplicationPathThatIsNotABundleWithoutOpeningAnything() async {

@@ -77,7 +77,7 @@ import Testing
                 "Downloads", "Home", "Library",
                 "Macintosh HD", "Applications", "Trash", "-", "Go to Folder…", "Go to Page…", "-",
                 "Show This Folder in Other Pane",
-                "Go to Other Pane's Folder", "-", "Use as Tree Root",
+                "Go to Other Pane’s Folder", "-", "Use as Tree Root",
             ])
         #expect(
             titles(submenu(main, "Window")) == [

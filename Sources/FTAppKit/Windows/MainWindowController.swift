@@ -789,7 +789,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// Reads the folder on screen again, quietly: something changed in it (`BrowserPane.reload`).
     func reload(changedPaths: [String]? = nil) { activePane.reload(changedPaths: changedPaths) }
 
-    /// The folder read again because the app asks, not because of a change from outside: Show Info's
+    /// The folder read again because the app asks, not because of a change from outside: Get Info's
     /// item goes.
     func readAgain() { activePane.readAgain() }
 
@@ -820,7 +820,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// The changes waiting to be read in the active pane.
     var pendingChange: FolderChangeGate.Pending? { activePane.pendingChange }
 
-    /// A change from outside is being taken in: Show Info's item stays.
+    /// A change from outside is being taken in: Get Info's item stays.
     var isTakingInOutsideChange: Bool { activePane.isTakingInOutsideChange }
 
     /// While a dialog is open or a name is being typed a press on the tab bar does nothing and the keyboard stays: the
@@ -844,7 +844,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         for pane in panes where pane.dropWaitingReadAgain() { treeOutOfDate = true }
     }
 
-    /// The tab is on screen again after another one, or for the first time. Show Info's item doesn't
+    /// The tab is on screen again after another one, or for the first time. Get Info's item doesn't
     /// outlast it.
     func cameBack() {
         infoController?.letShowInfosItemGo()

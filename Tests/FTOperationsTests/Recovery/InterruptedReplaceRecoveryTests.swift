@@ -175,7 +175,7 @@ struct RecoveringInterruptedReplacesTests {
 
             #expect(
                 outcomes.map(\.outcome) == [
-                    .failed(error: "You don't have permission to access this item."), .nothingLeft,
+                    .failed(error: "You don’t have permission to access this item."), .nothingLeft,
                 ])
         }
     }

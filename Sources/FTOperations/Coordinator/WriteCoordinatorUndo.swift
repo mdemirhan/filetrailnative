@@ -282,7 +282,7 @@ extension WriteCoordinator {
     /// `undoNotAnswered`: why an Undo (or Redo) was refused when a disk didn't answer its look at the items.
     nonisolated static func undoNotAnswered(_ direction: UndoDirection) -> String {
         let command = direction.command
-        return "A disk didn't answer while \(command) looked at its items. Choose \(command) again once it does."
+        return "A disk didn\u{2019}t answer while \(command) looked at its items. Choose \(command) again once it does."
     }
 
     /// `describeUnaskedQuestion`: what an Undo (or Redo) would ask now that it didn't ask when it was chosen, as the

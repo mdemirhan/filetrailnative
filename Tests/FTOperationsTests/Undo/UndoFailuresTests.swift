@@ -41,7 +41,7 @@ struct UndoFailuresTests {
             #expect(failed.status == .failed)
             #expect(
                 items(failed).first?.error
-                    == "“b.txt” couldn't be checked: You don't have permission to access this item.")
+                    == "“b.txt” couldn’t be checked: You don’t have permission to access this item.")
             #expect(t.history.top(.undo) == entry)
             unreadable.set(false)
             #expect(try await t.undo().status == .completed)
@@ -192,8 +192,8 @@ struct UndoFailuresTests {
             #expect(items(failed).map(\.status) == [.failed, .failed])
             #expect(
                 items(failed).map(\.error) == [
-                    "“b.txt” is named “a 2.txt” for now, because “a.txt” couldn't be renamed out of its way.",
-                    "You don't have permission to access this item.",
+                    "“b.txt” is named “a 2.txt” for now, because “a.txt” couldn’t be renamed out of its way.",
+                    "You don’t have permission to access this item.",
                 ])
             #expect(t.history.menu() == UndoMenuLabels(undo: "Rename of 2 Items", redo: "Rename", cantUndo: false))
             #expect(try await t.undo().status == .completed)
@@ -283,7 +283,7 @@ struct UndoFailuresTests {
             }
             try await t.newFolder(root, "F")
             let undone = try await t.undo()
-            let reason = "“F” couldn't be moved to the Trash because its disk has no Trash."
+            let reason = "“F” couldn’t be moved to the Trash because its disk has no Trash."
             #expect(undone.status == .failed)
             #expect(undone.result?.error == reason)
             #expect(items(undone).map(\.status) == [.skipped])
@@ -343,7 +343,7 @@ struct UndoFailuresTests {
             let item = try #require(items(undone).first)
             #expect(item.status == .completed)
             #expect(item.note)
-            #expect(item.error == "“F” is in the Trash, but the Trash didn't say where, so Redo can't bring it back.")
+            #expect(item.error == "“F” is in the Trash, but the Trash didn’t say where, so Redo can’t bring it back.")
             #expect(t.history.menu().redo == nil)
             await t.shutDown()
         }
@@ -363,7 +363,7 @@ struct UndoFailuresTests {
     }
 
     nonisolated static let renameFailures: [(Int32, CopyPasteItemResult.Status, String, String?)] = [
-        (EACCES, .failed, "You don't have permission to access this item.", "Rename"),
+        (EACCES, .failed, "You don’t have permission to access this item.", "Rename"),
         (EROFS, .skipped, "“b.txt” is on a disk that can only be read.", nil),
         (EXDEV, .skipped, "“b.txt” is on another disk now.", nil),
         (ENOENT, .skipped, "“b.txt” is no longer in", nil),
@@ -661,7 +661,7 @@ struct UndoFailuresTests {
             units, UndoRunOptions(direction: .undo, fileSystem: unreadableDisk("/nowhere", permissionDenied())))
         #expect(run.items.map(\.status) == [.failed])
         #expect(run.items.first?.sourcePath == "/D/b")
-        #expect(run.items.first?.error == "“b” couldn't be checked: You don't have permission to access this item.")
+        #expect(run.items.first?.error == "“b” couldn’t be checked: You don’t have permission to access this item.")
         #expect(run.leftover == units)
     }
 
@@ -671,7 +671,7 @@ struct UndoFailuresTests {
             units, UndoRunOptions(direction: .undo, fileSystem: unreadableDisk("/nowhere", permissionDenied())))
         #expect(run.items.map(\.status) == [.failed])
         #expect(
-            run.items.first?.error == "“a copy” couldn't be checked: You don't have permission to access this item.")
+            run.items.first?.error == "“a copy” couldn’t be checked: You don’t have permission to access this item.")
         #expect(run.leftover == units)
     }
 

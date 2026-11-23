@@ -80,11 +80,11 @@ public enum PathBarItem: Equatable, Sendable {
 }
 
 public enum PathBarModel {
-    /// A folder's name: the startup disk's name for `/`.
-    public static func label(_ path: String, startupDiskName: String = VolumePaths.defaultStartupDiskName) -> String {
-        path == "/"
-            ? startupDiskName
-            : (path.split(separator: "/", omittingEmptySubsequences: true).last.map(String.init) ?? path)
+    /// A folder's name as the tab and the toolbar say it: the startup disk's name for `/`, "Trash" for a Trash folder.
+    public static func label(
+        _ path: String, homePath: String = "", startupDiskName: String = VolumePaths.defaultStartupDiskName
+    ) -> String {
+        TabText.folderDisplayName(path, homePath: homePath, startupDiskName: startupDiskName)
     }
 
     /// The folder a segment is in ("/" for the folders at the top of the disk).

@@ -101,7 +101,7 @@ struct CopyPasteExecutionIntegrationTests {
             let events = await execute(fileSystem, operation, operationId: "flush-fails")
             for path in kept { #expect(fileSystem.exists(path), "\(path)") }
             let failed = events.last?.result?.items.filter { $0.status == .failed } ?? []
-            let said = failed.contains { $0.error?.contains("couldn't be written out to the disk") == true }
+            let said = failed.contains { $0.error?.contains("couldn’t be written out to the disk") == true }
             #expect(said, "\(source): \(failed.map(\.error))")
         }
     }
@@ -290,7 +290,7 @@ struct CopyPasteExecutionIntegrationTests {
         #expect(result?.items.map(\.status) == [.failed])
         #expect(
             result?.items.map(\.error) == [
-                "This folder couldn't be read, so it wasn't moved. You don't have permission to access this item."
+                "This folder couldn’t be read, so it wasn’t moved. You don’t have permission to access this item."
             ])
         #expect(fileSystem.readNode("/source/dir/a.txt") != nil)
         #expect(fileSystem.readNode("/target/dir") == nil)

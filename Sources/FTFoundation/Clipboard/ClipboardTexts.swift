@@ -45,7 +45,7 @@ public enum ClipboardTexts {
     ) -> String {
         let subject =
             currentSourcePath.map { "\u{201C}\(PathText.leafName($0))\u{201D} is" } ?? "items are"
-        let refused = "Can't \(drop ? "drop" : "drag") while"
+        let refused = "Can\u{2019}t \(drop ? "drop" : "drag") while"
         switch action {
         case .moveTo: return "\(refused) \(subject) being moved"
         case .trash: return "\(refused) \(subject) being moved to the Trash"
@@ -71,12 +71,18 @@ public enum ClipboardTexts {
         public var sourcePath: String?
         public var destinationPath: String?
         public var message: String
+        /// For two items that would land on one name: the other one.
+        public var otherSourcePath: String?
 
-        public init(code: String, sourcePath: String?, destinationPath: String?, message: String) {
+        public init(
+            code: String, sourcePath: String?, destinationPath: String?, message: String,
+            otherSourcePath: String? = nil
+        ) {
             self.code = code
             self.sourcePath = sourcePath
             self.destinationPath = destinationPath
             self.message = message
+            self.otherSourcePath = otherSourcePath
         }
     }
 
@@ -96,19 +102,28 @@ public enum ClipboardTexts {
         case "destination_missing":
             return "The folder \(folderName) no longer exists."
         case "destination_not_directory":
-            return "\(folderName) isn't a folder."
+            return "\(folderName) isn\u{2019}t a folder."
         case "source_missing":
             return names.isEmpty
                 ? "An item to copy no longer exists." : "\(names) no longer \(several ? "exist" : "exists")."
         case "same_path":
             return names.isEmpty
-                ? "Source and destination cannot be the same."
+                ? "Source and destination can\u{2019}t be the same."
                 : "\(names) \(several ? "are" : "is") already in \(folderName)."
         case "parent_into_child":
             return names.isEmpty
-                ? "A folder can't go into a folder inside itself."
-                : "\(names) can't be \(cut ? "moved" : "copied") into a folder inside \(several ? "themselves" : "itself")."
+                ? "A folder can\u{2019}t go into a folder inside itself."
+                : "\(names) can\u{2019}t be \(cut ? "moved" : "copied") into a folder inside \(several ? "themselves" : "itself")."
         case "duplicate_destination_name":
+            // Names that differ only in case land on one name where the folder doesn't tell case apart. Names
+            // equal once composed alike ("Café" in either form) are the same name to the person.
+            if let source = issue.sourcePath, let other = issue.otherSourcePath {
+                let (name, otherName) = (PathText.leafName(source), PathText.leafName(other))
+                if name != otherName {
+                    return
+                        "\u{201C}\(otherName)\u{201D} and \u{201C}\(name)\u{201D} would be pasted as one item, as \(folderName) doesn\u{2019}t tell upper and lower case apart."
+                }
+            }
             return "Two of the items are named \(destinationName), so one would replace the other."
         default:
             return issue.message

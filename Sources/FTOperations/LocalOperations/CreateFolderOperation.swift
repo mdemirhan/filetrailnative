@@ -111,7 +111,7 @@ extension WriteCoordinator {
                 operation, startedAt: startedAt, sourcePath: nil, destinationPath: destinationPath,
                 status: cancelled ? .cancelled : .failed,
                 error: cancelled
-                    ? "Operation cancelled."
+                    ? "Stopped before anything was changed."
                     : LocalOperations.describeWriteError(
                         error, missing: NodePath.basename(NodePath.dirname(destinationPath)),
                         existing: NodePath.basename(destinationPath)))

@@ -69,7 +69,7 @@ struct TrashItemTests {
 
         #expect(
             failure { try trashItem("/Users/demo/a.txt") }?.message
-                == "“a.txt” is locked. Unlock it in Finder's Get Info and try again.")
+                == "“a.txt” is locked. Unlock it in Finder’s Get Info and try again.")
     }
 
     // A network share or some USB drives have no Trash: only there may deleting be offered. The Trash says so with

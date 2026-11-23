@@ -172,7 +172,7 @@ extension WindowWriteActions {
         let issues = report.issues.map {
             ClipboardTexts.Issue(
                 code: $0.code.rawValue, sourcePath: $0.sourcePath, destinationPath: $0.destinationPath,
-                message: $0.message)
+                message: $0.message, otherSourcePath: $0.otherSourcePath)
         }
         let message = ClipboardTexts.issueMessage(
             issues, destinationDirectoryPath: report.destinationDirectoryPath, cut: report.mode == .cut)

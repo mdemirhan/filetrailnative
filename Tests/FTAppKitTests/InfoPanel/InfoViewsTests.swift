@@ -54,7 +54,7 @@ struct FolderSizeCellTests {
         panel.layout()
         let failed = try #require(findViews("test.cell.failed", in: panel).first as? NSTextField)
         let link = try #require(panel.subviews.compactMap { $0 as? TextLinkView }.first)
-        #expect(!failed.isHidden && failed.stringValue == "Couldn't Calculate")
+        #expect(!failed.isHidden && failed.stringValue == "Couldn’t Calculate")
         #expect(failed.toolTip == "EIO: Input/output error")
         #expect(!link.isHidden && link.text == "Try Again")
         #expect(link.frame.minX >= failed.frame.maxX)

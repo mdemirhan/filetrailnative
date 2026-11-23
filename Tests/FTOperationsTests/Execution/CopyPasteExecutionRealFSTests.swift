@@ -105,7 +105,7 @@ struct CopyPasteExecutionRealFSTests {
             let result = try #require(events.last?.result)
             #expect(events.last?.status != .cancelled)
             #expect(result.items.map(\.status) == [.failed, .completed])
-            #expect(result.items.first?.error == "You don't have permission to access this item.")
+            #expect(result.items.first?.error == "You don’t have permission to access this item.")
             #expect(Disk.read(destination + "/b.txt") == "readable")
         }
     }

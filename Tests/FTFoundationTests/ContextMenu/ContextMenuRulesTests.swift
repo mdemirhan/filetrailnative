@@ -143,7 +143,7 @@ struct ContextMenuRulesTests {
         #expect(
             menu == [
                 "Open", "Open With", "Open in Viewer", "Open in Other Pane", "Quick Look", "Edit in TextEdit",
-                "Show Info",
+                "Get Info",
                 "Cut", "Copy",
                 "Copy Path",
                 "Copy Text", "Rename", "Duplicate", "Make Alias", "Move to…",
@@ -156,7 +156,7 @@ struct ContextMenuRulesTests {
         #expect(
             folder == [
                 "Open", "Open With", "Open in New Tab", "Open in New Window", "Open in Other Pane", "Quick Look",
-                "Show Info",
+                "Get Info",
                 "Calculate Size", "Cut", "Copy", "Paste into Folder", "Copy Path", "Rename", "Duplicate",
                 "Make Alias", "Move to…",
                 "New Folder", "Compress \u{201C}F\u{201D}", "Share…", "Remove from Favorites", "Open in Terminal",
@@ -379,7 +379,7 @@ struct ContextMenuRulesTests {
         let menu = labels(background, world(pasteDestination: true))
         #expect(
             menu == [
-                "New Folder", "New File", "Show Info", "Calculate Size", "Paste", "Copy Path", "View As", "Group By",
+                "New Folder", "New File", "Get Info", "Calculate Size", "Paste", "Copy Path", "View As", "Group By",
                 "Sort By", "Folder View", "Open in Terminal", "Show in Finder",
             ])
         let inTrash = hidden(background, world(current: Self.trash + "/old"))

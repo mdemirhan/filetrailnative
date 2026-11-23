@@ -29,7 +29,7 @@ public enum CopyPasteNames {
 
     public struct NoFreeName: Error, Equatable, CustomStringConvertible, Sendable {
         public let sourceName: String
-        public var description: String { "Couldn't find a free name for \u{201C}\(sourceName)\u{201D}." }
+        public var description: String { "Couldn\u{2019}t find a free name for \u{201C}\(sourceName)\u{201D}." }
     }
 
     /// Whether something is at a path: false only when lstat says it is missing (ENOENT). Any other

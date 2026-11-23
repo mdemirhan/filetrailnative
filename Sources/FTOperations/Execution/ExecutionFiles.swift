@@ -133,7 +133,7 @@ private func writeFileContents(
             source.type == .other
         {
             throw OperationError(
-                "\u{201C}\(basenameOf(sourcePath))\u{201D} is a special file (such as a pipe or a socket), which can't be copied."
+                "\u{201C}\(basenameOf(sourcePath))\u{201D} is a special file (such as a pipe or a socket), which can\u{2019}t be copied."
             )
         }
         // Leave no half-written file behind, but only one this copy created: an item that was already there, or
@@ -177,7 +177,7 @@ func temporarySiblingPath(_ fileSystem: some IdentityFileSystem, _ finalPath: St
         }
     }
     throw OperationError(
-        "Couldn't find a free temporary name next to \u{201C}\(basenameOf(finalPath))\u{201D}.")
+        "Couldn\u{2019}t find a free temporary name next to \u{201C}\(basenameOf(finalPath))\u{201D}.")
 }
 
 /// A folder made under a hidden name next to `finalPath` for an item to be built in: made exclusively (a name
@@ -195,7 +195,7 @@ func reserveStagingFolder(_ fileSystem: some WriteServiceFileSystem, _ finalPath
         }
     }
     throw OperationError(
-        "Couldn't find a free temporary name next to \u{201C}\(basenameOf(finalPath))\u{201D}.")
+        "Couldn\u{2019}t find a free temporary name next to \u{201C}\(basenameOf(finalPath))\u{201D}.")
 }
 
 /// A hidden copy written down as complete is put in place at the next start: before any of it is removed, its

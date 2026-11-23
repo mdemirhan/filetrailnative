@@ -289,7 +289,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // Show Info's item doesn't outlast the tab going to the back.
+        // Get Info's item doesn't outlast the tab going to the back.
         @Test func showInfosItemGoesWithTheTab() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

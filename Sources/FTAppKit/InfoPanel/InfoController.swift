@@ -15,7 +15,7 @@ final class InfoController {
     let auto: AutoFolderSizeController
 
     // The target.
-    /// "Show Info" on an item: the panel describes this path whatever the selection.
+    /// "Get Info" on an item: the panel describes this path whatever the selection.
     private(set) var targetOverride: String?
     private var seenSelection = ContentSelection.empty
     // Properties: what is asked for and shown (`InfoPropertiesLoad`), and the wait before asking.
@@ -58,7 +58,7 @@ final class InfoController {
                 if !self.host.isTakingInOutsideChange { self.targetOverride = nil }
                 self.folderChanged()
             case .selection:
-                // The tree's selection says so too, as the tree refreshes: only the list's lets Show Info's item go.
+                // The tree's selection says so too, as the tree refreshes: only the list's lets Get Info's item go.
                 // Items that left the folder aren't a selection made: they just drop out of it.
                 if self.content.selection != self.seenSelection {
                     self.seenSelection = self.content.selection
@@ -141,14 +141,14 @@ final class InfoController {
 
     // MARK: The target
 
-    /// Where the views point: the Show Info target, else the selection's lead, else the folder on screen.
+    /// Where the views point: the Get Info target, else the selection's lead, else the folder on screen.
     var targetPath: String? {
         if let targetOverride { return targetOverride }
         if let lead = content.selection.leadPath { return lead }
         return folderPath.isEmpty ? nil : folderPath
     }
 
-    /// "Show Info": the panel opens and describes `path`.
+    /// "Get Info": the panel opens and describes `path`.
     func showInfo(for path: String) {
         targetOverride = path
         if !panelOpen { host.updatePanels { $0.propertiesOpen = true } }
@@ -186,7 +186,7 @@ final class InfoController {
         let metadata = infoMetadata(content.metadata(for: path)).map { [path: $0] } ?? [:]
         return InfoPreview.resolve(
             path: path, currentPath: folderPath, entries: found, metadataByPath: metadata, properties: properties,
-            startupDiskName: startupDiskName)
+            homePath: homePath, startupDiskName: startupDiskName)
     }
 
     private var startupDiskName: String { host.services.startupDisk.name }
@@ -399,7 +399,7 @@ final class InfoController {
                         summary: summary,
                         rows: InfoPanelModel.selectionRows(
                             summary, hasFolderSize: hasFolders, folderSize: selection.size.folderSizeEntry,
-                            startupDiskName: startupDiskName),
+                            homePath: homePath, startupDiskName: startupDiskName),
                         folderSize: selection.size.folderSizeEntry)), wantsSpinner: false)
         }
         guard let resolved else {
@@ -417,7 +417,7 @@ final class InfoController {
         let content = InfoPanelModel.itemContent(
             item: item, pending: resolved.pending, volume: volume?.path == item.path ? volume?.value : nil,
             isVolumeRoot: isVolume, hasFolderSize: folderSize != nil, folderSize: folderSize, opensWith: opens,
-            dates: .shared, startupDiskName: startupDiskName)
+            dates: .shared, homePath: homePath, startupDiskName: startupDiskName)
         let app =
             isFile ? lookup.answer(for: item.path)?.defaultApp.map { InfoOpenApp(path: $0.path, name: $0.name) } : nil
         let trash = FavoriteLabel.trashPath(homePath: homePath)
@@ -463,7 +463,7 @@ final class InfoController {
             active = infoEntry(single)
             iconEntry = single.iconEntry
         } else if !folderPath.isEmpty {
-            active = InfoPreview.folderEntry(folderPath, startupDiskName: startupDiskName)
+            active = InfoPreview.folderEntry(folderPath, homePath: homePath, startupDiskName: startupDiskName)
             iconEntry = IconEntry(path: folderPath, name: active?.name ?? "", kind: .directory)
         } else {
             return nil
@@ -489,7 +489,8 @@ final class InfoController {
         if let modified = facts.modified {
             list.append(.init(content: .text(modified), tooltip: facts.modifiedTooltip))
         }
-        return InfoRowDisplay(name: active.name, nameTooltip: active.name, icon: iconEntry, facts: list)
+        let name = InfoPreview.displayName(active.path, name: active.name, homePath: homePath)
+        return InfoRowDisplay(name: name, nameTooltip: name, icon: iconEntry, facts: list)
     }
 
     // MARK: Folder sizes

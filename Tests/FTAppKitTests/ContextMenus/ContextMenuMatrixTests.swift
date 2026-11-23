@@ -37,7 +37,7 @@ extension ExplorerWindowlessTests {
             #expect(spy.all.last?.contains("Terminal") == true)
             #expect(spy.all.last?.hasSuffix(folder) == true)
 
-            try choose("Show Info", in: tab.contextMenus.contentMenu(for: nil))
+            try choose("Get Info", in: tab.contextMenus.contentMenu(for: nil))
             #expect(tab.infoController?.targetPath == folder)
             #expect(tab.panels.propertiesOpen)
             await harness.close()

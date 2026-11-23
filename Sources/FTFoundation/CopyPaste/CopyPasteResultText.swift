@@ -82,20 +82,27 @@ public struct CopyPasteResultText: Equatable, Sendable {
     /// "Retry 2 Items" or "Try Again…"; nil when there is nothing to retry.
     public var retryLabel: String?
 
-    /// `canRetry`: false for Undo and Redo, which are chosen again from the menu.
+    /// `canRetry`: false for Undo and Redo, which are chosen again from the menu. `moves`: a paste that moves some
+    /// or all of its items, whose items are said to be pasted, as a cut item isn't copied.
     public init(
-        action: WriteOperationAction, targetPath: String?, error: String?, items: [ResultItem], canRetry: Bool
+        action: WriteOperationAction, targetPath: String?, error: String?, items: [ResultItem], canRetry: Bool,
+        moves: Bool = false
     ) {
         let renaming = action == .batchRename
         // An Undo's items are each on their own, each with what was found about it.
         let undoing = action == .undo || action == .redo
         let destinationName = CopyPasteReview.leafName(targetPath ?? "")
         let pastTense = Self.pastTense(action)
+        let pasteMoves = action == .paste && moves
         let presentVerb =
             undoing
-            ? (action == .undo ? "undone" : "redone") : renaming ? "renamed" : action == .moveTo ? "moved" : "copied"
+            ? (action == .undo ? "undone" : "redone")
+            : renaming ? "renamed" : action == .moveTo ? "moved" : pasteMoves ? "pasted" : "copied"
+        // What the person chose, as a stop or an end names it: "the paste was stopped", "The Undo has finished".
+        let actionName = Self.actionName(action)
+        let sentenceActionName = actionName.prefix(1).uppercased() + actionName.dropFirst()
         // Renamed items stay in their folder; copies and moves go into one.
-        let place = destinationName.isEmpty ? "" : " \(renaming ? "in" : "into") \u{201C}\(destinationName)\u{201D}"
+        let place = destinationName.isEmpty ? "" : " \(renaming ? "in" : "into") “\(destinationName)”"
         let outcome = Outcome(items, eachOnItsOwn: renaming || undoing, namedByDestination: undoing)
         let retryCount = canRetry ? outcome.retryCount : 0
         // A folder copied without some of its items counts as copied here; the message says what is missing.
@@ -115,30 +122,30 @@ public struct CopyPasteResultText: Equatable, Sendable {
         var sentences: [String] = []
         if outcome.failedOutside > 0 {
             sentences.append(
-                "\(ReviewCount.pluralize(outcome.failedOutside, "item")) couldn\u{2019}t be \(presentVerb).")
+                "\(ReviewCount.pluralize(outcome.failedOutside, "item")) couldn’t be \(presentVerb).")
         }
         if outcome.failedInside > 0 {
             let inside =
-                onlyPartial?.sourcePath.map { "\u{201C}\(CopyPasteReview.leafName($0))\u{201D}" } ?? "folders"
+                onlyPartial?.sourcePath.map { "“\(CopyPasteReview.leafName($0))”" } ?? "folders"
             sentences.append(
-                "\(ReviewCount.pluralize(outcome.failedInside, "item")) inside \(inside) couldn\u{2019}t be \(presentVerb)."
+                "\(ReviewCount.pluralize(outcome.failedInside, "item")) inside \(inside) couldn’t be \(presentVerb)."
             )
         }
         // A folder stopped part way isn't "not started": some of it is at the destination.
         if stoppedCount > 0 {
             let subject =
-                onlyStopped?.sourcePath.map { "\u{201C}\(CopyPasteReview.leafName($0))\u{201D} was" }
+                onlyStopped?.sourcePath.map { "“\(CopyPasteReview.leafName($0))” was" }
                 ?? "\(ReviewCount.pluralize(stoppedCount, "folder")) were"
-            let into = destinationName.isEmpty ? "" : " into \u{201C}\(destinationName)\u{201D}"
+            let into = destinationName.isEmpty ? "" : " into “\(destinationName)”"
             sentences.append(
-                "\(subject) stopped part way: some of what is inside was \(presentVerb)\(into), the rest wasn't.")
+                "\(subject) stopped part way: some of what is inside was \(presentVerb)\(into), the rest wasn’t.")
         }
         // What a full disk left is told apart from what a Stop left: a paste the disk ended wasn't stopped by anyone.
         let diskFullCount = outcome.notStarted.filter { outcome.items[$0].error == Self.notStartedDiskFull }.count
         for (count, reason) in [
-            (notStartedCount - diskFullCount, "the operation was stopped"), (diskFullCount, "the disk is full"),
+            (notStartedCount - diskFullCount, "\(actionName) was stopped"), (diskFullCount, "the disk is full"),
         ] where count > 0 {
-            let were = count == 1 ? "wasn't" : "weren't"
+            let were = count == 1 ? "wasn’t" : "weren’t"
             sentences.append("\(ReviewCount.pluralize(count, "item")) \(were) started because \(reason).")
         }
         if skippedCount > 0 {
@@ -146,7 +153,7 @@ public struct CopyPasteResultText: Equatable, Sendable {
                 "\(ReviewCount.pluralize(skippedCount, "item")) \(skippedCount == 1 ? "was" : "were") skipped.")
         }
         if action == .moveTo, failedCount + notStartedCount + stoppedCount > 0 {
-            sentences.append("Items that weren't moved are still in their original folder.")
+            sentences.append("Items that weren’t moved are still in their original folder.")
         }
         // An Undo says what it left, and that the part it did can be taken back. What failed is still on the list,
         // and the same command tries it again.
@@ -167,14 +174,15 @@ public struct CopyPasteResultText: Equatable, Sendable {
             if !outcome.failed.isEmpty {
                 sentences.append(
                     action == .undo
-                        ? "\(shortcuts.mention(.undo)) tries again what couldn\u{2019}t be undone."
-                        : "\(shortcuts.mention(.redo)) tries again what couldn\u{2019}t be redone.")
+                        ? "\(shortcuts.mention(.undo)) tries again what couldn’t be undone."
+                        : "\(shortcuts.mention(.redo)) tries again what couldn’t be redone.")
             }
         }
-        message = sentences.isEmpty ? (error ?? "The operation has finished.") : sentences.joined(separator: " ")
+        message =
+            sentences.isEmpty ? (error ?? "\(sentenceActionName) has finished.") : sentences.joined(separator: " ")
 
         let failedVerb =
-            undoing ? action.rawValue : renaming ? "rename" : action == .moveTo ? "move" : "copy"
+            undoing ? action.rawValue : renaming ? "rename" : action == .moveTo ? "move" : pasteMoves ? "paste" : "copy"
         func section(
             _ label: String, _ indexes: [Int], _ tone: ResultSectionText.Tone, _ describe: (ResultItem) -> String
         ) -> ResultSectionText? {
@@ -189,9 +197,9 @@ public struct CopyPasteResultText: Equatable, Sendable {
                 more: more > 0 ? "and \(ReviewCount.format(more)) more" : nil)
         }
         sections = [
-            section("Couldn\u{2019}t \(failedVerb)", outcome.failed, .danger) { item in
+            section("Couldn’t \(failedVerb)", outcome.failed, .danger) { item in
                 item.isFolderWithFailuresInside
-                    ? "\(ReviewCount.pluralize(item.childFailureCount ?? 0, "item")) inside couldn\u{2019}t be \(presentVerb)"
+                    ? "\(ReviewCount.pluralize(item.childFailureCount ?? 0, "item")) inside couldn’t be \(presentVerb)"
                     : (item.error ?? "Unknown error.")
             },
             section("Stopped part way", outcome.stoppedPartWay, .muted) { _ in
@@ -201,7 +209,7 @@ public struct CopyPasteResultText: Equatable, Sendable {
             section("Not started", outcome.notStarted, .muted) { item in
                 if renaming, item.destinationPath != nil, let error = item.error, !error.isEmpty { return error }
                 if let error = item.error, error == Self.notStartedDiskFull { return error }
-                return "The operation was stopped first."
+                return "\(sentenceActionName) was stopped first."
             },
             section("Note", outcome.notes, .muted) { $0.error ?? "" },
             section(undoing ? "Left as it is" : "Skipped", outcome.skipped, .muted) { item in
@@ -218,7 +226,7 @@ public struct CopyPasteResultText: Equatable, Sendable {
                 // The person chose Add Missing, not Skip.
                 if item.leftByAddMissing { return "Already there \u{B7} Add Missing left it" }
                 return item.skippedAfterChange
-                    ? "Skipped after it changed during the operation" : "Already existed \u{B7} you chose Skip"
+                    ? "Skipped after it changed during \(actionName)" : "Already existed \u{B7} you chose Skip"
             },
         ].compactMap { $0 }
         // A rename is tried again from the sheet, with its names worked out anew.
@@ -226,6 +234,21 @@ public struct CopyPasteResultText: Equatable, Sendable {
             retryLabel = renaming ? "Try Again\u{2026}" : "Retry \(ReviewCount.pluralize(retryCount, "Item"))"
         } else {
             retryLabel = nil
+        }
+    }
+
+    /// The action as a stop or an end names it, with its article: "the paste", "the Undo", "Duplicate".
+    private static func actionName(_ action: WriteOperationAction) -> String {
+        switch action {
+        case .undo: "the Undo"
+        case .redo: "the Redo"
+        case .rename, .batchRename: "the rename"
+        case .moveTo: "the move"
+        case .copyTo: "the copy"
+        case .duplicate: "Duplicate"
+        case .convertImages: "the conversion"
+        case .makeAlias: "Make Alias"
+        default: "the paste"
         }
     }
 
@@ -244,8 +267,8 @@ public struct CopyPasteResultText: Equatable, Sendable {
 
     private static func failedTitle(_ action: WriteOperationAction) -> String {
         switch action {
-        case .undo: "Couldn\u{2019}t Undo"
-        case .redo: "Couldn\u{2019}t Redo"
+        case .undo: "Couldn’t Undo"
+        case .redo: "Couldn’t Redo"
         case .paste: "Paste failed"
         case .copyTo: "Copy failed"
         case .moveTo: "Move failed"

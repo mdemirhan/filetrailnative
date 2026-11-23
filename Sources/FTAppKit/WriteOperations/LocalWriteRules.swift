@@ -54,7 +54,7 @@ enum LocalWriteRules {
     /// `describeEmptyTrashFailure`: a failure is told in a dialog; the usual one is that macOS has not let File Trail
     /// control Finder.
     static func describeEmptyTrashFailure(_ detail: String) -> (title: String, message: String) {
-        let title = "Couldn\u{2019}t Empty the Trash"
+        let title = "Couldn’t Empty the Trash"
         if matches(detail, #"not authori[sz]ed|-1743"#) {
             return (
                 title,
@@ -72,7 +72,7 @@ enum LocalWriteRules {
         reason = replacing(reason, #"^Command failed:[^\n]*\n?"#)
         reason = replacing(reason, #"\s*\(-?\d+\)\s*$"#)
         reason = InlineRenameRules.trimmedName(reason)
-        return (title, reason.isEmpty ? "Finder didn't empty the Trash. Try again, or empty it in Finder." : reason)
+        return (title, reason.isEmpty ? "Finder didn’t empty the Trash. Try again, or empty it in Finder." : reason)
     }
 
     private static func matches(_ text: String, _ pattern: String) -> Bool {
@@ -109,7 +109,7 @@ enum LocalWriteRules {
 
     /// One item's name in quotes; "notes.md and 2 more" as it is.
     private static func quoted(_ paths: [String]) -> String {
-        paths.count == 1 ? "\u{201C}\(itemSummary(paths))\u{201D}" : itemSummary(paths)
+        paths.count == 1 ? "“\(itemSummary(paths))”" : itemSummary(paths)
     }
 
     private static func count(_ paths: [String]) -> String {
@@ -135,8 +135,8 @@ enum LocalWriteRules {
                 ? "Are you sure you want to delete \(quoted(paths))?"
                 : "Are you sure you want to delete these \(count(paths)) items?",
             message: paths.count == 1
-                ? "This item will be deleted immediately. You can\u{2019}t undo this action."
-                : "These items will be deleted immediately. You can\u{2019}t undo this action.",
+                ? "This item will be deleted immediately. You can’t undo this action."
+                : "These items will be deleted immediately. You can’t undo this action.",
             confirmLabel: "Delete", destructive: true, cancelIsDefault: true)
     }
 
@@ -147,15 +147,15 @@ enum LocalWriteRules {
                 ? "Are you sure you want to delete \(quoted(paths))?"
                 : "Are you sure you want to delete these \(count(paths)) items?",
             message: paths.count == 1
-                ? "Its disk has no Trash, so it will be deleted immediately. You can\u{2019}t undo this action."
-                : "Their disk has no Trash, so they will be deleted immediately. You can\u{2019}t undo this action.",
+                ? "Its disk has no Trash, so it will be deleted immediately. You can’t undo this action."
+                : "Their disk has no Trash, so they will be deleted immediately. You can’t undo this action.",
             confirmLabel: "Delete", destructive: true, cancelIsDefault: true)
     }
 
     /// Finder's question, word for word; Cancel is the default.
     static let emptyTrashQuestion = WriteQuestion(
         title: "Are you sure you want to permanently erase the items in the Trash?",
-        message: "You can\u{2019}t undo this action.", confirmLabel: "Empty Trash", destructive: true,
+        message: "You can’t undo this action.", confirmLabel: "Empty Trash", destructive: true,
         cancelIsDefault: true)
 
     /// Before Paste as File writes what a password manager marked as private; Cancel is the default.
@@ -166,9 +166,9 @@ enum LocalWriteRules {
     /// The question before a name that begins with a dot: Finder's, word for word. Cancel is the default: Return keeps
     /// the name from hiding the item.
     static let dotNameQuestion = WriteQuestion(
-        title: "Are you sure you want to use a name that begins with a dot (\u{201C}.\u{201D})?",
+        title: "Are you sure you want to use a name that begins with a dot (“.”)?",
         message: "These names are reserved for the system. If you continue, the item will be hidden.",
-        confirmLabel: "Use \u{201C}.\u{201D}", destructive: false, cancelIsDefault: true)
+        confirmLabel: "Use “.”", destructive: false, cancelIsDefault: true)
 }
 
 /// A question asked before a write starts (a dialog with a primary and a Cancel button).

@@ -245,7 +245,7 @@ private func report(
             (.failed("  It broke.  "), "It broke."),
             (.failed(nil), Self.couldntCheck),
             (.failed("   "), Self.couldntCheck),
-            (.report(report(issues: [blocked])), "\u{201C}Folder\u{201D} isn't a folder."),
+            (.report(report(issues: [blocked])), "\u{201C}Folder\u{201D} isn\u{2019}t a folder."),
         ]
         for (analysis, message) in cases {
             let fixture = PasteFixture(analysis)

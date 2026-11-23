@@ -212,7 +212,7 @@ struct UndoPlanTests {
     @Test func saysSoWhenTheItemsDiskIsntConnected() {
         #expect(
             UndoPlan.checkMove(disk(), moveBack(from: "/Volumes/Backup/b.txt"))
-                == .refused(Refusal(reason: "“b.txt” is on “Backup”, which isn't connected.", missing: true)))
+                == .refused(Refusal(reason: "“b.txt” is on “Backup”, which isn’t connected.", missing: true)))
     }
 
     @Test func namesAnItemGoneFromTheTrashAsItWasBeforeAndTellsADisconnectedDiskApart() {
@@ -223,10 +223,10 @@ struct UndoPlanTests {
         ]
         #expect(
             UndoPlan.checkMove(disk(stick), step)
-                == .refused(Refusal(reason: "“a.txt” isn't in the Trash any more.", missing: true)))
+                == .refused(Refusal(reason: "“a.txt” isn’t in the Trash any more.", missing: true)))
         #expect(
             UndoPlan.checkMove(disk(), step)
-                == .refused(Refusal(reason: "“a.txt” is on “Stick”, which isn't connected.", missing: true)))
+                == .refused(Refusal(reason: "“a.txt” is on “Stick”, which isn’t connected.", missing: true)))
         #expect(
             UndoPlan.checkMove(disk(stick, ["/Volumes/Stick/.Trashes/501/1-a.txt": .file(ino: 99)]), step)
                 == .refused(Refusal(reason: "The “a.txt” in the Trash is another item now.", missing: false)))
@@ -488,7 +488,7 @@ struct UndoPlanTests {
     }
 
     private func cantCheck(_ name: String) -> MoveCheck {
-        .refused(Refusal(reason: "“\(name)” couldn't be checked: A disk error occurred.", missing: false, retry: true))
+        .refused(Refusal(reason: "“\(name)” couldn’t be checked: A disk error occurred.", missing: false, retry: true))
     }
 
     @Test func keepsAStepWhoseItemInTheTrashCantBeLookedAtAgain() {
@@ -498,7 +498,7 @@ struct UndoPlanTests {
             unread.fails = { look, path, count in look == "lstat" && path == "/T/a.txt" && count == 2 ? second : nil }
             #expect(
                 UndoPlan.checkMove(unread, putBackFile)
-                    == .refused(Refusal(reason: "“a.txt” couldn't be checked.", missing: false, retry: true)))
+                    == .refused(Refusal(reason: "“a.txt” couldn’t be checked.", missing: false, retry: true)))
         }
     }
 
@@ -512,7 +512,7 @@ struct UndoPlanTests {
         step.stamp = ItemStamp(kind: .directory, size: nil, mtimeMs: 1000, entryCount: 0)
         #expect(
             UndoPlan.checkMove(unlisted, step)
-                == .refused(Refusal(reason: "“F” couldn't be checked.", missing: false, retry: true)))
+                == .refused(Refusal(reason: "“F” couldn’t be checked.", missing: false, retry: true)))
     }
 
     @Test func keepsAStepWhoseFolderOrThePlaceItGoesBackToCantBeLookedAt() {
@@ -544,7 +544,7 @@ struct UndoPlanTests {
             UndoPlan.checkTrash(
                 fileSystem, PlannedTrash(path: "/a", id: id(10), stamp: nil, putBack: false, unlock: true))
                 == .refused(
-                    Refusal(reason: "“a” couldn't be checked: A disk error occurred.", missing: false, retry: true)))
+                    Refusal(reason: "“a” couldn’t be checked: A disk error occurred.", missing: false, retry: true)))
     }
 
     @Test func findsAnItemChangedWhenTheVeryItemIsNowAnotherKind() {
@@ -570,7 +570,7 @@ struct UndoPlanTests {
             ])
         #expect(
             checks.map(\.refusal?.reason) == [
-                "“a” couldn't be checked: A disk error occurred.", "“y” couldn't be checked: A disk error occurred.",
+                "“a” couldn’t be checked: A disk error occurred.", "“y” couldn’t be checked: A disk error occurred.",
                 // An item without an id in the way is never taken for one of the batch.
                 nil,
             ])

@@ -38,7 +38,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // Show Info on a row of the tree is about that folder, not the list's selection; the panel
+        // Get Info on a row of the tree is about that folder, not the list's selection; the panel
         // adds it to the Favorites and takes it away, and roots the tree there.
         @Test func showInfoOfARowIsAboutThatFolderAndActsOnIt() async throws {
             let harness = try ExplorerHarness.windowless()

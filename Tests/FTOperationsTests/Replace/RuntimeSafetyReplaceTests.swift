@@ -56,7 +56,7 @@ struct RuntimeSafetyReplaceTests {
             #expect(item?.destinationPath == dst + "/f copy.txt")
             #expect(
                 item?.error?.contains(
-                    "The old \u{201C}f.txt\u{201D} was moved to the Trash, but the new one couldn't take its name, so it was saved as \u{201C}f copy.txt\u{201D}."
+                    "The old \u{201C}f.txt\u{201D} was moved to the Trash, but the new one couldn’t take its name, so it was saved as \u{201C}f copy.txt\u{201D}."
                 ) == true)
             #expect(Disk.list(dst) == ["f copy.txt"])
             #expect(Disk.read(dst + "/f copy.txt") == "new")
@@ -211,7 +211,7 @@ struct RuntimeSafetyReplaceTests {
 
             #expect(
                 run.result?.items.first?.error
-                    == "\u{201C}F\u{201D} wasn't replaced because \u{201C}b.txt\u{201D} in it changed and was skipped.")
+                    == "\u{201C}F\u{201D} wasn’t replaced because \u{201C}b.txt\u{201D} in it changed and was skipped.")
             #expect(Disk.read(dst + "/F/b.txt") == "old b")
             #expect(Disk.list(trash) == [])
             #expect(Disk.list(dst) == ["F"])
@@ -253,7 +253,7 @@ struct RuntimeSafetyReplaceTests {
 
             #expect(
                 run.result?.items.first?.error
-                    == "\u{201C}keep.txt\u{201D} is locked. Unlock it in Finder's Get Info and try again.")
+                    == "\u{201C}keep.txt\u{201D} is locked. Unlock it in Finder’s Get Info and try again.")
             #expect(Disk.list(dst + "/F") == ["keep.txt", "other.txt"])
         }
     }

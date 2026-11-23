@@ -116,7 +116,7 @@ extension WriteCoordinator {
             let cancelled = error is StopError || operation.signal.isStopped
             let message: String
             if cancelled {
-                message = "Operation cancelled."
+                message = "Stopped before anything was changed."
             } else {
                 let locked = await LocalOperations.onDisk {
                     findLockedRefusal(

@@ -50,6 +50,9 @@ struct PathBarModelTests {
         #expect(PathBarModel.parentPath("/Users/demo") == "/Users")
         #expect(PathBarModel.label("/") == "Macintosh HD")
         #expect(PathBarModel.label("/Users/demo") == "demo")
+        // The Info panel's Where row and the separators' "Folders in …" call a Trash folder what its segment does.
+        #expect(PathBarModel.label("/Users/demo/.Trash", homePath: "/Users/demo") == "Trash")
+        #expect(PathBarModel.label("/Volumes/Photos/.Trashes/501") == "Trash")
     }
 
     @Test func fourSegmentsOrFewerAlwaysShow() {

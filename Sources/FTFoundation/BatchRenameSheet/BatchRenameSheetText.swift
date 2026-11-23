@@ -45,9 +45,10 @@ public enum BatchRenameSheetText {
         .init(value: .name, title: "Name"), .init(value: .extensionPart, title: "Extension"),
         .init(value: .both, title: "Name and Extension"),
     ]
+    /// With a name taken, `.block` renames none of the items until the taken names are fixed.
     public static let onConflictChoices: [Choice<BatchRenameOnConflict>] = [
         .init(value: .number, title: "Add a Number"), .init(value: .skip, title: "Skip Those Items"),
-        .init(value: .block, title: "Don\u{2019}t Rename"),
+        .init(value: .block, title: "Rename None"),
     ]
     public static let whereChoices: [Choice<BatchRenameWhere>] = [
         .init(value: .after, title: "after name"), .init(value: .before, title: "before name"),
@@ -239,10 +240,12 @@ public enum BatchRenameSheetText {
             return false
         }.count
         if numbered > 0 { parts.append("\(FormatLocale.count(numbered)) get a number") }
-        if plan.skippedCount > 0 {
-            parts.append("\(FormatLocale.count(plan.skippedCount)) left as they are")
+        if plan.skippedCount > 0 { parts.append("\(FormatLocale.count(plan.skippedCount)) skipped") }
+        // An item whose new name is the name it has: not skipped, there is nothing to do.
+        if plan.unchangedCount > 0 {
+            let has = plan.unchangedCount == 1 ? "already has that name" : "already have those names"
+            parts.append("\(FormatLocale.count(plan.unchangedCount)) \(has)")
         }
-        if plan.unchangedCount > 0 { parts.append("\(FormatLocale.count(plan.unchangedCount)) unchanged") }
         return Summary(text: parts.joined(separator: " \u{00B7} "), danger: false)
     }
 }

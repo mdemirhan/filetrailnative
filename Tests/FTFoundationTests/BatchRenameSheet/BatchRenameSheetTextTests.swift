@@ -41,7 +41,7 @@ import Testing
         let ready = plan([renamed("a 2.txt", number: 2), renamed("b.txt"), .unchanged])
         #expect(
             BatchRenameSheetText.summary(plan: ready, checking: false, checkError: nil).text
-                == "2 will be renamed \u{00B7} 1 get a number \u{00B7} 1 unchanged")
+                == "2 will be renamed \u{00B7} 1 get a number \u{00B7} 1 already has that name")
         #expect(
             BatchRenameSheetText.summary(plan: ready, checking: true, checkError: nil).text == "Checking names\u{2026}")
         let failed = BatchRenameSheetText.summary(plan: ready, checking: true, checkError: "Couldn\u{2019}t.")

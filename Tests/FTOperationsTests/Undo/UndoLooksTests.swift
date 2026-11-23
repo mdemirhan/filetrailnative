@@ -13,7 +13,7 @@ import os
 @Suite(.serialized, .localOperationHang)
 struct UndoLooksTests {
     private static let notAnswered = WriteCoordinatorError(
-        "A disk didn't answer while Undo looked at its items. Choose Undo again once it does.")
+        "A disk didn’t answer while Undo looked at its items. Choose Undo again once it does.")
 
     // A rename of many items is one step: the disk gets the time for each of its items, not for all of them.
     @Test func looksAtAllOfALargeBatchOnASlowDiskThatAnswersEveryRead() async throws {

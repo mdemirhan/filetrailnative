@@ -7,7 +7,7 @@ import Testing
 
 struct CopyPasteErrorsTests {
     @Test func readsTheCodeOfASystemError() {
-        #expect(describeCopyPasteError(POSIXError(.ENOSPC)) == "There isn't enough free space on the destination disk.")
+        #expect(describeCopyPasteError(POSIXError(.ENOSPC)) == "There isn’t enough free space on the destination disk.")
         #expect(errorCode(POSIXError(.ENOTSUP)) == .errno(ENOTSUP))
     }
 
@@ -24,11 +24,11 @@ struct CopyPasteErrorsTests {
         let flags: (String) throws -> UInt32 = { $0 == "/d/locked.txt" ? 0x2 : 0 }
         #expect(
             findLockedRefusal(flags, refusal, ["/d/free.txt", "/d/locked.txt"])?.message
-                == "“locked.txt” is locked. Unlock it in Finder's Get Info and try again.")
+                == "“locked.txt” is locked. Unlock it in Finder’s Get Info and try again.")
         #expect(findLockedRefusal(flags, refusal, ["/d/free.txt"]) == nil)
         #expect(findLockedRefusal(flags, OperationError("full", code: .errno(ENOSPC)), ["/d/locked.txt"]) == nil)
-        #expect(lockedMessage("plain") == "“plain” is locked. Unlock it in Finder's Get Info and try again.")
-        #expect(lockedMessage("/d/") == "“/d/” is locked. Unlock it in Finder's Get Info and try again.")
+        #expect(lockedMessage("plain") == "“plain” is locked. Unlock it in Finder’s Get Info and try again.")
+        #expect(lockedMessage("/d/") == "“/d/” is locked. Unlock it in Finder’s Get Info and try again.")
     }
 }
 

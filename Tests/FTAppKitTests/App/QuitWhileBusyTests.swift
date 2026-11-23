@@ -19,7 +19,7 @@ import Testing
         #expect(copy?.message == "A copy is still in progress.")
         #expect(
             copy?.detail
-                == "If you quit now, it stops after the current item. Items already copied stay where they are; a folder still being copied isn't left half copied."
+                == "If you quit now, it stops after the current item. Items already copied stay where they are; a folder still being copied isn’t left half copied."
         )
         let move = QuitWhileBusy.describe(.move)
         #expect(move?.message == "A move is still in progress.")
@@ -28,7 +28,7 @@ import Testing
                 == "If you quit now, it stops after the current item. Items already moved stay in their new place, and the rest stay where they were. A folder being moved to another disk may already be there in full, with some of its items still in the old place too."
         )
         #expect(QuitWhileBusy.describe(.trash)?.message == "Items are still being moved to the Trash.")
-        #expect(QuitWhileBusy.describe(.delete)?.detail.contains("can't be recovered") == true)
+        #expect(QuitWhileBusy.describe(.delete)?.detail.contains("can’t be recovered") == true)
         #expect(QuitWhileBusy.describe(.undo)?.message == "An Undo is still in progress.")
         #expect(QuitWhileBusy.describe(.redo)?.message == "A Redo is still in progress.")
         #expect(QuitWhileBusy.describe(.redo)?.detail.hasSuffix("What was already redone stays redone.") == true)
@@ -76,7 +76,7 @@ import Testing
         #expect(question?.message == "A copy is still in progress.")
         #expect(
             question?.detail
-                == "If you close the window now, it stops after the current item. Items already copied stay where they are; a folder still being copied isn't left half copied."
+                == "If you close the window now, it stops after the current item. Items already copied stay where they are; a folder still being copied isn’t left half copied."
         )
         #expect(QuitWhileBusy.describe(.rename, trigger: .close) == nil)
     }

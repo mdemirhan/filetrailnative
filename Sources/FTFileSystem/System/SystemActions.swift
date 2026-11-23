@@ -59,7 +59,9 @@ public struct SystemOpener: Sendable {
         openWithApplication: { applicationPath, paths in
             guard await BlockingWork.run({ FileManager.default.fileExists(atPath: applicationPath) }) else {
                 throw Failure(
-                    message: "Unable to find application named '\(ApplicationPaths.displayName(applicationPath))'")
+                    message:
+                        "\u{201C}\(ApplicationPaths.displayName(applicationPath))\u{201D} can\u{2019}t be found. It may have been moved or deleted."
+                )
             }
             let urls = await BlockingWork.run { itemURLs([applicationPath] + paths) }
             _ = try await NSWorkspace.shared.open(

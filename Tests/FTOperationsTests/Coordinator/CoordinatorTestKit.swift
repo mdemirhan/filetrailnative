@@ -276,7 +276,7 @@ enum Coordinators {
                     result: LocalWriteResults.result(
                         operationId: operation.operationId, action: action, targetPath: changedPath, startedAt: now,
                         finishedAt: now, totalItemCount: 1, completedItemCount: stopped ? 0 : 1, items: [item],
-                        status: status, error: stopped ? "Operation cancelled." : nil)),
+                        status: status, error: stopped ? "Stopped before anything was changed." : nil)),
                 undoLog: stopped ? nil : undoLog)
         }
     }

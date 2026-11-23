@@ -69,7 +69,7 @@ public func analyzeItemAgain(
     let node = try walker.analyzeNode(id: id, sourcePath: sourcePath, destinationPath: destinationPath)
     if let collision = walker.cache.nameCollisions.first {
         throw OperationError(
-            "\u{201C}\(NodePath.basename(collision.sourcePath))\u{201D} and \u{201C}\(NodePath.basename(collision.otherSourcePath))\u{201D} would both be pasted as one item, because the destination doesn't tell upper and lower case apart."
+            "\u{201C}\(NodePath.basename(collision.sourcePath))\u{201D} and \u{201C}\(NodePath.basename(collision.otherSourcePath))\u{201D} would both be pasted as one item, because the destination doesn\u{2019}t tell upper and lower case apart."
         )
     }
     return node
@@ -265,7 +265,7 @@ private struct ReportBuilder<FileSystem: AnalysisFileSystem> {
                         code: .duplicateDestinationName,
                         message:
                             "\(sourcePath) and \(claimingSourcePath) would both be pasted as \(NodePath.basename(destinationPath)).",
-                        sourcePath: sourcePath, destinationPath: destinationPath))
+                        sourcePath: sourcePath, destinationPath: destinationPath, otherSourcePath: claimingSourcePath))
                 continue
             }
             claimedDestinationNames[destinationNameKey] = sourcePath
@@ -296,7 +296,7 @@ private struct ReportBuilder<FileSystem: AnalysisFileSystem> {
                     CopyPasteAnalysisIssue(
                         code: .sourceUnreadable,
                         message:
-                            "\u{201C}\(NodePath.basename(sourcePath))\u{201D} can't be moved because a disk is mounted inside it (\u{201C}\(NodePath.basename(mountPoint))\u{201D}).",
+                            "\u{201C}\(NodePath.basename(sourcePath))\u{201D} can\u{2019}t be moved because a disk is mounted inside it (\u{201C}\(NodePath.basename(mountPoint))\u{201D}).",
                         sourcePath: sourcePath, destinationPath: destinationPath))
                 continue
             }
@@ -309,7 +309,8 @@ private struct ReportBuilder<FileSystem: AnalysisFileSystem> {
                     code: .duplicateDestinationName,
                     message:
                         "\(collision.sourcePath) and \(collision.otherSourcePath) would both be pasted as \(NodePath.basename(collision.destinationPath)), because the destination doesn't tell upper and lower case apart.",
-                    sourcePath: collision.sourcePath, destinationPath: collision.destinationPath))
+                    sourcePath: collision.sourcePath, destinationPath: collision.destinationPath,
+                    otherSourcePath: collision.otherSourcePath))
         }
 
         // Replacing an item that is, or holds, any item of this paste would destroy that item too. Items inside

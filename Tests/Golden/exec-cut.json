@@ -1541,11 +1541,11 @@
         "recovery": null,
         "result": {
           "destinationDirectoryPath": "$ROOT/destination",
-          "error": "“locked.txt” is locked. Unlock it in Finder's Get Info and try again.",
+          "error": "“locked.txt” is locked. Unlock it in Finder’s Get Info and try again.",
           "items": [
             {
               "destinationPath": "$ROOT/destination/locked.txt",
-              "error": "“locked.txt” is locked. Unlock it in Finder's Get Info and try again.",
+              "error": "“locked.txt” is locked. Unlock it in Finder’s Get Info and try again.",
               "skipReason": null,
               "sourceKind": "file",
               "sourcePath": "$ROOT/source/locked.txt",

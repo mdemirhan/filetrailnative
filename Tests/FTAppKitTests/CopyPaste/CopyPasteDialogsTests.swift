@@ -397,7 +397,7 @@ extension ExplorerWindowlessTests {
             #expect(sheet.text.title == "Copied 1 of 4 items into \u{201C}Folder\u{201D}")
             #expect(
                 sheet.messageLabel.stringValue
-                    == "1 item couldn\u{2019}t be copied. 1 item wasn't started because the operation was stopped. 1 item was skipped."
+                    == "1 item couldn\u{2019}t be copied. 1 item wasn\u{2019}t started because the copy was stopped. 1 item was skipped."
             )
             #expect(
                 sheet.sectionViews.map(\.titleLabel.stringValue) == ["Couldn\u{2019}t copy", "Not started", "Skipped"])
@@ -421,7 +421,7 @@ extension ExplorerWindowlessTests {
             results.present(event, in: tab)
             sheet = try #require(results.sheet)
             #expect(sheet.text.title == "Moved 0 of 250 items")
-            #expect(sheet.text.message.hasSuffix("Items that weren't moved are still in their original folder."))
+            #expect(sheet.text.message.hasSuffix("Items that weren\u{2019}t moved are still in their original folder."))
             #expect(sheet.sectionViews[0].rows.count == 200)
             #expect(sheet.sectionViews[0].moreLabel?.stringValue == "and 50 more")
             sheet.doneButton.perform()

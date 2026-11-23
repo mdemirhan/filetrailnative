@@ -155,11 +155,11 @@
         "recovery": null,
         "result": {
           "destinationDirectoryPath": "$ROOT/destination",
-          "error": "Operation cancelled.",
+          "error": "Stopped.",
           "items": [
             {
               "destinationPath": "$ROOT/destination/f",
-              "error": "Not started because the operation was stopped.",
+              "error": "Not reached before the stop.",
               "skipReason": null,
               "sourceKind": "directory",
               "sourcePath": "$ROOT/source/f",
@@ -167,7 +167,7 @@
             },
             {
               "destinationPath": "$ROOT/destination/g.txt",
-              "error": "Not started because the operation was stopped.",
+              "error": "Not reached before the stop.",
               "skipReason": null,
               "sourceKind": "file",
               "sourcePath": "$ROOT/source/g.txt",
@@ -390,11 +390,11 @@
         "recovery": null,
         "result": {
           "destinationDirectoryPath": "$ROOT/destination",
-          "error": "Operation cancelled.",
+          "error": "Stopped.",
           "items": [
             {
               "destinationPath": "$ROOT/destination/f",
-              "error": "Operation cancelled.",
+              "error": "Stopped.",
               "skipReason": null,
               "sourceKind": "directory",
               "sourcePath": "$ROOT/source/f",
@@ -402,7 +402,7 @@
             },
             {
               "destinationPath": "$ROOT/destination/g.txt",
-              "error": "Not started because the operation was stopped.",
+              "error": "Not reached before the stop.",
               "skipReason": null,
               "sourceKind": "file",
               "sourcePath": "$ROOT/source/g.txt",
@@ -588,7 +588,7 @@
         "recovery": null,
         "result": {
           "destinationDirectoryPath": "$ROOT/destination",
-          "error": "Operation cancelled.",
+          "error": "Stopped.",
           "items": [
             {
               "destinationPath": "$ROOT/destination/a.txt",
@@ -600,7 +600,7 @@
             },
             {
               "destinationPath": "$ROOT/destination/b.txt",
-              "error": "Not started because the operation was stopped.",
+              "error": "Not reached before the stop.",
               "skipReason": null,
               "sourceKind": "file",
               "sourcePath": "$ROOT/source/b.txt",
@@ -608,7 +608,7 @@
             },
             {
               "destinationPath": "$ROOT/destination/c.txt",
-              "error": "Not started because the operation was stopped.",
+              "error": "Not reached before the stop.",
               "skipReason": null,
               "sourceKind": "file",
               "sourcePath": "$ROOT/source/c.txt",
@@ -827,11 +827,11 @@
         "recovery": null,
         "result": {
           "destinationDirectoryPath": "$ROOT/destination",
-          "error": "Operation cancelled.",
+          "error": "Stopped.",
           "items": [
             {
               "destinationPath": "$ROOT/destination/f",
-              "error": "Operation cancelled.",
+              "error": "Stopped.",
               "skipReason": null,
               "sourceKind": "directory",
               "sourcePath": "$ROOT/source/f",
@@ -1026,11 +1026,11 @@
         "recovery": null,
         "result": {
           "destinationDirectoryPath": "$ROOT/destination",
-          "error": "Operation cancelled.",
+          "error": "Stopped.",
           "items": [
             {
               "destinationPath": "$ROOT/destination/f",
-              "error": "Operation cancelled.",
+              "error": "Stopped.",
               "skipReason": null,
               "sourceKind": "directory",
               "sourcePath": "$ROOT/source/f",
@@ -1251,11 +1251,11 @@
         "recovery": null,
         "result": {
           "destinationDirectoryPath": "$ROOT/destination",
-          "error": "Operation cancelled.",
+          "error": "Stopped.",
           "items": [
             {
               "destinationPath": "$ROOT/destination/a.txt",
-              "error": "Operation cancelled.",
+              "error": "Stopped.",
               "skipReason": null,
               "sourceKind": "file",
               "sourcePath": "$ROOT/source/a.txt",
@@ -1263,7 +1263,7 @@
             },
             {
               "destinationPath": "$ROOT/destination/b.txt",
-              "error": "Not started because the operation was stopped.",
+              "error": "Not reached before the stop.",
               "skipReason": null,
               "sourceKind": "file",
               "sourcePath": "$ROOT/source/b.txt",
@@ -1405,11 +1405,11 @@
         "recovery": null,
         "result": {
           "destinationDirectoryPath": "$ROOT/destination",
-          "error": "Operation cancelled.",
+          "error": "Stopped.",
           "items": [
             {
               "destinationPath": "$ROOT/destination/f",
-              "error": "Not started because the operation was stopped.",
+              "error": "Not reached before the stop.",
               "skipReason": null,
               "sourceKind": "directory",
               "sourcePath": "$ROOT/source/f",
@@ -1417,7 +1417,7 @@
             },
             {
               "destinationPath": "$ROOT/destination/g.txt",
-              "error": "Not started because the operation was stopped.",
+              "error": "Not reached before the stop.",
               "skipReason": null,
               "sourceKind": "file",
               "sourcePath": "$ROOT/source/g.txt",

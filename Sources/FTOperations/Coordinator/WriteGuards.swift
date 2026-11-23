@@ -4,7 +4,7 @@ import Foundation
 /// What every write is checked against, whatever the window asks: the Trash folders, the system's folders, the home
 /// folder and its own folders, whole disks.
 public enum WriteGuards {
-    public static let trashFolderRefusal = "The Trash folder is a protected system directory and cannot be modified."
+    public static let trashFolderRefusal = "The Trash itself can\u{2019}t be moved, renamed or deleted."
 
     /// `assertNotProtectedPath`: a Trash folder itself, the home folder's or another disk's.
     public static func assertNotProtectedPath(_ paths: [String], homePath: String) throws {
@@ -48,14 +48,14 @@ public enum WriteGuards {
             let ids = protectedIds ?? identities(of: Paths.protectedPaths(homePath: home), fileSystem)
             protectedIds = ids
             if let id = identity(of: stats), ids.contains(id) {
-                throw WriteCoordinatorError("\u{201C}\(NodePath.basename(resolved))\u{201D} can't be \(verb).")
+                throw WriteCoordinatorError("\u{201C}\(NodePath.basename(resolved))\u{201D} can\u{2019}t be \(verb).")
             }
             // A disk is mounted here when the folder is on a different disk than its parent.
             if let parent = try? fileSystem.lstat(NodePath.dirname(resolved)), let parentDev = parent.dev,
                 let dev = stats.dev, parentDev != dev
             {
                 throw WriteCoordinatorError(
-                    "\u{201C}\(NodePath.basename(resolved))\u{201D} is a disk, so it can't be \(verb).")
+                    "\u{201C}\(NodePath.basename(resolved))\u{201D} is a disk, so it can\u{2019}t be \(verb).")
             }
         }
     }

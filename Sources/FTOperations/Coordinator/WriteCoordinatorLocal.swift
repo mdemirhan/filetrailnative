@@ -78,7 +78,7 @@ extension WriteCoordinator {
 
     private func emitUnexpectedEnd(_ operationId: String, action: WriteOperationAction, error: any Error) {
         let now = Date()
-        let message = "The operation stopped unexpectedly: \(errorMessage(error))"
+        let message = "\(ProgressCardText.title(action, result: true)) stopped unexpectedly: \(errorMessage(error))"
         emitLocalWriteOperationEvent(
             WriteOperationEvent(
                 operationId: operationId, action: action, status: .failed,
@@ -157,7 +157,7 @@ public enum LocalWriteResults {
     /// "deleted", "renamed"…).
     public static func stoppedMessage(_ doneCount: Int, _ done: String) -> String {
         if doneCount == 0 {
-            return "Operation cancelled."
+            return "Stopped before any item was \(done)."
         }
         return "Stopped after \(doneCount == 1 ? "1 item was" : "\(FormatLocale.count(doneCount)) items were") \(done)."
     }
@@ -168,7 +168,7 @@ public enum LocalWriteResults {
         paths.map {
             WriteOperationItem(
                 sourcePath: $0, destinationPath: nil, status: .cancelled,
-                error: "Not started because the operation was stopped.")
+                error: "Not reached before the stop.")
         }
     }
 }

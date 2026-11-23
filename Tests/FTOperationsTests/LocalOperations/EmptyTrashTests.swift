@@ -53,7 +53,8 @@ import Testing
         #expect(refused.ok == false)
         #expect(
             refused.error
-                == "The Trash can't be emptied while another operation is running. Try again when it has finished.")
+                == "The Trash can’t be emptied while File Trail is still working on other items. Try again when it has finished."
+        )
         #expect(emptied == 0)
 
         held.release()

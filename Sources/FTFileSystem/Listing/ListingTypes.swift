@@ -170,7 +170,7 @@ public struct ItemProperties: Sendable, Hashable, Codable {
     /// for anything else.
     public var originalPath: String? = nil
 
-    /// A symbolic link or an alias: what Show Info says the original of.
+    /// A symbolic link or an alias: what Get Info says the original of.
     public var isLink: Bool { isSymlink || kind == .alias }
 }
 

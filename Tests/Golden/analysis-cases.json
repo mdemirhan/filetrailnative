@@ -5115,6 +5115,7 @@
               "code": "duplicate_destination_name",
               "destinationPath": "$ROOT/destination/x.txt",
               "message": "$ROOT/two/x.txt and $ROOT/one/x.txt would both be pasted as x.txt.",
+              "otherSourcePath": "$ROOT/one/x.txt",
               "sourcePath": "$ROOT/two/x.txt"
             }
           ],
@@ -5231,6 +5232,7 @@
               "code": "duplicate_destination_name",
               "destinationPath": "$ROOT/destination/X.txt",
               "message": "$ROOT/two/X.txt and $ROOT/one/x.txt would both be pasted as X.txt.",
+              "otherSourcePath": "$ROOT/one/x.txt",
               "sourcePath": "$ROOT/two/X.txt"
             }
           ],
@@ -5347,6 +5349,7 @@
               "code": "duplicate_destination_name",
               "destinationPath": "$ROOT/destination/Café.txt",
               "message": "$ROOT/two/Café.txt and $ROOT/one/Café.txt would both be pasted as Café.txt.",
+              "otherSourcePath": "$ROOT/one/Café.txt",
               "sourcePath": "$ROOT/two/Café.txt"
             }
           ],
@@ -14719,7 +14722,7 @@
                   "disposition": "new",
                   "id": "item-1/closed",
                   "issueCode": "source_unreadable",
-                  "issueMessage": "You don't have permission to access this item.",
+                  "issueMessage": "You don’t have permission to access this item.",
                   "keepBothDestinationPath": null,
                   "renameOnly": false,
                   "replaceBlockedReason": null,
@@ -16049,6 +16052,7 @@
               "code": "duplicate_destination_name",
               "destinationPath": "$ROOT/destination/x.txt",
               "message": "$ROOT/two/x.txt and $ROOT/one/x.txt would both be pasted as x.txt.",
+              "otherSourcePath": "$ROOT/one/x.txt",
               "sourcePath": "$ROOT/two/x.txt"
             }
           ],

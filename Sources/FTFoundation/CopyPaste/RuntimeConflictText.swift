@@ -171,7 +171,7 @@ public struct RuntimeConflictText: Equatable, Sendable {
             let what = isFolder ? "folder" : "item"
             return (
                 "Couldn\u{2019}t move \u{201C}\(name)\u{201D} to the Trash",
-                "\u{201C}\(folder)\u{201D} is on a volume without a Trash, so replacing the existing \(what) means deleting it permanently. This can\u{2019}t be undone."
+                "\u{201C}\(folder)\u{201D} is on a disk without a Trash, so replacing the existing \(what) means deleting it permanently. This can\u{2019}t be undone."
             )
         }
     }

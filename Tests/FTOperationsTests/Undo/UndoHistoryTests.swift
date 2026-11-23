@@ -106,7 +106,7 @@ struct UndoHistoryTests {
         let first = history.top(.undo)
         history.record(undoable(.rename, [moved("/c", "/d")]))
         #expect(
-            throws: UndoHistoryError(message: "The Undo list changed while one of its operations was being undone.")
+            throws: UndoHistoryError(message: "The Undo list changed while something on it was being undone.")
         ) {
             try finish(history, id: first?.id ?? -1, done: units([moved("/b", "/a")]))
         }

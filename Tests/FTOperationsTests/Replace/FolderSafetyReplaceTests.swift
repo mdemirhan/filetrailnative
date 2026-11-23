@@ -256,7 +256,7 @@ struct FolderSafetyReplaceTests {
             #expect(result.items.first?.status == .failed)
             #expect(
                 result.items.first?.error
-                    == "\u{201C}a.txt\u{201D} wasn't replaced, and couldn't be put back where it was, so it is under the hidden name \u{201C}\(hidden)\u{201D} in \u{201C}\(root)/dst\u{201D} until File Trail starts again. An item with this name already exists."
+                    == "\u{201C}a.txt\u{201D} wasn’t replaced, and couldn’t be put back where it was, so it is under the hidden name \u{201C}\(hidden)\u{201D} in \u{201C}\(root)/dst\u{201D} until File Trail starts again. An item with this name already exists."
             )
         }
     }

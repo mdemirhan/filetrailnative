@@ -114,8 +114,8 @@ public enum ActivityList {
         switch (kind, outcome) {
         case (_, .completed): "Done"
         case (_, .stopped): "Stopped"
-        case (.fileOperation, .failed): "Didn't finish"
-        case (_, .failed): "Couldn't calculate"
+        case (.fileOperation, .failed): "Didn\u{2019}t finish"
+        case (_, .failed): "Couldn\u{2019}t calculate"
         case (_, .partly): "Finished in part"
         case (_, nil): "Ended"
         }

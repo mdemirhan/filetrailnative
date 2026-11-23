@@ -454,7 +454,7 @@ private func assertNotWrittenByThisPaste(
 }
 
 private func sameNameMessage(_ node: ResolvedCopyPasteNode) -> String {
-    "\u{201C}\(basenameOf(node.node.sourcePath))\u{201D} wasn't pasted because another item of this paste has the same name on this disk, which doesn't tell upper and lower case apart."
+    "\u{201C}\(basenameOf(node.node.sourcePath))\u{201D} wasn\u{2019}t pasted because another item of this paste has the same name on this disk, which doesn\u{2019}t tell upper and lower case apart."
 }
 
 /// Continues from what is on disk now, which is what the person just decided on. After a question about the
@@ -485,7 +485,7 @@ private func resolveWithRuntimeAnswer(
         : nil
     if resolution == .merge && conflictClass != .directoryConflict {
         throw OperationError(
-            "\u{201C}\(basenameOf(node.node.sourcePath))\u{201D} is no longer a folder, so it can't be merged and was left."
+            "\u{201C}\(basenameOf(node.node.sourcePath))\u{201D} is no longer a folder, so it can\u{2019}t be merged and was left."
         )
     }
     source.destinationPath = node.destinationPath

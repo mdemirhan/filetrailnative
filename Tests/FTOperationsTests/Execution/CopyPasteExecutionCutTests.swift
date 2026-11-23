@@ -180,7 +180,7 @@ struct CopyPasteExecutionCutTests {
         #expect(events.last?.status == .partial)
         let first = events.last?.result?.items.first
         #expect(first?.status == .failed)
-        #expect(first?.error?.contains("the original folder couldn't be removed") == true)
+        #expect(first?.error?.contains("the original folder couldn\u{2019}t be removed") == true)
         // Its items were moved.
         #expect(fileSystem.exists("/target/dir/a.txt"))
         #expect(!fileSystem.exists("/source/dir/a.txt"))
@@ -203,7 +203,7 @@ struct CopyPasteExecutionCutTests {
         #expect(events.last?.status == .partial)
         let items = events.last?.result?.items ?? []
         #expect(items.first?.status == .failed)
-        #expect(items.first?.error?.contains("the original couldn't be removed") == true)
+        #expect(items.first?.error?.contains("the original couldn\u{2019}t be removed") == true)
         #expect(items.dropFirst().first?.status == .completed)
         #expect(fileSystem.exists("/target/a.txt"))
         #expect(fileSystem.exists("/target/b.txt"))

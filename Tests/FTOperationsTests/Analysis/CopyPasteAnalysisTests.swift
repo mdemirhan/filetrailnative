@@ -137,6 +137,7 @@ struct CopyPasteAnalysisTests {
         #expect(report.issues.first?.code == .duplicateDestinationName)
         #expect(report.issues.first?.sourcePath == "/b/Report.pdf")
         #expect(report.issues.first?.destinationPath == "/target/Report.pdf")
+        #expect(report.issues.first?.otherSourcePath == "/a/report.pdf")
     }
 
     @Test func fallsBackToASourceMissingIssueWhenParentChildRealpathChecksFail() throws {
@@ -497,7 +498,7 @@ struct CopyPasteAnalysisTests {
                 CopyPasteAnalysisIssue(
                     code: .sourceUnreadable,
                     message:
-                        "\u{201C}project\u{201D} can't be moved because a disk is mounted inside it (\u{201C}mnt\u{201D}).",
+                        "\u{201C}project\u{201D} can’t be moved because a disk is mounted inside it (\u{201C}mnt\u{201D}).",
                     sourcePath: "/Users/me/project", destinationPath: "/Volumes/Other/project")
             ])
         #expect(report.nodes.isEmpty)

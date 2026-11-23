@@ -144,7 +144,7 @@ import Testing
         let view = make(
             topic: .files, shortcuts: ShortcutDisplay(shortcuts: ShortcutCommands.resolve(overrides)))
         let row = views("help.shortcutRow", in: view).first {
-            texts("help.shortcutRow.description", in: $0) == ["Copy the selected items' paths as text"]
+            texts("help.shortcutRow.description", in: $0) == ["Copy the selected items’ paths as text"]
         }
         #expect(row.map { texts("help.keycap", in: $0) } == ["⌘", "+"])
         #expect(views("help.keycap", in: view).count > 4)

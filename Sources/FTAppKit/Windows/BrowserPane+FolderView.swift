@@ -482,7 +482,7 @@ enum FolderViewText {
     static func tooltip(_ view: FolderViewOnScreen) -> String {
         if view.isDraft { return "No view of its own \u{00B7} Unsaved changes" }
         let whose =
-            view.use.own ? "This folder's view" : "Folder view from “\(name(view.use.view.path))”"
+            view.use.own ? "This folder’s view" : "Folder view from “\(name(view.use.view.path))”"
         let keeps = view.saved.isEmpty ? " (keeps nothing)" : ""
         return whose + keeps + (view.hasUnsavedChanges ? " · Unsaved changes" : "")
     }

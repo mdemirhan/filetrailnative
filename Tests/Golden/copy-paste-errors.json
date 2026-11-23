@@ -21,7 +21,7 @@
       "output": {
         "code": "EPERM",
         "message": "EPERM: Operation not permitted, lstat '/Users/me/café 😀.txt'",
-        "described": "You don't have permission to access this item."
+        "described": "You don’t have permission to access this item."
       }
     },
     {
@@ -54,7 +54,7 @@
       "output": {
         "code": "EINTR",
         "message": "EINTR: Interrupted system call, lstat '/Users/me/café 😀.txt'",
-        "described": "The operation was interrupted. Try again."
+        "described": "It was interrupted. Try again."
       }
     },
     {
@@ -78,7 +78,7 @@
       "output": {
         "code": "ENXIO",
         "message": "ENXIO: Device not configured, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
-        "described": "The disk isn't available."
+        "described": "The disk isn’t available."
       }
     },
     {
@@ -144,7 +144,7 @@
       "output": {
         "code": "ENOMEM",
         "message": "ENOMEM: Cannot allocate memory, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
-        "described": "There isn't enough memory to finish this."
+        "described": "There isn’t enough memory to finish this."
       }
     },
     {
@@ -153,7 +153,7 @@
       "output": {
         "code": "EACCES",
         "message": "EACCES: Permission denied, lstat '/Users/me/café 😀.txt'",
-        "described": "You don't have permission to access this item."
+        "described": "You don’t have permission to access this item."
       }
     },
     {
@@ -210,7 +210,7 @@
       "output": {
         "code": "EXDEV",
         "message": "EXDEV: Cross-device link, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
-        "described": "The item can't be moved directly to a different disk."
+        "described": "The item can’t be moved directly to a different disk."
       }
     },
     {
@@ -219,7 +219,7 @@
       "output": {
         "code": "ENODEV",
         "message": "ENODEV: Operation not supported by device, lstat '/Users/me/café 😀.txt'",
-        "described": "The disk isn't available."
+        "described": "The disk isn’t available."
       }
     },
     {
@@ -228,7 +228,7 @@
       "output": {
         "code": "ENOTDIR",
         "message": "ENOTDIR: Not a directory, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
-        "described": "Part of the path isn't a folder any more."
+        "described": "Part of the path isn’t a folder any more."
       }
     },
     {
@@ -252,7 +252,7 @@
       "output": {
         "code": "EINVAL",
         "message": "EINVAL: Invalid argument, lstat '/Users/me/café 😀.txt'",
-        "described": "This volume doesn't accept this name or operation."
+        "described": "This disk doesn’t accept this name."
       }
     },
     {
@@ -309,7 +309,7 @@
       "output": {
         "code": "EFBIG",
         "message": "EFBIG: File too large, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
-        "described": "The file is too large for this volume."
+        "described": "The file is too large for this disk."
       }
     },
     {
@@ -318,7 +318,7 @@
       "output": {
         "code": "ENOSPC",
         "message": "ENOSPC: No space left on device, lstat '/Users/me/café 😀.txt'",
-        "described": "There isn't enough free space on the destination disk."
+        "described": "There isn’t enough free space on the destination disk."
       }
     },
     {
@@ -507,7 +507,7 @@
       "output": {
         "code": "ENOTSUP",
         "message": "ENOTSUP: Operation not supported, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
-        "described": "This volume doesn't support this operation."
+        "described": "This disk can’t do this."
       }
     },
     {
@@ -672,7 +672,7 @@
       "output": {
         "code": "ETIMEDOUT",
         "message": "ETIMEDOUT: Operation timed out, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
-        "described": "The volume took too long to respond."
+        "described": "The disk took too long to respond."
       }
     },
     {
@@ -690,7 +690,7 @@
       "output": {
         "code": "ELOOP",
         "message": "ELOOP: Too many levels of symbolic links, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
-        "described": "The item's location loops back on itself through symbolic links."
+        "described": "The item’s location loops back on itself through symbolic links."
       }
     },
     {
@@ -738,7 +738,7 @@
       "output": {
         "code": "ENOTEMPTY",
         "message": "ENOTEMPTY: Directory not empty, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
-        "described": "The folder isn't empty."
+        "described": "The folder isn’t empty."
       }
     },
     {
@@ -771,7 +771,7 @@
       "output": {
         "code": "EDQUOT",
         "message": "EDQUOT: Disc quota exceeded, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
-        "described": "The destination's storage quota is full."
+        "described": "The destination’s storage quota is full."
       }
     },
     {
@@ -780,7 +780,7 @@
       "output": {
         "code": "ESTALE",
         "message": "ESTALE: Stale NFS file handle, lstat '/Users/me/café 😀.txt'",
-        "described": "The network volume went away. Reconnect it and try again."
+        "described": "The server went away. Reconnect to it and try again."
       }
     },
     {
@@ -1134,7 +1134,7 @@
       "output": {
         "code": "EOPNOTSUPP",
         "message": "EOPNOTSUPP: Operation not supported on socket, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
-        "described": "This volume doesn't support this operation."
+        "described": "This disk can’t do this."
       }
     },
     {
@@ -1206,7 +1206,7 @@
     {
       "name": "node error EPERM",
       "input": {"kind": "error", "message": "EPERM: something, open '/x/y'", "code": "EPERM"},
-      "output": {"described": "You don't have permission to access this item."}
+      "output": {"described": "You don’t have permission to access this item."}
     },
     {
       "name": "node error ENOENT",
@@ -1221,7 +1221,7 @@
     {
       "name": "node error EINTR",
       "input": {"kind": "error", "message": "EINTR: something, open '/x/y'", "code": "EINTR"},
-      "output": {"described": "The operation was interrupted. Try again."}
+      "output": {"described": "It was interrupted. Try again."}
     },
     {
       "name": "node error EIO",
@@ -1231,7 +1231,7 @@
     {
       "name": "node error ENXIO",
       "input": {"kind": "error", "message": "ENXIO: something, open '/x/y'", "code": "ENXIO"},
-      "output": {"described": "The disk isn't available."}
+      "output": {"described": "The disk isn’t available."}
     },
     {
       "name": "node error E2BIG",
@@ -1261,12 +1261,12 @@
     {
       "name": "node error ENOMEM",
       "input": {"kind": "error", "message": "ENOMEM: something, open '/x/y'", "code": "ENOMEM"},
-      "output": {"described": "There isn't enough memory to finish this."}
+      "output": {"described": "There isn’t enough memory to finish this."}
     },
     {
       "name": "node error EACCES",
       "input": {"kind": "error", "message": "EACCES: something, open '/x/y'", "code": "EACCES"},
-      "output": {"described": "You don't have permission to access this item."}
+      "output": {"described": "You don’t have permission to access this item."}
     },
     {
       "name": "node error EFAULT",
@@ -1286,17 +1286,17 @@
     {
       "name": "node error EXDEV",
       "input": {"kind": "error", "message": "EXDEV: something, open '/x/y'", "code": "EXDEV"},
-      "output": {"described": "The item can't be moved directly to a different disk."}
+      "output": {"described": "The item can’t be moved directly to a different disk."}
     },
     {
       "name": "node error ENODEV",
       "input": {"kind": "error", "message": "ENODEV: something, open '/x/y'", "code": "ENODEV"},
-      "output": {"described": "The disk isn't available."}
+      "output": {"described": "The disk isn’t available."}
     },
     {
       "name": "node error ENOTDIR",
       "input": {"kind": "error", "message": "ENOTDIR: something, open '/x/y'", "code": "ENOTDIR"},
-      "output": {"described": "Part of the path isn't a folder any more."}
+      "output": {"described": "Part of the path isn’t a folder any more."}
     },
     {
       "name": "node error EISDIR",
@@ -1306,7 +1306,7 @@
     {
       "name": "node error EINVAL",
       "input": {"kind": "error", "message": "EINVAL: something, open '/x/y'", "code": "EINVAL"},
-      "output": {"described": "This volume doesn't accept this name or operation."}
+      "output": {"described": "This disk doesn’t accept this name."}
     },
     {
       "name": "node error ENFILE",
@@ -1331,12 +1331,12 @@
     {
       "name": "node error EFBIG",
       "input": {"kind": "error", "message": "EFBIG: something, open '/x/y'", "code": "EFBIG"},
-      "output": {"described": "The file is too large for this volume."}
+      "output": {"described": "The file is too large for this disk."}
     },
     {
       "name": "node error ENOSPC",
       "input": {"kind": "error", "message": "ENOSPC: something, open '/x/y'", "code": "ENOSPC"},
-      "output": {"described": "There isn't enough free space on the destination disk."}
+      "output": {"described": "There isn’t enough free space on the destination disk."}
     },
     {
       "name": "node error ESPIPE",
@@ -1416,7 +1416,7 @@
     {
       "name": "node error ENOTSUP",
       "input": {"kind": "error", "message": "ENOTSUP: something, open '/x/y'", "code": "ENOTSUP"},
-      "output": {"described": "This volume doesn't support this operation."}
+      "output": {"described": "This disk can’t do this."}
     },
     {
       "name": "node error EAFNOSUPPORT",
@@ -1476,7 +1476,7 @@
     {
       "name": "node error ETIMEDOUT",
       "input": {"kind": "error", "message": "ETIMEDOUT: something, open '/x/y'", "code": "ETIMEDOUT"},
-      "output": {"described": "The volume took too long to respond."}
+      "output": {"described": "The disk took too long to respond."}
     },
     {
       "name": "node error ECONNREFUSED",
@@ -1486,7 +1486,7 @@
     {
       "name": "node error ELOOP",
       "input": {"kind": "error", "message": "ELOOP: something, open '/x/y'", "code": "ELOOP"},
-      "output": {"described": "The item's location loops back on itself through symbolic links."}
+      "output": {"described": "The item’s location loops back on itself through symbolic links."}
     },
     {
       "name": "node error ENAMETOOLONG",
@@ -1506,7 +1506,7 @@
     {
       "name": "node error ENOTEMPTY",
       "input": {"kind": "error", "message": "ENOTEMPTY: something, open '/x/y'", "code": "ENOTEMPTY"},
-      "output": {"described": "The folder isn't empty."}
+      "output": {"described": "The folder isn’t empty."}
     },
     {
       "name": "node error EUSERS",
@@ -1516,12 +1516,12 @@
     {
       "name": "node error EDQUOT",
       "input": {"kind": "error", "message": "EDQUOT: something, open '/x/y'", "code": "EDQUOT"},
-      "output": {"described": "The destination's storage quota is full."}
+      "output": {"described": "The destination’s storage quota is full."}
     },
     {
       "name": "node error ESTALE",
       "input": {"kind": "error", "message": "ESTALE: something, open '/x/y'", "code": "ESTALE"},
-      "output": {"described": "The network volume went away. Reconnect it and try again."}
+      "output": {"described": "The server went away. Reconnect to it and try again."}
     },
     {
       "name": "node error EREMOTE",
@@ -1581,7 +1581,7 @@
     {
       "name": "node error EOPNOTSUPP",
       "input": {"kind": "error", "message": "EOPNOTSUPP: something, open '/x/y'", "code": "EOPNOTSUPP"},
-      "output": {"described": "This volume doesn't support this operation."}
+      "output": {"described": "This disk can’t do this."}
     },
     {
       "name": "node error ENOTBLK",
@@ -1810,12 +1810,12 @@
     {
       "name": "random 2",
       "input": {"kind": "error", "message": "random 345213 '/p/2'", "code": "EINTR"},
-      "output": {"described": "The operation was interrupted. Try again."}
+      "output": {"described": "It was interrupted. Try again."}
     },
     {
       "name": "random 3",
       "input": {"kind": "error", "message": "random 212118 '/p/3'", "code": "EACCES"},
-      "output": {"described": "You don't have permission to access this item."}
+      "output": {"described": "You don’t have permission to access this item."}
     },
     {
       "name": "random 4",
@@ -1825,7 +1825,7 @@
     {
       "name": "random 5",
       "input": {"kind": "error", "message": "random 880582 '/p/5'", "code": "EPERM"},
-      "output": {"described": "You don't have permission to access this item."}
+      "output": {"described": "You don’t have permission to access this item."}
     },
     {
       "name": "random 6",

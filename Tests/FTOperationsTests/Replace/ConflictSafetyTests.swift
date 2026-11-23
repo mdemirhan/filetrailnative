@@ -98,7 +98,7 @@ struct ConflictSafetyTests {
             #expect(run.result?.items.first?.status == .failed)
             #expect(
                 run.result?.items.first?.error
-                    == "Can't replace \u{201C}foo\u{201D} because it contains the item being pasted.")
+                    == "Can’t replace “foo” because it contains the item being pasted.")
             #expect(Disk.read(outer + "/outer.txt") == "outer")
             #expect(Disk.read(outer + "/foo/a.txt") == "important")
             #expect(Disk.list(trashDir) == [])
@@ -121,7 +121,7 @@ struct ConflictSafetyTests {
             #expect(run.result?.items.first?.status == .failed)
             #expect(
                 run.result?.items.first?.error
-                    == "Can't replace \u{201C}X\u{201D} because it contains the item being pasted.")
+                    == "Can’t replace “X” because it contains the item being pasted.")
             #expect(Disk.read(outer + "/X/a.txt") == "inner")
             #expect(Disk.read(outer + "/other.txt") == "other")
             #expect(Disk.list(trashDir) == [])
@@ -297,7 +297,7 @@ struct ConflictSafetyTests {
             #expect(run.result?.status == .partial)
             #expect(
                 names(run.result?.items) == [["a.txt", "completed"], ["b.txt", "failed"], ["c.txt", "completed"]])
-            #expect(run.result?.items[1].error == "You don't have permission to access this item.")
+            #expect(run.result?.items[1].error == "You don’t have permission to access this item.")
             // The failed copy leaves nothing half-written behind.
             #expect(!Disk.exists(target + "/b.txt"))
             #expect(Disk.read(target + "/c.txt") == "c")
@@ -413,7 +413,7 @@ struct ConflictSafetyTests {
             #expect(run.result?.status == .failed)
             let item = run.result?.items.first
             #expect(item?.status == .failed)
-            #expect(item?.error == "\u{201C}docs\u{201D} wasn't replaced because some items inside couldn't be copied.")
+            #expect(item?.error == "“docs” wasn’t replaced because some items inside couldn’t be copied.")
             #expect(item?.childFailureCount == 1)
             #expect(names(run.result?.items) == [["docs", "failed"], ["a.txt", "failed"]])
             #expect(Disk.list(trashDir) == [])
@@ -447,7 +447,7 @@ struct ConflictSafetyTests {
             #expect(names(run.result?.items) == [["docs", "failed"], ["b.txt", "failed"]])
             #expect(
                 run.result?.items.first?.error
-                    == "\u{201C}docs\u{201D} wasn't replaced because some items inside couldn't be copied.")
+                    == "“docs” wasn’t replaced because some items inside couldn’t be copied.")
             #expect(run.result?.summary.completedByteCount == 0)
             #expect(Disk.list(trashDir) == [])
             #expect(Disk.list(target + "/docs") == ["keep.txt"])
@@ -464,7 +464,7 @@ struct ConflictSafetyTests {
             let target = root + "/target"
             try Disk.write(source + "/notes.txt", "new notes")
             try Disk.write(target + "/notes.txt", "old notes")
-            let message = "\u{201C}notes.txt\u{201D} couldn\u{2019}t be moved to the trash because it\u{2019}s in use."
+            let message = "“notes.txt” couldn’t be moved to the trash because it’s in use."
 
             let run = try await SafetyPaste(
                 mode: .copy, sources: [source + "/notes.txt"], destination: target, resolve: { _ in .overwrite }

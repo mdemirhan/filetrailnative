@@ -103,9 +103,9 @@ public enum Paths {
         // The disk ignores case, so "/users" is "/Users".
         let normalized = Array(JSText.lowercased(resolved).unicodeScalars)
         if normalized == ["/"] {
-            return "The startup disk can't be \(verb)."
+            return "The startup disk can\u{2019}t be \(verb)."
         }
-        let refusal = "\u{201C}\(NodePath.basename(resolved))\u{201D} can't be \(verb)."
+        let refusal = "\u{201C}\(NodePath.basename(resolved))\u{201D} can\u{2019}t be \(verb)."
         let protected = protectedPaths(homePath: homePath).map { Array(JSText.lowercased($0).unicodeScalars) }
         if protected.contains(normalized) {
             return refusal

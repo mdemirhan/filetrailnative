@@ -320,8 +320,8 @@ private struct Triple: Equatable {
         let listed = rows(all, policy)
         #expect(listed.map(\.name) == ["photos", "a.jpg", "notes.txt", "config"])
         #expect(listed.map(\.choice) == [.merge, .overwrite, .keepBoth, .overwrite])
-        #expect(listed[0].detail.contains("Can't replace: It contains the item being pasted."))
-        #expect(listed[2].detail.contains("Can't replace: It is the item being pasted."))
+        #expect(listed[0].detail.contains("Can’t replace: It contains the item being pasted."))
+        #expect(listed[2].detail.contains("Can’t replace: It is the item being pasted."))
         let summary = CopyPasteReview.summarize(all, policy: policy, overrides: [:])
         #expect(summary.replaced == 2 && summary.merged == 1 && summary.keptBoth == 1)
         // The menu still reads Replace: that is what it does wherever it can.

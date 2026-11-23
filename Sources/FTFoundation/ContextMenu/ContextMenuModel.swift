@@ -134,7 +134,7 @@ public enum ContextMenuItems {
                 item(.openInNewWindow, "Open in New Window", .openInNewWindow),
                 item(.openInOtherPane, "Open in Other Pane", .twoPanes),
                 item(.rootTreeHere, "Use as Tree Root", .rootTreeHere), line("separator-tree-open"),
-                item(.showInfo, "Show Info", .showInfo), item(.calculateSize, "Calculate Size", .calculateSize),
+                item(.showInfo, "Get Info", .showInfo), item(.calculateSize, "Calculate Size", .calculateSize),
                 line("separator-tree-info"),
                 item(.cut, "Cut", .cut), item(.copy, "Copy", .copy),
             ] + clipboardItems(options) + [
@@ -153,7 +153,7 @@ public enum ContextMenuItems {
             return [
                 item(.newFolder, "New Folder", .newFolder), item(.newFile, "New File", .newFile, submenu: true),
                 line("separator-background-organize"),
-                item(.showInfo, "Show Info", .showInfo), item(.calculateSize, "Calculate Size", .calculateSize),
+                item(.showInfo, "Get Info", .showInfo), item(.calculateSize, "Calculate Size", .calculateSize),
                 line("separator-background-info"),
                 item(.paste, "Paste", .paste),
                 // Only with an image or text on the system's clipboard (hidden by the caller otherwise).
@@ -180,7 +180,7 @@ public enum ContextMenuItems {
                 // Only for a disk that can be ejected (hidden by the caller for the others).
                 line("separator-favorite-eject"),
                 item(.eject, options.ejectLabel ?? "Eject", .eject), line("separator-favorite-open"),
-                item(.showInfo, "Show Info", .showInfo), item(.calculateSize, "Calculate Size", .calculateSize),
+                item(.showInfo, "Get Info", .showInfo), item(.calculateSize, "Calculate Size", .calculateSize),
                 line("separator-favorite-info"),
                 item(.paste, "Paste into Folder", .paste), item(.copyPath, "Copy Path", .copyPath),
                 line("separator-favorite-clipboard"),
@@ -208,7 +208,7 @@ public enum ContextMenuItems {
                 item(.edit, "Edit in \(MenuName.shortened(textEditorName))", .edit),
                 item(.showPackageContents, "Show Package Contents", .showPackageContents),
                 line("separator-open"),
-                item(.showInfo, "Show Info", .showInfo),
+                item(.showInfo, "Get Info", .showInfo),
                 // For folders, or a selection with folders among it: hidden by the caller otherwise.
                 item(.calculateSize, "Calculate Size", .calculateSize), line("separator-info"),
                 item(.cut, "Cut", .cut), item(.copy, "Copy", .copy),

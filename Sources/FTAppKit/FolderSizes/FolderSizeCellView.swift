@@ -123,7 +123,7 @@ final class FolderSizeCellView: NSView {
         setAccessibilityIdentifier(identifier)
         calculate.text = calculateText
         calculate.font = tabularFont(DesignTokens.typeScale.callout, weight: style == .panel ? 600 : 400)
-        failedLine.stringValue = style == .panel ? "Couldn't Calculate" : "Couldn't calculate"
+        failedLine.stringValue = style == .panel ? "Couldn\u{2019}t Calculate" : "Couldn\u{2019}t calculate"
         failedLine.font = ThemeFonts.sans(DesignTokens.typeScale.callout)
         failedLine.lineBreakMode = .byTruncatingTail
         failedLine.setAccessibilityIdentifier(identifier + ".failed")

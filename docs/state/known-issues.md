@@ -31,7 +31,7 @@ Copy Contents leaves these for later:
 
 The Trash lists what is in the Trash of every local disk (`TrashFolders`), as Finder's does. Two things still see only the home folder's:
 
-- **Its size**: Show Info on the Trash, and the Trash's row with folder sizes on. The status bar leaves the size out while other disks' items are listed.
+- **Its size**: Get Info on the Trash, and the Trash's row with folder sizes on. The status bar leaves the size out while other disks' items are listed.
 - **Search from the Trash**: it searches the home folder's Trash only. A filter of the list covers every disk.
 
 There is no Put Back, on any disk.
@@ -78,7 +78,7 @@ Found by reading the code and confirmed there; not fixed yet.
 - **A tab added unread with the Info panel open asks for its item.** Merge All Windows and the tabs brought back at launch wait unread until they are shown; with the Info panel open, each still asks the disk for its folder's details as it is added.
 - **A moved folder that can't be read once its items are gone is taken for gone.** After a move to another disk, the emptied original is looked at before it is removed (`tryRemoveEmptySourceDirectory`, `Execution/ExecutionMoves.swift`); one that can't be read just then is left where it is without a word.
 - **A new folder inside a merge that a full disk ends has no line of its own in the result**, as with a Stop: its items are listed, not the folder.
-- **Always Open With answered by macOS after File Trail stopped waiting** (10 s) says "macOS didn't answer.", and the apps listed for that kind stay as they were until the window is next brought forward (`OpenWithCatalog`).
+- **Always Open With answered by macOS after File Trail stopped waiting** (10 s) says "macOS didn’t answer.", and the apps listed for that kind stay as they were until the window is next brought forward (`OpenWithCatalog`).
 - **Stop on a folder size just as it finishes** shows no size until the folder is asked about again: the window forgets the answer the job already has (`WindowFolderSizes.cancel`).
 - **Quick Look open while another window comes forward** keeps its panel but shows no item there.
 - **A state file that can't be written as JSON** logs the failure again at every later save (`AppStateStore`).

@@ -154,7 +154,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // Show Info points the panel at an item that is not selected, and a selection takes it back.
+        // Get Info points the panel at an item that is not selected, and a selection takes it back.
         // A press on the chevron of the split Open button opens the Open With menu under the button, its
         // right edge on the button's.
         @Test func theChevronOpensTheOpenWithMenu() async throws {
@@ -275,7 +275,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // Show Info on an app measures it; a change from outside keeps the item, and so
+        // Get Info on an app measures it; a change from outside keeps the item, and so
         // its measurement.
         @Test func anOutsideChangeKeepsShowInfosItem() async throws {
             let harness = try ExplorerHarness.windowless()

@@ -10,7 +10,7 @@ import Testing
 struct MountPointReplaceTests {
     private static let reviewNote = "It is a disk mounted here."
     private static func refusal(_ name: String) -> String {
-        "Can't replace \u{201C}\(name)\u{201D} because it is a disk mounted here."
+        "Can’t replace \u{201C}\(name)\u{201D} because it is a disk mounted here."
     }
 
     /// "/dst/Photos" is where a disk is mounted (another device than "/dst"), and a folder "Photos" is pasted
@@ -185,7 +185,7 @@ struct MountPointReplaceTests {
     // MARK: A folder that holds one, deeper inside
 
     private static func heldInside(_ within: String, _ folder: String) -> String {
-        "\u{201C}\(within)\u{201D} is another disk, mounted inside \u{201C}\(folder)\u{201D}, so \u{201C}\(folder)\u{201D} wasn't deleted for good and nothing was replaced. Eject it and try again."
+        "\u{201C}\(within)\u{201D} is another disk, mounted inside \u{201C}\(folder)\u{201D}, so \u{201C}\(folder)\u{201D} wasn’t deleted for good and nothing was replaced. Eject it and try again."
     }
 
     /// "/dst/Album" is a folder of its folder's disk that holds, two folders down, one a disk is mounted on

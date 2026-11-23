@@ -35,7 +35,7 @@ extension ExplorerWindowlessTests {
             #expect(fixture.rows == ["IMG_1.jpgLisbon 1.jpg", "notes.txtNo change"])
             #expect(fixture.sheet.preview.rows[0].segments.filter(\.changed).map(\.text) == ["Lisbon "])
             #expect(fixture.cell(0)?.newColumn.marks.count == 1)
-            #expect(fixture.summary == "1 will be renamed \u{00B7} 1 unchanged")
+            #expect(fixture.summary == "1 will be renamed \u{00B7} 1 already has that name")
             #expect(fixture.sheet.renameButton.title == "Rename 1 Item")
             #expect(fixture.sheet.renameButton.isEnabled)
             fixture.sheet.findField.focus()
@@ -86,7 +86,7 @@ extension ExplorerWindowlessTests {
             }
             #expect(
                 fixture.rows == ["a1.txtx1.txt", "b1.txtx1 2.txtSame new name as another item: a number is added"])
-            fixture.pick(fixture.sheet.onConflictPopUp, "Don\u{2019}t Rename")
+            fixture.pick(fixture.sheet.onConflictPopUp, "Rename None")
             #expect(fixture.sheet.preview.rows[1].tone == .danger)
             #expect(fixture.rows[1].contains("Another item here would get this name"))
             fixture.close()
@@ -135,7 +135,7 @@ extension ExplorerWindowlessTests {
                 $0.addText = "-old"
             }
             #expect(fixture.rows[0].contains("Left as it is: \u{201C}locked.txt\u{201D} is locked."))
-            #expect(fixture.summary == "1 will be renamed \u{00B7} 1 left as they are")
+            #expect(fixture.summary == "1 will be renamed \u{00B7} 1 skipped")
             #expect(fixture.sheet.renameButton.title == "Rename 1 Item")
             fixture.close()
         }

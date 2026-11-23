@@ -67,7 +67,7 @@ public enum QuitWhileBusy {
         case .copy:
             return (
                 "A copy is still in progress.",
-                "\(stops) Items already copied stay where they are; a folder still being copied isn't left half copied."
+                "\(stops) Items already copied stay where they are; a folder still being copied isn\u{2019}t left half copied."
             )
         case .move:
             // A folder moved to another disk is copied whole, then its original removed: stopped during the
@@ -82,7 +82,7 @@ public enum QuitWhileBusy {
                 "\(stops) Items already in the Trash stay there."
             )
         case .delete:
-            return ("Items are still being deleted.", "\(stops) Items already deleted can't be recovered.")
+            return ("Items are still being deleted.", "\(stops) Items already deleted can\u{2019}t be recovered.")
         case .undo:
             return ("An Undo is still in progress.", "\(stops) What was already undone stays undone.")
         case .redo:

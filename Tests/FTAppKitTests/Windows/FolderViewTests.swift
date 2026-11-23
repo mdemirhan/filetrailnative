@@ -594,7 +594,9 @@ extension ExplorerWindowlessTests {
             tab.perform(.viewAsDetails)
             // No folder view: the pane's columns, and the first item says so; Name, always on, comes next.
             var menu = tab.headerMenu(for: .size, in: pane)
-            #expect(menu.items.first?.title == "Changes apply to all folders in this pane")
+            #expect(
+                menu.items.first?.title
+                    == "Changes are for every folder in this pane, except those whose view keeps its own columns.")
             #expect(menu.items.first?.isEnabled == false && menu.items[1].isSeparatorItem)
             #expect(menu.items[2].title == "Name")
 
@@ -605,13 +607,16 @@ extension ExplorerWindowlessTests {
             tab.perform(.updateFolderView)
             #expect(pane.folderViews.views.own(real(harness, "Alpha"))?.keeps.columns != nil)
             menu = tab.headerMenu(for: .size, in: pane)
-            #expect(menu.items.first?.title == "Changes go to this folder's view, until Save")
+            #expect(
+                menu.items.first?.title == "Changes are for this folder\u{2019}s view. Update Folder View saves them.")
 
-            // Under a view from above that keeps columns: that view's, named.
+            // Under a view from above that keeps columns: this folder's, and the view above is named.
             await go(tab, harness, "Alpha/Inner")
             #expect(pane.shownFolderView?.use.own == false && pane.folderViewKeeps(.columns))
             menu = tab.headerMenu(for: .size, in: pane)
-            #expect(menu.items.first?.title == "Changes go to “Alpha” view, until Save")
+            #expect(
+                menu.items.first?.title
+                    == "Changes are for this folder, not “Alpha”. Update Folder View gives it a view of its own.")
             await harness.close()
         }
 

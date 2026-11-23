@@ -22,12 +22,12 @@ extension HelpContent {
                         HelpRow(
                             label: "Go to Folder",
                             description:
-                                "{openLocationSheet} finds a folder you have opened before, or a favorite, from a few letters of its name; the folders you use most come first. Start with `/` or `~` to type a path instead, or `./` and `../` for one from the folder you are in. ↑ and ↓ put a folder's path in the field, and what you type next goes on from it; Esc puts back what you typed. Tab completes the folder selected, and the list moves on to the folders inside it. ⌘⌫ removes the selected folder from the list, if it is one you opened."
+                                "{openLocationSheet} finds a folder you have opened before, or a favorite, from a few letters of its name; the folders you use most come first. Start with `/` or `~` to type a path instead, or `./` and `../` for one from the folder you are in. ↑ and ↓ put a folder’s path in the field, and what you type next goes on from it; Esc puts back what you typed. Tab completes the folder selected, and the list moves on to the folders inside it. ⌘⌫ removes the selected folder from the list, if it is one you opened."
                         ),
                         HelpRow(
                             label: "Favorites",
                             description:
-                                "Right-click a folder and choose Add to Favorites to pin it in the sidebar. File > Add to Favorites does the same for the selected folder, or for the folder you are in when nothing is selected. Drag a favorite up or down to reorder it, and right-click it for Remove from Favorites. Settings → Browsing → Favorites lists them, and Show favorites puts them in the folder tree or in their own section."
+                                "Right-click a folder and choose Add to Favorites to pin it at the top of the folder tree. File > Add to Favorites does the same for the selected folder, or for the folder you are in when nothing is selected. Drag a favorite up or down to reorder it, and right-click it for Remove from Favorites. Settings → Browsing → Favorites lists them, and Show favorites puts them in the folder tree or in their own section."
                         ),
                         HelpRow(
                             label: "Disks",
@@ -37,7 +37,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Tree root",
                             description:
-                                "{rootTreeAtSelection}, or Use as Tree Root in a folder's right-click menu, makes that folder the top of the folder tree, until you open a folder outside it. Go > Home returns the tree to your home folder."
+                                "{rootTreeAtSelection}, or Use as Tree Root in a folder’s right-click menu, makes that folder the top of the folder tree, until you open a folder outside it. Go > Home returns the tree to your home folder."
                         ),
                     ]),
                 HelpSection(
@@ -61,7 +61,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Moving between tabs",
                             description:
-                                "Click a tab, or use {selectNextTab} and {selectPreviousTab}. Drag a tab to move it along the row, out of the window to give it a window of its own, or onto another window's tabs to move it there."
+                                "Click a tab, or use {selectNextTab} and {selectPreviousTab}. Drag a tab to move it along the row, out of the window to give it a window of its own, or onto another window’s tabs to move it there."
                         ),
                         HelpRow(
                             label: "Closing",
@@ -88,7 +88,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Two Panes",
                             description:
-                                "{toggleTwoPanes} shows a second pane beside the first, each with its own folder, history, view, filter and search. If you closed a pane in this tab, it comes back as you left it; otherwise the new pane is a copy of yours, with the same folder, view and history. {duplicatePane} opens a copy of your pane every time, side by side at half the width, or in place of the other pane when two are open; beside a file you are viewing, it copies the list in the file's place. The toolbar, the folder tree and the Info panel follow the active pane, the one with the blue selection. The same key closes the pane that isn’t active, and {closePane} closes the one you are in."
+                                "{toggleTwoPanes} shows a second pane beside the first, each with its own folder, history, view, filter and search. If you closed a pane in this tab, it comes back as you left it; otherwise the new pane is a copy of yours, with the same folder, view and history. {duplicatePane} opens a copy of your pane every time, side by side at half the width, or in place of the other pane when two are open; beside a file you are viewing, it copies the list in the file’s place. The toolbar, the folder tree and the Info panel follow the active pane, the one with the blue selection. The same key closes the pane that isn’t active, and {closePane} closes the one you are in."
                         ),
                         HelpRow(
                             label: "Moving between panes",
@@ -117,7 +117,7 @@ extension HelpContent {
                         HelpRow(
                             label: "New window",
                             description:
-                                "{newWindow} opens a window on the folder you are in, the size of this one and a step down and to the right of it. File > Open in New Window, or Open in New Window in a folder's right-click menu, opens that folder in one."
+                                "{newWindow} opens a window on the folder you are in, the size of this one and a step down and to the right of it. File > Open in New Window, or Open in New Window in a folder’s right-click menu, opens that folder in one."
                         ),
                         HelpRow(
                             label: "Each window",
@@ -127,12 +127,12 @@ extension HelpContent {
                         HelpRow(
                             label: "Moving tabs",
                             description:
-                                "Window > Move Tab to New Window, or the same item in a tab's right-click menu, gives the tab a window of its own; it keeps its folder and view, but not its Back and Forward history. Window > Merge All Windows brings the tabs of every other window into this one and closes the others; a window whose tabs would take this one past \(AppPreferenceLimits.openTabsLimit) stays open."
+                                "Window > Move Tab to New Window, or the same item in a tab’s right-click menu, gives the tab a window of its own; it keeps its folder and view, but not its Back and Forward history. Window > Merge All Windows brings the tabs of every other window into this one and closes the others; a window whose tabs would take this one past \(AppPreferenceLimits.openTabsLimit) stays open."
                         ),
                         HelpRow(
                             label: "Tab views",
                             description:
-                                "Layout > Save Tab View… keeps what you check of this tab by name: one or two panes, the divider, hidden files, and for each pane its folder, the view it starts in, its grouping, order and Folders First, each view's own options (the List's columns, the icon size, the Compact List's column width, the previews at a time), its viewer's Read or Edit and Follow, and its Search View, how it shows search results (all of it, with one checkbox). What isn't checked comes from the tab you apply it to, its folders included. With one pane, Forget the Second Pane has the tab forget the second pane it had, the divider's place included, so Two Panes then opens a new one at half the width. Any pane can open the viewer over its own list, which keeps the rest: with Follow on and a list in the other pane it shows the file that list selects as the selection moves, and otherwise the file selected in its own list; Read or Edit says how it opens. Choose the tab view in Layout to apply it to this tab; the first five can have keys, {applyTabView1} to {applyTabView5} to begin with, and the rest are in More Tab Views. Up to 20 are kept. A folder with a view of its own still shows it, as in any pane. The Views window can set a tab view that every new tab and window opens with."
+                                "Layout > Save Tab View… keeps what you check of this tab by name: one or two panes, the divider, hidden files, and for each pane its folder, the view it starts in, its grouping, order and Folders First, each view’s own options (the List’s columns, the icon size, the Compact List’s column width, the previews at a time), its viewer’s Read or Edit and Follow, and its Search View, how it shows search results (all of it, with one checkbox). What isn’t checked comes from the tab you apply it to, its folders included. With one pane, Forget the Second Pane has the tab forget the second pane it had, the divider’s place included, so Two Panes then opens a new one at half the width. Any pane can open the viewer over its own list, which keeps the rest: with Follow on and a list in the other pane it shows the file that list selects as the selection moves, and otherwise the file selected in its own list; Read or Edit says how it opens. Choose the tab view in Layout to apply it to this tab; the first five can have keys, {applyTabView1} to {applyTabView5} to begin with, and the rest are in More Tab Views. Up to 20 are kept. A folder with a view of its own still shows it, as in any pane. The Views window can set a tab view that every new tab and window opens with."
                         ),
                         HelpRow(
                             label: "Window views",
@@ -147,12 +147,12 @@ extension HelpContent {
                         HelpRow(
                             label: "Between windows",
                             description:
-                                "Copy or cut in one window and paste in another. Drag items from one window into another to move or copy them there: they go where a drop from Finder would. Edit > Undo undoes the last operation, whichever window it was done in."
+                                "Copy or cut in one window and paste in another. Drag items from one window into another to move or copy them there: they go where a drop from Finder would. Edit > Undo undoes the last change to files, whichever window it was made in."
                         ),
                         HelpRow(
                             label: "Command palette",
                             description:
-                                "{showCommandPalette}, or View > Command Palette…, lists every command with its keys and its place in the menus, including those that have keys but no menu item. Type some letters of a command's name, in order, and press Return or click it to run it; Esc closes the list. A command that can't run now is dimmed and listed last. With nothing typed, the commands you ran from it lately come first."
+                                "{showCommandPalette}, or View > Command Palette…, lists every command with its keys and its place in the menus, including those that have keys but no menu item. Type some letters of a command’s name, in order, and press Return or click it to run it; Esc closes the list. A command that can’t run now is dimmed and listed last. With nothing typed, the commands you ran from it lately come first."
                         ),
                         HelpRow(
                             label: "Closing",
@@ -212,7 +212,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Double-click a file",
                             description:
-                                "Opens it in its app. A disk image is mounted and an archive is extracted, here in File Trail. To open a text file in your text editor, choose Edit in the File menu or in its right-click menu."
+                                "Opens it in its app. A disk image is mounted and an archive is extracted, here in File Trail. To open a text file in your text editor, use {editSelection}, also in the file’s right-click menu."
                         ),
                         HelpRow(
                             label: "Open With",
@@ -225,12 +225,12 @@ extension HelpContent {
                         HelpRow(
                             label: "Open in Viewer",
                             description:
-                                "Open in Viewer, Space or {viewFile}, shows the selected file in its pane: text with colors for code, to read or to edit and save, as you last chose in that pane; Back goes back to the list. Settings → Shortcuts can give Space to Quick Look instead. Open in Other Pane shows it in the other pane instead, which then follows the list's selection unless Follow was turned off there, and asks to save edits before it moves on. What else it does is in its bar: Read or Edit, Save, Follow, and its ⋯ menu, which names its keys."
+                                "Open in Viewer, Space or {viewFile}, shows the selected file in its pane: text with colors for code, to read or to edit and save, as you last chose in that pane; Back goes back to the list. Settings → Shortcuts can give Space to Quick Look instead. Open in Other Pane shows it in the other pane instead, which then follows the list’s selection unless Follow was turned off there, and asks to save edits before it moves on. What else it does is in its bar: Read or Edit, Save, Follow, and its ⋯ menu, which names its keys."
                         ),
                         HelpRow(
                             label: "PDFs, pictures and documents in the viewer",
                             description:
-                                "A PDF, a picture, a Word document, a presentation or a spreadsheet takes the keyboard as it opens: the arrows, Space, {pageDown} and {halfPageDown} move it, ← and → go to the next or previous page or slide, and {goToPage} goes to one by its number. {increaseSize} and {decreaseSize} zoom in and out (a presentation's slides stay at the pane's size), {resetSize} shows it at its actual size, and {zoomToFit} makes a page as wide as the pane again, as a PDF or a Word document opens, or fits a picture in it; the next file of its kind opens at the same zoom. In text they make the text bigger and smaller. {focusFileSearch} finds text in a PDF. Text can be selected in a PDF, a Word document or a spreadsheet, and Copy copies it. A movie or a sound plays in the pane: Space plays and pauses, and ← and → go five seconds back and forward."
+                                "A PDF, a picture, a Word document, a presentation or a spreadsheet takes the keyboard as it opens: the arrows, Space, {pageDown} and {halfPageDown} move it, ← and → go to the next or previous page or slide, and {goToPage} goes to one by its number. {increaseSize} and {decreaseSize} zoom in and out (a presentation’s slides stay at the pane’s size), {resetSize} shows it at its actual size, and {zoomToFit} makes a page as wide as the pane again, as a PDF or a Word document opens, or fits a picture in it; the next file of its kind opens at the same zoom. In text they make the text bigger and smaller. {focusFileSearch} finds text in a PDF. Text can be selected in a PDF, a Word document or a spreadsheet, and Copy copies it. A movie or a sound plays in the pane: Space plays and pauses, and ← and → go five seconds back and forward."
                         ),
                         HelpRow(
                             label: "Open in Terminal",
@@ -244,12 +244,12 @@ extension HelpContent {
                         HelpRow(
                             label: "Copy, cut, paste",
                             description:
-                                "Paste and New Folder go into the folder you are browsing, whatever is selected. To paste into another folder, or make a folder inside it, right-click that folder. Files you copy or cut here paste only in File Trail, not in Finder or other apps, and files copied in Finder don't paste here: drag them between apps instead."
+                                "Paste and New Folder go into the folder you are browsing, whatever is selected. To paste into another folder, or make a folder inside it, right-click that folder. Files you copy or cut here paste only in File Trail, not in Finder or other apps, and files copied in Finder don’t paste here: drag them between apps instead."
                         ),
                         HelpRow(
                             label: "Gathering from several folders",
                             description:
-                                "{addToCopied} and {addToCut} add the selected items to what is on the clipboard, where Copy and Cut start over. Go from folder to folder adding what you need, then paste once: each item is copied or moved as you added it, in one paste you can undo in one step. A paste that moves anything uses the clipboard up, but for what it couldn't paste; a list of copies only stays, to be pasted again. The clipboard's list (the toolbar's button, or {showClipboard}) shows the items to move apart from those to copy; click an item's icon there to switch it, or right-click it. When an item you add has the name of one already on the clipboard, you choose to keep both (the one added is pasted under a name of its own), to use the new one instead, or not to add it. If Copy or Cut replaces a clipboard you built this way, Put Back brings it back."
+                                "{addToCopied} and {addToCut} add the selected items to what is on the clipboard, where Copy and Cut start over. Go from folder to folder adding what you need, then paste once: each item is copied or moved as you added it, in one paste you can undo in one step. A paste that moves anything uses the clipboard up, but for what it couldn’t paste; a list of copies only stays, to be pasted again. The clipboard’s list (the toolbar’s button, or {showClipboard}) shows the items to move apart from those to copy; click an item’s icon there to switch it, or right-click it. When an item you add has the name of one already on the clipboard, you choose to keep both (the one added is pasted under a name of its own), to use the new one instead, or not to add it. If Copy or Cut replaces a clipboard you built this way, Put Back brings it back."
                         ),
                         HelpRow(
                             label: "Move instead of copy",
@@ -259,27 +259,27 @@ extension HelpContent {
                         HelpRow(
                             label: "Move to a folder",
                             description:
-                                "{moveSelection} asks where to move the selected items. It opens on the folder you are in, its path selected: type a few letters to find another folder instead, or change the path. The other pane's folder comes first, then the folders you move or extract into most and the folders you open. A click puts a folder in the field, and a double-click or Return moves the items there. A folder that doesn't exist yet can be made on the way: the button becomes Create and Move."
+                                "{moveSelection} asks where to move the selected items. It opens on the folder you are in, its path selected: type a few letters to find another folder instead, or change the path. The other pane’s folder comes first, then the folders you move or extract into most and the folders you open. A click puts a folder in the field, and a double-click or Return moves the items there. A folder that doesn’t exist yet can be made on the way: the button becomes Create and Move."
                         ),
                         HelpRow(
                             label: "Image or text as a file",
                             description:
-                                "{pasteAsFile} saves an image or text copied in another app, a screenshot or a few paragraphs, as a new file in the folder you are browsing, and selects its name for you to change. An image keeps the format it was copied in; one copied only as TIFF is saved as PNG. Text is saved as plain text (.txt). The Edit menu and the right-click menu of the folder's empty space say which it will be. Undo moves the file to the Trash."
+                                "{pasteAsFile} saves an image or text copied in another app, a screenshot or a few paragraphs, as a new file in the folder you are browsing, and selects its name for you to change. An image keeps the format it was copied in; one copied only as TIFF is saved as PNG. Text is saved as plain text (.txt). The Edit menu and the right-click menu of the folder’s empty space say which it will be. Undo moves the file to the Trash."
                         ),
                         HelpRow(
-                            label: "A file's image or text",
+                            label: "A file’s image or text",
                             description:
-                                "{copyContents} puts the image or text of the selected file on the clipboard, to paste in another app: a photo into a message, a file's text into a document. An image keeps its format, with a PNG copy for the apps that read only PNG. Text is copied as it is, and an RTF file keeps its styles. The Edit menu and the file's right-click menu say which it will be. Before copying a file that usually holds a password or a key, such as .env or id_rsa, it asks, and marks the text as private on the clipboard."
+                                "{copyContents} puts the image or text of the selected file on the clipboard, to paste in another app: a photo into a message, a file’s text into a document. An image keeps its format, with a PNG copy for the apps that read only PNG. Text is copied as it is, and an RTF file keeps its styles. The Edit menu and the file’s right-click menu say which it will be. Before copying a file that usually holds a password or a key, such as .env or id_rsa, it asks, and marks the text as private on the clipboard."
                         ),
                         HelpRow(
                             label: "Sharing",
                             description:
-                                "{shareSelection} opens the share menu Finder has for the selected items: AirDrop, Mail, Messages, Notes and the share extensions you have added. It is in the right-click menu and the Info panel too, and a Share button can be added to the toolbar. Items in the Trash can't be shared."
+                                "{shareSelection} opens the share menu Finder has for the selected items: AirDrop, Mail, Messages, Notes and the share extensions you have added. It is in the right-click menu and the Info panel too, and a Share button can be added to the toolbar. Items in the Trash can’t be shared."
                         ),
                         HelpRow(
                             label: "Converting images",
                             description:
-                                "Choose Convert Images from the right-click menu, the Info panel or {convertImages} to make a copy of the selected images in another format (JPEG, HEIC, PNG, TIFF or AVIF), or smaller, beside each original: Photo.HEIC as JPEG becomes Photo.jpg, numbered when that name is taken. It is offered only when every selected item is an image. The size can fit within a longest side, be a percentage or be a width and height of your own, and no image is ever made larger. Keep metadata keeps the camera's details, and Remove location takes out where the photo was taken. The originals stay as they are, and Undo moves the new files to the Trash."
+                                "Choose Convert Images from the right-click menu, the Info panel or {convertImages} to make a copy of the selected images in another format (JPEG, HEIC, PNG, TIFF or AVIF), or smaller, beside each original: Photo.HEIC as JPEG becomes Photo.jpg, numbered when that name is taken. It is offered only when every selected item is an image. The size can fit within a longest side, be a percentage or be a width and height of your own, and no image is ever made larger. Keep metadata keeps the camera’s details, and Remove location takes out where the photo was taken. The originals stay as they are, and Undo moves the new files to the Trash."
                         ),
                         HelpRow(
                             label: "From the folder tree",
@@ -294,7 +294,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Drag",
                             description:
-                                "Drag items onto a folder to move them there. Dragged to another disk (a USB drive, a network share) they are copied instead, as in Finder. Hold Option to copy, or Command to move. Rest the drag on a folder to open it: its icon wiggles first, and moving the pointer stops it. Keep going into folders inside; drop anywhere in the folder that opened to put the items there, or press Esc to go back to where you started. In search results, drop onto a folder found; a drag doesn't open folders there."
+                                "Drag items onto a folder to move them there. Dragged to another disk (a USB drive, a network share) they are copied instead, as in Finder. Hold Option to copy, or Command to move. Rest the drag on a folder to open it: its icon wiggles first, and moving the pointer stops it. Keep going into folders inside; drop anywhere in the folder that opened to put the items there, or press Esc to go back to where you started. In search results, drop onto a folder found; a drag doesn’t open folders there."
                         ),
                         HelpRow(
                             label: "To other apps",
@@ -304,7 +304,7 @@ extension HelpContent {
                         HelpRow(
                             label: "From other apps",
                             description:
-                                "Drag files and folders in from Finder or another app: drop them anywhere in the folder on screen, or on a folder in the list, the sidebar or search results. They move or copy by the same rules as a drag inside File Trail, and Option copies; an app that only lets its items be copied gets a copy. Command doesn't work for these drags: let go of it before you drop. Mail attachments, photos from Photos, text and links can't be dropped. Undo takes a drop back like any other move or copy."
+                                "Drag files and folders in from Finder or another app: drop them anywhere in the folder on screen, or on a folder in the list, the tree or search results. They move or copy by the same rules as a drag inside File Trail, and Option copies; an app that only lets its items be copied gets a copy. Command doesn’t work for these drags: let go of it before you drop. Mail attachments, photos from Photos, text and links can’t be dropped. Undo takes a drop back like any other move or copy."
                         ),
                         HelpRow(
                             label: "Same name",
@@ -328,7 +328,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Aliases and symbolic links",
                             description:
-                                "{makeAlias} makes an alias of each selected item beside it, named as Finder names one (“Report.pdf alias”), and {undo} moves them to the Trash. Opening an alias or a symbolic link opens its original, and so do Open With, Open in Viewer, Quick Look and Copy Contents; Rename, Copy, Compress, Move to Trash and Show Info act on the alias or the link itself. File ▸ Show Original selects the original in its folder, and Show Info says where it is."
+                                "{makeAlias} makes an alias of each selected item beside it, named as Finder names one (“Report.pdf alias”), and {undo} moves them to the Trash. Opening an alias or a symbolic link opens its original, and so do Open With, Open in Viewer, Quick Look and Copy Contents; Rename, Copy, Compress, Move to Trash and Get Info act on the alias or the link itself. File ▸ Show Original selects the original in its folder, and Get Info says where it is."
                         ),
                         HelpRow(
                             label: "Move to Trash",
@@ -362,7 +362,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Extract To",
                             description:
-                                "File › Extract To… takes the archives apart in a folder you choose, picked as in Move to…: it opens on the folder you are in, and a folder that doesn't exist yet can be made on the way. When no pane shows that folder, what comes out opens in a new window or tab, as Settings → Files sets for disk images and archives."
+                                "File › Extract To… takes the archives apart in a folder you choose, picked as in Move to…: it opens on the folder you are in, and a folder that doesn’t exist yet can be made on the way. When no pane shows that folder, what comes out opens in a new window or tab, as Settings → Files sets for disk images and archives."
                         ),
                         HelpRow(
                             label: "What isn’t extracted",
@@ -569,7 +569,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Defaults",
                             description:
-                                "Options you choose in the search field's menu stay with that search: other panes, tabs and windows keep theirs, and those you open later start with the ones you chose last."
+                                "Options you choose in the search field’s menu stay with that search: other panes, tabs and windows keep theirs, and those you open later start with the ones you chose last."
                         ),
                     ]),
                 HelpSection(
@@ -684,7 +684,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Folder sizes",
                             description:
-                                "With the Info panel or the Info Row open, the folder they show (the one you select, or with nothing selected the folder on screen) is measured by itself when it is your home folder, a folder in it, or an app; Calculate folder sizes automatically in Settings → General turns this off. Other folders show no size until you ask: click Calculate in the Info panel, or choose Calculate Size from the right-click menu or {calculateSize}. This sizes the folders among the selected items, or, from a right-click on empty space, the folder on screen, and every folder inside them. Sizes you ask for are measured one at a time, the front window's first and then in the order you asked, ahead of those measured by themselves; one waiting its turn says Waiting…. Once every size in it is known, the right end of the path bar shows the size of the selection, or of the folder on screen. A size leaves out what changes or can't be read while it is measured. While something runs in the background, a ring at the end of the toolbar's title shows it, filling as a file operation goes on, with a count when more than one runs or waits; click it for the list, each with Stop."
+                                "With the Info panel or the Info Row open, the folder they show (the one you select, or with nothing selected the folder on screen) is measured by itself when it is your home folder, a folder in it, or an app; Calculate folder sizes automatically in Settings → General turns this off. Other folders show no size until you ask: click Calculate in the Info panel, or choose Calculate Size from the right-click menu or {calculateSize}. This sizes the folders among the selected items, or, from a right-click on empty space, the folder on screen, and every folder inside them. Sizes you ask for are measured one at a time, the front window’s first and then in the order you asked, ahead of those measured by themselves; one waiting its turn says Waiting…. Once every size in it is known, the right end of the path bar shows the size of the selection, or of the folder on screen. A size leaves out what changes or can’t be read while it is measured. While something runs in the background, a ring at the end of the toolbar’s title shows it, filling as a copy, move or delete goes on, with a count when more than one runs or waits; click it for the list, each with Stop."
                         ),
                         HelpRow(
                             label: "What takes the space",
@@ -751,7 +751,7 @@ extension HelpContent {
         HelpShortcutItem(
             group: .navigation, .command(.openSelectionInNewWindow), "Open the selected folder in a new window"),
         HelpShortcutItem(group: .navigation, .command(.moveTabToNewWindow), "Move the tab to a window of its own"),
-        HelpShortcutItem(group: .navigation, .command(.mergeAllWindows), "Bring every window's tabs into this window"),
+        HelpShortcutItem(group: .navigation, .command(.mergeAllWindows), "Bring every window’s tabs into this window"),
         HelpShortcutItem(
             group: .navigation, .command(.saveTabView), "Save what you check of this tab by name, to apply to a tab"),
         HelpShortcutItem(group: .navigation, .command(.applyTabView1), "Apply the first tab view to this tab"),
@@ -760,7 +760,7 @@ extension HelpContent {
         HelpShortcutItem(group: .navigation, .command(.applyTabView4), "Apply the fourth tab view to this tab"),
         HelpShortcutItem(group: .navigation, .command(.applyTabView5), "Apply the fifth tab view to this tab"),
         HelpShortcutItem(
-            group: .navigation, .command(.saveWindowView), "Save this window's tabs, by their tab views, by name"),
+            group: .navigation, .command(.saveWindowView), "Save this window’s tabs, by their tab views, by name"),
         HelpShortcutItem(group: .navigation, .command(.openWindowView1), "Open the first window view in a new window"),
         HelpShortcutItem(group: .navigation, .command(.openWindowView2), "Open the second window view in a new window"),
         HelpShortcutItem(group: .navigation, .command(.openWindowView3), "Open the third window view in a new window"),
@@ -778,7 +778,7 @@ extension HelpContent {
             group: .navigation, .command(.openWindowView5InThisWindow), "Open the fifth window view in this window"),
         HelpShortcutItem(
             group: .navigation, .command(.toggleTwoPanes),
-            "Show a second pane beside this one, or close the pane you aren't in"),
+            "Show a second pane beside this one, or close the pane you aren’t in"),
         HelpShortcutItem(
             group: .navigation, .command(.duplicatePane),
             "Show a copy of this pane beside it, in place of the other pane if there is one"),
@@ -787,14 +787,14 @@ extension HelpContent {
             group: .navigation, .command(.openSelectionInOtherPane),
             "Open the selected folder, or show the selected file, in the other pane"),
         HelpShortcutItem(
-            group: .navigation, .command(.copyToOtherPane), "Copy the selected items into the other pane's folder"),
+            group: .navigation, .command(.copyToOtherPane), "Copy the selected items into the other pane’s folder"),
         HelpShortcutItem(
-            group: .navigation, .command(.moveToOtherPane), "Move the selected items into the other pane's folder"),
+            group: .navigation, .command(.moveToOtherPane), "Move the selected items into the other pane’s folder"),
         HelpShortcutItem(group: .navigation, .command(.swapPanes), "Swap the two panes, left for right"),
         HelpShortcutItem(
-            group: .navigation, .command(.showFolderInOtherPane), "Show this pane's folder in the other pane"),
+            group: .navigation, .command(.showFolderInOtherPane), "Show this pane’s folder in the other pane"),
         HelpShortcutItem(
-            group: .navigation, .command(.goToOtherPaneFolder), "Open the other pane's folder in this pane too"),
+            group: .navigation, .command(.goToOtherPaneFolder), "Open the other pane’s folder in this pane too"),
         HelpShortcutItem(group: .navigation, .command(.equalizePanes), "Make the two panes equally wide"),
         HelpShortcutItem(
             group: .navigation, .command(.closePane),
@@ -842,7 +842,7 @@ extension HelpContent {
         HelpShortcutItem(
             group: .files, .command(.renameSelection),
             "Rename the selected item, or several at once in the Rename sheet"),
-        HelpShortcutItem(group: .files, .command(.undo), "Undo the last file operation (in a text field, its typing)"),
+        HelpShortcutItem(group: .files, .command(.undo), "Undo the last change to files (in a text field, its typing)"),
         HelpShortcutItem(group: .files, .command(.redo), "Redo what was undone"),
         HelpShortcutItem(group: .files, .command(.copy), "Copy the selected items, to paste into another folder"),
         HelpShortcutItem(group: .files, .command(.cut), "Cut the selected items, to move them where you paste"),
@@ -880,14 +880,14 @@ extension HelpContent {
             group: .files, .command(.deleteImmediately), "Delete the items selected in the Trash for good, asking first"
         ),
         HelpShortcutItem(group: .files, .command(.emptyTrash), "Empty the Trash (asks first)"),
-        HelpShortcutItem(group: .files, .command(.ejectVolume), "Eject the disk selected in the sidebar"),
+        HelpShortcutItem(group: .files, .command(.ejectVolume), "Eject the disk selected in the folder tree"),
         HelpShortcutItem(group: .files, .command(.selectAll), "Select everything in the list"),
         HelpShortcutItem(group: .files, .command(.deselectAll), "Select nothing in the list"),
         HelpShortcutItem(
-            group: .files, .command(.invertSelection), "Select what isn't selected in the list, and only that"),
-        HelpShortcutItem(group: .files, .command(.copyPath), "Copy the selected items' paths as text"),
+            group: .files, .command(.invertSelection), "Select what isn’t selected in the list, and only that"),
+        HelpShortcutItem(group: .files, .command(.copyPath), "Copy the selected items’ paths as text"),
         HelpShortcutItem(
-            group: .files, .command(.copyContents), "Copy the selected file's image or text, to paste in another app"),
+            group: .files, .command(.copyContents), "Copy the selected file’s image or text, to paste in another app"),
         HelpShortcutItem(
             group: .files, .command(.shareSelection),
             "Send the selected items by AirDrop, Mail, Messages or another way macOS offers"),
@@ -924,7 +924,7 @@ extension HelpContent {
             group: .views, .command(.toggleInfoPanel), "Show or hide the details of the selected item, at the right"),
         HelpShortcutItem(
             group: .views, .command(.toggleInfoRow),
-            "Show or hide a strip of the selected item's details under the list"),
+            "Show or hide a strip of the selected item’s details under the list"),
         HelpShortcutItem(
             group: .views, .command(.toggleHiddenFiles),
             "Show or hide files whose names start with a dot, and other hidden items"),
@@ -967,7 +967,7 @@ extension HelpContent {
             group: .views, .command(.groupBySize), "Group the list by size, from Zero bytes to Over 10 GB"),
         HelpShortcutItem(
             group: .views, .command(.groupByKind), "Group the list by kind: folders, images, documents and the rest"),
-        HelpShortcutItem(group: .views, .command(.groupByTags), "Group the list by each item's first tag"),
+        HelpShortcutItem(group: .views, .command(.groupByTags), "Group the list by each item’s first tag"),
         HelpShortcutItem(group: .views, .command(.groupByFolder), "Group search results by the folder each one is in"),
         HelpShortcutItem(
             group: .views, .command(.reverseGroupOrder),
@@ -998,29 +998,29 @@ extension HelpContent {
         HelpShortcutItem(
             group: .views, .command(.showPermissionsColumn), "Show or hide the Permissions column in List view"),
         HelpShortcutItem(
-            group: .views, .command(.rememberFolderView), "Keep this folder's view, order, columns and size as they are"
+            group: .views, .command(.rememberFolderView), "Keep this folder’s view, order, columns and size as they are"
         ),
         HelpShortcutItem(
-            group: .views, .command(.updateFolderView), "Save the changes made to the folder's view on screen"),
+            group: .views, .command(.updateFolderView), "Save the changes made to the folder’s view on screen"),
         HelpShortcutItem(
-            group: .views, .command(.revertFolderView), "Drop the unsaved changes and show the folder's saved view"),
+            group: .views, .command(.revertFolderView), "Drop the unsaved changes and show the folder’s saved view"),
         HelpShortcutItem(
-            group: .views, .command(.folderViewOptions), "Choose what the folder's view keeps, and its folders inside"),
+            group: .views, .command(.folderViewOptions), "Choose what the folder’s view keeps, and its folders inside"),
         HelpShortcutItem(
             group: .views, .command(.resetFolderView),
-            "Forget this folder's own view; it shows the one above or the pane's"),
+            "Forget this folder’s own view; it shows the one above or the pane’s"),
         HelpShortcutItem(
             group: .views, .command(.manageFolderViews),
             "List every folder with a view of its own in the Folder Views window"),
         HelpShortcutItem(group: .views, .command(.fullScreen), "Enter or leave full screen"),
         HelpShortcutItem(group: .views, .command(.minimize), "Minimize the window into the Dock"),
-        HelpShortcutItem(group: .views, .command(.hide), "Hide File Trail's windows until you come back to it"),
+        HelpShortcutItem(group: .views, .command(.hide), "Hide File Trail’s windows until you come back to it"),
         HelpShortcutItem(group: .views, .command(.hideOthers), "Hide other apps"),
-        HelpShortcutItem(group: .views, .command(.customizeToolbar), "Add, remove or move the toolbar's buttons"),
+        HelpShortcutItem(group: .views, .command(.customizeToolbar), "Add, remove or move the toolbar’s buttons"),
         HelpShortcutItem(
             group: .views, .command(.showCommandPalette), "Find any command by its name, and run it"),
-        HelpShortcutItem(group: .views, .command(.settings), "Change File Trail's settings and keyboard shortcuts"),
-        HelpShortcutItem(group: .views, .command(.openHelp), "Open File Trail's Help"),
+        HelpShortcutItem(group: .views, .command(.settings), "Change File Trail’s settings and keyboard shortcuts"),
+        HelpShortcutItem(group: .views, .command(.openHelp), "Open File Trail’s Help"),
         HelpShortcutItem(group: .views, .command(.openKeyboardShortcuts), "List every keyboard shortcut, in Help"),
         HelpShortcutItem(group: .views, .command(.quit), "Close every window and quit File Trail"),
         HelpShortcutItem(group: .views, .fixed("Esc"), "Clear the search in Help"),

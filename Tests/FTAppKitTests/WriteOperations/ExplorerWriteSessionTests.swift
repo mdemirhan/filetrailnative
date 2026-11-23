@@ -279,8 +279,9 @@ private func gatheredPasteEnded(lockedMoved: Bool) -> WriteOperationEvent {
         #expect(fixture.session.foreign?.operationId == operationId)
 
         #expect(fixture.actions.refuseWhileBusy(.operation(.trash)))
-        #expect(fixture.shown.map(\.0) == ["Couldn\u{2019}t Move to Trash"])
-        #expect(fixture.shown.map(\.1) == ["Another file operation is running. Try again when it has finished."])
+        #expect(fixture.shown.map(\.0) == ["Couldn’t Move to Trash"])
+        #expect(
+            fixture.shown.map(\.1) == ["File Trail is still working on other items. Try again when it has finished."])
         #expect(fixture.session.isWriteLocked)
 
         fixture.service.emit(pasteEvent(operationId, .completed))
@@ -320,7 +321,7 @@ private func gatheredPasteEnded(lockedMoved: Bool) -> WriteOperationEvent {
         fixture.session.cameToFront()
 
         #expect(fixture.actions.refuseWhileBusy(.operation(.trash)))
-        #expect(fixture.shown.map(\.0) == ["Couldn\u{2019}t Move to Trash"])
+        #expect(fixture.shown.map(\.0) == ["Couldn’t Move to Trash"])
         #expect(fixture.session.isWriteLocked)
         await fixture.coordinator.shutDown(maxWaitMs: 0)
     }

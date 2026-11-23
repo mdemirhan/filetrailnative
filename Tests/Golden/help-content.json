@@ -136,7 +136,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+\\",
-            "description": "Show a second pane beside this one, or close the pane you aren't in"
+            "description": "Show a second pane beside this one, or close the pane you aren’t in"
           },
           {
             "group": "navigation",
@@ -151,12 +151,12 @@
           {
             "group": "navigation",
             "shortcut": "F5",
-            "description": "Copy the selected items into the other pane's folder"
+            "description": "Copy the selected items into the other pane’s folder"
           },
           {
             "group": "navigation",
             "shortcut": "F6",
-            "description": "Move the selected items into the other pane's folder"
+            "description": "Move the selected items into the other pane’s folder"
           },
           {"group": "navigation", "shortcut": "Cmd+U", "description": "Swap the two panes, left for right"},
           {
@@ -241,7 +241,7 @@
           {
             "group": "files",
             "shortcut": "Cmd+Z",
-            "description": "Undo the last file operation (in a text field, its typing)"
+            "description": "Undo the last change to files (in a text field, its typing)"
           },
           {"group": "files", "shortcut": "Cmd+Shift+Z", "description": "Redo what was undone"},
           {
@@ -290,11 +290,11 @@
           {"group": "files", "shortcut": "Cmd+Shift+Backspace", "description": "Empty the Trash (asks first)"},
           {"group": "files", "shortcut": "Cmd+A", "description": "Select everything in the list"},
           {"group": "files", "shortcut": "Cmd+Option+A", "description": "Select nothing in the list"},
-          {"group": "files", "shortcut": "Cmd+Option+C", "description": "Copy the selected items' paths as text"},
+          {"group": "files", "shortcut": "Cmd+Option+C", "description": "Copy the selected items’ paths as text"},
           {
             "group": "files",
             "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected file's image or text, to paste in another app"
+            "description": "Copy the selected file’s image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -345,7 +345,7 @@
           {
             "group": "views",
             "shortcut": "Cmd+Shift+I",
-            "description": "Show or hide a strip of the selected item's details under the list"
+            "description": "Show or hide a strip of the selected item’s details under the list"
           },
           {
             "group": "views",
@@ -383,15 +383,15 @@
           {
             "group": "views",
             "shortcut": "Cmd+J",
-            "description": "Choose what the folder's view keeps, and its folders inside"
+            "description": "Choose what the folder’s view keeps, and its folders inside"
           },
           {"group": "views", "shortcut": "Ctrl+Cmd+F", "description": "Enter or leave full screen"},
           {"group": "views", "shortcut": "Cmd+M", "description": "Minimize the window into the Dock"},
-          {"group": "views", "shortcut": "Cmd+H", "description": "Hide File Trail's windows until you come back to it"},
+          {"group": "views", "shortcut": "Cmd+H", "description": "Hide File Trail’s windows until you come back to it"},
           {"group": "views", "shortcut": "Cmd+Option+H", "description": "Hide other apps"},
           {"group": "views", "shortcut": "Cmd+Shift+P", "description": "Find any command by its name, and run it"},
-          {"group": "views", "shortcut": "Cmd+,", "description": "Change File Trail's settings and keyboard shortcuts"},
-          {"group": "views", "shortcut": "?", "description": "Open File Trail's Help"},
+          {"group": "views", "shortcut": "Cmd+,", "description": "Change File Trail’s settings and keyboard shortcuts"},
+          {"group": "views", "shortcut": "?", "description": "Open File Trail’s Help"},
           {"group": "views", "shortcut": "Cmd+Q", "description": "Close every window and quit File Trail"},
           {"group": "views", "shortcut": "Esc", "description": "Clear the search in Help"}
         ],
@@ -785,12 +785,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "F5",
-                  "description": "Copy the selected items into the other pane's folder"
+                  "description": "Copy the selected items into the other pane’s folder"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "F6",
-                  "description": "Move the selected items into the other pane's folder"
+                  "description": "Move the selected items into the other pane’s folder"
                 },
                 {"group": "navigation", "shortcut": "Cmd+R", "description": "Refresh the current folder"}
               ],
@@ -930,7 +930,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+J",
-                  "description": "Choose what the folder's view keeps, and its folders inside"
+                  "description": "Choose what the folder’s view keeps, and its folders inside"
                 }
               ],
               "topic": "views",
@@ -1076,7 +1076,7 @@
                 {
                   "group": "files",
                   "shortcut": "Cmd+Z",
-                  "description": "Undo the last file operation (in a text field, its typing)"
+                  "description": "Undo the last change to files (in a text field, its typing)"
                 },
                 {"group": "files", "shortcut": "Cmd+Shift+Z", "description": "Redo what was undone"}
               ],
@@ -1132,6 +1132,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
+                ["Opening", "Double-click a file"],
                 ["Opening", "Quick Look"],
                 ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
@@ -1140,7 +1141,7 @@
                 ["Copying and moving", "Move instead of copy"],
                 ["Copying and moving", "Move to a folder"],
                 ["Copying and moving", "Image or text as a file"],
-                ["Copying and moving", "A file's image or text"],
+                ["Copying and moving", "A file’s image or text"],
                 ["Changing", "Aliases and symbolic links"],
                 ["Changing", "Move to Trash"],
                 ["Undo and Redo", "Undo"],
@@ -1198,7 +1199,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Shift+I",
-                  "description": "Show or hide a strip of the selected item's details under the list"
+                  "description": "Show or hide a strip of the selected item’s details under the list"
                 }
               ],
               "topic": "views",
@@ -1445,7 +1446,7 @@
             "shortcut": "F5",
             "description": "Open the selected folder in a new window (Cmd+K also works)"
           },
-          {"group": "navigation", "shortcut": "Cmd+Up", "description": "Bring every window's tabs into this window"},
+          {"group": "navigation", "shortcut": "Cmd+Up", "description": "Bring every window’s tabs into this window"},
           {"group": "navigation", "shortcut": "Cmd+Option+1", "description": "Apply the first tab view to this tab"},
           {"group": "navigation", "shortcut": "Cmd+Option+2", "description": "Apply the second tab view to this tab"},
           {"group": "navigation", "shortcut": "Cmd+Option+3", "description": "Apply the third tab view to this tab"},
@@ -1479,7 +1480,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+\\",
-            "description": "Show a second pane beside this one, or close the pane you aren't in"
+            "description": "Show a second pane beside this one, or close the pane you aren’t in"
           },
           {
             "group": "navigation",
@@ -1494,7 +1495,7 @@
           {
             "group": "navigation",
             "shortcut": "F6",
-            "description": "Move the selected items into the other pane's folder"
+            "description": "Move the selected items into the other pane’s folder"
           },
           {"group": "navigation", "shortcut": "Cmd+U", "description": "Swap the two panes, left for right"},
           {
@@ -1577,7 +1578,7 @@
           {
             "group": "files",
             "shortcut": "Cmd+Z",
-            "description": "Undo the last file operation (in a text field, its typing)"
+            "description": "Undo the last change to files (in a text field, its typing)"
           },
           {"group": "files", "shortcut": "Cmd+Shift+Z", "description": "Redo what was undone"},
           {
@@ -1625,11 +1626,11 @@
           {"group": "files", "shortcut": "Cmd+Shift+Backspace", "description": "Empty the Trash (asks first)"},
           {"group": "files", "shortcut": "Cmd+A", "description": "Select everything in the list"},
           {"group": "files", "shortcut": "Cmd+Option+A", "description": "Select nothing in the list"},
-          {"group": "files", "shortcut": "Cmd+Option+C", "description": "Copy the selected items' paths as text"},
+          {"group": "files", "shortcut": "Cmd+Option+C", "description": "Copy the selected items’ paths as text"},
           {
             "group": "files",
             "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected file's image or text, to paste in another app"
+            "description": "Copy the selected file’s image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -1680,7 +1681,7 @@
           {
             "group": "views",
             "shortcut": "Cmd+Shift+I",
-            "description": "Show or hide a strip of the selected item's details under the list"
+            "description": "Show or hide a strip of the selected item’s details under the list"
           },
           {
             "group": "views",
@@ -1718,15 +1719,15 @@
           {
             "group": "views",
             "shortcut": "Cmd+J",
-            "description": "Choose what the folder's view keeps, and its folders inside"
+            "description": "Choose what the folder’s view keeps, and its folders inside"
           },
           {"group": "views", "shortcut": "Ctrl+Cmd+F", "description": "Enter or leave full screen"},
           {"group": "views", "shortcut": "Cmd+M", "description": "Minimize the window into the Dock"},
-          {"group": "views", "shortcut": "Cmd+H", "description": "Hide File Trail's windows until you come back to it"},
+          {"group": "views", "shortcut": "Cmd+H", "description": "Hide File Trail’s windows until you come back to it"},
           {"group": "views", "shortcut": "Cmd+Option+H", "description": "Hide other apps"},
           {"group": "views", "shortcut": "Cmd+Shift+P", "description": "Find any command by its name, and run it"},
-          {"group": "views", "shortcut": "Cmd+,", "description": "Change File Trail's settings and keyboard shortcuts"},
-          {"group": "views", "shortcut": "?", "description": "Open File Trail's Help"},
+          {"group": "views", "shortcut": "Cmd+,", "description": "Change File Trail’s settings and keyboard shortcuts"},
+          {"group": "views", "shortcut": "?", "description": "Open File Trail’s Help"},
           {"group": "views", "shortcut": "Cmd+Q", "description": "Close every window and quit File Trail"},
           {"group": "views", "shortcut": "Esc", "description": "Clear the search in Help"}
         ],
@@ -1914,7 +1915,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Up",
-                  "description": "Bring every window's tabs into this window"
+                  "description": "Bring every window’s tabs into this window"
                 },
                 {
                   "group": "navigation",
@@ -2123,7 +2124,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "F6",
-                  "description": "Move the selected items into the other pane's folder"
+                  "description": "Move the selected items into the other pane’s folder"
                 },
                 {"group": "navigation", "shortcut": "Cmd+R", "description": "Refresh the current folder"}
               ],
@@ -2268,7 +2269,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+J",
-                  "description": "Choose what the folder's view keeps, and its folders inside"
+                  "description": "Choose what the folder’s view keeps, and its folders inside"
                 }
               ],
               "topic": "views",
@@ -2414,7 +2415,7 @@
                 {
                   "group": "files",
                   "shortcut": "Cmd+Z",
-                  "description": "Undo the last file operation (in a text field, its typing)"
+                  "description": "Undo the last change to files (in a text field, its typing)"
                 },
                 {"group": "files", "shortcut": "Cmd+Shift+Z", "description": "Redo what was undone"}
               ],
@@ -2470,6 +2471,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
+                ["Opening", "Double-click a file"],
                 ["Opening", "Quick Look"],
                 ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
@@ -2478,7 +2480,7 @@
                 ["Copying and moving", "Move instead of copy"],
                 ["Copying and moving", "Move to a folder"],
                 ["Copying and moving", "Image or text as a file"],
-                ["Copying and moving", "A file's image or text"],
+                ["Copying and moving", "A file’s image or text"],
                 ["Changing", "Aliases and symbolic links"],
                 ["Changing", "Move to Trash"],
                 ["Undo and Redo", "Undo"],
@@ -2531,7 +2533,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Shift+I",
-                  "description": "Show or hide a strip of the selected item's details under the list"
+                  "description": "Show or hide a strip of the selected item’s details under the list"
                 }
               ],
               "topic": "views",
@@ -3122,12 +3124,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "F5",
-                  "description": "Copy the selected items into the other pane's folder"
+                  "description": "Copy the selected items into the other pane’s folder"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "F6",
-                  "description": "Move the selected items into the other pane's folder"
+                  "description": "Move the selected items into the other pane’s folder"
                 },
                 {"group": "navigation", "shortcut": "Cmd+R", "description": "Refresh the current folder"}
               ],
@@ -3267,7 +3269,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+J",
-                  "description": "Choose what the folder's view keeps, and its folders inside"
+                  "description": "Choose what the folder’s view keeps, and its folders inside"
                 }
               ],
               "topic": "views",
@@ -3407,7 +3409,7 @@
                 {
                   "group": "files",
                   "shortcut": "Cmd+Z",
-                  "description": "Undo the last file operation (in a text field, its typing)"
+                  "description": "Undo the last change to files (in a text field, its typing)"
                 },
                 {"group": "files", "shortcut": "Cmd+Shift+Z", "description": "Redo what was undone"}
               ],
@@ -3463,6 +3465,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
+                ["Opening", "Double-click a file"],
                 ["Opening", "Quick Look"],
                 ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
@@ -3471,7 +3474,7 @@
                 ["Copying and moving", "Move instead of copy"],
                 ["Copying and moving", "Move to a folder"],
                 ["Copying and moving", "Image or text as a file"],
-                ["Copying and moving", "A file's image or text"],
+                ["Copying and moving", "A file’s image or text"],
                 ["Changing", "Aliases and symbolic links"],
                 ["Changing", "Move to Trash"],
                 ["Undo and Redo", "Undo"],
@@ -3529,7 +3532,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Shift+I",
-                  "description": "Show or hide a strip of the selected item's details under the list"
+                  "description": "Show or hide a strip of the selected item’s details under the list"
                 }
               ],
               "topic": "views",
@@ -3740,7 +3743,7 @@
               "description": "Go back to the folder you were in before (Cmd+Left also works)"
             },
             {"group": "navigation", "shortcut": "Cmd+T", "description": "Open a new tab on the folder you are in"},
-            {"group": "files", "shortcut": "Cmd+Option+C", "description": "Copy the selected items' paths as text"},
+            {"group": "files", "shortcut": "Cmd+Option+C", "description": "Copy the selected items’ paths as text"},
             {
               "group": "views",
               "shortcut": "Cmd+Plus",
@@ -3761,7 +3764,7 @@
               {
                 "group": "files",
                 "shortcut": "Cmd+=",
-                "description": "Copy the selected items' paths as text (Cmd++ also works)"
+                "description": "Copy the selected items’ paths as text (Cmd++ also works)"
               }
             ],
             [
@@ -4076,7 +4079,7 @@
                 {
                   "group": "files",
                   "shortcut": "Cmd+=",
-                  "description": "Copy the selected items' paths as text (Cmd++ also works)"
+                  "description": "Copy the selected items’ paths as text (Cmd++ also works)"
                 }
               ],
               "topic": "files",
@@ -4162,12 +4165,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "F5",
-                  "description": "Copy the selected items into the other pane's folder"
+                  "description": "Copy the selected items into the other pane’s folder"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "F6",
-                  "description": "Move the selected items into the other pane's folder"
+                  "description": "Move the selected items into the other pane’s folder"
                 },
                 {"group": "navigation", "shortcut": "Cmd+R", "description": "Refresh the current folder"}
               ],
@@ -4307,7 +4310,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+J",
-                  "description": "Choose what the folder's view keeps, and its folders inside"
+                  "description": "Choose what the folder’s view keeps, and its folders inside"
                 }
               ],
               "topic": "views",
@@ -4453,7 +4456,7 @@
                 {
                   "group": "files",
                   "shortcut": "Cmd+Z",
-                  "description": "Undo the last file operation (in a text field, its typing)"
+                  "description": "Undo the last change to files (in a text field, its typing)"
                 },
                 {"group": "files", "shortcut": "Cmd+Shift+Z", "description": "Redo what was undone"}
               ],
@@ -4508,6 +4511,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
+                ["Opening", "Double-click a file"],
                 ["Opening", "Quick Look"],
                 ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
@@ -4516,7 +4520,7 @@
                 ["Copying and moving", "Move instead of copy"],
                 ["Copying and moving", "Move to a folder"],
                 ["Copying and moving", "Image or text as a file"],
-                ["Copying and moving", "A file's image or text"],
+                ["Copying and moving", "A file’s image or text"],
                 ["Changing", "Aliases and symbolic links"],
                 ["Changing", "Move to Trash"],
                 ["Undo and Redo", "Undo"],
@@ -4574,7 +4578,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Shift+I",
-                  "description": "Show or hide a strip of the selected item's details under the list"
+                  "description": "Show or hide a strip of the selected item’s details under the list"
                 }
               ],
               "topic": "views",
@@ -5178,12 +5182,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "F5",
-                  "description": "Copy the selected items into the other pane's folder"
+                  "description": "Copy the selected items into the other pane’s folder"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "F6",
-                  "description": "Move the selected items into the other pane's folder"
+                  "description": "Move the selected items into the other pane’s folder"
                 },
                 {"group": "navigation", "shortcut": "Cmd+R", "description": "Refresh the current folder"}
               ],
@@ -5323,7 +5327,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+J",
-                  "description": "Choose what the folder's view keeps, and its folders inside"
+                  "description": "Choose what the folder’s view keeps, and its folders inside"
                 }
               ],
               "topic": "views",
@@ -5463,7 +5467,7 @@
                 {
                   "group": "files",
                   "shortcut": "Cmd+Z",
-                  "description": "Undo the last file operation (in a text field, its typing)"
+                  "description": "Undo the last change to files (in a text field, its typing)"
                 },
                 {"group": "files", "shortcut": "Cmd+Shift+Z", "description": "Redo what was undone"}
               ],
@@ -5519,6 +5523,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
+                ["Opening", "Double-click a file"],
                 ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
@@ -5526,7 +5531,7 @@
                 ["Copying and moving", "Move instead of copy"],
                 ["Copying and moving", "Move to a folder"],
                 ["Copying and moving", "Image or text as a file"],
-                ["Copying and moving", "A file's image or text"],
+                ["Copying and moving", "A file’s image or text"],
                 ["Changing", "Aliases and symbolic links"],
                 ["Changing", "Move to Trash"],
                 ["Undo and Redo", "Undo"],
@@ -5584,7 +5589,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Shift+I",
-                  "description": "Show or hide a strip of the selected item's details under the list"
+                  "description": "Show or hide a strip of the selected item’s details under the list"
                 }
               ],
               "topic": "views",
@@ -5887,7 +5892,7 @@
               "shortcut": "F5",
               "description": "Open the selected folder in a new window (Cmd+K also works)"
             },
-            {"group": "navigation", "shortcut": "Cmd+Up", "description": "Bring every window's tabs into this window"},
+            {"group": "navigation", "shortcut": "Cmd+Up", "description": "Bring every window’s tabs into this window"},
             {
               "group": "navigation",
               "shortcut": "Cmd+W",
@@ -5959,7 +5964,7 @@
             },
             {"group": "files", "shortcut": "Cmd+Shift+Backspace", "description": "Empty the Trash (asks first)"},
             {"group": "files", "shortcut": "Cmd+Option+A", "description": "Select nothing in the list"},
-            {"group": "files", "shortcut": "Cmd+Option+C", "description": "Copy the selected items' paths as text"},
+            {"group": "files", "shortcut": "Cmd+Option+C", "description": "Copy the selected items’ paths as text"},
             {"group": "files", "shortcut": "Ctrl+Cmd+V", "description": "See what is waiting to be pasted"},
             {
               "group": "files",
@@ -5987,7 +5992,7 @@
             {
               "group": "views",
               "shortcut": "Cmd+Shift+I",
-              "description": "Show or hide a strip of the selected item's details under the list"
+              "description": "Show or hide a strip of the selected item’s details under the list"
             },
             {
               "group": "views",
@@ -6001,7 +6006,7 @@
               "shortcut": "F7",
               "description": "List the folders before the files, or among them (Cmd+; also works)"
             },
-            {"group": "views", "shortcut": "?", "description": "Open File Trail's Help"}
+            {"group": "views", "shortcut": "?", "description": "Open File Trail’s Help"}
           ],
           "$insert": [
             [
@@ -6013,7 +6018,7 @@
               {
                 "group": "navigation",
                 "shortcut": "F5",
-                "description": "Copy the selected items into the other pane's folder"
+                "description": "Copy the selected items into the other pane’s folder"
               }
             ],
             [
@@ -6293,12 +6298,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "F5",
-                  "description": "Copy the selected items into the other pane's folder"
+                  "description": "Copy the selected items into the other pane’s folder"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "F6",
-                  "description": "Move the selected items into the other pane's folder"
+                  "description": "Move the selected items into the other pane’s folder"
                 }
               ],
               "topic": "navigation",
@@ -6400,7 +6405,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+J",
-                  "description": "Choose what the folder's view keeps, and its folders inside"
+                  "description": "Choose what the folder’s view keeps, and its folders inside"
                 }
               ],
               "topic": "views",
@@ -6517,7 +6522,7 @@
                 {
                   "group": "files",
                   "shortcut": "Cmd+Z",
-                  "description": "Undo the last file operation (in a text field, its typing)"
+                  "description": "Undo the last change to files (in a text field, its typing)"
                 },
                 {"group": "files", "shortcut": "Cmd+Shift+Z", "description": "Redo what was undone"}
               ],
@@ -6574,7 +6579,7 @@
                 ["Copying and moving", "Gathering from several folders"],
                 ["Copying and moving", "Move instead of copy"],
                 ["Copying and moving", "Image or text as a file"],
-                ["Copying and moving", "A file's image or text"],
+                ["Copying and moving", "A file’s image or text"],
                 ["Changing", "Aliases and symbolic links"],
                 ["Changing", "Move to Trash"],
                 ["Undo and Redo", "Undo"],
@@ -7205,12 +7210,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "F5",
-                  "description": "Copy the selected items into the other pane's folder"
+                  "description": "Copy the selected items into the other pane’s folder"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "F6",
-                  "description": "Move the selected items into the other pane's folder"
+                  "description": "Move the selected items into the other pane’s folder"
                 },
                 {"group": "navigation", "shortcut": "Cmd+R", "description": "Refresh the current folder"}
               ],
@@ -7350,7 +7355,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+J",
-                  "description": "Choose what the folder's view keeps, and its folders inside"
+                  "description": "Choose what the folder’s view keeps, and its folders inside"
                 }
               ],
               "topic": "views",
@@ -7496,7 +7501,7 @@
                 {
                   "group": "files",
                   "shortcut": "Cmd+Z",
-                  "description": "Undo the last file operation (in a text field, its typing)"
+                  "description": "Undo the last change to files (in a text field, its typing)"
                 },
                 {"group": "files", "shortcut": "Cmd+Shift+Z", "description": "Redo what was undone"}
               ],
@@ -7553,6 +7558,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
+                ["Opening", "Double-click a file"],
                 ["Opening", "Quick Look"],
                 ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
@@ -7561,7 +7567,7 @@
                 ["Copying and moving", "Move instead of copy"],
                 ["Copying and moving", "Move to a folder"],
                 ["Copying and moving", "Image or text as a file"],
-                ["Copying and moving", "A file's image or text"],
+                ["Copying and moving", "A file’s image or text"],
                 ["Changing", "Aliases and symbolic links"],
                 ["Changing", "Move to Trash"],
                 ["Undo and Redo", "Undo"],
@@ -7614,7 +7620,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Shift+I",
-                  "description": "Show or hide a strip of the selected item's details under the list"
+                  "description": "Show or hide a strip of the selected item’s details under the list"
                 }
               ],
               "topic": "views",
@@ -8233,12 +8239,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "F5",
-                  "description": "Copy the selected items into the other pane's folder"
+                  "description": "Copy the selected items into the other pane’s folder"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "F6",
-                  "description": "Move the selected items into the other pane's folder"
+                  "description": "Move the selected items into the other pane’s folder"
                 },
                 {"group": "navigation", "shortcut": "Cmd+R", "description": "Refresh the current folder"}
               ],
@@ -8378,7 +8384,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+J",
-                  "description": "Choose what the folder's view keeps, and its folders inside"
+                  "description": "Choose what the folder’s view keeps, and its folders inside"
                 }
               ],
               "topic": "views",
@@ -8518,7 +8524,7 @@
                 {
                   "group": "files",
                   "shortcut": "Cmd+Z",
-                  "description": "Undo the last file operation (in a text field, its typing)"
+                  "description": "Undo the last change to files (in a text field, its typing)"
                 },
                 {"group": "files", "shortcut": "Cmd+Shift+Z", "description": "Redo what was undone"}
               ],
@@ -8574,6 +8580,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
+                ["Opening", "Double-click a file"],
                 ["Opening", "Quick Look"],
                 ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
@@ -8582,7 +8589,7 @@
                 ["Copying and moving", "Move instead of copy"],
                 ["Copying and moving", "Move to a folder"],
                 ["Copying and moving", "Image or text as a file"],
-                ["Copying and moving", "A file's image or text"],
+                ["Copying and moving", "A file’s image or text"],
                 ["Changing", "Aliases and symbolic links"],
                 ["Changing", "Move to Trash"],
                 ["Undo and Redo", "Undo"],
@@ -8640,7 +8647,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Shift+I",
-                  "description": "Show or hide a strip of the selected item's details under the list"
+                  "description": "Show or hide a strip of the selected item’s details under the list"
                 }
               ],
               "topic": "views",
@@ -8874,7 +8881,7 @@
             {
               "group": "views",
               "shortcut": "Cmd+Shift+I",
-              "description": "Show or hide a strip of the selected item's details under the list"
+              "description": "Show or hide a strip of the selected item’s details under the list"
             },
             {
               "group": "views",
@@ -8928,7 +8935,7 @@
               {
                 "group": "views",
                 "shortcut": "Ctrl+Cmd+S",
-                "description": "Show or hide a strip of the selected item's details under the list (Cmd+Shift+Backspace also works)"
+                "description": "Show or hide a strip of the selected item’s details under the list (Cmd+Shift+Backspace also works)"
               }
             ]
           ]
@@ -9312,12 +9319,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "F5",
-                  "description": "Copy the selected items into the other pane's folder"
+                  "description": "Copy the selected items into the other pane’s folder"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "F6",
-                  "description": "Move the selected items into the other pane's folder"
+                  "description": "Move the selected items into the other pane’s folder"
                 }
               ],
               "topic": "navigation",
@@ -9455,7 +9462,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+J",
-                  "description": "Choose what the folder's view keeps, and its folders inside"
+                  "description": "Choose what the folder’s view keeps, and its folders inside"
                 }
               ],
               "topic": "views",
@@ -9589,7 +9596,7 @@
                 {
                   "group": "files",
                   "shortcut": "Cmd+Z",
-                  "description": "Undo the last file operation (in a text field, its typing)"
+                  "description": "Undo the last change to files (in a text field, its typing)"
                 },
                 {"group": "files", "shortcut": "Cmd+Shift+Z", "description": "Redo what was undone"}
               ],
@@ -9646,6 +9653,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
+                ["Opening", "Double-click a file"],
                 ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
                 ["Opening", "Open in Terminal"],
@@ -9653,7 +9661,7 @@
                 ["Copying and moving", "Move instead of copy"],
                 ["Copying and moving", "Move to a folder"],
                 ["Copying and moving", "Image or text as a file"],
-                ["Copying and moving", "A file's image or text"],
+                ["Copying and moving", "A file’s image or text"],
                 ["Changing", "Aliases and symbolic links"],
                 ["Changing", "Move to Trash"],
                 ["Undo and Redo", "Undo"],
@@ -9706,7 +9714,7 @@
                 {
                   "group": "views",
                   "shortcut": "Ctrl+Cmd+S",
-                  "description": "Show or hide a strip of the selected item's details under the list (Cmd+Shift+Backspace also works)"
+                  "description": "Show or hide a strip of the selected item’s details under the list (Cmd+Shift+Backspace also works)"
                 }
               ],
               "topic": "views",
@@ -10307,12 +10315,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "F5",
-                  "description": "Copy the selected items into the other pane's folder"
+                  "description": "Copy the selected items into the other pane’s folder"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "F6",
-                  "description": "Move the selected items into the other pane's folder"
+                  "description": "Move the selected items into the other pane’s folder"
                 },
                 {"group": "navigation", "shortcut": "Cmd+R", "description": "Refresh the current folder"}
               ],
@@ -10452,7 +10460,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+J",
-                  "description": "Choose what the folder's view keeps, and its folders inside"
+                  "description": "Choose what the folder’s view keeps, and its folders inside"
                 }
               ],
               "topic": "views",
@@ -10592,7 +10600,7 @@
                 {
                   "group": "files",
                   "shortcut": "Cmd+Z",
-                  "description": "Undo the last file operation (in a text field, its typing)"
+                  "description": "Undo the last change to files (in a text field, its typing)"
                 },
                 {"group": "files", "shortcut": "Cmd+Shift+Z", "description": "Redo what was undone"}
               ],
@@ -10648,6 +10656,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
+                ["Opening", "Double-click a file"],
                 ["Opening", "Quick Look"],
                 ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
@@ -10656,7 +10665,7 @@
                 ["Copying and moving", "Move instead of copy"],
                 ["Copying and moving", "Move to a folder"],
                 ["Copying and moving", "Image or text as a file"],
-                ["Copying and moving", "A file's image or text"],
+                ["Copying and moving", "A file’s image or text"],
                 ["Changing", "Aliases and symbolic links"],
                 ["Changing", "Move to Trash"],
                 ["Undo and Redo", "Undo"],
@@ -10714,7 +10723,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Shift+I",
-                  "description": "Show or hide a strip of the selected item's details under the list"
+                  "description": "Show or hide a strip of the selected item’s details under the list"
                 }
               ],
               "topic": "views",
@@ -11370,12 +11379,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "F5",
-                  "description": "Copy the selected items into the other pane's folder"
+                  "description": "Copy the selected items into the other pane’s folder"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "F6",
-                  "description": "Move the selected items into the other pane's folder"
+                  "description": "Move the selected items into the other pane’s folder"
                 },
                 {"group": "navigation", "shortcut": "Cmd+R", "description": "Refresh the current folder"}
               ],
@@ -11514,7 +11523,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+J",
-                  "description": "Choose what the folder's view keeps, and its folders inside"
+                  "description": "Choose what the folder’s view keeps, and its folders inside"
                 }
               ],
               "topic": "views",
@@ -11648,7 +11657,7 @@
                 {
                   "group": "files",
                   "shortcut": "Cmd+Z",
-                  "description": "Undo the last file operation (in a text field, its typing)"
+                  "description": "Undo the last change to files (in a text field, its typing)"
                 },
                 {"group": "files", "shortcut": "Cmd+Shift+Z", "description": "Redo what was undone"}
               ],
@@ -11704,6 +11713,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
+                ["Opening", "Double-click a file"],
                 ["Opening", "Quick Look"],
                 ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
@@ -11712,7 +11722,7 @@
                 ["Copying and moving", "Move instead of copy"],
                 ["Copying and moving", "Move to a folder"],
                 ["Copying and moving", "Image or text as a file"],
-                ["Copying and moving", "A file's image or text"],
+                ["Copying and moving", "A file’s image or text"],
                 ["Changing", "Aliases and symbolic links"],
                 ["Changing", "Move to Trash"],
                 ["Undo and Redo", "Undo"],
@@ -11765,7 +11775,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Shift+I",
-                  "description": "Show or hide a strip of the selected item's details under the list"
+                  "description": "Show or hide a strip of the selected item’s details under the list"
                 }
               ],
               "topic": "views",
@@ -11983,7 +11993,7 @@
             {
               "group": "navigation",
               "shortcut": "F5",
-              "description": "Copy the selected items into the other pane's folder"
+              "description": "Copy the selected items into the other pane’s folder"
             },
             {
               "group": "files",
@@ -11993,7 +12003,7 @@
             {
               "group": "views",
               "shortcut": "Cmd+Shift+I",
-              "description": "Show or hide a strip of the selected item's details under the list"
+              "description": "Show or hide a strip of the selected item’s details under the list"
             },
             {
               "group": "views",
@@ -12043,7 +12053,7 @@
               {
                 "group": "views",
                 "shortcut": "Ctrl+Y",
-                "description": "Show or hide a strip of the selected item's details under the list"
+                "description": "Show or hide a strip of the selected item’s details under the list"
               }
             ],
             [
@@ -12055,7 +12065,7 @@
               }
             ],
             [
-              {"group": "views", "shortcut": "?", "description": "Open File Trail's Help"},
+              {"group": "views", "shortcut": "?", "description": "Open File Trail’s Help"},
               {"group": "views", "shortcut": "F5", "description": "List every keyboard shortcut, in Help"}
             ]
           ]
@@ -12427,7 +12437,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "F6",
-                  "description": "Move the selected items into the other pane's folder"
+                  "description": "Move the selected items into the other pane’s folder"
                 },
                 {"group": "navigation", "shortcut": "Cmd+R", "description": "Refresh the current folder"}
               ],
@@ -12567,7 +12577,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+J",
-                  "description": "Choose what the folder's view keeps, and its folders inside"
+                  "description": "Choose what the folder’s view keeps, and its folders inside"
                 }
               ],
               "topic": "views",
@@ -12713,7 +12723,7 @@
                 {
                   "group": "files",
                   "shortcut": "Cmd+Z",
-                  "description": "Undo the last file operation (in a text field, its typing)"
+                  "description": "Undo the last change to files (in a text field, its typing)"
                 },
                 {"group": "files", "shortcut": "Cmd+Shift+Z", "description": "Redo what was undone"}
               ],
@@ -12769,6 +12779,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
+                ["Opening", "Double-click a file"],
                 ["Opening", "Quick Look"],
                 ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
@@ -12777,7 +12788,7 @@
                 ["Copying and moving", "Move instead of copy"],
                 ["Copying and moving", "Move to a folder"],
                 ["Copying and moving", "Image or text as a file"],
-                ["Copying and moving", "A file's image or text"],
+                ["Copying and moving", "A file’s image or text"],
                 ["Changing", "Aliases and symbolic links"],
                 ["Changing", "Move to Trash"],
                 ["Undo and Redo", "Undo"],
@@ -12835,7 +12846,7 @@
                 {
                   "group": "views",
                   "shortcut": "Ctrl+Y",
-                  "description": "Show or hide a strip of the selected item's details under the list"
+                  "description": "Show or hide a strip of the selected item’s details under the list"
                 }
               ],
               "topic": "views",
@@ -13467,12 +13478,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "F5",
-                  "description": "Copy the selected items into the other pane's folder"
+                  "description": "Copy the selected items into the other pane’s folder"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "F6",
-                  "description": "Move the selected items into the other pane's folder"
+                  "description": "Move the selected items into the other pane’s folder"
                 },
                 {"group": "navigation", "shortcut": "Cmd+R", "description": "Refresh the current folder"}
               ],
@@ -13612,7 +13623,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+J",
-                  "description": "Choose what the folder's view keeps, and its folders inside"
+                  "description": "Choose what the folder’s view keeps, and its folders inside"
                 }
               ],
               "topic": "views",
@@ -13752,7 +13763,7 @@
                 {
                   "group": "files",
                   "shortcut": "Cmd+Z",
-                  "description": "Undo the last file operation (in a text field, its typing)"
+                  "description": "Undo the last change to files (in a text field, its typing)"
                 },
                 {"group": "files", "shortcut": "Cmd+Shift+Z", "description": "Redo what was undone"}
               ],
@@ -13808,6 +13819,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
+                ["Opening", "Double-click a file"],
                 ["Opening", "Quick Look"],
                 ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
@@ -13816,7 +13828,7 @@
                 ["Copying and moving", "Move instead of copy"],
                 ["Copying and moving", "Move to a folder"],
                 ["Copying and moving", "Image or text as a file"],
-                ["Copying and moving", "A file's image or text"],
+                ["Copying and moving", "A file’s image or text"],
                 ["Changing", "Aliases and symbolic links"],
                 ["Changing", "Move to Trash"],
                 ["Undo and Redo", "Undo"],
@@ -13874,7 +13886,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Shift+I",
-                  "description": "Show or hide a strip of the selected item's details under the list"
+                  "description": "Show or hide a strip of the selected item’s details under the list"
                 }
               ],
               "topic": "views",
@@ -14508,12 +14520,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "F5",
-                  "description": "Copy the selected items into the other pane's folder"
+                  "description": "Copy the selected items into the other pane’s folder"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "F6",
-                  "description": "Move the selected items into the other pane's folder"
+                  "description": "Move the selected items into the other pane’s folder"
                 },
                 {"group": "navigation", "shortcut": "Cmd+R", "description": "Refresh the current folder"}
               ],
@@ -14652,7 +14664,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+J",
-                  "description": "Choose what the folder's view keeps, and its folders inside"
+                  "description": "Choose what the folder’s view keeps, and its folders inside"
                 }
               ],
               "topic": "views",
@@ -14786,7 +14798,7 @@
                 {
                   "group": "files",
                   "shortcut": "Cmd+Z",
-                  "description": "Undo the last file operation (in a text field, its typing)"
+                  "description": "Undo the last change to files (in a text field, its typing)"
                 },
                 {"group": "files", "shortcut": "Cmd+Shift+Z", "description": "Redo what was undone"}
               ],
@@ -14842,6 +14854,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
+                ["Opening", "Double-click a file"],
                 ["Opening", "Quick Look"],
                 ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
@@ -14850,7 +14863,7 @@
                 ["Copying and moving", "Move instead of copy"],
                 ["Copying and moving", "Move to a folder"],
                 ["Copying and moving", "Image or text as a file"],
-                ["Copying and moving", "A file's image or text"],
+                ["Copying and moving", "A file’s image or text"],
                 ["Changing", "Aliases and symbolic links"],
                 ["Changing", "Move to Trash"],
                 ["Undo and Redo", "Undo"],
@@ -14908,7 +14921,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Shift+I",
-                  "description": "Show or hide a strip of the selected item's details under the list"
+                  "description": "Show or hide a strip of the selected item’s details under the list"
                 }
               ],
               "topic": "views",
@@ -15120,6 +15133,177 @@
               "description": "Open the selected files in the text editor chosen in Settings"
             }
           ]
+        },
+        "searches": {
+          "$remove": [
+            [
+              {
+                "shortcuts": [],
+                "topic": "navigation",
+                "rows": [
+                  ["Folders", "Go to Folder"],
+                  ["Folders", "Tree root"],
+                  ["Tabs", "New tab"],
+                  ["Tabs", "Open in New Tab"],
+                  ["Tabs", "Closing"],
+                  ["Two panes", "Two Panes"],
+                  ["Two panes", "Moving between panes"],
+                  ["Two panes", "Open in the other pane"],
+                  ["Windows", "New window"],
+                  ["Windows", "Tab views"],
+                  ["Windows", "Window views"],
+                  ["Windows", "Command palette"],
+                  ["Windows", "Closing"],
+                  ["Keyboard", "Type in the list"]
+                ]
+              },
+              {
+                "shortcuts": [],
+                "topic": "files",
+                "rows": [
+                  ["Opening", "Double-click a file"],
+                  ["Opening", "Quick Look"],
+                  ["Opening", "Open in Viewer"],
+                  ["Opening", "PDFs, pictures and documents in the viewer"],
+                  ["Opening", "Open in Terminal"],
+                  ["Copying and moving", "Gathering from several folders"],
+                  ["Copying and moving", "Move instead of copy"],
+                  ["Copying and moving", "Move to a folder"],
+                  ["Copying and moving", "Image or text as a file"],
+                  ["Copying and moving", "A file’s image or text"],
+                  ["Changing", "Aliases and symbolic links"],
+                  ["Changing", "Move to Trash"],
+                  ["Undo and Redo", "Undo"],
+                  ["Undo and Redo", "Redo"],
+                  ["Undo and Redo", "While typing"],
+                  ["Undo and Redo: if something has changed since", "An item is gone"],
+                  ["Undo and Redo: if something has changed since", "It couldn’t be done"],
+                  ["Undo and Redo: if something has changed since", "Stopping"]
+                ]
+              },
+              {
+                "shortcuts": [],
+                "topic": "search",
+                "rows": [["Options", "Hidden files"], ["Results", "Open"], ["Results", "After changes"]]
+              },
+              {
+                "shortcuts": [],
+                "topic": "views",
+                "rows": [
+                  ["The list", "Icons, List, Compact List and Previews"],
+                  ["The list", "Icon size and column width"],
+                  ["The list", "Previews"],
+                  ["The list", "Folder views"],
+                  ["The list", "Hidden files"],
+                  ["Appearance", "Full screen"]
+                ]
+              }
+            ]
+          ],
+          "$insert": [
+            [
+              [
+                {"shortcuts": [], "topic": "navigation", "rows": [["Windows", "Between windows"]]},
+                {
+                  "shortcuts": [
+                    {
+                      "group": "files",
+                      "shortcut": "Cmd+Z",
+                      "description": "Undo the last change to files (in a text field, its typing)"
+                    },
+                    {"group": "files", "shortcut": "Cmd+Shift+Z", "description": "Redo what was undone"}
+                  ],
+                  "topic": "files",
+                  "rows": [
+                    ["Copying and moving", "Gathering from several folders"],
+                    ["Copying and moving", "Image or text as a file"],
+                    ["Copying and moving", "Converting images"],
+                    ["Copying and moving", "From other apps"],
+                    ["Changing", "Tags"],
+                    ["Archives", "Compress"],
+                    ["Archives", "Extract"],
+                    ["Undo and Redo", "Undo"],
+                    ["Undo and Redo", "Redo"],
+                    ["Undo and Redo", "In the toolbar"],
+                    ["Undo and Redo", "What you can undo"],
+                    ["Undo and Redo", "Nothing is deleted"],
+                    ["Undo and Redo", "While typing"],
+                    ["Undo and Redo", "What can’t be undone"],
+                    ["Undo and Redo: if something has changed since", "It checks first"],
+                    ["Undo and Redo: if something has changed since", "You edited an item"],
+                    ["Undo and Redo: if something has changed since", "The name is taken"],
+                    ["Undo and Redo: if something has changed since", "An item is gone"],
+                    ["Undo and Redo: if something has changed since", "It couldn’t be done"],
+                    ["Undo and Redo: if something has changed since", "A disk was ejected"],
+                    ["Undo and Redo: if something has changed since", "Stopping"],
+                    ["Undo and Redo: if something has changed since", "When you quit"]
+                  ]
+                }
+              ],
+              [
+                {
+                  "shortcuts": [],
+                  "topic": "navigation",
+                  "rows": [
+                    ["Folders", "Go to Folder"],
+                    ["Folders", "Tree root"],
+                    ["Tabs", "New tab"],
+                    ["Tabs", "Open in New Tab"],
+                    ["Tabs", "Closing"],
+                    ["Two panes", "Two Panes"],
+                    ["Two panes", "Moving between panes"],
+                    ["Two panes", "Open in the other pane"],
+                    ["Windows", "New window"],
+                    ["Windows", "Tab views"],
+                    ["Windows", "Window views"],
+                    ["Windows", "Command palette"],
+                    ["Windows", "Closing"],
+                    ["Keyboard", "Type in the list"]
+                  ]
+                },
+                {
+                  "shortcuts": [],
+                  "topic": "files",
+                  "rows": [
+                    ["Opening", "Quick Look"],
+                    ["Opening", "Open in Viewer"],
+                    ["Opening", "PDFs, pictures and documents in the viewer"],
+                    ["Opening", "Open in Terminal"],
+                    ["Copying and moving", "Gathering from several folders"],
+                    ["Copying and moving", "Move instead of copy"],
+                    ["Copying and moving", "Move to a folder"],
+                    ["Copying and moving", "Image or text as a file"],
+                    ["Copying and moving", "A file’s image or text"],
+                    ["Changing", "Aliases and symbolic links"],
+                    ["Changing", "Move to Trash"],
+                    ["Undo and Redo", "Undo"],
+                    ["Undo and Redo", "Redo"],
+                    ["Undo and Redo", "While typing"],
+                    ["Undo and Redo: if something has changed since", "An item is gone"],
+                    ["Undo and Redo: if something has changed since", "It couldn’t be done"],
+                    ["Undo and Redo: if something has changed since", "Stopping"]
+                  ]
+                },
+                {
+                  "shortcuts": [],
+                  "topic": "search",
+                  "rows": [["Options", "Hidden files"], ["Results", "Open"], ["Results", "After changes"]]
+                },
+                {
+                  "shortcuts": [],
+                  "topic": "views",
+                  "rows": [
+                    ["The list", "Icons, List, Compact List and Previews"],
+                    ["The list", "Icon size and column width"],
+                    ["The list", "Previews"],
+                    ["The list", "Folder views"],
+                    ["The list", "Hidden files"],
+                    ["Appearance", "Full screen"]
+                  ]
+                }
+              ]
+            ]
+          ]
         }
       }
     },
@@ -15203,7 +15387,7 @@
             {
               "group": "navigation",
               "shortcut": "F5",
-              "description": "Copy the selected items into the other pane's folder"
+              "description": "Copy the selected items into the other pane’s folder"
             },
             {
               "group": "files",
@@ -15702,7 +15886,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "F6",
-                  "description": "Move the selected items into the other pane's folder"
+                  "description": "Move the selected items into the other pane’s folder"
                 },
                 {
                   "group": "navigation",
@@ -15842,7 +16026,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+J",
-                  "description": "Choose what the folder's view keeps, and its folders inside"
+                  "description": "Choose what the folder’s view keeps, and its folders inside"
                 }
               ],
               "topic": "views",
@@ -15987,7 +16171,7 @@
                 {
                   "group": "files",
                   "shortcut": "Cmd+Z",
-                  "description": "Undo the last file operation (in a text field, its typing)"
+                  "description": "Undo the last change to files (in a text field, its typing)"
                 },
                 {"group": "files", "shortcut": "Cmd+Shift+Z", "description": "Redo what was undone"}
               ],
@@ -16042,6 +16226,7 @@
               "shortcuts": [],
               "topic": "files",
               "rows": [
+                ["Opening", "Double-click a file"],
                 ["Opening", "Quick Look"],
                 ["Opening", "Open in Viewer"],
                 ["Opening", "PDFs, pictures and documents in the viewer"],
@@ -16050,7 +16235,7 @@
                 ["Copying and moving", "Move instead of copy"],
                 ["Copying and moving", "Move to a folder"],
                 ["Copying and moving", "Image or text as a file"],
-                ["Copying and moving", "A file's image or text"],
+                ["Copying and moving", "A file’s image or text"],
                 ["Changing", "Aliases and symbolic links"],
                 ["Changing", "Move to Trash"],
                 ["Undo and Redo", "Undo"],
@@ -16108,7 +16293,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Shift+I",
-                  "description": "Show or hide a strip of the selected item's details under the list"
+                  "description": "Show or hide a strip of the selected item’s details under the list"
                 }
               ],
               "topic": "views",

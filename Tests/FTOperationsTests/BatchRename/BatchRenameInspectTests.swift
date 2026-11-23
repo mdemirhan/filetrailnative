@@ -135,19 +135,19 @@ private func inspect(_ paths: [String], dateTaken: Bool = false, _ deps: BatchRe
 
         let lockedFolder = await inspect(["/trip/a.jpg"], deps(getFlags: { $0 == "/trip" ? 0x2 : 0 }))
         #expect(
-            lockedFolder.items.first?.cannotRename == "“trip” is locked. Unlock it in Finder's Get Info and try again.")
+            lockedFolder.items.first?.cannotRename == "“trip” is locked. Unlock it in Finder’s Get Info and try again.")
 
         let readOnly = await inspect(["/trip/a.jpg"], deps(canWriteFolder: { _ in false }))
         #expect(readOnly.items.first?.cannotRename == "You don’t have permission to rename items in “trip”.")
 
         let lockedItem = await inspect(["/trip/a.jpg"], deps(getFlags: { $0 == "/trip/a.jpg" ? 0x2 : 0 }))
         #expect(
-            lockedItem.items.first?.cannotRename == "“a.jpg” is locked. Unlock it in Finder's Get Info and try again.")
+            lockedItem.items.first?.cannotRename == "“a.jpg” is locked. Unlock it in Finder’s Get Info and try again.")
 
         let protectedFolder = await inspect(
             ["\(home)/Documents"],
-            deps(assertRenamable: { _ in throw WriteCoordinatorError("“Documents” can't be renamed.") }))
-        #expect(protectedFolder.items.first?.cannotRename == "“Documents” can't be renamed.")
+            deps(assertRenamable: { _ in throw WriteCoordinatorError("“Documents” can’t be renamed.") }))
+        #expect(protectedFolder.items.first?.cannotRename == "“Documents” can’t be renamed.")
     }
 
     @Test func leavesOutDatesTheDiskDoesntReallyHaveAndNamesItCantRead() async {
@@ -236,7 +236,7 @@ private func inspect(_ paths: [String], dateTaken: Bool = false, _ deps: BatchRe
                 BatchRenameInspectRequest(paths: [locked, readOnly + "/a.txt"], includeDateTaken: false), realDeps())
             #expect(
                 answer.items.map(\.cannotRename) == [
-                    "“locked.txt” is locked. Unlock it in Finder's Get Info and try again.",
+                    "“locked.txt” is locked. Unlock it in Finder’s Get Info and try again.",
                     "You don’t have permission to rename items in “read-only”.",
                 ])
         }

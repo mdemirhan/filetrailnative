@@ -220,7 +220,7 @@ public final class UndoHistory {
             let verb = direction == .undo ? "undone" : "redone"
             throw UndoHistoryError(
                 message:
-                    "The \(direction.command) list changed while one of its operations was being \(verb).")
+                    "The \(direction.command) list changed while something on it was being \(verb).")
         }
         var kept: Set<Int> = []
         var left: UndoEntry?

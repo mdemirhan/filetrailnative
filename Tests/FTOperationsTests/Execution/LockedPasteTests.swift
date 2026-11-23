@@ -26,7 +26,7 @@ struct LockedPasteTests {
             #expect(run.result?.items.first?.status == .failed)
             #expect(
                 run.result?.items.first?.error
-                    == "\u{201C}f.txt\u{201D} is locked. Unlock it in Finder's Get Info and try again.")
+                    == "\u{201C}f.txt\u{201D} is locked. Unlock it in Finder’s Get Info and try again.")
             #expect(Disk.list(src) == ["f.txt"])
             #expect(Disk.list(dst) == [])
         }
@@ -44,7 +44,7 @@ struct LockedPasteTests {
             #expect(run.result?.items.first?.status == .failed)
             #expect(
                 run.result?.items.first?.error
-                    == "\u{201C}Vault\u{201D} is locked. Unlock it in Finder's Get Info and try again.")
+                    == "\u{201C}Vault\u{201D} is locked. Unlock it in Finder’s Get Info and try again.")
             #expect(Disk.list(src + "/Vault") == ["a.txt"])
             #expect(made(disk) == [])
         }
@@ -65,7 +65,7 @@ struct LockedPasteTests {
             #expect(run.result?.items.first?.status == .failed)
             #expect(
                 run.result?.items.first?.error
-                    == "\u{201C}Docs\u{201D} wasn't moved, because you don't have permission to remove what is inside it."
+                    == "\u{201C}Docs\u{201D} wasn’t moved, because you don’t have permission to remove what is inside it."
             )
             #expect(made(disk) == [])
             #expect(Disk.list(docs) == ["a.txt", "b.txt"])
@@ -83,7 +83,7 @@ struct LockedPasteTests {
 
             #expect(
                 run.result?.items.first?.error
-                    == "\u{201C}a.txt\u{201D} wasn't moved, because you don't have permission to remove it from \u{201C}Docs\u{201D}."
+                    == "\u{201C}a.txt\u{201D} wasn’t moved, because you don’t have permission to remove it from \u{201C}Docs\u{201D}."
             )
             #expect(made(disk) == [])
         }

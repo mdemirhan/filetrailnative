@@ -4434,7 +4434,7 @@
         "caseSensitive": false,
         "allTaken": false
       },
-      "output": {"error": "Couldn't find a free name for “x copy 999999999999999999999.txt”."}
+      "output": {"error": "Couldn’t find a free name for “x copy 999999999999999999999.txt”."}
     },
     {
       "name": "huge number: \"x copy 1000000000000000000000.txt\" #365",
@@ -4446,7 +4446,7 @@
         "caseSensitive": false,
         "allTaken": false
       },
-      "output": {"error": "Couldn't find a free name for “x copy 1000000000000000000000.txt”."}
+      "output": {"error": "Couldn’t find a free name for “x copy 1000000000000000000000.txt”."}
     },
     {
       "name": "huge number: \"x copy 9999999999999999999999.txt\" #366",
@@ -4458,7 +4458,7 @@
         "caseSensitive": false,
         "allTaken": false
       },
-      "output": {"error": "Couldn't find a free name for “x copy 9999999999999999999999.txt”."}
+      "output": {"error": "Couldn’t find a free name for “x copy 9999999999999999999999.txt”."}
     },
     {
       "name": "huge number: \"x copy 10000000000000000000000.txt\" #367",
@@ -4470,7 +4470,7 @@
         "caseSensitive": false,
         "allTaken": false
       },
-      "output": {"error": "Couldn't find a free name for “x copy 10000000000000000000000.txt”."}
+      "output": {"error": "Couldn’t find a free name for “x copy 10000000000000000000000.txt”."}
     },
     {
       "name": "huge number: \"x copy 99999999999999999999999.txt\" #368",
@@ -4482,7 +4482,7 @@
         "caseSensitive": false,
         "allTaken": false
       },
-      "output": {"error": "Couldn't find a free name for “x copy 99999999999999999999999.txt”."}
+      "output": {"error": "Couldn’t find a free name for “x copy 99999999999999999999999.txt”."}
     },
     {
       "name": "huge number: \"x copy 100000000000000000000000.txt\" #369",
@@ -4494,7 +4494,7 @@
         "caseSensitive": false,
         "allTaken": false
       },
-      "output": {"error": "Couldn't find a free name for “x copy 100000000000000000000000.txt”."}
+      "output": {"error": "Couldn’t find a free name for “x copy 100000000000000000000000.txt”."}
     },
     {
       "name": "huge number: \"x copy 999999999999999999999999.txt\" #370",
@@ -4506,7 +4506,7 @@
         "caseSensitive": false,
         "allTaken": false
       },
-      "output": {"error": "Couldn't find a free name for “x copy 999999999999999999999999.txt”."}
+      "output": {"error": "Couldn’t find a free name for “x copy 999999999999999999999999.txt”."}
     },
     {
       "name": "huge number: \"x copy 1000000000000000000000000.txt\" #371",
@@ -4518,7 +4518,7 @@
         "caseSensitive": false,
         "allTaken": false
       },
-      "output": {"error": "Couldn't find a free name for “x copy 1000000000000000000000000.txt”."}
+      "output": {"error": "Couldn’t find a free name for “x copy 1000000000000000000000000.txt”."}
     },
     {
       "name": "huge number: \"x copy 9999999999999999999999999.txt\" #372",
@@ -4530,7 +4530,7 @@
         "caseSensitive": false,
         "allTaken": false
       },
-      "output": {"error": "Couldn't find a free name for “x copy 9999999999999999999999999.txt”."}
+      "output": {"error": "Couldn’t find a free name for “x copy 9999999999999999999999999.txt”."}
     },
     {
       "name": "huge number: \"x copy 9007199254740990.txt\" #373",
@@ -4614,7 +4614,7 @@
         "caseSensitive": false,
         "allTaken": false
       },
-      "output": {"error": "Couldn't find a free name for “x copy 100000000000000000000000.txt”."}
+      "output": {"error": "Couldn’t find a free name for “x copy 100000000000000000000000.txt”."}
     },
     {
       "name": "huge number, no extension: \"x copy 99999999999999999999\" #380",
@@ -4650,7 +4650,7 @@
         "caseSensitive": false,
         "allTaken": true
       },
-      "output": {"error": "Couldn't find a free name for “report.txt”."}
+      "output": {"error": "Couldn’t find a free name for “report.txt”."}
     },
     {
       "name": "all taken: \"x copy 5\" #383",
@@ -4662,7 +4662,7 @@
         "caseSensitive": false,
         "allTaken": true
       },
-      "output": {"error": "Couldn't find a free name for “x copy 5”."}
+      "output": {"error": "Couldn’t find a free name for “x copy 5”."}
     },
     {
       "name": "all taken: \"Tool.app\" #384",
@@ -4674,7 +4674,7 @@
         "caseSensitive": false,
         "allTaken": true
       },
-      "output": {"error": "Couldn't find a free name for “Tool.app”."}
+      "output": {"error": "Couldn’t find a free name for “Tool.app”."}
     },
     {
       "name": "all taken: \"archive\" #385",
@@ -4686,7 +4686,7 @@
         "caseSensitive": false,
         "allTaken": true
       },
-      "output": {"error": "Couldn't find a free name for “archive”."}
+      "output": {"error": "Couldn’t find a free name for “archive”."}
     },
     {
       "name": "reserved: \"a.txt\" #386",

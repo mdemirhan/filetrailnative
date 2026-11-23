@@ -94,7 +94,7 @@ extension ExplorerWindowlessTests {
             #expect(tab.dragDrop.beginDrag([try entry(window, "note.txt")], event: event, from: tab.content.view))
             #expect(
                 tab.notifications?.toasts.entries.map(\.title) == [
-                    "Can't drag while \u{201C}Photos\u{201D} is being copied"
+                    "Can\u{2019}t drag while \u{201C}Photos\u{201D} is being copied"
                 ])
             #expect(TabDragDrop.ownDrag == nil)
             #expect(
@@ -102,7 +102,7 @@ extension ExplorerWindowlessTests {
                     [url(window, "note.txt").path], entry: try entry(window, "Alpha"), allowed: .move))
             #expect(
                 tab.notifications?.toasts.entries.last?.title
-                    == "Can't drop while \u{201C}Photos\u{201D} is being copied")
+                    == "Can\u{2019}t drop while \u{201C}Photos\u{201D} is being copied")
             session.applyCard(nil)
             await window.close()
         }

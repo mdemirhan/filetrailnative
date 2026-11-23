@@ -471,7 +471,7 @@ public enum CopyPasteReview {
         let described = describeChoice(node, choice, mode, now, dates)
         // Say why Replace isn't offered here, not only inside the disabled menu item.
         if choice != nil, let reason = node.replaceBlockedReason {
-            return ("\(described.text) \u{B7} Can't replace: \(reason)", described.tone)
+            return ("\(described.text) \u{B7} Can\u{2019}t replace: \(reason)", described.tone)
         }
         return described
     }

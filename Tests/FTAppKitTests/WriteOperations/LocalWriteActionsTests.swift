@@ -464,7 +464,7 @@ private final class Fixture {
 
         #expect(
             await fixture.actions.trash([fixture.path("Documents")])
-                == .error(message: "“Documents” can't be moved to the Trash."))
+                == .error(message: "“Documents” can’t be moved to the Trash."))
         #expect(fixture.shown.map(\.title) == ["Couldn’t Move to Trash"])
         #expect(fixture.session.card == nil)
         await fixture.close()
@@ -550,7 +550,7 @@ private final class Fixture {
         fixture.answers = [true]
         #expect(
             await fixture.actions.deleteImmediately([fixture.path("kept.txt")])
-                == .error(message: "“kept.txt” isn't in the Trash, so it can't be deleted immediately."))
+                == .error(message: "“kept.txt” isn’t in the Trash, so it can’t be deleted immediately."))
         #expect(fixture.shown.map(\.title) == ["Couldn’t Delete"])
         #expect(fixture.exists("kept.txt"))
         await fixture.close()

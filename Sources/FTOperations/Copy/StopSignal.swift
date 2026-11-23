@@ -63,6 +63,6 @@ public struct StopError: CodedError, Equatable, Sendable, CustomStringConvertibl
 
     public var code: ErrorCode? { nil }
     public var name: String { "AbortError" }
-    public var message: String { "This operation was aborted" }
+    public var message: String { "Stopped." }
     public var description: String { message }
 }

@@ -172,7 +172,7 @@ extension MainWindowController {
         activePaneIndex = 0
         window?.minSize = minimumWindowSize
         // The active pane is the one it was: nothing that follows it is told of a change, so the sidebar's row (a
-        // favorite it was opened from) and Show Info's item stay as they are.
+        // favorite it was opened from) and Get Info's item stay as they are.
         updateTitle()
         panesChanged()
         // The list that had the keyboard keeps it; the pane that went gives it to the one that stays.
@@ -333,7 +333,7 @@ extension MainWindowController {
     // MARK: The active pane
 
     /// A change of `pane`'s own: its folder, history, view, search or selection. The other pane's is told apart, so
-    /// that what follows the active pane keeps what it shows: Show Info's item stays, the active item isn't read again,
+    /// that what follows the active pane keeps what it shows: Get Info's item stays, the active item isn't read again,
     /// and the toolbar keeps the active pane's Back and Forward, view and search.
     func paneChanged(_ change: ExplorerWindowChange, in pane: BrowserPane) {
         // A pane closed with Two Panes may still finish a read it started: it is no longer the tab's, and what it

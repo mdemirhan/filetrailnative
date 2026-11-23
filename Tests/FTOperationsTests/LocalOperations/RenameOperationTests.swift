@@ -215,7 +215,7 @@ import Testing
             sourcePath: "/Users/demo/source.txt", destinationName: "renamed.txt", window: window)
         let end = await window.ended("write-op-1")
 
-        #expect(end.result?.error == "You don't have permission to access this item.")
+        #expect(end.result?.error == "You don’t have permission to access this item.")
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
@@ -230,7 +230,7 @@ import Testing
                 sourcePath: root.appending("notes.txt").path, destinationName: "renamed.txt", window: window)
             let end = await window.ended("write-op-1")
 
-            #expect(end.result?.error == "“notes.txt” is locked. Unlock it in Finder's Get Info and try again.")
+            #expect(end.result?.error == "“notes.txt” is locked. Unlock it in Finder’s Get Info and try again.")
             #expect(try names(root.path) == ["notes.txt"])
             await coordinator.shutDown(maxWaitMs: 0)
         }
@@ -249,7 +249,7 @@ import Testing
             let end = await window.ended("write-op-1")
 
             #expect(
-                end.result?.items.first?.error == "“keep.txt” is locked. Unlock it in Finder's Get Info and try again.")
+                end.result?.items.first?.error == "“keep.txt” is locked. Unlock it in Finder’s Get Info and try again.")
             #expect(try read(trash + "/Folder/keep.txt") == "keep")
             await coordinator.shutDown(maxWaitMs: 0)
         }

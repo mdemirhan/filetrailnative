@@ -58,7 +58,7 @@ extension WriteCoordinator {
                     throw WriteCoordinatorError(WriteGuards.trashFolderRefusal)
                 case .outside:
                     throw WriteCoordinatorError(
-                        "\u{201C}\(NodePath.basename(resolved))\u{201D} isn't in the Trash, so it can't be deleted immediately."
+                        "\u{201C}\(NodePath.basename(resolved))\u{201D} isn\u{2019}t in the Trash, so it can\u{2019}t be deleted immediately."
                     )
                 case .inside:
                     break
@@ -103,7 +103,7 @@ extension WriteCoordinator {
         }
         if !same {
             throw WriteCoordinatorError(
-                "\u{201C}\(NodePath.basename(path))\u{201D} changed after you were asked about it, so it wasn't deleted."
+                "\u{201C}\(NodePath.basename(path))\u{201D} changed after you were asked about it, so it wasn\u{2019}t deleted."
             )
         }
         return false

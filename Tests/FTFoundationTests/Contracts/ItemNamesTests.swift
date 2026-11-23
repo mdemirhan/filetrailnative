@@ -15,8 +15,8 @@ struct ItemNamesTests {
 
     @Test func rejectsEmptyAndDotSegmentNames() {
         #expect(ItemNames.error(for: "   ") == "Enter a name.")
-        #expect(ItemNames.error(for: ".") == "\".\" is not a valid name.")
-        #expect(ItemNames.error(for: " .. ") == "\"..\" is not a valid name.")
+        #expect(ItemNames.error(for: ".") == "\u{201C}.\u{201D} can\u{2019}t be used as a name.")
+        #expect(ItemNames.error(for: " .. ") == "\u{201C}..\u{201D} can\u{2019}t be used as a name.")
     }
 
     @Test func rejectsNamesContainingPathSeparatorsOrNul() {

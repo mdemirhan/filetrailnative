@@ -214,7 +214,7 @@ public enum UndoPlan {
             return .unreadable(
                 Refusal(
                     reason:
-                        "\u{201C}\(NodePath.basename(path))\u{201D} couldn't be checked: \(describeCopyPasteError(error))",
+                        "“\(NodePath.basename(path))” couldn’t be checked: \(describeCopyPasteError(error))",
                     missing: false, retry: true))
         }
     }
@@ -245,12 +245,12 @@ public enum UndoPlan {
     {
         let name = NodePath.basename(original ?? path)
         if let disk = volumeName(path), (try? fileSystem.lstat("/Volumes/\(disk)")) == nil {
-            return "\u{201C}\(name)\u{201D} is on \u{201C}\(disk)\u{201D}, which isn't connected."
+            return "“\(name)” is on “\(disk)”, which isn’t connected."
         }
         if original != nil {
-            return "\u{201C}\(name)\u{201D} isn't in the Trash any more."
+            return "“\(name)” isn’t in the Trash any more."
         }
-        return "\u{201C}\(name)\u{201D} is no longer in \u{201C}\(NodePath.basename(NodePath.dirname(path)))\u{201D}."
+        return "“\(name)” is no longer in “\(NodePath.basename(NodePath.dirname(path)))”."
     }
 
     /// The name of the disk under /Volumes that `path` is inside (not the disk's own path); nil for any other path.
@@ -271,13 +271,13 @@ public enum UndoPlan {
     {
         let name = NodePath.basename(original ?? path)
         if reconnected(expected, itemIdOf(stats)) {
-            return "\u{201C}\(name)\u{201D} is on a disk that was disconnected since, so it is left as it is."
+            return "“\(name)” is on a disk that was disconnected since, so it is left as it is."
         }
         if original != nil {
-            return "The \u{201C}\(name)\u{201D} in the Trash is another item now."
+            return "The “\(name)” in the Trash is another item now."
         }
         return
-            "The \u{201C}\(name)\u{201D} in \u{201C}\(NodePath.basename(NodePath.dirname(path)))\u{201D} is another item now."
+            "The “\(name)” in “\(NodePath.basename(NodePath.dirname(path)))” is another item now."
     }
 
     /// The same file id on another device number: the disk was ejected and connected again.
@@ -316,7 +316,7 @@ public enum UndoPlan {
             guard let now, !(now.kind == .directory && now.entryCount == nil && stamp.entryCount != nil) else {
                 return .refused(
                     Refusal(
-                        reason: "\u{201C}\(NodePath.basename(step.from))\u{201D} couldn't be checked.", missing: false,
+                        reason: "“\(NodePath.basename(step.from))” couldn’t be checked.", missing: false,
                         retry: true))
             }
             if !sameStamp(stamp, now) {
@@ -335,7 +335,7 @@ public enum UndoPlan {
         guard let folder, folder.isDirectory else {
             return .refused(
                 Refusal(
-                    reason: "Its folder \u{201C}\(NodePath.basename(folderPath))\u{201D} no longer exists.",
+                    reason: "Its folder “\(NodePath.basename(folderPath))” no longer exists.",
                     missing: false))
         }
         let folderId = itemIdOf(folder)
@@ -344,8 +344,8 @@ public enum UndoPlan {
             return .refused(
                 Refusal(
                     reason: reconnected(parentId, folderId)
-                        ? "Its folder \u{201C}\(name)\u{201D} is on a disk that was disconnected since, so it is left as it is."
-                        : "Its folder \u{201C}\(name)\u{201D} was replaced by another folder.",
+                        ? "Its folder “\(name)” is on a disk that was disconnected since, so it is left as it is."
+                        : "Its folder “\(name)” was replaced by another folder.",
                     missing: false))
         }
         let kind = kindOfStats(item)

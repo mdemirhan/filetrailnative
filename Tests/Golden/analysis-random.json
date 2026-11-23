@@ -124,6 +124,7 @@
               "code": "duplicate_destination_name",
               "destinationPath": "$ROOT/destination/photo.jpg",
               "message": "$ROOT/source/two-dup/photo.jpg and $ROOT/source/one/photo.jpg would both be pasted as photo.jpg.",
+              "otherSourcePath": "$ROOT/source/one/photo.jpg",
               "sourcePath": "$ROOT/source/two-dup/photo.jpg"
             }
           ],
@@ -479,6 +480,7 @@
               "code": "duplicate_destination_name",
               "destinationPath": "$ROOT/destination/sub",
               "message": "$ROOT/source/two-dup/sub and $ROOT/source/one/sub would both be pasted as sub.",
+              "otherSourcePath": "$ROOT/source/one/sub",
               "sourcePath": "$ROOT/source/two-dup/sub"
             }
           ],

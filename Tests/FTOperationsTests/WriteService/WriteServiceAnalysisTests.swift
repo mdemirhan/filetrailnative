@@ -101,7 +101,7 @@ struct WriteServiceAnalysisTests {
             try await service.analyze(request(["/source/file.txt"], into: "/target"), signal: StopSignal())
         }
 
-        #expect(failure.map(errorMessage) == "Couldn't find a free name for \u{201C}file.txt\u{201D}.")
+        #expect(failure.map(errorMessage) == "Couldn’t find a free name for \u{201C}file.txt\u{201D}.")
     }
 
     // Each review's report has an id of its own, which its paste's events carry.
