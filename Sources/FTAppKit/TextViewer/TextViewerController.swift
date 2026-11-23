@@ -540,6 +540,8 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     /// its name (`MarkdownLink.headingLine`).
     func show(_ path: String?, focus: Bool = false, editing: Bool? = nil, heading: String? = nil) {
         let editing = editing ?? opensForEditing
+        textView.stopGliding()
+        previewView.stopGliding()
         loadNumber += 1
         pendingHeading = heading
         headingShown = nil
@@ -799,6 +801,8 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
             onEditingChosen(editing)
         }
         guard isText, editing != isEditing else { return }
+        textView.stopGliding()
+        previewView.stopGliding()
         isEditing = editing
         textView.isEditable = editing
         if language.hasPreview {
@@ -1048,6 +1052,8 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     func arrowKeyUp(_ event: NSEvent) {
         pdfView.arrowKeyUp(event)
         imageView.arrowKeyUp(event)
+        textView.arrowKeyUp(event)
+        previewView.arrowKeyUp(event)
     }
 
     private enum PageStep { case forward, back, tab, escape, space }

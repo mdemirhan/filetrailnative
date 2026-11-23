@@ -37,6 +37,7 @@ final class ViewerPDFView: PDFView {
         self.document = document
         guard let place, let document else {
             fitWidth()
+            toTop()
             return
         }
         switch place.1 {
@@ -253,8 +254,22 @@ final class ViewerPDFView: PDFView {
         case nil, .fit: break
         case .scale(let scale):
             setScale(scale)
+            toTop()
             onChange()
         }
+    }
+
+    /// The top of the first page, at its left edge. PDFKit keeps another place as the scale it opens at is set: the
+    /// first page's top was cut off by about a sixth of its height.
+    private func toTop() {
+        layoutDocumentView()
+        guard let scrollView = documentView?.enclosingScrollView, let pages = scrollView.documentView else { return }
+        let clip = scrollView.contentView
+        var bounds = clip.bounds
+        bounds.origin = NSPoint(
+            x: pages.bounds.minX, y: pages.isFlipped ? pages.bounds.minY : pages.bounds.maxY - bounds.height)
+        clip.scroll(to: clip.constrainBoundsRect(bounds).origin)
+        scrollView.reflectScrolledClipView(clip)
     }
 }
 

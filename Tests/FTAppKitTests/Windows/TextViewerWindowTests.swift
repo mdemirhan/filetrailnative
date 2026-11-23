@@ -465,8 +465,10 @@ extension ExplorerWindowlessTests {
             #expect(abs(top() - start - half) < 1)
             try press("\u{15}", "u", 32, [.control])
             #expect(abs(top() - start) < 1)
+            // ↓ glides it, on the display's frames, which a window off screen doesn't have (tried in the app).
             try press(down, down, 125)
-            #expect(top() > start)
+            #expect(viewer.previewView.isGliding)
+            viewer.previewView.stopGliding()
             try press(" ", " ", 49)
             #expect(top() - start > half)
             // From the command palette, the same.
@@ -961,6 +963,95 @@ extension ExplorerWindowlessTests {
             let saved = tab.snapshot
             #expect(saved.secondPane?.pane.viewer?.mode == .following)
             #expect(saved.viewer == nil)
+        }
+
+        // A PDF opens at the top of its first page, opened from the list, stepped to from text, from a PDF scrolled
+        // down, and at a zoom kept from the one before: PDFKit kept a place a sixth of a page down as it set the scale.
+        @Test func aPDFOpensAtTheTopOfItsFirstPage() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            try writePDF(pages: 3, to: harness.folder.appending("p1.pdf"))
+            try writePDF(pages: 3, to: harness.folder.appending("p2.pdf"))
+            let tab = try await tabWithFiles(harness)
+            let pane = tab.activePane
+            let (p1, p2) = (real(harness, "p1.pdf"), real(harness, "p2.pdf"))
+            #expect(await waitUntil { pane.content.listedEntry(at: p2) != nil })
+            func fromTop(_ viewer: TextViewerController) -> CGFloat? {
+                guard let scroll = viewer.pdfView.documentView?.enclosingScrollView, let pages = scroll.documentView
+                else { return nil }
+                let clip = scroll.contentView.bounds
+                return pages.isFlipped ? clip.minY - pages.bounds.minY : pages.bounds.maxY - clip.maxY
+            }
+            func atTop(_ viewer: TextViewerController) -> Bool { fromTop(viewer).map { abs($0) < 0.5 } ?? false }
+
+            select(p1, in: tab)
+            tab.perform(.viewFile)
+            let viewer = try #require(pane.viewer)
+            #expect(await waitUntil { viewer.pdfView.document != nil })
+            #expect(atTop(viewer), "\(String(describing: fromTop(viewer)))")
+            viewer.pdfView.scroll(pages: 1.5)
+            #expect(!atTop(viewer))
+            tab.stepFile(by: 1)
+            #expect(await waitUntil { viewer.path == p2 && viewer.pdfView.document != nil })
+            #expect(atTop(viewer), "\(String(describing: fromTop(viewer)))")
+            // At a zoom kept from the one before.
+            tab.perform(.increaseSize)
+            viewer.pdfView.scroll(pages: 1)
+            tab.stepFile(by: -1)
+            #expect(await waitUntil { viewer.path == p1 && viewer.pdfView.document != nil })
+            #expect(!viewer.pdfView.fitsWidth)
+            #expect(atTop(viewer), "\(String(describing: fromTop(viewer)))")
+            // From text.
+            tab.stepFile(by: -1)
+            #expect(await waitUntil { viewer.isText })
+            tab.stepFile(by: 1)
+            #expect(await waitUntil { viewer.path == p1 && viewer.pdfView.document != nil })
+            #expect(atTop(viewer), "\(String(describing: fromTop(viewer)))")
+        }
+
+        // ↓ and ↑ in Read glide the text, as a PDF's do, where each moved it a line a key repeat, slowly; another file
+        // stops a glide, and in Edit they move the caret. The glide itself runs on the display's frames, which a window
+        // off screen doesn't have: it is tried in the app.
+        @Test func theArrowsGlideTheTextInRead() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let lines = (0..<400).map { "let line\($0) = \($0)" }.joined(separator: "\n")
+            try lines.write(to: harness.folder.appending("long.swift"), atomically: true, encoding: .utf8)
+            let tab = try await tabWithFiles(harness)
+            let pane = tab.activePane
+            let long = real(harness, "long.swift")
+            #expect(await waitUntil { pane.content.listedEntry(at: long) != nil })
+            select(long, in: tab)
+            tab.perform(.viewFile)
+            let viewer = try #require(pane.viewer)
+            #expect(await waitUntil { viewer.isText })
+            tab.focusPane(pane)
+            #expect(viewer.textHasKeyboard)
+            let window = try #require(tab.window)
+            func arrow(down: Bool) throws {
+                let scalar = try #require(UnicodeScalar(down ? NSDownArrowFunctionKey : NSUpArrowFunctionKey))
+                let event = try #require(
+                    NSEvent.keyEvent(
+                        with: .keyDown, location: .zero, modifierFlags: [.function, .numericPad], timestamp: 0,
+                        windowNumber: window.windowNumber, context: nil, characters: String(scalar),
+                        charactersIgnoringModifiers: String(scalar), isARepeat: false, keyCode: down ? 125 : 126))
+                window.sendEvent(event)
+            }
+            let caret = viewer.textView.selectedRange()
+            try arrow(down: true)
+            #expect(viewer.textView.isGliding)
+            #expect(viewer.textView.selectedRange() == caret)
+            tab.stepFile(by: 1)
+            #expect(await waitUntil { viewer.path != long && !viewer.textView.isGliding })
+            tab.stepFile(by: -1)
+            #expect(await waitUntil { viewer.path == long && viewer.isText })
+
+            viewer.setEditing(true)
+            #expect(viewer.textHasKeyboard)
+            viewer.textView.setSelectedRange(NSRange(location: 0, length: 0))
+            try arrow(down: true)
+            #expect(!viewer.textView.isGliding)
+            #expect(viewer.textView.selectedRange().location > 0)
         }
 
         /// A PDF of `pages` US Letter pages, each with its number.

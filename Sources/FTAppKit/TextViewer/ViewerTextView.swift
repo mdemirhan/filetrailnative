@@ -49,8 +49,9 @@ final class ViewerTextView: NSTextView {
         let flags = event.modifierFlags.intersection([.command, .option, .control, .shift])
         let key = event.charactersIgnoringModifiers.flatMap(\.unicodeScalars.first).map { Int($0.value) } ?? 0
         switch (key, flags) {
-        case (NSUpArrowFunctionKey, []): scroll(lines: -1)
-        case (NSDownArrowFunctionKey, []): scroll(lines: 1)
+        case (NSUpArrowFunctionKey, []), (NSDownArrowFunctionKey, []):
+            // A press glides a short way and a key held goes faster, as a PDF's arrows do; one line a repeat was slow.
+            if !keyScroller.keyDown(event, horizontal: false) { scroll(lines: key == NSUpArrowFunctionKey ? -1 : 1) }
         case (NSLeftArrowFunctionKey, []): scroll(columns: -4)
         case (NSRightArrowFunctionKey, []): scroll(columns: 4)
         case (0x20, []): scroll(pages: 1)
@@ -83,6 +84,22 @@ final class ViewerTextView: NSTextView {
     }
 
     func scroll(lines: CGFloat) { scrollBy(dx: 0, dy: lines * lineHeight) }
+
+    private lazy var keyScroller = ViewerKeyScroller { [weak self] in self?.enclosingScrollView }
+
+    /// Whether an arrow held down, or let go a moment ago, still moves the text.
+    var isGliding: Bool { keyScroller.isMoving }
+
+    /// An arrow let go: a glide eases to a stop.
+    func arrowKeyUp(_ event: NSEvent) { keyScroller.keyUp(event) }
+
+    /// A glide stops at once: another file is shown, or the text is edited.
+    func stopGliding() { keyScroller.stop() }
+
+    override func viewWillMove(toWindow newWindow: NSWindow?) {
+        if newWindow == nil { keyScroller.stop() }
+        super.viewWillMove(toWindow: newWindow)
+    }
 
     func scroll(pages: CGFloat) {
         scrollBy(dx: 0, dy: distance(pages: pages))
