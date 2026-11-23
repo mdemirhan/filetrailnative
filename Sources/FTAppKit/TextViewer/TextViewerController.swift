@@ -128,6 +128,8 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     /// PDFs or photos keeps it. A viewer opened anew starts without.
     private var keptZoom: [ZoomKind: KeptZoom] = [:]
     private enum ZoomKind { case pdf, picture, document }
+    /// Quick Look's document is at its page's width, as it opens, and stays so as the pane is resized.
+    private var documentFitsWidth = true
 
     /// `opensForEditing`: its pane's Read or Edit.
     init(mode: Mode, settings: TextViewerSettings, opensForEditing: Bool) {
@@ -320,11 +322,14 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         {
             window.makeFirstResponder(keyboardView)
         }
-        // A document opens at the zoom the one before it was given.
+        // A document opens at its page's width, as a PDF does, or at the zoom the one before it was given.
         switch keptZoom[.document] {
-        case nil: break
-        case .fit: if let fit = quickLook.fitZoom { _ = quickLook.setZoom(fit) }
-        case .scale(let scale): _ = quickLook.setZoom(scale)
+        case nil, .fit:
+            documentFitsWidth = true
+            if let fit = quickLook.fitZoom { _ = quickLook.setZoom(fit) }
+        case .scale(let scale):
+            documentFitsWidth = false
+            _ = quickLook.setZoom(scale)
         }
         refreshChrome()
     }
@@ -361,7 +366,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
             add(.zoomIn, pdfView.canZoomInNow)
             add(.zoomOut, pdfView.canZoomOutNow)
             add(.actualSize, !pdfView.isActualSize)
-            add(.fit, !pdfView.fitsPage)
+            add(.fit, !pdfView.fitsWidth)
         case .image where imageView.image != nil:
             add(.zoomIn, imageView.canZoomIn)
             add(.zoomOut, imageView.canZoomOut)
@@ -395,7 +400,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
             case .zoomIn: pdfView.zoomInStep()
             case .zoomOut: pdfView.zoomOutStep()
             case .actualSize: pdfView.actualSize()
-            case .fit: pdfView.fitPage()
+            case .fit: pdfView.fitWidth()
             }
         case .image:
             switch zoom {
@@ -423,6 +428,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
                 case .actualSize: 1
                 case .fit: fit
                 }
+            documentFitsWidth = zoom == .fit
             _ = quickLook.setZoom(wanted)
         }
         zoomChanged()
@@ -443,8 +449,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
             }
         case .quickLook:
             guard let zoom = quickLook.zoom, let fit = quickLook.fitZoom else { break }
-            keptZoom[.document] =
-                abs(zoom - 1) < 0.001 ? nil : abs(zoom - fit) < 0.001 ? .fit : .scale(zoom)
+            keptZoom[.document] = documentFitsWidth || abs(zoom - fit) < 0.001 ? nil : .scale(zoom)
         default:
             break
         }
@@ -998,7 +1003,8 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         case .forward where flags.isEmpty, .back where flags.isEmpty:
             let forward = Self.pageStep(event) == .forward
             switch shownBody {
-            case .pdf: return pdfView.stepPage(forward: forward)
+            case .pdf: return pdfView.stepPage(forward: forward) || pdfView.arrowKeyDown(event)
+            case .image: return imageView.arrowKeyDown(event)
             case .media:
                 mediaView.seek(by: (forward ? 1 : -1) * ViewerMediaView.seekStep)
                 return true
@@ -1011,8 +1017,19 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         case .escape where flags.isEmpty:
             return cancel()
         default:
-            return false
+            // ↑ and ↓ glide a PDF or a picture, as a web view's do.
+            switch shownBody {
+            case .pdf: return pdfView.arrowKeyDown(event)
+            case .image: return imageView.arrowKeyDown(event)
+            default: return false
+            }
         }
+    }
+
+    /// A key let go: an arrow held down in a PDF or a picture eases to a stop.
+    func arrowKeyUp(_ event: NSEvent) {
+        pdfView.arrowKeyUp(event)
+        imageView.arrowKeyUp(event)
     }
 
     private enum PageStep { case forward, back, tab, escape, space }
@@ -1449,6 +1466,13 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
             child.frame = body.bounds
         }
         scrollView.tile()
+        // A document at its page's width stays so, as a PDF's pages do.
+        if shownBody == .quickLook, documentFitsWidth, !quickLook.isHidden, let fit = quickLook.fitZoom,
+            let zoom = quickLook.zoom, abs(zoom - fit) > 0.001
+        {
+            _ = quickLook.setZoom(fit)
+            refreshChrome()
+        }
         // What is on screen once the text has its size: a first layout may have shown none of it.
         coloring.colorVisible()
     }

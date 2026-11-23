@@ -378,7 +378,7 @@
           {
             "group": "views",
             "shortcut": "Cmd+9",
-            "description": "Fit a whole page of the PDF a pane shows in the pane"
+            "description": "Make the page a pane shows as wide as the pane, or fit its picture"
           },
           {
             "group": "views",
@@ -1704,7 +1704,7 @@
           {
             "group": "views",
             "shortcut": "Cmd+9",
-            "description": "Fit a whole page of the PDF a pane shows in the pane"
+            "description": "Make the page a pane shows as wide as the pane, or fit its picture"
           },
           {
             "group": "views",
@@ -7826,7 +7826,7 @@
               {
                 "group": "views",
                 "shortcut": "Cmd+9",
-                "description": "Fit a whole page of the PDF a pane shows in the pane"
+                "description": "Make the page a pane shows as wide as the pane, or fit its picture"
               },
               {"group": "views", "shortcut": "Cmd+;", "description": "Order the list by size"}
             ]
@@ -10961,7 +10961,7 @@
               {
                 "group": "views",
                 "shortcut": "Cmd+9",
-                "description": "Fit a whole page of the PDF a pane shows in the pane"
+                "description": "Make the page a pane shows as wide as the pane, or fit its picture"
               },
               {
                 "group": "views",
@@ -14111,7 +14111,7 @@
               {
                 "group": "views",
                 "shortcut": "Cmd+9",
-                "description": "Fit a whole page of the PDF a pane shows in the pane"
+                "description": "Make the page a pane shows as wide as the pane, or fit its picture"
               },
               {
                 "group": "views",

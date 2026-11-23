@@ -1,7 +1,8 @@
 import FTFoundation
 
 /// What the View menu's size commands do to a PDF or Quick Look's preview the viewer shows: Make Bigger is Zoom In,
-/// Make Smaller Zoom Out and Default Size Actual Size, with their keys, and Zoom to Fit fits a whole page.
+/// Make Smaller Zoom Out and Default Size Actual Size, with their keys, and Zoom to Fit makes a page as wide as the
+/// pane, as it opens.
 enum ViewerZoom: CaseIterable, Hashable, Sendable {
     case zoomIn, zoomOut, actualSize, fit
 

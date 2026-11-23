@@ -230,7 +230,7 @@ extension HelpContent {
                         HelpRow(
                             label: "PDFs, pictures and documents in the viewer",
                             description:
-                                "A PDF, a picture, a Word document, a presentation or a spreadsheet takes the keyboard as it opens: the arrows, Space, {pageDown} and {halfPageDown} move it, ← and → go to the next or previous page or slide, and {goToPage} goes to one by its number. {increaseSize} and {decreaseSize} zoom in and out (a presentation's slides stay at the pane's size), {resetSize} shows it at its actual size, and {zoomToFit} fits a whole page or picture in the pane, or a document's page to its width; the next file of its kind opens at the same zoom. In text they make the text bigger and smaller. {focusFileSearch} finds text in a PDF, and Copy copies what is selected in it. A movie or a sound plays in the pane: Space plays and pauses, and ← and → go five seconds back and forward."
+                                "A PDF, a picture, a Word document, a presentation or a spreadsheet takes the keyboard as it opens: the arrows, Space, {pageDown} and {halfPageDown} move it, ← and → go to the next or previous page or slide, and {goToPage} goes to one by its number. {increaseSize} and {decreaseSize} zoom in and out (a presentation's slides stay at the pane's size), {resetSize} shows it at its actual size, and {zoomToFit} makes a page as wide as the pane again, as a PDF or a Word document opens, or fits a picture in it; the next file of its kind opens at the same zoom. In text they make the text bigger and smaller. {focusFileSearch} finds text in a PDF, and Copy copies what is selected in it. A movie or a sound plays in the pane: Space plays and pauses, and ← and → go five seconds back and forward."
                         ),
                         HelpRow(
                             label: "Open in Terminal",
@@ -949,7 +949,8 @@ extension HelpContent {
         HelpShortcutItem(
             group: .views, .command(.resetSize),
             "Icons, columns or previews at their default size, a file at actual size"),
-        HelpShortcutItem(group: .views, .command(.zoomToFit), "Fit a whole page of the PDF a pane shows in the pane"),
+        HelpShortcutItem(
+            group: .views, .command(.zoomToFit), "Make the page a pane shows as wide as the pane, or fit its picture"),
         HelpShortcutItem(group: .views, .command(.groupByNone), "Show the list without groups"),
         HelpShortcutItem(group: .views, .command(.groupByName), "Group the list by the first letter of each name"),
         HelpShortcutItem(

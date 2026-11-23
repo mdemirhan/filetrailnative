@@ -527,6 +527,11 @@ extension MainWindowController {
         return panes.contains { $0.viewer?.pagesKey(event) == true }
     }
 
+    /// A key let go reaches every viewer: one gliding with an arrow held down eases to a stop. It goes on as it would.
+    func viewerKeyUp(_ event: NSEvent) {
+        for pane in panes { pane.viewer?.arrowKeyUp(event) }
+    }
+
     /// A press in the viewer whose view is `root`: its pane becomes the active one, and the viewer takes the keyboard
     /// unless something in it (its text, its find bar) has it already.
     func viewerPressed(_ root: NSView) {

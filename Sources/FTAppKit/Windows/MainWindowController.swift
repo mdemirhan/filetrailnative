@@ -122,6 +122,7 @@ final class ExplorerTabWindow: NSWindow {
         if WindowEventRouting.intercept(event, in: self) { return }
         if WindowOverlayView.existing(in: self)?.forward(event) == true { return }
         if event.type == .keyDown, explorerTab?.viewerPagesKey(event) == true { return }
+        if event.type == .keyUp { explorerTab?.viewerKeyUp(event) }
         // A press anywhere in a file a pane shows (Quick Look's preview, its bar, its buttons) makes that pane the
         // active one, as a click in its list does: most of the viewer takes no keyboard of its own.
         if event.type == .leftMouseDown || event.type == .rightMouseDown,

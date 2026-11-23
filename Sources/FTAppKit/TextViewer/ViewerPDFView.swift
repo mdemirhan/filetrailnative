@@ -2,17 +2,19 @@ import AppKit
 import PDFKit
 
 /// A PDF shown by the viewer itself, as Preview shows one: its pages one under another, at the pane's width when it
-/// opens. It zooms, fits a whole page in the pane, and goes a page at a time with ← and → while the page is no wider than
-/// the pane.
+/// opens and again with Zoom to Fit, kept so as the pane is resized. It zooms, and goes a page at a time with ← and →
+/// while the page is no wider than the pane.
 final class ViewerPDFView: PDFView {
     /// The scale changed, or the page shown: the menus and the pane's bottom bar say so.
     var onChange: () -> Void = {}
-    /// How the pages are sized: to the pane's width, a whole page in the pane, or a scale chosen.
+    /// How the pages are sized: to the pane's width, or a scale chosen.
     private(set) var fit = Fit.width
     /// The scale this view set last: one it didn't set came from a pinch.
     private var scaleSet: CGFloat?
+    /// ↑ and ↓ glide, as a web view's do; PDFKit's own move a line for each key repeat.
+    private lazy var keyScroller = ViewerKeyScroller { [weak self] in self?.documentView?.enclosingScrollView }
 
-    enum Fit { case width, page, none }
+    enum Fit { case width, none }
 
     override init(frame: NSRect) {
         super.init(frame: frame)
@@ -30,6 +32,7 @@ final class ViewerPDFView: PDFView {
 
     /// Shows `document` at the pane's width, or where the one before was (`keepingPlace`: the same file read again).
     func show(_ document: PDFDocument?, keepingPlace: Bool) {
+        keyScroller.stop()
         let place = keepingPlace ? (page: currentPage.flatMap { self.document?.index(for: $0) }, fit, scaleFactor) : nil
         self.document = document
         guard let place, let document else {
@@ -38,7 +41,6 @@ final class ViewerPDFView: PDFView {
         }
         switch place.1 {
         case .width: fitWidth()
-        case .page: fitPage()
         case .none: setScale(place.2)
         }
         if let index = place.page, index < document.pageCount, let page = document.page(at: index) { go(to: page) }
@@ -50,7 +52,7 @@ final class ViewerPDFView: PDFView {
     var canZoomInNow: Bool { document != nil && canZoomIn }
     var canZoomOutNow: Bool { document != nil && canZoomOut }
     var isActualSize: Bool { abs(scaleFactor - 1) < 0.005 }
-    var fitsPage: Bool { fit == .page && abs(scaleFactor - pageFitScale) < 0.005 }
+    var fitsWidth: Bool { fit == .width && autoScales }
 
     func zoomInStep() {
         let page = currentPage
@@ -70,20 +72,13 @@ final class ViewerPDFView: PDFView {
         fixedAfterZoom(on: page)
     }
 
-    /// A whole page in the pane, the one most of the pane shows.
-    func fitPage() {
+    /// The pages as wide as the pane, as a PDF opens, on the page the pane shows most of.
+    func fitWidth() {
         let page = currentPage
-        autoScales = false
-        fit = .page
-        set(pageFitScale)
-        if let page { go(to: page) }
-        onChange()
-    }
-
-    private func fitWidth() {
         fit = .width
         scaleSet = nil
         autoScales = true
+        if let page, currentPage != page { go(to: page) }
         onChange()
     }
 
@@ -105,24 +100,6 @@ final class ViewerPDFView: PDFView {
         scaleSet = scaleFactor
         if let page, currentPage != page { go(to: page) }
         onChange()
-    }
-
-    /// The scale at which the page shown fits the pane whole, its margins in.
-    private var pageFitScale: CGFloat {
-        guard let page = currentPage ?? document?.page(at: 0) else { return 1 }
-        var size = page.bounds(for: displayBox).size
-        if page.rotation % 180 != 0 { size = NSSize(width: size.height, height: size.width) }
-        let margins = pageBreakMargins
-        let room = NSSize(
-            width: bounds.width - margins.left - margins.right, height: bounds.height - margins.top - margins.bottom)
-        guard size.width > 0, size.height > 0, room.width > 0, room.height > 0 else { return 1 }
-        return min(room.width / size.width, room.height / size.height)
-    }
-
-    override func layout() {
-        super.layout()
-        // A page kept whole in the pane stays whole as the pane is resized.
-        if fit == .page, abs(scaleFactor - pageFitScale) > 0.005 { set(pageFitScale) }
     }
 
     @objc private func scaleChanged() {
@@ -151,6 +128,18 @@ final class ViewerPDFView: PDFView {
         bounds.origin.y += (document.isFlipped ? 1 : -1) * bounds.height * pages
         clip.scroll(to: clip.constrainBoundsRect(bounds).origin)
         scrollView.reflectScrolledClipView(clip)
+    }
+
+    /// A plain arrow key, before PDFKit sees it: true when it glides the pages.
+    func arrowKeyDown(_ event: NSEvent) -> Bool {
+        document != nil && keyScroller.keyDown(event)
+    }
+
+    func arrowKeyUp(_ event: NSEvent) { keyScroller.keyUp(event) }
+
+    override func viewWillMove(toWindow newWindow: NSWindow?) {
+        if newWindow == nil { keyScroller.stop() }
+        super.viewWillMove(toWindow: newWindow)
     }
 
     /// The page after or before the one shown, while the page is no wider than the pane: wider, ← and → move it sideways
@@ -255,15 +244,13 @@ final class ViewerPDFView: PDFView {
     var keptZoom: KeptZoom? {
         switch fit {
         case .width: nil
-        case .page: .fit
         case .none: .scale(scaleFactor)
         }
     }
 
     func apply(_ kept: KeptZoom?) {
         switch kept {
-        case nil: break
-        case .fit: fitPage()
+        case nil, .fit: break
         case .scale(let scale):
             setScale(scale)
             onChange()

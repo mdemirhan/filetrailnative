@@ -899,7 +899,7 @@ extension ExplorerWindowlessTests {
         }
 
         /// A PDF is drawn by the viewer itself: it takes the keyboard as it opens at the pane's width, the size commands
-        /// zoom it and Zoom to Fit shows a whole page, ← and → step its pages, the half-page keys move it, and Tab goes
+        /// zoom it and Zoom to Fit takes it back to the pane's width, ← and → step its pages, the half-page keys move it, and Tab goes
         /// on to the next pane. Nothing else the viewer shows zooms.
         @Test func aPDFTakesTheKeyboardZoomsAndStepsItsPages() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -921,20 +921,21 @@ extension ExplorerWindowlessTests {
             window.layoutIfNeeded()
             #expect(pdf.fit == .width)
             #expect(tab.menuState.fileShown)
-            #expect(tab.canPerform(.increaseSize) && tab.canPerform(.decreaseSize) && tab.canPerform(.zoomToFit))
+            #expect(tab.canPerform(.increaseSize) && tab.canPerform(.decreaseSize))
+            #expect(pdf.fitsWidth && !tab.canPerform(.zoomToFit))
 
             let opened = pdf.scaleFactor
             tab.perform(.increaseSize)
             #expect(pdf.scaleFactor > opened)
+            #expect(tab.canPerform(.zoomToFit))
             tab.perform(.resetSize)
             #expect(pdf.isActualSize)
             #expect(!tab.canPerform(.resetSize))
             tab.perform(.zoomToFit)
-            #expect(pdf.fitsPage)
+            #expect(pdf.fitsWidth)
             #expect(!tab.canPerform(.zoomToFit))
-            let pageRoom = pdf.bounds.height
-            let pageHeight = try #require(pdf.document?.page(at: 0)).bounds(for: .mediaBox).height * pdf.scaleFactor
-            #expect(pageHeight <= pageRoom)
+            window.layoutIfNeeded()
+            #expect(abs(pdf.scaleFactor - opened) < 0.005)
 
             func send(_ characters: String, _ ignoring: String, _ keyCode: UInt16, _ flags: NSEvent.ModifierFlags = [])
                 throws
@@ -1044,7 +1045,7 @@ extension ExplorerWindowlessTests {
             tab.perform(.zoomToFit)
             tab.stepFile(by: -1)
             #expect(await waitUntil { viewer.pdfView.document?.pageCount == 4 })
-            #expect(viewer.pdfView.fitsPage)
+            #expect(viewer.pdfView.fitsWidth)
         }
 
         /// A PNG of `width` by `height` pixels.

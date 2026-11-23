@@ -2,11 +2,12 @@ import AppKit
 
 /// A picture the viewer shows, in the middle of the pane: shrunk to fit as it opens and never enlarged, then zoomed in
 /// and out, at its actual size (its pixels as points, as a browser shows it) or fitted to the pane, enlarged if small.
-/// The arrows move a picture larger than the pane.
+/// The arrows glide a picture larger than the pane.
 final class ViewerImageView: NSScrollView {
     /// The scale changed: the menus and the pane's bottom bar say so.
     var onChange: () -> Void = {}
     private let picture = ViewerPictureView()
+    private lazy var keyScroller = ViewerKeyScroller { [weak self] in self }
     /// How the picture is sized: to fit as it opens (never enlarged), to fit (enlarged too), or a scale chosen.
     private(set) var fit = Fit.opening
     /// The picture's size in pixels, drawn as so many points at 100%.
@@ -57,6 +58,7 @@ final class ViewerImageView: NSScrollView {
 
     /// Shows `image` as it opens, or at `kept`, the zoom the picture before it had.
     func show(_ image: NSImage?, kept: Fit, scale: CGFloat) {
+        keyScroller.stop()
         self.image = image
         fit = kept
         if kept == .none {
@@ -154,24 +156,25 @@ final class ViewerImageView: NSScrollView {
         return true
     }
 
-    /// The arrows move a picture larger than the pane by a tenth of it, Space and Shift-Space by a page; Space is the
-    /// picture's even with nothing to move, never Quick Look's.
+    /// A plain arrow key: true when it glides the picture, as a web view's arrows do.
+    func arrowKeyDown(_ event: NSEvent) -> Bool { image != nil && keyScroller.keyDown(event) }
+
+    func arrowKeyUp(_ event: NSEvent) { keyScroller.keyUp(event) }
+
+    override func viewWillMove(toWindow newWindow: NSWindow?) {
+        if newWindow == nil { keyScroller.stop() }
+        super.viewWillMove(toWindow: newWindow)
+    }
+
+    /// The arrows glide a picture larger than the pane, Space and Shift-Space move it a page; Space is the picture's
+    /// even with nothing to move, never Quick Look's.
     private func key(_ event: NSEvent) -> Bool {
         let flags = event.modifierFlags.intersection([.command, .option, .control, .shift])
         if event.charactersIgnoringModifiers == " ", flags.isEmpty || flags == .shift {
             _ = scroll(pages: flags.isEmpty ? 1 : -1)
             return true
         }
-        guard flags.isEmpty else { return false }
-        let step = NSPoint(x: contentView.bounds.width / 10, y: contentView.bounds.height / 10)
-        switch event.charactersIgnoringModifiers?.unicodeScalars.first.map({ Int($0.value) }) {
-        case NSUpArrowFunctionKey: scroll(by: NSPoint(x: 0, y: -step.y))
-        case NSDownArrowFunctionKey: scroll(by: NSPoint(x: 0, y: step.y))
-        case NSLeftArrowFunctionKey: scroll(by: NSPoint(x: -step.x, y: 0))
-        case NSRightArrowFunctionKey: scroll(by: NSPoint(x: step.x, y: 0))
-        default: return false
-        }
-        return true
+        return arrowKeyDown(event)
     }
 }
 
