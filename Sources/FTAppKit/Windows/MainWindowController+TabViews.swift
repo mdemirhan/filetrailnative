@@ -246,8 +246,8 @@ extension MainWindowController {
     }
 
     /// `keeps` applied: the second pane opened or closed as ⌘\ does, the divider, hidden files, then each pane given
-    /// settings takes them, goes to its folder where the tab view keeps one, and holds the override the tab view
-    /// leaves.
+    /// settings takes them and goes to its folder where the tab view keeps one, and its viewer opens where it keeps
+    /// one.
     func apply(_ keeps: TabViewKeeps) {
         let applied = TabViews.applying(keeps, to: tabViewState, columnWidth: workspace.paneColumnWidth)
         if case .closed(let index)? = applied.secondPane, panes.indices.contains(index),
@@ -285,25 +285,15 @@ extension MainWindowController {
             // The viewer opens over the pane's list, which takes the rest as any pane does.
             if let viewer = applied.viewers[index] { viewers.append((index, viewer)) }
             let before = pane.shownOrder
-            pane.tabViewOverride = nil
-            pane.arrivingTabViewOverride = nil
             pane.takeTabViewSettings(paneKeeps.view, sizes: paneKeeps.sizes)
             if let results = paneKeeps.searchResults { pane.takeSearchResultsView(results) }
-            let override = paneKeeps.choice == .folderFirst ? nil : paneKeeps
             if let folder = paneKeeps.folder, DiskPath(folder) != DiskPath(pane.folderPath) || pane.folderLetGo {
-                // The override waits for the folder to arrive, and holds there by the path its listing gives.
-                pane.arrivingTabViewOverride = override.map {
-                    TabViewOverride(folder: folder, choice: $0.choice, keeps: $0)
-                }
                 // The view and columns now carried show as the folder arrives: arriving in a folder with no view of
                 // its own shows nothing new by itself.
                 pane.refreshColumns()
                 pane.content.setMode(pane.shownViewMode)
                 pane.go(to: folder, cause: .command)
             } else {
-                pane.tabViewOverride = override.map {
-                    TabViewOverride(folder: pane.folderPath, choice: $0.choice, keeps: $0)
-                }
                 pane.showTabViewSettings(orderBefore: before)
             }
         }

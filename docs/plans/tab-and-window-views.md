@@ -4,6 +4,8 @@ The plan for saved views of a tab and of a window, beside the folder's view File
 
 ## Status (2026-11-21)
 
+Since: the Folder Views choice of each pane and the override it left were removed on 2026-11-23 ("A tab view leaves folder views alone" in [decisions/windows-and-panes.md](../decisions/windows-and-panes.md)). What this plan says of them, and of their tests, is the record of what was built then.
+
 Built: the model and its rules (phase 1), tab views in the app with the override and the new-tab view (phase 2), window views with workspaces removed (phase 3), the Views window and the Layout menu (phase 4), Help, the palette, the goldens and the decisions (phase 5, but for what is left below). The decisions are in [decisions/windows-and-panes.md](../decisions/windows-and-panes.md) ("Saved views") and [decisions/views.md](../decisions/views.md).
 
 Where the build differs from this plan, each for the reason beside it:

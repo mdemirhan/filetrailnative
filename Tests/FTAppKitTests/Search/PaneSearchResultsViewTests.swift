@@ -151,29 +151,26 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
-        @Test func aSizeSetOverResultsLeavesATabViewsHoldOnTheFoldersSize() async throws {
+        // A size set over results is the results' own: the folder's size a tab view gave the pane stays.
+        @Test func aSizeSetOverResultsLeavesTheFoldersSize() async throws {
             let opened = try await open()
             let tab = opened.tab
-            let sizes = FolderViewSizes(
-                iconSizes: DensitySizes(standard: 96, finder: 96), compactListWidths: .compactListDefaults,
-                previewCounts: .previewCountDefaults)
             tab.updatePreferences {
                 $0.tabViews = [
                     TabView(
                         id: "tv", name: "Sizes",
                         keeps: TabViewKeeps(
-                            pane: PaneKeeps(view: FolderViewKeeps(size: sizes), folderViews: .tabViewFirst)))
+                            pane: PaneKeeps(sizes: ViewSizesKeeps(iconSizes: DensitySizes(standard: 96, finder: 96)))))
                 ]
             }
             tab.applyTabView(id: "tv")
             let pane = tab.activePane
-            #expect(pane.tabViewOverride?.kept.contains(.size) == true)
+            #expect(await waitUntil { pane.shownPreferences(tab.preferences).iconSizes.standard == 96 })
             try search("no", opened)
             #expect(pane.showsSearchResults)
             pane.content.onIconSizeChanged?(.standard, 48)
             pane.content.onCompactListWidthChanged?(.standard, 400)
             pane.content.onPreviewCountChanged?(.standard, 9)
-            #expect(pane.tabViewOverride?.kept.contains(.size) == true)
             let own = pane.shownPreferences(tab.preferences)
             #expect(own.searchIconSizes.standard == 48 && own.iconSizes.standard == 96)
             #expect(own.searchCompactListWidths.standard == 400 && own.searchPreviewCounts.standard == 9)

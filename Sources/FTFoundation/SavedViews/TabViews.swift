@@ -1,16 +1,5 @@
 import Foundation
 
-/// How a tab view treats a folder that has a view (its own, or one from a folder above), in a pane it gives settings
-/// to. It holds only while the pane stays in the folder it was on once the tab view was applied.
-public enum FolderViewsChoice: String, Codable, CaseIterable, Sendable {
-    /// The folder's view comes first, as in any pane.
-    case folderFirst
-    /// What the tab view keeps comes first; the folder's view gives the rest.
-    case tabViewFirst
-    /// The folder's view isn't used: the pane shows what it carries.
-    case notUsed
-}
-
 /// A pane showing a file in the viewer beside the other pane's list, as Open in Other Pane shows one.
 public struct PaneViewer: Codable, Equatable, Sendable {
     /// Follow, as the viewer's bar has it: the file the other pane selects, as the selection moves; off, the file
@@ -112,8 +101,6 @@ public struct PaneKeeps: Codable, Equatable, Sendable {
     public var view: FolderViewKeeps
     /// Each view's size, each kept apart.
     public var sizes: ViewSizesKeeps?
-    /// How folders with a view are treated; nil is `.folderFirst`, which the file doesn't write.
-    public var folderViews: FolderViewsChoice?
     /// The pane opens the viewer, over its own list; nil (not written) otherwise.
     public var opensViewer: Bool?
     /// The pane's Follow and Read or Edit: how a viewer in it starts, the one it opens and any opened after.
@@ -125,7 +112,7 @@ public struct PaneKeeps: Codable, Equatable, Sendable {
     /// The sizes `view` keeps, three together as a folder's view keeps them, are kept as `sizes` where it has none.
     public init(
         folder: String? = nil, view: FolderViewKeeps = FolderViewKeeps(), sizes: ViewSizesKeeps? = nil,
-        folderViews: FolderViewsChoice = .folderFirst, opensViewer: Bool = false, viewerFollows: Bool? = nil,
+        opensViewer: Bool = false, viewerFollows: Bool? = nil,
         viewerEditing: Bool? = nil, searchResults: SearchResultsKeeps? = nil
     ) {
         self.folder = folder?.isEmpty == true ? nil : folder
@@ -134,7 +121,6 @@ public struct PaneKeeps: Codable, Equatable, Sendable {
         view.size = nil
         self.view = view
         self.sizes = sizes?.isEmpty == false ? sizes : nil
-        self.folderViews = folderViews == .folderFirst ? nil : folderViews
         self.opensViewer = opensViewer ? true : nil
         self.viewerFollows = viewerFollows
         self.viewerEditing = viewerEditing
@@ -155,25 +141,15 @@ public struct PaneKeeps: Codable, Equatable, Sendable {
             folder: (try? container.decode(SavedPathIfAny.self, forKey: .folder))?.wrappedValue,
             view: view ?? FolderViewKeeps(),
             sizes: viewer != nil ? nil : try? container.decode(ViewSizesKeeps.self, forKey: .sizes),
-            folderViews: (try? container.decode(FolderViewsChoice.self, forKey: .folderViews)) ?? .folderFirst,
             opensViewer: viewer != nil || (try? container.decode(Bool.self, forKey: .opensViewer)) == true,
             viewerFollows: viewer?.follows ?? (try? container.decode(Bool.self, forKey: .viewerFollows)),
             viewerEditing: viewer?.editing ?? (try? container.decode(Bool.self, forKey: .viewerEditing)),
             searchResults: viewer != nil ? nil : try? container.decode(SearchResultsKeeps.self, forKey: .searchResults))
     }
 
-    public var choice: FolderViewsChoice { folderViews ?? .folderFirst }
-
-    /// The settings a folder's view could keep that this keeps: Size where it keeps any view's size.
-    public var settingsKept: Set<FolderViewSetting> {
-        var kept = Set(view.kept)
-        if sizes != nil { kept.insert(.size) }
-        return kept
-    }
-
     /// Keeps nothing and changes nothing: not kept.
     public var isEmpty: Bool {
-        folder == nil && view.isEmpty && sizes == nil && folderViews == nil && opensViewer == nil
+        folder == nil && view.isEmpty && sizes == nil && opensViewer == nil
             && viewerFollows == nil && viewerEditing == nil && searchResults == nil
     }
 
@@ -363,79 +339,6 @@ public struct TabState: Equatable, Sendable {
     }
 }
 
-/// What a tab view applied with `.tabViewFirst` or `.notUsed` leaves on a pane: the folder it holds in, the choice,
-/// and the settings the tab view kept. It holds while the pane stays in that folder.
-public struct TabViewOverride: Equatable, Sendable {
-    public var folder: String
-    public var choice: FolderViewsChoice
-    /// Size among them where it kept any view's size, which `sizes` names.
-    public var kept: Set<FolderViewSetting>
-    public var sizes: Set<ViewSizeKind>
-
-    /// `sizes` nil: every view's, where `kept` has Size.
-    public init(
-        folder: String, choice: FolderViewsChoice, kept: Set<FolderViewSetting>, sizes: Set<ViewSizeKind>? = nil
-    ) {
-        self.folder = folder
-        self.choice = choice
-        let sizes = kept.contains(.size) ? sizes ?? Set(ViewSizeKind.allCases) : []
-        var kept = kept
-        if sizes.isEmpty { kept.remove(.size) }
-        self.kept = kept
-        self.sizes = sizes
-    }
-
-    /// What a tab view applied with `choice` leaves for `keeps` in `folder`.
-    public init(folder: String, choice: FolderViewsChoice, keeps: PaneKeeps) {
-        self.init(
-            folder: folder, choice: choice, kept: keeps.settingsKept, sizes: Set(keeps.sizes?.kept ?? []))
-    }
-
-    /// Whether it holds for a pane showing `folder`: the same folder, by its path's bytes.
-    public func holds(in folder: String?) -> Bool {
-        guard let folder, choice != .folderFirst else { return false }
-        return DiskPath(folder) == DiskPath(self.folder)
-    }
-
-    /// Whether it decides `setting`: every setting while the folder's view isn't used, the kept ones while the tab
-    /// view comes first.
-    public func covers(_ setting: FolderViewSetting) -> Bool {
-        choice == .notUsed || (choice == .tabViewFirst && kept.contains(setting))
-    }
-
-    /// Whether it decides `size`: as `covers(.size)`, but one view's size at a time.
-    public func covers(_ size: ViewSizeKind) -> Bool {
-        choice == .notUsed || (choice == .tabViewFirst && sizes.contains(size))
-    }
-
-    /// The same without `size`, once that view's size is changed by hand in the folder.
-    public func without(_ size: ViewSizeKind) -> TabViewOverride? {
-        guard choice == .tabViewFirst else { return without(.size) }
-        var next = self
-        next.sizes.remove(size)
-        if next.sizes.isEmpty { next.kept.remove(.size) }
-        return next.kept.isEmpty ? nil : next
-    }
-
-    /// The same without `setting`, once that setting is changed by hand in the folder; nil when nothing is left that
-    /// it decides.
-    public func without(_ setting: FolderViewSetting) -> TabViewOverride? {
-        switch choice {
-        case .folderFirst:
-            return nil
-        case .tabViewFirst:
-            var next = self
-            next.kept.remove(setting)
-            if setting == .size { next.sizes = [] }
-            return next.kept.isEmpty ? nil : next
-        case .notUsed:
-            // Not using the folder's view is one choice: a change by hand of any setting is a change of the folder's
-            // view, so the folder's view comes back for every setting.
-            return nil
-        }
-    }
-}
-
 /// A tab view applied to a tab: the tab as it is after, and what the window has to do to show it.
 public struct TabViewApplied: Equatable, Sendable {
     /// What happened to the second pane.
@@ -449,12 +352,10 @@ public struct TabViewApplied: Equatable, Sendable {
 
     public var tab: TabState
     public var secondPane: SecondPane?
-    /// The panes (after) the tab view gave settings to: an override these had before is replaced by `overrides`.
+    /// The panes (after) the tab view gave settings to.
     public var panesGiven: [Int]
     /// The panes (after) whose folder the tab view changed: each goes there, and Back comes back.
     public var panesMoved: [Int]
-    /// The overrides the tab view leaves, by pane (after).
-    public var overrides: [Int: TabViewOverride]
     /// The panes (after) that open the viewer, with how it starts.
     public var viewers: [Int: PaneViewer] = [:]
     /// Of those, the ones whose viewer shows the file selected in their own list, in place of it, rather than
@@ -477,7 +378,7 @@ public enum TabViews {
     }
 
     /// The tab with `keeps` applied: in order, the panes, the divider, hidden files, each pane's settings and folder,
-    /// and the overrides it leaves. The active pane stays the active pane. `columnWidth` is the room the two panes share,
+    /// and its viewer. The active pane stays the active pane. `columnWidth` is the room the two panes share,
     /// which a divider kept as a width is measured against.
     public static func applying(_ keeps: TabViewKeeps, to tab: TabState, columnWidth: Double) -> TabViewApplied {
         var tab = tab
@@ -513,7 +414,6 @@ public enum TabViews {
         if let hidden = keeps.includeHidden { tab.includeHidden = hidden }
         var given: [Int] = []
         var moved: [Int] = []
-        var overrides: [Int: TabViewOverride] = [:]
         var viewers: [Int: PaneViewer] = [:]
         var viewersClosed: [Int] = []
         for (index, paneKeeps) in keeps.paneKeeps(active: tab.active) where tab.panes.indices.contains(index) {
@@ -538,9 +438,6 @@ public enum TabViews {
             if let sizes = paneKeeps.sizes, let now = tab.panes[index].settings.size {
                 tab.panes[index].settings.size = sizes.applied(to: now)
             }
-            if paneKeeps.choice != .folderFirst, let folder = tab.panes[index].folder {
-                overrides[index] = TabViewOverride(folder: folder, choice: paneKeeps.choice, keeps: paneKeeps)
-            }
         }
         // A viewer that follows shows what the other pane's list selects, beside it, where the other pane shows a list
         // and opens no viewer; any other shows the file selected in its own list, in place of it.
@@ -560,7 +457,7 @@ public enum TabViews {
             }
         }
         return TabViewApplied(
-            tab: tab, secondPane: secondPane, panesGiven: given, panesMoved: moved, overrides: overrides,
+            tab: tab, secondPane: secondPane, panesGiven: given, panesMoved: moved,
             viewers: viewers, viewersInPlace: inPlace, viewersClosed: viewersClosed)
     }
 

@@ -18,7 +18,7 @@ enum AppStateJSON {
         "searchGroupReversed",
     ]
     private static let windowKeys = ["id", "bounds", "session"]
-    private static let paneKeepsKeys = ["folder", "view", "folderViews"]
+    private static let paneKeepsKeys = ["folder", "view"]
     private static let columnKeys = ["modified", "size", "kind", "created", "added", "lastOpened", "permissions"]
 
     private static let orders: [String: [String]] = [

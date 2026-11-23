@@ -435,13 +435,13 @@ extension ExplorerWindowlessTests {
             for button in [sheet.saveButton, sheet.cancelButton] {
                 #expect(sheet.bounds.contains(button.convert(button.bounds, to: sheet)))
             }
-            let folderViews = try #require(SheetInput.control("tabViewOptions.folderViews", in: sheet))
-            let scroll = try #require(folderViews.enclosingScrollView)
+            // The View part's last row, at the sheet's foot.
+            let last = try #require(SheetInput.control("tabViewOptions.keep.Previews at a Time", in: sheet))
+            let scroll = try #require(last.enclosingScrollView)
             let document = try #require(scroll.documentView)
             #expect(document.frame.height > scroll.contentView.bounds.height)
-            sheet.moveKeyboard(to: folderViews)
-            #expect(
-                scroll.contentView.documentVisibleRect.contains(folderViews.convert(folderViews.bounds, to: document)))
+            sheet.moveKeyboard(to: last)
+            #expect(scroll.contentView.documentVisibleRect.contains(last.convert(last.bounds, to: document)))
 
             let tall = sheet.panelSize(in: NSSize(width: 1000, height: 4000))
             #expect(tall == sheet.panelSize(in: NSSize(width: 1000, height: 3000)))

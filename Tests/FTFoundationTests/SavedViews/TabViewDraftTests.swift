@@ -128,13 +128,12 @@ struct TabViewDraftTests {
             id: "t", name: "Saved",
             keeps: TabViewKeeps(
                 panes: 2, divider: .leftWidth(400),
-                left: PaneKeeps(folder: "/saved", view: FolderViewKeeps(view: .details), folderViews: .notUsed)))
+                left: PaneKeeps(folder: "/saved", view: FolderViewKeeps(view: .details))))
         let draft = TabViewDraft(tab: Self.tab(["/a"]), columnWidth: 1009, editing: saved)
         #expect(draft.name == "Saved" && draft.editingID == "t")
         #expect(draft.divider == .saved && draft.savedDivider == .leftWidth(400))
         #expect(draft.left.folder == "/saved" && draft.left.keepsFolder)
         #expect(draft.left.values.view == .details && draft.left.kept == [.view])
-        #expect(draft.left.folderViews == .notUsed)
         // What isn't kept shows the tab's.
         #expect(draft.right.kept.isEmpty && draft.right.values.view == .icons)
         // Saved again unchanged, it keeps what it kept.
@@ -144,7 +143,9 @@ struct TabViewDraftTests {
     @Test func resetKeepsNothing() {
         var draft = TabViewDraft(tab: Self.tab(["/a", "/b"]), columnWidth: 1009)
         draft.keepsHidden = true
-        draft.left.folderViews = .tabViewFirst
+        draft.left.opensViewer = true
+        draft.left.keepsEditing = true
+        draft.left.sizesKept = [.icons]
         draft.reset()
         #expect(draft.keeps.isEmpty)
     }
@@ -152,12 +153,12 @@ struct TabViewDraftTests {
     @Test func whatAKeepsSaysOfItself() {
         let keeps = TabViewKeeps(
             panes: 2, divider: .share(0.62),
-            left: PaneKeeps(folder: "/u/Downloads", view: FolderViewKeeps(view: .details), folderViews: .tabViewFirst),
+            left: PaneKeeps(folder: "/u/Downloads", view: FolderViewKeeps(view: .details)),
             right: PaneKeeps(view: FolderViewKeeps(foldersFirst: false)))
         #expect(
             SavedViewText.parts(keeps) == [
                 "Two panes", "Divider 62% / 38%", "Left: opens \u{201C}Downloads\u{201D}", "Left: List",
-                "Left: over folder views", "Right: folders mixed in",
+                "Right: folders mixed in",
             ])
         #expect(
             SavedViewText.parts(TabViewKeeps(pane: PaneKeeps(view: FolderViewKeeps(view: .previews))))

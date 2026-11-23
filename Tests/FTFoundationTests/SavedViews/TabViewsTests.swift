@@ -24,10 +24,8 @@ struct TabViewsTests {
     @Test func everyPartIsReadBackAsWritten() throws {
         let keeps = TabViewKeeps(
             panes: 2, divider: .share(0.62), includeHidden: true,
-            left: PaneKeeps(folder: "/u/a", view: FolderViewKeeps(view: .details), folderViews: .tabViewFirst),
-            right: PaneKeeps(
-                view: FolderViewKeeps(sort: FolderViewSort(by: .modified, direction: .desc)),
-                folderViews: .notUsed))
+            left: PaneKeeps(folder: "/u/a", view: FolderViewKeeps(view: .details)),
+            right: PaneKeeps(view: FolderViewKeeps(sort: FolderViewSort(by: .modified, direction: .desc))))
         let view = TabView(id: "tab-1", name: "Compare", keeps: keeps)
         let node = try JSONNode.of([view])
         #expect(TabViews.sanitize(node) == [view])
@@ -38,11 +36,20 @@ struct TabViewsTests {
         }
     }
 
-    @Test func folderFirstAndNothingKeptAreNotWritten() throws {
-        let keeps = TabViewKeeps(pane: PaneKeeps(view: FolderViewKeeps(view: .details), folderViews: .folderFirst))
+    @Test func nothingKeptIsNotWritten() throws {
+        let keeps = TabViewKeeps(pane: PaneKeeps(view: FolderViewKeeps(view: .details)))
         let pane = try #require(try JSONNode.of(keeps).object?["pane"]?.object)
-        #expect(pane["folderViews"] == nil)
-        #expect(pane["folder"] == nil)
+        #expect(Set(pane.keys) == ["view"])
+    }
+
+    // A tab view saved when it chose how folders with a view of their own showed reads without the choice: folders
+    // show their own view, as in any pane.
+    @Test func theFolderViewsChoiceOnceSavedIsPassedOver() throws {
+        let saved = Data(#"{"pane": {"view": {"view": "details"}, "folderViews": "tabViewFirst"}}"#.utf8)
+        let keeps = try JSONDecoder().decode(TabViewKeeps.self, from: saved)
+        #expect(keeps.pane == PaneKeeps(view: FolderViewKeeps(view: .details)))
+        let alone = Data(#"{"pane": {"folderViews": "notUsed"}}"#.utf8)
+        #expect(try JSONDecoder().decode(TabViewKeeps.self, from: alone).isEmpty)
     }
 
     @Test func partsThatMakeNoSenseTogetherAreDropped() {
@@ -145,24 +152,16 @@ struct TabViewsTests {
         #expect(left.viewersInPlace == [0] && left.viewersClosed.isEmpty)
     }
 
-    // Each view's size is applied on its own; under Tab View First, the override holds only the sizes kept.
+    // Each view's size is applied on its own.
     @Test func eachViewsSizeIsAppliedOnItsOwn() {
         let tab = Self.tab(["/a"])
         let keeps = TabViewKeeps(
-            pane: PaneKeeps(
-                sizes: ViewSizesKeeps(iconSizes: DensitySizes(standard: 112, finder: 96)), folderViews: .tabViewFirst))
+            pane: PaneKeeps(sizes: ViewSizesKeeps(iconSizes: DensitySizes(standard: 112, finder: 96))))
         let applied = Self.apply(keeps, tab)
         let before = tab.panes[0].settings.size
         #expect(applied.tab.panes[0].settings.size?.iconSizes == DensitySizes(standard: 112, finder: 96))
         #expect(applied.tab.panes[0].settings.size?.compactListWidths == before?.compactListWidths)
         #expect(applied.tab.panes[0].settings.size?.previewCounts == before?.previewCounts)
-        let override = applied.overrides[0]
-        #expect(override?.kept == [.size] && override?.sizes == [.icons])
-        #expect(override?.covers(.size) == true && override?.covers(ViewSizeKind.icons) == true)
-        #expect(override?.covers(ViewSizeKind.previews) == false)
-        // Changed by hand, one view's size lets go of that one alone; the last one lets go of the override.
-        #expect(override?.without(ViewSizeKind.previews) == override)
-        #expect(override?.without(ViewSizeKind.icons) == nil)
     }
 
     @Test func aDividerIsKeptWithinWhatADragAllows() {
@@ -387,34 +386,6 @@ struct TabViewsTests {
         let applied = Self.apply(keeps, TabState(panes: [Self.pane(nil)]))
         #expect(applied.tab.panes[0].folder == "/x")
         #expect(applied.panesMoved == [0])
-    }
-
-    // MARK: Applying: overrides
-
-    @Test func anOverrideIsLeftOnlyForAChoiceOtherThanTheFoldersViewFirst() {
-        let keeps = TabViewKeeps(
-            panes: 2,
-            left: PaneKeeps(
-                folder: "/x", view: FolderViewKeeps(view: .details, sort: FolderViewSort(by: .size, direction: .asc)),
-                folderViews: .tabViewFirst),
-            right: PaneKeeps(view: FolderViewKeeps(view: .previews)))
-        let applied = Self.apply(keeps, Self.tab(["/a", "/b"]))
-        #expect(applied.overrides.count == 1)
-        // It holds in the folder the pane is on once applied: the tab view's folder, not the one before.
-        #expect(applied.overrides[0] == TabViewOverride(folder: "/x", choice: .tabViewFirst, kept: [.view, .sort]))
-    }
-
-    @Test func notUsedHoldsInTheFolderThePaneStaysOn() {
-        let keeps = TabViewKeeps(pane: PaneKeeps(folderViews: .notUsed))
-        let applied = Self.apply(keeps, Self.tab(["/a"]))
-        #expect(applied.overrides[0] == TabViewOverride(folder: "/a", choice: .notUsed, kept: []))
-        #expect(applied.panesGiven == [0])
-        #expect(applied.panesMoved.isEmpty)
-    }
-
-    @Test func aPaneWithNoFolderGetsNoOverride() {
-        let keeps = TabViewKeeps(pane: PaneKeeps(folderViews: .notUsed))
-        #expect(Self.apply(keeps, TabState(panes: [Self.pane(nil)])).overrides.isEmpty)
     }
 
     // MARK: Gone folders

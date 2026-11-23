@@ -1,53 +1,9 @@
-// A tab view in a pane: the settings it gives the pane, and the override it leaves on the folder it opened
+// A tab view in a pane: what it sees of the pane, and the settings it gives it
 import AppKit
 import FTFoundation
 
 extension BrowserPane {
-    // MARK: What the folder's view decides
-
-    /// The folder's view as on screen where it decides `setting` (`PaneViewResolution`): it keeps the setting, and no
-    /// tab view's override holds for it here. Nil where the pane's own setting shows.
-    func folderViewShown(_ setting: FolderViewSetting) -> FolderViewKeeps? {
-        PaneViewResolution.folderViewDecides(
-            setting, onScreen: folderView, override: tabViewOverride, folder: folderPath)
-            ? folderView?.shown : nil
-    }
-
-    /// Whether a tab view's override holds in the folder on screen.
-    var tabViewOverrideHolds: Bool {
-        tabViewOverride?.holds(in: folderPath) == true && !folderLetGo
-    }
-
-    /// A setting is changed by hand in the folder on screen: it is no longer the tab view's, and the change goes where
-    /// it would with no tab view (the folder's view where it keeps it, else the pane). "Not Used" lets go whole. True,
-    /// so it reads as the first condition of the branch it decides.
-    @discardableResult
-    func changedByHand(_ setting: FolderViewSetting) -> Bool {
-        guard let override = tabViewOverride, override.holds(in: folderPath), override.covers(setting) else {
-            return true
-        }
-        tabViewOverride = override.without(setting)
-        return true
-    }
-
-    /// One view's size is changed by hand in the folder on screen: as `changedByHand(.size)`, but only that view's
-    /// size is no longer the tab view's.
-    @discardableResult
-    func changedByHand(_ size: ViewSizeKind) -> Bool {
-        guard let override = tabViewOverride, override.holds(in: folderPath), override.covers(size) else {
-            return true
-        }
-        tabViewOverride = override.without(size)
-        return true
-    }
-
-    /// The folder's view as on screen where it decides `size`: it keeps the sizes, and no tab view's override holds
-    /// for that view's size here. Nil where the pane's own size shows.
-    func folderViewShown(_ size: ViewSizeKind) -> FolderViewSizes? {
-        guard let shown = folderView?.shown, let sizes = shown.size else { return nil }
-        if tabViewOverrideHolds, let override = tabViewOverride, override.covers(size) { return nil }
-        return sizes
-    }
+    // MARK: The viewer's own
 
     /// How a viewer in this pane starts: its own Follow and Read or Edit, or, before it has its own, the app's.
     var viewerDefaults: PaneViewer {
@@ -63,46 +19,10 @@ extension BrowserPane {
         if let editing = keeps.viewerEditing, let viewer, viewer.mode != .inPlace { viewer.opensForEditing = editing }
     }
 
-    /// A Folder View command or Folder View Options in this pane: the override ends first, so what they show and save
-    /// is the folder's view, not the tab view laid over it.
-    func endTabViewOverride() {
-        guard tabViewOverride != nil || arrivingTabViewOverride != nil else { return }
-        let before = shownOrder
-        tabViewOverride = nil
-        arrivingTabViewOverride = nil
-        showFolderView()
-        if before != shownOrder { viewChanged() }
-    }
-
-    // MARK: Arriving and following
-
-    /// Another folder arrived: an override waiting for it takes its place there (the folder by the path its listing
-    /// gives, a link's target), and any other ends.
-    func arriveWithTabViewOverride(in path: String) {
-        if var arriving = arrivingTabViewOverride {
-            arriving.folder = path
-            tabViewOverride = arriving
-        } else {
-            tabViewOverride = nil
-        }
-        arrivingTabViewOverride = nil
-    }
-
-    /// The folder on screen was renamed or moved and the pane follows it: the override goes with it.
-    func followTabViewOverride(to path: String) {
-        guard var override = tabViewOverride, override.holds(in: folderPath) else { return }
-        override.folder = path
-        if loaded {
-            arrivingTabViewOverride = override
-        } else {
-            tabViewOverride = override
-        }
-    }
-
     // MARK: What a tab view sees and gives
 
-    /// The pane as a tab view sees it: its folder and its settings as on screen, the folder's view (and a tab view's
-    /// over it) laid over what the pane carries, its sizes and columns included. Tab View Options starts from these,
+    /// The pane as a tab view sees it: its folder and its settings as on screen, the folder's view laid over what the
+    /// pane carries, its sizes and columns included. Tab View Options starts from these,
     /// so a setting checked there keeps what the folder shows.
     var tabViewState: PaneState {
         let settings = shownKeeps

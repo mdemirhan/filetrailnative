@@ -136,12 +136,6 @@ public enum ViewSizeKind: String, CaseIterable, Sendable, Hashable {
         }
     }
 
-    /// The size of `view`; nil for the List, whose sizes are its columns' widths.
-    public init?(_ view: ExplorerViewMode) {
-        guard let size = Self.allCases.first(where: { $0.view == view }) else { return nil }
-        self = size
-    }
-
     /// As it first is.
     public var defaults: DensitySizes {
         switch self {

@@ -43,15 +43,6 @@ final class TabViewOptionsSheet: SavedViewSheet {
     private static let modes = ExplorerViewMode.menuOrder
     private static let groupFields = [GroupByPreference.none] + GroupByPreference.menuOrder
     private static let sortFields = SortByPreference.menuOrder
-    private static let folderViewsChoices: [(choice: FolderViewsChoice, title: String, detail: String)] = [
-        (.folderFirst, "Folder\u{2019}s View First", "A folder with a view of its own shows it, as in any pane."),
-        (
-            .tabViewFirst, "Tab View First",
-            "What this tab view keeps comes first in the folder it opens; the folder\u{2019}s view gives the rest."
-        ),
-        (.notUsed, "Not Used", "A folder\u{2019}s own view isn\u{2019}t used in the folder this tab view opens."),
-    ]
-
     private let subtitle = NSTextField(labelWithString: "")
     private lazy var sidebar: SheetSidebar = {
         let sidebar = SheetSidebar(identifier: "tabViewOptions.parts")
@@ -139,24 +130,7 @@ final class TabViewOptionsSheet: SavedViewSheet {
     private lazy var folderRow = keepRow("Folder", NSStackView(views: [folderPopUp, folderNote])) { [weak self] on in
         self?.changePane { $0.keepsFolder = on }
     }
-    private lazy var folderViewsPopUp = popUp(
-        Self.folderViewsChoices.map(\.title), label: "Folder Views", id: "folderViews"
-    ) { [weak self] index in
-        self?.changePane { $0.folderViews = Self.folderViewsChoices[index].choice }
-    }
-    private lazy var folderViewsDetail: NSTextField = {
-        let field = note("")
-        field.setAccessibilityIdentifier("tabViewOptions.folderViewsDetail")
-        return field
-    }()
-    private lazy var folderViewsRow: NSView = {
-        let lines = NSStackView(views: [folderViewsPopUp, folderViewsDetail])
-        lines.orientation = .vertical
-        lines.alignment = .leading
-        lines.spacing = 4
-        return row(indented(label("Folder Views")), lines, height: 60)
-    }()
-    private lazy var folderPage = page("", [(card([folderRow.view, folderViewsRow]), 0)])
+    private lazy var folderPage = page("", [(card([folderRow.view]), 0)])
 
     // MARK: A pane's View
 
@@ -508,7 +482,7 @@ final class TabViewOptionsSheet: SavedViewSheet {
     private func refreshFolder(_ pane: TabViewDraft.Pane) {
         if let line = folderPage.arrangedSubviews.first as? NSTextField {
             let pane = Self.paneWords(shownGroup)
-            Self.set(line, "Where \(pane) goes, and how folders with a view of their own show in it.")
+            Self.set(line, "The folder \(pane) goes to.")
         }
         var paths = draft.foldersNow.map(\.path)
         var titles = draft.foldersNow.map { "\(NodePath.basename($0.path)) \u{2014} \($0.pane)" }
@@ -523,9 +497,6 @@ final class TabViewOptionsSheet: SavedViewSheet {
         Self.set(folderPopUp, hidden: !pane.keepsFolder)
         Self.set(folderNote, hidden: pane.keepsFolder)
         folderRow.show(kept: pane.keepsFolder, dims: false)
-        let choice = Self.folderViewsChoices.firstIndex { $0.choice == pane.folderViews } ?? 0
-        folderViewsPopUp.selectItem(at: choice)
-        Self.set(folderViewsDetail, Self.folderViewsChoices[choice].detail)
     }
 
     private func refreshView(_ pane: TabViewDraft.Pane) {

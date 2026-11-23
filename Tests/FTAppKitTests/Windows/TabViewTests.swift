@@ -1,5 +1,5 @@
 // Checks tab views applied to the app's own tabs, never shown: the panes, the divider, each pane's settings and
-// folder, the override left on a folder with a view of its own and every way it ends, and the new-tab view
+// folder, folders with a view of their own, the viewer, and the new-tab view
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -47,18 +47,13 @@ extension ExplorerWindowlessTests {
             await settled(tab)
         }
 
-        /// The folder `name` keeps `view` as its own, saved, and covers the folders inside with `subfolders`.
+        /// The folder `name` keeps `view` as its own, saved.
         private func remember(
-            _ name: String, _ view: ExplorerViewMode, subfolders: Bool = false, in tab: MainWindowController,
-            _ harness: ExplorerHarness
+            _ name: String, _ view: ExplorerViewMode, in tab: MainWindowController, _ harness: ExplorerHarness
         ) async {
             await go(tab, harness, name)
             tab.setMode(view)
             tab.perform(.rememberFolderView)
-            if subfolders {
-                tab.activePane.setFolderViewSubfolders(true)
-                tab.perform(.updateFolderView)
-            }
         }
 
         // MARK: Panes and settings
@@ -187,9 +182,11 @@ extension ExplorerWindowlessTests {
             #expect(tab.activePane.folderPath == real(harness, "Alpha"))
         }
 
-        // MARK: The override
+        // MARK: Folder views
 
-        @Test func theFoldersViewFirstShowsTheFoldersViewAndLeavingShowsTheTabViews() async throws {
+        // A folder with a view of its own shows it over what the tab view gave the pane, as in any pane; the folder
+        // after shows the tab view's.
+        @Test func aFoldersViewShowsOverTheTabViewsSettings() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             await remember("Alpha", .previews, in: tab, harness)
@@ -198,33 +195,9 @@ extension ExplorerWindowlessTests {
                 TabViewKeeps(pane: PaneKeeps(folder: real(harness, "Alpha"), view: FolderViewKeeps(view: .details))),
                 to: tab)
             let pane = tab.activePane
-            #expect(pane.tabViewOverride == nil)
             #expect(pane.content.mode == .previews)
             await go(tab, harness, "Gamma")
             #expect(pane.content.mode == .details)
-        }
-
-        @Test func theTabViewFirstShowsWhatItKeepsAndTheFoldersViewGivesTheRest() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            await go(tab, harness, "Alpha")
-            tab.setMode(.previews)
-            tab.setSort(.size, .desc)
-            tab.perform(.rememberFolderView)
-            await go(tab, harness, "Beta")
-            await apply(
-                TabViewKeeps(
-                    pane: PaneKeeps(
-                        folder: real(harness, "Alpha"), view: FolderViewKeeps(view: .details),
-                        folderViews: .tabViewFirst)),
-                to: tab)
-            let pane = tab.activePane
-            #expect(pane.tabViewOverride?.holds(in: real(harness, "Alpha")) == true)
-            #expect(pane.content.mode == .details)
-            // Sort By isn't the tab view's: the folder's view gives it.
-            #expect(pane.shownSortBy == .size && pane.shownSortDirection == .desc)
-            #expect(
-                pane.content.contentShell.pathBarRow.folderViewMark?.tooltip.contains("tab view comes first") == true)
         }
 
         @Test func tabViewOptionsStartsFromWhatTheFoldersViewShows() async throws {
@@ -253,155 +226,6 @@ extension ExplorerWindowlessTests {
             #expect(
                 checked.keeps.view
                     == FolderViewKeeps(view: .previews, sort: FolderViewSort(by: .size, direction: .desc)))
-        }
-
-        @Test func theTabViewFirstHoldsInAFolderCoveredFromAbove() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            await remember("Alpha", .previews, subfolders: true, in: tab, harness)
-            await go(tab, harness, "Beta")
-            await apply(
-                TabViewKeeps(
-                    pane: PaneKeeps(
-                        folder: real(harness, "Alpha/Inner"), view: FolderViewKeeps(view: .details),
-                        folderViews: .tabViewFirst)),
-                to: tab)
-            #expect(tab.activePane.shownFolderView?.use.own == false)
-            #expect(tab.activePane.content.mode == .details)
-        }
-
-        @Test func notUsedIgnoresTheFoldersView() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            await remember("Alpha", .previews, in: tab, harness)
-            tab.setMode(.icons)
-            await go(tab, harness, "Beta")
-            tab.setMode(.list)
-            await apply(TabViewKeeps(pane: PaneKeeps(folder: real(harness, "Alpha"), folderViews: .notUsed)), to: tab)
-            // What the pane carries, though the tab view keeps no view.
-            #expect(tab.activePane.content.mode == .list)
-            #expect(tab.activePane.content.contentShell.pathBarRow.folderViewMark?.tooltip.contains("Not used") == true)
-        }
-
-        @Test func theOverrideEndsOnLeavingAndDoesntComeBackWithBack() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            await remember("Alpha", .previews, in: tab, harness)
-            await apply(
-                TabViewKeeps(pane: PaneKeeps(view: FolderViewKeeps(view: .details), folderViews: .tabViewFirst)),
-                to: tab)
-            let pane = tab.activePane
-            #expect(pane.content.mode == .details)
-            await go(tab, harness, "Alpha/Inner")
-            #expect(pane.tabViewOverride == nil)
-            tab.perform(.goBack)
-            #expect(await waitUntil { pane.folderPath == real(harness, "Alpha") && !pane.isNavigating })
-            #expect(pane.content.mode == .previews)
-        }
-
-        @Test func eachFolderViewCommandEndsTheOverrideFirst() async throws {
-            for command in [AppCommand.rememberFolderView, .resetFolderView, .folderViewOptions] {
-                let harness = try ExplorerHarness.windowless()
-                let tab = try await harness.open()
-                await remember("Alpha", .previews, in: tab, harness)
-                await apply(
-                    TabViewKeeps(pane: PaneKeeps(view: FolderViewKeeps(view: .details), folderViews: .tabViewFirst)),
-                    to: tab)
-                #expect(tab.activePane.tabViewOverride != nil)
-                tab.perform(command)
-                #expect(tab.activePane.tabViewOverride == nil, "\(command)")
-                tab.closeFolderViewPopover()
-            }
-        }
-
-        @Test func rememberAfterTheOverrideKeepsTheFoldersViewNotTheTabViews() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            await remember("Alpha", .previews, in: tab, harness)
-            await apply(
-                TabViewKeeps(pane: PaneKeeps(view: FolderViewKeeps(view: .details), folderViews: .tabViewFirst)),
-                to: tab)
-            tab.perform(.rememberFolderView)
-            #expect(tab.activePane.folderViews.views.own(real(harness, "Alpha"))?.keeps.view == .previews)
-        }
-
-        @Test func aCoveredSettingChangedByHandLeavesTheOverrideAndIsAChangeOfTheFoldersView() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            await go(tab, harness, "Alpha")
-            tab.setMode(.previews)
-            tab.setSort(.size, .desc)
-            tab.perform(.rememberFolderView)
-            await apply(
-                TabViewKeeps(
-                    pane: PaneKeeps(
-                        view: FolderViewKeeps(view: .details, sort: FolderViewSort(by: .name, direction: .asc)),
-                        folderViews: .tabViewFirst)),
-                to: tab)
-            let pane = tab.activePane
-            tab.setMode(.list)
-            // View is the folder's again, changed on screen; Sort By is still the tab view's.
-            #expect(pane.tabViewOverride?.kept == [.sort])
-            #expect(pane.shownFolderView?.unsaved == [.view])
-            #expect(pane.content.mode == .list)
-            #expect(pane.shownSortBy == .name)
-        }
-
-        @Test func aToggleTurnsWhatIsOnScreen() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            await go(tab, harness, "Alpha")
-            tab.activePane.foldersFirst = true
-            tab.perform(.rememberFolderView)
-            await apply(
-                TabViewKeeps(pane: PaneKeeps(view: FolderViewKeeps(foldersFirst: false), folderViews: .tabViewFirst)),
-                to: tab)
-            #expect(!tab.activePane.shownFoldersFirst)
-            tab.activePane.toggleFoldersFirst()
-            // On screen it was off: on now, as a change of the folder's view.
-            #expect(tab.activePane.shownFoldersFirst)
-            #expect(tab.activePane.shownFolderView?.unsaved.isEmpty == true)
-        }
-
-        @Test func refreshAndHiddenFilesKeepTheOverride() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            await remember("Alpha", .previews, in: tab, harness)
-            await apply(
-                TabViewKeeps(pane: PaneKeeps(view: FolderViewKeeps(view: .details), folderViews: .tabViewFirst)),
-                to: tab)
-            tab.perform(.refreshOrApplySearchSort)
-            await settled(tab)
-            tab.perform(.toggleHiddenFiles)
-            await settled(tab)
-            #expect(tab.activePane.tabViewOverride != nil)
-            #expect(tab.activePane.content.mode == .details)
-        }
-
-        @Test func aDuplicatedPaneShowsTheFoldersView() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            await remember("Alpha", .previews, in: tab, harness)
-            await apply(
-                TabViewKeeps(pane: PaneKeeps(view: FolderViewKeeps(view: .details), folderViews: .tabViewFirst)),
-                to: tab)
-            tab.duplicatePane()
-            await settled(tab)
-            let copy = try #require(tab.otherPane)
-            #expect(copy.tabViewOverride == nil)
-            #expect(await waitUntil { copy.loaded && !copy.isNavigating && copy.content.mode == .previews })
-        }
-
-        @Test func twoPanesOnOneFolderEachShowTheirOwn() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            await remember("Alpha", .previews, in: tab, harness)
-            tab.openSecondPane(at: real(harness, "Alpha"))
-            await settled(tab)
-            await apply(
-                TabViewKeeps(pane: PaneKeeps(view: FolderViewKeeps(view: .details), folderViews: .tabViewFirst)),
-                to: tab)
-            #expect(await waitUntil { tab.panes.map(\.content.mode) == [.details, .previews] })
         }
 
         // MARK: New tabs

@@ -34,8 +34,6 @@ extension MainWindowController {
         default:
             // Update, Revert and Reset look for something unsaved, or a view of the folder's own, themselves.
             guard pane.searchRootPath == nil, !pane.shownFolderPath.isEmpty else { return }
-            // What they act on is the folder's view, not a tab view laid over it.
-            pane.endTabViewOverride()
         }
         switch command {
         case .rememberFolderView:
@@ -69,7 +67,7 @@ extension MainWindowController {
             order = ColumnOrder.showing(
                 key, in: order, isShown: { shown[$0] }, standard: OptionalDetailColumnKey.menuOrder)
         }
-        if pane.changedByHand(.columns), pane.folderViewKeeps(.columns) {
+        if pane.folderViewKeeps(.columns) {
             pane.changeShownFolderView { keeps in
                 guard var columns = keeps.columns else { return }
                 toggle(&columns.visibility, &columns.order)
@@ -100,7 +98,7 @@ extension MainWindowController {
         let shown = pane.shownPreferences(preferences)
         guard let order = ColumnOrder.moving(key, by: offset, in: shown.detailColumnOrder, visible: shown.detailColumns)
         else { return }
-        if pane.changedByHand(.columns), pane.folderViewKeeps(.columns) {
+        if pane.folderViewKeeps(.columns) {
             pane.changeShownFolderView { $0.columns?.order = order }
         } else {
             pane.changeOwnSettings { $0.detailColumnOrder = order }
@@ -137,7 +135,7 @@ extension MainWindowController {
         let order = ColumnOrder.placing(
             key, before: before.flatMap { OptionalDetailColumnKey(rawValue: $0.rawValue) }, in: shown.detailColumnOrder)
         guard order != shown.detailColumnOrder else { return }
-        if pane.changedByHand(.columns), pane.folderViewKeeps(.columns) {
+        if pane.folderViewKeeps(.columns) {
             pane.changeShownFolderView { $0.columns?.order = order }
         } else {
             pane.changeOwnSettings { $0.detailColumnOrder = order }
@@ -147,7 +145,7 @@ extension MainWindowController {
 
     /// Reset Columns: the columns and widths as they first were.
     func resetColumns(in pane: BrowserPane) {
-        if pane.changedByHand(.columns), pane.folderViewKeeps(.columns) {
+        if pane.folderViewKeeps(.columns) {
             pane.changeShownFolderView {
                 $0.columns = FolderViewColumns(
                     visibility: .defaults, order: AppPreferenceLimits.defaultDetailColumnOrder, widths: .defaults)
@@ -287,8 +285,6 @@ extension MainWindowController {
         guard let window, !pane.showsSearchResults, pane.searchRootPath == nil, !pane.shownFolderPath.isEmpty else {
             return
         }
-        // The options show and save the folder's view: a tab view laid over it lets go first.
-        pane.endTabViewOverride()
         if let shown = folderViewPopover {
             let same = shown.pane === pane
             closeFolderViewPopover()

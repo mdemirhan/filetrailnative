@@ -17,7 +17,7 @@ public struct TabViewDraft: Equatable, Sendable {
     }
 
     /// One pane's rows: its folder, the settings with their values and whether each is kept, each view's size, the
-    /// viewer's rows, the folder-views choice and its search results' view.
+    /// viewer's rows and its search results' view.
     public struct Pane: Equatable, Sendable {
         public var keepsFolder: Bool
         public var folder: String?
@@ -26,7 +26,6 @@ public struct TabViewDraft: Equatable, Sendable {
         /// The settings kept, never Size: each view's size is kept apart, in `sizesKept`.
         public var kept: Set<FolderViewSetting>
         public var sizesKept: Set<ViewSizeKind>
-        public var folderViews: FolderViewsChoice
         /// Opens the Viewer, over the pane's own list.
         public var opensViewer: Bool
         /// The viewer's Follow and Read or Edit as the rows show them, and whether each is kept.
@@ -47,7 +46,6 @@ public struct TabViewDraft: Equatable, Sendable {
             self.values = values
             kept = Set(keeps?.view.kept ?? []).subtracting([.size])
             sizesKept = Set(keeps?.sizes?.kept ?? [])
-            folderViews = keeps?.choice ?? .folderFirst
             opensViewer = keeps?.opensViewer == true
             viewer = PaneViewer(
                 follows: keeps?.viewerFollows ?? state.viewerDefaults.follows,
@@ -59,7 +57,7 @@ public struct TabViewDraft: Equatable, Sendable {
         }
 
         /// What it keeps: the folder where checked, each setting and each view's size checked with its value, the
-        /// viewer's rows where checked, and the choice.
+        /// viewer's rows where checked.
         public var keeps: PaneKeeps {
             var view = FolderViewKeeps()
             for setting in FolderViewSetting.allCases where kept.contains(setting) && setting != .size {
@@ -67,7 +65,7 @@ public struct TabViewDraft: Equatable, Sendable {
             }
             let sizes = values.size.map { ViewSizesKeeps($0, only: sizesKept) }
             return PaneKeeps(
-                folder: keepsFolder ? folder : nil, view: view, sizes: sizes, folderViews: folderViews,
+                folder: keepsFolder ? folder : nil, view: view, sizes: sizes,
                 opensViewer: opensViewer, viewerFollows: keepsFollows ? viewer.follows : nil,
                 viewerEditing: keepsEditing ? viewer.editing : nil,
                 searchResults: keepsSearchResults ? searchResults : nil)
@@ -272,7 +270,6 @@ public struct TabViewDraft: Equatable, Sendable {
             pane.opensViewer = false
             pane.keepsFollows = false
             pane.keepsEditing = false
-            pane.folderViews = .folderFirst
             pane.keepsSearchResults = false
             self[group] = pane
         }
@@ -333,11 +330,6 @@ public enum SavedViewText {
         if view.columns != nil { parts.append(prefix + "columns") }
         for size in pane.sizes?.kept ?? [] { parts.append(prefix + sizeName(size)) }
         if let results = pane.searchResults { parts.append(prefix + "search view: " + results.summary) }
-        switch pane.choice {
-        case .folderFirst: break
-        case .tabViewFirst: parts.append(prefix + "over folder views")
-        case .notUsed: parts.append(prefix + "folder views not used")
-        }
         return parts
     }
 }

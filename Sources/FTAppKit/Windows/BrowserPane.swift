@@ -103,12 +103,6 @@ final class BrowserPane {
     /// The view of the folder on screen, if a folder's view covers it (View ▸ Folder View), with what is changed of it
     /// on screen and not saved yet.
     var folderView: FolderViewOnScreen?
-    /// What a tab view applied with "Tab View First" or "Not Used" left on the pane: it decides what it covers while
-    /// the pane stays in its folder, and ends once the pane opens another (`BrowserPane+TabView.swift`).
-    var tabViewOverride: TabViewOverride?
-    /// An override waiting for the folder the pane is on its way to: the tab view's folder, or the new name of the
-    /// folder on screen, followed. It takes the place of `tabViewOverride` once that folder arrives.
-    var arrivingTabViewOverride: TabViewOverride?
     /// What the pane carried as it came into the folder on screen: what a setting goes back to in the pane once the
     /// folder keeps it, so a change made here before the folder was customized stays with the folder alone.
     var settingsOnArrival: PaneSettingsOnArrival?
@@ -256,7 +250,6 @@ final class BrowserPane {
     var shownViewMode: ExplorerViewMode { searchStore?.showsResults == true ? searchViewMode : shownMode }
 
     /// The folder's view, order and Folders First as on screen: its view's where it keeps them, else the pane's.
-    /// A tab view's override, where it holds, gives the pane's own in place of the view's (`folderViewShown`).
     var shownMode: ExplorerViewMode { folderViewShown(.view)?.view ?? viewMode }
     var shownSortBy: SortByPreference { folderViewShown(.sort)?.sort?.by ?? sortBy }
     var shownSortDirection: SortDirectionPreference { folderViewShown(.sort)?.sort?.direction ?? sortDirection }
@@ -483,7 +476,6 @@ final class BrowserPane {
         let path = shownFolderPath
         let followed = ExplorerTabs.followMovedPath(path, moves)
         guard !path.isEmpty, followed != path else { return }
-        followTabViewOverride(to: followed)
         if loaded {
             go(to: followed, history: .replace, cause: .followingDisk)
         } else {
@@ -819,15 +811,12 @@ final class BrowserPane {
         }
     }
 
-    /// The order `path` is read in with `view` laid over the pane: where a tab view's override holds there (the one on
-    /// the pane, or one waiting for the folder the pane goes to), what it covers is the pane's.
+    /// The order `path` is read in with `view` laid over the pane.
     private func readOrder(_ view: FolderViewOnScreen?, at path: String) -> (
         by: SortByPreference, direction: SortDirectionPreference, foldersFirst: Bool, groupBy: GroupByPreference
     ) {
-        let override = arrivingTabViewOverride ?? tabViewOverride
         func shown(_ setting: FolderViewSetting) -> FolderViewKeeps? {
-            PaneViewResolution.folderViewDecides(setting, onScreen: view, override: override, folder: path)
-                ? view?.shown : nil
+            PaneViewResolution.folderViewDecides(setting, onScreen: view) ? view?.shown : nil
         }
         return (
             shown(.sort)?.sort?.by ?? sortBy, shown(.sort)?.sort?.direction ?? sortDirection,
@@ -1078,7 +1067,6 @@ final class BrowserPane {
         folderPath = shownPath
         folderLetGo = false
         placeTaken = false
-        if opensAnotherFolder { arriveWithTabViewOverride(in: shownPath) }
         if opensAnotherFolder { settingsOnArrival = PaneSettingsOnArrival(self) }
         // Nothing to show where neither the folder left nor this one has a view: the common case does no more work.
         if opensAnotherFolder, folderView != nil || view != nil {
@@ -1204,7 +1192,7 @@ final class BrowserPane {
         if let search = searchStore, search.showsResults {
             searchViewMode = mode
             tab.updatePreferences { $0.searchViewMode = mode }
-        } else if changedByHand(.view), folderView?.shown.keeps(.view) == true {
+        } else if folderView?.shown.keeps(.view) == true {
             // A folder's view that keeps the view: changed on screen only, until Save.
             folderView?.shown.view = mode
         } else {
@@ -1225,7 +1213,7 @@ final class BrowserPane {
 
     /// Puts the folder in this order: it is read again ("replace"), and the selection is not kept.
     func setSort(_ field: SortByPreference, _ direction: SortDirectionPreference) {
-        if changedByHand(.sort), folderView?.shown.keeps(.sort) == true {
+        if folderView?.shown.keeps(.sort) == true {
             folderView?.shown.sort = FolderViewSort(by: field, direction: direction)
         } else {
             sortBy = field
@@ -1248,7 +1236,7 @@ final class BrowserPane {
             return
         }
         guard field.isForFolders, field != shownGroupBy else { return }
-        if changedByHand(.groupBy), folderView?.shown.keeps(.groupBy) == true {
+        if folderView?.shown.keeps(.groupBy) == true {
             folderView?.shown.groupBy = field
         } else {
             groupBy = field
@@ -1266,9 +1254,9 @@ final class BrowserPane {
             tab.updatePreferences { $0.searchGroupReversed = reversed }
             content.setSearchGroupReversed(searchGroupReversed)
         } else {
-            // Read before the view is written, and before a tab view's override lets go of it.
+            // Read before the view is written.
             let reversed = !shownGroupReversed
-            if changedByHand(.groupBy), folderView?.shown.keeps(.groupBy) == true {
+            if folderView?.shown.keeps(.groupBy) == true {
                 folderView?.shown.groupReversed = reversed ? true : nil
             } else {
                 groupReversed.toggle()
@@ -1281,9 +1269,9 @@ final class BrowserPane {
 
     /// Folders First on or off, for the folder's view where it keeps it.
     func toggleFoldersFirst() {
-        // The other way from what is on screen, before a tab view's override lets go of it.
+        // The other way from what is on screen.
         let turned = !shownFoldersFirst
-        if changedByHand(.foldersFirst), folderView?.shown.keeps(.foldersFirst) == true {
+        if folderView?.shown.keeps(.foldersFirst) == true {
             folderView?.shown.foldersFirst = turned
         } else {
             foldersFirst = turned
