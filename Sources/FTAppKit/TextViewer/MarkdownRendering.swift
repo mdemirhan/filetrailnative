@@ -3,9 +3,10 @@ import FTFoundation
 
 /// Markdown as the viewer's Preview shows it: the system's parser, drawn in the viewer's theme. A picture on the disk
 /// shows once it has been read (`MarkdownImages`), from Markdown or an HTML `<img>` (`MarkdownHTML`); one on the web
-/// is never fetched and shows as its text, as does one not read. Links stay links. A table is a table: each cell a paragraph in its own
-/// block of an `NSTextTable`, the header row bold on the code background, each column aligned as the Markdown says,
-/// which the Preview's text view draws as it lays out with TextKit 1.
+/// is never fetched and shows as its text, as does one not read. Links stay links, which the viewer follows
+/// (`MarkdownLink`). A table is a table: each cell a paragraph in its own block of an `NSTextTable`, the header row
+/// bold on the code background, each column aligned as the Markdown says, which the Preview's text view draws as it
+/// lays out with TextKit 1.
 @MainActor
 enum MarkdownRendering {
     /// The line of the Markdown a piece of the Preview comes from, counted from 1: the source and the Preview keep

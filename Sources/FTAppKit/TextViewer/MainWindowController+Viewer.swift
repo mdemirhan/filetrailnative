@@ -80,22 +80,33 @@ extension MainWindowController {
         }
     }
 
-    /// Back, Forward or a jump in the history to a file: its folder, then the file in place of it. False for a
-    /// folder, which the history opens as it always has.
+    /// Back, Forward or a jump in the history to a file: its folder, then the file in place of it. A file shown in
+    /// place already gives way to it, after asking about its edits: one a link in Markdown's Preview led from or to.
+    /// False for a folder, which the history opens as it always has.
     func openFileFromHistory(_ target: String, move: HistoryMove) -> Bool {
-        var isFolder: ObjCBool = false
-        guard FileManager.default.fileExists(atPath: target, isDirectory: &isFolder), !isFolder.boolValue,
-            let parent = ExplorerTabs.parentDirectoryPath(target)
-        else { return false }
+        guard Self.isFile(target), let parent = ExplorerTabs.parentDirectoryPath(target) else { return false }
         let pane = activePane
-        if pane.viewer != nil { return true }
-        if samePath(parent, pane.shownFolderPath) {
-            switch move {
-            case .back: _ = pane.navigationHistory.goBack()
-            case .forward: _ = pane.navigationHistory.goForward()
-            case .jump(let index): _ = pane.navigationHistory.jump(to: index)
-            default: return false
+        if let viewer = pane.viewer {
+            guard viewer.mode == .inPlace else { return true }
+            Task { [weak self] in
+                guard await viewer.confirmLeave(), let self, pane.viewer === viewer, self.activePane === pane else {
+                    return
+                }
+                if samePath(parent, pane.shownFolderPath) {
+                    guard Self.step(move, in: &pane.navigationHistory) else { return }
+                    if pane.content.listedEntry(at: target) != nil { pane.content.select(paths: [target]) }
+                    viewer.show(target, focus: true)
+                    self.updatePosition(of: viewer, in: pane)
+                    self.paneChanged(.history, in: pane)
+                } else if await self.navigate(to: parent, history: move), self.activePane === pane, pane.viewer == nil {
+                    pane.content.select(paths: [target])
+                    self.openViewer(in: pane, mode: .inPlace, path: target, focus: true)
+                }
             }
+            return true
+        }
+        if samePath(parent, pane.shownFolderPath) {
+            guard Self.step(move, in: &pane.navigationHistory) else { return false }
             pane.content.select(paths: [target])
             openViewer(in: pane, mode: .inPlace, path: target, focus: true)
             paneChanged(.history, in: pane)
@@ -109,6 +120,106 @@ extension MainWindowController {
             self.openViewer(in: pane, mode: .inPlace, path: target, focus: true)
         }
         return true
+    }
+
+    /// Whether something is at `path` that isn't a folder.
+    private static func isFile(_ path: String) -> Bool {
+        var isFolder: ObjCBool = false
+        return FileManager.default.fileExists(atPath: path, isDirectory: &isFolder) && !isFolder.boolValue
+    }
+
+    /// Moves `history` as `move` says, Back, Forward or a jump; false for any other move.
+    private static func step(_ move: HistoryMove, in history: inout NavigationHistory) -> Bool {
+        switch move {
+        case .back: _ = history.goBack()
+        case .forward: _ = history.goForward()
+        case .jump(let index): _ = history.jump(to: index)
+        default: return false
+        }
+        return true
+    }
+
+    /// Back while the active pane shows a file in place and the step before isn't the folder under it: a file there,
+    /// one a link in Markdown's Preview led from, shows in its place; another folder opens as Back opens one, after
+    /// asking about the file's edits. False otherwise: Back shows the folder under the file (`leaveFileInPlace`).
+    func backFromFileInPlace() -> Bool {
+        let pane = activePane
+        guard let viewer = pane.viewer, viewer.mode == .inPlace, let target = pane.navigationHistory.backTarget,
+            !samePath(target, pane.shownFolderPath)
+        else { return false }
+        if openFileFromHistory(target, move: .back) { return true }
+        afterLeavingViewer(of: pane) { $0.go(to: target, history: .back) }
+        return true
+    }
+
+    // MARK: Links in Markdown's Preview
+
+    /// A link clicked in the Preview of `viewer`, the viewer of `pane`. A web page or an email address opens in the
+    /// app the system has for it. A file shows in the same viewer, at the heading the link names: in place of the
+    /// folder as a step of Back, its own folder opened first if it is in another; beside the list, the viewer stops
+    /// following it. A folder opens in the pane as a step of Back, and a package is selected in its folder, never
+    /// opened. One that isn't there says so. A file with edits not saved is asked about first.
+    func openLink(_ link: MarkdownLink, from viewer: TextViewerController, in pane: BrowserPane) {
+        switch link {
+        case .heading:
+            return
+        case .other(let url):
+            openFile(url)
+        case .disk(let path, let heading):
+            Task { [weak self] in
+                let found = await BlockingWork.run { () -> (path: String, isFolder: Bool)? in
+                    let named = DiskPath(path).itemAsOnDisk().string
+                    var isFolder: ObjCBool = false
+                    guard FileManager.default.fileExists(atPath: named, isDirectory: &isFolder) else { return nil }
+                    return (named, isFolder.boolValue)
+                }
+                guard let self, pane.viewer === viewer else { return }
+                guard let found else { return self.showLinkMissing(path) }
+                guard await viewer.confirmLeave(), pane.viewer === viewer else { return }
+                if self.activePane !== pane { self.activate(pane) }
+                if found.isFolder && NSWorkspace.shared.isFilePackage(atPath: found.path) {
+                    self.revealOriginal(found.path)
+                } else if found.isFolder {
+                    self.go(to: found.path)
+                } else {
+                    await self.showLinkedFile(found.path, heading: heading, in: viewer, of: pane)
+                }
+            }
+        }
+    }
+
+    private func showLinkedFile(
+        _ path: String, heading: String?, in viewer: TextViewerController, of pane: BrowserPane
+    ) async {
+        guard viewer.mode == .inPlace else {
+            viewer.mode = .pinned
+            viewer.position = nil
+            viewer.show(path, focus: true, heading: heading)
+            commandsChanged()
+            return
+        }
+        let parent = DiskPath(path).parent.string
+        guard samePath(parent, pane.shownFolderPath) else {
+            guard await navigate(to: parent), activePane === pane, pane.viewer == nil else { return }
+            pane.content.select(paths: [path])
+            pane.navigationHistory.record(path, mode: .push)
+            openViewer(in: pane, mode: .inPlace, path: path, focus: true, heading: heading)
+            paneChanged(.history, in: pane)
+            return
+        }
+        if pane.content.listedEntry(at: path) != nil { pane.content.select(paths: [path]) }
+        pane.navigationHistory.record(path, mode: .push)
+        viewer.show(path, focus: true, heading: heading)
+        updatePosition(of: viewer, in: pane)
+        paneChanged(.history, in: pane)
+    }
+
+    private func showLinkMissing(_ path: String) {
+        showNotice(
+            title: "The Linked Item Can\u{2019}t Be Found",
+            message:
+                "\u{201C}\(NodePath.basename(path))\u{201D} isn\u{2019}t there. It may have been moved or deleted, or be on a disk or a server that isn\u{2019}t connected."
+        )
     }
 
     // MARK: In the other pane
@@ -276,12 +387,12 @@ extension MainWindowController {
 
     @discardableResult
     private func openViewer(
-        in pane: BrowserPane, mode: TextViewerController.Mode, path: String?, focus: Bool
+        in pane: BrowserPane, mode: TextViewerController.Mode, path: String?, focus: Bool, heading: String? = nil
     ) -> TextViewerController {
         let viewer = makeViewer(in: pane, mode: mode)
         // The list it covers lets go of the keyboard: the viewer has it while the file is read.
         if focus { window?.makeFirstResponder(viewer.view) }
-        viewer.show(path, focus: focus)
+        viewer.show(path, focus: focus, heading: heading)
         if mode == .inPlace { updatePosition(of: viewer, in: pane) }
         return viewer
     }
@@ -325,6 +436,10 @@ extension MainWindowController {
             if viewer.mode == .inPlace { viewer.position = nil }
             self.commandsChanged()
         }
+        viewer.onLink = { [weak self, weak pane, weak viewer] link in
+            guard let self, let pane, let viewer else { return }
+            self.openLink(link, from: viewer, in: pane)
+        }
         viewer.onStatusChange = { [weak pane] status in pane?.content.contentShell.pathBarRow.fileStatus = status }
         viewer.onTab = { [weak self, weak pane] in
             guard let self, let pane else { return }
@@ -347,7 +462,8 @@ extension MainWindowController {
     }
 
     /// Closes the viewer of `pane`, after asking about edits, and shows the pane's folder. A file in place leaves its
-    /// step in the history, with the file selected and the keyboard in the list.
+    /// step in the history, with the file selected and the keyboard in the list: Back to the folder, or the folder a
+    /// step of its own after a file a link in Markdown's Preview led from, so Back comes back to the file.
     @discardableResult
     func closeViewer(in pane: BrowserPane) async -> Bool {
         guard let viewer = pane.viewer else { return true }
@@ -357,8 +473,13 @@ extension MainWindowController {
         pane.viewer = nil
         pane.content.showViewer(nil)
         if viewer.mode == .inPlace, let path = viewer.path {
-            if pane.navigationHistory.current.map({ samePath($0, path) }) == true, pane.navigationHistory.canGoBack {
-                _ = pane.navigationHistory.goBack()
+            let history = pane.navigationHistory
+            if history.current.map({ samePath($0, path) }) == true, let back = history.backTarget {
+                if !samePath(back, pane.shownFolderPath) && Self.isFile(back) {
+                    pane.navigationHistory.record(pane.shownFolderPath, mode: .push)
+                } else {
+                    _ = pane.navigationHistory.goBack()
+                }
                 paneChanged(.history, in: pane)
             }
             if pane.content.listedEntry(at: path) != nil { pane.content.select(paths: [path]) }

@@ -63,6 +63,9 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     var onMoved: (_ from: String, _ to: String) -> Void = { _, _ in }
     /// The file shown went: to the Trash, deleted, or moved to another disk.
     var onGone: () -> Void = {}
+    /// A link clicked in Markdown's Preview to a file or a folder, a web page or an email address: the window's to
+    /// open. One to a heading of the file shown is the viewer's own.
+    var onLink: (MarkdownLink) -> Void = { _ in }
     /// The command of the app's own keys a key press is, if any: the page keys move the text; Save, Next File and
     /// Previous File are the viewer's.
     var commandForKey: (NSEvent) -> ShortcutCommandID? = { _ in nil }
@@ -103,6 +106,11 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
     private var changes = 0
     /// The file whose pictures are being read (its `loadNumber`), so one read goes at a time.
     private var readingImagesFor: Int?
+    /// The heading a link went to, and where the Preview was once there: pictures read after it move it down, and it
+    /// is gone to again while nothing has scrolled since.
+    private var headingShown: (name: String?, place: CGFloat)?
+    /// The heading to show once the file being read shows its Preview: a link to another file named one.
+    private var pendingHeading: String?
     /// What the Markdown Preview shows.
     var previewText: NSAttributedString { previewView.attributedString() }
     let quickLook = QuickLookHost()
@@ -191,6 +199,7 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         previewView.onEdit = { [weak self] in self?.setEditing(true) }
         previewView.commandForKey = { [weak self] event in self?.commandForKey(event) }
         previewView.onFocusChange = { [weak self] in self?.onFocusChange() }
+        previewView.onLink = { [weak self] link in self?.follow(link: link) }
         previewView.textContainerInset = NSSize(width: 24, height: 18)
         previewView.isVerticallyResizable = true
         previewView.minSize = .zero
@@ -295,10 +304,13 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
 
     /// Shows `path`, read off the main actor; nil shows nothing. A file already shown with edits is the caller's to ask
     /// about first (`confirmLeave`).
-    /// `editing`: Read or Edit; nil for the pane's.
-    func show(_ path: String?, focus: Bool = false, editing: Bool? = nil) {
+    /// `editing`: Read or Edit; nil for the pane's. `heading`: the heading of a Markdown file its Preview opens at, by
+    /// its name (`MarkdownLink.headingLine`).
+    func show(_ path: String?, focus: Bool = false, editing: Bool? = nil, heading: String? = nil) {
         let editing = editing ?? opensForEditing
         loadNumber += 1
+        pendingHeading = heading
+        headingShown = nil
         let number = loadNumber
         stopWatching?()
         stopWatching = nil
@@ -324,6 +336,10 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
             guard let self, number == self.loadNumber else { return }
             self.apply(file, keepingPlace: false)
             self.watch(file.path)
+            if let heading = self.pendingHeading {
+                self.pendingHeading = nil
+                self.showHeading(heading)
+            }
             // The text, or the viewer itself for a file that isn't text, so Esc and Tab reach it.
             if focus { self.view.window?.makeFirstResponder(self.keyboardView) }
             guard case .text = file.content else { return }
@@ -366,6 +382,11 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
                 textView.scrollRangeToVisible(NSRange(location: 0, length: 0))
             }
             showBody(language.hasPreview && showsPreview && !isEditing ? .preview : .text)
+            if place == nil {
+                // Its Preview starts at its top too: drawn anew, it would stay where the last file's was scrolled to.
+                previewView.setSelectedRange(NSRange(location: 0, length: 0))
+                previewView.scrollLineToTop(0)
+            }
         case .other:
             if let image = file.image {
                 imageView.image = image
@@ -463,9 +484,43 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
             guard !self.previewScroll.isHidden else { return }
             let place = self.previewScroll.contentView.bounds.origin
             self.renderPreview()
+            if let shown = self.headingShown, shown.place == place.y {
+                self.showHeading(shown.name)
+                return
+            }
             self.previewScroll.contentView.scroll(to: place)
             self.previewScroll.reflectScrolledClipView(self.previewScroll.contentView)
         }
+    }
+
+    // MARK: Links
+
+    /// A link clicked in the Preview: one to a heading of this file goes there, any other is the window's to open. One
+    /// that leads nowhere, or to a heading the file doesn't have, beeps.
+    private func follow(link: Any) {
+        guard let target = MarkdownLink.target(of: link, shown: filePath) else { return NSSound.beep() }
+        guard case .heading(let name) = target else { return onLink(target) }
+        if !showHeading(name) { NSSound.beep() }
+    }
+
+    /// The heading named `name` at the top of the Preview, or its top for nil. False when the Preview isn't shown or
+    /// has no such heading.
+    @discardableResult
+    func showHeading(_ name: String?) -> Bool {
+        guard !previewScroll.isHidden else { return false }
+        var location = 0
+        if let name {
+            guard let line = MarkdownLink.headingLine(name, in: textView.string) else { return false }
+            location = MarkdownRendering.location(ofSourceLine: line, in: previewView.attributedString())
+        }
+        // Laid out whole, as it is drawn, so it is as tall as the way to the heading.
+        if let manager = previewView.layoutManager, let container = previewView.textContainer {
+            manager.ensureLayout(for: container)
+            previewView.sizeToFit()
+        }
+        previewView.scrollLineToTop(location)
+        headingShown = (name, previewScroll.contentView.bounds.origin.y)
+        return true
     }
 
     // MARK: Read and Edit

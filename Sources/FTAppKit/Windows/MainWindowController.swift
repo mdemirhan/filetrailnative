@@ -342,7 +342,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     var servicesOverride: ExplorerServices?
     /// What Edit opens files with; tests give their own, so nothing opens on this Mac.
     var opener: SystemOpener = .workspace
-    /// Opens an activated file or app in what macOS chooses; tests give their own.
+    /// Opens an activated file or app, or a web or email link clicked in Markdown's Preview, in what macOS chooses;
+    /// tests give their own.
     var openFile: @MainActor (URL) -> Void = { NSWorkspace.shared.open($0) }
     /// The event being handled, which says whether a key is held down; tests give their own.
     var currentEvent: @MainActor () -> NSEvent? = { NSApp.currentEvent }
@@ -1802,6 +1803,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     // MARK: Actions
 
     @objc func goBack(_ sender: Any?) {
+        if backFromFileInPlace() { return }
         if leaveFileInPlace() { return }
         guard let target = navigationHistory.backTarget else { return }
         if openFileFromHistory(target, move: .back) { return }

@@ -14,6 +14,13 @@ final class ViewerTextView: NSTextView {
     var onEdit: () -> Void = {}
     /// The command of the app's own keys a key press is: the page keys move the text in Read and in Edit.
     var commandForKey: (NSEvent) -> ShortcutCommandID? = { _ in nil }
+    /// A link clicked, its `.link` value: the viewer's to follow. Without it, the system opens the link's address.
+    var onLink: ((Any) -> Void)?
+
+    override func clicked(onLink link: Any, at charIndex: Int) {
+        guard let onLink else { return super.clicked(onLink: link, at: charIndex) }
+        onLink(link)
+    }
 
     /// In Read, the keys a reader uses move the text, not an invisible caret: the arrows a line or a column, Space and
     /// Shift-Space a page, Home and End to the top and the bottom. The app's page and half-page keys move the text in

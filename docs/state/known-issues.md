@@ -130,4 +130,5 @@ If this is picked up: the disk says whether it keeps attributes this way (`getat
 - **Line endings are made one kind on Save**: a file that mixes them is written with the kind most of its lines have.
 - **Markdown has Source and Preview, not both side by side**, and HTML, CSV and SVG have no preview of their own.
 - **Markdown's Preview shows pictures on the Mac only**: one on the web shows as its description, by choice (see views.md). Of HTML only `<img>` is drawn, at its `width` and `height` and centered by `align="center"`; other tags show as their text. An animation shows its first frame, and past 256 MB of pictures in one file the rest show as their descriptions.
+- **Markdown's links are its own**: an HTML `<a href>` shows as its text, not a link, and an HTML anchor (`<a name>`, an `id`) is no place a link goes to; only headings are.
 - **The colors come from the app's own lexer**, which knows keywords, strings, comments and numbers, not the grammar: a regular expression in JavaScript or a here-document in a shell script is colored as the code around it.
