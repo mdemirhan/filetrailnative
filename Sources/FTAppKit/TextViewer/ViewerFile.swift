@@ -38,10 +38,11 @@ struct ViewerFile: @unchecked Sendable {
     /// A file up to this size is shown and can be edited.
     static let viewLimit: Int64 = 50 * 1024 * 1024
 
-    /// What Quick Look shows better than text: pictures, movies, sound, PDFs, fonts, archives, apps, documents.
+    /// What Quick Look shows better than text: pictures, movies, sound, PDFs, fonts, archives, apps, documents. RTF is
+    /// text to the system, but its text is markup: Quick Look shows it as the document it is.
     private static let previewTypes: [UTType] = [
         .image, .audiovisualContent, .pdf, .font, .archive, .diskImage, .application, .bundle, .presentation,
-        .spreadsheet, .executable,
+        .spreadsheet, .executable, .rtf,
     ]
 
     /// Reads `path`, off the main actor.
@@ -79,7 +80,7 @@ struct ViewerFile: @unchecked Sendable {
         if values.isDirectory == true { return file(values.isPackage == true ? .other : .folder) }
         // A name the viewer knows is read as text, whatever the system takes it for: `.ts` is a video to it.
         let named = TextLanguage.detect(fileName: NodePath.basename(path)) != .plainText
-        if !named, let type = values.contentType, !type.conforms(to: .text),
+        if !named, let type = values.contentType, !type.conforms(to: .text) || type.conforms(to: .rtf),
             previewTypes.contains(where: { type.conforms(to: $0) })
         {
             var picture = file(.other)
