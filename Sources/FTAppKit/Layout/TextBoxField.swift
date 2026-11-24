@@ -26,6 +26,34 @@ class TextBoxCell: NSTextFieldCell {
     /// centers it.
     func textFrame(forBounds rect: NSRect) -> NSRect { rect }
 
+    // A click that selects text that can't be edited puts it in the field editor, which lays it out 2 pt in from the
+    // frame it is given, where this cell draws it at its text frame's edge: given that frame 2 wider on each side,
+    // the text stays where it was drawn. A field that is typed in keeps the system's placing.
+    override func select(
+        withFrame rect: NSRect, in controlView: NSView, editor textObj: NSText, delegate: Any?, start selStart: Int,
+        length selLength: Int
+    ) {
+        super.select(
+            withFrame: editorFrame(rect, in: controlView), in: controlView, editor: textObj, delegate: delegate,
+            start: selStart, length: selLength)
+    }
+
+    override func edit(
+        withFrame rect: NSRect, in controlView: NSView, editor textObj: NSText, delegate: Any?, event: NSEvent?
+    ) {
+        super.edit(
+            withFrame: editorFrame(rect, in: controlView), in: controlView, editor: textObj, delegate: delegate,
+            event: event)
+    }
+
+    /// Where the field editor goes. Read-only text also keeps its runs (code, a mark) in it: without
+    /// `allowsEditingTextAttributes` the editor shows it plain, in the field's one font. It still can't be edited.
+    private func editorFrame(_ rect: NSRect, in controlView: NSView) -> NSRect {
+        guard let field = controlView as? NSTextField, !field.isEditable else { return rect }
+        field.allowsEditingTextAttributes = true
+        return textFrame(forBounds: rect).insetBy(dx: -2, dy: 0)
+    }
+
     override func drawInterior(withFrame cellFrame: NSRect, in controlView: NSView) {
         if let field = controlView as? NSTextField, field.currentEditor() != nil {
             super.drawInterior(withFrame: cellFrame, in: controlView)

@@ -141,7 +141,9 @@ public final class ThemedText: NSTextField, ThemeApplying {
         isBordered = false
         drawsBackground = false
         isSelectable = selectable
-        allowsEditingTextAttributes = false
+        // Selected, the text keeps its runs (code, emphasis): without this the field editor shows it plain. It still
+        // can't be edited.
+        allowsEditingTextAttributes = selectable
         focusRingType = .none
         lineBreakMode = wrapping ? .byWordWrapping : .byClipping
         usesSingleLineMode = !wrapping
