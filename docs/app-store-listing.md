@@ -55,7 +55,7 @@ SEARCH AS YOU TYPE
 • Results from the folder you are in appear as you type, each with the folder it lives in.
 • Plain text, glob or regular expression, by name or full path. Case and accents never get in the way: "resume" finds "Résumé".
 • No index to build or wait for. Widen a search to your Home folder or the whole disk with one click.
-• Inside a Git repository, leave out .git and everything .gitignore excludes.
+• Narrow by kind, size, date or tag as you type (kind:pdf size:>10mb), and leave out .git folders or any folder by name.
 • Group and sort results by folder, kind, date, size or tag.
 
 TWO FOLDERS, ONE WINDOW
