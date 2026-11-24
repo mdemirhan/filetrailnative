@@ -20,6 +20,11 @@ typedef struct {
     int threads;
     /// The threads' quality of service, a `qos_class_t`; 0 for user-initiated.
     int qos_class;
+    /// Symbolic links are listed too (never followed), for a search that asks for them.
+    int include_links;
+    /// Folders of these names (`skip_count` of them, as the disk spells them) aren't listed or gone into.
+    const char *const *skip_names;
+    int skip_count;
 } ft_search_options;
 
 /// What `ft_search_match` answers of an item.
@@ -29,16 +34,16 @@ typedef struct {
 #define FT_SEARCH_STOP 2
 
 /// Called on a worker thread for each file and folder the walk passes, with its whole path (NUL-terminated, `length`
-/// bytes without the NUL), where its name starts in it, and whether it is a folder: whether its name or path is what
-/// the search looks for (`FT_SEARCH_…`). Many threads call it at once, each with its own `worker`, from 0 up to the
-/// number of threads.
+/// bytes without the NUL), where its name starts in it, and whether it is a folder or a symbolic link: whether it is
+/// what the search looks for by what its folder lists of it (`FT_SEARCH_…`). Many threads call it at once, each with
+/// its own `worker`, from 0 up to the number of threads.
 typedef int (*ft_search_match)(void *context, int worker, const char *path, size_t length, size_t name_offset,
-                               int is_folder);
+                               int is_folder, int is_link);
 
 /// Called on a worker thread for each item matched that the walk keeps, with whether it is hidden (a name starting
-/// with a dot, or the flag that hides one). Returns 0 to go on, 1 to end the walk.
-typedef int (*ft_search_keep)(void *context, const char *path, size_t length, size_t name_offset, int is_folder,
-                              int is_hidden);
+/// with a dot, or the flag that hides one) and whether it is a symbolic link. Returns 0 to go on, 1 to end the walk.
+typedef int (*ft_search_keep)(void *context, int worker, const char *path, size_t length, size_t name_offset,
+                              int is_folder, int is_hidden, int is_link);
 
 /// How a walk ended: valid once `ft_search_run` has returned.
 typedef struct {

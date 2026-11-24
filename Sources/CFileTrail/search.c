@@ -50,6 +50,8 @@ typedef struct search_node {
 struct ft_search {
     char *root_path;
     ft_search_options options;
+    char **skip_names; /* owned copies of the options' */
+    size_t *skip_lengths;
     ft_search_match match;
     ft_search_keep keep;
     void *context;
@@ -186,6 +188,14 @@ static int search_is_gone(int errnum) { return errnum == ENOENT || errnum == ENO
 
 /* ── Listing a folder ────────────────────────────────────────────── */
 
+/* A folder of one of the names the search leaves out, as listed. */
+static int search_skips(ft_search *search, const char *name, size_t length) {
+    for (int index = 0; index < search->options.skip_count; index++) {
+        if (search->skip_lengths[index] == length && memcmp(search->skip_names[index], name, length) == 0) return 1;
+    }
+    return 0;
+}
+
 typedef struct {
     ft_search *search;
     int index;       /* which worker, for the match callback */
@@ -262,12 +272,14 @@ static void search_list(search_worker *worker, int fd, const char *folder, size_
             if (fstatat(fd, name, &info, AT_SYMLINK_NOFOLLOW) != 0) continue;
             type = S_ISDIR(info.st_mode) ? DT_DIR : S_ISREG(info.st_mode) ? DT_REG : DT_LNK;
         }
-        /* Files and folders only: no link is listed or followed. */
-        if (type != DT_REG && type != DT_DIR) continue;
+        /* Files and folders, and links when asked for: no link is followed. */
+        int is_link = type == DT_LNK;
+        if (type != DT_REG && type != DT_DIR && !(is_link && options->include_links)) continue;
         int is_folder = type == DT_DIR;
         int dotted = name[0] == '.';
         if (dotted && !options->include_hidden) continue;
         if (options->skip_git && name_length == 4 && memcmp(name, ".git", 4) == 0) continue;
+        if (is_folder && search_skips(search, name, name_length)) continue;
 
         /* The name the disk holds for the item, which is how the rest of the app names it. */
         const char *listed_name = name;
@@ -288,7 +300,7 @@ static void search_list(search_worker *worker, int fd, const char *folder, size_
             (strcmp(worker->path, "/Volumes") == 0 || strcmp(worker->path, "/System/Volumes") == 0)) {
             continue;
         }
-        int matched = search->match(search->context, worker->index, worker->path, length, prefix, is_folder);
+        int matched = search->match(search->context, worker->index, worker->path, length, prefix, is_folder, is_link);
         if (matched == FT_SEARCH_STOP) {
             search_stop(search);
             break;
@@ -302,7 +314,8 @@ static void search_list(search_worker *worker, int fd, const char *folder, size_
                 is_hidden = 1;
             }
             if (!is_hidden || options->include_hidden) {
-                if (search->keep(search->context, worker->path, length, prefix, is_folder, is_hidden) != 0) {
+                if (search->keep(search->context, worker->index, worker->path, length, prefix, is_folder, is_hidden,
+                                 is_link) != 0) {
                     search_stop(search);
                     break;
                 }
@@ -361,6 +374,34 @@ ft_search *ft_search_create(const char *root_path, ft_search_options options, ft
         return NULL;
     }
     search->options = options;
+    int count = options.skip_count > 0 && options.skip_names ? options.skip_count : 0;
+    search->options.skip_count = 0;
+    search->options.skip_names = NULL;
+    if (count > 0) {
+        search->skip_names = calloc((size_t)count, sizeof(char *));
+        search->skip_lengths = calloc((size_t)count, sizeof(size_t));
+        if (!search->skip_names || !search->skip_lengths) {
+            free(search->skip_names);
+            free(search->skip_lengths);
+            free(search->root_path);
+            free(search);
+            return NULL;
+        }
+        for (int index = 0; index < count; index++) {
+            const char *name = options.skip_names[index] ? options.skip_names[index] : "";
+            search->skip_names[index] = strdup(name);
+            search->skip_lengths[index] = strlen(name);
+            if (!search->skip_names[index]) {
+                for (int made = 0; made < index; made++) free(search->skip_names[made]);
+                free(search->skip_names);
+                free(search->skip_lengths);
+                free(search->root_path);
+                free(search);
+                return NULL;
+            }
+        }
+        search->options.skip_count = count;
+    }
     search->match = match;
     search->keep = keep;
     search->context = context;
@@ -463,6 +504,9 @@ ft_search_result ft_search_run(ft_search *search) {
 
 void ft_search_destroy(ft_search *search) {
     if (!search) return;
+    for (int index = 0; index < search->options.skip_count; index++) free(search->skip_names[index]);
+    free(search->skip_names);
+    free(search->skip_lengths);
     pthread_mutex_destroy(&search->lock);
     pthread_cond_destroy(&search->cond);
     free(search->root_path);

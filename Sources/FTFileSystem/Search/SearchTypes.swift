@@ -11,11 +11,13 @@ public struct SearchRequest: Sendable, Equatable {
     public var includeHidden: Bool
     /// Leave out `.git` folders.
     public var skipGitFolders: Bool
+    /// What an item must be besides its name: every one of them.
+    public var conditions: [SearchCondition]
 
     public init(
         rootPath: String, query: String, patternMode: SearchPatternModePreference = .text,
         matchScope: SearchMatchScopePreference = .name, recursive: Bool = true, includeHidden: Bool = false,
-        skipGitFolders: Bool = true
+        skipGitFolders: Bool = true, conditions: [SearchCondition] = []
     ) {
         self.rootPath = rootPath
         self.query = query
@@ -24,6 +26,7 @@ public struct SearchRequest: Sendable, Equatable {
         self.recursive = recursive
         self.includeHidden = includeHidden
         self.skipGitFolders = skipGitFolders
+        self.conditions = conditions
     }
 }
 
@@ -77,10 +80,13 @@ public struct SearchUpdate: Sendable, Equatable {
     public var error: String?
     /// The search met folders it couldn't read (no permission, a disk error): what is in them isn't among the results.
     public var unreadableFolders: Bool
+    /// How many items its conditions have read so far, beyond what their folders list; 0 for a search with none that
+    /// read.
+    public var itemsRead: Int
 
     public init(
         jobId: String, status: SearchJobStatus, items: [SearchResultItem], nextCursor: Int, done: Bool,
-        truncated: Bool, error: String?, unreadableFolders: Bool = false
+        truncated: Bool, error: String?, unreadableFolders: Bool = false, itemsRead: Int = 0
     ) {
         self.jobId = jobId
         self.status = status
@@ -90,6 +96,7 @@ public struct SearchUpdate: Sendable, Equatable {
         self.truncated = truncated
         self.error = error
         self.unreadableFolders = unreadableFolders
+        self.itemsRead = itemsRead
     }
 }
 
