@@ -26,9 +26,6 @@ typedef struct {
     /// Each item kept is read (`fstatat`, from its folder) and the read passed to `ft_search_keep`, for conditions
     /// that need what it holds. Otherwise an item is read only for the flag that hides it, when its name doesn't.
     int wants_stat;
-    /// Folders of these names (`skip_count` of them, as the disk spells them) aren't listed or gone into.
-    const char *const *skip_names;
-    int skip_count;
 } ft_search_options;
 
 /// What `ft_search_match` answers of an item.
@@ -36,6 +33,8 @@ typedef struct {
 #define FT_SEARCH_MATCH 1
 /// Ends the walk.
 #define FT_SEARCH_STOP 2
+/// A folder the search leaves out: it is no match, and what is in it isn't walked.
+#define FT_SEARCH_SKIP 3
 
 /// Called on a worker thread for each file and folder the walk passes, with its whole path (NUL-terminated, `length`
 /// bytes without the NUL), where its name starts in it, and whether it is a folder or a symbolic link: whether it is
@@ -46,9 +45,10 @@ typedef int (*ft_search_match)(void *context, int worker, const char *path, size
 
 /// Called on a worker thread for each item matched that the walk keeps, with whether it is hidden (a name starting
 /// with a dot, or the flag that hides one), whether it is a symbolic link, and what reading it gave (NULL when it
-/// wasn't read, or couldn't be). Returns 0 to go on, 1 to end the walk.
+/// wasn't read, or couldn't be). `folder` is its folder, open, for the length of the call: an item whose path is too
+/// long for a call by path is reached from it. Returns 0 to go on, 1 to end the walk.
 typedef int (*ft_search_keep)(void *context, int worker, const char *path, size_t length, size_t name_offset,
-                              int is_folder, int is_hidden, int is_link, const struct stat *info);
+                              int is_folder, int is_hidden, int is_link, const struct stat *info, int folder);
 
 /// How a walk ended: valid once `ft_search_run` has returned.
 typedef struct {

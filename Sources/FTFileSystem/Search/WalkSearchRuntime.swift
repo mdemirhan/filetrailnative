@@ -66,6 +66,10 @@ public final class WalkSearchRuntime: @unchecked Sendable {
         func match(_ path: UnsafeRawBufferPointer, nameOffset: Int, worker: Int, isFolder: Bool, isLink: Bool) -> Int32
         {
             let pathBytes = path.bindMemory(to: UInt8.self)
+            // A folder the search leaves out, before anything else is asked of it: neither listed nor gone into.
+            if isFolder, conditions.skips(UnsafeBufferPointer(rebasing: pathBytes[nameOffset...])) {
+                return Int32(FT_SEARCH_SKIP)
+            }
             let scratch = scratches[worker % scratches.count]
             switch match.outcome(path: pathBytes, nameOffset: nameOffset, worker: worker, scratch: scratch) {
             case .noMatch:
@@ -82,18 +86,45 @@ public final class WalkSearchRuntime: @unchecked Sendable {
             }
         }
 
+        /// `/.vol/<disk>/<number>`: a path to the item named at `nameOffset` of `path`, in the open `folder`, that
+        /// is short however deep the item is. Nil where it can't be read from its folder; a disk that has no such
+        /// paths (FAT, a network disk) fails the reads made by it, as a path too long does.
+        static func pathByNumber(
+            _ path: UnsafeRawBufferPointer, nameOffset: Int, folder: Int32, info: inout stat?
+        ) -> String? {
+            guard folder >= 0, let base = path.baseAddress else { return nil }
+            if info == nil {
+                // The walk's path ends in a NUL, so the name is a C string.
+                var read = stat()
+                let name = (base + nameOffset).assumingMemoryBound(to: CChar.self)
+                guard fstatat(folder, name, &read, AT_SYMLINK_NOFOLLOW) == 0 else { return nil }
+                info = read
+            }
+            return info.map { "/.vol/\($0.st_dev)/\($0.st_ino)" }
+        }
+
         /// A match the walk keeps, from a worker thread. True ends the walk: the results reached the limit.
         /// The conditions that read the item are checked here, of what the name and the entry kept.
         func keep(
             _ path: UnsafeRawBufferPointer, nameOffset: Int, isFolder: Bool, isHidden: Bool, isLink: Bool,
-            info: UnsafePointer<stat>? = nil
+            info: UnsafePointer<stat>? = nil, folder: Int32 = -1
         ) -> Bool {
             let fullPath = String(decoding: path, as: UTF8.self)
-            if conditions.readsEachItem { read.withLock { $0 += 1 } }
-            guard
-                conditions.keepsByItem(
-                    path: fullPath, isFolder: isFolder, isHidden: isHidden, isLink: isLink, info: info?.pointee)
-            else { return false }
+            if conditions.readsEachItem {
+                read.withLock { $0 += 1 }
+                // The walk goes deeper than a path one call takes (`PATH_MAX`): the conditions' reads, which are by
+                // path, then go by the item's number on its disk, found from its folder.
+                var read = info?.pointee
+                let readPath =
+                    path.count >= Int(PATH_MAX)
+                    ? Self.pathByNumber(path, nameOffset: nameOffset, folder: folder, info: &read) : nil
+                guard
+                    conditions.keepsByItem(
+                        path: readPath ?? fullPath, isFolder: isFolder, isHidden: isHidden, isLink: isLink, info: read)
+                else { return false }
+            } else if !conditions.keepsByItem(path: fullPath, isFolder: isFolder, isHidden: isHidden, isLink: isLink) {
+                return false
+            }
             let name = String(decoding: path[nameOffset...], as: UTF8.self)
             // The folder is the path up to the slash before the name ("/" for an item at the top of the disk).
             let parentPath =
@@ -174,21 +205,13 @@ public final class WalkSearchRuntime: @unchecked Sendable {
         let walk = Walk(
             rootPath: rootPath, match: match, conditions: conditions, limit: limit,
             threads: threads > 0 ? threads : Self.defaultThreads)
-        // The names are copied by the walk as it is made.
-        let skipped = conditions.skippedFolders.map { strdup($0) }
-        defer {
-            for name in skipped { free(name) }
-        }
-        let handle: OpaquePointer? = skipped.map { UnsafePointer($0) }.withUnsafeBufferPointer { names in
-            let options = ft_search_options(
-                recursive: request.recursive ? 1 : 0, include_hidden: request.includeHidden ? 1 : 0,
-                skip_git: request.skipGitFolders ? 1 : 0, skip_system_volumes: rootPath == "/" ? 1 : 0,
-                threads: Int32(threads), qos_class: 0, include_links: conditions.wantsLinks ? 1 : 0,
-                wants_stat: conditions.needsStat ? 1 : 0, skip_names: names.baseAddress,
-                skip_count: Int32(names.count))
-            return ft_search_create(
-                rootPath, options, Self.match, Self.keep, Unmanaged.passUnretained(walk).toOpaque())
-        }
+        let options = ft_search_options(
+            recursive: request.recursive ? 1 : 0, include_hidden: request.includeHidden ? 1 : 0,
+            skip_git: request.skipGitFolders ? 1 : 0, skip_system_volumes: rootPath == "/" ? 1 : 0,
+            threads: Int32(threads), qos_class: 0, include_links: conditions.wantsLinks ? 1 : 0,
+            wants_stat: conditions.needsStat ? 1 : 0)
+        let handle = ft_search_create(
+            rootPath, options, Self.match, Self.keep, Unmanaged.passUnretained(walk).toOpaque())
         guard let handle else {
             return failed(Errno.description(of: ENOMEM))
         }
@@ -235,13 +258,13 @@ public final class WalkSearchRuntime: @unchecked Sendable {
     }
 
     private static let keep: ft_search_keep = {
-        context, _, path, length, nameOffset, isFolder, isHidden, isLink, info in
+        context, _, path, length, nameOffset, isFolder, isHidden, isLink, info, folder in
         guard let context, let path else { return 1 }
         let walk = Unmanaged<Walk>.fromOpaque(context).takeUnretainedValue()
         let bytes = UnsafeRawBufferPointer(start: path, count: length)
         return walk.keep(
             bytes, nameOffset: nameOffset, isFolder: isFolder != 0, isHidden: isHidden != 0, isLink: isLink != 0,
-            info: info) ? 1 : 0
+            info: info, folder: folder) ? 1 : 0
     }
 
     private func finish(_ jobId: String, walk: Walk, result: ft_search_result) {

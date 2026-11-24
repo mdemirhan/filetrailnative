@@ -29,20 +29,6 @@ import Testing
         #expect(
             chip(.size(SearchSizeRule(comparison: .smaller, value: 1.5, unit: .kilobytes)))
                 == "Size is smaller than 1.5 KB")
-        #expect(chip(.pictureSize(SearchPixelRule(larger: true, pixels: 3840))) == "Picture is larger than 3,840 px")
-        #expect(chip(.pictureSize(SearchPixelRule(larger: false, pixels: 100))) == "Picture is smaller than 100 px")
-        #expect(chip(.pictureSize(SearchPixelRule(comparison: .equal, pixels: 1920))) == "Picture is 1,920 px")
-        #expect(
-            chip(.not(.pictureSize(SearchPixelRule(comparison: .equal, pixels: 1920)))) == "Picture is not 1,920 px")
-        #expect(
-            chip(.not(.pictureSize(SearchPixelRule(larger: true, pixels: 3840))))
-                == "Picture is not larger than 3,840 px")
-        // Pixels are whole: exactly is exactly.
-        let exactly = SearchPixelRule(comparison: .equal, pixels: 300)
-        #expect(exactly.holds(300) && !exactly.holds(299) && !exactly.holds(301))
-        #expect(
-            SearchPixelRule(larger: true, pixels: 300).holds(301)
-                && !SearchPixelRule(larger: true, pixels: 300).holds(300))
         #expect(chip(.date(.modified, .withinLast(2, .weeks))) == "Modified within the last 2 weeks")
         #expect(chip(.date(.lastOpened, .moreThanAgo(1, .years))) == "Last opened more than 1 year ago")
         #expect(chip(.date(.created, .thisMonth)) == "Created this month")
@@ -65,8 +51,19 @@ import Testing
             span(.thisMonth) == SearchDateSpan(start: date("2026-11-01T00:00:00Z"), end: date("2026-12-01T00:00:00Z")))
         // The days counted whole: the last 2 days are yesterday and today.
         #expect(span(.withinLast(2, .days)) == SearchDateSpan(start: date("2026-11-23T00:00:00Z")))
-        #expect(span(.withinLast(1, .months)) == SearchDateSpan(start: date("2026-10-24T00:00:00Z")))
-        #expect(span(.moreThanAgo(1, .years)) == SearchDateSpan(end: date("2025-11-24T15:00:00Z")))
+        // A week is 7 days, as `7d` is, and a month or a year ends today as they do: one day after the same day
+        // of the month, or the year, before.
+        #expect(span(.withinLast(7, .days)) == SearchDateSpan(start: date("2026-11-18T00:00:00Z")))
+        #expect(span(.withinLast(1, .weeks)) == span(.withinLast(7, .days)))
+        #expect(span(.withinLast(1, .months)) == SearchDateSpan(start: date("2026-10-25T00:00:00Z")))
+        // More than so long ago is whatever the last so long leaves out, to the day: an item is in one or the other.
+        #expect(span(.moreThanAgo(1, .days)) == SearchDateSpan(end: date("2026-11-24T00:00:00Z")))
+        #expect(span(.moreThanAgo(1, .years)) == SearchDateSpan(end: date("2025-11-25T00:00:00Z")))
+        for unit in SearchTimeUnit.allCases {
+            for count in [1, 2, 7, 30] {
+                #expect(span(.withinLast(count, unit)).start == span(.moreThanAgo(count, unit)).end)
+            }
+        }
         let first = date("2026-11-01T10:00:00Z")
         let last = date("2026-11-03T18:00:00Z")
         #expect(span(.before(first)) == SearchDateSpan(end: date("2026-11-01T00:00:00Z")))

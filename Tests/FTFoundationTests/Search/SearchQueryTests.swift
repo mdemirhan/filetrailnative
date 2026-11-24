@@ -127,24 +127,6 @@ import Testing
         #expect(query("ext:.HEIC,jpg").conditions == [.fileExtension(["heic", "jpg"])])
         #expect(query("ext:.").hasUnfinished)
         #expect(query("ext:tar.gz").hasUnfinished)
-        #expect(query("picture:>4k").conditions == [.pictureSize(SearchPixelRule(larger: true, pixels: 3840))])
-        #expect(query("picture:<1920").conditions == [.pictureSize(SearchPixelRule(larger: false, pixels: 1920))])
-        // Alone, that size exactly, as a file's size alone is that size.
-        #expect(query("picture:1920").conditions == [.pictureSize(SearchPixelRule(comparison: .equal, pixels: 1920))])
-        #expect(query("picture:hd").conditions == query("picture:1920").conditions)
-        #expect(query("picture:4k").conditions == [.pictureSize(SearchPixelRule(comparison: .equal, pixels: 3840))])
-        #expect(query("picture:8k").conditions == [.pictureSize(SearchPixelRule(comparison: .equal, pixels: 7680))])
-        #expect(query("picture:2k").conditions == [.pictureSize(SearchPixelRule(comparison: .equal, pixels: 2000))])
-        #expect(query("picture:>HD").conditions == [.pictureSize(SearchPixelRule(larger: true, pixels: 1920))])
-        // Not that size, nor larger, nor smaller.
-        let hd = SearchPixelRule(comparison: .equal, pixels: 1920)
-        #expect(query("picture:!1920").conditions == [.not(.pictureSize(hd))])
-        #expect(query("!picture:hd").conditions == [.not(.pictureSize(hd))])
-        #expect(
-            query("picture:!>4k").conditions == [.not(.pictureSize(SearchPixelRule(larger: true, pixels: 3840)))])
-        for text in ["picture:0", "picture:!0", "picture:-5", "picture:1920px", "picture:4kk", "picture:=1920"] {
-            #expect(query(text).conditions.isEmpty, "\(text)")
-        }
         #expect(query("tag:Red,work").conditions == [.tags(["Red", "work"], all: false)])
         #expect(query("tag:Café").conditions == [.tags(["Café"], all: false)])
         #expect(
@@ -183,7 +165,7 @@ import Testing
         #expect(query("created:week").conditions == [.date(.created, .thisWeek)])
         #expect(query("opened:7d").conditions == [.date(.lastOpened, .withinLast(7, .days))])
         #expect(query("added:2w").conditions == [.date(.added, .withinLast(2, .weeks))])
-        #expect(query("taken:>1y").conditions == [.date(.taken, .moreThanAgo(1, .years))])
+        #expect(query("created:>1y").conditions == [.date(.created, .moreThanAgo(1, .years))])
         #expect(
             query("modified:2026-03-15").conditions == [.date(.modified, .between(day(2026, 3, 15), day(2026, 3, 15)))])
         // A month is its first to its last day.
@@ -265,7 +247,8 @@ import Testing
         let pieces = [
             "\"", " ", "  ", "\t", ":", ",", "kind", "kind:", "size:>", "1k", "tag:", "a", "pdf", "📁", "e\u{301}", "..",
             "is:", "-", ">", "<", "\u{65E5}", "skip:", "2026-01", "\n", "!", "!!", "perm:", "755", "rwx", "..",
-            "\"!", "1.50", "mb", "!kind:", "size:1", "not:",
+            "\"!", "1.50", "mb", "!kind:", "size:1", "not:", "99999999999999999999", "9999999999", "gb", "modified:",
+            "y", "d", "1\u{FE0F}\u{20E3}", "7\u{301}", "tag:\"", "skip:!\"", "\",", "١٢",
         ]
         var state: UInt64 = 0x9E37_79B9_7F4A_7C15
         func next(_ bound: Int) -> Int {
@@ -285,6 +268,15 @@ import Testing
             }
             let read = query(text)
             #expect(read.names == NameTerms.words(read.text), "\(text.debugDescription)")
+            // What each condition is made into when the search runs.
+            for condition in read.conditions {
+                var asked = condition
+                if case .not(let inner) = condition { asked = inner }
+                if case .size(let rule) = asked { _ = rule.bounds }
+                if case .date(_, let rule) = asked { _ = rule.span(now: day(2026, 11, 24), calendar: calendar) }
+                _ = SearchConditionText.chip(condition)
+            }
+            _ = SearchQuery.problems(text, caret: length, whileTyping: true)
             #expect(
                 read.conditions.count == words.filter { if case .condition = $0.role { true } else { false } }.count,
                 "\(text.debugDescription)")
@@ -359,10 +351,10 @@ import Testing
     // A word is found by its name's words as well as by what is typed for it.
     @Test func aWordIsFoundByItsName() throws {
         let dates = try #require(suggest("d"))
-        #expect(dates.rows.map(\.hint) == ["modified:", "created:", "added:", "opened:", "taken:"])
-        #expect(try #require(suggest("date")).rows.count == 5)
-        #expect(try #require(suggest("tak")).rows.map(\.hint) == ["taken:"])
-        #expect(try #require(suggest("si")).rows.map(\.hint) == ["size:", "picture:"])
+        #expect(dates.rows.map(\.hint) == ["modified:", "created:", "added:", "opened:"])
+        #expect(try #require(suggest("date")).rows.count == 4)
+        #expect(try #require(suggest("mod")).rows.map(\.hint) == ["modified:"])
+        #expect(try #require(suggest("si")).rows.map(\.hint) == ["size:"])
         #expect(try #require(suggest("Ta")).rows.map(\.hint).contains("tag:"))
     }
 

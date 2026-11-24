@@ -6,6 +6,9 @@ public enum SearchTiming {
     public static let liveSearchMinLength = 2
     /// …and the keyboard has been still for this long.
     public static let liveSearchDelay: TimeInterval = 0.4
+    /// Text that only narrows the results on screen narrows them once the keyboard has been still for this long: a
+    /// word typed at speed filters them once, at its end, not at each of its letters. Return doesn't wait.
+    public static let refineDelay: TimeInterval = 0.15
     /// The search on screen is asked for news this often.
     public static let pollInterval: TimeInterval = 0.12
     /// A background tab's search, this often.

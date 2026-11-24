@@ -569,18 +569,13 @@ extension HelpContent {
                                 "A size alone is that size to its last digit: 1.5 MB up to 1.6 MB; `size:1mb` is 1 MB up to 2 MB, and `size:1000b` exactly 1,000 bytes"
                         ),
                         HelpRow(
-                            label: "picture:>4k", code: true,
-                            description:
-                                "A picture’s longer side: `1920` or `hd` exactly, `>4k` larger, `>=hd` HD or larger, `<1920` smaller"
-                        ),
-                        HelpRow(
                             label: "Dates",
                             description:
-                                "`modified:`, `created:`, `added:`, `opened:` and `taken:` take today, yesterday, week, month or year; `7d` within the last 7 days, `>1y` more than a year ago; a day `2026-03-15` or a month `2026-03`, with `<` before or `>` after it, `>=` from it on or `<=` to its end; or `2026-01..2026-03` between. Never opened counts as long ago."
+                                "`modified:`, `created:`, `added:` and `opened:` take today, yesterday, week, month or year; `7d` within the last 7 days, `>1y` more than a year ago; a day `2026-03-15` or a month `2026-03`, with `<` before or `>` after it, `>=` from it on or `<=` to its end; or `2026-01..2026-03` between. Never opened counts as long ago."
                         ),
                         HelpRow(
                             label: "tag:red", code: true,
-                            description: "Finder’s tags, by name"),
+                            description: "Finder’s tags, by name, in quotes when the name has a space: `tag:\"To Do\"`"),
                         HelpRow(
                             label: "is:locked", code: true,
                             description:
@@ -592,16 +587,18 @@ extension HelpContent {
                         ),
                         HelpRow(
                             label: "skip:node_modules", code: true,
-                            description: "Leaves out every folder of that name, and what is in it"),
+                            description:
+                                "Leaves out every folder of that name, and what is in it, whatever its capitals; quotes for a name with a space: `skip:\"My Builds\"`"
+                        ),
                         HelpRow(
                             label: "All or either",
                             description:
-                                "Every word must match: `tag:red tag:blue` finds items with both tags, and `size:>1mb size:<10mb` those between 1 and 10 MB. A comma gives a choice: `tag:red,blue` finds items with either tag, and `kind:pdf,picture` PDFs and pictures."
+                                "Every word must match: `tag:red tag:blue` finds items with both tags, and `size:>1mb size:<10mb` those between 1 and 10 MB. A comma gives a choice: `tag:red,blue` finds items with either tag, and `kind:pdf,picture` PDFs and pictures. Kinds, extensions, tags, permissions and folders skipped take a comma; an attribute is one to a word, so `is:hidden is:locked` for both."
                         ),
                         HelpRow(
                             label: "Not",
                             description:
-                                "`!` before a value asks for anything else: `kind:!pdf`, `tag:!red`, `ext:!tmp`, `perm:!777`, `size:!1mb`, `picture:!hd`, `modified:!today`; `kind:!pdf,picture` is neither. Before the whole word it is the same: `!tag:red` is `tag:!red`. A name without a word: `!draft`."
+                                "`!` before a value asks for anything else: `kind:!pdf`, `tag:!red`, `ext:!tmp`, `perm:!777`, `size:!1mb`, `modified:!today`; `kind:!pdf,picture` is neither. Before the whole word it is the same: `!tag:red` is `tag:!red`. A name without a word: `!draft`."
                         ),
                         HelpRow(
                             label: "No text needed",
@@ -686,7 +683,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Limits",
                             description:
-                                "Search stops at \(FormatLocale.count(SearchLimits.resultLimit)) results. Symbolic links are not searched for; aliases are. What you have no permission to read is passed over, and the status bar says so, beside the count."
+                                "Search stops at \(FormatLocale.count(SearchLimits.resultLimit)) results. Symbolic links are not searched for; aliases are. What you have no permission to read is passed over."
                         ),
                     ]),
             ]),

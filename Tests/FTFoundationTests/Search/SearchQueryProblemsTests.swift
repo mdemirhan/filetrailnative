@@ -13,14 +13,13 @@ import Testing
         let typing = [
             "kind:", "kind:p", "kind:pd", "kind:pdf,p", "kind:pic", "ext:do", "ext:.d", "size:", "size:1", "size:1.",
             "size:1.5", "size:1m", "size:1k", "size:>", "size:<5", "size:>1k", "size:1mb.", "size:1mb..", "size:1mb..2",
-            "size:1mb..2m", "picture:>", "picture:>4", "picture:h", "picture:<19", "picture:19", "picture:!",
-            "picture:!>4", "!picture:h", "modified:to", "modified:yest",
+            "size:1mb..2m", "modified:to", "modified:yest",
             "modified:7", "modified:>1", "modified:2026", "modified:2026-", "modified:2026-0", "modified:2026-03-1",
             "modified:2026-03.", "modified:2026-03..", "modified:2026-01..2026-0", "modified:<2026", "opened:w",
             "is:lo", "not:hid", "perm:", "perm:7", "perm:75", "perm:?5", "perm:rw", "perm:rwxr-", "perm:-rw",
             "perm:drwx", "perm:???r", "kind:!pd", "!kind:pd", "is:!lo", "size:!", "size:!5.6", "size:!5.6k",
-            "!size:1", "modified:!to", "!modified:7", "taken:!2026-0", "size:>=", "size:=", "size:=>", "size:<=1",
-            "size:=<1.5m", "size:!>=1", "picture:>=", "picture:=", "picture:<=h", "picture:=>19", "modified:>=",
+            "!size:1", "modified:!to", "!modified:7", "size:>=", "size:=", "size:=>", "size:<=1",
+            "size:=<1.5m", "size:!>=1", "modified:>=",
             "modified:=", "modified:>=2026-0", "modified:<=2026", "modified:=>1", "modified:>=7d",
         ]
         for text in typing {
@@ -34,13 +33,13 @@ import Testing
     @Test func wordsNoTypingCanSave() throws {
         let hopeless = [
             "kind:zzz", "kind:pdf,zz", "kind:nothing,pdf", "ext:d-o", "ext:do.c", "size:x", "size:1x", "size:1mbx",
-            "size:0mb", "size:>1mb..", "size:1..2mb", "size:1tb", "size:mb", "picture:x", "picture:4kk",
-            "picture:hdx", "modified:zz", "modified:0d", "modified:2026-13", "modified:2026-1-", "modified:20266",
+            "size:0mb", "size:>1mb..", "size:1..2mb", "size:1tb", "size:mb", "modified:zz", "modified:0d",
+            "modified:2026-13", "modified:2026-1-", "modified:20266",
             "modified:<7d", "modified:2026-02-32", "is:zzz", "not:hiddenx", "perm:8", "perm:77777", "perm:rwz",
             "perm:rwxr-xr-xx", "perm:www", "perm:wwwwwwwww", "!!kind:pdf", "kind:!!pdf", "size:!!1", "!size:!1",
-            "modified:!!7d", "skip:!x", "picture:!!4k", "!picture:!4k", "picture:>!4k", "picture:=4k", "size:=1",
+            "modified:!!7d", "skip:!x", "size:=1",
             "size:==", "size:>=>", "size:>=1mb..",
-            "size:<>1", "modified:<=7d", "modified:=7", "modified:>=2026-01..", "picture:>==",
+            "size:<>1", "modified:<=7d", "modified:=7", "modified:>=2026-01..",
         ]
         for text in hopeless {
             let read = try #require(word(text), "\(text)")
@@ -68,8 +67,6 @@ import Testing
         #expect(perm.title == "“perm:www” can’t be read")
         #expect(perm.detail == SearchQueryKey.perm.expects)
         #expect(perm.message == "“perm:www” can’t be read. " + SearchQueryKey.perm.expects)
-        #expect(SearchQuery.problems("picture:!>4k").isEmpty)
-        #expect(try #require(SearchQuery.problems("picture:x").first).detail == SearchQueryKey.picture.expects)
         #expect(SearchQuery.problems("size:!5.6k").isEmpty)
         #expect(try #require(SearchQuery.problems("skip:!x").first).detail.contains("already left out"))
         #expect(try #require(SearchQuery.problems("!!kind:pdf").first).detail == "One ! is enough")

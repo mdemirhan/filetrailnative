@@ -38,30 +38,6 @@ public enum DatesTaken {
             ?? localDate(fromExif: exif[kCGImagePropertyExifDateTimeDigitized])
     }
 
-    /// The longer side of the picture at `path`, in pixels, from its header alone; nil for anything that isn't a
-    /// picture, or can't be read.
-    static func longerSide(_ path: String) -> Int? {
-        let ext = String(NodePath.extname(path).dropFirst())
-        guard !ext.isEmpty, let type = UTType(filenameExtension: ext), type.conforms(to: .image) else { return nil }
-        let options = [kCGImageSourceShouldCache: false] as CFDictionary
-        guard let source = CGImageSourceCreateWithURL(DiskPath(path).url(isDirectory: false) as CFURL, options),
-            let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, options) as? [CFString: Any],
-            let width = properties[kCGImagePropertyPixelWidth] as? Int,
-            let height = properties[kCGImagePropertyPixelHeight] as? Int
-        else { return nil }
-        return max(width, height)
-    }
-
-    /// When the photo at `path` was taken, on the clock of this Mac; nil for anything else.
-    static func takenDate(_ path: String) -> Date? {
-        guard let text = dateTaken(path) else { return nil }
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = .current
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-        return formatter.date(from: text)
-    }
-
     private static func dateTaken(_ path: String) -> String? {
         let ext = String(NodePath.extname(path).dropFirst())
         guard !ext.isEmpty, let type = UTType(filenameExtension: ext), type.conforms(to: .image) else { return nil }

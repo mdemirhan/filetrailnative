@@ -373,6 +373,25 @@ public struct NameMatcher: Sendable {
         folded.count >= letters.count && letters.indices.allSatisfy { same($0, folded[$0]) }
     }
 
+    /// Whether `name` is the text, whole: its letters and no others, compared as any match is (case aside, a plain
+    /// letter being the letter with or without an accent).
+    public func isWhole(_ name: String) -> Bool {
+        if let bytes = ascii,
+            let result = withASCII(name, { $0.count == bytes.count && Self.asciiRun(bytes, in: $0, prefixOnly: true) })
+        {
+            return result
+        }
+        let folded = FoldedText(name).letters
+        return folded.count == letters.count && isPrefix(of: folded)
+    }
+
+    /// The same of a name given as its UTF-8 bytes, when they are all ASCII; nil when they aren't.
+    public func isWhole(asciiBytes bytes: UnsafeBufferPointer<UInt8>) -> Bool? {
+        for byte in bytes where byte >= 0x80 { return nil }
+        guard let needle = ascii else { return false }
+        return needle.count == bytes.count && Self.asciiRun(needle, in: bytes, prefixOnly: true)
+    }
+
     /// Whether `name` holds the text as a run of letters, whatever the mode.
     public func isContained(in name: String, cache: FoldedNameCache? = nil) -> Bool {
         if let bytes = ascii, let result = withASCII(name, { Self.asciiRun(bytes, in: $0, prefixOnly: false) }) {

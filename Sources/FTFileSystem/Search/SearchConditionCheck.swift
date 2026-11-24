@@ -1,7 +1,7 @@
 // What a search's conditions ask of each item the walk passes, checked cheapest first: what its folder's entry tells
 // (kind, extension, a link) as its name is matched, then, of what is still kept, one `lstat` (size, the modified and
 // created dates, locked, read-only, can be run, empty), and last the reads that cost more (the date added and last
-// opened, an alias, tags, the date taken and a picture's size), each only for a search that asks for it, as "Nothing
+// opened, an alias, tags), each only for a search that asks for it, as "Nothing
 // is read before it is needed" allows: the search asks for it.
 import Darwin
 import FTFoundation
@@ -18,9 +18,6 @@ struct SearchConditionCheck: Sendable {
     private let size: (above: Int64?, below: Int64?)?
     /// Sizes a file is none of (`size:!1mb`), each over `above` and under `below`.
     private let excludedSizes: [(above: Int64?, below: Int64?)]
-    private let pixels: [SearchPixelRule]
-    /// Pictures' sizes a picture is none of (`picture:!1920`).
-    private let excludedPixels: [SearchPixelRule]
     /// Each date asked about, and whether it is asked for not (`modified:!today`).
     private let dates: [(SearchDateField, SearchDateRule, SearchDateSpan, not: Bool)]
     private let attributes: [(SearchAttribute, Bool)]
@@ -37,8 +34,10 @@ struct SearchConditionCheck: Sendable {
     private let excludedModes: [SearchPermission]
     private let lastOpened: @Sendable (String) -> Int64?
 
-    /// Folders not gone into, by name.
-    let skippedFolders: [String]
+    /// Folders not gone into, by name: each name whole, compared as Plain Text compares (`NameMatcher`), so
+    /// `skip:Node_Modules` leaves out `node_modules`, and a name typed with its accents the folder that has them,
+    /// however the disk stores them.
+    private let skippedFolders: [NameMatcher]
     /// Whether the search must list hidden items for its conditions.
     let wantsHidden: Bool
     /// Whether it must list symbolic links.
@@ -57,8 +56,6 @@ struct SearchConditionCheck: Sendable {
         var above: Int64?
         var below: Int64?
         var sized = false
-        var pixels: [SearchPixelRule] = []
-        var excludedPixels: [SearchPixelRule] = []
         var dates: [(SearchDateField, SearchDateRule, SearchDateSpan, not: Bool)] = []
         var excludedSizes: [(above: Int64?, below: Int64?)] = []
         var attributes: [(SearchAttribute, Bool)] = []
@@ -84,8 +81,6 @@ struct SearchConditionCheck: Sendable {
                 excludedTags.formUnion(chosen.map { $0.lowercased() })
             case .not(.permissions(let modes)):
                 excludedModes += modes
-            case .not(.pictureSize(let rule)):
-                excludedPixels.append(rule)
             case .not(.size(let rule)):
                 excludedSizes.append(rule.bounds)
             case .not(.date(let field, let rule)):
@@ -106,8 +101,6 @@ struct SearchConditionCheck: Sendable {
                 let bounds = rule.bounds
                 if let low = bounds.above { above = max(above ?? low, low) }
                 if let high = bounds.below { below = min(below ?? high, high) }
-            case .pictureSize(let rule):
-                pixels.append(rule)
             case .date(let field, let rule):
                 dates.append((field, rule, rule.span(now: now, calendar: calendar), not: false))
             case .tags(let chosen, let all):
@@ -137,8 +130,6 @@ struct SearchConditionCheck: Sendable {
         self.hidden = hidden
         size = sized ? (above: above, below: below) : nil
         self.excludedSizes = excludedSizes
-        self.pixels = pixels
-        self.excludedPixels = excludedPixels
         self.dates = dates
         self.attributes = attributes
         self.tagGroups = tagGroups
@@ -152,12 +143,12 @@ struct SearchConditionCheck: Sendable {
         } else {
             lastOpened = { _ in nil }
         }
-        skippedFolders = skipped
+        skippedFolders = skipped.compactMap { NameMatcher($0, mode: .contains) }
         wantsHidden = hidden == true
         wantsLinks = link == true
         let permissions = !modeGroups.isEmpty || !excludedModes.isEmpty
         readsEachItem =
-            sized || !excludedSizes.isEmpty || !pixels.isEmpty || !excludedPixels.isEmpty || !dates.isEmpty
+            sized || !excludedSizes.isEmpty || !dates.isEmpty
             || !attributes.isEmpty
             || !tagGroups.isEmpty
             || !excludedTags.isEmpty || permissions
@@ -173,6 +164,22 @@ struct SearchConditionCheck: Sendable {
     }
 
     // MARK: From the folder's entry
+
+    /// Whether a folder of this name, given as its bytes, is one the search leaves out.
+    func skips(_ name: UnsafeBufferPointer<UInt8>) -> Bool {
+        guard !skippedFolders.isEmpty else { return false }
+        var text: String?
+        for folder in skippedFolders {
+            if let whole = folder.isWhole(asciiBytes: name) {
+                if whole { return true }
+                continue
+            }
+            let name = text ?? String(decoding: name, as: UTF8.self)
+            text = name
+            if folder.isWhole(name) { return true }
+        }
+        return false
+    }
 
     /// What the item's name and type tell, as it is matched: kind, extension, whether it is a link.
     func keepsByEntry(name: String, isFolder: Bool, isLink: Bool) -> Bool {
@@ -204,8 +211,7 @@ struct SearchConditionCheck: Sendable {
     /// What reading the item tells: run only for an item kept by its name and entry. `info` is the walk's own read
     /// of it (`needsStat`); it is read here only when a condition needs it and the walk didn't. Each check makes the
     /// calls it needs and no others, the cheapest first: what `info` holds, then a call each (can be run, writable,
-    /// an alias, an empty folder, the date added, last opened, tags), then reading the file (the date taken, a
-    /// picture's size).
+    /// an alias, an empty folder, the date added, last opened, tags). Nothing opens a file to read what is in it.
     func keepsByItem(path: String, isFolder: Bool, isHidden: Bool, isLink: Bool = false, info given: stat? = nil)
         -> Bool
     {
@@ -290,18 +296,6 @@ struct SearchConditionCheck: Sendable {
             }
             if has != value { return false }
         }
-        // Last, what reading the file itself tells.
-        for (field, rule, span, not) in dates where field == .taken {
-            if Self.holds(isFile ? DatesTaken.takenDate(path) : nil, rule, span) == not { return false }
-        }
-        if !pixels.isEmpty || !excludedPixels.isEmpty {
-            // Pictures alone have a size in pixels, a size not asked for too.
-            guard isFile, let side = DatesTaken.longerSide(path), pixels.allSatisfy({ $0.holds(side) }),
-                !excludedPixels.contains(where: { $0.holds(side) })
-            else {
-                return false
-            }
-        }
         return true
     }
 
@@ -326,7 +320,6 @@ struct SearchConditionCheck: Sendable {
         switch field {
         case .modified, .created: 0
         case .added, .lastOpened: 1
-        case .taken: 2
         }
     }
 

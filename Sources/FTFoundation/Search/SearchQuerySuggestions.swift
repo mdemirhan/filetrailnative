@@ -79,9 +79,11 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
     /// What to offer for `query` with the caret at `caret`; nil for nothing. `listsWordsForNewWord`: where a new word
     /// starts, in an empty field or after a whole condition, every condition's word is listed, none highlighted. `offersConditionWords`: a plain word offers the conditions it could be; the Edit Search
     /// box, which lists the words below, offers only a condition's values. `tags` and `folders` are offered after
-    /// `tag:` and `skip:`.
+    /// `tag:` and `skip:`, and are asked for only then: the folders of 50,000 results aren't tallied at every key
+    /// of a name.
     public static func make(
-        query: String, caret: Int, tags: [String] = [], folders: [String] = [], listsWordsForNewWord: Bool = false,
+        query: String, caret: Int, tags: @autoclosure () -> [String] = [],
+        folders: @autoclosure () -> [String] = [], listsWordsForNewWord: Bool = false,
         offersConditionWords: Bool = true, now: Date = Date(), calendar: Calendar = .current
     ) -> SearchQuerySuggestions? {
         let words = SearchQuery.words(query, calendar: calendar)
@@ -113,23 +115,27 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
                         return problem
                     })
             }
-            // `kind:!pd` offers what `kind:pd` does, each a not.
+            // `kind:!pd` offers what `kind:pd` does, each a not; `!kind:pd` too, its `!` before the word.
             var value = word.value
             let not = key.takesNot && value.hasPrefix("!") ? "!" : ""
             value.removeFirst(not.count)
-            let head = value.lastIndex(of: ",").map { String(value[...$0]) } ?? ""
-            let partial = String(value.dropFirst(head.count))
-            let rows = values(key, partial: partial, tags: tags, folders: folders, now: now, calendar: calendar)
-                .map { title, typed in
-                    SearchQuerySuggestion(
-                        title: not.isEmpty ? title : "Not " + Self.inSentence(title), hint: not + typed,
-                        replacement: String(word.text.prefix(word.keyLength)) + not + head + typed + " ")
-                }
+            let isNot = !not.isEmpty || (key.takesNot && word.text.hasPrefix("!"))
+            let (head, partial) = Self.lastValue(of: value, names: key == .tag || key == .skip)
+            let rows = values(
+                key, partial: partial, tags: key == .tag ? tags() : [], folders: key == .skip ? folders() : [],
+                now: now, calendar: calendar
+            )
+            .map { title, typed in
+                SearchQuerySuggestion(
+                    title: isNot ? Self.not(title, key: key) : title, hint: not + typed,
+                    replacement: String(word.text.prefix(word.keyLength)) + not + head + typed + " ")
+            }
             guard !rows.isEmpty else { return nil }
             // A free name (a tag, a folder) is whole only once it is one listed.
             let complete =
                 word.role != .unfinished
-                && ((key != .tag && key != .skip) || rows.contains { $0.hint.lowercased() == word.value.lowercased() })
+                && ((key != .tag && key != .skip)
+                    || rows.contains { $0.hint.lowercased() == (not + Self.typedLast(value)).lowercased() })
             return SearchQuerySuggestions(
                 range: word.range, sections: [Section(title: key.title, rows: rows)], highlightsFirst: !complete,
                 typedIsComplete: complete)
@@ -137,7 +143,7 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
         // A name left out (`!draft`), or the box's plain words: nothing to offer.
         guard offersConditionWords, !word.text.hasPrefix("!") else { return nil }
         let typed = word.text.lowercased()
-        // A word is found by what is typed for it or by its name: "d" and "date" find every date, "tak" Date Taken.
+        // A word is found by what is typed for it or by its name: "d" and "date" find every date, "mod" Date Modified.
         var rows: [SearchQuerySuggestion] = SearchQueryKey.menuOrder.filter { key in
             key.rawValue.hasPrefix(typed)
                 || key.title.lowercased().split(separator: " ").contains { $0.hasPrefix(typed) }
@@ -153,8 +159,9 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
             if SearchKind.allCases.contains(where: { $0.extensions.contains(typed) }) {
                 rows.append(row(.fileExtension([typed]), typed: "ext:" + typed))
             }
-            for tag in tags where tag.lowercased().hasPrefix(typed) {
-                rows.append(row(.tags([tag], all: false), typed: "tag:" + tag))
+            for tag in tags() where tag.lowercased().hasPrefix(typed) {
+                guard let name = SearchQuery.nameWord(tag) else { continue }
+                rows.append(row(.tags([tag], all: false), typed: "tag:" + name))
             }
         }
         guard !rows.isEmpty else { return nil }
@@ -183,13 +190,10 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
             all = common.map { ("\($0.uppercased()) files", $0) }
         case .size:
             return sizes(typed)
-        case .picture:
-            all = [
-                ("1,920 px (HD)", "hd"), ("3,840 px (4K)", "4k"), ("HD or larger", ">=hd"), ("4K or larger", ">=4k"),
-                ("Larger than 4K", ">4k"), ("Smaller than HD", "<hd"),
-            ]
-        case .modified, .created, .added, .opened, .taken:
-            if let number = Int(typed), number > 0 {
+        case .modified, .created, .added, .opened:
+            if typed.count <= SearchQuery.largestCountDigits, typed.allSatisfy(SearchQuery.isDigit),
+                let number = Int(typed), number > 0
+            {
                 return [
                     ("Within the last \(number) \(SearchTimeUnit.days.label(number))", "\(number)d"),
                     ("Within the last \(number) \(SearchTimeUnit.weeks.label(number))", "\(number)w"),
@@ -212,11 +216,12 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
                 ("Between two days", "\(year)-01-01..\(year)-03-31"),
             ]
         case .tag:
-            all = tags.map { ($0, $0) }
+            // A name with a space is typed in quotes, and found by its letters with or without them.
+            return names(tags, partial: partial)
         case .is, .not:
             all = SearchAttribute.allCases.map { ($0.chip(is: key == .is), SearchQuery.attributeWord($0)) }
         case .skip:
-            all = folders.map { ($0, $0) }
+            return names(folders, partial: partial)
         case .perm:
             all = [0o755, 0o644, 0o700, 0o600, 0o750, 0o640, 0o777, 0o666, 0o444].map {
                 (SearchPermissions.letters($0), SearchPermissions.octal($0) ?? "")
@@ -231,6 +236,59 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
             shown.insert((sentence(condition, key), partial), at: 0)
         }
         return Array(shown.prefix(maxValues))
+    }
+
+    /// Tags or folders whose name starts with what is typed, or holds it: (the name, what types it). A tag or a
+    /// folder can be any name: what is typed comes first when none starts with it.
+    private static func names(_ all: [String], partial: String) -> [(String, String)] {
+        let typed = partial.lowercased()
+        let rows = all.compactMap { name in SearchQuery.nameWord(name).map { (name, $0) } }
+        var shown = typed.isEmpty ? rows : rows.filter { $0.0.lowercased().contains(typed) }
+        if !typed.isEmpty, !shown.contains(where: { $0.0.lowercased().hasPrefix(typed) }),
+            let word = SearchQuery.nameWord(partial)
+        {
+            shown.insert((partial, word), at: 0)
+        }
+        return Array(shown.prefix(maxValues))
+    }
+
+    /// The value being typed, the last of a list, and what is before it: `pdf,pic` is `pic` after `pdf,`. Among
+    /// names, a comma inside quotes separates nothing, and the name is given without the quote that opens it.
+    static func lastValue(of value: String, names: Bool) -> (head: String, partial: String) {
+        var start = value.startIndex
+        var quoted = false
+        var index = value.startIndex
+        while index < value.endIndex {
+            let character = value[index]
+            if names, character == "\"", quoted || index == start {
+                quoted.toggle()
+            } else if character == ",", !quoted {
+                start = value.index(after: index)
+            }
+            index = value.index(after: index)
+        }
+        var partial = value[start...]
+        if names, partial.hasPrefix("\"") {
+            partial = partial.dropFirst()
+            if partial.hasSuffix("\"") { partial = partial.dropLast() }
+        }
+        return (String(value[..<start]), String(partial))
+    }
+
+    /// The last name of a list as typed, quotes and all.
+    private static func typedLast(_ value: String) -> String {
+        String(value.dropFirst(lastValue(of: value, names: true).head.count))
+    }
+
+    /// A row's title when its value is asked for not: "Not PDF", "Not larger than 1 MB"; an attribute's other side
+    /// in its own words ("Not locked").
+    private static func not(_ title: String, key: SearchQueryKey) -> String {
+        if key == .is || key == .not,
+            let attribute = SearchAttribute.allCases.first(where: { $0.chip(is: key == .is) == title })
+        {
+            return attribute.chip(is: key != .is)
+        }
+        return "Not " + inSentence(title)
     }
 
     /// What a size offers: the examples, one of each kind (larger, smaller, the size itself, between); a number, in
@@ -277,7 +335,7 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
 
     /// A number as typed: no point for a whole one.
     private static func number(_ value: Double) -> String {
-        value == value.rounded() ? String(Int(value)) : String(value)
+        Int(exactly: value).map { String($0) } ?? String(value)
     }
 
     /// A title inside a sentence: "Larger than 1 MB" is "larger than 1 MB", "Today" "today"; a name in capitals stays
@@ -297,7 +355,7 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
     private static func sentence(_ condition: SearchCondition, _ key: SearchQueryKey) -> String {
         let chip = SearchConditionText.chip(condition)
         let subjects =
-            ["Kind is ", "Extension is ", "Size is ", "Picture is ", "Tagged ", "Skipping ", "Permissions are "]
+            ["Kind is ", "Extension is ", "Size is ", "Tagged ", "Skipping ", "Permissions are "]
             + SearchDateField.allCases.map { $0.chipLabel + " " }
         for subject in subjects where chip.hasPrefix(subject) {
             return String(chip.dropFirst(subject.count)).capitalizedFirst

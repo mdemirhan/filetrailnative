@@ -347,7 +347,7 @@ import Testing
     // A skipped folder is already left out; two marks are one too many.
     @Test func notWhereItHasNoMeaning() {
         for text in [
-            "picture:!!4k", "!picture:!4k", "picture:>!4k", "skip:!build", "!skip:build", "kind:!!pdf", "!kind:!pdf",
+            "skip:!build", "!skip:build", "kind:!!pdf", "!kind:!pdf",
             "!!kind:pdf",
             "kind:!", "kind:!,", "tag:!", "!kind:", "kind:!nothing", "perm:!8", "is:!nothing", "size:!!1mb",
             "!size:!1mb", "modified:!!today", "size:!", "modified:!",
@@ -382,31 +382,15 @@ import Testing
         #expect(words("size:>=1mb") == "Size is at least 1 MB")
         #expect(words("size:<=500kb") == "Size is at most 500 KB")
         #expect(words("size:!>=1mb") == "Size is not at least 1 MB")
-        #expect(words("picture:>=hd") == "Picture is at least 1,920 px")
-        #expect(words("picture:=<4k") == "Picture is at most 3,840 px")
         // A sign, then a range, or two signs, or `=` alone: none of them reads.
         for text in [
             "size:>=1mb..2mb", "size:>=>1mb", "size:==1mb", "size:=1mb", "size:>==1mb", "size:<>1mb", "size:>=",
-            "picture:=1920", "picture:>=", "picture:>=0", "modified:=7d", "modified:<=7d",
+            "modified:=7d", "modified:<=7d",
             "modified:>=2026-03..2026-04",
         ] {
             #expect(query(text).hasUnfinished, "\(text)")
             #expect(query(text).conditions.isEmpty, "\(text)")
         }
-    }
-
-    @Test func atLeastAndAtMostForPictures() {
-        #expect(query("picture:>=hd").conditions == [.pictureSize(SearchPixelRule(comparison: .atLeast, pixels: 1920))])
-        #expect(query("picture:=>1920").conditions == query("picture:>=hd").conditions)
-        #expect(query("picture:<=4k").conditions == [.pictureSize(SearchPixelRule(comparison: .atMost, pixels: 3840))])
-        #expect(
-            query("picture:!>=4k").conditions == [
-                .not(.pictureSize(SearchPixelRule(comparison: .atLeast, pixels: 3840)))
-            ])
-        let atLeast = SearchPixelRule(comparison: .atLeast, pixels: 1920)
-        let atMost = SearchPixelRule(comparison: .atMost, pixels: 1920)
-        #expect(!atLeast.holds(1919) && atLeast.holds(1920) && atLeast.holds(1921))
-        #expect(atMost.holds(1919) && atMost.holds(1920) && !atMost.holds(1921))
     }
 
     // A day or a month: `>=` from its first day on, `<=` to the end of its last; a count is more than so long ago.
@@ -418,7 +402,7 @@ import Testing
         #expect(query("modified:<=2026-03").conditions == [.date(.modified, .onOrBefore(try day(2026, 3, 31)))])
         #expect(query("modified:>=2026-03-15").conditions == [.date(.modified, .onOrAfter(try day(2026, 3, 15)))])
         #expect(query("modified:=<2026-03-15").conditions == [.date(.modified, .onOrBefore(try day(2026, 3, 15)))])
-        #expect(query("taken:>=1y").conditions == [.date(.taken, .moreThanAgo(1, .years))])
+        #expect(query("created:>=1y").conditions == [.date(.created, .moreThanAgo(1, .years))])
         #expect(query("added:!>=2026-03").conditions == [.not(.date(.added, .onOrAfter(try day(2026, 3, 1))))])
         let now = try day(2026, 6, 1)
         let from = SearchDateRule.onOrAfter(try day(2026, 3, 1)).span(now: now, calendar: calendar)
@@ -450,7 +434,7 @@ import Testing
             query("size:!1mb..2mb").conditions.first.map { if case .not(.size) = $0 { true } else { false } } == true)
         #expect(query("modified:!today").conditions == [.not(.date(.modified, .today))])
         #expect(query("opened:!7d").conditions == [.not(.date(.lastOpened, .withinLast(7, .days)))])
-        #expect(query("taken:!>1y").conditions == [.not(.date(.taken, .moreThanAgo(1, .years)))])
+        #expect(query("created:!>1y").conditions == [.not(.date(.created, .moreThanAgo(1, .years)))])
         #expect(query("added:!2026-03").conditions.count == 1)
         func words(_ text: String) -> String? { query(text).conditions.first.map { SearchConditionText.chip($0) } }
         #expect(words("size:!1mb") == "Size is not 1 MB to under 2 MB")
@@ -463,7 +447,7 @@ import Testing
     @Test func notBeforeTheWordIsNotBeforeItsValue() {
         let pairs = [
             ("kind", "pdf"), ("ext", "tmp"), ("tag", "red"), ("perm", "?5?"), ("size", "1mb"), ("size", ">5k"),
-            ("modified", "today"), ("created", "7d"), ("added", "2026-03"), ("opened", ">1y"), ("taken", "week"),
+            ("modified", "today"), ("created", "7d"), ("added", "2026-03"), ("opened", ">1y"),
             ("is", "hidden"), ("not", "locked"),
         ]
         for (key, value) in pairs {
@@ -586,11 +570,6 @@ import Testing
         #expect(days.rows.first?.hint == "!7d")
         #expect(days.rows.first?.title == "Not within the last 7 days")
         #expect(try #require(suggest("kind:!pd")).rows.first?.title == "Not PDF")
-        // A picture's size takes it: anything but that size.
-        let pictures = try #require(suggest("picture:!4"))
-        #expect(pictures.rows.first?.hint == "!4k")
-        #expect(pictures.rows.first?.title == "Not 3,840 px (4K)")
-        #expect(try #require(suggest("picture:!>4")).rows.first?.title == "Not larger than 4K")
         // Where `!` means nothing, the list says so.
         #expect(suggest("skip:!x")?.rows.first?.tone == .problem)
     }
@@ -645,5 +624,161 @@ import Testing
         #expect(suggest("!d") == nil)
         #expect(suggest("!pdf") == nil)
         #expect(suggest("report !draft ", newWord: true) == nil)
+    }
+
+    // MARK: What typing can't break
+
+    // Numbers past any size or count are words that can't be read, and nothing made of one traps.
+    @Test func numbersPastAnySizeAreNotRead() {
+        for text in [
+            "size:>9999999999gb", "size:99999999999999999999b", "size:1kb..99999999999999999999gb",
+            "size:9999999999999999999999999999999999kb", "modified:>9223372036854775807y", "modified:10000d",
+            "modified:99999w", "perm:1\u{301}55", "perm:1\u{FE0F}\u{20E3}55", "modified:+123-01", "size:١mb",
+            "modified:٢٠٢٦-٠٣",
+        ] {
+            #expect(query(text).hasUnfinished, "\(text)")
+            #expect(query(text).conditions.isEmpty, "\(text)")
+            _ = SearchQuerySuggestions.make(query: text, caret: text.utf16.count)
+            _ = SearchQuery.problems(text, caret: text.utf16.count, whileTyping: true)
+        }
+        // The largest size read is still a number of bytes, and its bounds are too.
+        let largest = rule(">1000000000gb")
+        #expect(largest?.bounds.above == 1_000_000_000_000_000_000)
+        // A rule made by hand past what is counted has bounds, and finds nothing.
+        let huge = SearchSizeRule(comparison: .between, value: 1e30, upper: 1e300, unit: .gigabytes)
+        #expect(huge.bounds.above.map { $0 > 0 } == true)
+        #expect(SearchSizeRule(comparison: .equal, value: .infinity, unit: .gigabytes).bounds.above != nil)
+        // The list builds a range's other end from any number typed.
+        #expect(suggest("size:1kb..99999999999999999999")?.rows.contains { $0.canBeChosen } != true)
+        #expect(
+            suggest("size:1kb..99999999999999")?.rows.map(\.hint) == ["1kb..99999999999999kb", "1kb..99999999999999b"])
+    }
+
+    // A size alone is to its last digit: one finer than a byte is no size; with a sign it still compares.
+    @Test func aSizeAloneIsWholeBytes() {
+        for text in ["size:1.5b", "size:0.0001kb", "size:1.2345kb", "size:1.mb", "size:>1.mb"] {
+            #expect(query(text).hasUnfinished, "\(text)")
+        }
+        #expect(rule("1.234kb")?.bounds.above == 1233)
+        #expect(rule(">1.2345kb") != nil)
+    }
+
+    // A range of days typed the later one first is the same days.
+    @Test func aRangeOfDaysTypedBackwardsIsTheSameDays() {
+        #expect(query("modified:2026-03..2026-01").conditions == query("modified:2026-01..2026-03").conditions)
+        #expect(
+            query("modified:2026-03-10..2026-03-01").conditions == query("modified:2026-03-01..2026-03-10").conditions)
+        #expect(
+            query("modified:2026-03..2026-01").conditions.first.map { SearchConditionText.chip($0) }
+                == "Modified between Jan 1, 2026 and Mar 31, 2026")
+    }
+
+    // MARK: Names with a space
+
+    // A tag or a folder with a space in its name is typed in quotes, after the colon, a comma or the `!`.
+    @Test func namesInQuotesAreTakenWhole() {
+        #expect(query("tag:\"To Do\"").conditions == [.tags(["To Do"], all: false)])
+        #expect(query("tag:red,\"To Do\",blue").conditions == [.tags(["red", "To Do", "blue"], all: false)])
+        #expect(query("tag:!\"To Do\"").conditions == [.not(.tags(["To Do"], all: false))])
+        #expect(query("!tag:\"To Do\"").conditions == query("tag:!\"To Do\"").conditions)
+        #expect(
+            query("skip:\"Application Support\",build").conditions == [
+                .skipFolders(["Application Support", "build"])
+            ])
+        #expect(query("TAG:\"a,b\"").conditions == [.tags(["a,b"], all: false)])
+        // The words around it stay the name to find.
+        let mixed = query("annual tag:\"To Do\" report")
+        #expect(mixed.text == "annual report")
+        #expect(mixed.conditions == [.tags(["To Do"], all: false)])
+        #expect(!mixed.hasUnfinished)
+        // A quote elsewhere in a value is a character, and quotes after other words are too.
+        #expect(query("tag:a\"b").conditions == [.tags(["a\"b"], all: false)])
+        #expect(query("kind:\"pdf\"").hasUnfinished)
+        // Left open, the name runs to the end of the text and is still being typed: nothing is searched for it.
+        let open = query("tag:\"To Do report")
+        #expect(open.hasUnfinished && open.conditions.isEmpty && open.text.isEmpty)
+        #expect(SearchQuery.words("tag:\"To Do report").count == 1)
+        #expect(SearchQuery.problems("tag:\"To Do", caret: 10, whileTyping: true).isEmpty)
+        #expect(SearchQuery.problems("tag:\"To Do").first?.detail == "Close the quote: tag:\"a name\"")
+        // Something after the closing quote that isn't a comma can't be read.
+        #expect(query("tag:\"To Do\"x").hasUnfinished)
+        #expect(SearchQuery.words("tag:\"To Do\"x").first?.canStillBeRead == false)
+    }
+
+    // One `!` before the first name is for all of them; one before a later name says nothing.
+    @Test func notBeforeALaterNameIsNotRead() {
+        for text in ["tag:red,!blue", "tag:!red,!blue", "skip:a,!b"] {
+            #expect(query(text).hasUnfinished, "\(text)")
+            #expect(SearchQuery.words(text).first?.canStillBeRead == false, "\(text)")
+        }
+        #expect(SearchQuery.problems("tag:red,!blue").first?.detail.hasPrefix("One ! before the first tag") == true)
+        // In quotes it is a name.
+        #expect(query("tag:red,\"!blue\"").conditions == [.tags(["red", "!blue"], all: false)])
+    }
+
+    // An attribute is one to a word: after a comma nothing is offered, and the word says what to type.
+    @Test func anAttributeIsOneToAWord() {
+        for text in ["is:hidden,", "is:hidden,locked", "not:hidden,lo", "is:!hidden,locked"] {
+            #expect(query(text).hasUnfinished, "\(text)")
+            #expect(SearchQuery.words(text).first?.canStillBeRead == false, "\(text)")
+            #expect(suggest(text)?.rows.contains { $0.canBeChosen } != true, "\(text)")
+        }
+        #expect(
+            SearchQuery.problems("is:hidden,locked").first?.detail
+                == "One attribute to a word: is:hidden is:locked for both")
+    }
+
+    // `!` before the word and `!` before its value are one too many, and say so.
+    @Test func twoMarksSaySo() {
+        for text in ["!kind:!pdf", "!size:!1mb", "!!kind:pdf", "kind:!!pdf"] {
+            #expect(SearchQuery.problems(text).first?.detail == "One ! is enough", "\(text)")
+        }
+    }
+
+    // MARK: What a row says is what it types
+
+    // Every row that can be taken types a word that reads, and says what that word asks for: its title is the
+    // condition's own words, "Not" and all, wherever the `!` was typed.
+    @Test func eachRowTypesWhatItSays() throws {
+        let tags = ["Red", "To Do", "a,b", "Work"]
+        let folders = ["node_modules", "Application Support", "build"]
+        let typed = [
+            "kind:", "kind:pd", "kind:!pd", "!kind:pd", "kind:pdf,pic", "!kind:pdf,pic", "ext:", "ext:!do", "!ext:do",
+            "size:", "size:1", "size:!1", "!size:1", "size:>2", "!size:>2", "size:1mb..", "modified:", "modified:7",
+            "modified:!7", "!modified:7", "!modified:to", "opened:!ye", "tag:", "tag:r", "tag:!r", "!tag:r", "tag:to",
+            "tag:\"To", "tag:red,to", "!tag:red,\"To", "tag:a", "is:", "is:lo", "is:!lo", "!is:lo", "not:lo",
+            "!not:lo", "not:!lo", "perm:", "perm:7", "perm:!7", "!perm:7", "skip:", "skip:app", "skip:build,\"App",
+            "to", "re", "app", "doc", "pdf",
+        ]
+        for text in typed {
+            let list = try #require(
+                SearchQuerySuggestions.make(
+                    query: text, caret: text.utf16.count, tags: tags, folders: folders,
+                    now: calendar.date(from: DateComponents(year: 2026, month: 11, day: 24))!, calendar: calendar),
+                "\(text)")
+            for row in list.rows where row.canBeChosen && !row.keepsListOpen {
+                let replacement = try #require(row.replacement, "\(text): \(row.title)")
+                let read = SearchQuery(replacement, calendar: calendar)
+                #expect(!read.hasUnfinished && read.text.isEmpty, "\(text) types \(replacement)")
+                let condition = try #require(read.conditions.first, "\(text) types \(replacement)")
+                #expect(read.conditions.count == 1, "\(text) types \(replacement)")
+                // Negated, the row says so; and it never says so of what isn't.
+                let isNot: Bool
+                switch condition {
+                case .not: isNot = true
+                case .attribute(_, let isSo): isNot = !isSo
+                default: isNot = false
+                }
+                let saysNot = row.title.hasPrefix("Not ") || row.title.contains(" not ") || row.title.hasPrefix("Can't")
+                #expect(saysNot == isNot, "\(text): “\(row.title)” types \(replacement)")
+                // A name row names every name the word then asks for last.
+                if case .tags(let names, _) = condition, text.contains("tag:") {
+                    #expect(names.last.map { row.title.hasSuffix($0) } == true, "\(text): \(row.title)")
+                }
+                if case .skipFolders(let names) = condition {
+                    #expect(names.last.map { row.title.hasSuffix($0) } == true, "\(text): \(row.title)")
+                }
+            }
+        }
     }
 }

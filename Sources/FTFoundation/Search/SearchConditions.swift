@@ -1,4 +1,4 @@
-// What a search can ask of an item besides its name: its kind, extension, size, size in pixels, dates, tags and
+// What a search can ask of an item besides its name: its kind, extension, size, dates, tags and
 // attributes, and folders it leaves out. Each condition is a chip under the search bar, kept as it was set ("within the
 // last 2 weeks"), and made into what the walk checks when the search runs.
 import Foundation
@@ -55,7 +55,7 @@ public enum SearchKind: String, CaseIterable, Codable, Sendable, Hashable {
 
 /// Which of an item's dates a condition is about.
 public enum SearchDateField: String, CaseIterable, Codable, Sendable, Hashable {
-    case modified, created, added, lastOpened, taken
+    case modified, created, added, lastOpened
 
     /// As the Add a Condition menu names it.
     public var menuLabel: String {
@@ -64,7 +64,6 @@ public enum SearchDateField: String, CaseIterable, Codable, Sendable, Hashable {
         case .created: "Date Created"
         case .added: "Date Added"
         case .lastOpened: "Date Last Opened"
-        case .taken: "Date Taken"
         }
     }
 
@@ -75,7 +74,6 @@ public enum SearchDateField: String, CaseIterable, Codable, Sendable, Hashable {
         case .created: "Created"
         case .added: "Added"
         case .lastOpened: "Last opened"
-        case .taken: "Taken"
         }
     }
 }
@@ -187,21 +185,29 @@ public struct SearchSizeRule: Equatable, Codable, Sendable, Hashable {
     /// to the last digit typed, as the Size column starts: `1mb` is 1 MB up to 2 MB (what shows as 1.x MB), `1.5mb`
     /// 1.5 up to 1.6 MB, `1000b` 1,000 bytes and no other.
     public var bounds: (above: Int64?, below: Int64?) {
-        let low = Int64((value * unit.bytes).rounded())
+        // A size past what `Int64` counts is the largest it does: no file is that large, and none is found.
+        func count(_ bytes: Double) -> Int64 {
+            guard bytes.isFinite else { return bytes > 0 ? Self.most : 0 }
+            return bytes >= Double(Self.most) ? Self.most : bytes <= 0 ? 0 : Int64(bytes)
+        }
+        let low = count((value * unit.bytes).rounded())
         switch comparison {
         case .larger: return (low, nil)
         case .smaller: return (nil, low)
-        case .atLeast: return (Int64((value * unit.bytes - 1e-6).rounded(.up)) - 1, nil)
-        case .atMost: return (nil, Int64((value * unit.bytes + 1e-6).rounded(.down)) + 1)
+        case .atLeast: return (count((value * unit.bytes - 1e-6).rounded(.up)) - 1, nil)
+        case .atMost: return (nil, count((value * unit.bytes + 1e-6).rounded(.down)) + 1)
         case .between:
-            let high = Int64((upper * unit.bytes).rounded())
+            let high = count((upper * unit.bytes).rounded())
             return (min(low, high) - 1, max(low, high) + 1)
         case .equal:
             // Up to a whole byte, past what a decimal leaves over (2.11 × 1000 is 2110.0000000000002).
-            func whole(_ bytes: Double) -> Int64 { Int64((bytes - 1e-6).rounded(.up)) }
+            func whole(_ bytes: Double) -> Int64 { count((bytes - 1e-6).rounded(.up)) }
             return (whole(value * unit.bytes) - 1, whole(upTo * unit.bytes))
         }
     }
+
+    /// The most bytes a bound is, with room left for the one byte a bound adds.
+    private static let most = Int64.max / 2
 
     /// Where an equal size ends, not included: one more of its last digit (2 for 1, 1.6 for 1.5).
     public var upTo: Double { value + 1 / pow(10, Double(places ?? Self.decimals(value))) }
@@ -215,35 +221,6 @@ public struct SearchSizeRule: Equatable, Codable, Sendable, Hashable {
             places += 1
         }
         return places
-    }
-}
-
-/// A picture's longer side as set.
-public struct SearchPixelRule: Equatable, Codable, Sendable, Hashable {
-    /// Larger, smaller, at least, at most, or exactly (a size alone, as a file's size alone is that size); "between"
-    /// isn't offered.
-    public var comparison: SearchComparison
-    public var pixels: Int
-
-    public init(comparison: SearchComparison, pixels: Int) {
-        self.comparison = comparison
-        self.pixels = pixels
-    }
-
-    public init(larger: Bool, pixels: Int) { self.init(comparison: larger ? .larger : .smaller, pixels: pixels) }
-
-    public var larger: Bool { comparison == .larger }
-
-    /// Whether a picture whose longer side is `side` pixels meets it. Pixels are whole: exactly is exactly.
-    public func holds(_ side: Int) -> Bool {
-        switch comparison {
-        case .larger: side > pixels
-        case .smaller: side < pixels
-        case .equal: side == pixels
-        case .atLeast: side >= pixels
-        case .atMost: side <= pixels
-        case .between: false
-        }
     }
 }
 
@@ -337,6 +314,13 @@ public enum SearchDateRule: Equatable, Codable, Sendable, Hashable {
             return SearchDateSpan(start: interval.start, end: interval.end)
         }
         let today = calendar.startOfDay(for: now)
+        // Where "the last N" starts and "more than N ago" ends: the days are counted whole, today being the first, so
+        // "the last 2 days" is yesterday and today, a week is 7 days as `7d` is, and what one leaves out the other
+        // finds.
+        func edge(_ count: Int, _ unit: SearchTimeUnit) -> Date? {
+            calendar.date(byAdding: unit.component, value: -count, to: today)
+                .flatMap { calendar.date(byAdding: .day, value: 1, to: $0) }
+        }
         switch self {
         case .today: return period(.day)
         case .yesterday: return period(.day, back: 1)
@@ -344,12 +328,9 @@ public enum SearchDateRule: Equatable, Codable, Sendable, Hashable {
         case .thisMonth: return period(.month)
         case .thisYear: return period(.year)
         case .withinLast(let count, let unit):
-            // The days counted whole: "the last 2 days" is yesterday and today.
-            let start = calendar.date(byAdding: unit.component, value: -count, to: today)
-            return SearchDateSpan(
-                start: unit == .days ? start.flatMap { calendar.date(byAdding: .day, value: 1, to: $0) } : start)
+            return SearchDateSpan(start: edge(count, unit) ?? .distantPast)
         case .moreThanAgo(let count, let unit):
-            return SearchDateSpan(end: calendar.date(byAdding: unit.component, value: -count, to: now))
+            return SearchDateSpan(end: edge(count, unit) ?? .distantPast)
         case .before(let day):
             return SearchDateSpan(end: calendar.startOfDay(for: day))
         case .after(let day):
@@ -366,7 +347,7 @@ public enum SearchDateRule: Equatable, Codable, Sendable, Hashable {
         }
     }
 
-    /// An item that has no such date (never opened, no date taken) meets only a rule of "long ago".
+    /// An item that has no such date (never opened) meets only a rule of "long ago".
     public var takesNoDate: Bool {
         switch self {
         case .moreThanAgo, .before, .onOrBefore: true
@@ -399,7 +380,6 @@ public enum SearchCondition: Equatable, Codable, Sendable, Hashable {
     /// Any of these extensions, lowercase, without the dot; none asks for nothing.
     case fileExtension([String])
     case size(SearchSizeRule)
-    case pictureSize(SearchPixelRule)
     case date(SearchDateField, SearchDateRule)
     /// Tags by name; with `all`, every one of them, else any.
     case tags([String], all: Bool)
@@ -409,8 +389,8 @@ public enum SearchCondition: Equatable, Codable, Sendable, Hashable {
     /// An item's permissions are any of these modes (`0o7777`: the read, write and run bits of its owner, its group and
     /// everyone, with set-user, set-group and sticky).
     case permissions([SearchPermission])
-    /// What the condition asks for, not: for a kind, an extension, tags, permissions, a size, a picture's size and a
-    /// date (`kind:!pdf`, `size:!1mb`, `picture:!1920`, `modified:!today`).
+    /// What the condition asks for, not: for a kind, an extension, tags, permissions, a size and a date
+    /// (`kind:!pdf`, `size:!1mb`, `modified:!today`).
     indirect case not(SearchCondition)
 
     /// What the Add a Condition menu offers, in its order, with what each starts as.
@@ -418,7 +398,6 @@ public enum SearchCondition: Equatable, Codable, Sendable, Hashable {
     public static let extensionDefault = SearchCondition.fileExtension([])
     public static let sizeDefault = SearchCondition.size(
         SearchSizeRule(comparison: .larger, value: 10, unit: .megabytes))
-    public static let pictureSizeDefault = SearchCondition.pictureSize(SearchPixelRule(larger: true, pixels: 1920))
     public static func dateDefault(_ field: SearchDateField) -> SearchCondition { .date(field, .withinLast(7, .days)) }
     public static let tagsDefault = SearchCondition.tags([], all: false)
     public static func attributeDefault(_ attribute: SearchAttribute) -> SearchCondition {
@@ -479,15 +458,6 @@ public enum SearchConditionText {
                 return
                     "Size is between \(number(rule.value, locale)) and \(number(rule.upper, locale)) \(rule.unit.label(rule.upper))"
             }
-        case .pictureSize(let rule):
-            let pixels = FormatLocale.count(rule.pixels, locale: locale)
-            switch rule.comparison {
-            case .larger: return "Picture is larger than \(pixels) px"
-            case .smaller: return "Picture is smaller than \(pixels) px"
-            case .atLeast: return "Picture is at least \(pixels) px"
-            case .atMost: return "Picture is at most \(pixels) px"
-            case .equal, .between: return "Picture is \(pixels) px"
-            }
         case .date(let field, let rule):
             return field.chipLabel + " " + dateWords(rule, locale: locale)
         case .tags(let tags, let all):
@@ -514,10 +484,6 @@ public enum SearchConditionText {
             return "Not tagged " + tags.joined(separator: " or ")
         case .permissions(let modes):
             return "Permissions are not " + modes.map(SearchPermissions.words).joined(separator: " or ")
-        case .pictureSize:
-            // "Picture is not 1,920 px", "Picture is not larger than 3,840 px".
-            let said = chip(condition, locale: locale)
-            return said.hasPrefix("Picture is ") ? "Picture is not " + said.dropFirst("Picture is ".count) : said
         case .size:
             // "Size is not 1 MB to under 2 MB", "Size is not larger than 10 MB".
             let said = chip(condition, locale: locale)
@@ -592,6 +558,14 @@ public enum SearchPermissions {
     /// The bits each letter stands for, owner first.
     private static let bits: [UInt16] = [0o400, 0o200, 0o100, 0o40, 0o20, 0o10, 0o4, 0o2, 0o1]
 
+    /// One of 0 to 7 and nothing else: a digit with a mark on it, or a keycap, is none.
+    public static func isOctalDigit(_ character: Character) -> Bool {
+        character.isASCII && ("0"..."7").contains(character)
+    }
+
+    /// What `ls` writes before an item's permissions: a file, a folder, a link, a device, a pipe, a socket.
+    public static let typeLetters: Set<Character> = ["-", "d", "l", "b", "c", "p", "s"]
+
     /// The exact mode `text` is, or nil (for a wildcard too).
     public static func mode(_ text: String) -> UInt16? {
         guard let permission = permission(text), permission.mask == 0o7777 else { return nil }
@@ -600,7 +574,7 @@ public enum SearchPermissions {
 
     /// The permissions `text` asks for, or nil.
     public static func permission(_ text: String) -> SearchPermission? {
-        if (3...4).contains(text.count), text.allSatisfy({ ("0"..."7").contains($0) || $0 == "?" }) {
+        if (3...4).contains(text.count), text.allSatisfy({ isOctalDigit($0) || $0 == "?" }) {
             var mode: UInt16 = 0
             var mask: UInt16 = 0o7777
             // Digits say digits: from the last, others, group, owner, then the digit of set-user, set-group and sticky.
@@ -612,13 +586,14 @@ public enum SearchPermissions {
                 if digit == "?" {
                     mask &= ~(0o7 << shift)
                 } else {
-                    mode |= UInt16(String(digit), radix: 8)! << shift
+                    mode |= UInt16(digit.wholeNumberValue ?? 0) << shift
                 }
             }
             return SearchPermission(mode: mode, mask: mask)
         }
         var letters = Array(text)
-        if letters.count == 10 { letters.removeFirst() }
+        // `ls`'s ten letters start with the item's type.
+        if letters.count == 10, typeLetters.contains(letters[0]) { letters.removeFirst() }
         guard letters.count == 9 else { return nil }
         var mode: UInt16 = 0
         var mask: UInt16 = 0o7777

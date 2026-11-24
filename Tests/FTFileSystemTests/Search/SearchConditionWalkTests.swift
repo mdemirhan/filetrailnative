@@ -88,33 +88,6 @@ import UniformTypeIdentifiers
             #expect(
                 try found([.size(SearchSizeRule(comparison: .between, value: 50, upper: 200, unit: .kilobytes))])
                     .isEmpty)
-            #expect(try found([.pictureSize(SearchPixelRule(larger: true, pixels: 100))]) == ["wide.png"])
-            #expect(try found([.pictureSize(SearchPixelRule(larger: false, pixels: 100))]) == ["tiny.png"])
-            // A size alone is that size exactly; the longer side counts (wide.png is 300 by 20).
-            #expect(try found([.pictureSize(SearchPixelRule(comparison: .equal, pixels: 300))]) == ["wide.png"])
-            #expect(try found([.pictureSize(SearchPixelRule(comparison: .equal, pixels: 10))]) == ["tiny.png"])
-            #expect(try found([.pictureSize(SearchPixelRule(comparison: .equal, pixels: 20))]).isEmpty)
-            #expect(try found([.pictureSize(SearchPixelRule(comparison: .equal, pixels: 299))]).isEmpty)
-            #expect(try found([.pictureSize(SearchPixelRule(larger: true, pixels: 300))]).isEmpty)
-            #expect(try found([.pictureSize(SearchPixelRule(comparison: .atLeast, pixels: 300))]) == ["wide.png"])
-            #expect(try found([.pictureSize(SearchPixelRule(comparison: .atLeast, pixels: 301))]).isEmpty)
-            #expect(try found([.pictureSize(SearchPixelRule(comparison: .atMost, pixels: 10))]) == ["tiny.png"])
-            #expect(
-                try found([.pictureSize(SearchPixelRule(comparison: .atMost, pixels: 300))]) == [
-                    "wide.png", "tiny.png",
-                ])
-            // Not that size is still a picture: no document or folder is found by it.
-            #expect(try found([.not(.pictureSize(SearchPixelRule(comparison: .equal, pixels: 300)))]) == ["tiny.png"])
-            #expect(try found([.not(.pictureSize(SearchPixelRule(larger: true, pixels: 100)))]) == ["tiny.png"])
-            #expect(
-                try found([.not(.pictureSize(SearchPixelRule(comparison: .equal, pixels: 5)))]) == [
-                    "wide.png", "tiny.png",
-                ])
-            #expect(
-                try found([
-                    .pictureSize(SearchPixelRule(larger: true, pixels: 5)),
-                    .not(.pictureSize(SearchPixelRule(comparison: .equal, pixels: 10))),
-                ]) == ["wide.png"])
             #expect(try found([.date(.modified, .moreThanAgo(1, .years))]) == ["notes.txt"])
             #expect(
                 try found([.date(.modified, .withinLast(1, .years)), .kind([.text])]) == [
@@ -143,9 +116,9 @@ import UniformTypeIdentifiers
             .attribute(.empty, is: true),
         ]
         let needsNot: [SearchCondition] = [
-            .tags(["red"], all: false), .date(.added, .today), .date(.lastOpened, .today), .date(.taken, .today),
+            .tags(["red"], all: false), .date(.added, .today), .date(.lastOpened, .today),
             .attribute(.executable, is: true), .attribute(.alias, is: true), .attribute(.hidden, is: true),
-            .pictureSize(SearchPixelRule(larger: true, pixels: 100)), .kind([.pdf]), .fileExtension(["txt"]),
+            .kind([.pdf]), .fileExtension(["txt"]),
             .skipFolders(["build"]),
         ]
         for condition in needs { #expect(SearchConditionCheck([condition]).needsStat, "\(condition)") }
@@ -166,7 +139,6 @@ import UniformTypeIdentifiers
                 [.attribute(.locked, is: true)], [.attribute(.readOnly, is: true)], [.attribute(.empty, is: true)],
                 [.attribute(.empty, is: false)], [.attribute(.executable, is: true)], [.tags(["work"], all: false)],
                 [.tags(["work", "red"], all: true)], [.tags(["work"], all: false), .attribute(.locked, is: false)],
-                [.pictureSize(SearchPixelRule(larger: true, pixels: 100))],
             ]
             let items = try FileManager.default.subpathsOfDirectory(atPath: top).map { top + "/" + $0 }
             for condition in conditions {
@@ -263,23 +235,6 @@ import UniformTypeIdentifiers
         }
     }
 
-    // A picture's date taken is read from it; a file with none meets only a rule of long ago.
-    @Test func theDateTakenIsReadFromThePicture() throws {
-        let runtime = WalkSearchRuntime()
-        defer { runtime.close() }
-        try withTemporaryDirectory { folder in
-            let top = folder.path
-            try DatesTakenFixtures.taken.write(to: URL(fileURLWithPath: top + "/taken.jpg"))
-            try DatesTakenFixtures.undated.write(to: URL(fileURLWithPath: top + "/undated.jpg"))
-            var calendar = Calendar.current
-            calendar.timeZone = .current
-            let day = calendar.date(from: DateComponents(year: 2021, month: 7, day: 4))!
-            #expect(try names(runtime, top, [.date(.taken, .between(day, day))]) == ["taken.jpg"])
-            #expect(try names(runtime, top, [.date(.taken, .before(day))]) == ["undated.jpg"])
-            #expect(try names(runtime, top, [.date(.taken, .after(day))]).isEmpty)
-        }
-    }
-
     // What the conditions read is counted, and only what the name and the entry kept is read.
     @Test func onlyWhatTheNameAndEntryKeptIsRead() throws {
         let runtime = WalkSearchRuntime()
@@ -293,6 +248,116 @@ import UniformTypeIdentifiers
             #expect(sized.itemsRead == 2)
             let (byName, _) = try runWalk(runtime, SearchRequest(rootPath: top, query: "", conditions: [.kind([.pdf])]))
             #expect(byName.itemsRead == 0)
+        }
+    }
+
+    // A folder skipped is named as Plain Text names: whatever its capitals, and with its accents however the disk
+    // stores them; a plain letter is the letter with or without one, and a name is taken whole.
+    @Test func aFolderSkippedIsNamedAsPlainTextNames() throws {
+        let runtime = WalkSearchRuntime()
+        defer { runtime.close() }
+        try withTemporaryDirectory { folder in
+            let top = folder.path
+            let composed = "Caf\u{E9}"
+            let decomposed = "Cafe\u{301} Two"
+            for name in ["node_modules", composed, decomposed, "My Builds", "node_modules_old"] {
+                try makeSearchFolder(top + "/" + name)
+                try makeSearchFile(top + "/" + name + "/hit.txt")
+            }
+            func folders(_ skipped: [String]) throws -> Set<String> {
+                let (update, items) = try runWalk(
+                    runtime,
+                    SearchRequest(
+                        rootPath: top, query: "hit", conditions: skipped.isEmpty ? [] : [.skipFolders(skipped)]))
+                #expect(update.status == .complete)
+                return Set(items.map { NodePath.basename($0.parentPath) })
+            }
+            let all: Set<String> = ["node_modules", composed, decomposed, "My Builds", "node_modules_old"]
+            #expect(try folders([]) == all)
+            #expect(try folders(["Node_Modules"]) == all.subtracting(["node_modules"]))
+            #expect(try folders(["NODE_MODULES", "my builds"]) == all.subtracting(["node_modules", "My Builds"]))
+            // Typed composed or decomposed, the folder that has the accent; typed plain, it too.
+            #expect(try folders(["caf\u{E9}"]) == all.subtracting([composed]))
+            #expect(try folders(["cafe\u{301}"]) == all.subtracting([composed]))
+            #expect(try folders(["cafe"]) == all.subtracting([composed]))
+            #expect(try folders(["caf\u{E9} two"]) == all.subtracting([decomposed]))
+            // A part of a name skips nothing.
+            #expect(try folders(["node", "modules", "Builds"]) == all)
+            // The folder itself isn't listed either.
+            let (_, items) = try runWalk(
+                runtime, SearchRequest(rootPath: top, query: "node", conditions: [.skipFolders(["NODE_modules"])]))
+            #expect(items.map(\.name) == ["node_modules_old"])
+        }
+    }
+
+    // The walk finds items deeper than one call by path reaches, and the conditions read them as they read any
+    // other: a writable file there isn't read-only, and its tags are its own.
+    @Test func itemsDeeperThanOnePathAreReadAsAnyOther() throws {
+        let runtime = WalkSearchRuntime()
+        defer { runtime.close() }
+        try withTemporaryDirectory { folder in
+            let top = folder.path
+            // Six folders of 250 letters each, made one inside the other from the one before.
+            let name = String(repeating: "d", count: 250)
+            var opened: [Int32] = [open(top, O_RDONLY | O_DIRECTORY)]
+            defer {
+                // Taken away from the deepest up: a path this long is no path to remove by.
+                for (depth, descriptor) in opened.enumerated().reversed() {
+                    if depth == opened.count - 1 {
+                        for file in ["needle-plain.txt", "needle-tagged.txt", "needle-readonly.txt"] {
+                            unlinkat(descriptor, file, 0)
+                        }
+                    } else {
+                        unlinkat(descriptor, name, AT_REMOVEDIR)
+                    }
+                    close(descriptor)
+                }
+            }
+            for _ in 0..<6 {
+                let parent = try #require(opened.last)
+                #expect(mkdirat(parent, name, 0o755) == 0)
+                let child = openat(parent, name, O_RDONLY | O_DIRECTORY)
+                #expect(child >= 0)
+                opened.append(child)
+            }
+            let deepest = try #require(opened.last)
+            for (file, mode) in [
+                ("needle-plain.txt", 0o644), ("needle-tagged.txt", 0o644), ("needle-readonly.txt", 0o444),
+            ] {
+                let made = openat(deepest, file, O_WRONLY | O_CREAT, mode_t(mode))
+                #expect(made >= 0)
+                if file == "needle-tagged.txt" {
+                    let tags = try PropertyListSerialization.data(
+                        fromPropertyList: ["Red\n6"], format: .binary, options: 0)
+                    let set = tags.withUnsafeBytes {
+                        fsetxattr(made, FinderTags.attribute, $0.baseAddress, $0.count, 0, 0)
+                    }
+                    #expect(set == 0)
+                }
+                close(made)
+            }
+            try makeSearchFile(top + "/needle-near.txt")
+            func found(_ conditions: [SearchCondition]) throws -> Set<String> {
+                let (update, items) = try runWalk(
+                    runtime, SearchRequest(rootPath: top, query: "needle", conditions: conditions))
+                #expect(update.status == .complete)
+                #expect(items.filter { $0.name != "needle-near.txt" }.allSatisfy { $0.path.utf8.count > Int(PATH_MAX) })
+                return Set(items.map(\.name))
+            }
+            #expect(try found([]).count == 4)
+            #expect(try found([.attribute(.readOnly, is: true)]) == ["needle-readonly.txt"])
+            #expect(
+                try found([.attribute(.readOnly, is: false)]) == [
+                    "needle-plain.txt", "needle-tagged.txt", "needle-near.txt",
+                ])
+            #expect(try found([.tags(["red"], all: false)]) == ["needle-tagged.txt"])
+            #expect(
+                try found([.not(.tags(["red"], all: false))]) == [
+                    "needle-plain.txt", "needle-readonly.txt", "needle-near.txt",
+                ])
+            #expect(try found([.attribute(.empty, is: true)]).count == 4)
+            #expect(try found([.date(.added, .today)]).count == 4)
+            #expect(try found([.size(SearchSizeRule(comparison: .smaller, value: 1, unit: .kilobytes))]).count == 4)
         }
     }
 }

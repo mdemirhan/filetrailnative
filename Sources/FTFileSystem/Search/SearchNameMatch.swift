@@ -281,9 +281,12 @@ public enum GlobPattern {
             case "[":
                 run = ""
                 inSet = true
-                // A "]" first in the set is one of its members.
+                // A "]" first in the set, or first after the "!" or "^" that turns the set round, is one of its
+                // members and doesn't end it.
                 var copy = scalars
-                if let next = copy.next(), next == "]" || next == "!" || next == "^" { _ = scalars.next() }
+                if let next = copy.next(), next == "!" || next == "^" { _ = scalars.next() }
+                copy = scalars
+                if let next = copy.next(), next == "]" { _ = scalars.next() }
             case "\\":
                 if let escaped = scalars.next() { run.unicodeScalars.append(escaped) }
             default:

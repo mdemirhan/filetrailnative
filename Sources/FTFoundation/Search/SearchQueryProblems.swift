@@ -11,8 +11,7 @@ extension SearchQueryKey {
             "Not a kind: pdf, picture, video, audio, document, spreadsheet, presentation, archive, code, text, folder or application"
         case .ext: "Not an extension: letters and digits, like docx or mp4"
         case .size: "Not a size: a number and a unit, like 10mb, >1gb, <500kb, >=1mb or 1mb..10mb"
-        case .picture: "Not a picture size: 1920, 4k, >hd, >=hd or <1920"
-        case .modified, .created, .added, .opened, .taken:
+        case .modified, .created, .added, .opened:
             "Not a date: today, week, 7d, >1y, 2026-03-15, <2026-03, >=2026-03 or 2026-01..2026-03"
         case .tag: "Not a tag"
         case .is, .not: "Not an attribute: locked, readonly, executable, empty, alias, link or hidden"
@@ -50,9 +49,25 @@ extension SearchQuery {
     }
 
     private static func detail(_ word: SearchQueryWord, _ key: SearchQueryKey) -> String {
-        if word.text.hasPrefix("!!") || word.value.hasPrefix("!!") { return "One ! is enough" }
+        if word.text.hasPrefix("!!") || word.value.hasPrefix("!!")
+            || (word.text.hasPrefix("!") && word.value.hasPrefix("!"))
+        {
+            return "One ! is enough"
+        }
         if (word.text.hasPrefix("!") || word.value.hasPrefix("!")) && !key.takesNot {
             return "A folder skipped is already left out: no ! before it"
+        }
+        let value = word.value.hasPrefix("!") ? String(word.value.dropFirst()) : word.value
+        if key == .tag || key == .skip {
+            if !namesCanBecome(value) {
+                return key == .tag
+                    ? "One ! before the first tag is for all of them: tag:!red,blue is neither"
+                    : "A folder skipped is already left out: no ! before it"
+            }
+            if value.contains("\"") { return "Close the quote: \(key.word)\"a name\"" }
+        }
+        if (key == .is || key == .not) && value.contains(",") {
+            return "One attribute to a word: is:hidden is:locked for both"
         }
         if word.value.isEmpty { return key.expects.replacingOccurrences(of: "Not ", with: "Give ") }
         return key.expects
@@ -67,15 +82,36 @@ extension SearchQuery {
         }
         switch key {
         case .size: return sizeCanBecome(value)
-        case .picture: return pictureCanBecome(value)
-        case .modified, .created, .added, .opened, .taken: return dateCanBecome(value)
-        case .tag, .skip: return true
-        case .kind, .ext, .is, .not, .perm:
+        case .modified, .created, .added, .opened: return dateCanBecome(value)
+        case .tag, .skip: return namesCanBecome(value)
+        // An attribute is one to a word: a comma after one starts nothing.
+        case .is, .not: return !value.contains(",") && valueCanBecome(key, value)
+        case .kind, .ext, .perm:
             // Values before the last comma are whole ones; the last is the start of one.
             let parts = value.split(separator: ",", omittingEmptySubsequences: false).map(String.init)
             guard parts.dropLast().allSatisfy({ $0.isEmpty || condition(key, $0) != nil }) else { return false }
             return valueCanBecome(key, parts.last ?? "")
         }
+    }
+
+    /// Names being typed after `tag:` or `skip:`: anything, a quote left open too, but for a `!` before a name that
+    /// isn't the first, and for something after a closing quote that isn't a comma.
+    static func namesCanBecome(_ value: String) -> Bool {
+        var rest = Substring(value)
+        while !rest.isEmpty {
+            if rest.hasPrefix("\"") {
+                let inside = rest.dropFirst()
+                guard let close = inside.firstIndex(of: "\"") else { return true }
+                rest = inside[inside.index(after: close)...]
+                guard rest.isEmpty || rest.hasPrefix(",") else { return false }
+                rest = rest.dropFirst()
+            } else {
+                let name = rest.prefix { $0 != "," }
+                if name.hasPrefix("!") { return false }
+                rest = rest.dropFirst(name.count).dropFirst()
+            }
+        }
+        return true
     }
 
     private static func valueCanBecome(_ key: SearchQueryKey, _ value: String) -> Bool {
@@ -105,7 +141,7 @@ extension SearchQuery {
     /// as `ls` writes it, or not.
     static func permissionCanBecome(_ value: String) -> Bool {
         let letters = Array(value)
-        if letters.count <= 4, letters.allSatisfy({ ("0"..."7").contains($0) || $0 == "?" }) { return true }
+        if letters.count <= 4, letters.allSatisfy({ SearchPermissions.isOctalDigit($0) || $0 == "?" }) { return true }
         func fits(_ letters: ArraySlice<Character>) -> Bool {
             guard letters.count <= 9 else { return false }
             for (index, letter) in letters.enumerated() {
@@ -118,7 +154,7 @@ extension SearchQuery {
         }
         if fits(letters[...]) { return true }
         // `ls`'s ten letters start with the item's type.
-        guard let first = letters.first, "-dlbcps".contains(first) else { return false }
+        guard let first = letters.first, SearchPermissions.typeLetters.contains(first) else { return false }
         return fits(letters.dropFirst())
     }
 
@@ -143,24 +179,20 @@ extension SearchQuery {
     /// it must be.
     private static func amountCanBecome(_ text: String) -> Bool {
         let digits = text.prefix { $0.isNumber || $0 == "." }
-        guard digits.filter({ $0 == "." }).count <= 1 else { return false }
+        guard digits.filter({ $0 == "." }).count <= 1, digits.allSatisfy({ $0 == "." || isDigit($0) }) else {
+            return false
+        }
         let unit = String(text.dropFirst(digits.count))
         guard ["", "b", "k", "kb", "m", "mb", "g", "gb"].contains(unit) else { return false }
-        if unit.isEmpty { return true }
-        guard let number = Double(digits), number > 0 else { return false }
-        return true
-    }
-
-    /// A sign, then digits and `k`, or the start of `hd`.
-    static func pictureCanBecome(_ value: String) -> Bool {
-        let lower = value.lowercased()
-        if lower == "=" { return true }
-        let rest = sign(lower).rest
-        if rest.isEmpty || "hd".hasPrefix(rest) { return true }
-        let digits = rest.prefix { $0.isNumber }
-        let after = rest.dropFirst(digits.count)
-        guard !digits.isEmpty, after.isEmpty || after == "k" else { return false }
-        return Int(digits).map { $0 > 0 } ?? false || after.isEmpty
+        // No unit yet: any number that some unit would make a size, so not one past the largest in bytes.
+        if unit.isEmpty { return Double(digits).map { $0 <= largestSize } ?? true }
+        // With one, what is typed reads as it is or never will (`0mb`, `1.mb`, `1.5b`), but for the unit's first
+        // letter, which the next may complete.
+        if size(">" + text) != nil { return true }
+        guard unit.count == 1, unit != "b", let number = Double(digits), number > 0, !digits.hasSuffix(".") else {
+            return false
+        }
+        return number * 1e3 <= largestSize
     }
 
     /// The start of a word (`today`, `week`), of a count (`7d`, `>1y`), or of a day or a month with a sign or `..`.
@@ -174,9 +206,9 @@ extension SearchQuery {
         let digits = rest.prefix { $0.isNumber }
         let after = rest.dropFirst(digits.count)
         let before = compared == .smaller || compared == .atMost
-        if !before, after.isEmpty || (after.count == 1 && "dwmy".contains(after)) {
-            if after.isEmpty { return digits.count <= 4 || dayCanBecome(rest) }
-            return Int(digits).map { $0 > 0 } ?? false
+        if !before, digits.allSatisfy(isDigit), after.isEmpty || (after.count == 1 && "dwmy".contains(after)) {
+            if after.isEmpty { return digits.count <= largestCountDigits || dayCanBecome(rest) }
+            return digits.count <= largestCountDigits && (Int(digits).map { $0 > 0 } ?? false)
         }
         if let dots = rest.range(of: "..") {
             guard compared == nil, days(Substring(rest[..<dots.lowerBound]), .current) != nil
@@ -191,7 +223,7 @@ extension SearchQuery {
     /// The start of `YYYY-MM-DD`: four digits, a dash, a month of 01 to 12, a dash, a day of 01 to 31.
     private static func dayCanBecome(_ text: String) -> Bool {
         let parts = text.split(separator: "-", omittingEmptySubsequences: false).map(String.init)
-        guard parts.count <= 3, parts.allSatisfy({ $0.allSatisfy(\.isNumber) }) else { return false }
+        guard parts.count <= 3, parts.allSatisfy({ $0.allSatisfy(isDigit) }) else { return false }
         let year = parts[0]
         guard year.count <= 4, parts.count == 1 || year.count == 4 else { return false }
         if parts.count >= 2 {

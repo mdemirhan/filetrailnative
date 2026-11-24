@@ -917,6 +917,7 @@
               "rows": [
                 ["Conditions", "kind:pdf"],
                 ["Conditions", "skip:node_modules"],
+                ["Conditions", "All or either"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -1005,10 +1006,11 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
-                ["Conditions", "picture:>4k"],
                 ["Conditions", "Dates"],
+                ["Conditions", "tag:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
                 ["Conditions", "No text needed"]
@@ -1226,7 +1228,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Conditions", "All or either"], ["Options", "Hidden files"]]},
             {
               "shortcuts": [
                 {
@@ -2263,6 +2265,7 @@
               "rows": [
                 ["Conditions", "kind:pdf"],
                 ["Conditions", "skip:node_modules"],
+                ["Conditions", "All or either"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -2356,10 +2359,11 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
-                ["Conditions", "picture:>4k"],
                 ["Conditions", "Dates"],
+                ["Conditions", "tag:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
                 ["Conditions", "No text needed"]
@@ -2572,7 +2576,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Conditions", "All or either"], ["Options", "Hidden files"]]},
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Hidden files"]]}
           ],
           [
@@ -3279,6 +3283,7 @@
               "rows": [
                 ["Conditions", "kind:pdf"],
                 ["Conditions", "skip:node_modules"],
+                ["Conditions", "All or either"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -3367,10 +3372,11 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
-                ["Conditions", "picture:>4k"],
                 ["Conditions", "Dates"],
+                ["Conditions", "tag:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
                 ["Conditions", "No text needed"]
@@ -3582,7 +3588,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Conditions", "All or either"], ["Options", "Hidden files"]]},
             {
               "shortcuts": [
                 {
@@ -4331,6 +4337,7 @@
               "rows": [
                 ["Conditions", "kind:pdf"],
                 ["Conditions", "skip:node_modules"],
+                ["Conditions", "All or either"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -4419,10 +4426,11 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
-                ["Conditions", "picture:>4k"],
                 ["Conditions", "Dates"],
+                ["Conditions", "tag:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
                 ["Conditions", "No text needed"]
@@ -4639,7 +4647,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Conditions", "All or either"], ["Options", "Hidden files"]]},
             {
               "shortcuts": [
                 {
@@ -5359,6 +5367,7 @@
               "rows": [
                 ["Conditions", "kind:pdf"],
                 ["Conditions", "skip:node_modules"],
+                ["Conditions", "All or either"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -5447,10 +5456,11 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
-                ["Conditions", "picture:>4k"],
                 ["Conditions", "Dates"],
+                ["Conditions", "tag:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
                 ["Conditions", "No text needed"]
@@ -5661,7 +5671,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Conditions", "All or either"], ["Options", "Hidden files"]]},
             {
               "shortcuts": [
                 {
@@ -6451,6 +6461,7 @@
               "rows": [
                 ["Conditions", "kind:pdf"],
                 ["Conditions", "skip:node_modules"],
+                ["Conditions", "All or either"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -6521,10 +6532,11 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
-                ["Conditions", "picture:>4k"],
                 ["Conditions", "Dates"],
+                ["Conditions", "tag:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
                 ["Conditions", "No text needed"]
@@ -6705,7 +6717,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Conditions", "All or either"], ["Options", "Hidden files"]]},
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Hidden files"]]}
           ],
           [
@@ -7411,6 +7423,7 @@
               "rows": [
                 ["Conditions", "kind:pdf"],
                 ["Conditions", "skip:node_modules"],
+                ["Conditions", "All or either"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -7499,10 +7512,11 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
-                ["Conditions", "picture:>4k"],
                 ["Conditions", "Dates"],
+                ["Conditions", "tag:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
                 ["Conditions", "No text needed"]
@@ -7716,7 +7730,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Conditions", "All or either"], ["Options", "Hidden files"]]},
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Hidden files"]]}
           ],
           [
@@ -8451,6 +8465,7 @@
               "rows": [
                 ["Conditions", "kind:pdf"],
                 ["Conditions", "skip:node_modules"],
+                ["Conditions", "All or either"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -8539,10 +8554,11 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
-                ["Conditions", "picture:>4k"],
                 ["Conditions", "Dates"],
+                ["Conditions", "tag:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
                 ["Conditions", "No text needed"]
@@ -8754,7 +8770,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Conditions", "All or either"], ["Options", "Hidden files"]]},
             {
               "shortcuts": [
                 {
@@ -9541,6 +9557,7 @@
               "rows": [
                 ["Conditions", "kind:pdf"],
                 ["Conditions", "skip:node_modules"],
+                ["Conditions", "All or either"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -9622,10 +9639,11 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
-                ["Conditions", "picture:>4k"],
                 ["Conditions", "Dates"],
+                ["Conditions", "tag:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
                 ["Conditions", "No text needed"]
@@ -9832,7 +9850,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Conditions", "All or either"], ["Options", "Hidden files"]]},
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Hidden files"]]}
           ],
           [
@@ -10549,6 +10567,7 @@
               "rows": [
                 ["Conditions", "kind:pdf"],
                 ["Conditions", "skip:node_modules"],
+                ["Conditions", "All or either"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -10637,10 +10656,11 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
-                ["Conditions", "picture:>4k"],
                 ["Conditions", "Dates"],
+                ["Conditions", "tag:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
                 ["Conditions", "No text needed"]
@@ -10852,7 +10872,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Conditions", "All or either"], ["Options", "Hidden files"]]},
             {
               "shortcuts": [
                 {
@@ -11624,6 +11644,7 @@
               "rows": [
                 ["Conditions", "kind:pdf"],
                 ["Conditions", "skip:node_modules"],
+                ["Conditions", "All or either"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -11705,10 +11726,11 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
-                ["Conditions", "picture:>4k"],
                 ["Conditions", "Dates"],
+                ["Conditions", "tag:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
                 ["Conditions", "No text needed"]
@@ -11915,7 +11937,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Conditions", "All or either"], ["Options", "Hidden files"]]},
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Hidden files"]]}
           ],
           [
@@ -12688,6 +12710,7 @@
               "rows": [
                 ["Conditions", "kind:pdf"],
                 ["Conditions", "skip:node_modules"],
+                ["Conditions", "All or either"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -12776,10 +12799,11 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
-                ["Conditions", "picture:>4k"],
                 ["Conditions", "Dates"],
+                ["Conditions", "tag:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
                 ["Conditions", "No text needed"]
@@ -12997,7 +13021,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Conditions", "All or either"], ["Options", "Hidden files"]]},
             {
               "shortcuts": [
                 {
@@ -13745,6 +13769,7 @@
               "rows": [
                 ["Conditions", "kind:pdf"],
                 ["Conditions", "skip:node_modules"],
+                ["Conditions", "All or either"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -13833,10 +13858,11 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
-                ["Conditions", "picture:>4k"],
                 ["Conditions", "Dates"],
+                ["Conditions", "tag:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
                 ["Conditions", "No text needed"]
@@ -14048,7 +14074,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Conditions", "All or either"], ["Options", "Hidden files"]]},
             {
               "shortcuts": [
                 {
@@ -14798,6 +14824,7 @@
               "rows": [
                 ["Conditions", "kind:pdf"],
                 ["Conditions", "skip:node_modules"],
+                ["Conditions", "All or either"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -14879,10 +14906,11 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
-                ["Conditions", "picture:>4k"],
                 ["Conditions", "Dates"],
+                ["Conditions", "tag:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
                 ["Conditions", "No text needed"]
@@ -15094,7 +15122,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Conditions", "All or either"], ["Options", "Hidden files"]]},
             {
               "shortcuts": [
                 {
@@ -16170,6 +16198,7 @@
               "rows": [
                 ["Conditions", "kind:pdf"],
                 ["Conditions", "skip:node_modules"],
+                ["Conditions", "All or either"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -16263,10 +16292,11 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
-                ["Conditions", "picture:>4k"],
                 ["Conditions", "Dates"],
+                ["Conditions", "tag:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
                 ["Conditions", "No text needed"]
@@ -16477,7 +16507,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Conditions", "All or either"], ["Options", "Hidden files"]]},
             {
               "shortcuts": [
                 {

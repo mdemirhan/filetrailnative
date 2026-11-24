@@ -71,6 +71,12 @@ import Testing
         #expect(GlobPattern.requiredText("photo-??.jpg") == "photo-")
         #expect(GlobPattern.requiredText("[abc]*.md") == ".md")
         #expect(GlobPattern.requiredText("star\\*name") == "star*name")
+        // A "]" first in a set, or first after its "!" or "^", is a member: the set goes on to the next "]".
+        #expect(GlobPattern.requiredText("[]x]bc") == "bc")
+        #expect(GlobPattern.requiredText("[^]]bc") == "bc")
+        #expect(GlobPattern.requiredText("[!]]bc") == "bc")
+        #expect(GlobPattern.requiredText("*[!]]") == nil)
+        #expect(GlobPattern.requiredText("[!a]bc") == "bc")
         // Alternatives make any text optional; none, or beyond ASCII, is nothing to look for.
         #expect(GlobPattern.requiredText("*.{md,txt}") == nil)
         #expect(GlobPattern.requiredText("*") == nil)

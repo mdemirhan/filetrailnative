@@ -4,7 +4,7 @@ import Foundation
 
 /// A condition's word, as typed before its colon.
 public enum SearchQueryKey: String, CaseIterable, Sendable {
-    case kind, ext, size, picture, modified, created, added, opened, taken, tag, `is`, not, perm, skip
+    case kind, ext, size, modified, created, added, opened, tag, `is`, not, perm, skip
 
     /// The word as typed, with its colon.
     public var word: String { rawValue + ":" }
@@ -15,7 +15,6 @@ public enum SearchQueryKey: String, CaseIterable, Sendable {
         case .kind: "Kind"
         case .ext: "Extension"
         case .size: "Size"
-        case .picture: "Picture Size"
         case .tag: "Tags"
         case .is: "Attribute"
         case .not: "Attribute Is Not"
@@ -32,18 +31,17 @@ public enum SearchQueryKey: String, CaseIterable, Sendable {
         case .created: .created
         case .added: .added
         case .opened: .lastOpened
-        case .taken: .taken
         default: nil
         }
     }
 
     /// The words the field's menu lists, in its order: `is:` stands for the attributes, `not:` being its other side.
     public static let menuOrder: [SearchQueryKey] = [
-        .kind, .ext, .size, .picture, .modified, .created, .added, .opened, .taken, .tag, .is, .perm, .skip,
+        .kind, .ext, .size, .modified, .created, .added, .opened, .tag, .is, .perm, .skip,
     ]
 
     /// Whether `!` before its value, or before the word, asks for what it doesn't say: `kind:!pdf`, `!tag:red`,
-    /// `size:!1mb`, `picture:!1920`, `modified:!today`. A folder skipped is already left out.
+    /// `size:!1mb`, `modified:!today`. A folder skipped is already left out.
     public var takesNot: Bool { self != .skip }
 }
 
@@ -118,7 +116,9 @@ public struct SearchQuery: Equatable, Sendable {
 
     /// The words of `query`, separated by white space, each with what it is. A word that starts with a double quote
     /// runs to the quote that closes it, white space and all, and is text, never a condition (`"kind:pdf notes"`);
-    /// without a closing quote the quote is an ordinary character (`NameTerms.words`).
+    /// without a closing quote the quote is an ordinary character (`NameTerms.words`). A name after `tag:` or `skip:`
+    /// takes quotes too (`tag:"To Do"`, `skip:build,"My Builds"`), as a tag or a folder may have a space in its
+    /// name; there a quote left open runs to the end of the text, the word being one still typed.
     public static func words(_ query: String, calendar: Calendar = .current) -> [SearchQueryWord] {
         let source = query as NSString
         var words: [SearchQueryWord] = []
@@ -144,13 +144,67 @@ public struct SearchQuery: Equatable, Sendable {
                 let close = source.range(of: "\"", options: .literal, range: rest)
                 if close.location != NSNotFound { location = NSMaxRange(close) }
             }
-            while location < length, !isSpace(source.character(at: location)) { location += 1 }
+            while location < length, !isSpace(source.character(at: location)) {
+                if source.character(at: location) == quote, location > start,
+                    opensName(source, wordStart: start, at: location)
+                {
+                    let rest = NSRange(location: location + 1, length: length - location - 1)
+                    let close = source.range(of: "\"", options: .literal, range: rest)
+                    location = close.location == NSNotFound ? length : NSMaxRange(close)
+                    continue
+                }
+                location += 1
+            }
             guard location > start else { break }
             let range = NSRange(location: start, length: location - start)
             let text = source.substring(with: range)
             words.append(word(text, range: range, calendar: calendar))
         }
         return words
+    }
+
+    /// Whether the quote at `location` starts a name in the value of `tag:` or `skip:`: right after the colon, after
+    /// a comma, or after the `!` that follows the colon.
+    private static func opensName(_ source: NSString, wordStart: Int, at location: Int) -> Bool {
+        var head = source.substring(with: NSRange(location: wordStart, length: location - wordStart)).lowercased()
+        if head.hasPrefix("!") { head.removeFirst() }
+        guard let key = [SearchQueryKey.tag, .skip].first(where: { head.hasPrefix($0.word) }) else { return false }
+        let value = head.dropFirst(key.word.count)
+        return value.isEmpty || value == "!" || value.hasSuffix(",")
+    }
+
+    /// The names in the value of `tag:` or `skip:`: separated by commas, one in double quotes taken whole, spaces and
+    /// commas and all. Nil when it can't be read: no name at all, a quote left open, something after a closing quote,
+    /// or a `!` before a name that isn't the first (`tag:!red,blue` is neither; `tag:red,!blue` says nothing).
+    public static func names(_ value: String) -> [String]? {
+        var names: [String] = []
+        var rest = Substring(value)
+        while !rest.isEmpty {
+            if rest.hasPrefix("\"") {
+                let inside = rest.dropFirst()
+                guard let close = inside.firstIndex(of: "\"") else { return nil }
+                if close > inside.startIndex { names.append(String(inside[..<close])) }
+                rest = inside[inside.index(after: close)...]
+                guard rest.isEmpty || rest.hasPrefix(",") else { return nil }
+                rest = rest.dropFirst()
+            } else {
+                let name = rest.prefix { $0 != "," }
+                guard !name.hasPrefix("!") else { return nil }
+                if !name.isEmpty { names.append(String(name)) }
+                rest = rest.dropFirst(name.count).dropFirst()
+            }
+        }
+        return names.isEmpty ? nil : names
+    }
+
+    /// A tag's or a folder's name as it is typed after its word: in quotes when it has a space or a comma, or starts
+    /// with a quote's or a not's mark. Nil for a name that can't be typed (a quote inside one that needs quotes).
+    public static func nameWord(_ name: String) -> String? {
+        let needsQuotes =
+            name.contains(",") || name.hasPrefix("!") || name.hasPrefix("\"")
+            || name.unicodeScalars.contains { CharacterSet.whitespacesAndNewlines.contains($0) }
+        guard needsQuotes else { return name.isEmpty ? nil : name }
+        return name.contains("\"") ? nil : "\"" + name + "\""
     }
 
     /// `!` before a condition's word is `!` before its value: `!kind:pdf` is `kind:!pdf`.
@@ -226,7 +280,7 @@ public struct SearchQuery: Equatable, Sendable {
         }
         let lower = value.lowercased()
         let list = lower.split(separator: ",").map(String.init).filter { !$0.isEmpty }
-        guard !list.isEmpty else { return nil }
+        guard !list.isEmpty || key == .tag || key == .skip else { return nil }
         switch key {
         case .kind:
             let kinds = list.map(kind)
@@ -240,22 +294,20 @@ public struct SearchQuery: Equatable, Sendable {
             return .fileExtension(extensions)
         case .size:
             return size(lower).map { .size($0) }
-        case .picture:
-            return pixels(lower).map { .pictureSize($0) }
         case .tag:
             // Tags by name, as typed: they are compared case aside.
-            return .tags(value.split(separator: ",").map(String.init).filter { !$0.isEmpty }, all: false)
+            return names(value).map { .tags($0, all: false) }
         case .is, .not:
             guard let attribute = attributeWords[lower] else { return nil }
             return .attribute(attribute, is: key == .is)
         case .skip:
-            return .skipFolders(value.split(separator: ",").map(String.init).filter { !$0.isEmpty })
+            return names(value).map { .skipFolders($0) }
         case .perm:
             // As typed: `S` and `T` aren't `s` and `t`.
             let modes = value.split(separator: ",").map { SearchPermissions.permission(String($0)) }
             guard !modes.isEmpty, modes.allSatisfy({ $0 != nil }) else { return nil }
             return .permissions(modes.compactMap { $0 })
-        case .modified, .created, .added, .opened, .taken:
+        case .modified, .created, .added, .opened:
             guard let field = key.dateField, let rule = dateRule(lower, calendar: calendar) else { return nil }
             return .date(field, rule)
         }
@@ -287,12 +339,23 @@ public struct SearchQuery: Equatable, Sendable {
         return ("", nil, Substring(value))
     }
 
+    /// The largest size read, in bytes: a million terabytes, past any file, and well inside what `Int64` counts.
+    static let largestSize = 1e18
+
+    /// Whether a number typed with these digits is whole bytes in `unit`: `1.5kb` is 1,500 bytes; `1.5b` and
+    /// `1.2345kb` are no number of bytes, and no file is that size (`>1.2345kb` still reads: larger than it).
+    static func isWholeBytes(_ digits: Substring, _ unit: SearchSizeUnit) -> Bool {
+        let places = digits.firstIndex(of: ".").map { digits[digits.index(after: $0)...].count } ?? 0
+        return places <= Int(log10(unit.bytes).rounded())
+    }
+
     /// `>10mb`, `<500kb`, `>=1mb`, `<=1mb`, `1mb..10mb`, and `1mb` alone: to its last digit, so 1 MB up to 2 MB (`SearchSizeRule.bounds`);
     /// `k`, `m` and `g` are `kb`, `mb` and `gb`.
     static func size(_ value: String) -> SearchSizeRule? {
         func amount(_ text: Substring) -> (Double, SearchSizeUnit)? {
             let digits = text.prefix { $0.isNumber || $0 == "." }
-            guard let number = Double(digits), number > 0, let unit = units[String(text.dropFirst(digits.count))]
+            guard !digits.hasSuffix("."), let number = Double(digits), number > 0,
+                let unit = units[String(text.dropFirst(digits.count))], number * unit.bytes <= largestSize
             else { return nil }
             return (number, unit)
         }
@@ -311,31 +374,20 @@ public struct SearchQuery: Equatable, Sendable {
         let comparison = compared ?? .equal
         // The places typed, kept where the number alone loses them (`2.10kb`).
         let digits = rest.prefix { $0.isNumber || $0 == "." }
+        // A size alone is to its last digit, and a digit finer than a byte is no size a file has.
+        if comparison == .equal, !isWholeBytes(digits, unit) { return nil }
         let places = digits.firstIndex(of: ".").map { digits[digits.index(after: $0)...].count } ?? 0
         return SearchSizeRule(
             comparison: comparison, value: number, unit: unit,
             places: comparison == .equal && places != SearchSizeRule.decimals(number) ? places : nil)
     }
 
-    /// `1920`, `4k`, `hd` exactly; `>4k`, `<1920`, `>=hd`, `<=hd`: a picture's longer side.
-    static func pixels(_ value: String) -> SearchPixelRule? {
-        let (_, compared, typed) = sign(value)
-        let rest = String(typed)
-        let side: Int?
-        switch rest {
-        case "hd": side = 1920
-        case "4k": side = 3840
-        case "8k": side = 7680
-        default:
-            if rest.hasSuffix("k"), let thousands = Int(rest.dropLast()) {
-                side = thousands * 1000
-            } else {
-                side = Int(rest)
-            }
-        }
-        guard let side, side > 0 else { return nil }
-        // Alone, that size exactly, as a file's size alone is that size: `1920`, `4k`, `hd`.
-        return SearchPixelRule(comparison: compared ?? .equal, pixels: side)
+    /// The most digits a count of days, weeks, months or years has.
+    static let largestCountDigits = 4
+
+    /// One of 0 to 9, and no other digit: a digit of another script, or one with a mark on it, is no number here.
+    static func isDigit(_ character: Character) -> Bool {
+        character.isASCII && character.isNumber
     }
 
     private static let spans: [Character: SearchTimeUnit] = ["d": .days, "w": .weeks, "m": .months, "y": .years]
@@ -352,10 +404,12 @@ public struct SearchQuery: Equatable, Sendable {
         case "year": return .thisYear
         default: break
         }
+        // A count is up to four digits: nothing is 10,000 days old that a longer count would tell apart.
         func count(_ text: Substring) -> (Int, SearchTimeUnit)? {
-            guard let last = text.last, let unit = spans[last], let number = Int(text.dropLast()), number > 0 else {
-                return nil
-            }
+            let digits = text.dropLast()
+            guard let last = text.last, let unit = spans[last], (1...largestCountDigits).contains(digits.count),
+                digits.allSatisfy(isDigit), let number = Int(digits), number > 0
+            else { return nil }
             return (number, unit)
         }
         let (_, compared, rest) = sign(value)
@@ -368,7 +422,9 @@ public struct SearchQuery: Equatable, Sendable {
             guard let first = days(value[..<dots.lowerBound], calendar),
                 let second = days(value[dots.upperBound...], calendar)
             else { return nil }
-            return .between(first.first, second.last)
+            // Typed the later one first, it is the same days: from the start of the earlier to the end of the later.
+            return first.first <= second.first
+                ? .between(first.first, second.last) : .between(second.first, first.last)
         }
         if let compared, let span = days(rest, calendar) {
             switch compared {
@@ -386,6 +442,7 @@ public struct SearchQuery: Equatable, Sendable {
     /// The first and last day of `2026-03-15` (the same day) or `2026-03` (the month).
     static func days(_ text: Substring, _ calendar: Calendar) -> (first: Date, last: Date)? {
         let parts = text.split(separator: "-", omittingEmptySubsequences: false)
+        guard parts.allSatisfy({ $0.allSatisfy(isDigit) }) else { return nil }
         guard parts.count == 2 || parts.count == 3, parts[0].count == 4, let year = Int(parts[0]),
             parts[1].count == 2, let month = Int(parts[1]), (1...12).contains(month)
         else { return nil }

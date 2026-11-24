@@ -10,7 +10,7 @@
 // What is kept is what a search lists: files and folders. Symbolic links, devices, sockets and pipes are
 // passed over, and no link is followed into, as the search has always done. Hidden items (a name starting
 // with a dot, or the flag that hides one) and everything inside a hidden folder are left out unless asked
-// for. The flag is read of an item only once it has matched, and of a folder when it is opened. Folders on
+// for, and so is a folder the match callback says to skip, with all that is in it. The flag is read of an item only once it has matched, and of a folder when it is opened. Folders on
 // other disks are walked into, as anything mounted below the folder searched is part of it, except, for a
 // search of "/", /Volumes (other disks are searched from their own top) and /System/Volumes (the data
 // volume is already reached through the firmlinks).
@@ -50,8 +50,6 @@ typedef struct search_node {
 struct ft_search {
     char *root_path;
     ft_search_options options;
-    char **skip_names; /* owned copies of the options' */
-    size_t *skip_lengths;
     ft_search_match match;
     ft_search_keep keep;
     void *context;
@@ -188,14 +186,6 @@ static int search_is_gone(int errnum) { return errnum == ENOENT || errnum == ENO
 
 /* ── Listing a folder ────────────────────────────────────────────── */
 
-/* A folder of one of the names the search leaves out, as listed. */
-static int search_skips(ft_search *search, const char *name, size_t length) {
-    for (int index = 0; index < search->options.skip_count; index++) {
-        if (search->skip_lengths[index] == length && memcmp(search->skip_names[index], name, length) == 0) return 1;
-    }
-    return 0;
-}
-
 typedef struct {
     ft_search *search;
     int index;       /* which worker, for the match callback */
@@ -270,7 +260,8 @@ static void search_list(search_worker *worker, int fd, const char *folder, size_
             /* A disk that doesn't keep types in its folders: the item is asked. */
             struct stat info;
             if (fstatat(fd, name, &info, AT_SYMLINK_NOFOLLOW) != 0) continue;
-            type = S_ISDIR(info.st_mode) ? DT_DIR : S_ISREG(info.st_mode) ? DT_REG : DT_LNK;
+            /* A device, a socket or a pipe is none of the three, and is passed over as one listed with its type. */
+            type = S_ISDIR(info.st_mode) ? DT_DIR : S_ISREG(info.st_mode) ? DT_REG : S_ISLNK(info.st_mode) ? DT_LNK : DT_UNKNOWN;
         }
         /* Files and folders, and links when asked for: no link is followed. */
         int is_link = type == DT_LNK;
@@ -279,7 +270,6 @@ static void search_list(search_worker *worker, int fd, const char *folder, size_
         int dotted = name[0] == '.';
         if (dotted && !options->include_hidden) continue;
         if (options->skip_git && name_length == 4 && memcmp(name, ".git", 4) == 0) continue;
-        if (is_folder && search_skips(search, name, name_length)) continue;
 
         /* The name the disk holds for the item, which is how the rest of the app names it. */
         const char *listed_name = name;
@@ -305,6 +295,8 @@ static void search_list(search_worker *worker, int fd, const char *folder, size_
             search_stop(search);
             break;
         }
+        /* A folder the search leaves out: not listed, and not gone into. */
+        if (matched == FT_SEARCH_SKIP) continue;
         if (matched == FT_SEARCH_MATCH) {
             /* Hidden by its flag, read now it is wanted: one read, from the folder, that the conditions get too. */
             int is_hidden = dotted;
@@ -316,7 +308,7 @@ static void search_list(search_worker *worker, int fd, const char *folder, size_
             }
             if (!is_hidden || options->include_hidden) {
                 if (search->keep(search->context, worker->index, worker->path, length, prefix, is_folder, is_hidden,
-                                 is_link, read ? &info : NULL) != 0) {
+                                 is_link, read ? &info : NULL, fd) != 0) {
                     search_stop(search);
                     break;
                 }
@@ -375,34 +367,6 @@ ft_search *ft_search_create(const char *root_path, ft_search_options options, ft
         return NULL;
     }
     search->options = options;
-    int count = options.skip_count > 0 && options.skip_names ? options.skip_count : 0;
-    search->options.skip_count = 0;
-    search->options.skip_names = NULL;
-    if (count > 0) {
-        search->skip_names = calloc((size_t)count, sizeof(char *));
-        search->skip_lengths = calloc((size_t)count, sizeof(size_t));
-        if (!search->skip_names || !search->skip_lengths) {
-            free(search->skip_names);
-            free(search->skip_lengths);
-            free(search->root_path);
-            free(search);
-            return NULL;
-        }
-        for (int index = 0; index < count; index++) {
-            const char *name = options.skip_names[index] ? options.skip_names[index] : "";
-            search->skip_names[index] = strdup(name);
-            search->skip_lengths[index] = strlen(name);
-            if (!search->skip_names[index]) {
-                for (int made = 0; made < index; made++) free(search->skip_names[made]);
-                free(search->skip_names);
-                free(search->skip_lengths);
-                free(search->root_path);
-                free(search);
-                return NULL;
-            }
-        }
-        search->options.skip_count = count;
-    }
     search->match = match;
     search->keep = keep;
     search->context = context;
@@ -505,9 +469,6 @@ ft_search_result ft_search_run(ft_search *search) {
 
 void ft_search_destroy(ft_search *search) {
     if (!search) return;
-    for (int index = 0; index < search->options.skip_count; index++) free(search->skip_names[index]);
-    free(search->skip_names);
-    free(search->skip_lengths);
     pthread_mutex_destroy(&search->lock);
     pthread_cond_destroy(&search->cond);
     free(search->root_path);
