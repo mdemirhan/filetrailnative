@@ -140,6 +140,10 @@ public struct SyntaxLexer: Sendable {
         case .ini(let rules): next = line.lexINI(rules, state)
         case .css(let rules): next = line.lexCSS(rules, state)
         case .diff: next = line.lexDiff()
+        case .restructuredText: next = line.lexReST(state)
+        case .asciiDoc: next = line.lexAsciiDoc(state)
+        case .org: next = line.lexOrg(state)
+        case .typst: next = line.lexTypst(state)
         }
         tokens = line.tokens
         return next

@@ -15,6 +15,10 @@ public enum SyntaxGrammar: Sendable {
     /// CSS, SCSS, Less.
     case css(CSSRules)
     case diff
+    case restructuredText
+    case asciiDoc
+    case org
+    case typst
 }
 
 /// A string's delimiters.

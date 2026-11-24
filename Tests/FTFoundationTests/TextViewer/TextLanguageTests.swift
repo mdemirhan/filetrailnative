@@ -67,7 +67,7 @@ import Testing
         let ids = TextLanguage.all.map(\.id)
         #expect(Set(ids).count == ids.count)
         #expect(ids.first == "plain")
-        #expect(TextLanguage.all.count >= 70)
+        #expect(TextLanguage.all.count >= 75)
         let names = TextLanguage.all.dropFirst().map(\.name)
         #expect(names == names.sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending })
     }

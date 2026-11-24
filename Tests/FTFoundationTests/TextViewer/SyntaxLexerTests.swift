@@ -298,6 +298,148 @@ import Testing
         #expect(!found.contains { $0.0 == "let" })
     }
 
+    @Test func restHasUnderlinesDirectivesRolesAndLiteralBlocks() throws {
+        let found = try runs(
+            """
+            Title
+            =====
+            Some *em*, **strong**, ``code``, :func:`run` and `Python`_.
+
+            .. note:: Read this.
+            .. a comment
+               that goes on
+            .. code-block:: python
+               :linenos:
+
+               def f(): pass
+            An example::
+
+                $ make
+            :Author: Me
+            - item
+            """, "rst")
+        #expect(found.contains { $0 == ("=====", .heading) })
+        #expect(found.contains { $0 == ("*em*", .emphasis) })
+        #expect(found.contains { $0 == ("**strong**", .strong) })
+        #expect(found.contains { $0 == ("``code``", .code) })
+        #expect(found.contains { $0 == (":func:", .attribute) })
+        #expect(found.contains { $0 == ("`run`", .code) })
+        #expect(found.contains { $0 == ("`Python`_", .link) })
+        #expect(found.contains { $0 == (".. note::", .keyword) })
+        #expect(found.contains { $0 == (".. a comment", .comment) })
+        #expect(found.contains { $0 == ("that goes on", .comment) })
+        #expect(found.contains { $0 == (":linenos:", .property) })
+        #expect(found.contains { $0 == ("def", .keyword) })
+        #expect(found.contains { $0 == ("$ make", .code) })
+        #expect(found.contains { $0 == (":Author:", .property) })
+        #expect(found.contains { $0 == ("-", .keyword) })
+    }
+
+    @Test func asciiDocHasTitlesAttributesBlocksAndMacros() throws {
+        let found = try runs(
+            """
+            = Guide
+            :toc: left
+            // a note
+            NOTE: Mind the *gap* and `code`, see <<setup>> and {product}.
+            [source,swift]
+            ----
+            let x = 1
+            ----
+            ....
+            literal
+            ....
+            image::shot.png[Shot]
+            * one
+            term:: definition
+            """, "asciidoc")
+        #expect(found.contains { $0 == ("= Guide", .heading) })
+        #expect(found.contains { $0 == (":toc:", .property) })
+        #expect(found.contains { $0 == ("// a note", .comment) })
+        #expect(found.contains { $0 == ("NOTE:", .keyword) })
+        #expect(found.contains { $0 == ("*gap*", .strong) })
+        #expect(found.contains { $0 == ("`code`", .code) })
+        #expect(found.contains { $0 == ("<<setup>>", .link) })
+        #expect(found.contains { $0 == ("{product}", .variable) })
+        #expect(found.contains { $0 == ("[source,swift]", .attribute) })
+        #expect(found.contains { $0 == ("let", .keyword) })
+        #expect(found.contains { $0 == ("literal", .code) })
+        #expect(found.contains { $0 == ("image::", .keyword) })
+        #expect(found.contains { $0 == ("*", .keyword) })
+        #expect(found.contains { $0 == ("term::", .property) })
+    }
+
+    @Test func orgHasHeadingsKeywordsBlocksAndEmphasis() throws {
+        let found = try runs(
+            """
+            #+TITLE: Notes
+            * TODO [#A] Write it :work:
+            :PROPERTIES:
+            :ID: 42
+            :END:
+            Some *bold*, /italic/, =verbatim= and [[https://a.b][a link]], not a/b/c.
+            #+BEGIN_SRC python
+            x = None
+            #+END_SRC
+            # a comment
+            - [X] done
+            SCHEDULED: <2026-11-24 Tue>
+            """, "org")
+        #expect(found.contains { $0 == ("#+TITLE:", .keyword) })
+        #expect(found.contains { $0 == ("* ", .heading) })
+        #expect(found.contains { $0 == ("TODO", .keyword) })
+        #expect(found.contains { $0 == ("[#A]", .keyword) })
+        #expect(found.contains { $0 == (":work:", .attribute) })
+        #expect(found.contains { $0 == (":PROPERTIES:", .attribute) })
+        #expect(found.contains { $0 == (":ID:", .property) })
+        #expect(found.contains { $0 == ("*bold*", .strong) })
+        #expect(found.contains { $0 == ("/italic/", .emphasis) })
+        #expect(found.contains { $0 == ("=verbatim=", .code) })
+        #expect(found.contains { $0 == ("[[https://a.b][a link]]", .link) })
+        #expect(!found.contains { $0.0 == "/b/" })
+        #expect(found.contains { $0 == ("#+BEGIN_SRC", .keyword) })
+        #expect(found.contains { $0 == ("None", .literal) })
+        #expect(found.contains { $0 == ("# a comment", .comment) })
+        #expect(found.contains { $0 == ("[X]", .keyword) })
+        #expect(found.contains { $0 == ("SCHEDULED:", .keyword) })
+        #expect(found.contains { $0 == ("<2026-11-24 Tue>", .number) })
+    }
+
+    @Test func typstHasMarkupCodeMathAndRawBlocks() throws {
+        let found = try runs(
+            """
+            = Intro
+            #set text(font: "New CM", size: 11pt)
+            Some *strong* and _emph_, $x^2$, <intro> and @fig. // note
+            #figure(
+              image("a.png"),
+              caption: [A cat],
+            ) after
+            ```rust
+            fn main() {}
+            ```
+            - item
+            """, "typst")
+        #expect(found.contains { $0 == ("= Intro", .heading) })
+        #expect(found.contains { $0 == ("#set", .keyword) })
+        #expect(found.contains { $0 == ("text", .function) })
+        #expect(found.contains { $0 == ("\"New CM\"", .string) })
+        #expect(found.contains { $0 == ("11pt", .number) })
+        #expect(found.contains { $0 == ("*strong*", .strong) })
+        #expect(found.contains { $0 == ("_emph_", .emphasis) })
+        #expect(found.contains { $0 == ("$x^2$", .string) })
+        #expect(found.contains { $0 == ("@fig", .link) })
+        #expect(found.contains { $0 == ("<intro>", .attribute) })
+        #expect(found.contains { $0 == ("// note", .comment) })
+        #expect(found.contains { $0 == ("#figure", .function) })
+        #expect(found.contains { $0 == ("image", .function) })
+        #expect(found.contains { $0 == ("\"a.png\"", .string) })
+        #expect(!found.contains { $0.0 == "after" })
+        #expect(found.contains { $0 == ("```rust", .code) })
+        #expect(found.contains { $0 == ("fn", .keyword) })
+        #expect(found.contains { $0 == ("-", .keyword) })
+    }
+
     @Test func plainTextHasNoRuns() throws {
         #expect(try runs("let x = 1 // nothing", "plain").isEmpty)
     }
@@ -308,6 +450,10 @@ import Testing
         ("a = '''x\ny''' # c\n/* not a comment */ b = 2", "python"),
         ("<script\n type=\"module\">\nconst s = `a\nb` /* c\nd */\n</script>\n<p>", "html"),
         ("```js\nconst s = `a\nb`\n```\n*em*", "markdown"),
+        (".. code:: c\n\n   /* a\n   b */ int x;\nText", "rst"),
+        ("[source,c]\n----\n/* a\nb */\n----\n*x*", "asciidoc"),
+        ("#+begin_src c\n/* a\nb */\n#+end_src\n*x*", "org"),
+        ("#f(\n /* a\n */ 1)\n$a\nb$ ```c\n/* x\n*/```", "typst"),
     ])
     func lineByLineFromCarriedStatesGivesTheSameRuns(_ text: String, _ id: String) throws {
         let language = try #require(TextLanguage.with(id: id))

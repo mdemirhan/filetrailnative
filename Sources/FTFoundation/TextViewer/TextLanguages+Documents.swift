@@ -45,5 +45,9 @@ extension TextLanguages {
                     rules.variablePrefix = Char.at
                     return rules
                 }()), extensions: ["less"]),
+        TextLanguage("rst", "reStructuredText", .restructuredText, extensions: ["rst", "rest"]),
+        TextLanguage("asciidoc", "AsciiDoc", .asciiDoc, extensions: ["adoc", "asciidoc"]),
+        TextLanguage("org", "Org", .org, extensions: ["org"]),
+        TextLanguage("typst", "Typst", .typst, extensions: ["typ"]),
     ]
 }
