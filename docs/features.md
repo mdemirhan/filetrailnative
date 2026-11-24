@@ -1,6 +1,6 @@
 # Everything File Trail does
 
-The [README](../README.md) is about what is different from Finder. This page lists the rest, by area, a line or two each. How to do each thing is in the app's own Help, which also lists every shortcut, the ones you changed included.
+The [README](../README.md) has the highlights. This page lists everything, by area, a line or two each. How to do each thing is in the app's own Help, which also lists every shortcut, the ones you changed included.
 
 - [Getting around](#getting-around)
 - [Tabs, panes, windows and saved views](#tabs-panes-windows-and-saved-views)
