@@ -998,8 +998,7 @@
               "rows": [
                 ["Plain Text", "report (1).pdf"],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"],
-                ["Options", "Skip Files Ignored by Git"]
+                ["Glob patterns", "[a-c]*.txt"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -2337,8 +2336,7 @@
               "rows": [
                 ["Plain Text", "report (1).pdf"],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"],
-                ["Options", "Skip Files Ignored by Git"]
+                ["Glob patterns", "[a-c]*.txt"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -3337,8 +3335,7 @@
               "rows": [
                 ["Plain Text", "report (1).pdf"],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"],
-                ["Options", "Skip Files Ignored by Git"]
+                ["Glob patterns", "[a-c]*.txt"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -4378,8 +4375,7 @@
               "rows": [
                 ["Plain Text", "report (1).pdf"],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"],
-                ["Options", "Skip Files Ignored by Git"]
+                ["Glob patterns", "[a-c]*.txt"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -5395,8 +5391,7 @@
               "rows": [
                 ["Plain Text", "report (1).pdf"],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"],
-                ["Options", "Skip Files Ignored by Git"]
+                ["Glob patterns", "[a-c]*.txt"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -6456,8 +6451,7 @@
               "rows": [
                 ["Plain Text", "report (1).pdf"],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"],
-                ["Options", "Skip Files Ignored by Git"]
+                ["Glob patterns", "[a-c]*.txt"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -7423,8 +7417,7 @@
               "rows": [
                 ["Plain Text", "report (1).pdf"],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"],
-                ["Options", "Skip Files Ignored by Git"]
+                ["Glob patterns", "[a-c]*.txt"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -8452,8 +8445,7 @@
               "rows": [
                 ["Plain Text", "report (1).pdf"],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"],
-                ["Options", "Skip Files Ignored by Git"]
+                ["Glob patterns", "[a-c]*.txt"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -9524,8 +9516,7 @@
               "rows": [
                 ["Plain Text", "report (1).pdf"],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"],
-                ["Options", "Skip Files Ignored by Git"]
+                ["Glob patterns", "[a-c]*.txt"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -10528,8 +10519,7 @@
               "rows": [
                 ["Plain Text", "report (1).pdf"],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"],
-                ["Options", "Skip Files Ignored by Git"]
+                ["Glob patterns", "[a-c]*.txt"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -11585,8 +11575,7 @@
               "rows": [
                 ["Plain Text", "report (1).pdf"],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"],
-                ["Options", "Skip Files Ignored by Git"]
+                ["Glob patterns", "[a-c]*.txt"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -12645,8 +12634,7 @@
               "rows": [
                 ["Plain Text", "report (1).pdf"],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"],
-                ["Options", "Skip Files Ignored by Git"]
+                ["Glob patterns", "[a-c]*.txt"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -13691,8 +13679,7 @@
               "rows": [
                 ["Plain Text", "report (1).pdf"],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"],
-                ["Options", "Skip Files Ignored by Git"]
+                ["Glob patterns", "[a-c]*.txt"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -14726,8 +14713,7 @@
               "rows": [
                 ["Plain Text", "report (1).pdf"],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"],
-                ["Options", "Skip Files Ignored by Git"]
+                ["Glob patterns", "[a-c]*.txt"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -16099,8 +16085,7 @@
               "rows": [
                 ["Plain Text", "report (1).pdf"],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"],
-                ["Options", "Skip Files Ignored by Git"]
+                ["Glob patterns", "[a-c]*.txt"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}

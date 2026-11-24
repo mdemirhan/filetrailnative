@@ -82,7 +82,6 @@ struct AppPreferencesTests {
         #expect(defaults.searchMatchScope == .name)
         #expect(defaults.searchRecursive)
         #expect(defaults.searchSkipGitFolders)
-        #expect(!defaults.searchSkipGitIgnored)
         #expect(defaults.searchResultsSortBy == .path)
         #expect(defaults.searchResultsSortDirection == .asc)
         #expect(defaults.treeWidth == 280)
@@ -156,7 +155,7 @@ struct AppPreferencesTests {
         // Every preference key is listed.
         let preferenceKeys = (try? JSONNode.of(AppPreferences.defaults()))?.object ?? [:]
         #expect(Set(preferenceKeys.keys) == Set(PreferenceKey.allCases.map(\.rawValue)))
-        #expect(PreferenceKey.allCases.count == 66)
+        #expect(PreferenceKey.allCases.count == 65)
     }
 
     // The Compact List keeps a width for each density; a saved one is kept within 160…600, a missing one is the

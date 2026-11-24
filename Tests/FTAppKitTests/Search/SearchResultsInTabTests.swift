@@ -1,5 +1,5 @@
 // Reveal in Folder, the path bar, Settings edits of the search defaults, Return in an empty field and the options
-// button from the keyboard, over the stand-in fd runtime
+// button from the keyboard, over the stand-in search runtime
 import AppKit
 import FTFileSystem
 import FTFoundation

@@ -8,7 +8,7 @@ public enum PreferenceKey: String, CaseIterable, Sendable, Hashable {
     case notificationsEnabled, markClipboardItems, autoCalculateFolderSizes, folderTreeOpen, propertiesOpen
     case detailRowOpen, topToolbarItems, terminalApp, defaultTextEditor, openWithApplications
     case diskImageOpensIn, returnKeyAction, shortcutOverrides, openItemLimit, includeHidden, searchPatternMode
-    case searchMatchScope, searchRecursive, searchSkipGitFolders, searchSkipGitIgnored, searchResultsSortBy
+    case searchMatchScope, searchRecursive, searchSkipGitFolders, searchResultsSortBy
     case searchResultsSortDirection, searchGroupBy, searchGroupReversed, treeWidth, inspectorWidth
     case restoreSessionOnStartup, openTabs, activeTabIndex
     case treeRootPath, lastVisitedPath, lastVisitedFavoritePath, favorites, favoritesPlacement, favoritesExpanded
@@ -62,7 +62,6 @@ public enum PreferenceKey: String, CaseIterable, Sendable, Hashable {
         case .searchMatchScope: .of(\.searchMatchScope)
         case .searchRecursive: .of(\.searchRecursive)
         case .searchSkipGitFolders: .of(\.searchSkipGitFolders)
-        case .searchSkipGitIgnored: .of(\.searchSkipGitIgnored)
         case .searchResultsSortBy: .of(\.searchResultsSortBy)
         case .searchResultsSortDirection: .of(\.searchResultsSortDirection)
         case .searchGroupBy: .of(\.searchGroupBy)

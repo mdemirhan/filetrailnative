@@ -387,7 +387,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     // MARK: The options menu
 
     private enum Option {
-        case matchScope, patternMode, recursive, skipGitFolders, skipGitIgnored
+        case matchScope, patternMode, recursive, skipGitFolders
     }
 
     /// The option chosen in the menu is the pane's, saved with it, and what a pane with none to copy starts with; no
@@ -401,7 +401,6 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
             case .patternMode: $0.searchPatternMode = search.patternMode
             case .recursive: $0.searchRecursive = search.recursive
             case .skipGitFolders: $0.searchSkipGitFolders = search.skipGitFolders
-            case .skipGitIgnored: $0.searchSkipGitIgnored = search.skipGitIgnored
             }
         }
         tab.group?.tabChanged(tab)
@@ -412,7 +411,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         let search = session
         return SearchBarText.changedOptions(
             matchScope: search.matchScope, patternMode: search.patternMode, recursive: search.recursive,
-            skipGitFolders: search.skipGitFolders, skipGitIgnored: search.skipGitIgnored)
+            skipGitFolders: search.skipGitFolders)
     }
 
     /// The bar's Options, and the toolbar's magnifier while this search drives the field, say whether an option differs
@@ -483,9 +482,6 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
             .separator,
             item("Skip .git Folders", search.skipGitFolders, .skipGitFolders) {
                 search.setSkipGitFolders(!search.skipGitFolders)
-            },
-            item("Skip Files Ignored by Git", search.skipGitIgnored, .skipGitIgnored) {
-                search.setSkipGitIgnored(!search.skipGitIgnored)
             },
         ]
     }

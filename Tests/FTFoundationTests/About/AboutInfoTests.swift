@@ -4,7 +4,7 @@ import Testing
 
 struct AboutInfoTests {
     private let info = AboutInfo(
-        version: "0.1.0", commit: "df11088", macosVersion: "27.0", architecture: "Apple silicon", fdVersion: "10.5.0")
+        version: "0.1.0", commit: "df11088", macosVersion: "27.0", architecture: "Apple silicon")
 
     @Test func addsTheCommitTheAppWasBuiltFromWhenTheBuildKnowsIt() {
         #expect(AboutText.formatAppVersion(info) == "0.1.0 (df11088)")
@@ -16,14 +16,14 @@ struct AboutInfoTests {
     @Test func listsWhatABugReportNeedsOneLineEach() {
         #expect(
             AboutText.formatAboutDetails(info)
-                == ["File Trail 0.1.0 (df11088)", "macOS 27.0, Apple silicon", "fd 10.5.0"].joined(separator: "\n"))
+                == ["File Trail 0.1.0 (df11088)", "macOS 27.0, Apple silicon"].joined(separator: "\n"))
     }
 
     // The rows of the window
-    @Test func showsTheVersionMacOSAndSearchRows() {
+    @Test func showsTheVersionAndMacOSRows() {
         let rows = AboutText.rows(info)
-        #expect(rows.map(\.label) == ["Version", "macOS", "Search"])
-        #expect(rows.map(\.value) == ["0.1.0 (df11088)", "27.0, Apple silicon", "fd 10.5.0"])
+        #expect(rows.map(\.label) == ["Version", "macOS"])
+        #expect(rows.map(\.value) == ["0.1.0 (df11088)", "27.0, Apple silicon"])
     }
 
     @Test func namesAMacOSVersionTheWayMacOSDoes() {

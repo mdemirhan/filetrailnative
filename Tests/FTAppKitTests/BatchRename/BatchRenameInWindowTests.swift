@@ -489,7 +489,7 @@ extension ExplorerWindowlessTests {
             await close(opened)
         }
 
-        /// Results of a search in the tab's folder, found by a stand-in for fd.
+        /// Results of a search in the tab's folder, found by a stand-in for the search.
         private func search(_ names: [String], in tab: MainWindowController) throws -> ManualTimers {
             let engine = FakeSearchEngine()
             let timers = ManualTimers()

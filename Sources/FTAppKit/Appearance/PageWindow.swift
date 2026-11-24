@@ -17,7 +17,7 @@ public final class PageWindow: NSWindow {
     }
 }
 
-/// What one of the app's own windows (Settings, Help, About, Acknowledgements) is: its title and sizes.
+/// What one of the app's own windows (Settings, Help, About) is: its title and sizes.
 public struct PageWindowSpec: Equatable, Sendable {
     public var title: String
     /// The content size, or the window's size for a window with no frame of its own to count.

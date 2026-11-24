@@ -8,18 +8,15 @@ public struct AboutActions {
     /// Puts text on the clipboard; false when it could not.
     public var copyText: @MainActor (String) -> Bool
     public var openURL: @MainActor (URL) -> Void
-    public var openAcknowledgements: @MainActor () -> Void
     public var scheduler: any FolderWatchScheduler
 
     public init(
         copyText: @escaping @MainActor (String) -> Bool = AboutActions.copyToPasteboard,
         openURL: @escaping @MainActor (URL) -> Void = { NSWorkspace.shared.open($0) },
-        openAcknowledgements: @escaping @MainActor () -> Void = {},
         scheduler: any FolderWatchScheduler = DispatchFolderWatchScheduler()
     ) {
         self.copyText = copyText
         self.openURL = openURL
-        self.openAcknowledgements = openAcknowledgements
         self.scheduler = scheduler
     }
 
@@ -71,7 +68,6 @@ public final class AboutView: ThemedView {
     public let copyButton: SystemButton
     public let gitHubButton: SystemButton
     public let issuesButton: SystemButton
-    public let acknowledgementsLink: LinkButton
     private let copyright: ThemedText
     private var cancelCopiedNote: (() -> Void)?
     public private(set) var copied = false
@@ -102,8 +98,6 @@ public final class AboutView: ThemedView {
         copyButton = SystemButton(title: "Copy Details", theme: theme)
         gitHubButton = SystemButton(title: "GitHub", theme: theme)
         issuesButton = SystemButton(title: "Report an Issue", theme: theme)
-        acknowledgementsLink = LinkButton(
-            title: "Acknowledgements", fontSize: DesignTokens.typeScale.small, theme: theme)
         copyright = ThemedText(AboutText.copyright, style: Self.footerStyle)
         super.init(
             frame: NSRect(
@@ -127,7 +121,6 @@ public final class AboutView: ThemedView {
             button.setAccessibilityIdentifier(id)
             addSubview(button)
         }
-        acknowledgementsLink.setAccessibilityIdentifier("about.link")
         setAccessibilityIdentifier("about")
         setAccessibilityLabel("About \(AboutText.appName)")
 
@@ -138,10 +131,8 @@ public final class AboutView: ThemedView {
         gitHubButton.action = #selector(openGitHub(_:))
         issuesButton.target = self
         issuesButton.action = #selector(openIssues(_:))
-        acknowledgementsLink.target = self
-        acknowledgementsLink.action = #selector(openAcknowledgements(_:))
 
-        for subview in [icon, name, tagline, acknowledgementsLink, copyright] { addSubview(subview) }
+        for subview in [icon, name, tagline, copyright] { addSubview(subview) }
         // The details: a row each; none while the info could not be read.
         for row in info.map(AboutText.rows) ?? [] {
             let label = ThemedText(row.label, style: Self.labelStyle, selectable: true)
@@ -236,15 +227,12 @@ public final class AboutView: ThemedView {
             x += buttonWidth + 8
         }
 
-        // The footer sits at the bottom.
+        // The footer, the copyright alone, sits at the bottom, centred.
         let footerHeight = Self.footerHeight
         let footerTop = bounds.height - Self.bottomPadding - footerHeight
-        let linkSize = acknowledgementsLink.preferredSize
-        acknowledgementsLink.frame = NSRect(
-            x: Self.sidePadding, y: footerTop, width: linkSize.width, height: footerHeight)
         let copyrightWidth = ceil(copyright.naturalWidth)
         copyright.frame = NSRect(
-            x: width - Self.sidePadding - copyrightWidth, y: footerTop, width: copyrightWidth, height: footerHeight)
+            x: floor((width - copyrightWidth) / 2), y: footerTop, width: copyrightWidth, height: footerHeight)
     }
 
     public override func draw(_ dirtyRect: NSRect) {
@@ -287,10 +275,6 @@ public final class AboutView: ThemedView {
 
     @objc private func openIssues(_ sender: Any?) {
         if let url = URL(string: AboutText.issuesURL) { actions.openURL(url) }
-    }
-
-    @objc private func openAcknowledgements(_ sender: Any?) {
-        actions.openAcknowledgements()
     }
 
     isolated deinit { cancelCopiedNote?() }

@@ -57,7 +57,7 @@ public struct SearchResultRenames: Sendable {
 
 extension SearchResults {
     /// `results` without the items at or inside a path of `removed`, and with those at or inside a renamed item at
-    /// their new paths, found as fd would have found them there; nil when no result is one of them. A renamed item
+    /// their new paths, found as the search would have found them there; nil when no result is one of them. A renamed item
     /// stays though its new name may not match the search. Paths are compared byte for byte.
     public static func afterWrite(
         _ results: [SearchResultItem], rootPath: String, removed: [String], renamed: [SearchResultRename]

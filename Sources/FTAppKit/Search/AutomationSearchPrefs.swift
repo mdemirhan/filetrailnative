@@ -12,7 +12,7 @@
             guard !registered else { return }
             registered = true
             for key: PreferenceKey in [
-                .searchPatternMode, .searchMatchScope, .searchRecursive, .searchSkipGitFolders, .searchSkipGitIgnored,
+                .searchPatternMode, .searchMatchScope, .searchRecursive, .searchSkipGitFolders,
             ] {
                 AutomationPrefs.register(key) { value, context in
                     guard let controller = context.controller else { return .unsupported(key.rawValue) }

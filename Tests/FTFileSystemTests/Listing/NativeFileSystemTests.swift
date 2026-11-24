@@ -418,7 +418,7 @@ struct NativeFileSystemTests {
             #expect(disk.askedPaths == asked)
             #expect(listed.items.map(\.kindLabel).first == "Folder")
             #expect(listed.items.map(\.kindLabel).last.map { $0 != "Folder" } == true)
-            // A search result is a package as the listing says, by its type: fd's results aren't looked into, so a
+            // A search result is a package as the listing says, by its type: a search doesn't look into its results, so a
             // folder known only by its bundle bit is a folder there.
             #expect(SearchResults.item(rootPath: root, outputPath: root + "/Script.scptd/").kind == .bundle)
             #expect(SearchResults.item(rootPath: root, outputPath: root + "/Plain.utm/").kind == .directory)

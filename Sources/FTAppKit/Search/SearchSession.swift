@@ -69,7 +69,6 @@ final class SearchSession {
     private(set) var matchScope: SearchMatchScopePreference
     private(set) var recursive: Bool
     private(set) var skipGitFolders: Bool
-    private(set) var skipGitIgnored: Bool
     private(set) var sortBy: SearchResultsSortByPreference
     private(set) var sortDirection: SortDirectionPreference
     private(set) var resultsVisible = false
@@ -137,7 +136,6 @@ final class SearchSession {
         matchScope = preferences.searchMatchScope
         recursive = preferences.searchRecursive
         skipGitFolders = preferences.searchSkipGitFolders
-        skipGitIgnored = preferences.searchSkipGitIgnored
         sortBy = preferences.searchResultsSortBy
         sortDirection = preferences.searchResultsSortDirection
         searchedHidden = includeHidden
@@ -518,13 +516,11 @@ final class SearchSession {
         var matchScope: SearchMatchScopePreference
         var recursive: Bool
         var skipGitFolders: Bool
-        var skipGitIgnored: Bool
     }
 
     private var options: SearchOptions {
         SearchOptions(
-            patternMode: patternMode, matchScope: matchScope, recursive: recursive, skipGitFolders: skipGitFolders,
-            skipGitIgnored: skipGitIgnored)
+            patternMode: patternMode, matchScope: matchScope, recursive: recursive, skipGitFolders: skipGitFolders)
     }
 
     private func refine(_ query: String) {
@@ -561,11 +557,6 @@ final class SearchSession {
         optionChanged()
     }
 
-    func setSkipGitIgnored(_ value: Bool) {
-        skipGitIgnored = value
-        optionChanged()
-    }
-
     /// A capture scene's preferences set the live values of the keys it gives, without running anything again; the
     /// others keep what was chosen in the options menu.
     func applyDefaults(_ preferences: AppPreferences, keys: Set<PreferenceKey>) {
@@ -573,7 +564,6 @@ final class SearchSession {
         if keys.contains(.searchMatchScope) { matchScope = preferences.searchMatchScope }
         if keys.contains(.searchRecursive) { recursive = preferences.searchRecursive }
         if keys.contains(.searchSkipGitFolders) { skipGitFolders = preferences.searchSkipGitFolders }
-        if keys.contains(.searchSkipGitIgnored) { skipGitIgnored = preferences.searchSkipGitIgnored }
         emit(.options)
     }
 
@@ -682,7 +672,7 @@ final class SearchSession {
         let counter = sessionCounter
         let request = SearchRequest(
             rootPath: root, query: trimmed, patternMode: patternMode, matchScope: matchScope, recursive: recursive,
-            includeHidden: host.searchIncludeHidden, skipGitFolders: skipGitFolders, skipGitIgnored: skipGitIgnored)
+            includeHidden: host.searchIncludeHidden, skipGitFolders: skipGitFolders)
         do {
             let started = try engine.start(request)
             jobID = started

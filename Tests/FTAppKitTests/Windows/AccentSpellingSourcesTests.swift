@@ -103,7 +103,7 @@ extension ExplorerWindowlessTests {
                 "realpath of the file, asked the other way": "composed/composed",
                 "a listing's own path, asked the other way": "composed",
                 "a listing's row": "composed/composed", "the tree's row of the folder": "composed",
-                "fd from the folder above": "composed/composed", "fd from the folder": "composed/composed",
+                "a search from the folder above": "composed/composed", "a search from the folder": "composed/composed",
                 "the system's events": "composed/composed", "the app's watch names it": "composed",
                 "lstat by the other spelling": "found", "rename by the other spelling": "found",
                 "unlink by the other spelling": "found", "the other spelling beside it": "the same item",
@@ -114,7 +114,8 @@ extension ExplorerWindowlessTests {
                 "realpath of the file, asked the other way": "decomposed/decomposed",
                 "a listing's own path, asked the other way": "decomposed",
                 "a listing's row": "decomposed/decomposed", "the tree's row of the folder": "decomposed",
-                "fd from the folder above": "decomposed/decomposed", "fd from the folder": "decomposed/decomposed",
+                "a search from the folder above": "decomposed/decomposed",
+                "a search from the folder": "decomposed/decomposed",
                 "the system's events": "decomposed/decomposed", "the app's watch names it": "decomposed",
                 "lstat by the other spelling": "found", "rename by the other spelling": "found",
                 "unlink by the other spelling": "found", "the other spelling beside it": "the same item",
@@ -125,7 +126,7 @@ extension ExplorerWindowlessTests {
                 "realpath of the file, asked the other way": "composed/composed",
                 "a listing's own path, asked the other way": "composed",
                 "a listing's row": "composed/composed", "the tree's row of the folder": "composed",
-                "fd from the folder above": "composed/composed", "fd from the folder": "composed/composed",
+                "a search from the folder above": "composed/composed", "a search from the folder": "composed/composed",
                 "the system's events": "composed/composed", "the app's watch names it": "composed",
                 "lstat by the other spelling": "found", "rename by the other spelling": "not found",
                 "unlink by the other spelling": "found", "the other spelling beside it": "the same item",
@@ -136,7 +137,7 @@ extension ExplorerWindowlessTests {
                 "realpath of the file, asked the other way": "composed/composed",
                 "a listing's own path, asked the other way": "composed",
                 "a listing's row": "composed/composed", "the tree's row of the folder": "composed",
-                "fd from the folder above": "composed/composed", "fd from the folder": "composed/composed",
+                "a search from the folder above": "composed/composed", "a search from the folder": "composed/composed",
                 "the system's events": "composed/composed", "the app's watch names it": "composed",
                 "lstat by the other spelling": "found", "rename by the other spelling": "found",
                 "unlink by the other spelling": "not found", "the other spelling beside it": "the same item",
@@ -176,7 +177,7 @@ extension ExplorerWindowlessTests {
             status == 0 ? "found" : errno == ENOENT ? "not found" : String(cString: strerror(errno))
         }
 
-        private func search(_ runtime: FdSearchRuntime, for query: String, in root: String) throws
+        private func search(_ runtime: WalkSearchRuntime, for query: String, in root: String) throws
             -> [SearchResultItem]
         {
             let started = runtime.startSearch(SearchRequest(rootPath: root, query: query))
@@ -243,12 +244,12 @@ extension ExplorerWindowlessTests {
             said["the tree's row of the folder"] = spelled(
                 tree.children.first { $0.name == folderName }?.path, below: top)
 
-            let runtime = FdSearchRuntime(fdBinaryPath: try FdBinary.resolveBundledPath())
+            let runtime = WalkSearchRuntime()
             let query = stored == .composed ? "sum" : "som"
             let fromAbove = try search(runtime, for: query, in: top).first { $0.name == fileName }
-            said["fd from the folder above"] = spelled(fromAbove?.path, below: top)
+            said["a search from the folder above"] = spelled(fromAbove?.path, below: top)
             let fromTheFolder = try search(runtime, for: query, in: listing.path).first { $0.name == fileName }
-            said["fd from the folder"] = spelled(fromTheFolder?.path, below: top)
+            said["a search from the folder"] = spelled(fromTheFolder?.path, below: top)
             runtime.close()
 
             // The system's events for the folder, watched by its real path: a file made in it.

@@ -72,7 +72,7 @@ public enum SearchBarText {
     /// its order; empty while every one is at its default.
     public static func changedOptions(
         matchScope: SearchMatchScopePreference, patternMode: SearchPatternModePreference, recursive: Bool,
-        skipGitFolders: Bool, skipGitIgnored: Bool
+        skipGitFolders: Bool
     ) -> [String] {
         let defaults = AppPreferences.defaults()
         var changed: [String] = []
@@ -81,9 +81,6 @@ public enum SearchBarText {
         if recursive != defaults.searchRecursive { changed.append("Search Subfolders \(recursive ? "On" : "Off")") }
         if skipGitFolders != defaults.searchSkipGitFolders {
             changed.append("Skip .git Folders \(skipGitFolders ? "On" : "Off")")
-        }
-        if skipGitIgnored != defaults.searchSkipGitIgnored {
-            changed.append("Skip Files Ignored by Git \(skipGitIgnored ? "On" : "Off")")
         }
         return changed
     }

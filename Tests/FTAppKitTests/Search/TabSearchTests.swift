@@ -188,7 +188,6 @@ extension ExplorerWindowlessTests {
             #expect(
                 menu.rows.map(\.title) == [
                     "Name", "Full Path", "Plain Text", "Glob", "Regex", "Search Subfolders", "Skip .git Folders",
-                    "Skip Files Ignored by Git",
                 ])
             #expect(menu.nsMenu.items.filter(\.isSectionHeader).map(\.title) == ["Match", "Match As"])
             #expect(
@@ -254,10 +253,10 @@ extension ExplorerWindowlessTests {
             let menu = try #require(AppMenuPresenter.shared.menu)
             let marked = try #require(menu.markedIndex)
             #expect(menu.items[marked].title == "Name")
-            let skip = try #require(menu.items.firstIndex { $0.title == "Skip Files Ignored by Git" })
+            let skip = try #require(menu.items.firstIndex { $0.title == "Skip .git Folders" })
             menu.onChoose(skip)
             #expect(!AppMenuPresenter.shared.isOpen)
-            #expect(tab.search.session.skipGitIgnored)
+            #expect(!tab.search.session.skipGitFolders)
             await harness.close()
         }
 

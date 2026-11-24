@@ -1,4 +1,4 @@
-// The Help, About and Acknowledgements windows as the app opens them and Help's documentation of the application menu
+// The Help and About windows as the app opens them and Help's documentation of the application menu
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -39,10 +39,8 @@ import Testing
         let pages = PageWindows(model: AppearanceModel(), preferences: { box.preferences })
         pages.aboutActions = AboutActions()
         pages.readAboutInfo = {
-            AboutInfo(
-                version: "0.1.0", commit: nil, macosVersion: "27.0", architecture: "Apple silicon", fdVersion: "10.5.0")
+            AboutInfo(version: "0.1.0", commit: nil, macosVersion: "27.0", architecture: "Apple silicon")
         }
-        pages.readAcknowledgements = { [] }
         pages.presentsWindows = false
         return (pages, box)
     }
@@ -104,11 +102,6 @@ import Testing
         #expect(about?.wasPresented == true)
         #expect(about?.window?.isVisible == false)
 
-        pages.openAcknowledgements()
-        let acknowledgements = pages.acknowledgementsWindow
-        pages.openAcknowledgements()
-        #expect(pages.acknowledgementsWindow === acknowledgements)
-
         pages.openSettings()
         #expect(pages.settingsWindow?.wasPresented == true)
         #expect(pages.settingsWindow?.window?.isVisible == false)
@@ -130,10 +123,8 @@ import Testing
         #expect(pages.helpWindow?.helpView.activeTopic == .search)
 
         about?.window?.close()
-        acknowledgements?.window?.close()
         pages.helpWindow?.window?.close()
         #expect(pages.aboutWindow == nil)
-        #expect(pages.acknowledgementsWindow == nil)
     }
 
     // The keys Help shows are the ones chosen in Settings, and Return renames while Settings says so
@@ -157,7 +148,7 @@ import Testing
 
 }
 
-/// Puts the Help, About and Acknowledgements windows on screen: only with FILETRAIL_GUI_TESTS=1.
+/// Puts the Help and About windows on screen: only with FILETRAIL_GUI_TESTS=1.
 @MainActor
 @Suite(.serialized, .holdsMainLoop, .enabled(if: ProcessInfo.processInfo.environment["FILETRAIL_GUI_TESTS"] == "1"))
 struct PageWindowsGUITests {
@@ -167,12 +158,9 @@ struct PageWindowsGUITests {
         pages.presentsWindows = true
         pages.openHelp()
         pages.openAbout()
-        pages.openAcknowledgements()
         #expect(pages.helpWindow?.window?.isVisible == true)
         #expect(pages.aboutWindow?.window?.isVisible == true)
-        #expect(pages.acknowledgementsWindow?.window?.isVisible == true)
         pages.helpWindow?.window?.close()
         pages.aboutWindow?.window?.close()
-        pages.acknowledgementsWindow?.window?.close()
     }
 }

@@ -6,7 +6,7 @@ What the app needs before it can be submitted, from a review of the code and the
 
 Most of it is paperwork and a build script. One part is real work: **the Mac App Store takes only sandboxed apps** (App Review Guideline 2.4.5(i)), and a sandboxed app sees only the files and folders the user has given it. A file browser has to ask for that access once and remember it, and a few features that reach outside the app (Empty Trash through Finder, mounting disk images with `hdiutil`, ejecting through Disk Arbitration) have to be tried in the sandbox and changed where it stops them.
 
-Everything else already fits: File Trail makes no network connections, has no updater, no account, no login item, no root helper and no third-party frameworks, and the one bundled tool (`fd`) is MIT or Apache 2.0.
+Everything else already fits: File Trail makes no network connections, has no updater, no account, no login item, no root helper, no bundled tools and no third-party frameworks: search walks the disk inside the app.
 
 The recommendation is to keep the Developer ID download as it is and add the App Store build beside it, made from the same code with an `APP_STORE` build flag where the two differ. The download keeps every feature; the App Store build gives up what the sandbox doesn't allow.
 
@@ -54,7 +54,7 @@ Things to try once it is built, as these behave differently in the sandbox:
 
 | Feature | Where | In the sandbox | What to do |
 |---|---|---|---|
-| Search | `Sources/FTFileSystem/Search/FdProcess.swift` | A bundled tool runs only when signed with `app-sandbox` and `inherit` and nothing else. It then has the app's access. | Sign `Contents/Helpers/fd` with those two entitlements. Try a search of a granted disk, and of a folder dropped on the app. |
+| Search | `Sources/CFileTrail/search.c` | The walk runs in the app, with the app's access. | Try a search of a granted disk, and of a folder dropped on the app. |
 | Empty Trash | `Sources/FTFileSystem/System/TrashState.swift` (`NSAppleScript` to Finder) | Blocked without `com.apple.security.temporary-exception.apple-events` for `com.apple.finder`. | Owner's decision 4. Move to Trash itself (`trashItem`) is not affected. |
 | The Trash location | `Sources/FTFoundation/Ranking/Places.swift`, `TrashFolders.swift` | `~/.Trash` is likely closed even with Home granted. | Try it. If closed, the sidebar's Trash opens Finder's Trash. |
 | Opening disk images | `Sources/FTFileSystem/DiskImages/HdiutilProcess.swift` | `/usr/bin/hdiutil` runs inside the app's sandbox and is likely refused. | Try it. If refused, owner's decision 5. |
@@ -81,8 +81,6 @@ A new `Resources/FileTrail-AppStore.entitlements`:
 <key>com.apple.developer.team-identifier</key><string>TEAMID</string>
 ```
 
-And `Resources/fd.entitlements` for the bundled tool: `com.apple.security.app-sandbox` and `com.apple.security.inherit`, both true, and nothing else.
-
 No network entitlement: File Trail makes no connections, and servers are reached through the file system once macOS has mounted them. `com.apple.security.files.all` and an absolute-path exception for `/` are not asked for: App Review refuses them for a file browser.
 
 ## 3. Build, sign and upload
@@ -100,7 +98,7 @@ A new `scripts/make-appstore-app.sh`, beside `scripts/make-release-app.sh`:
    - system boot time (`NSPrivacyAccessedAPICategorySystemBootTime`, `ProcessInfo.systemUptime` in `AppClock.swift`): `35F9.1` elapsed time;
    - user defaults (`NSPrivacyAccessedAPICategoryUserDefaults`): `CA92.1` the app's own.
 4. **Provisioning profile** copied to `Contents/embedded.provisionprofile`.
-5. **Sign**, inside out, with the Apple Distribution identity: `fd` with `fd.entitlements`, then the app with `FileTrail-AppStore.entitlements`. The hardened runtime is allowed but not required, and the app isn't notarized: Apple signs what the store ships.
+5. **Sign** with the Apple Distribution identity: the app with `FileTrail-AppStore.entitlements`. The hardened runtime is allowed but not required, and the app isn't notarized: Apple signs what the store ships.
 6. **Package:** `productbuild --component "build/appstore/File Trail.app" /Applications --sign "3rd Party Mac Developer Installer: … (TEAMID)" build/appstore/FileTrail.pkg`.
 7. **Validate and upload:** `xcrun altool --validate-app -f build/appstore/FileTrail.pkg -t macos --apiKey <key> --apiIssuer <issuer>`, then the same with `--upload-app`, or drop the package on the Transporter app.
 
@@ -126,7 +124,7 @@ For testing on this Mac before any upload, the same script signs with the Apple 
 | 2.4.5(i) sandboxed | Section 2. |
 | 2.4.5(ii) built with Apple's tools, no installer of its own | The `swift` toolchain, `codesign` and `productbuild`. |
 | 2.4.5(iii) self-contained, writes only where allowed | Yes: one bundle; state in the container. |
-| 2.4.5(iv) nothing that starts at login or keeps running after quit | Yes: `fd` runs only during a search and stops with it. |
+| 2.4.5(iv) nothing that starts at login or keeps running after quit | Yes: a search runs on the app's own threads and stops when it quits. |
 | 2.4.5(v)/(vii) no updater of its own, no root | Yes: there is no update check, and nothing runs as root. |
 | 2.5.1 public APIs only | The two `dlsym` lookups in section 2 are the ones to watch. |
 | 2.3.7 metadata | No other app's name in the name, subtitle, keywords or description. |

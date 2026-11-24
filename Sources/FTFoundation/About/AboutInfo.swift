@@ -1,7 +1,7 @@
 import Foundation
 
-/// What the About window shows and Copy Details copies: the app's version and commit, the macOS version, the kind
-/// of processor and the version of the bundled `fd`.
+/// What the About window shows and Copy Details copies: the app's version and commit, the macOS version and the kind
+/// of processor.
 public struct AboutInfo: Equatable, Sendable {
     public var version: String
     /// The short git hash the build was made from; nil when the build doesn't know it.
@@ -10,14 +10,12 @@ public struct AboutInfo: Equatable, Sendable {
     public var macosVersion: String
     /// "Apple silicon" or "Intel".
     public var architecture: String
-    public var fdVersion: String
 
-    public init(version: String, commit: String?, macosVersion: String, architecture: String, fdVersion: String) {
+    public init(version: String, commit: String?, macosVersion: String, architecture: String) {
         self.version = version
         self.commit = commit
         self.macosVersion = macosVersion
         self.architecture = architecture
-        self.fdVersion = fdVersion
     }
 }
 
@@ -39,7 +37,6 @@ public enum AboutText {
         [
             "\(appName) \(formatAppVersion(info))",
             "macOS \(info.macosVersion), \(info.architecture)",
-            "fd \(info.fdVersion)",
         ].joined(separator: "\n")
     }
 
@@ -48,7 +45,6 @@ public enum AboutText {
         [
             (label: "Version", value: formatAppVersion(info)),
             (label: "macOS", value: "\(info.macosVersion), \(info.architecture)"),
-            (label: "Search", value: "fd \(info.fdVersion)"),
         ]
     }
 

@@ -45,7 +45,6 @@ struct AppStateRoundTripTests {
             "searchMatchScope": "path",
             "searchRecursive": false,
             "searchSkipGitFolders": false,
-            "searchSkipGitIgnored": true,
             "searchResultsSortBy": "kind",
             "searchResultsSortDirection": "desc",
             "treeWidth": 300,

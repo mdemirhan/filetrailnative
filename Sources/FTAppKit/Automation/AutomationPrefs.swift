@@ -45,7 +45,7 @@
             let own = PaneViewSizes(controller.preferences)
             for pane in controller.panes { pane.setViewSize { $0 = own } }
             let options: Set<PreferenceKey> = [
-                .searchPatternMode, .searchMatchScope, .searchRecursive, .searchSkipGitFolders, .searchSkipGitIgnored,
+                .searchPatternMode, .searchMatchScope, .searchRecursive, .searchSkipGitFolders,
             ]
             controller.search.session.applyDefaults(controller.preferences, keys: options)
         }

@@ -130,12 +130,10 @@ APP_VERSION="$(/usr/libexec/PlistBuddy -c "Print :FTVersion" "${APP_BUNDLE}/Cont
 step_done "${APP_VERSION}"
 
 step "Signing with the Developer ID"
-# The hardened runtime and a secure timestamp are both required for notarization. Inside out, as Apple asks (no --deep): the
-# bundled fd first, then the app, which seals it.
+# The hardened runtime and a secure timestamp are both required for notarization.
 sign() {
     run codesign --force --options runtime --timestamp --sign "${SIGN_IDENTITY}" "$@"
 }
-sign "${APP_BUNDLE}/Contents/Helpers/fd"
 sign --entitlements "${ENTITLEMENTS_PLIST}" "${APP_BUNDLE}"
 run codesign --verify --deep --strict "${APP_BUNDLE}"
 # Before notarization spctl still refuses the app, but it already names the source: the Developer ID.

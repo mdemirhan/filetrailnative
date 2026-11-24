@@ -42,7 +42,6 @@ if [ -z "$identity" ]; then
 fi
 
 scripts/build-app.sh debug --out "$folder"
-codesign --force --sign "$identity" "$app/Contents/Helpers/fd"
 codesign --force --sign "$identity" "$app"
 
 # The demo project and home are taken away however the script ends, a copy cut short too. Neither was there before.

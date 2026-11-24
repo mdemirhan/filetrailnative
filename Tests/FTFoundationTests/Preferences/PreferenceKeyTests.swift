@@ -31,7 +31,7 @@ struct PreferenceKeyTests {
                  "fileActivationAction": "edit", "diskImageOpensIn": "tab", "returnKeyAction": "open",
                  "shortcutOverrides": {"newTab": ["Cmd+Option+N"]}, "openItemLimit": 9, "includeHidden": true,
                  "searchPatternMode": "glob", "searchMatchScope": "path", "searchRecursive": false,
-                 "searchSkipGitFolders": false, "searchSkipGitIgnored": true, "searchResultsSortBy": "name",
+                 "searchSkipGitFolders": false, "searchResultsSortBy": "name",
                  "searchResultsSortDirection": "desc", "searchGroupBy": "kind", "searchGroupReversed": true,
                  "treeWidth": 312, "inspectorWidth": 388,
                  "restoreSessionOnStartup": false,
@@ -53,7 +53,7 @@ struct PreferenceKeyTests {
     @Test func namesEveryFieldOfThePreferencesOnce() throws {
         let encoded = try #require(try JSONNode.of(AppPreferences.defaults()).object)
         #expect(Set(encoded.keys) == Set(PreferenceKey.allCases.map(\.rawValue)))
-        #expect(PreferenceKey.allCases.count == 66)
+        #expect(PreferenceKey.allCases.count == 65)
         #expect(PreferenceKey(\AppPreferences.theme) == .theme)
         #expect(PreferenceKey(\AppPreferences.terminalApp) == .terminalApp)
         #expect(PreferenceKey(\AppPreferences.detailColumnWidths.name) == nil)

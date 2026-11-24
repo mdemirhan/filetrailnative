@@ -15,7 +15,7 @@ What still has to be done before the app can be submitted is in the plan, [plans
 | Primary language | English (U.S.) |
 | Primary category | Utilities |
 | Secondary category | Productivity |
-| Content rights | Contains no third-party content that needs rights. The bundled `fd` is MIT or Apache 2.0, credited in the app's Acknowledgements. |
+| Content rights | Contains no third-party content that needs rights. |
 | Age rating | 4+ (every answer in the questionnaire is None or No) |
 | Copyright | `2026 Mustafa Demirhan` |
 | Price | The owner's choice (see plans/app-store.md) |
@@ -142,7 +142,6 @@ Things to try:
 • Press Space on a text file to read it in the window; choose Edit to change it.
 • Press Shift-Command-P for the command palette.
 
-The bundled command-line tool Contents/Helpers/fd (MIT or Apache 2.0 license) is what search runs. It is signed with the App Sandbox and inherits the app's sandbox.
 ```
 
 **Check:** the second paragraph describes the access flow the App Store build is to have (plans/app-store.md, "Folder access"). Keep it in step with what is built, and add a line for Empty Trash if the App Store build keeps it.

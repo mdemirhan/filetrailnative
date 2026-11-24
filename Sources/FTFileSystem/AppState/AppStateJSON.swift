@@ -39,7 +39,7 @@ enum AppStateJSON {
             "detailColumnWidths", "searchIconSizes", "searchCompactListWidths", "searchPreviewCounts",
             "searchColumns", "searchColumnOrder", "searchColumnWidths", "searchResultsSortBy",
             "searchResultsSortDirection", "searchPatternMode", "searchMatchScope", "searchRecursive",
-            "searchSkipGitFolders", "searchSkipGitIgnored", "viewerEditing", "viewerFollows",
+            "searchSkipGitFolders", "viewerEditing", "viewerFollows",
         ],
         "detailColumns": columnKeys,
         "searchColumns": ["folder"] + columnKeys,

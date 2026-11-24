@@ -563,10 +563,6 @@ extension HelpContent {
                             label: "Skip .git Folders",
                             description: "Keeps Git’s internal files out of the results."),
                         HelpRow(
-                            label: "Skip Files Ignored by Git",
-                            description:
-                                "Inside a Git repository, leaves out what `.gitignore` excludes, such as build output."),
-                        HelpRow(
                             label: "Defaults",
                             description:
                                 "Options you choose in the search field’s menu stay with that search: other panes, tabs and windows keep theirs, and those you open later start with the ones you chose last."

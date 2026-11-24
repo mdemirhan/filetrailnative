@@ -11,44 +11,28 @@ protocol SearchEngine: AnyObject {
     func cancel(jobID: String)
 }
 
-/// The app's one `fd` runtime: every window's searches are its jobs (`search-1`, `search-2`, …). Quitting stops them
-/// all, so no `fd` goes on searching after the app.
+/// The app's one search runtime: every window's searches are its jobs (`search-1`, `search-2`, …), each a walk of the
+/// disk on threads of its own. Quitting stops them all.
 @MainActor
 final class SearchRuntime: SearchEngine {
     static let shared = SearchRuntime()
 
-    private var runtime: FdSearchRuntime?
-    /// Why the bundled `fd` could not be found, once it was looked for.
-    private var unavailable: (any Error)?
-
-    /// Made on first use: the bundled `fd` is looked for then.
-    private func resolved() throws -> FdSearchRuntime {
-        if let runtime { return runtime }
-        if let unavailable { throw unavailable }
-        do {
-            let made = FdSearchRuntime(fdBinaryPath: try FdBinary.resolveBundledPath())
-            runtime = made
-            return made
-        } catch {
-            unavailable = error
-            throw error
-        }
-    }
+    private let runtime = WalkSearchRuntime()
 
     func start(_ request: SearchRequest) throws -> String {
-        try resolved().startSearch(request).jobId
+        runtime.startSearch(request).jobId
     }
 
     func update(jobID: String, cursor: Int) throws -> SearchUpdate {
-        try resolved().getUpdate(jobId: jobID, cursor: cursor)
+        try runtime.getUpdate(jobId: jobID, cursor: cursor)
     }
 
     func cancel(jobID: String) {
-        runtime?.cancelSearch(jobId: jobID)
+        runtime.cancelSearch(jobId: jobID)
     }
 
-    /// Every running search is stopped (SIGTERM) and every job forgotten: the app is quitting.
+    /// Every running search is stopped and every job forgotten: the app is quitting.
     func close() {
-        runtime?.close()
+        runtime.close()
     }
 }

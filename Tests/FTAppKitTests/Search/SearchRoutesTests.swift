@@ -1,5 +1,5 @@
 // The keys through the window, the field's commands, ⌘R, ⌘F, opening results, and what becomes of the list's filter,
-// over the stand-in fd runtime
+// over the stand-in search runtime
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -495,13 +495,13 @@ extension ExplorerWindowlessTests {
             let tab = try await harness.open()
             tab.windowDidBecomeKey(Notification(name: NSWindow.didBecomeKeyNotification))
             #expect(tab.preferences.searchPatternMode == .text)
-            try choose(["Regex", "Full Path", "Search Subfolders", "Skip Files Ignored by Git"], in: tab)
+            try choose(["Regex", "Full Path", "Search Subfolders", "Skip .git Folders"], in: tab)
             tab.content.onSearchSortSet?(.name, .desc)
             let session = tab.search.session
             #expect(session.patternMode == .regex)
             #expect(session.matchScope == .path)
             #expect(!session.recursive)
-            #expect(session.skipGitIgnored)
+            #expect(!session.skipGitFolders)
             #expect(!session.hasCachedSearch)
             // A tab opened next in this window, and a window opened next: what each reads, and the search of a pane
             // opened in it (the harness gives a window its services only once it is open, after its first pane's
@@ -524,7 +524,7 @@ extension ExplorerWindowlessTests {
                 #expect(new.patternMode == .regex)
                 #expect(new.matchScope == .path)
                 #expect(!new.recursive)
-                #expect(new.skipGitIgnored)
+                #expect(!new.skipGitFolders)
                 #expect(!new.hasCachedSearch)
             }
             let inTab = try #require(other.panes.last).search.session
@@ -552,10 +552,10 @@ extension ExplorerWindowlessTests {
             // An option chosen in the other pane saves that option alone: its search, made before the left one's
             // were chosen, doesn't take them back.
             tab.activate(right)
-            try choose(["Skip Files Ignored by Git"], in: tab)
-            #expect(right.search.session.skipGitIgnored)
+            try choose(["Skip .git Folders"], in: tab)
+            #expect(!right.search.session.skipGitFolders)
             #expect(right.search.session.patternMode == .text)
-            #expect(tab.preferences.searchSkipGitIgnored)
+            #expect(!tab.preferences.searchSkipGitFolders)
             #expect(tab.preferences.searchPatternMode == .glob)
             #expect(tab.preferences.searchMatchScope == .path)
             tab.closePane()
@@ -564,7 +564,7 @@ extension ExplorerWindowlessTests {
             // Opened from the left pane: its options, not the closed right pane's.
             #expect(reopened.search.session.patternMode == .glob)
             #expect(reopened.search.session.matchScope == .path)
-            #expect(!reopened.search.session.skipGitIgnored)
+            #expect(reopened.search.session.skipGitFolders)
             await harness.close()
         }
 

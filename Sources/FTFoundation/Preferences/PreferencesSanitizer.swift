@@ -143,7 +143,6 @@ public enum PreferencesSanitizer {
         sizes.searchMatchScope = choice(record, "searchMatchScope", sizes.searchMatchScope)
         sizes.searchRecursive = bool(record, "searchRecursive", sizes.searchRecursive)
         sizes.searchSkipGitFolders = bool(record, "searchSkipGitFolders", sizes.searchSkipGitFolders)
-        sizes.searchSkipGitIgnored = bool(record, "searchSkipGitIgnored", sizes.searchSkipGitIgnored)
         sizes.viewerEditing = bool(record, "viewerEditing", sizes.viewerEditing)
         sizes.viewerFollows = bool(record, "viewerFollows", sizes.viewerFollows)
         return sizes
@@ -357,7 +356,6 @@ public enum PreferencesSanitizer {
             searchMatchScope: choice(record, "searchMatchScope", defaults.searchMatchScope),
             searchRecursive: bool(record, "searchRecursive", defaults.searchRecursive),
             searchSkipGitFolders: bool(record, "searchSkipGitFolders", defaults.searchSkipGitFolders),
-            searchSkipGitIgnored: bool(record, "searchSkipGitIgnored", defaults.searchSkipGitIgnored),
             searchResultsSortBy: choice(record, "searchResultsSortBy", defaults.searchResultsSortBy),
             searchResultsSortDirection: choice(
                 record, "searchResultsSortDirection", defaults.searchResultsSortDirection),

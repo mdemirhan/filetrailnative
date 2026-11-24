@@ -6,7 +6,7 @@ import Testing
 
 @testable import FTAppKit
 
-/// The fd runtime, answering from a table the test fills: what each query finds, and whether its search is still
+/// The search runtime, answering from a table the test fills: what each query finds, and whether its search is still
 /// running.
 @MainActor
 final class FakeSearchEngine: SearchEngine {
@@ -450,10 +450,8 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(search.resolveRootPath() == "/other")
         search.setRecursive(false)
         search.setSkipGitFolders(false)
-        search.setSkipGitIgnored(true)
         #expect(engine.starts.last?.recursive == false)
         #expect(engine.starts.last?.skipGitFolders == false)
-        #expect(engine.starts.last?.skipGitIgnored == true)
         #expect(engine.starts.last?.rootPath == "/Users/demo")
     }
 

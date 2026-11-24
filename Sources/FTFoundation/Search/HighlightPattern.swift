@@ -3,7 +3,7 @@ import Foundation
 
 /// The text of a name search as the names are marked with it: a regular expression in the system's syntax
 /// (`NSRegularExpression`), or the text itself, found as typed. It only says which letters are painted; which files a
-/// search finds is fd's.
+/// search finds is the search's (`SearchNameMatch`).
 public struct HighlightPattern: @unchecked Sendable {
     /// How long one name may take a regular expression to look through. The names are marked on the main thread, and a
     /// pattern such as `(a+)+$` can take seconds on a name that almost matches: past this, it gives up.
@@ -34,14 +34,14 @@ public struct HighlightPattern: @unchecked Sendable {
         matcher = .regex(regex, GaveUp())
     }
 
-    /// The text itself; nil for an empty one. Without case, each character is compared by its simple case fold, as
-    /// fd's search compares: "k" finds "K", but "ss" doesn't find "ß".
+    /// The text itself; nil for an empty one. Without case, each character is compared by its simple case fold: "k"
+    /// finds "K", but "ss" doesn't find "ß".
     public init?(text: String, ignoreCase: Bool) {
         guard !text.isEmpty else { return nil }
         matcher = .text(ignoreCase ? Self.folded(text) : Array(text.utf16), ignoreCase: ignoreCase)
     }
 
-    /// Plain Text as a search matches it (`PlainTextPattern`): the run of letters a filter in Contains would mark.
+    /// Plain Text as a search matches it (`NameMatcher`): the run of letters a filter in Contains would mark.
     public init(names matcher: NameMatcher) {
         self.matcher = .names(matcher)
     }

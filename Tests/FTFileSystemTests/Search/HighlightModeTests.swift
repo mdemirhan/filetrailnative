@@ -1,4 +1,4 @@
-// The search highlight: a regular expression in the system's syntax with fd's smart case, or Plain Text as the filters match
+// The search highlight: a regular expression in the system's syntax with the search's smart case, or Plain Text as the filters match
 import FTFileSystem
 import FTFoundation
 import Testing
@@ -18,7 +18,7 @@ import Testing
         #expect(match("\\d+", in: "IMG_0042.jpg") == HighlightRange(start: 4, end: 8))
     }
 
-    // One the system doesn't take marks nothing; the search itself is fd's.
+    // One the system doesn't take marks nothing, and the search itself says the pattern isn't valid.
     @Test func marksNothingForAPatternTheSystemDoesntTake() {
         #expect(match("a(", in: "a(.txt") == nil)
         #expect(match("[", in: "[.txt") == nil)

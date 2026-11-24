@@ -4,7 +4,7 @@ How to build File Trail from source, check a change and make a release. What the
 
 ## Build from source
 
-You only need this for changes that haven't been released yet, or to work on File Trail itself. You need an Apple Silicon Mac and Xcode 27, and [Bun](https://bun.sh) to build the test fixtures (`bun tools/fixtures/generate.ts`; the tests that read them are skipped without them). There is no Xcode project: File Trail is a Swift package with no dependencies beyond the system's frameworks, the system's libarchive and the bundled `fd`.
+You only need this for changes that haven't been released yet, or to work on File Trail itself. You need an Apple Silicon Mac and Xcode 27, and [Bun](https://bun.sh) to build the test fixtures (`bun tools/fixtures/generate.ts`; the tests that read them are skipped without them). There is no Xcode project: File Trail is a Swift package with no dependencies beyond the system's frameworks and the system's libarchive.
 
 ```bash
 scripts/build-app.sh

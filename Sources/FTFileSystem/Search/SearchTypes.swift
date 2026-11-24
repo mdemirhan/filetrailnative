@@ -11,13 +11,11 @@ public struct SearchRequest: Sendable, Equatable {
     public var includeHidden: Bool
     /// Leave out `.git` folders.
     public var skipGitFolders: Bool
-    /// Leave out anything Git ignores (.gitignore and friends).
-    public var skipGitIgnored: Bool
 
     public init(
         rootPath: String, query: String, patternMode: SearchPatternModePreference = .text,
         matchScope: SearchMatchScopePreference = .name, recursive: Bool = true, includeHidden: Bool = false,
-        skipGitFolders: Bool = true, skipGitIgnored: Bool = false
+        skipGitFolders: Bool = true
     ) {
         self.rootPath = rootPath
         self.query = query
@@ -26,7 +24,6 @@ public struct SearchRequest: Sendable, Equatable {
         self.recursive = recursive
         self.includeHidden = includeHidden
         self.skipGitFolders = skipGitFolders
-        self.skipGitIgnored = skipGitIgnored
     }
 }
 

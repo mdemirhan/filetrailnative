@@ -10,7 +10,7 @@ import Testing
 @MainActor
 private final class FailingSearchEngine: SearchEngine {
     struct Failure: Error, CustomStringConvertible {
-        var description: String { "fd is gone" }
+        var description: String { "the search is gone" }
     }
 
     var startFails = false
@@ -114,7 +114,7 @@ private final class FailingSearchEngine: SearchEngine {
         let search = session(failing)
         search.submit("so")
         #expect(search.status == .error)
-        #expect(search.error == "fd is gone")
+        #expect(search.error == "the search is gone")
         #expect(search.jobID == nil)
         timers.advance(1)
         #expect(failing.updates == 0)
@@ -133,7 +133,7 @@ private final class FailingSearchEngine: SearchEngine {
         timers.advance(0.12)
         #expect(failing.updates == asked + 1)
         #expect(search.status == .error)
-        #expect(search.error == "fd is gone")
+        #expect(search.error == "the search is gone")
         #expect(search.jobID == nil)
         timers.advance(1)
         #expect(failing.updates == asked + 1)

@@ -8,7 +8,7 @@ import Testing
 @testable import FTAppKit
 
 extension ExplorerWindowlessTests {
-    /// Search results' own Group By and order, over the stand-in fd runtime: every field, a date, the size and the
+    /// Search results' own Group By and order, over the stand-in search runtime: every field, a date, the size and the
     /// tags read for every result only while the order or the groups need them.
     @MainActor
     @Suite struct SearchGroupsTests {

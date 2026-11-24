@@ -163,13 +163,6 @@ func systemBytes(of url: URL) -> [UInt8]? {
             #expect(utf8Bytes(folder) == utf8Bytes(place.folder + "/samples/folder"))
             #expect(FileManager.default.fileExists(atPath: folder + "/item"))
             #expect(utf8Bytes(try samples.path(forTint: .red)) == utf8Bytes(place.folder + "/samples/tag-6"))
-            let fd = place.folder + "/Helpers"
-            try #require(mkdir(fd, 0o755) == 0)
-            try place.file("Helpers/fd")
-            let found = try FdBinary.resolveBundledPath(
-                locations: .init(helpers: DiskPath(fd).url(isDirectory: true), sourceTree: nil),
-                fileExists: { _ in true })
-            #expect(utf8Bytes(found) == utf8Bytes(fd + "/fd"))
         }
     }
 

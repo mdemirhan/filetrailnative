@@ -6,7 +6,7 @@ public struct ThemePalette: Equatable, Sendable {
     /// A selected row's fill while its list doesn't have the keyboard (the file list, Help's and Settings' lists).
     public let bgActiveInactive: RGBA
 
-    /// The background of the content: Help, About, Acknowledgements, the rename field.
+    /// The background of the content: Help, About, the rename field.
     public let bgBase: RGBA
 
     /// Cards above the window and what sits on them: alerts, sheets, Go To.
@@ -15,7 +15,7 @@ public struct ThemePalette: Equatable, Sendable {
     /// A row or button under the pointer.
     public let bgHover: RGBA
 
-    /// Code in Help, and the box of licence texts in Acknowledgements.
+    /// Code in Help.
     public let bgInput: RGBA
 
     /// The Rename sheet's preview.
@@ -147,9 +147,6 @@ public struct ThemePalette: Equatable, Sendable {
     /// Text fainter than secondary: an empty or fixed shortcut, a hint in the Rename sheet's preview.
     public let textTertiary: RGBA
 
-    /// Acknowledgements' bar.
-    public let toolbarBg: RGBA
-
     /// A search option's toggle while it is on.
     public let toolbarToggleIconActive: RGBA
 
@@ -214,7 +211,6 @@ public struct ThemePalette: Equatable, Sendable {
         textPrimary: RGBA(r: 29, g: 29, b: 31),
         textSecondary: RGBA(r: 0, g: 0, b: 0, alpha: 0.5),
         textTertiary: RGBA(r: 0, g: 0, b: 0, alpha: 0.26),
-        toolbarBg: RGBA(r: 251, g: 251, b: 253),
         toolbarToggleIconActive: RGBA(r: 29, g: 29, b: 31)
     )
 
@@ -278,7 +274,6 @@ public struct ThemePalette: Equatable, Sendable {
         textPrimary: RGBA(r: 242, g: 242, b: 245),
         textSecondary: RGBA(r: 255, g: 255, b: 255, alpha: 0.55),
         textTertiary: RGBA(r: 255, g: 255, b: 255, alpha: 0.25),
-        toolbarBg: RGBA(r: 37, g: 37, b: 40),
         toolbarToggleIconActive: RGBA(r: 242, g: 242, b: 245)
     )
 

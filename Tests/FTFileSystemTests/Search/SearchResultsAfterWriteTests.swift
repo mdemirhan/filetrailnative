@@ -7,7 +7,7 @@ import Testing
 
 private let root = "/r"
 
-/// A result as fd gives it under `root`: a folder ends with a slash.
+/// A result under `root`, a folder's path written with a slash at its end.
 private func found(_ relative: String) -> SearchResultItem {
     SearchResults.item(rootPath: root, outputPath: root + "/" + relative)
 }
@@ -52,7 +52,7 @@ private func paths(_ items: [SearchResultItem]?) -> [String]? {
 
     // MARK: Renamed
 
-    // A file renamed is the same result under its new name: its extension, hidden mark and folder as fd would give
+    // A file renamed is the same result under its new name: its extension, hidden mark and folder as the search would give
     // them, its place in the list kept.
     @Test func aFileRenamedIsRenamedInPlace() throws {
         let results = [found("a.txt"), found("Docs/b.txt"), found("c.txt")]
@@ -98,7 +98,7 @@ private func paths(_ items: [SearchResultItem]?) -> [String]? {
         #expect(paths(after) == ["Papers/b.txt"])
     }
 
-    // A folder renamed to a package's name is a package, as fd's results tell them; one renamed from it is a folder.
+    // A folder renamed to a package's name is a package, as search results tell them; one renamed from it is a folder.
     @Test func aFolderRenamedToAPackagesNameIsAPackage() {
         let results = [found("Tool/"), found("Other.app/")]
         let after = SearchResults.afterWrite(

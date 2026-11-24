@@ -69,14 +69,13 @@ import Testing
             ])
     }
 
-    // A window that only follows (About, Help, Acknowledgements) is redrawn with the new theme
+    // A window that only follows (About, Help) is redrawn with the new theme
     @Test func aPageWindowIsRedrawnWithANewThemeAndAccent() {
         _ = NSApplication.shared
         let model = AppearanceModel(
             theme: .light, accent: "#007aff", systemPrefersDark: { false }, setNativeAppearance: { _ in })
         let controller = AboutWindowController(
-            info: AboutInfo(
-                version: "1", commit: nil, macosVersion: "27.0", architecture: "Apple silicon", fdVersion: "10"),
+            info: AboutInfo(version: "1", commit: nil, macosVersion: "27.0", architecture: "Apple silicon"),
             actions: AboutActions(), model: model)
         let view = controller.aboutView
         #expect(view.theme.appearance == .light)

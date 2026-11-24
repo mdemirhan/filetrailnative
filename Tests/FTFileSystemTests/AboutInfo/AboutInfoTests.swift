@@ -1,4 +1,4 @@
-// The build's version and commit now come from the app's Info.plist, and the licenses from Resources/Acknowledgements
+// The build's version and commit come from the app's Info.plist
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -7,22 +7,6 @@ import Testing
 @testable import FTFileSystem
 
 @Suite struct AboutInfoTests {
-    @Test func findsTheAcknowledgementsFolderInTheAppOrBesideTheSource() throws {
-        try withTemporaryDirectory { root in
-            let app = root.appending("Resources/Acknowledgements")
-            let source = root.appending("source")
-            try FileManager.default.createDirectory(at: app, withIntermediateDirectories: true)
-            try FileManager.default.createDirectory(at: source, withIntermediateDirectories: true)
-            let locations = Acknowledgements.Locations(resources: app, sourceTree: source)
-
-            #expect(Acknowledgements.resolveDirectory(locations) == nil)
-            try "[]".write(to: source.appendingPathComponent("index.json"), atomically: true, encoding: .utf8)
-            #expect(Acknowledgements.resolveDirectory(locations) == source)
-            try "[]".write(to: app.appendingPathComponent("index.json"), atomically: true, encoding: .utf8)
-            #expect(Acknowledgements.resolveDirectory(locations) == app)
-        }
-    }
-
     @Test func readsTheCommitTheBuildRecordedAndDoesWithoutOne() {
         #expect(BuildInfo.commit(from: nil) == nil)
         #expect(BuildInfo.commit(from: [:]) == nil)
@@ -47,48 +31,13 @@ import Testing
         let info = AboutInfoReader.read(
             info: ["FTVersion": "0.2.0", "FTCommit": "abc1234"],
             systemVersion: OperatingSystemVersion(majorVersion: 27, minorVersion: 0, patchVersion: 0),
-            architecture: "Apple silicon", fdVersion: "10.5.0")
+            architecture: "Apple silicon")
         #expect(
             info
-                == AboutInfo(
-                    version: "0.2.0", commit: "abc1234", macosVersion: "27.0", architecture: "Apple silicon",
-                    fdVersion: "10.5.0"))
+                == AboutInfo(version: "0.2.0", commit: "abc1234", macosVersion: "27.0", architecture: "Apple silicon"))
         // A run with no Info.plist has the placeholder version and no commit.
         let bare = AboutInfoReader.read(info: nil)
         #expect(bare.version == BuildInfo.fallbackVersion)
         #expect(bare.commit == nil)
-        #expect(bare.fdVersion == FdBinary.manifest.version)
-    }
-
-    @Test func listsTheBundledSoftwareWithEachLicenseAsShipped() throws {
-        try withTemporaryDirectory { root in
-            let folder = root.appending("Acknowledgements")
-            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
-            try "MIT License\n".write(to: folder.appendingPathComponent("fd.txt"), atomically: true, encoding: .utf8)
-            let index = """
-                [{"id":"fd","name":"fd","version":"10.5.0","license":"MIT or Apache 2.0",\
-                "url":"https://github.com/sharkdp/fd","file":"fd.txt"}]
-                """
-            try index.write(to: folder.appendingPathComponent("index.json"), atomically: true, encoding: .utf8)
-            let locations = Acknowledgements.Locations(resources: folder, sourceTree: nil)
-
-            #expect(try Acknowledgements.read(.init(resources: nil, sourceTree: nil)) == [])
-            #expect(
-                try Acknowledgements.read(locations) == [
-                    Acknowledgement(
-                        id: "fd", name: "fd", version: "10.5.0", license: "MIT or Apache 2.0",
-                        url: "https://github.com/sharkdp/fd", text: "MIT License\n")
-                ])
-        }
-    }
-
-    // The list the repository ships is what the generator writes: fd and its two licenses
-    @Test func theCheckedInListHasFdWithBothLicenses() throws {
-        let list = try Acknowledgements.read(
-            Acknowledgements.Locations(resources: nil, sourceTree: Acknowledgements.Locations.standard.sourceTree))
-        #expect(list.map(\.id) == ["fd"])
-        #expect(list.first?.version == FdBinary.manifest.version)
-        #expect(list.first?.text.contains("MIT License") == true)
-        #expect(list.first?.text.contains("Apache License") == true)
     }
 }

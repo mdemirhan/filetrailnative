@@ -35,7 +35,7 @@ Type in the search field and results appear as you type: everything under the fo
 - **Widen or narrow in one step.** Move the search from this folder to Home or the whole disk with one click, and filter what was found without searching again.
 - **Aware of Git.** Inside a repository, search can skip `.git` and everything `.gitignore` excludes, so build output stays out of your results.
 - **Group and sort results** by folder, kind, date, size or tag, in any view.
-- **Nothing to set up.** Search is powered by a bundled copy of [`fd`](https://github.com/sharkdp/fd). Each tab keeps its own search, and it keeps running while you work in another.
+- **Nothing to set up.** Search walks the disk itself, with nothing to index or install. Each tab keeps its own search, and it keeps running while you work in another.
 
 ## Two folders side by side
 
@@ -166,4 +166,4 @@ File Trail is signed and notarized by Apple.
 
 ## License
 
-File Trail is open source under the [MIT License](LICENSE). The bundled `fd` keeps its own license (MIT or Apache 2.0), shown in the app's Acknowledgements.
+File Trail is open source under the [MIT License](LICENSE).

@@ -23,7 +23,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
 
     /// The theme and accent every window draws with; a change reaches every window at once.
     public let appearance = AppearanceModel.shared
-    /// Settings, Help, About and Acknowledgements.
+    /// Settings, Help and About.
     public private(set) var pageWindows: PageWindows!
     /// What a window changes of the preferences goes through here: it is stored, and told to the appearance, to every
     /// explorer window and to the menu. The toolbar and Settings change the look through it.
@@ -265,7 +265,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             // The running operation stops (not Empty Trash), waited for up to 15 s; the folder sizes stop measuring.
             await self?.writeOperations?.shutDown()
             self?.folderWatches?.stopAll()
-            // No fd goes on searching after the app.
+            // No search goes on walking the disk while the app quits.
             SearchRuntime.shared.close()
             self?.logger?.info("[filetrail] app stop", .context(["phase": .string("before-quit")]))
             self?.logger?.flush()

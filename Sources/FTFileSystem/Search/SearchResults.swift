@@ -2,12 +2,12 @@ import FTFoundation
 import Foundation
 
 public enum SearchResults {
-    // MARK: - Items from fd's output
+    // MARK: - Items
 
-    /// A result from one record of fd's output. fd ends a folder's path with a slash, which tells folders from files
-    /// without a stat call. A folder is a package as a listing tells (`ItemNames.isPackageFolder`), from its name
-    /// alone: by the list, or for another extension by whether its type is a package (`isPackageType`, given the
-    /// extension). The folder isn't looked at, so one known only by its bundle bit is a folder here.
+    /// A result from its path, a folder's written with a slash at its end ("/Users/demo/Photos/"), as tests write
+    /// them. A folder is a package as a listing tells (`ItemNames.isPackageFolder`), from its name alone: by the list,
+    /// or for another extension by whether its type is a package (`isPackageType`, given the extension). The folder
+    /// isn't looked at, so one known only by its bundle bit is a folder here.
     public static func item(
         rootPath: String, outputPath: String, isPackageType: (String) -> Bool = SystemPackages.isPackageType
     ) -> SearchResultItem {
@@ -15,19 +15,29 @@ public enum SearchResults {
         let isFolder = units.count > 1 && units.last == slash
         let entryPath = isFolder ? String(decoding: units.dropLast(), as: UTF16.self) : outputPath
         let name = NodePath.basename(entryPath)
-        let parentPath = NodePath.dirname(entryPath)
+        return item(
+            rootPath: rootPath, path: entryPath, name: name, parentPath: NodePath.dirname(entryPath),
+            isFolder: isFolder, isHidden: name.hasPrefix("."), isPackageType: isPackageType)
+    }
+
+    /// A result the search's own walk found: its path, name and folder as the walk spelled them, and whether it is a
+    /// folder and hidden.
+    public static func item(
+        rootPath: String, path: String, name: String, parentPath: String, isFolder: Bool, isHidden: Bool,
+        isPackageType: (String) -> Bool = SystemPackages.isPackageType
+    ) -> SearchResultItem {
         let relativeParentPath = relative(from: rootPath, to: parentPath)
+        let fileExtension = extensionOf(name)
         let kind: EntryKind
         if !isFolder {
             kind = .file
         } else {
             // Packages (.app and the like) are folders on disk but single items to the user.
-            kind = ItemNames.isPackageFolder(named: name) { isPackageType(extensionOf(name)) } ? .bundle : .directory
+            kind = ItemNames.isPackageFolder(named: name) { isPackageType(fileExtension) } ? .bundle : .directory
         }
         return SearchResultItem(
-            path: entryPath, name: name, fileExtension: extensionOf(name), kind: kind,
-            isHidden: name.hasPrefix("."), isSymlink: false, parentPath: parentPath,
-            relativeParentPath: relativeParentPath.isEmpty ? "." : relativeParentPath)
+            path: path, name: name, fileExtension: fileExtension, kind: kind, isHidden: isHidden, isSymlink: false,
+            parentPath: parentPath, relativeParentPath: relativeParentPath.isEmpty ? "." : relativeParentPath)
     }
 
     private static let slash = UInt16(UInt8(ascii: "/"))
@@ -162,7 +172,8 @@ public enum SearchResults {
     // MARK: - Highlighting
 
     /// What a name search matched, to mark it in the names. Plain Text is marked as the filters match names; a regular
-    /// expression with fd's smart case (case-sensitive only when the query has an uppercase letter). Glob patterns match
+    /// expression with the search's smart case (`SmartCase`: case-sensitive only when the query has a capital letter of
+    /// its own, not one of an escape such as `\S`). Glob patterns match
     /// the whole name, so they are not marked, and neither are patterns that the system's regular expressions don't
     /// take.
     public static func highlightPattern(
@@ -175,8 +186,7 @@ public enum SearchResults {
         if patternMode == .text {
             return NameMatcher(trimmed, mode: .contains).map(HighlightPattern.init(names:))
         }
-        let hasUppercase = trimmed.unicodeScalars.contains { $0.properties.generalCategory == .uppercaseLetter }
-        return HighlightPattern(regex: trimmed, ignoreCase: !hasUppercase)
+        return HighlightPattern(regex: trimmed, ignoreCase: !SmartCase.regexHasUppercase(trimmed))
     }
 
     // MARK: - Folder column
@@ -214,8 +224,7 @@ public enum SearchResults {
         }
     }
 
-    /// The text without white space at either end: a typed query, a path typed in the path bar or Go To, an `fd`
-    /// error.
+    /// The text without white space at either end: a typed query, a path typed in the path bar or Go To.
     static func jsTrimmed(_ text: String) -> String {
         var scalars = Substring(text).unicodeScalars[...]
         while let first = scalars.first, isJSWhitespace(first) { scalars.removeFirst() }

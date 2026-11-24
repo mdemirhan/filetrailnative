@@ -49,7 +49,7 @@ The [README](../README.md) has the highlights. This page lists everything, by ar
 
 - **Search as you type**, of everything under the folder you are in, by name or full path, in plain text, glob or regex. One click widens it to Home or the whole disk.
 - **Plain text** ignores case, and a plain letter finds its accented forms: `resume` finds Résumé.
-- **Options**: hidden files, and inside a Git repository, leaving out `.git` and whatever `.gitignore` excludes.
+- **Options**: hidden files, and leaving out `.git` folders.
 - **Results grouped and sorted your way**: by the folder each result is in, by name or kind, or by a date, size or tag, which File Trail reads for the results in the background while they are grouped or sorted by it.
 - **Results in any view**, with columns of their own that you choose and sort, and a filter field that trims them by name or by folder without searching again. A search stops at 50,000 results, and the status bar says so when some folders couldn't be read.
 - **Each tab keeps its own search**, a search keeps running while you look at another tab, and ⇧⌘F shows the last results again.

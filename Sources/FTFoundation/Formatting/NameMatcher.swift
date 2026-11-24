@@ -149,8 +149,8 @@ struct FoldedText: Sendable {
     private static let bases = OSAllocatedUnfairLock(initialState: [UInt32: UInt32]())
     private static let folds = OSAllocatedUnfairLock(initialState: [UInt32: Unicode.Scalar]())
 
-    /// A lowercase letter as Unicode folds case, where that gives one letter: "ſ" is "s", "µ" is "μ", "ς" is "σ", as
-    /// fd's own case rule takes them. "ß" stays itself, as its fold is two letters.
+    /// A lowercase letter as Unicode folds case, where that gives one letter: "ſ" is "s", "µ" is "μ", "ς" is "σ". "ß"
+    /// stays itself, as its fold is two letters.
     static func caseFolded(_ scalar: Unicode.Scalar) -> Unicode.Scalar {
         if scalar.isASCII { return scalar }
         if let known = folds.withLock({ $0[scalar.value] }) { return known }
@@ -189,6 +189,22 @@ struct FoldedName: Sendable {
     init(_ text: FoldedText) {
         letters = text.letters
         wordStarts = text.wordStarts
+    }
+}
+
+/// A folder's path folded into letters once, for matching the paths of the many items in it
+/// (`NameMatcher.matches(name:in:)`): only the end of the folder's path and each name are compared again.
+public struct FoldedFolder: Sendable {
+    /// The folder's path holds the text: every path inside it does.
+    public let holdsText: Bool
+    /// The folder's last letters, as many as could start a run of the text that goes on into a name (for Contains;
+    /// all of them for Fuzzy).
+    let tail: [FoldedLetter]
+
+    public init(_ path: String, for matcher: NameMatcher) {
+        let letters = FoldedText(path).letters
+        holdsText = matcher.matches(letters)
+        tail = matcher.mode == .contains ? Array(letters.suffix(max(0, matcher.letterCount - 1))) : letters
     }
 }
 
@@ -439,6 +455,26 @@ public struct NameMatcher: Sendable {
     }
 
     /// The match for an ASCII name, byte by byte; nil when the name isn't ASCII or the text isn't.
+    /// How many letters the text folds to.
+    var letterCount: Int { letters.count }
+
+    /// Whether the path of `name` in `folder` matches: the folder's letters, a slash, then the name's, the folder's
+    /// folded once for all the names in it.
+    public func matches(name: String, in folder: FoldedFolder) -> Bool {
+        if folder.holdsText { return true }
+        return matches(folder.tail + FoldedText("/" + name).letters)
+    }
+
+    /// Whether a name given as its UTF-8 bytes matches, when they are all ASCII; nil when they aren't, for the name to
+    /// be matched as text. A search asks this of every name it walks past, most of them ASCII, without making a string.
+    public func matches(asciiBytes bytes: UnsafeBufferPointer<UInt8>) -> Bool? {
+        for byte in bytes where byte >= 0x80 { return nil }
+        // Text with a letter that folds beyond ASCII never matches an ASCII name.
+        guard let needle = ascii else { return false }
+        return mode == .contains
+            ? Self.asciiRun(needle, in: bytes, prefixOnly: false) : Self.asciiInOrder(needle, in: bytes)
+    }
+
     private func asciiMatches(_ name: String) -> Bool? {
         guard let bytes = ascii else {
             // Text with a letter that folds beyond ASCII never matches an ASCII name: a plain one is its own base, and

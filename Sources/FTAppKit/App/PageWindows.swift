@@ -2,7 +2,7 @@ import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// The windows of the app that are not explorer windows: Settings, Help, About and Acknowledgements. Each is one at a
+/// The windows of the app that are not explorer windows: Settings, Help and About. Each is one at a
 /// time: asking again shows and focuses the one open.
 @MainActor
 public final class PageWindows {
@@ -11,7 +11,6 @@ public final class PageWindows {
     private var settings: SettingsWindowController?
     private var help: HelpWindowController?
     private var about: AboutWindowController?
-    private var acknowledgements: AcknowledgementsWindowController?
     /// The topic Help was left on, for the next time it opens.
     public private(set) var lastHelpTopic: HelpTopicID?
 
@@ -29,7 +28,6 @@ public final class PageWindows {
     /// The About window's links and clipboard.
     public var aboutActions = AboutActions()
     public var readAboutInfo: () -> AboutInfo? = { AboutInfoReader.read() }
-    public var readAcknowledgements: () throws -> [Acknowledgement] = { try Acknowledgements.read() }
     /// Off, its windows are made and read but never go on screen (the windowless tests, as `ExplorerWindows`').
     var presentsWindows = true
 
@@ -43,7 +41,6 @@ public final class PageWindows {
     public var settingsWindow: SettingsWindowController? { settings }
     public var helpWindow: HelpWindowController? { help }
     public var aboutWindow: AboutWindowController? { about }
-    public var acknowledgementsWindow: AcknowledgementsWindowController? { acknowledgements }
 
     // MARK: Settings
 
@@ -101,7 +98,7 @@ public final class PageWindows {
         controller.present()
     }
 
-    // MARK: About and Acknowledgements
+    // MARK: About
 
     /// About File Trail: a small fixed window in place of the standard panel.
     public func openAbout() {
@@ -109,24 +106,9 @@ public final class PageWindows {
             about.present()
             return
         }
-        var actions = aboutActions
-        actions.openAcknowledgements = { [weak self] in self?.openAcknowledgements() }
-        let controller = AboutWindowController(info: readAboutInfo(), actions: actions, model: model)
+        let controller = AboutWindowController(info: readAboutInfo(), actions: aboutActions, model: model)
         controller.onClose = { [weak self] in self?.about = nil }
         about = controller
-        controller.ordersWindow = presentsWindows
-        controller.present()
-    }
-
-    /// The open-source software inside the app and its licenses, opened from About.
-    public func openAcknowledgements() {
-        if let acknowledgements {
-            acknowledgements.present()
-            return
-        }
-        let controller = AcknowledgementsWindowController(load: readAcknowledgements, model: model)
-        controller.onClose = { [weak self] in self?.acknowledgements = nil }
-        acknowledgements = controller
         controller.ordersWindow = presentsWindows
         controller.present()
     }

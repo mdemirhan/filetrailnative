@@ -447,7 +447,8 @@ struct AppStateReaderTests {
         #expect(own?.detailColumns[.created] == true && own?.detailColumns[.kind] == false)
         #expect(own?.detailColumnOrder == app.detailColumnOrder)
         #expect(own?.searchColumns[.folder] == false)
-        #expect(own?.searchPatternMode == .regex && own?.searchSkipGitIgnored == true)
+        // "searchSkipGitIgnored", an option search no longer has, is passed over.
+        #expect(own?.searchPatternMode == .regex)
         // The results' order was the window's.
         #expect(own?.searchResultsSortBy == .modified && own?.searchResultsSortDirection == .desc)
         #expect(own?.detailColumnWidths.name == 410)

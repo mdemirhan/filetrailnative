@@ -63,7 +63,7 @@ extension PreferenceKey {
             .autoCalculateFolderSizes, .folderTreeOpen, .propertiesOpen, .detailRowOpen, .topToolbarItems,
             .terminalApp, .defaultTextEditor, .openWithApplications, .diskImageOpensIn, .returnKeyAction,
             .openItemLimit, .includeHidden, .searchPatternMode, .searchMatchScope, .searchRecursive,
-            .searchSkipGitFolders, .searchSkipGitIgnored, .searchResultsSortBy, .searchResultsSortDirection,
+            .searchSkipGitFolders, .searchResultsSortBy, .searchResultsSortDirection,
             .searchGroupBy, .searchGroupReversed,
             .treeWidth, .inspectorWidth, .restoreSessionOnStartup, .openTabs, .activeTabIndex, .treeRootPath,
             .lastVisitedPath, .lastVisitedFavoritePath, .favoritesExpanded, .locationsExpanded,

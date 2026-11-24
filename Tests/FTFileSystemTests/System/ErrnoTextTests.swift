@@ -92,12 +92,6 @@ import Testing
             ExplorerError.system(code: EDQUOT, path: "/x").description == "EDQUOT: disc quota exceeded, scandir '/x'")
     }
 
-    @Test func aSearchThatCantStartNamesItsError() {
-        for number in Self.numbers {
-            #expect(FdProcess.errnoName(number) == Self.names[number] ?? "errno \(number)")
-        }
-    }
-
     @Test func aFailedEjectNamesItsError() {
         let volume = Volume(
             path: "/Volumes/USB", name: "USB", isLocal: true, isReadOnly: false, fileSystem: "apfs", canEject: true,

@@ -54,7 +54,6 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     public var searchMatchScope: SearchMatchScopePreference
     public var searchRecursive: Bool
     public var searchSkipGitFolders: Bool
-    public var searchSkipGitIgnored: Bool
     public var searchResultsSortBy: SearchResultsSortByPreference
     public var searchResultsSortDirection: SortDirectionPreference
     /// What search results are grouped by, and whether the groups are reversed, as set last in any pane: with
@@ -111,7 +110,7 @@ public struct AppPreferences: Codable, Equatable, Sendable {
             defaultTextEditor: AppPreferenceLimits.defaultTextEditor, openWithApplications: [],
             diskImageOpensIn: .window, returnKeyAction: .rename, shortcutOverrides: [:],
             openItemLimit: 5, includeHidden: false, searchPatternMode: .text, searchMatchScope: .name,
-            searchRecursive: true, searchSkipGitFolders: true, searchSkipGitIgnored: false,
+            searchRecursive: true, searchSkipGitFolders: true,
             searchResultsSortBy: .path, searchResultsSortDirection: .asc, searchGroupBy: .none,
             searchGroupReversed: false, treeWidth: 280, inspectorWidth: 320,
             restoreSessionOnStartup: true, openTabs: [], activeTabIndex: 0, treeRootPath: nil, lastVisitedPath: nil,

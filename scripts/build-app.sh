@@ -24,7 +24,7 @@ while [ $# -gt 0 ]; do
     esac
     shift
 done
-# The bundled fd is built for Apple silicon, and so is the app.
+# The app is built for Apple silicon only.
 if [ "$(uname -m)" != arm64 ]; then
     echo "File Trail builds on Apple silicon only; this Mac is $(uname -m)." >&2
     exit 1
@@ -57,7 +57,6 @@ mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 cp "$binary" "$app/Contents/MacOS/FileTrail"
 cp Resources/Info.plist "$app/Contents/Info.plist"
 cp Resources/AppIcon.icns "$app/Contents/Resources/AppIcon.icns"
-cp -R Resources/Acknowledgements "$app/Contents/Resources/Acknowledgements"
 /usr/libexec/PlistBuddy -c "Delete :FTCommit" "$app/Contents/Info.plist" 2>/dev/null || true
 /usr/libexec/PlistBuddy -c "Add :FTCommit string $(git rev-parse --short HEAD)" "$app/Contents/Info.plist"
 # The version comes from git. macOS shows numbers only, so a build past a release shows that release's number; the About
@@ -82,10 +81,6 @@ if ! stamped="$(vtool -set-build-version macos "$minimum" "$(xcrun --show-sdk-ve
     echo "vtool couldn't stamp the SDK on the app's binary" >&2
     exit 1
 fi
-# The bundled fd (search): the helper is signed first, then the app seals it. Its licences are shown from
-# Resources/Acknowledgements/fd.txt.
-mkdir -p "$app/Contents/Helpers"
-cp Resources/fd/darwin-arm64/fd "$app/Contents/Helpers/fd"
 # codesign says "replacing existing signature" each time: its output is shown only when it fails.
 sign() {
     local output
@@ -95,7 +90,6 @@ sign() {
         exit 1
     fi
 }
-sign --options runtime "$app/Contents/Helpers/fd"
 sign "$app"
 
 echo "Built $app, version $version ($(du -sh "$app" | cut -f1)) in ${SECONDS}s"

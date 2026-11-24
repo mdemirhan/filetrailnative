@@ -29,13 +29,12 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
 @MainActor
 @Suite struct AboutWindowTests {
     private let info = AboutInfo(
-        version: "0.1.0", commit: "df11088", macosVersion: "27.0", architecture: "Apple silicon", fdVersion: "10.5.0")
+        version: "0.1.0", commit: "df11088", macosVersion: "27.0", architecture: "Apple silicon")
 
     @MainActor
     final class Recorder {
         var copied: [String] = []
         var opened: [URL] = []
-        var acknowledgements = 0
         var copyWorks = true
     }
 
@@ -47,8 +46,7 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
             copyText: { text in
                 recorder.copied.append(text)
                 return recorder.copyWorks
-            }, openURL: { recorder.opened.append($0) }, openAcknowledgements: { recorder.acknowledgements += 1 },
-            scheduler: scheduler)
+            }, openURL: { recorder.opened.append($0) }, scheduler: scheduler)
         let controller = AboutWindowController(info: info, actions: actions)
         controller.aboutView.layoutSubtreeIfNeeded()
         return controller
@@ -60,8 +58,8 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
         #expect(texts("about.title", in: view) == ["File Trail"])
         #expect(texts("about.tagline", in: view) == ["A file browser that stays out of your way."])
         #expect(views("about.icon", in: view).count == 1)
-        #expect(texts("about.row.label", in: view) == ["Version", "macOS", "Search"])
-        #expect(texts("about.row.value", in: view) == ["0.1.0 (df11088)", "27.0, Apple silicon", "fd 10.5.0"])
+        #expect(texts("about.row.label", in: view) == ["Version", "macOS"])
+        #expect(texts("about.row.value", in: view) == ["0.1.0 (df11088)", "27.0, Apple silicon"])
         #expect(texts("about.copyright", in: view) == ["© 2026 Mustafa Demirhan"])
         #expect(
             views("about.button", in: view).compactMap { ($0 as? NSButton)?.title } == [
@@ -88,7 +86,7 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
         #expect(view.copyButton.title == "Copy Details")
 
         view.copyButton.perform()
-        #expect(recorder.copied == ["File Trail 0.1.0 (df11088)\nmacOS 27.0, Apple silicon\nfd 10.5.0"])
+        #expect(recorder.copied == ["File Trail 0.1.0 (df11088)\nmacOS 27.0, Apple silicon"])
         #expect(view.copyButton.title == "Copied")
         scheduler.advance(1499)
         #expect(view.copyButton.title == "Copied")
@@ -116,7 +114,7 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
         #expect(view.copyButton.title == "Copy Details")
     }
 
-    @Test func linksToTheProjectAndOpensAcknowledgements() {
+    @Test func linksToTheProject() {
         let recorder = Recorder()
         let view = make(info, recorder).aboutView
         view.gitHubButton.perform()
@@ -125,8 +123,6 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
             recorder.opened.map(\.absoluteString) == [
                 "https://github.com/mdemirhan/filetrailnative", "https://github.com/mdemirhan/filetrailnative/issues",
             ])
-        view.acknowledgementsLink.perform()
-        #expect(recorder.acknowledgements == 1)
     }
 
     @Test func closesWithEscape() {
@@ -144,7 +140,7 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
         let window = controller.window
         let size = try #require(window.map { $0.contentRect(forFrameRect: $0.frame).size })
         #expect(size.width == 460)
-        #expect(size.height == AboutView.fittingHeight(rows: 3))
+        #expect(size.height == AboutView.fittingHeight(rows: 2))
         // The footer is one gap under the buttons, not at the bottom of a taller window: it was 356 high, with a band
         // of nothing between them.
         #expect(size.height < 356)
@@ -161,22 +157,23 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
         #expect(window?.backgroundColor == NSColor(AppearanceModel.shared.theme.pageWindowBackground))
     }
 
-    // The layout: the 72 point icon 28 in, the rows of 31 under a hairline, then the buttons and the link 28 in
-    @Test func laysOutTheIconRowsButtonsAndLink() {
+    // The layout: the 72 point icon 28 in, the rows of 31 under a hairline, then the buttons 28 in, and the copyright
+    // centred under them
+    @Test func laysOutTheIconRowsButtonsAndCopyright() {
         let view = make(info, Recorder()).aboutView
         let icon = views("about.icon", in: view).first?.frame
         #expect(icon == NSRect(x: 28, y: 42, width: 72, height: 72))
         let labels = views("about.row.label", in: view).map(\.frame)
         // 40 for the title strip, 2 + 72 + 18 for the header, a hairline, then rows of 8 + 14 + 8 + 1.
-        #expect(labels.map(\.minY) == [141, 172, 203])
+        #expect(labels.map(\.minY) == [141, 172])
         let buttons = views("about.button", in: view).map(\.frame)
-        #expect(buttons.map(\.minY) == [242, 242, 242])
+        #expect(buttons.map(\.minY) == [211, 211, 211])
         #expect(buttons.map(\.height) == [24, 24, 24])
         #expect(abs((buttons.first?.minX ?? 0) - 28) < 0.01)
-        let link = views("about.link", in: view).first?.frame
-        #expect(link?.minX == 28)
+        let copyright = views("about.copyright", in: view).first?.frame
+        #expect(abs((copyright?.midX ?? 0) - view.bounds.width / 2) <= 1)
         // 22 under the buttons, then the footer's line and 18 to the bottom.
-        #expect(link?.minY == 288)
-        #expect(view.bounds.height - (link?.maxY ?? 0) == 18)
+        #expect(copyright?.minY == 257)
+        #expect(view.bounds.height - (copyright?.maxY ?? 0) == 18)
     }
 }

@@ -595,7 +595,6 @@ public struct PaneViewSizes: Codable, Equatable, Sendable {
     public var searchMatchScope: SearchMatchScopePreference
     public var searchRecursive: Bool
     public var searchSkipGitFolders: Bool
-    public var searchSkipGitIgnored: Bool
     /// How a viewer in the pane starts: Read or Edit (the app's is the one chosen last in any pane) and Follow (the
     /// pane's alone; on until turned off).
     public var viewerEditing: Bool
@@ -621,7 +620,6 @@ public struct PaneViewSizes: Codable, Equatable, Sendable {
         searchMatchScope = preferences.searchMatchScope
         searchRecursive = preferences.searchRecursive
         searchSkipGitFolders = preferences.searchSkipGitFolders
-        searchSkipGitIgnored = preferences.searchSkipGitIgnored
         viewerEditing = preferences.textViewerSettings.opensForEditing
         viewerFollows = true
     }
@@ -666,7 +664,6 @@ public struct PaneViewSizes: Codable, Equatable, Sendable {
         take(\.searchMatchScope, \.searchMatchScope)
         take(\.searchRecursive, \.searchRecursive)
         take(\.searchSkipGitFolders, \.searchSkipGitFolders)
-        take(\.searchSkipGitIgnored, \.searchSkipGitIgnored)
         // Follow is the pane's alone: the app has none.
         if before.viewerEditing != viewerEditing { next.textViewerSettings.opensForEditing = viewerEditing }
         return next
@@ -693,7 +690,6 @@ public struct PaneViewSizes: Codable, Equatable, Sendable {
         shown.searchMatchScope = searchMatchScope
         shown.searchRecursive = searchRecursive
         shown.searchSkipGitFolders = searchSkipGitFolders
-        shown.searchSkipGitIgnored = searchSkipGitIgnored
         return shown
     }
 }

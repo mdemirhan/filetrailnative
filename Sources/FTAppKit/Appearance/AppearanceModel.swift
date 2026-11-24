@@ -221,7 +221,7 @@ public final class AppearanceModel {
 
     // MARK: Windows other than explorer windows
 
-    /// A window that is not an explorer window (Settings, Help, About, Acknowledgements) gets the theme's background;
+    /// A window that is not an explorer window (Settings, Help, About) gets the theme's background;
     /// explorer windows stay transparent, as a color would cover their sidebar material.
     public func register(pageWindow window: NSWindow) {
         pageWindows.removeAll { $0.window == nil || $0.window === window }

@@ -7,6 +7,7 @@
 #include "ft_archive.h"
 #include "ft_copyfile.h"
 #include "ft_foldersize.h"
+#include "ft_search.h"
 
 /// What an entry of a folder is (the object type getattrlistbulk reports).
 typedef enum {

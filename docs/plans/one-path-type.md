@@ -40,7 +40,7 @@ Check each against the code; names may have moved.
 1. **Every stored path is a `DiskPath`** (or `DiskPath?`, `[DiskPath]`): model fields, cached values, parameters, return values, keys.
 2. **A name is a `String`.** A single name (what `basename` returns, what a person types in a rename) is not a path. Where names are keys or are compared exactly, they are `NameKeys.Exact`. Do not introduce a type for names in this work ([file-name-type.md](file-name-type.md) asks whether one is worth having); note in the report where one would have helped or got in the way, as that plan's investigation will want it.
 3. **A relative path is not a `DiskPath`.** `relativeParentPath` and their kin stay `String`, with a comment saying so.
-4. **A `String` becomes a `DiskPath` only where a path is born:** a listing (the C listing's bytes), `realpath`, `nameOnDisk`, `fd`'s output, the mount table, the decoding of saved state and of the journal, the boundary files, a path built from another `DiskPath` (`appending`, `parent`), a literal for a place the system names (`"/"`, `"/Volumes"`, `"/Applications"`), and tests. Everything else that makes one (typed text, a panel's answer, a drop, a launch argument, a URL) goes through the boundary first (`asOnDisk()`, `itemAsOnDisk()`, `init?(urlSpelling:)`).
+4. **A `String` becomes a `DiskPath` only where a path is born:** a listing (the C listing's bytes), `realpath`, `nameOnDisk`, the search walk's paths, the mount table, the decoding of saved state and of the journal, the boundary files, a path built from another `DiskPath` (`appending`, `parent`), a literal for a place the system names (`"/"`, `"/Volumes"`, `"/Applications"`), and tests. Everything else that makes one (typed text, a panel's answer, a drop, a launch argument, a URL) goes through the boundary first (`asOnDisk()`, `itemAsOnDisk()`, `init?(urlSpelling:)`).
 5. **A `DiskPath` gives up its `String` only at a leaf:** a C or POSIX call, text shown to a person, a log line, the hand-written encoders, and `NodePath`'s own functions.
 6. **Path arithmetic is on the type.** `NodePath` stays as the `String` implementation behind `DiskPath`'s members and for names and relative paths; callers with a `DiskPath` call its members, not `NodePath.x(path.string)`.
 7. **File-system protocols take and return `DiskPath`** for paths (`WriteServiceFileSystem`, `ExplorerFileSystem`, `AnalysisFileSystem`, `IdentityFileSystem`, `StateFileSystem`, `BatchRenameFileSystem`, `LocalWriteFileSystem` and the rest: about 46 methods), names staying `String`.
@@ -145,7 +145,7 @@ When a step meets a loose comparison, it stays loose by an explicit call on `.st
 
 | Source | Says |
 |---|---|
-| `readdir`, `getattrlistbulk` (so a raw listing, a walk, `fd`'s output) | always decomposed |
+| `readdir`, `getattrlistbulk` (so a raw listing, a walk, a search) | always decomposed |
 | `getattrlist` for the one item, `realpath`, FSEvents | the spelling the item was **made or first looked up by since the disk was mounted**, whichever spelling asks later |
 | `lstat`, `open` by either spelling | found |
 | `rename` on FAT32, `unlink` on exFAT, by the other spelling than the one held | `ENOENT` |
@@ -158,7 +158,7 @@ The app's one spelling there is **the one the disk holds**. So the rule has a se
 - `ft_read_directory` (`Sources/CFileTrail/listing.c`): every listing's rows and the tree's children.
 - `PosixFileSystem.names(in:)` (`Sources/FTOperations/Identity/WriteServiceStats.swift`): every folder the write engine reads or walks, so what it then renames or unlinks is found.
 - `process_dir` (`Sources/CFileTrail/foldersize.c`): a sub-folder's path in the folder-size walk, so its size is kept under the path its row has.
-- `FdSearchRuntime.HeldSpelling`: `fd`'s results (`DiskPath.isListedRespelled`, then `asOnDisk()` for the folder once and `namedAsOnDisk()` for the name).
+- `search_list` (`Sources/CFileTrail/search.c`): every search result's name and every folder a search walks into (`ft_held_name_on`, as the folder-size walk does).
 
 Not respelled, on purpose: the archive walks (`archive.c`, `fts`; they only open what they read, which either spelling finds, and a member's name inside the archive is then the decomposed one), `TrashState` and `NewFileTemplates` (they compare a name with nothing from elsewhere).
 
@@ -167,7 +167,7 @@ What it costs (disk images, this Mac): nothing on any other disk and nothing for
 Known limits:
 
 - The disk can forget an item (it lets go of what it has not used for long) and then hold it by the next spelling that asks. A path the app kept from before may then differ from a fresh listing's until the folder is read again; on FAT32 a rename by the kept path fails only if another app asked by the other spelling in between.
-- A search decides by its root whether results are respelled: one started above a FAT or exFAT disk (in `/Volumes`) leaves that disk's results as `fd` wrote them.
+- A search decides by its root whether results are respelled: one started above a FAT or exFAT disk (in `/Volumes`) leaves that disk's results as its folders list them.
 - A name longer than 1,023 bytes decomposed is left as listed.
 - Unmeasured, and to be measured before anyone relies on them: network shares (SMB, NFS, WebDAV), NTFS, and FAT/exFAT on a macOS older than 27. A disk of a kind not in the list is taken at its listing's word, as before.
 

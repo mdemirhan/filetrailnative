@@ -35,15 +35,14 @@ public enum AboutInfoReader {
         "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
     }
 
-    /// What the About window shows, from the app's `Info.plist`, the running macOS and the bundled `fd`.
+    /// What the About window shows, from the app's `Info.plist` and the running macOS.
     public static func read(
         info: [String: Any]? = Bundle.main.infoDictionary,
         systemVersion: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion,
-        architecture: String = currentArchitectureName, fdVersion: String = FdBinary.manifest.version
+        architecture: String = currentArchitectureName
     ) -> AboutInfo {
         AboutInfo(
             version: BuildInfo.version(from: info) ?? BuildInfo.fallbackVersion, commit: BuildInfo.commit(from: info),
-            macosVersion: AboutText.formatMacosVersion(versionString(systemVersion)), architecture: architecture,
-            fdVersion: fdVersion)
+            macosVersion: AboutText.formatMacosVersion(versionString(systemVersion)), architecture: architecture)
     }
 }
