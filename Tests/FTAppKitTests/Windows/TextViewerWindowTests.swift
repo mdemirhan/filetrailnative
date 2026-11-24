@@ -1008,6 +1008,11 @@ extension ExplorerWindowlessTests {
                 return pages.isFlipped ? clip.minY - pages.bounds.minY : pages.bounds.maxY - clip.maxY
             }
             func atTop(_ viewer: TextViewerController) -> Bool { fromTop(viewer).map { abs($0) < 0.5 } ?? false }
+            // The viewer has the path at once and reads the file after: until then the PDF before is still shown,
+            // scrolled where it was left.
+            func shows(_ viewer: TextViewerController, _ path: String) -> Bool {
+                viewer.path == path && viewer.pdfView.document?.documentURL?.path == path
+            }
 
             select(p1, in: tab)
             tab.perform(.viewFile)
@@ -1017,20 +1022,20 @@ extension ExplorerWindowlessTests {
             viewer.pdfView.scroll(pages: 1.5)
             #expect(!atTop(viewer))
             tab.stepFile(by: 1)
-            #expect(await waitUntil { viewer.path == p2 && viewer.pdfView.document != nil })
+            #expect(await waitUntil { shows(viewer, p2) })
             #expect(atTop(viewer), "\(String(describing: fromTop(viewer)))")
             // At a zoom kept from the one before.
             tab.perform(.increaseSize)
             viewer.pdfView.scroll(pages: 1)
             tab.stepFile(by: -1)
-            #expect(await waitUntil { viewer.path == p1 && viewer.pdfView.document != nil })
+            #expect(await waitUntil { shows(viewer, p1) })
             #expect(!viewer.pdfView.fitsWidth)
             #expect(atTop(viewer), "\(String(describing: fromTop(viewer)))")
             // From text.
             tab.stepFile(by: -1)
             #expect(await waitUntil { viewer.isText })
             tab.stepFile(by: 1)
-            #expect(await waitUntil { viewer.path == p1 && viewer.pdfView.document != nil })
+            #expect(await waitUntil { shows(viewer, p1) })
             #expect(atTop(viewer), "\(String(describing: fromTop(viewer)))")
         }
 
