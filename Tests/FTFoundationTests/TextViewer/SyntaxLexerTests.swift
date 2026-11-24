@@ -228,15 +228,89 @@ import Testing
         #expect(found["// indirect"] == .comment)
     }
 
+    @Test func aScriptAndAStyleAreColoredAsTheirLanguage() throws {
+        let found = try runs(
+            """
+            <style>
+            .card { color: red; }
+            </style>
+            <script type="module">
+            const n = 1 // count
+            </script><p class="x">
+            """, "html")
+        #expect(found.contains { $0 == (".card", .attribute) })
+        #expect(found.contains { $0 == ("color", .property) })
+        #expect(found.contains { $0 == ("const", .keyword) })
+        #expect(found.contains { $0 == ("// count", .comment) })
+        // The closing tag touches the next, so they are one run.
+        #expect(found.contains { $0 == ("</script><p", .tag) })
+        #expect(found.contains { $0 == ("class", .property) })
+    }
+
+    @Test func aVueOrSvelteBlockGoesByItsLang() throws {
+        let found = try runs(
+            """
+            <script setup
+              lang="ts">
+            let n: number = 1
+            </script>
+            <style lang="scss">$gap: 4px;</style>
+            <template><div>{{ n }}</div></template>
+            """, "html")
+        #expect(found.contains { $0 == ("number", .type) })
+        #expect(found.contains { $0 == ("$gap", .variable) })
+        #expect(found.contains { $0 == ("<template><div>", .tag) })
+    }
+
+    @Test func aScriptOfAnotherTypeIsJSONOrPlainText() throws {
+        let json = try runs("<script type=\"application/ld+json\">{\"a\": 1}</script>", "html")
+        #expect(json.contains { $0 == ("\"a\"", .property) })
+        let shader = try runs("<script type=\"x-shader/x-vertex\">if (a < b) {}</script>", "html")
+        #expect(!shader.contains { $0.0 == "if" || $0.0 == "b" })
+        // A script that closes as it opens has no text.
+        let empty = try runs("<script src=\"a.js\"/><b>x</b>", "html")
+        #expect(empty.contains { $0 == ("/><b>", .tag) })
+    }
+
+    @Test func aFencedBlockIsColoredAsTheLanguageItNames() throws {
+        let found = try runs(
+            """
+            ```swift
+            let x = 1 // one
+            ```
+            ```{r}
+            x <- TRUE
+            ```
+            ```unknown
+            let y = 2
+            ```
+            """, "markdown")
+        #expect(found.contains { $0 == ("```swift", .code) })
+        #expect(found.contains { $0 == ("let", .keyword) })
+        #expect(found.contains { $0 == ("// one", .comment) })
+        #expect(found.contains { $0 == ("TRUE", .literal) })
+        #expect(found.contains { $0 == ("let y = 2", .code) })
+    }
+
+    @Test func codeInsideCodeIsNotLookedInto() throws {
+        let found = try runs("```html\n<script>let a = 1</script>\n```", "markdown")
+        #expect(found.contains { $0 == ("<script>", .tag) })
+        #expect(!found.contains { $0.0 == "let" })
+    }
+
     @Test func plainTextHasNoRuns() throws {
         #expect(try runs("let x = 1 // nothing", "plain").isEmpty)
     }
 
     /// Lexing a line at a time from the state the line before ended in gives the runs of the whole text: what lets an
     /// edit re-lex from its line only.
-    @Test func lineByLineFromCarriedStatesGivesTheSameRuns() throws {
-        let text = "a = '''x\ny''' # c\n/* not a comment */ b = 2"
-        let language = try #require(TextLanguage.with(id: "python"))
+    @Test(arguments: [
+        ("a = '''x\ny''' # c\n/* not a comment */ b = 2", "python"),
+        ("<script\n type=\"module\">\nconst s = `a\nb` /* c\nd */\n</script>\n<p>", "html"),
+        ("```js\nconst s = `a\nb`\n```\n*em*", "markdown"),
+    ])
+    func lineByLineFromCarriedStatesGivesTheSameRuns(_ text: String, _ id: String) throws {
+        let language = try #require(TextLanguage.with(id: id))
         let lexer = SyntaxLexer(language: language)
         let whole = lexer.tokens(of: text)
         var state = LexState.normal

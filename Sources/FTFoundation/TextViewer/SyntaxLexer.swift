@@ -46,8 +46,9 @@ public struct SyntaxToken: Equatable, Sendable {
     }
 }
 
-/// Where a line's lexing starts: inside a comment or a string that an earlier line opened, or not. Two lines that
-/// start in the same state lex the same, which is what lets an edit stop re-lexing once the states agree again.
+/// Where a line's lexing starts: inside a comment or a string that an earlier line opened, or not, and inside code of
+/// another language (a `<script>`, a fenced block) with that code's own state. Two lines that start in the same state
+/// lex the same, which is what lets an edit stop re-lexing once the states agree again.
 public struct LexState: Hashable, Sendable {
     public enum Mode: UInt8, Sendable {
         case normal
@@ -58,6 +59,10 @@ public struct LexState: Hashable, Sendable {
         case markupCData
         case fence
         case blockScalar
+        /// Inside a `<script>` or a `<style>`; `rule` says which.
+        case embedded
+        /// Inside a block that the line closing it alone ends: a delimited block, a comment block, a literal block.
+        case block
     }
 
     public var mode: Mode
@@ -65,14 +70,43 @@ public struct LexState: Hashable, Sendable {
     public var rule: UInt16
     /// A nested comment's depth, a fence's length, a block scalar's indent, CSS's brace depth.
     public var depth: UInt16
+    /// The language of the code inside, by its place in `TextLanguage.all` plus one; 0 for none.
+    public var embedded: UInt16
+    /// Where the code inside ended the line before.
+    public var innerMode: Mode
+    public var innerRule: UInt16
+    public var innerDepth: UInt16
 
-    public init(_ mode: Mode = .normal, rule: UInt16 = 0, depth: UInt16 = 0) {
+    public init(_ mode: Mode = .normal, rule: UInt16 = 0, depth: UInt16 = 0, embedded: UInt16 = 0) {
         self.mode = mode
         self.rule = rule
         self.depth = depth
+        self.embedded = embedded
+        self.innerMode = .normal
+        self.innerRule = 0
+        self.innerDepth = 0
     }
 
     public static let normal = LexState()
+
+    /// The state of the code inside, which has none inside it.
+    var inner: LexState {
+        get { LexState(innerMode, rule: innerRule, depth: innerDepth) }
+        set {
+            innerMode = newValue.mode
+            innerRule = newValue.rule
+            innerDepth = newValue.depth
+        }
+    }
+
+    var embeddedLanguage: TextLanguage? { embedded == 0 ? nil : TextLanguage.all[Int(embedded) - 1] }
+
+    /// This state with the code inside in `inner`.
+    func with(inner: LexState) -> LexState {
+        var state = self
+        state.inner = inner
+        return state
+    }
 }
 
 /// Lexes a language a line at a time. The lines are given without their line break.
@@ -88,7 +122,14 @@ public struct SyntaxLexer: Sendable {
     public func lex(
         _ chars: UnsafeBufferPointer<UInt16>, from state: LexState, into tokens: inout [SyntaxToken]
     ) -> LexState {
-        var line = Line(chars: chars, tokens: tokens)
+        lex(chars, from: state, into: &tokens, embeds: true)
+    }
+
+    /// `embeds` false lexes code that is itself inside other code, whose own code inside isn't looked into.
+    func lex(
+        _ chars: UnsafeBufferPointer<UInt16>, from state: LexState, into tokens: inout [SyntaxToken], embeds: Bool
+    ) -> LexState {
+        var line = Line(chars: chars, tokens: tokens, embeds: embeds)
         let next: LexState
         switch language.grammar {
         case .plain: next = .normal
@@ -189,11 +230,40 @@ enum Char {
 struct Line {
     let chars: UnsafeBufferPointer<UInt16>
     var tokens: [SyntaxToken]
+    /// Whether code of another language inside this one is lexed as its language: not in code that is itself inside.
+    let embeds: Bool
     var count: Int { chars.count }
 
-    init(chars: UnsafeBufferPointer<UInt16>, tokens: [SyntaxToken]) {
+    init(chars: UnsafeBufferPointer<UInt16>, tokens: [SyntaxToken], embeds: Bool = true) {
         self.chars = chars
         self.tokens = tokens
+        self.embeds = embeds
+    }
+
+    /// Lexes `chars[start..<end]` as the language of `state.embedded`, from `state.inner`, its runs put at their place
+    /// in this line; `state` with the inner code's state at the line's end.
+    mutating func lexEmbedded(_ start: Int, _ end: Int, _ state: LexState) -> LexState {
+        guard let language = state.embeddedLanguage else { return state }
+        var inner: [SyntaxToken] = []
+        let slice = UnsafeBufferPointer(rebasing: chars[start..<max(start, end)])
+        let next = SyntaxLexer(language: language).lex(slice, from: state.inner, into: &inner, embeds: false)
+        for token in inner { emit(start + token.location, start + token.location + token.length, token.kind) }
+        return state.with(inner: next)
+    }
+
+    /// The language a fenced block's opening names after its marks: ` ```swift `, ` ```{r} `, `[source,python]`'s
+    /// `python`; 0 for none or one not known.
+    func fenceLanguage(from i: Int) -> UInt16 {
+        var j = firstNonSpace(from: i)
+        while j < count && (chars[j] == Char.openBrace || chars[j] == Char.dot) { j += 1 }
+        var end = j
+        while end < count && !Char.isSpace(chars[end])
+            && ![Char.comma, Char.closeBrace, Char.openBrace, Char.closeBracket].contains(chars[end])
+        {
+            end += 1
+        }
+        guard embeds, end > j else { return 0 }
+        return TextLanguages.position(named: word(j, end))
     }
 
     @inline(__always) func at(_ i: Int) -> UInt16 { i < chars.count ? chars[i] : 0 }

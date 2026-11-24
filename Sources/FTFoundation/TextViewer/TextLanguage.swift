@@ -90,6 +90,20 @@ enum TextLanguages {
         return nil
     }
 
+    /// Each language's place in `TextLanguage.all` plus one, as a `LexState` names the language of code inside.
+    static let positions: [String: UInt16] = Dictionary(
+        uniqueKeysWithValues: TextLanguage.all.enumerated().map { ($0.element.id, UInt16($0.offset + 1)) })
+    static let byLowercasedName: [String: TextLanguage] = Dictionary(
+        TextLanguage.all.map { ($0.name.lowercased(), $0) }, uniquingKeysWith: { first, _ in first })
+
+    /// The language a fenced block or a `lang` attribute names, by its ID, its name, an extension or its program
+    /// (`swift`, `objective-c`, `py`, `node`), as its place for a `LexState`; 0 for one not known.
+    static func position(named name: String) -> UInt16 {
+        let key = name.lowercased()
+        let language = byID[key] ?? byLowercasedName[key] ?? byExtension[key] ?? byInterpreter[key]
+        return language.flatMap { positions[$0.id] } ?? 0
+    }
+
     private static func index(_ keys: KeyPath<TextLanguage, [String]>) -> [String: TextLanguage] {
         var result: [String: TextLanguage] = [:]
         for language in TextLanguage.all {
