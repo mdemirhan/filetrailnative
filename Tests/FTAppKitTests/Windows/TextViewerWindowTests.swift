@@ -3,6 +3,7 @@ import FTFoundation
 import Foundation
 import PDFKit
 import Testing
+import WebKit
 
 @testable import FTAppKit
 
@@ -1160,6 +1161,98 @@ extension ExplorerWindowlessTests {
                     == true)
         }
 
+        /// Markdown's Preview finds in its own bar, as a PDF does, without going to the source; an RTF document is shown
+        /// as the document it is, by Quick Look, and found in too. Done takes the marks away.
+        @Test func thePreviewAndAnRTFDocumentFindAsAPDFDoes() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            try "# Notes\n\nThe **lighthouse** and the Lighthouse.\n".write(
+                to: harness.folder.appending("notes.md"), atomically: true, encoding: .utf8)
+            let rich = NSAttributedString(string: "A líghthouse here.\nAnother lighthouse there.\n")
+            try rich.data(
+                from: NSRange(location: 0, length: rich.length),
+                documentAttributes: [.documentType: NSAttributedString.DocumentType.rtf]
+            ).write(to: harness.folder.appending("r.rtf"))
+            let tab = try await tabWithFiles(harness)
+            let pane = tab.activePane
+            let (notes, rtf) = (real(harness, "notes.md"), real(harness, "r.rtf"))
+            #expect(await waitUntil { pane.content.listedEntry(at: rtf) != nil })
+            select(notes, in: tab)
+            tab.perform(.viewFile)
+            let viewer = try #require(pane.viewer)
+            #expect(await waitUntil { viewer.finder === viewer.previewFind && viewer.hasKeyboard }, "\(shown(viewer))")
+
+            tab.perform(.focusFileSearch)
+            #expect(!viewer.findBar.isHidden)
+            #expect(viewer.findBar.field.placeholderString == "Find in Preview")
+            #expect(viewer.finder === viewer.previewFind, "the Preview stays")
+            viewer.findBar.field.stringValue = "lighthouse"
+            viewer.findBar.onChange("lighthouse")
+            let preview = viewer.previewFind
+            #expect(preview.matchCount == 2 && preview.matchIndex == 0)
+            viewer.findBar.onStep(true)
+            viewer.findBar.onStep(true)
+            #expect(preview.matchIndex == 0)
+            let first = (viewer.previewView.string as NSString).range(of: "lighthouse")
+            func marked() -> Bool {
+                viewer.previewView.layoutManager?.temporaryAttribute(
+                    .backgroundColor, atCharacterIndex: first.location, effectiveRange: nil) != nil
+            }
+            #expect(marked())
+            viewer.closeFind()
+            #expect(viewer.findBar.isHidden && preview.matchCount == 0 && !marked())
+
+            // RTF, in Quick Look's text.
+            tab.stepFile(by: 1)
+            #expect(await waitUntil { viewer.path == rtf && viewer.quickLook.textView != nil }, "\(shown(viewer))")
+            #expect(await waitUntil { viewer.canFind })
+            tab.perform(.focusFileSearch)
+            #expect(!viewer.findBar.isHidden)
+            #expect(viewer.findBar.field.placeholderString == "Find in Document")
+            viewer.findBar.field.stringValue = "lighthouse"
+            viewer.findBar.onChange("lighthouse")
+            #expect(viewer.quickLook.textFind.matchCount == 2)
+            viewer.closeFind()
+            #expect(viewer.quickLook.textFind.matchCount == 0)
+        }
+
+        /// The script in the page Quick Look shows a document in finds in a frame from another origin, as Quick Look
+        /// shows a spreadsheet's sheet in, and reads a page of pictures, as Quick Look shows Keynote's slides and Pages'
+        /// pages, as pages to step through.
+        @Test func thePageScriptFindsInFramesAndStepsPagesOfPictures() async throws {
+            let sheet = "<table><tr><td>Lighthouse north</td></tr><tr><td>l\u{ED}ghthouse south</td></tr></table>"
+            let server = PageServer([
+                "main": "<p>The lighthouse page.</p><iframe style='width: 500px; height: 200px'"
+                    + " src='filetrail-test://sheet/'></iframe>",
+                "sheet": sheet,
+            ])
+            let configuration = WKWebViewConfiguration()
+            configuration.setURLSchemeHandler(server, forURLScheme: "filetrail-test")
+            let web = WKWebView(frame: NSRect(x: 0, y: 0, width: 600, height: 400), configuration: configuration)
+            QuickLookPageScript.install(in: web)
+            web.load(URLRequest(url: try #require(URL(string: "filetrail-test://main/"))))
+            #expect(await waitUntil { !web.isLoading })
+            let find = WebPageFind { web }
+            find.find("lighthouse")
+            #expect(await waitUntil { !find.isFinding })
+            #expect(find.matchCount == 3, "\(find.matchCount)")
+            #expect(find.matchIndex == 0)
+            find.stepMatch(forward: false)
+            #expect(await waitUntil { !find.isFinding && find.matchIndex == 2 })
+            find.stopFinding()
+
+            let picture = "<div><img width='500' height='400' src='data:image/gif;base64,R0lGODlhAQABAAAAACw='></div>"
+            web.loadHTMLString(
+                "<body style='margin: 0'>\(String(repeating: picture, count: 3))</body>", baseURL: nil)
+            #expect(await waitUntil { !web.isLoading })
+            let pages = try await QuickLookPageScript.call(web, ["action": "pages"])
+            #expect((pages?["count"] as? NSNumber)?.intValue == 3)
+            #expect((pages?["current"] as? NSNumber)?.intValue == 0)
+            _ = try await QuickLookPageScript.call(web, ["action": "goToPage", "number": 2])
+            let shown = try await QuickLookPageScript.call(web, ["action": "pages"])
+            #expect((shown?["current"] as? NSNumber)?.intValue == 2)
+        }
+
         /// A PDF of `pages` US Letter pages, each with its number.
         private func writePDF(pages: Int, to url: URL) throws {
             var box = CGRect(x: 0, y: 0, width: 612, height: 792)
@@ -1456,4 +1549,26 @@ extension ExplorerWindowlessTests {
             #expect(!media.isPlaying)
         }
     }
+}
+
+/// Serves a page and the frame in it from hosts of their own, as Quick Look serves a spreadsheet and its sheet: the page
+/// can't reach into the frame.
+private final class PageServer: NSObject, WKURLSchemeHandler {
+    private let pages: [String: String]
+
+    init(_ pages: [String: String]) {
+        self.pages = pages
+    }
+
+    func webView(_ webView: WKWebView, start task: any WKURLSchemeTask) {
+        let host = task.request.url?.host() ?? ""
+        let data = Data("<!doctype html><meta charset='utf-8'><body>\(pages[host] ?? "")</body>".utf8)
+        guard let url = task.request.url else { return }
+        task.didReceive(
+            URLResponse(url: url, mimeType: "text/html", expectedContentLength: data.count, textEncodingName: "utf-8"))
+        task.didReceive(data)
+        task.didFinish()
+    }
+
+    func webView(_ webView: WKWebView, stop task: any WKURLSchemeTask) {}
 }
