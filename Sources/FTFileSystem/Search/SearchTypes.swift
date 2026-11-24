@@ -79,6 +79,7 @@ public struct SearchUpdate: Sendable, Equatable {
     public var truncated: Bool
     public var error: String?
     /// The search met folders it couldn't read (no permission, a disk error): what is in them isn't among the results.
+    /// Kept and not shown, as Finder says nothing of them.
     public var unreadableFolders: Bool
     /// How many items its conditions have read so far, beyond what their folders list; 0 for a search with none that
     /// read.

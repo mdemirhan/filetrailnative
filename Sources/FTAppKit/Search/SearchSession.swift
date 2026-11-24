@@ -85,8 +85,6 @@ final class SearchSession {
     /// Started by typing: a pattern that does not parse yet is not shown as a failure.
     private(set) var startedLive = false
     private(set) var truncated = false
-    /// The search met folders it couldn't read: the banner says so, once, while it runs and after.
-    private(set) var unreadableFolders = false
     /// A write that acted on the results put something inside the folder searched, which they don't list: they may
     /// be missing it until the search runs again.
     private(set) var mayBeMissingItems = false
@@ -373,7 +371,6 @@ final class SearchSession {
         status = nil
         error = nil
         truncated = false
-        unreadableFolders = false
         itemsRead = 0
         mayBeMissingItems = false
         resultsVisible = false
@@ -685,7 +682,6 @@ final class SearchSession {
         status = .running
         error = nil
         truncated = false
-        unreadableFolders = false
         itemsRead = 0
         mayBeMissingItems = false
         searchedHidden = host.searchIncludeHidden
@@ -756,8 +752,7 @@ final class SearchSession {
         // A poll that found nothing new and changed nothing tells the tab nothing: showing the results again costs
         // as much as there are of them, every poll of a long search.
         var change: Change =
-            update.status != status || update.error != error || update.truncated != truncated
-                || update.unreadableFolders != unreadableFolders ? .status : []
+            update.status != status || update.error != error || update.truncated != truncated ? .status : []
         if !newItems.isEmpty {
             results = SearchResults.append(results, newItems)
             resultsChanged()
@@ -775,7 +770,6 @@ final class SearchSession {
         status = update.status
         error = update.error
         truncated = update.truncated
-        unreadableFolders = update.unreadableFolders
         itemsRead = update.itemsRead
         if update.done {
             jobID = nil

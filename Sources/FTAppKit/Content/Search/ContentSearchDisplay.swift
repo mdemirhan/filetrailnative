@@ -20,8 +20,6 @@ struct ContentSearchDisplay {
     var isRunning: Bool
     var error: String?
     var errorIsQuiet: Bool
-    /// The search met folders it couldn't read: the status bar says so beside the count.
-    var unreadableFolders = false
     /// How many items the conditions have read so far, for the status bar while the search runs.
     var itemsRead = 0
     /// What a result right in `/` shows in its Folder column.

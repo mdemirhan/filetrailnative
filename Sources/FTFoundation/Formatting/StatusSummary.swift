@@ -55,14 +55,12 @@ public enum StatusSummary {
         return parts.joined(separator: " · ")
     }
 
-    /// The search met folders it has no permission to read, or that failed to read: what is in them isn't listed.
-    public static let unreadableFoldersNote = "Some folders couldn\u{2019}t be read"
-
-    /// One line of search status: the result count, the selection with its size when known, and that folders
-    /// couldn't be read. While a search with conditions that read items runs, how many it has looked at.
+    /// One line of search status: the result count, and the selection with its size when known. While a search with
+    /// conditions that read items runs, how many it has looked at. That folders couldn't be read isn't said, as Finder
+    /// doesn't say it.
     public static func search(
         isSearching: Bool, shown: Int, totalCount: Int, selectedCount: Int, selectionSize: StatusSize? = nil,
-        unreadableFolders: Bool = false, itemsRead: Int = 0
+        itemsRead: Int = 0
     ) -> String {
         let noun = totalCount == 1 ? "result" : "results"
         let total = FormatLocale.count(totalCount)
@@ -77,7 +75,6 @@ public enum StatusSummary {
                 parts.append(text)
             }
         }
-        if unreadableFolders { parts.append(unreadableFoldersNote) }
         return parts.joined(separator: " · ")
     }
 }

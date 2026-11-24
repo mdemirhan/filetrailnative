@@ -51,8 +51,7 @@ public enum SearchBarText {
     public static let searchAgainName = "Search again"
 
     /// What the banner over the results says: that they were cut short, that they may be missing what was added, or
-    /// both; nil when there is nothing to say. That folders couldn't be read is said in the status bar
-    /// (`StatusSummary.search`).
+    /// both; nil when there is nothing to say.
     public static func banner(truncated: Bool, mayBeMissingItems: Bool) -> String? {
         let lines = [truncated ? truncatedBanner : nil, mayBeMissingItems ? mayBeMissingBanner : nil].compactMap { $0 }
         return lines.isEmpty ? nil : lines.joined(separator: " ")

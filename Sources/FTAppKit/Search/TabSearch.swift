@@ -205,8 +205,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
                 rootPath: rootPath, viewKey: "search:\(rootPath):\(session.committedQuery)", run: session.runNumber,
                 results: session.shownResults, sortBy: session.sortBy, sortDirection: session.sortDirection,
                 highlight: session.highlightPattern, isRunning: session.isRunning, error: session.error,
-                errorIsQuiet: session.errorIsQuiet, unreadableFolders: session.unreadableFolders,
-                itemsRead: session.itemsRead, startupDiskName: disk))
+                errorIsQuiet: session.errorIsQuiet, itemsRead: session.itemsRead, startupDiskName: disk))
         // Results opened start in the mode new views start with; results brought back are given theirs after.
         if opening { content.setViewFilterMode(tab.preferences.listFilterMatch) }
         header.show(
