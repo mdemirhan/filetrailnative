@@ -1,7 +1,8 @@
 import AppKit
 
-/// The bar over a PDF that finds text in it, as the text's own find bar does: what is typed is looked for as it is
-/// typed, every match is marked, Return goes to the next and Shift-Return to the one before, and Esc or Done closes it.
+/// The bar over a PDF or a document that finds text in it, as the text's own find bar does: what is typed is looked
+/// for as it is typed, every match is marked, Return goes to the next and Shift-Return to the one before, and Esc or
+/// Done closes it.
 final class ViewerFindBar: NSView, NSSearchFieldDelegate {
     static let height: CGFloat = 36
 

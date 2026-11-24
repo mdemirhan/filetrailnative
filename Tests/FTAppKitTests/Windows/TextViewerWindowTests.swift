@@ -1093,6 +1093,73 @@ extension ExplorerWindowlessTests {
             #expect(await selectsAll("Second document's words"))
         }
 
+        /// ⌘F finds in a Word document as in a PDF, in the page Quick Look shows it in: without regard to case or
+        /// accents, across a change of style in a word, every match marked and the first shown; the steps go round at
+        /// the ends, the bar looks again in the next document, and Done takes the marks away.
+        @Test func aWordDocumentFindsAsAPDFDoes() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let first = NSMutableAttributedString(string: "The Lighthouse keeper.\nA líghthouse in Spain.\nlight")
+            first.append(
+                NSAttributedString(string: "house", attributes: [.font: NSFont.boldSystemFont(ofSize: 12)]))
+            first.append(NSAttributedString(string: " again.\nNothing else.\n"))
+            let second = NSAttributedString(string: "One lighthouse only.\n")
+            for (name, text) in [("f1.docx", first), ("f2.docx", second)] {
+                let data = try text.data(
+                    from: NSRange(location: 0, length: text.length),
+                    documentAttributes: [.documentType: NSAttributedString.DocumentType.officeOpenXML])
+                try data.write(to: harness.folder.appending(name))
+            }
+            let tab = try await tabWithFiles(harness)
+            let pane = tab.activePane
+            let (f1, f2) = (real(harness, "f1.docx"), real(harness, "f2.docx"))
+            #expect(await waitUntil { pane.content.listedEntry(at: f2) != nil })
+            select(f1, in: tab)
+            tab.perform(.viewFile)
+            let viewer = try #require(pane.viewer)
+            #expect(await waitUntil { viewer.hasKeyboard && viewer.canFind }, "\(shown(viewer))")
+            let window = try #require(tab.window)
+            func marks() async -> Int {
+                guard let web = viewer.quickLook.webView else { return -1 }
+                let script = "(CSS.highlights.get('file-trail-find') || new Set()).size"
+                return (try? await web.evaluateJavaScript(script) as? NSNumber)?.intValue ?? -1
+            }
+
+            tab.perform(.focusFileSearch)
+            #expect(!viewer.findBar.isHidden)
+            #expect((window.firstResponder as? NSView)?.isDescendant(of: viewer.findBar) == true)
+            #expect(viewer.findBar.field.placeholderString == "Find in Document")
+            let find = viewer.quickLook.pageFind
+            viewer.findBar.field.stringValue = "lighthouse"
+            viewer.findBar.onChange("lighthouse")
+            #expect(await waitUntil { !find.isFinding && find.matchCount == 3 }, "\(find.matchCount)")
+            #expect(find.matchIndex == 0)
+            #expect(await marks() == 3)
+            viewer.findBar.onStep(true)
+            #expect(await waitUntil { find.matchIndex == 1 })
+            viewer.findBar.onStep(false)
+            viewer.findBar.onStep(false)
+            #expect(await waitUntil { find.matchIndex == 2 })
+
+            // The next document is looked in again, the bar still open.
+            tab.stepFile(by: 1)
+            #expect(await waitUntil { viewer.path == f2 })
+            #expect(await waitUntil { !find.isFinding && find.matchCount == 1 }, "\(find.matchCount)")
+            #expect(!viewer.findBar.isHidden)
+
+            viewer.closeFind()
+            #expect(viewer.findBar.isHidden && find.matchCount == 0)
+            var left = await marks()
+            for _ in 0..<40 where left != 0 {
+                try? await Task.sleep(for: .milliseconds(50))
+                left = await marks()
+            }
+            #expect(left == 0)
+            #expect(
+                viewer.quickLook.preview.map { (window.firstResponder as? NSView)?.isDescendant(of: $0) == true }
+                    == true)
+        }
+
         /// A PDF of `pages` US Letter pages, each with its number.
         private func writePDF(pages: Int, to url: URL) throws {
             var box = CGRect(x: 0, y: 0, width: 612, height: 792)

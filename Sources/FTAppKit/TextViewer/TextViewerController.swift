@@ -1,6 +1,7 @@
 import AppKit
 import FTFileSystem
 import FTFoundation
+import UniformTypeIdentifiers
 
 /// A file shown in a pane: its text with colors, read or edited, a picture, a PDF, a movie or a sound, or Quick Look's
 /// preview of a file that is none of these. It takes the place of the pane's list (`ContentPaneController.showViewer`).
@@ -243,13 +244,14 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         pdfView.setAccessibilityIdentifier("textViewer.pdf")
         pdfView.onChange = { [weak self] in self?.zoomChanged() }
         pdfView.onFindChange = { [weak self] in self?.findChanged() }
+        quickLook.pageFind.onFindChange = { [weak self] in self?.findChanged() }
         quickLook.onLoad = { [weak self] in self?.quickLookLoaded() }
         quickLook.onPageChange = { [weak self] in self?.refreshFooter() }
         imageView.isHidden = true
         imageView.onChange = { [weak self] in self?.zoomChanged() }
         findBar.isHidden = true
-        findBar.onChange = { [weak self] text in self?.pdfView.find(text) }
-        findBar.onStep = { [weak self] forward in self?.pdfView.stepMatch(forward: forward) }
+        findBar.onChange = { [weak self] text in self?.finder?.find(text) }
+        findBar.onStep = { [weak self] forward in self?.finder?.stepMatch(forward: forward) }
         findBar.onClose = { [weak self] in self?.closeFind() }
         root.addSubview(header)
         root.addSubview(conflictBar)
@@ -338,6 +340,15 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         case .scale(let scale):
             documentFitsWidth = false
             _ = quickLook.setZoom(scale)
+        }
+        // The find bar stays open from one document to the next, and looks again; a file it can't look in closes it.
+        if !findBar.isHidden {
+            if let finder {
+                prepareFindBar()
+                finder.find(findBar.field.stringValue)
+            } else {
+                closeFind()
+            }
         }
         refreshChrome()
     }
@@ -695,7 +706,10 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         if shown != .image { imageView.image = nil }
         pdfView.isHidden = shown != .pdf
         if shown != .pdf {
-            if !findBar.isHidden { closeFind() }
+            // The find bar stays open into a document Quick Look shows, and looks again once it has loaded.
+            if !findBar.isHidden {
+                if shown == .quickLook { pdfView.stopFinding() } else { closeFind() }
+            }
             pdfView.document = nil
         }
         mediaView.isHidden = shown != .media
@@ -1127,23 +1141,44 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         }
     }
 
-    /// Whether ⌘F finds in what shows: the text, or a PDF.
-    var canFind: Bool { isText || (shownBody == .pdf && pdfView.document != nil) }
-
-    /// Whether ⌘F from the menu is the viewer's: its text has the keyboard, or a PDF with the keyboard in the viewer.
-    var findTakesKeyboard: Bool {
-        isText ? textHasKeyboard : shownBody == .pdf && pdfView.document != nil && hasKeyboard
+    /// What the find bar finds in: a PDF, or the page Quick Look shows a Word document, a spreadsheet or a web archive
+    /// in. Nil for text, which has the system's find bar, and for what has no text to find (a picture, a presentation's
+    /// slides).
+    var finder: ViewerFinding? {
+        switch shownBody {
+        case .pdf: pdfView.document != nil ? pdfView : nil
+        case .quickLook: quickLook.webView != nil ? quickLook.pageFind : nil
+        default: nil
+        }
     }
 
-    /// The find bar over a PDF, its text selected so typing replaces it.
-    private func showPDFFind() {
+    /// Whether ⌘F finds in what shows: the text, a PDF or a document.
+    var canFind: Bool { isText || finder != nil }
+
+    /// Whether ⌘F from the menu is the viewer's: its text has the keyboard, or a PDF or a document with the keyboard
+    /// in the viewer.
+    var findTakesKeyboard: Bool {
+        isText ? textHasKeyboard : finder != nil && hasKeyboard
+    }
+
+    /// The find bar over a PDF or a document, its text selected so typing replaces it.
+    private func showDocumentFind() {
         let reopened = findBar.isHidden
         findBar.isHidden = false
+        prepareFindBar()
         layoutViews()
         view.window?.makeFirstResponder(findBar.field)
         findBar.field.selectText(nil)
-        if reopened, !findBar.field.stringValue.isEmpty { pdfView.find(findBar.field.stringValue) }
+        if reopened, !findBar.field.stringValue.isEmpty { finder?.find(findBar.field.stringValue) }
         findChanged()
+    }
+
+    /// The find field says what it looks in.
+    private func prepareFindBar() {
+        let isSpreadsheet = filePath.flatMap { UTType(filenameExtension: String(NodePath.extname($0).dropFirst())) }?
+            .conforms(to: .spreadsheet)
+        findBar.field.placeholderString =
+            shownBody == .pdf ? "Find in PDF" : isSpreadsheet == true ? "Find in Spreadsheet" : "Find in Document"
     }
 
     /// Done or Esc in the find bar: the marks go, and the keyboard goes back to the pages.
@@ -1151,17 +1186,20 @@ final class TextViewerController: NSViewController, NSTextViewDelegate {
         let hadKeyboard = (view.window?.firstResponder as? NSView)?.isDescendant(of: findBar) == true
         findBar.isHidden = true
         pdfView.stopFinding()
+        quickLook.pageFind.stopFinding()
         layoutViews()
-        if hadKeyboard, shownBody == .pdf { view.window?.makeFirstResponder(pdfView) }
+        if hadKeyboard, shownBody == .pdf || shownBody == .quickLook { view.window?.makeFirstResponder(keyboardView) }
     }
 
     private func findChanged() {
-        findBar.show(match: pdfView.matchIndex, of: pdfView.matches.count, searching: pdfView.isFinding)
+        let finder = finder
+        findBar.show(
+            match: finder?.matchIndex, of: finder?.matchCount ?? 0, searching: finder?.isFinding ?? false)
     }
 
     func showFind() {
         guard isText else {
-            if canFind { showPDFFind() }
+            if canFind { showDocumentFind() }
             return
         }
         guard isText else { return }

@@ -18,6 +18,8 @@ final class QuickLookHost: NSView {
     /// Told as the page or slide shown changes.
     var onPageChange: () -> Void = {}
     private var loadObservation: QuickLookLoadObservation?
+    /// Finds in the page of a document shown in a web view.
+    private(set) lazy var pageFind = WebPageFind { [weak self] in self?.webView }
 
     /// The file shown, or none.
     var item: URL? {
@@ -28,6 +30,8 @@ final class QuickLookHost: NSView {
     }
 
     private func show() {
+        // What was found was in the file before.
+        pageFind.stopFinding()
         guard let item else {
             preview?.previewItem = nil
             return
