@@ -7,17 +7,17 @@ extension TextLanguages {
             "html", "HTML", .markup,
             extensions: [
                 "html", "htm", "xhtml", "shtml", "vue", "svelte", "hbs", "handlebars", "mustache", "jinja", "j2",
-                "twig", "liquid",
+                "twig", "liquid", "erb",
             ]),
         TextLanguage(
             "xml", "XML", .markup,
             extensions: [
                 "xml", "plist", "svg", "xsd", "xsl", "xslt", "rss", "atom", "xib", "storyboard", "entitlements",
-                "csproj",
-                "vbproj", "fsproj", "props", "targets", "resx", "xaml", "wsdl", "kml", "gpx", "dae", "opml",
+                "xcscheme", "xcworkspacedata", "csproj", "vbproj", "fsproj", "props", "targets", "resx", "xaml",
+                "wsdl", "kml", "gpx", "dae", "opml",
             ]),
         TextLanguage(
-            "markdown", "Markdown", .markdown, extensions: ["md", "markdown", "mdown", "mkd", "mkdn", "mdx"],
+            "markdown", "Markdown", .markdown, extensions: ["md", "markdown", "mdown", "mkd", "mkdn", "mdx", "rmd"],
             hasPreview: true),
         TextLanguage(
             "tex", "LaTeX",

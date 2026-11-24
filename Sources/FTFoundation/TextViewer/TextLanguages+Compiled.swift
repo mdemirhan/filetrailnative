@@ -198,5 +198,114 @@ extension TextLanguages {
                 $0.attributePrefixes = [Char.at]
                 $0.capitalizedTypes = true
             }, extensions: ["dart"]),
+        TextLanguage(
+            "metal", "Metal",
+            cLike(
+                keywords: cppKeywords + """
+                     kernel vertex fragment device constant threadgroup threadgroup_imageblock thread ray_data \
+                    object mesh visible stitchable
+                    """,
+                types: [
+                    cTypes, shaderVectors("float half int uint short ushort char uchar bool"),
+                    """
+                    half uint ushort uchar float2x2 float3x3 float4x4 half2x2 half3x3 half4x4 packed_float2 \
+                    packed_float3 packed_float4 texture1d texture2d texture3d texturecube texture2d_array depth2d \
+                    sampler atomic_int atomic_uint atomic_bool
+                    """,
+                ].joined(separator: " "),
+                literals: "true false nullptr NULL"
+            ) {
+                $0.preprocessor = true
+                $0.doubleBracketAttributes = true
+            }, extensions: ["metal"]),
+        TextLanguage(
+            "glsl", "GLSL",
+            cLike(
+                keywords: """
+                    attribute const uniform varying buffer shared coherent volatile restrict readonly writeonly layout \
+                    centroid flat smooth noperspective patch sample break continue do for while switch case default if \
+                    else subroutine in out inout invariant precise discard return struct precision lowp mediump highp
+                    """,
+                types: [
+                    "void bool int uint float double", shaderVectors("vec dvec bvec ivec uvec", matrices: "mat dmat"),
+                    """
+                    sampler1D sampler2D sampler3D samplerCube sampler2DShadow sampler2DArray isampler2D usampler2D \
+                    image2D image3D atomic_uint
+                    """,
+                ].joined(separator: " ")
+            ) { $0.preprocessor = true },
+            extensions: ["glsl", "vert", "frag", "geom", "tesc", "tese", "comp", "vsh", "fsh"]),
+        TextLanguage(
+            "hlsl", "HLSL",
+            cLike(
+                keywords: """
+                    cbuffer tbuffer struct register packoffset static const uniform extern in out inout groupshared \
+                    nointerpolation linear centroid noperspective sample precise if else for while do switch case \
+                    default break continue return discard typedef namespace technique technique11 pass compile \
+                    row_major column_major
+                    """,
+                types: [
+                    "void",
+                    shaderVectors("float half int uint bool double min16float min16int", matrices: "float half"),
+                    """
+                    Texture1D Texture2D Texture3D TextureCube Texture2DArray RWTexture2D RWTexture3D SamplerState \
+                    SamplerComparisonState Buffer RWBuffer StructuredBuffer RWStructuredBuffer ByteAddressBuffer \
+                    RWByteAddressBuffer ConstantBuffer
+                    """,
+                ].joined(separator: " ")
+            ) { $0.preprocessor = true }, extensions: ["hlsl", "hlsli", "fx", "fxh"]),
+        TextLanguage(
+            "solidity", "Solidity",
+            cLike(
+                keywords: """
+                    pragma solidity import as from contract interface library abstract is function modifier event emit \
+                    struct enum mapping public private internal external pure view payable constant immutable override \
+                    virtual returns return if else for while do break continue new delete try catch revert require \
+                    assert memory storage calldata using constructor fallback receive error type unchecked assembly \
+                    anonymous indexed
+                    """,
+                types: """
+                    address bool string bytes int uint int8 int16 int32 int64 int128 int256 uint8 uint16 uint32 uint64 \
+                    uint128 uint256 bytes1 bytes2 bytes4 bytes8 bytes16 bytes20 bytes32
+                    """,
+                literals: "true false wei gwei ether seconds minutes hours days weeks",
+                definers: "function modifier event contract interface library"
+            ) { $0.capitalizedTypes = true }, extensions: ["sol"]),
+        TextLanguage(
+            "vb", "Visual Basic",
+            code {
+                $0.lineComments = [Array("'".utf16), Array("rem ".utf16), Array("Rem ".utf16), Array("REM ".utf16)]
+                $0.strings = [StringRule("\"", escape: false, doubled: true)]
+                $0.keywords = words(
+                    """
+                    addhandler addressof alias and andalso as byref byval call case catch class const continue declare \
+                    default delegate dim do each else elseif end enum erase error event exit finally for friend function \
+                    get global gosub goto handles if implements imports in inherits interface is isnot let lib like loop \
+                    me mod module mustinherit mustoverride mybase myclass namespace narrowing new next not of on option \
+                    optional or orelse overloads overridable overrides paramarray partial private property protected \
+                    public raiseevent readonly redim removehandler resume return select set shadows shared static step \
+                    stop structure sub synclock then throw to try typeof until using wend when while widening with \
+                    withevents writeonly xor async await iterator yield explicit strict compare
+                    """)
+                $0.types = words(
+                    "Boolean Byte Char Date Decimal Double Integer Long Object SByte Short Single String UInteger ULong UShort Variant"
+                )
+                $0.literals = words("true false nothing")
+                $0.definers = words("sub function property")
+                $0.caseInsensitive = true
+                $0.preprocessor = true
+                $0.capitalizedTypes = false
+            }, extensions: ["vb", "vbs", "bas", "vba"]),
     ]
+
+    /// The vector types of a shading language, `float2` to `float4` and `vec2` to `vec4` (`2…4` after each prefix), and
+    /// the square and rectangular matrices `mat2` to `mat4x4` after each matrix prefix.
+    static func shaderVectors(_ prefixes: String, matrices: String = "") -> String {
+        let sizes = 2...4
+        let vectors = prefixes.split(separator: " ").flatMap { prefix in sizes.map { "\(prefix)\($0)" } }
+        let grids = matrices.split(separator: " ").flatMap { prefix in
+            sizes.map { "\(prefix)\($0)" } + sizes.flatMap { rows in sizes.map { "\(prefix)\(rows)x\($0)" } }
+        }
+        return (vectors + grids).joined(separator: " ")
+    }
 }

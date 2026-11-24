@@ -64,6 +64,12 @@ extension Line {
                 i = end
                 continue
             }
+            if rules.doubleBracketAttributes && c == Char.openBracket && at(i + 1) == Char.openBracket {
+                let end = bracketEnd(from: i)
+                emit(i, end, .attribute)
+                i = end
+                continue
+            }
             if rules.attributePrefixes.contains(c) {
                 if rules.bracketAttributes && c == Char.hash
                     && (at(i + 1) == Char.openBracket || (at(i + 1) == Char.bang && at(i + 2) == Char.openBracket))
@@ -115,10 +121,12 @@ extension Line {
         rules.strings.firstIndex { matches($0.open, at: i) }
     }
 
-    /// A string followed by `:` is a key, when the rules say so.
+    /// A string or a word followed by the rules' key separator is a key; `==` is no separator.
     func keyKind(_ rules: CodeRules, after end: Int) -> SyntaxKind? {
-        guard rules.keysBeforeColon else { return nil }
-        return at(firstNonSpace(from: end)) == Char.colon ? .property : nil
+        guard let separator = rules.keySeparator else { return nil }
+        let next = firstNonSpace(from: end)
+        guard at(next) == separator, separator != Char.equals || at(next + 1) != Char.equals else { return nil }
+        return .property
     }
 
     func blockCommentEnd(_ rule: CommentRule, from i: Int, depth: Int) -> (end: Int, depth: Int) {
@@ -191,12 +199,14 @@ extension Line {
     func classify(
         _ word: String, _ rules: CodeRules, start: Int, end: Int, atLineStart: Bool, previous: String
     ) -> SyntaxKind {
+        if atLineStart, let kind = rules.lineStartWords { return kind }
         let key = rules.lookup(word)
         let afterDot = start > 0 && chars[start - 1] == Char.dot && !(start > 1 && chars[start - 2] == Char.dot)
         if !afterDot {
             if rules.keywords.contains(key) { return .keyword }
             if rules.literals.contains(key) { return .literal }
         }
+        if let kind = keyKind(rules, after: end) { return kind }
         if rules.types.contains(word) { return .type }
         let next = at(firstNonSpace(from: end))
         if rules.lineStartLabels && atLineStart && next == Char.colon && at(firstNonSpace(from: end) + 1) != Char.equals

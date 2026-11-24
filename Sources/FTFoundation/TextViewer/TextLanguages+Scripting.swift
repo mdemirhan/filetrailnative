@@ -24,27 +24,12 @@ extension TextLanguages {
                 $0.strings = [StringRule("`", multiline: true), StringRule("\""), StringRule("'")]
                 $0.attributePrefixes = [Char.at]
                 $0.capitalizedTypes = true
-            }, extensions: ["ts", "tsx", "mts", "cts"]),
+            }, extensions: ["ts", "tsx", "mts", "cts"],
+            interpreters: ["tsx", "ts-node"]),
         TextLanguage(
             "python", "Python",
-            code {
-                $0.lineComments = [Array("#".utf16)]
-                $0.strings = [
-                    StringRule("\"\"\"", multiline: true), StringRule("'''", multiline: true), StringRule("\""),
-                    StringRule("'"),
-                ]
-                $0.stringPrefixes = words("r u b f rb br fr rf R U B F Rb bR Br BR Fr fR FR rF RF")
-                $0.keywords = words(
-                    """
-                    and as assert async await break class continue def del elif else except finally for from global \
-                    if import in is lambda nonlocal not or pass raise return try while with yield match case type self cls
-                    """)
-                $0.literals = words("True False None NotImplemented Ellipsis")
-                $0.types = words("int float str bytes bool list dict set tuple object complex frozenset bytearray")
-                $0.definers = words("def class")
-                $0.attributePrefixes = [Char.at]
-            }, extensions: ["py", "pyw", "pyi", "pyx", "gyp"], fileNames: ["sconstruct", "sconscript"],
-            interpreters: ["python", "python2", "python3", "pypy"]),
+            pythonGrammar, extensions: ["py", "pyw", "pyi", "pyx", "gyp"], fileNames: ["sconstruct", "sconscript"],
+            interpreters: ["python", "python2", "python3", "pypy", "uv"]),
         TextLanguage(
             "ruby", "Ruby",
             code {
@@ -63,9 +48,11 @@ extension TextLanguages {
                 $0.variablePrefix = Char.dollar
                 $0.identifierExtras = [Char.question, Char.bang]
                 $0.capitalizedTypes = true
-            }, extensions: ["rb", "rake", "gemspec", "ru", "erb"],
-            fileNames: ["gemfile", "rakefile", "podfile", "fastfile", "vagrantfile", "brewfile"], interpreters: ["ruby"]
-        ),
+            }, extensions: ["rb", "rake", "gemspec", "ru"],
+            fileNames: [
+                "gemfile", "rakefile", "podfile", "fastfile", "appfile", "matchfile", "gymfile", "snapfile", "scanfile",
+                "deliverfile", "pluginfile", "dangerfile", "vagrantfile", "brewfile",
+            ], interpreters: ["ruby"]),
         TextLanguage(
             "php", "PHP",
             cLike(
@@ -116,7 +103,7 @@ extension TextLanguages {
                 $0.strings = [StringRule("\""), StringRule("'")]
                 $0.keywords = words("if else repeat while function for in next break library require return")
                 $0.literals = words("TRUE FALSE NULL NA NaN Inf NA_integer_ NA_real_ NA_character_ T F")
-            }, extensions: ["r", "rmd"], interpreters: ["rscript"]),
+            }, extensions: ["r"], interpreters: ["rscript"]),
         TextLanguage(
             "julia", "Julia",
             code {
@@ -258,8 +245,9 @@ extension TextLanguages {
                 $0.identifierExtras = [Char.minus]
             }, extensions: ["sh", "bash", "zsh", "ksh", "command", "bats", "fish"],
             fileNames: [
-                ".bashrc", ".bash_profile", ".bash_logout", ".zshrc", ".zprofile", ".zshenv", ".zlogin", ".profile",
-                "pkgbuild",
+                ".bashrc", ".bash_profile", ".bash_logout", ".bash_aliases", ".zshrc", ".zprofile", ".zshenv",
+                ".zlogin",
+                ".zlogout", ".profile", "pkgbuild",
             ],
             interpreters: ["sh", "bash", "zsh", "ksh", "dash", "fish"]),
         TextLanguage(
@@ -289,5 +277,46 @@ extension TextLanguages {
                 $0.caseInsensitive = true
                 $0.variablePrefix = Char.percent
             }, extensions: ["bat", "cmd"]),
+        TextLanguage(
+            "starlark", "Starlark", pythonGrammar, extensions: ["bzl", "bazel", "star", "sky"],
+            fileNames: ["build", "workspace", "buck", "tiltfile"]),
+        TextLanguage(
+            "applescript", "AppleScript",
+            code {
+                $0.lineComments = [Array("--".utf16), Array("#".utf16)]
+                $0.blockComments = [CommentRule("(*", "*)", nested: true)]
+                $0.strings = [StringRule("\"")]
+                $0.keywords = words(
+                    """
+                    about above after against and apart around as aside at back before beginning behind below beneath \
+                    beside between but by considering contain contains continue copy div does eighth else end equal \
+                    equals error every exit fifth first for fourth from front get given global if ignoring in instead \
+                    into is it its last local me middle mod my ninth not of on onto or out over prop property put ref \
+                    reference repeat return returning script second set seventh since sixth some tell tenth that the \
+                    then third through thru timeout times to transaction try until use where while whose with without
+                    """)
+                $0.literals = words("true false missing null pi")
+                $0.definers = words("on to")
+                $0.caseInsensitive = true
+            }, extensions: ["applescript"], interpreters: ["osascript"]),
     ]
+
+    /// Python, and Starlark, Bazel's dialect of it.
+    static let pythonGrammar = code {
+        $0.lineComments = [Array("#".utf16)]
+        $0.strings = [
+            StringRule("\"\"\"", multiline: true), StringRule("'''", multiline: true), StringRule("\""),
+            StringRule("'"),
+        ]
+        $0.stringPrefixes = words("r u b f rb br fr rf R U B F Rb bR Br BR Fr fR FR rF RF")
+        $0.keywords = words(
+            """
+            and as assert async await break class continue def del elif else except finally for from global \
+            if import in is lambda nonlocal not or pass raise return try while with yield match case type self cls
+            """)
+        $0.literals = words("True False None NotImplemented Ellipsis")
+        $0.types = words("int float str bytes bool list dict set tuple object complex frozenset bytearray")
+        $0.definers = words("def class")
+        $0.attributePrefixes = [Char.at]
+    }
 }

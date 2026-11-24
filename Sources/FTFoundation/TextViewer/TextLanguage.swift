@@ -46,19 +46,17 @@ extension TextLanguage {
         TextLanguages.byID[id]
     }
 
-    /// The language a file is in: by its whole name, its extension, then a `#!` line among its first characters.
+    /// The language of a file, by its whole name, then its extension, then the program its `#!` line names. A name
+    /// with no extension goes by its `#!` line first: a script called `build` is the script's, not Bazel's.
     public static func detect(fileName: String, firstLine: String? = nil) -> TextLanguage {
         let lower = fileName.lowercased()
-        if let language = TextLanguages.byFileName[lower] { return language }
         let ext = (lower as NSString).pathExtension
+        let interpreted = firstLine.flatMap(TextLanguages.interpreter(of:))
+        if ext.isEmpty, let interpreted { return interpreted }
+        if let language = TextLanguages.byFileName[lower] { return language }
         if !ext.isEmpty, let language = TextLanguages.byExtension[ext] { return language }
         if lower.hasPrefix(".env") || lower.hasSuffix(".env") { return TextLanguages.byID["dotenv"] ?? plainText }
-        if let line = firstLine, line.hasPrefix("#!") {
-            let words = line.dropFirst(2).split(whereSeparator: { $0 == " " || $0 == "/" }).map(String.init)
-            let program = words.last(where: { !$0.hasPrefix("-") && $0 != "env" }) ?? ""
-            let name = program.trimmingCharacters(in: .decimalDigits.union(CharacterSet(charactersIn: ".")))
-            if let language = TextLanguages.byInterpreter[name] { return language }
-        }
+        if let interpreted { return interpreted }
         if lower.hasPrefix("dockerfile") || lower.hasSuffix(".dockerfile") {
             return TextLanguages.byID["dockerfile"] ?? plainText
         }
@@ -72,6 +70,25 @@ enum TextLanguages {
     static let byExtension: [String: TextLanguage] = index(\.extensions)
     static let byFileName: [String: TextLanguage] = index(\.fileNames)
     static let byInterpreter: [String: TextLanguage] = index(\.interpreters)
+
+    /// The language of the program a `#!` line runs: the program itself (`/bin/zsh`), the one `env` runs after its
+    /// options (`env -S deno run`), or for a runner that names no language, the first word after it that does
+    /// (`env -S npx tsx`). `python3.12` is `python`.
+    static func interpreter(of line: String) -> TextLanguage? {
+        guard line.hasPrefix("#!") else { return nil }
+        var words = line.dropFirst(2).split(whereSeparator: { $0 == " " || $0 == "\t" }).map { word in
+            String(word.split(separator: "/").last ?? word).lowercased()
+        }
+        if words.first == "env" {
+            words.removeFirst()
+            while let first = words.first, first.hasPrefix("-") || first.contains("=") { words.removeFirst() }
+        }
+        for word in words where !word.hasPrefix("-") {
+            let name = word.trimmingCharacters(in: .decimalDigits.union(CharacterSet(charactersIn: ".")))
+            if let language = byInterpreter[name] { return language }
+        }
+        return nil
+    }
 
     private static func index(_ keys: KeyPath<TextLanguage, [String]>) -> [String: TextLanguage] {
         var result: [String: TextLanguage] = [:]

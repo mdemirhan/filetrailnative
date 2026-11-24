@@ -156,6 +156,78 @@ import Testing
         #expect(found["'it''s'"] == .string)
     }
 
+    @Test func aStringsFileAndAnXcodeProjectHaveKeysBeforeTheirEquals() throws {
+        let strings = try kinds("/* Greeting */\n\"hello\" = \"Hello\";", "strings")
+        #expect(strings["/* Greeting */"] == .comment)
+        #expect(strings["\"hello\""] == .property)
+        #expect(strings["\"Hello\""] == .string)
+        let project = try kinds("isa = PBXBuildFile; fileRef = 8A1B2C /* App.swift */;", "pbxproj")
+        #expect(project["isa"] == .property)
+        #expect(project["fileRef"] == .property)
+        #expect(project["PBXBuildFile"] == nil)
+        #expect(project["8A1B2C"] == .number)
+    }
+
+    @Test func anXcodeConfigHasItsSettingsIncludesAndVariables() throws {
+        let found = try kinds(
+            "#include \"Base.xcconfig\"\n// Release\nOTHER_LDFLAGS[sdk=macosx*] = $(inherited) -ObjC\nENABLE_BITCODE = NO",
+            "xcconfig")
+        #expect(found["#include"] == .attribute)
+        #expect(found["\"Base.xcconfig\""] == .string)
+        #expect(found["// Release"] == .comment)
+        #expect(found["OTHER_LDFLAGS"] == .property)
+        #expect(found["$(inherited)"] == .variable)
+        #expect(found["ENABLE_BITCODE"] == .property)
+        #expect(found["NO"] == .literal)
+    }
+
+    @Test func metalHasItsQualifiersVectorsAndAttributes() throws {
+        let found = try kinds("vertex float4 main0(uint id [[vertex_id]], constant half3 *c [[buffer(0)]])", "metal")
+        #expect(found["vertex"] == .keyword)
+        #expect(found["float4"] == .type)
+        #expect(found["half3"] == .type)
+        #expect(found["constant"] == .keyword)
+        #expect(found["[[vertex_id]]"] == .attribute)
+        #expect(found["[[buffer(0)]]"] == .attribute)
+    }
+
+    @Test func shadingLanguagesHaveTheirVectorAndMatrixTypes() throws {
+        let glsl = try kinds("uniform mat4x3 m; layout(location = 0) in vec3 p;", "glsl")
+        #expect(glsl["uniform"] == .keyword)
+        #expect(glsl["mat4x3"] == .type)
+        #expect(glsl["vec3"] == .type)
+        let hlsl = try kinds("cbuffer C : register(b0) { float4x4 world; Texture2D tex; };", "hlsl")
+        #expect(hlsl["cbuffer"] == .keyword)
+        #expect(hlsl["float4x4"] == .type)
+        #expect(hlsl["Texture2D"] == .type)
+    }
+
+    @Test func visualBasicAndAppleScriptIgnoreCase() throws {
+        let vb = try kinds("Public Sub Main() ' starts\n  Dim s As String = \"a\"\"b\"\nEnd Sub", "vb")
+        #expect(vb["Public"] == .keyword)
+        #expect(vb["Main"] == .function)
+        #expect(vb["' starts"] == .comment)
+        #expect(vb["String"] == .type)
+        #expect(vb["\"a\"\"b\""] == .string)
+        let script = try kinds(
+            "on greet(name) -- say it\n  tell application \"Finder\" to activate\nend greet", "applescript")
+        #expect(script["on"] == .keyword)
+        #expect(script["greet"] == .function)
+        #expect(script["-- say it"] == .comment)
+        #expect(script["tell"] == .keyword)
+        #expect(script["\"Finder\""] == .string)
+    }
+
+    @Test func aGoModuleHasItsDirectives() throws {
+        let found = try kinds(
+            "module example.com/app\n\ngo 1.22\n\nrequire golang.org/x/text v0.14.0 // indirect", "gomod")
+        #expect(found["module"] == .keyword)
+        #expect(found["go"] == .keyword)
+        #expect(found["1.22"] == .number)
+        #expect(found["require"] == .keyword)
+        #expect(found["// indirect"] == .comment)
+    }
+
     @Test func plainTextHasNoRuns() throws {
         #expect(try runs("let x = 1 // nothing", "plain").isEmpty)
     }

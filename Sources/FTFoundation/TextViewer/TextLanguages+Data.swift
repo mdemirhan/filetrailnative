@@ -10,10 +10,17 @@ extension TextLanguages {
                 $0.blockComments = cComments.block
                 $0.strings = [StringRule("\"")]
                 $0.literals = words("true false null")
-                $0.keysBeforeColon = true
+                $0.keySeparator = Char.colon
                 $0.functionCalls = false
-            }, extensions: ["json", "jsonc", "json5", "geojson", "webmanifest", "har", "ipynb"],
-            fileNames: [".babelrc", ".eslintrc", ".prettierrc", "package.lock"]),
+            },
+            extensions: [
+                "json", "jsonc", "json5", "jsonl", "ndjson", "geojson", "webmanifest", "har", "ipynb", "map",
+                "xcstrings", "code-workspace",
+            ],
+            fileNames: [
+                ".babelrc", ".eslintrc", ".prettierrc", "package.lock", "package.resolved", "flake.lock",
+                "composer.lock", "deno.lock", "bun.lock",
+            ]),
         TextLanguage(
             "sql", "SQL",
             code {
@@ -112,7 +119,8 @@ extension TextLanguages {
                 $0.lineStartLabels = true
                 $0.functionCalls = false
                 $0.identifierExtras = [Char.minus, Char.dot, Char.slash]
-            }, extensions: ["mk", "mak", "make"], fileNames: ["makefile", "gnumakefile", "bsdmakefile"]),
+            }, extensions: ["mk", "mak", "make", "just"],
+            fileNames: ["makefile", "gnumakefile", "bsdmakefile", "justfile", ".justfile"]),
         TextLanguage(
             "dockerfile", "Dockerfile",
             code {
@@ -156,7 +164,9 @@ extension TextLanguages {
                 $0.literals = words("INFO DEBUG TRACE NOTICE info debug trace notice true false null")
                 $0.functionCalls = false
             }, extensions: ["log"]),
-        TextLanguage("yaml", "YAML", .yaml, extensions: ["yaml", "yml"], fileNames: [".clang-format", ".clang-tidy"]),
+        TextLanguage(
+            "yaml", "YAML", .yaml, extensions: ["yaml", "yml"],
+            fileNames: [".clang-format", ".clang-tidy", "podfile.lock", "pubspec.lock", "procfile"]),
         TextLanguage(
             "toml", "TOML",
             .ini(
@@ -165,7 +175,7 @@ extension TextLanguages {
                     rules.semicolonComments = false
                     rules.typedValues = true
                     return rules
-                }()), extensions: ["toml"], fileNames: ["cargo.lock", "pipfile", "poetry.lock"]),
+                }()), extensions: ["toml"], fileNames: ["cargo.lock", "pipfile", "poetry.lock", "uv.lock"]),
         TextLanguage(
             "ini", "INI", .ini(INIRules()),
             extensions: ["ini", "cfg", "conf", "config", "inf", "reg", "desktop", "service", "editorconfig"],
@@ -202,5 +212,57 @@ extension TextLanguages {
             ]),
         TextLanguage("diff", "Diff", .diff, extensions: ["diff", "patch", "rej"]),
         TextLanguage("csv", "CSV", .plain, extensions: ["csv", "tsv", "tab", "psv"]),
+        TextLanguage(
+            "apache", "Apache Config",
+            code {
+                $0.lineComments = [Array("#".utf16)]
+                $0.lineCommentsNeedSpace = true
+                $0.strings = [StringRule("\""), StringRule("'")]
+                $0.lineStartWords = .keyword
+                $0.literals = words("on off On Off")
+                $0.variablePrefix = Char.percent
+                $0.functionCalls = false
+            }, fileNames: [".htaccess", "httpd.conf", "apache2.conf"]),
+        TextLanguage(
+            "gomod", "Go Module",
+            code {
+                $0.lineComments = cComments.line
+                $0.strings = [StringRule("\""), StringRule("`", escape: false)]
+                $0.keywords = words("module go toolchain require replace exclude retract godebug tool ignore use")
+                $0.functionCalls = false
+                $0.identifierExtras = [Char.minus, Char.dot, Char.slash]
+            }, fileNames: ["go.mod", "go.sum", "go.work", "go.work.sum"]),
+        TextLanguage(
+            "xcconfig", "Xcode Config",
+            code {
+                $0.lineComments = cComments.line
+                $0.strings = [StringRule("\"")]
+                $0.preprocessor = true
+                $0.lineStartWords = .property
+                $0.literals = words("YES NO inherited")
+                $0.variablePrefix = Char.dollar
+                $0.functionCalls = false
+            }, extensions: ["xcconfig"]),
+        TextLanguage("pbxproj", "Xcode Project", openStepPropertyList, extensions: ["pbxproj"]),
+        TextLanguage("strings", "Strings File", openStepPropertyList, extensions: ["strings"]),
+        TextLanguage(
+            "modulemap", "Module Map",
+            cLike(
+                keywords: """
+                    module framework explicit extern umbrella header exclude private textual requires export use link \
+                    config_macros conflict
+                    """,
+                literals: ""
+            ) { $0.functionCalls = false }, extensions: ["modulemap"]),
     ]
+
+    /// An Xcode project's and a strings file's format: `key = value;` in braces, with C's comments.
+    static let openStepPropertyList = code {
+        $0.lineComments = cComments.line
+        $0.blockComments = cComments.block
+        $0.strings = [StringRule("\"")]
+        $0.keySeparator = Char.equals
+        $0.functionCalls = false
+        $0.identifierExtras = [Char.dot, Char.minus]
+    }
 }

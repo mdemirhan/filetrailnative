@@ -79,8 +79,12 @@ public struct CodeRules: Sendable {
     public var variablePrefix: UInt16?
     /// A word at the line's start before `:` is a function: a Make target.
     public var lineStartLabels = false
-    /// A string before `:` is a key (JSON).
-    public var keysBeforeColon = false
+    /// A string or a word before this character is a key: `:` in JSON, `=` in a strings file or an Xcode project.
+    public var keySeparator: UInt16?
+    /// The first word of a line is of this kind: an Xcode config's setting, a directive of Apache's.
+    public var lineStartWords: SyntaxKind?
+    /// `[[…]]` is an attribute (Metal).
+    public var doubleBracketAttributes = false
     /// Characters a word may hold besides letters, digits and `_`: `-` in Lisp, `?` and `!` in Ruby.
     public var identifierExtras: Set<UInt16> = []
 
