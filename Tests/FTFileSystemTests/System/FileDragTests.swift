@@ -93,6 +93,17 @@ struct FileDragTests {
     /// drag holds the Mac's mouse (the Dock, other apps) until its button comes up; one whose button-up never reached
     /// it kept the mouse for as long as the tests were left running. The main thread is inside the drag then, so this
     /// watches from a thread of its own, and ending the process is what lets the mouse go.
+    /// A run of the main run loop of the test's own, and whether one is under way.
+    private final class OwnRun: @unchecked Sendable {
+        private(set) var isRunning = false
+
+        func turn(for seconds: TimeInterval) {
+            isRunning = true
+            CFRunLoopRunInMode(.defaultMode, seconds, false)
+            isRunning = false
+        }
+    }
+
     private final class RealDrag: @unchecked Sendable {
         static let longest: TimeInterval = 10
         private let lock = NSLock()
@@ -126,7 +137,7 @@ struct FileDragTests {
 
     // With many items AppKit measures their frames on other threads, up through the view the drag starts from; every
     // item is handed over, in order, so the drag counts them all and the drop gets them all.
-    @Test func startsADragOfManyFilesWithAllOfThemOnThePasteboard() throws {
+    @Test func startsADragOfManyFilesWithAllOfThemOnThePasteboard() async throws {
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 200, height: 200), styleMask: [.titled], backing: .buffered,
             defer: true)
@@ -148,22 +159,28 @@ struct FileDragTests {
         let dragged = NSPasteboard(name: .drag).readObjects(forClasses: [NSURL.self], options: nil) as? [URL] ?? []
         #expect(dragged.map(\.path) == paths)
 
-        // The drag is a real one: AppKit runs it the next time the main run loop turns, and until the button comes up
-        // it holds the Mac's mouse and keyboard. It is ended here with the button-up it waits for, so no later wait on
-        // the main thread starts it. Posting an event stops the run of the main run loop under way, so the button-up
-        // is posted from a run of the test's own, never from the one the tests run in, which would end the process.
+        // The drag is a real one: AppKit begins it as the main run loop turns, and until the button comes up it holds
+        // the Mac's mouse and keyboard. It is ended here with the button-up it waits for, so no later wait on the main
+        // thread starts it. Posting an event stops the run of the main run loop under way, so the button-up is posted
+        // only from a run of the test's own, never from the one the tests run in, which would end the process; one is
+        // posted on each run until the drag has ended, as one posted before the drag began to wait is gone. Since
+        // macOS 27.2.1 the drag tells it has ended through the main queue, which a run of the test's own, inside the
+        // main queue's work, doesn't serve: between runs the test waits, and the main queue tells it.
         let windowNumber = window.windowNumber
-        CFRunLoopPerformBlock(CFRunLoopGetMain(), CFRunLoopMode.commonModes.rawValue) {
-            MainActor.assumeIsolated {
-                let up = NSEvent.mouseEvent(
-                    with: .leftMouseUp, location: .zero, modifierFlags: [], timestamp: 0, windowNumber: windowNumber,
-                    context: nil, eventNumber: 0, clickCount: 1, pressure: 0)!
-                NSApplication.shared.postEvent(up, atStart: false)
-            }
-        }
+        let run = OwnRun()
         let deadline = Date(timeIntervalSinceNow: 5)
         while !drag.hasEnded && Date() < deadline {
-            CFRunLoopRunInMode(.defaultMode, 0.05, false)
+            CFRunLoopPerformBlock(CFRunLoopGetMain(), CFRunLoopMode.commonModes.rawValue) {
+                MainActor.assumeIsolated {
+                    guard run.isRunning, !drag.hasEnded else { return }
+                    let up = NSEvent.mouseEvent(
+                        with: .leftMouseUp, location: .zero, modifierFlags: [], timestamp: 0,
+                        windowNumber: windowNumber, context: nil, eventNumber: 0, clickCount: 1, pressure: 0)!
+                    NSApplication.shared.postEvent(up, atStart: false)
+                }
+            }
+            run.turn(for: 0.05)
+            try await Task.sleep(for: .milliseconds(20))
         }
         // One that hasn't ended is still there for a later turn of the main run loop to run: the watch stays on it.
         #expect(drag.hasEnded)
