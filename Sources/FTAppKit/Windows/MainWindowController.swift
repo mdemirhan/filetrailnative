@@ -286,6 +286,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     var viewerFollowNumber = 0
     /// The file a following viewer showed when the tab was saved, selected again once its pane has read its folder.
     var viewerSelectsAfterRead: String?
+    /// What the window last saved of its panes' viewers (`viewersChanged`).
+    var keptViewers: [ViewerPreference?] = []
     /// The viewer beside the list is asking whether to save its edits before it follows.
     var viewerAsking = false
     /// The file the second pane showed when ⌘\ closed it, for ⌘\ to bring back with it.

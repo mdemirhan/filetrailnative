@@ -411,7 +411,10 @@ extension MainWindowController {
             guard let viewer else { return }
             self?.setFollow(on, viewer: viewer)
         }
-        viewer.onStateChange = { [weak self] in self?.commandsChanged() }
+        viewer.onStateChange = { [weak self] in
+            self?.commandsChanged()
+            self?.viewersChanged()
+        }
         viewer.onSettingsChange = { [weak self] settings in
             // Read or Edit is the panes' (`onEditingChosen`): the viewer's look leaves the app's as it is.
             self?.updatePreferences {
@@ -472,6 +475,7 @@ extension MainWindowController {
         let hadKeyboard = viewer.hasKeyboard
         pane.viewer = nil
         pane.content.showViewer(nil)
+        viewersChanged()
         if viewer.mode == .inPlace, let path = viewer.path {
             let history = pane.navigationHistory
             if history.current.map({ samePath($0, path) }) == true, let back = history.backTarget {
@@ -613,6 +617,7 @@ extension MainWindowController {
         guard let viewer = pane.viewer, !viewer.isDirty else { return }
         pane.viewer = nil
         pane.content.showViewer(nil)
+        viewersChanged()
         commandsChanged()
         notify(.panels)
     }
@@ -643,6 +648,16 @@ extension MainWindowController {
     // MARK: Saved with the tab
 
     /// What the pane keeps of its viewer in a saved tab, a workspace, Reopen Closed Tab and a pane closed with ⌘\.
+    /// A viewer opened, closed, or shows another file or shows it another way: the window's session is saved once what
+    /// it keeps of its viewers differs, so the next launch brings back the viewers as they are, and none that was
+    /// closed. Quitting doesn't save the windows again.
+    func viewersChanged() {
+        let now = panes.map { savedViewer(of: $0) }
+        guard now != keptViewers else { return }
+        keptViewers = now
+        group?.saveSession()
+    }
+
     func savedViewer(of pane: BrowserPane) -> ViewerPreference? {
         guard let viewer = pane.viewer else { return nil }
         if viewer.mode != .following && viewer.path == nil { return nil }

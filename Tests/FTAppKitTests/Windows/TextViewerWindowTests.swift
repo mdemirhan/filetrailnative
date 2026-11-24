@@ -955,6 +955,30 @@ extension ExplorerWindowlessTests {
             #expect(viewer.textView.selectedRange().location > 0)
         }
 
+        /// A file shown in place is kept for the next launch as soon as it shows, and a file closed is gone from what
+        /// the window keeps, so quitting right after doesn't bring it back.
+        @Test func aViewerClosedIsNoLongerKeptForTheNextLaunch() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await tabWithFiles(harness)
+            let pane = tab.activePane
+            select(real(harness, "a.swift"), in: tab)
+            tab.perform(.viewFile)
+            let viewer = try #require(pane.viewer)
+            #expect(await waitUntil { viewer.path == real(harness, "a.swift") })
+            let record = try #require(tab.group?.recordID)
+            func kept() -> ViewerPreference? {
+                harness.store.windowPreferences(record).openTabs.first?.viewer
+            }
+            #expect(await waitUntil { kept()?.path == real(harness, "a.swift") }, "\(String(describing: kept()))")
+            // Another file shown is kept as it shows.
+            tab.stepFile(by: 1)
+            #expect(await waitUntil { kept()?.path == real(harness, "b.json") }, "\(String(describing: kept()))")
+            #expect(await tab.closeViewer(in: pane))
+            #expect(pane.viewer == nil)
+            #expect(kept() == nil)
+        }
+
         @Test func aTabsSnapshotKeepsItsViewers() async throws {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }
