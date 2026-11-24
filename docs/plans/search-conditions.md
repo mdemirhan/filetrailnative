@@ -2,7 +2,7 @@
 
 Planned (2026-11-24). A search can have **conditions** (kind, size, dates, tags, attributes, folders left out) beside the text typed. The mocks the owner agreed to are on the design canvas "File Trail search conditions" (https://claude.ai/artifact/8P6aB3jDuBnPG8ip4VunaS, private to the owner).
 
-It is built on the search's own walk of the disk, which replaced fd first (done, 2026-11-24: "Search walks the disk itself" in [names-and-search.md](../decisions/names-and-search.md), the timings in [records/search-walk.md](../records/search-walk.md)). The walk reads a folder's entries with `readdir`, and an item's flag only once it matched, so a condition on what the entries don't hold (size, dates, tags, attributes) is a read of each item the text and the other conditions kept.
+It is built on the search's own walk of the disk (done, 2026-11-24: "Search walks the disk itself" in [names-and-search.md](../decisions/names-and-search.md)). The walk reads a folder's entries with `readdir`, and an item's flag only once it matched, so a condition on what the entries don't hold (size, dates, tags, attributes) is a read of each item the text and the other conditions kept.
 
 ## Conditions
 
@@ -38,13 +38,13 @@ As the canvas draws them. "Conditions", not filters: the results bar already has
 
 What the walk reads costs nothing more. Last Opened, Tags, Date Taken and Picture Size are read of each item only for a search that has them, and only of items that met every other condition first; while they are read the status line says so ("Reading dates taken and sizes · 1,204 of 3,880 pictures").
 
-**What can be taken from the parked branch.** `claude/apple-intelligence-parked` (commit `a3e62231`, see [apple-intelligence.md](apple-intelligence.md)) has a first version of the model and the reads, written for fd, and to be fitted to the walk: `SearchFilters`, `SearchDateFilter`, `SearchAttribute` and `SearchKind` in `Sources/FTFoundation/Search/DescribedSearch.swift`; the per-item reads in `Sources/FTFileSystem/Search/DescribedItemCheck.swift` and `DatesTaken.longerSide`; the chip and its ✕ in `Sources/FTAppKit/Content/Search/DescribedSearchView.swift`; the chips' wording in `DescribedSearchText.swift`; and their tests. Taken over, they lose what is about descriptions.
+**What can be taken from the parked branch.** `claude/apple-intelligence-parked` (commit `a3e62231`, see [apple-intelligence.md](apple-intelligence.md)) has a first version of the model and the reads, written before the walk, and to be fitted to it: `SearchFilters`, `SearchDateFilter`, `SearchAttribute` and `SearchKind` in `Sources/FTFoundation/Search/DescribedSearch.swift`; the per-item reads in `Sources/FTFileSystem/Search/DescribedItemCheck.swift` and `DatesTaken.longerSide`; the chip and its ✕ in `Sources/FTAppKit/Content/Search/DescribedSearchView.swift`; the chips' wording in `DescribedSearchText.swift`; and their tests. Taken over, they lose what is about descriptions.
 
 ## Order of work
 
 1. The conditions' model and how the walk applies them: what a folder's entries hold first (kind, extension, folders left out), then one read of each item kept for size, dates and attributes (`getattrlist` or `fstatat`), then Last Opened, tags, Date Taken and picture size, each only for a search that has them. Tests of each.
 2. The bar's +, the chips and the editors; the commands, Help and `features.md`.
-3. Tried in the app by hand: Home, a disk image, a FAT disk, a folder dropped on the app, every editor; and the release's search timings (`WalkSearchReleaseTests`) with conditions added.
+3. Tried in the app by hand: Home, a disk image, a FAT disk, a folder dropped on the app, every editor.
 
 ## Done when
 

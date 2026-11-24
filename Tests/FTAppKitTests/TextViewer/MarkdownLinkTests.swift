@@ -56,7 +56,7 @@ struct MarkdownLinkTests {
 
             Text.
 
-            ### Use `fd` (fast) — or *not*
+            ### Use `ls` (fast) — or *not*
 
             ## FAQ
 
@@ -72,7 +72,7 @@ struct MarkdownLinkTests {
         let headings = MarkdownLink.headings(in: markdown)
         #expect(
             headings.map(\.name) == [
-                "file-trail", "getting-started", "use-fd-fast--or-not", "faq", "faq-1", "setext-heading",
+                "file-trail", "getting-started", "use-ls-fast--or-not", "faq", "faq-1", "setext-heading",
                 "été-2026--co_op", "faq-2",
             ])
         #expect(headings.map(\.line) == [1, 3, 7, 9, 11, 13, 16, 18])

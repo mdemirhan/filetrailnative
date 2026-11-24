@@ -40,4 +40,4 @@ A native macOS file browser in Swift and AppKit. It's a Swift package with no Xc
 
 ## Benchmarks
 
-- Only the frame times of scrolling, which gate a release, and the release-only timing of search (`WalkSearchReleaseTests`: each kind of search against the walk alone) (`docs/decisions/code.md`, "A few benchmarks gate a release"). No other bench scripts, benchmark tests, budgets or `--bench` modes; a CPU-time test (`CPUTime.measureThread`) guards a speed fix where one is needed.
+- Only the frame times of scrolling, which gate a release (`docs/decisions/code.md`, "A few benchmarks gate a release"). No other bench scripts, benchmark tests, budgets or `--bench` modes; a CPU-time test (`CPUTime.measureThread`) guards a speed fix where one is needed.

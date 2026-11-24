@@ -33,10 +33,6 @@ Things in the code that look removable and are not. Don't change them; if a chan
 
 ## Search
 
-- **The search's walk lists folders with `readdir`** (`search.c`): `getattrlistbulk` reads each item and made searches 10–25% slower than fd, the bar the walk was signed off on.
-- **The hidden flag read of a folder when it is opened, and of an item once it matched**: a name starting with a dot isn't the only way to be hidden, and reading the flag of every item would cost what `getattrlistbulk` did.
-- **One regular expression for each of the walk's threads** (`SearchNameMatch(copies:)`): one shared made Regex searches a third slower.
-- **The held name of an accented item on FAT and exFAT** (`ft_held_name_on` in the walk): those disks list a name otherwise than they hold it, and a result would not be the same item as its row.
 - **The polling of a running search and the background-tab behavior** (one poll a second, search again on return): a search in a background tab keeps going at little cost ([battery.md](../state/battery.md)), and a tab shown again searches what was typed meanwhile.
 
 ## Windows and UI
