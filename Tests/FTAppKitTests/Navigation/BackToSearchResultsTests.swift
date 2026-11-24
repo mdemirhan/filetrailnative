@@ -345,6 +345,7 @@ extension ExplorerWindowlessTests {
             #expect(await back(place, to: place.searched))
             #expect(place.tab.search.session.returnPlace != nil)
             try type("inn", place)
+            place.timers.advance(SearchTiming.refineDelay)
             #expect(place.tab.search.session.committedQuery == "inn")
             #expect(place.tab.search.session.returnPlace == nil)
             #expect(place.engine.starts.count == 1)

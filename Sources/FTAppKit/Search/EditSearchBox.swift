@@ -178,7 +178,8 @@ final class EditSearchBox: DialogPanelView, NSTextViewDelegate {
             return
         }
         window?.makeFirstResponder(textView)
-        textView.insertText(replacement, replacementRange: list.range)
+        textView.insertText(
+            replacement, replacementRange: TabSearch.range(list.range, taking: replacement, in: textView.string))
     }
 
     /// A condition's word at the caret, after the word the caret is in, with a space before it where it needs one.
@@ -207,7 +208,8 @@ final class EditSearchBox: DialogPanelView, NSTextViewDelegate {
 
     override func handleKey(_ event: NSEvent) -> Bool {
         let modifiers = event.modifierFlags.intersection([.command, .control, .option, .shift])
-        let listShows = !suggestions.isHidden
+        // The list is the text's: with the keyboard on Cancel or Search it takes no key, Esc least of all.
+        let listShows = !suggestions.isHidden && window?.firstResponder === textView
         if KeyCode.isCancel(event) {
             if listShows { closeList() } else { onClose() }
             return true
@@ -221,10 +223,14 @@ final class EditSearchBox: DialogPanelView, NSTextViewDelegate {
             return false
         }
         switch event.keyCode {
+        // While no row is highlighted the list is only an offer: ↓ and ↑ move the caret to the line below or above
+        // where the text has one, as in any text, and go into the list where it hasn't.
         case KeyCode.down where modifiers.isEmpty && listShows:
+            if suggestions.highlighted < 0, caretHasLine(below: true) { return false }
             suggestions.move(1)
             return true
         case KeyCode.up where modifiers.isEmpty && listShows:
+            if suggestions.highlighted < 0, caretHasLine(below: false) { return false }
             suggestions.move(-1)
             return true
         case KeyCode.tab where modifiers.isEmpty && listShows:
@@ -247,6 +253,17 @@ final class EditSearchBox: DialogPanelView, NSTextViewDelegate {
         }
     }
 
+    /// Whether the wrapped text has a line under the caret's, or over it.
+    private func caretHasLine(below: Bool) -> Bool {
+        let length = (textView.string as NSString).length
+        func line(_ location: Int) -> NSRect {
+            textView.firstRect(forCharacterRange: NSRange(location: location, length: 0), actualRange: nil)
+        }
+        let caret = line(min(textView.selectedRange().location, length))
+        // On screen a lower line has the smaller y.
+        return below ? caret.minY > line(length).minY + 1 : caret.minY < line(0).minY - 1
+    }
+
     /// Tab goes from the text to Cancel and Search, and round.
     override func focusOrder() -> [NSView] { [textView, cancelButton, submitButton] }
 
@@ -262,6 +279,9 @@ final class EditSearchBox: DialogPanelView, NSTextViewDelegate {
             render()
             return
         }
+        // Nothing to search for: Search is dimmed, and Return does no more than a press on it would. The search on
+        // screen is ended from the field or the results, not by an emptied box.
+        guard submitButton.isEnabled else { return }
         onSubmit(SearchTiming.trimmed(text))
     }
 
@@ -592,7 +612,7 @@ final class EditSearchWordButton: NSView, ThemeApplying {
         result.append(
             NSAttributedString(
                 string: "  " + word,
-                attributes: [.font: Self.wordFont, .foregroundColor: NSColor(theme.accent.solid)]))
+                attributes: [.font: Self.wordFont, .foregroundColor: NSColor(theme.accent.batchRenameMarkText)]))
         return result
     }
 

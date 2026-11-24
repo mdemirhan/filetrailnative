@@ -33,7 +33,9 @@ enum SearchQueryTint {
             spans.append(
                 (
                     NSRange(location: word.range.location, length: word.keyLength),
-                    [.foregroundColor: NSColor(theme.accent.solid)]
+                    // The accent as the Rename sheet's marks have it, darkened on a light ground and lightened on a
+                    // dark one: a yellow or green accent as it is can't be read as text on white.
+                    [.foregroundColor: NSColor(theme.accent.batchRenameMarkText)]
                 ))
         }
         return spans

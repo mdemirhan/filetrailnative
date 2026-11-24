@@ -363,6 +363,8 @@ extension MainWindowController {
     func activePaneChanged(saving: Bool = true) {
         let pane = activePane
         workspace.activePane = activePaneIndex
+        // The other pane's list of what its search's word can be goes with the field, which is this pane's now.
+        for other in panes where other !== pane { other.searchStore?.paneBecameInactive() }
         pane.search.connect(searchField)
         infoController?.follow(row: pane.content.contentShell.infoRow)
         showInfoRow(animated: false)

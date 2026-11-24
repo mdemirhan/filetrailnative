@@ -67,9 +67,14 @@ extension ExplorerWindowlessTests {
             #expect(tab.content.contentShell.pathBarRow.status.stringValue == "2 results")
             // Typing on narrows what was found without searching again.
             try type("not", in: tab)
+            timers.advance(SearchTiming.refineDelay)
             #expect(engine.starts.count == 1)
             #expect(Set(names(tab)) == ["note.txt", "notes.md"])
+            // A word typed at speed narrows them once, at its end: nothing changes at each letter.
+            try type("note", in: tab)
             try type("note.", in: tab)
+            #expect(Set(names(tab)) == ["note.txt", "notes.md"])
+            timers.advance(SearchTiming.refineDelay)
             #expect(names(tab) == ["note.txt"])
             // The marks: the match in the name.
             #expect(tab.content.search?.marks(in: "note.txt") == [HighlightRange(start: 0, end: 5)])
@@ -179,8 +184,8 @@ extension ExplorerWindowlessTests {
             #expect(
                 menu.rows.map(\.title) == [
                     "Name", "Full Path", "Plain Text", "Glob", "Regex", "Search Subfolders", "Skip .git Folders",
-                    "Kind", "Extension", "Size", "Picture Size", "Date Modified", "Date Created", "Date Added",
-                    "Date Last Opened", "Date Taken", "Tags", "Attribute", "Permissions", "Skip a Folder",
+                    "Kind", "Extension", "Size", "Date Modified", "Date Created", "Date Added", "Date Last Opened",
+                    "Tags", "Attribute", "Permissions", "Skip a Folder",
                 ])
             #expect(menu.nsMenu.items.filter(\.isSectionHeader).map(\.title) == ["Match", "Match As", "Conditions"])
             #expect(

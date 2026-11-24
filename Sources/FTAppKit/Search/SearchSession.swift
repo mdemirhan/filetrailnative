@@ -431,8 +431,9 @@ final class SearchSession {
 
     // MARK: Typing
 
-    /// Text that only narrows what the search covers is applied at once; anything else is
-    /// searched once the keyboard rests; text too short shows the folder again.
+    /// Text that only narrows what the search covers is applied once the keyboard has rested a moment
+    /// (`SearchTiming.refineDelay`), so a word typed at speed filters the results once; anything else is searched once
+    /// it has rested longer; text too short shows the folder again.
     func updateDraft(_ text: String) {
         draftQuery = text
         cancelLiveSearch()
@@ -448,10 +449,38 @@ final class SearchSession {
             return
         }
         if canRefine(trimmed) {
-            refine(trimmed)
+            // What is searched for is what shows already (a condition's word being typed after the name): nothing
+            // to narrow, and nothing to wait for.
+            if searchesTheSame(trimmed, as: committedQuery) { return }
+            scheduleRefine(trimmed)
             return
         }
         scheduleLiveSearch(trimmed)
+    }
+
+    /// Whether two texts ask the same of a search: the same name to find and the same conditions, whatever words not
+    /// finished yet are beside them.
+    private func searchesTheSame(_ query: String, as other: String) -> Bool {
+        let (first, second) = (SearchQuery(query), SearchQuery(other))
+        return first.text == second.text && first.conditions == second.conditions
+    }
+
+    /// Narrows the results to `trimmed` once the keyboard has rested, if it is still what the field holds and still
+    /// only narrows them.
+    private func scheduleRefine(_ trimmed: String) {
+        pendingLiveQuery = trimmed
+        liveTimer = timers.schedule(after: SearchTiming.refineDelay) { [weak self] in
+            guard let self else { return }
+            self.liveTimer = nil
+            self.pendingLiveQuery = nil
+            guard SearchTiming.trimmed(self.draftQuery) == trimmed else { return }
+            if self.canRefine(trimmed) {
+                self.refine(trimmed)
+            } else {
+                // The search it would have narrowed ended, or stopped at its limit, meanwhile.
+                self.startSearch(trimmed, rootPath: self.resolveRootPath(), live: true, keepMatching: true)
+            }
+        }
     }
 
     /// Return. Whether the results for the query were already on screen and final.
@@ -544,6 +573,11 @@ final class SearchSession {
 
     private func refine(_ query: String) {
         guard query != committedQuery else { return }
+        // The same name and conditions, typed otherwise: the results are those on screen, and stay as they are.
+        if searchesTheSame(query, as: committedQuery) {
+            committedQuery = query
+            return
+        }
         committedQuery = query
         returnPlace = nil
         resultsChanged()
@@ -805,7 +839,7 @@ final class SearchSession {
         clearPolling()
         if let pending = pendingLiveQuery {
             pendingLiveQuery = nil
-            scheduleLiveSearch(pending)
+            if canRefine(pending) { scheduleRefine(pending) } else { scheduleLiveSearch(pending) }
         }
         if let jobID { poll(jobID: jobID, counter: sessionCounter) }
         let stoppedShort = jobID == nil && truncated && committedQuery != baseQuery

@@ -84,6 +84,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
 
     /// The pane was closed: the window no longer asks it about Esc.
     func disconnect() {
+        dropdown.hide()
         guard let id = escapeInterceptor else { return }
         escapeInterceptor = nil
         if let window = tab.window { WindowEventRouting.remove(id, from: window) }
@@ -491,11 +492,23 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         dropdown.show(list, under: field)
     }
 
+    /// The pane is no longer the one the field drives: its list goes, as nothing of this pane's would close it.
+    func paneBecameInactive() {
+        dropdown.hide()
+    }
+
     /// ↑ ↓ move in the list, Tab takes the highlighted row, Return takes it unless it is the name itself, and Esc
     /// closes the list.
     private func handleListKey(_ selector: Selector) -> Bool {
         switch selector {
         case #selector(NSResponder.moveDown(_:)):
+            // While no row is highlighted the list is only an offer, and with results on screen ↓ goes into them, as
+            // it does with no list: a word typed that could also be a condition ("doc", "red") doesn't take the key.
+            // ↑ still goes into the list, and Tab takes its first row.
+            if dropdown.view.highlighted < 0, session.isSearchMode {
+                dropdown.hide()
+                return false
+            }
             dropdown.view.move(1)
             return true
         case #selector(NSResponder.moveUp(_:)):
@@ -555,7 +568,17 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
             return
         }
         guard let field, let editor = field.currentEditor() as? NSTextView else { return }
-        editor.insertText(replacement, replacementRange: list.range)
+        editor.insertText(replacement, replacementRange: Self.range(list.range, taking: replacement, in: editor.string))
+    }
+
+    /// The text a row replaces: its word, and the space after it when the row brings one of its own, so a row taken
+    /// in the middle of the text leaves one space and not two.
+    static func range(_ range: NSRange, taking replacement: String, in text: String) -> NSRange {
+        let text = text as NSString
+        let end = NSMaxRange(range)
+        guard replacement.hasSuffix(" "), end < text.length, text.character(at: end) == unichar(UInt8(ascii: " "))
+        else { return range }
+        return NSRange(location: range.location, length: range.length + 1)
     }
 
     /// A condition's word from the field's menu, typed after the word at the caret: its values are listed.
@@ -625,6 +648,12 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     /// Clear Search Conditions: the condition words go from the text, and what is left is searched.
     func clearConditions() {
         let text = SearchQuery.removingConditions(from: field?.stringValue ?? session.draftQuery)
+        // Through the field's editor while it is typed in, as typing would change it: ⌘Z brings the words back.
+        if drivesField, let field, field.isActive, let editor = field.currentEditor() as? NSTextView,
+            editor.string != text
+        {
+            editor.insertText(text, replacementRange: NSRange(location: 0, length: (editor.string as NSString).length))
+        }
         session.setDraft(text)
         if drivesField, let field, field.stringValue != text { field.stringValue = text }
         session.submit(text)

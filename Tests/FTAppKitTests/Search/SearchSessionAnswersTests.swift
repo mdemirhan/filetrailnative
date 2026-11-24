@@ -59,6 +59,7 @@ private final class FailingSearchEngine: SearchEngine {
         search.noteSelection(.single("/demo/sonar.txt"))
         let applied = host.applied.count
         search.updateDraft("sou")
+        timers.advance(SearchTiming.refineDelay)
         #expect(search.committedQuery == "sou")
         #expect(search.baseQuery == "so")
         #expect(search.results == found)

@@ -70,6 +70,15 @@ final class SearchSuggestionsView: NSView, ThemeApplying {
         rows.move(step)
         rows.scrollToVisible(rows.highlightedFrame.insetBy(dx: 0, dy: -Self.padding))
         NSAccessibility.post(element: self, notification: .selectedChildrenChanged)
+        // The keyboard stays in the text, so VoiceOver is told which row the arrows reached.
+        if let row = rows.highlightedRow, let window {
+            NSAccessibility.post(
+                element: window, notification: .announcementRequested,
+                userInfo: [
+                    .announcement: SearchSuggestionRows.spoken(row),
+                    .priority: NSAccessibilityPriorityLevel.high.rawValue,
+                ])
+        }
     }
 
     /// As tall as all its rows and the line of keys.
@@ -319,19 +328,37 @@ final class SearchSuggestionRows: NSView {
 
     // MARK: Accessibility
 
+    /// What VoiceOver says of a row: what it is, and what taking it types.
+    static func spoken(_ row: SearchQuerySuggestion) -> String {
+        row.replacement == nil ? row.title : "\(row.title), types \(row.hint)"
+    }
+
     func accessibilityRows(parent: NSView) -> [Any] {
         guard let suggestions else { return [] }
         let layout = frames()
         return suggestions.rows.enumerated().compactMap { index, row -> NSAccessibilityElement? in
             guard layout.rows.indices.contains(index) else { return nil }
-            let element = NSAccessibilityElement()
-            element.setAccessibilityRole(.staticText)
-            element.setAccessibilityLabel(row.replacement == nil ? row.title : "\(row.title), types \(row.hint)")
+            // A row that can be taken is a button, pressed as a click presses it; what is wrong with a word is text.
+            let element = SearchSuggestionRowElement()
+            element.setAccessibilityRole(row.canBeChosen ? .button : .staticText)
+            element.setAccessibilityLabel(Self.spoken(row))
+            if row.canBeChosen { element.press = { [weak self] in self?.onChoose(index) } }
             element.setAccessibilityParent(parent)
             element.setAccessibilityFrameInParentSpace(convert(layout.rows[index], to: parent))
             element.setAccessibilitySelected(index == highlighted)
             return element
         }
+    }
+}
+
+/// A row of the list as VoiceOver meets it: pressing it takes the row.
+final class SearchSuggestionRowElement: NSAccessibilityElement {
+    var press: (@MainActor () -> Void)?
+
+    override func accessibilityPerformPress() -> Bool {
+        guard let press else { return false }
+        MainActor.assumeIsolated { press() }
+        return true
     }
 }
 
@@ -365,7 +392,8 @@ final class SearchSyntaxHelpLink: NSView, ThemeApplying {
         NSAttributedString(
             string: Self.title,
             attributes: [
-                .font: Self.font, .foregroundColor: NSColor(theme.accent.solid),
+                // The accent as text takes it: a yellow accent as it is can't be read on the list's ground.
+                .font: Self.font, .foregroundColor: NSColor(theme.accent.batchRenameMarkText),
                 .underlineStyle: hovered ? NSUnderlineStyle.single.rawValue : 0,
             ])
     }

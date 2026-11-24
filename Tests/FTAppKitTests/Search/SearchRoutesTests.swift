@@ -362,6 +362,7 @@ extension ExplorerWindowlessTests {
             let field = try #require(tab.searchField)
             field.stringValue = "not"
             tab.search.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification, object: field))
+            opened.timers.advance(SearchTiming.refineDelay)
             #expect(opened.engine.starts.count == 1)
             #expect(tab.content.filter.isEmpty)
             #expect(filter.text.isEmpty)

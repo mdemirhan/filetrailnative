@@ -172,6 +172,7 @@ import Testing
 
         session.applyWrite(write(.copyTo, [("/x/new.txt", "/demo/new.txt")], target: "/demo"))
         session.updateDraft("")
+        timers.advance(SearchTiming.refineDelay)
         #expect(!session.hasCachedSearch)
         #expect(!session.mayBeMissingItems)
     }

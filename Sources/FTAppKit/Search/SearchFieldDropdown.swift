@@ -22,6 +22,9 @@ final class SearchFieldDropdown {
         }
         view.show(suggestions)
         if view.superview !== host {
+            // The list is made with its pane, and shows in the look the app has now: light or dark and the accent may
+            // have changed since.
+            view.applyTheme(AppearanceModel.shared.theme)
             view.removeFromSuperview()
             host.addSubview(view, positioned: .above, relativeTo: nil)
         }
@@ -40,5 +43,7 @@ final class SearchFieldDropdown {
     func hide() {
         guard isShown else { return }
         view.removeFromSuperview()
+        // Shown again, the list starts afresh: a row highlighted before it closed isn't one Return would take.
+        view.show(nil)
     }
 }

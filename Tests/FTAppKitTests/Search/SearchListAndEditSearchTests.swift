@@ -125,6 +125,137 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // MARK: The arrows, a row taken, and the list of another pane
+
+        // A plain word that could also be a condition lists it, with no row highlighted: over results ↓ goes into
+        // them as it does with no list, ↑ goes into the list, and Tab takes its first row.
+        @Test func downGoesIntoTheResultsWhileNoRowIsHighlighted() async throws {
+            let (harness, tab, engine, timers) = try await open()
+            engine.finds = { _ in (["doc-one.txt", "doc-two.txt"], false, false) }
+            let editor = try focus(tab)
+            type("doc", into: editor)
+            timers.advance(0.4)
+            #expect(tab.search.session.isSearchMode)
+            #expect(list(tab)?.rows.map(\.hint).contains("kind:document") == true)
+            #expect(tab.search.dropdown.view.highlighted == -1)
+            // ↑ is the way into the list.
+            editor.doCommand(by: #selector(NSResponder.moveUp(_:)))
+            #expect(tab.search.dropdown.view.highlighted >= 0)
+            #expect(tab.searchField?.isActive == true)
+            editor.doCommand(by: #selector(NSResponder.cancelOperation(_:)))
+            type("s", into: editor)
+            editor.deleteBackward(nil)
+            #expect(list(tab) != nil)
+            #expect(tab.search.dropdown.view.highlighted == -1)
+            // ↓ leaves the field for the results, the first selected, and the text is as typed.
+            editor.doCommand(by: #selector(NSResponder.moveDown(_:)))
+            #expect(list(tab) == nil)
+            #expect(tab.searchField?.currentEditor() == nil)
+            #expect(tab.searchField?.stringValue == "doc")
+            #expect(tab.content.selection.paths.count == 1)
+            #expect(engine.starts.last?.conditions.isEmpty == true)
+            await harness.close()
+        }
+
+        // With nothing found yet there is nowhere else for ↓ to go: it goes into the list, and Return takes the row.
+        @Test func downGoesIntoTheListWithNoResultsAndReturnTakesTheRow() async throws {
+            let (harness, tab, _, _) = try await open()
+            let editor = try focus(tab)
+            #expect(!tab.search.session.isSearchMode)
+            editor.doCommand(by: #selector(NSResponder.moveDown(_:)))
+            #expect(tab.search.dropdown.view.highlighted == 0)
+            editor.doCommand(by: #selector(NSResponder.moveDown(_:)))
+            #expect(tab.search.dropdown.view.highlightedRow?.hint == "ext:")
+            editor.doCommand(by: #selector(NSResponder.insertNewline(_:)))
+            #expect(editor.string == "ext:")
+            // Its values are listed, and a click takes one as Return does.
+            let values = try #require(list(tab))
+            let docx = try #require(values.rows.firstIndex { $0.hint == "docx" })
+            tab.search.chooseSuggestion(docx)
+            #expect(editor.string == "ext:docx ")
+            await harness.close()
+        }
+
+        // A row taken in the middle of the text leaves one space after its word, not two.
+        @Test func aRowTakenMidTextLeavesOneSpace() async throws {
+            let (harness, tab, _, _) = try await open()
+            let editor = try focus(tab)
+            type("alpha kind:pd beta", into: editor)
+            editor.setSelectedRange(NSRange(location: 13, length: 0))
+            let shown = try #require(list(tab))
+            #expect(shown.rows.first?.hint == "pdf")
+            editor.doCommand(by: #selector(NSResponder.insertTab(_:)))
+            #expect(editor.string == "alpha kind:pdf beta")
+            #expect(editor.selectedRange().location == 15)
+            #expect(TabSearch.range(NSRange(location: 0, length: 3), taking: "kind:", in: "kin beta").length == 3)
+            await harness.close()
+        }
+
+        // Clear Search Conditions takes the words out as typing would: ⌘Z in the field brings them back.
+        @Test func clearingConditionsLeavesTheNameAndCanBeUndone() async throws {
+            let (harness, tab, engine, timers) = try await open()
+            engine.finds = { _ in (["annual report.pdf"], false, false) }
+            let editor = try focus(tab)
+            editor.allowsUndo = true
+            // Each step is an event of its own, as a key and a menu item are.
+            let undo = try #require(editor.undoManager)
+            undo.groupsByEvent = false
+            undo.beginUndoGrouping()
+            type("annual  \"big report\" kind:pdf   !draft tag:\"To Do\" size:", into: editor)
+            undo.endUndoGrouping()
+            timers.advance(0.4)
+            #expect(engine.starts.last?.conditions.count == 2)
+            #expect(tab.canPerform(.clearSearchConditions))
+            undo.beginUndoGrouping()
+            tab.perform(.clearSearchConditions)
+            undo.endUndoGrouping()
+            #expect(tab.searchField?.stringValue == "annual  \"big report\" !draft")
+            #expect(engine.starts.last?.conditions.isEmpty == true)
+            #expect(engine.starts.last?.query == "annual  \"big report\" !draft")
+            #expect(!tab.canPerform(.clearSearchConditions))
+            undo.undo()
+            #expect(editor.string == "annual  \"big report\" kind:pdf   !draft tag:\"To Do\" size:")
+            await harness.close()
+        }
+
+        // The words are tinted where they are: a condition's word in the accent as text takes it, the whole of it on
+        // the accent's ground; a word that can't be read is underlined once the caret has left it.
+        @Test func conditionWordsAreTintedWhereTheyAre() {
+            let theme = AppearanceModel.shared.theme
+            let spans = SearchQueryTint.spans("report kind:pdf perm:www", caret: 0, theme: theme)
+            let ground = spans.filter { $0.1[.backgroundColor] != nil }.map(\.0)
+            #expect(ground == [NSRange(location: 7, length: 8)])
+            let word = spans.first { $0.1[.foregroundColor] != nil }
+            #expect(word?.0 == NSRange(location: 7, length: 5))
+            #expect(word?.1[.foregroundColor] as? NSColor == NSColor(theme.accent.batchRenameMarkText))
+            #expect(spans.contains { $0.0 == NSRange(location: 16, length: 8) && $0.1[.underlineStyle] != nil })
+            #expect(SearchQueryTint.spans("annual report", caret: nil, theme: theme).isEmpty)
+            // A name in quotes after its word is one word, spaces and all.
+            let quoted = SearchQueryTint.spans("tag:\"To Do\" x", caret: nil, theme: theme)
+            #expect(quoted.first { $0.1[.backgroundColor] != nil }?.0 == NSRange(location: 0, length: 11))
+        }
+
+        // The list is the pane's whose search the field shows: another pane made active, or this one closed, takes it
+        // away, as nothing of this pane's would close it after.
+        @Test func thePanesListGoesWhenAnotherPaneIsActive() async throws {
+            let (harness, tab, _, _) = try await open()
+            tab.perform(.toggleTwoPanes)
+            let first = tab.activePane
+            _ = try focus(tab)
+            #expect(first.search.dropdown.isShown)
+            tab.perform(.switchToOtherPane)
+            #expect(tab.activePane !== first)
+            #expect(!first.search.dropdown.isShown)
+            // Closed with its list open, the pane takes it along.
+            let second = tab.activePane
+            _ = try focus(tab)
+            #expect(second.search.dropdown.isShown)
+            tab.perform(.closePane)
+            #expect(!second.search.dropdown.isShown)
+            #expect(!first.search.dropdown.isShown || tab.searchField?.isActive == true)
+            await harness.close()
+        }
+
         // MARK: The Edit Search box
 
         private func box(_ tab: MainWindowController) throws -> EditSearchBox {
@@ -230,6 +361,30 @@ extension ExplorerWindowlessTests {
             box.textView.string = "report perm:755"
             box.render()
             #expect(box.submitButton.isEnabled)
+            await harness.close()
+        }
+
+        // Emptied, the box has nothing to search for: Search is dimmed, and Return does no more than it would. The
+        // search on screen stays.
+        @Test func returnInAnEmptiedBoxDoesNothing() async throws {
+            let (harness, tab, engine, timers) = try await open()
+            engine.finds = { _ in (["note.txt"], false, false) }
+            let editor = try focus(tab)
+            type("note", into: editor)
+            timers.advance(0.4)
+            let box = try box(tab)
+            box.textView.insertText("", replacementRange: NSRange(location: 0, length: 4))
+            #expect(!box.submitButton.isEnabled)
+            let event = try #require(
+                NSEvent.keyEvent(
+                    with: .keyDown, location: .zero, modifierFlags: [], timestamp: 0,
+                    windowNumber: tab.window?.windowNumber ?? 0, context: nil, characters: "\r",
+                    charactersIgnoringModifiers: "\r", isARepeat: false, keyCode: 36))
+            #expect(box.handleKey(event))
+            #expect(DialogScrim.front(in: tab.window)?.panel === box)
+            #expect(tab.search.session.isSearchMode)
+            #expect(tab.search.session.committedQuery == "note")
+            box.onClose()
             await harness.close()
         }
 
