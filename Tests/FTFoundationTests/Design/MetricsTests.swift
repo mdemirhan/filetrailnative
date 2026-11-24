@@ -56,7 +56,8 @@ import Testing
     }
 
     static let toolbar: Table = [
-        "titleMinWidth": 96, "searchWidth": 200, "searchMinWidth": 110, "minHeight": 52, "titlePaddingLeading": 8,
+        "titleMinWidth": 96, "searchWidth": 200, "searchFocusedWidth": 380, "searchMinWidth": 110, "minHeight": 52,
+        "titlePaddingLeading": 8,
         "titlePaddingTrailing": 4, "titleFontSize": 15,
     ]
 

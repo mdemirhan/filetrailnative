@@ -84,6 +84,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
             MainActor.assumeIsolated { self?.toolbarChanged() }
         }
         searchField.onEditingChange = { [weak self] in self?.scheduleSearchWidth() }
+        searchField.onWillTakeKeyboard = { [weak self] in self?.widenSearchField(true, animated: false) }
     }
 
     func attach(_ context: ExplorerWindowContext) {
@@ -590,6 +591,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     func updateSearchWidth() {
         searchWidthPending = false
         guard !isCustomizing, let id = searchID else { return }
+        widenSearchField(searchField.holdsKeyboard)
         if searchInUse {
             setSearchOpen(true)
         } else if id == .compactSearch {
@@ -612,6 +614,28 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         let open = Self.searchStaysOpen(wasOpen: searchOpen, titleSpare: spare)
         guard !open || !hasOverflowedItems else { return }
         setSearchOpen(open)
+    }
+
+    /// The field is wider while it has the keyboard, so what is typed shows: the title gives way first, as it does to
+    /// the field's own width (`searchFieldWidths`). It widens at once, before it takes the keyboard
+    /// (`ToolbarSearchField.onWillTakeKeyboard`), and eases back once it has let it go: its width never changes while
+    /// it is typed in.
+    private func widenSearchField(_ wide: Bool, animated: Bool = true) {
+        let layout = DesignTokens.toolbar
+        let width = wide ? layout.searchFocusedWidth : layout.searchWidth
+        guard let preferred = searchFieldWidths.last, preferred.constant != width else { return }
+        let window = context?.window
+        guard animated, window?.isVisible == true, !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion else {
+            preferred.constant = width
+            window?.standardWindowButton(.closeButton)?.superview?.layoutSubtreeIfNeeded()
+            return
+        }
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.18
+            context.allowsImplicitAnimation = true
+            preferred.animator().constant = width
+            window?.standardWindowButton(.closeButton)?.superview?.layoutSubtreeIfNeeded()
+        }
     }
 
     /// Whether any of the app's items is in the » menu: the system's separator over the sidebar never counts as shown.

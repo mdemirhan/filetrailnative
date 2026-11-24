@@ -396,6 +396,9 @@ final class ToolbarSearchField: NSSearchField {
     var onClear: () -> Void = {}
     /// The field took the keyboard or let it go: the toolbar decides again whether it stays open (`updateSearchWidth`).
     var onEditingChange: () -> Void = {}
+    /// The field is about to take the keyboard: it widens first, so its editor starts at the width it will have while
+    /// typed in, and the width never changes while it is (`ExplorerToolbar.widenSearchField`).
+    var onWillTakeKeyboard: () -> Void = {}
     /// The press target over the system's magnifier, for automation and the accessibility tree.
     let optionsButton = ToolbarSearchOptionsButton()
     /// Where Tab stops at the system's ✕, which takes no keyboard itself.
@@ -465,18 +468,42 @@ final class ToolbarSearchField: NSSearchField {
         didSet { syncClearButton() }
     }
 
+    override func textDidBeginEditing(_ notification: Notification) {
+        super.textDidBeginEditing(notification)
+        fitEditor()
+    }
+
     override func textDidChange(_ notification: Notification) {
         super.textDidChange(notification)
         syncClearButton()
+        fitEditor()
     }
 
     override func becomeFirstResponder() -> Bool {
+        onWillTakeKeyboard()
         let took = super.becomeFirstResponder()
         if took {
             onFocus()
             onEditingChange()
         }
         return took
+    }
+
+    /// The field's editor is set up for the field's width, and never grows: text typed past its end was cut off out of
+    /// sight, and the ✕ coming once there is text narrowed the room further. Set up as a field editor that scrolls
+    /// is, one line that grows sideways as it is typed, it keeps the caret in sight.
+    private func fitEditor() {
+        guard let editor = currentEditor() as? NSTextView else { return }
+        if !editor.isHorizontallyResizable || editor.textContainer?.widthTracksTextView != false {
+            let unlimited = CGFloat.greatestFiniteMagnitude
+            editor.isHorizontallyResizable = true
+            editor.maxSize = NSSize(width: unlimited, height: editor.maxSize.height)
+            editor.textContainer?.widthTracksTextView = false
+            editor.textContainer?.containerSize = NSSize(
+                width: unlimited, height: editor.textContainer?.containerSize.height ?? unlimited)
+        }
+        editor.sizeToFit()
+        editor.scrollRangeToVisible(editor.selectedRange())
     }
 
     override func textDidEndEditing(_ notification: Notification) {

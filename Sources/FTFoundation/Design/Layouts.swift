@@ -192,6 +192,8 @@ public struct FlowListLayout: Equatable, Sendable {
 public struct ToolbarLayout: Equatable, Sendable {
     public var titleMinWidth: Double
     public var searchWidth: Double
+    /// The field's width while it has the keyboard: room to see a long search as it is typed.
+    public var searchFocusedWidth: Double
     public var searchMinWidth: Double
     public var minHeight: Double
     public var titlePaddingLeading: Double
@@ -200,7 +202,8 @@ public struct ToolbarLayout: Equatable, Sendable {
 
     static func make() -> ToolbarLayout {
         ToolbarLayout(
-            titleMinWidth: 96, searchWidth: 200, searchMinWidth: 110, minHeight: 52, titlePaddingLeading: 8,
+            titleMinWidth: 96, searchWidth: 200, searchFocusedWidth: 380, searchMinWidth: 110, minHeight: 52,
+            titlePaddingLeading: 8,
             titlePaddingTrailing: 4, titleFontSize: 15)
     }
 }
