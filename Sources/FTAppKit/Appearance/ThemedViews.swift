@@ -225,14 +225,19 @@ public struct TextStyle {
     @MainActor
     public func string(_ text: String, _ theme: Theme) -> NSAttributedString {
         var attributes = attributes(theme)
-        if let lineHeight {
-            // The line a font takes by itself: the extra of a taller line goes half above and half below.
-            let natural = NSAttributedString(string: "H", attributes: [.font: font])
-                .boundingRect(with: NSSize(width: 100, height: 100), options: [.usesLineFragmentOrigin]).height
-            let extra = CGFloat(Double(font.pointSize) * lineHeight) - natural
-            if abs(extra) > 0.01 { attributes[.baselineOffset] = extra / 2 }
-        }
+        if let baselineOffset { attributes[.baselineOffset] = baselineOffset }
         return NSAttributedString(string: text, attributes: attributes)
+    }
+
+    /// How far the text is raised in a line taller than its font: half the extra. Another font set in this style's
+    /// lines (code in a sentence) is raised as much, so the two share a baseline. Nil for lines of the font's own height.
+    public var baselineOffset: CGFloat? {
+        guard let lineHeight else { return nil }
+        // The line a font takes by itself: the extra of a taller line goes half above and half below.
+        let natural = NSAttributedString(string: "H", attributes: [.font: font])
+            .boundingRect(with: NSSize(width: 100, height: 100), options: [.usesLineFragmentOrigin]).height
+        let extra = CGFloat(Double(font.pointSize) * lineHeight) - natural
+        return abs(extra) > 0.01 ? extra / 2 : nil
     }
 }
 

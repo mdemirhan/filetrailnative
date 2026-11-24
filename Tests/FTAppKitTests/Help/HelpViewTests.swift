@@ -35,6 +35,30 @@ import Testing
     private func headings(_ view: HelpView) -> [String] { texts("help.sectionTitle", in: view) }
     private func shortcutTexts(_ view: HelpView) -> [String] { texts("help.shortcutRow.description", in: view) }
 
+    // Code in a sentence sits on its line: raised as the words beside it are, in every text of every topic.
+    @Test func codeSitsOnTheLineOfTheTextAroundIt() {
+        for topic in HelpTopicID.allCases {
+            let view = make(topic: topic)
+            var texts: [ThemedText] = []
+            func collect(_ view: NSView) {
+                if let text = view as? ThemedText { texts.append(text) }
+                view.subviews.forEach(collect)
+            }
+            collect(view)
+            for text in texts {
+                let string = text.attributedStringValue
+                var offsets = Set<CGFloat>()
+                var fixedPitch = false
+                string.enumerateAttributes(in: NSRange(location: 0, length: string.length)) { attributes, _, _ in
+                    offsets.insert((attributes[.baselineOffset] as? CGFloat) ?? 0)
+                    if (attributes[.font] as? NSFont)?.isFixedPitch == true { fixedPitch = true }
+                }
+                guard fixedPitch else { continue }
+                #expect(offsets.count == 1, "\(topic): \(string.string.prefix(40)) has offsets \(offsets)")
+            }
+        }
+    }
+
     @Test func exposesTheSelectedLayoutMode() {
         #expect(make(layout: .compact).layoutMode == .compact)
         #expect(make(layout: .narrow).layoutMode == .narrow)

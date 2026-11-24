@@ -37,11 +37,13 @@ private enum PageStyle {
         return result
     }
 
-    /// Code: the mono font on the input fill.
+    /// Code: the mono font on the input fill, on the line's baseline: raised as the text around it is
+    /// (`TextStyle.baselineOffset`), or it sits lower than the words beside it.
     @MainActor
     static func code(_ text: String, style: TextStyle, theme: Theme) -> NSAttributedString {
         var attributes = style.attributes(theme)
         attributes[.font] = Self.code
+        if let offset = style.baselineOffset { attributes[.baselineOffset] = offset }
         attributes[.foregroundColor] = NSColor(theme.palette.textPrimary)
         attributes[.backgroundColor] = NSColor(theme.palette.bgInput)
         return NSAttributedString(string: text, attributes: attributes)
