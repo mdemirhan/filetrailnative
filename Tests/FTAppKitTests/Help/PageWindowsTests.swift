@@ -67,8 +67,9 @@ import Testing
         // The window opens on the topic asked for, and tells it.
         #expect(controller.helpView.activeTopic == .files)
         #expect(told == [.files])
-        // Help is not closed by Escape: Escape clears its search.
-        #expect((window as? PageWindow)?.closesOnEscape == false)
+        // Escape closes Help, as it does Settings and About, once its search has nothing to clear: with text, the
+        // search field keeps the key and clears it first (`ThemedSearchField`).
+        #expect((window as? PageWindow)?.closesOnEscape == true)
     }
 
     // Customize… opens Settings on the shortcuts tab

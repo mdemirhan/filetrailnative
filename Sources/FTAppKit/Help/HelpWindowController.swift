@@ -25,6 +25,8 @@ public final class HelpWindowController: PageWindowController {
             spec: PageWindowSpec(title: Self.title, size: Self.size, minSize: Self.minSize), model: model)
         window?.contentView = helpView
         window?.initialFirstResponder = helpView
+        // Help is read, as Settings and About are: Esc closes it, once its search field has nothing left to clear.
+        (window as? PageWindow)?.closesOnEscape = true
         window?.setContentSize(Self.size)
         themeChanged(model.theme)
         helpView.announceTopic()
