@@ -334,6 +334,7 @@
             "description": "Move from the search field into the results (Return also works)"
           },
           {"group": "search", "shortcut": "Cmd+Shift+F", "description": "Show the last results again"},
+          {"group": "search", "shortcut": "Cmd+Option+F", "description": "Open the search in a larger editor, with every condition's word"},
           {"group": "search", "shortcut": "Cmd+R", "description": "Run the search again"},
           {"group": "search", "shortcut": "Esc", "description": "Close the results"},
           {"group": "views", "shortcut": "Ctrl+Cmd+S", "description": "Show or hide the folder tree"},
@@ -658,7 +659,7 @@
               ]
             },
             {"shortcuts": [], "topic": "files", "rows": [["Archives", "Extract To"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Defaults"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Defaults"]]},
             {
               "shortcuts": [],
               "topic": "views",
@@ -914,6 +915,8 @@
               ],
               "topic": "search",
               "rows": [
+                ["Conditions", "kind:pdf"],
+                ["Conditions", "skip:node_modules"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -996,9 +999,19 @@
               "shortcuts": [],
               "topic": "search",
               "rows": [
-                ["Plain Text", "report (1).pdf"],
+                ["Plain Text", "!draft"],
+                ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"]
+                ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "size:>10mb"],
+                ["Conditions", "size:1.5mb"],
+                ["Conditions", "picture:>4k"],
+                ["Conditions", "Dates"],
+                ["Conditions", "is:locked"],
+                ["Conditions", "perm:755"],
+                ["Conditions", "All or either"],
+                ["Conditions", "Not"],
+                ["Conditions", "No text needed"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -1213,7 +1226,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
             {
               "shortcuts": [
                 {
@@ -1669,6 +1682,7 @@
             "description": "Move from the search field into the results (Return also works)"
           },
           {"group": "search", "shortcut": "Cmd+Shift+F", "description": "Show the last results again"},
+          {"group": "search", "shortcut": "Cmd+Option+F", "description": "Open the search in a larger editor, with every condition's word"},
           {"group": "search", "shortcut": "Cmd+R", "description": "Run the search again"},
           {"group": "search", "shortcut": "Esc", "description": "Close the results"},
           {"group": "views", "shortcut": "Ctrl+Cmd+S", "description": "Show or hide the folder tree"},
@@ -1996,7 +2010,7 @@
               ]
             },
             {"shortcuts": [], "topic": "files", "rows": [["Archives", "Extract To"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Defaults"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Defaults"]]},
             {
               "shortcuts": [],
               "topic": "views",
@@ -2247,6 +2261,8 @@
               ],
               "topic": "search",
               "rows": [
+                ["Conditions", "kind:pdf"],
+                ["Conditions", "skip:node_modules"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -2334,9 +2350,19 @@
               "shortcuts": [],
               "topic": "search",
               "rows": [
-                ["Plain Text", "report (1).pdf"],
+                ["Plain Text", "!draft"],
+                ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"]
+                ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "size:>10mb"],
+                ["Conditions", "size:1.5mb"],
+                ["Conditions", "picture:>4k"],
+                ["Conditions", "Dates"],
+                ["Conditions", "is:locked"],
+                ["Conditions", "perm:755"],
+                ["Conditions", "All or either"],
+                ["Conditions", "Not"],
+                ["Conditions", "No text needed"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -2546,7 +2572,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Hidden files"]]}
           ],
           [
@@ -2995,7 +3021,7 @@
               ]
             },
             {"shortcuts": [], "topic": "files", "rows": [["Archives", "Extract To"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Defaults"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Defaults"]]},
             {
               "shortcuts": [],
               "topic": "views",
@@ -3251,6 +3277,8 @@
               ],
               "topic": "search",
               "rows": [
+                ["Conditions", "kind:pdf"],
+                ["Conditions", "skip:node_modules"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -3333,9 +3361,19 @@
               "shortcuts": [],
               "topic": "search",
               "rows": [
-                ["Plain Text", "report (1).pdf"],
+                ["Plain Text", "!draft"],
+                ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"]
+                ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "size:>10mb"],
+                ["Conditions", "size:1.5mb"],
+                ["Conditions", "picture:>4k"],
+                ["Conditions", "Dates"],
+                ["Conditions", "is:locked"],
+                ["Conditions", "perm:755"],
+                ["Conditions", "All or either"],
+                ["Conditions", "Not"],
+                ["Conditions", "No text needed"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -3544,7 +3582,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
             {
               "shortcuts": [
                 {
@@ -4048,7 +4086,7 @@
               ]
             },
             {"shortcuts": [], "topic": "files", "rows": [["Archives", "Extract To"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Defaults"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Defaults"]]},
             {
               "shortcuts": [],
               "topic": "views",
@@ -4291,6 +4329,8 @@
               ],
               "topic": "search",
               "rows": [
+                ["Conditions", "kind:pdf"],
+                ["Conditions", "skip:node_modules"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -4373,9 +4413,19 @@
               "shortcuts": [],
               "topic": "search",
               "rows": [
-                ["Plain Text", "report (1).pdf"],
+                ["Plain Text", "!draft"],
+                ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"]
+                ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "size:>10mb"],
+                ["Conditions", "size:1.5mb"],
+                ["Conditions", "picture:>4k"],
+                ["Conditions", "Dates"],
+                ["Conditions", "is:locked"],
+                ["Conditions", "perm:755"],
+                ["Conditions", "All or either"],
+                ["Conditions", "Not"],
+                ["Conditions", "No text needed"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -4589,7 +4639,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
             {
               "shortcuts": [
                 {
@@ -5051,7 +5101,7 @@
               ]
             },
             {"shortcuts": [], "topic": "files", "rows": [["Archives", "Extract To"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Defaults"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Defaults"]]},
             {
               "shortcuts": [],
               "topic": "views",
@@ -5307,6 +5357,8 @@
               ],
               "topic": "search",
               "rows": [
+                ["Conditions", "kind:pdf"],
+                ["Conditions", "skip:node_modules"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -5389,9 +5441,19 @@
               "shortcuts": [],
               "topic": "search",
               "rows": [
-                ["Plain Text", "report (1).pdf"],
+                ["Plain Text", "!draft"],
+                ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"]
+                ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "size:>10mb"],
+                ["Conditions", "size:1.5mb"],
+                ["Conditions", "picture:>4k"],
+                ["Conditions", "Dates"],
+                ["Conditions", "is:locked"],
+                ["Conditions", "perm:755"],
+                ["Conditions", "All or either"],
+                ["Conditions", "Not"],
+                ["Conditions", "No text needed"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -5599,7 +5661,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
             {
               "shortcuts": [
                 {
@@ -5767,6 +5829,7 @@
           "toggleFavorite": [],
           "focusFileSearch": [],
           "showLastSearchResults": [],
+          "editSearch": [],
           "revealInFolder": [],
           "viewAsIcons": [],
           "viewAsDetails": [],
@@ -5977,6 +6040,7 @@
               "description": "Search the folder you are in, and the folders inside it"
             },
             {"group": "search", "shortcut": "Cmd+Shift+F", "description": "Show the last results again"},
+            {"group": "search", "shortcut": "Cmd+Option+F", "description": "Open the search in a larger editor, with every condition's word"},
             {"group": "search", "shortcut": "Cmd+R", "description": "Run the search again"},
             {"group": "views", "shortcut": "Ctrl+Cmd+S", "description": "Show or hide the folder tree"},
             {
@@ -6232,7 +6296,7 @@
               ]
             },
             {"shortcuts": [], "topic": "files", "rows": [["Archives", "Extract To"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Defaults"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Defaults"]]},
             {
               "shortcuts": [],
               "topic": "views",
@@ -6385,6 +6449,8 @@
               "shortcuts": [],
               "topic": "search",
               "rows": [
+                ["Conditions", "kind:pdf"],
+                ["Conditions", "skip:node_modules"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -6449,9 +6515,19 @@
               "shortcuts": [],
               "topic": "search",
               "rows": [
-                ["Plain Text", "report (1).pdf"],
+                ["Plain Text", "!draft"],
+                ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"]
+                ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "size:>10mb"],
+                ["Conditions", "size:1.5mb"],
+                ["Conditions", "picture:>4k"],
+                ["Conditions", "Dates"],
+                ["Conditions", "is:locked"],
+                ["Conditions", "perm:755"],
+                ["Conditions", "All or either"],
+                ["Conditions", "Not"],
+                ["Conditions", "No text needed"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -6629,7 +6705,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Hidden files"]]}
           ],
           [
@@ -7086,7 +7162,7 @@
               ]
             },
             {"shortcuts": [], "topic": "files", "rows": [["Archives", "Extract To"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Defaults"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Defaults"]]},
             {
               "shortcuts": [],
               "topic": "views",
@@ -7333,6 +7409,8 @@
               ],
               "topic": "search",
               "rows": [
+                ["Conditions", "kind:pdf"],
+                ["Conditions", "skip:node_modules"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -7415,9 +7493,19 @@
               "shortcuts": [],
               "topic": "search",
               "rows": [
-                ["Plain Text", "report (1).pdf"],
+                ["Plain Text", "!draft"],
+                ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"]
+                ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "size:>10mb"],
+                ["Conditions", "size:1.5mb"],
+                ["Conditions", "picture:>4k"],
+                ["Conditions", "Dates"],
+                ["Conditions", "is:locked"],
+                ["Conditions", "perm:755"],
+                ["Conditions", "All or either"],
+                ["Conditions", "Not"],
+                ["Conditions", "No text needed"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -7628,7 +7716,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Hidden files"]]}
           ],
           [
@@ -8105,7 +8193,7 @@
               ]
             },
             {"shortcuts": [], "topic": "files", "rows": [["Archives", "Extract To"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Defaults"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Defaults"]]},
             {
               "shortcuts": [],
               "topic": "views",
@@ -8361,6 +8449,8 @@
               ],
               "topic": "search",
               "rows": [
+                ["Conditions", "kind:pdf"],
+                ["Conditions", "skip:node_modules"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -8443,9 +8533,19 @@
               "shortcuts": [],
               "topic": "search",
               "rows": [
-                ["Plain Text", "report (1).pdf"],
+                ["Plain Text", "!draft"],
+                ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"]
+                ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "size:>10mb"],
+                ["Conditions", "size:1.5mb"],
+                ["Conditions", "picture:>4k"],
+                ["Conditions", "Dates"],
+                ["Conditions", "is:locked"],
+                ["Conditions", "perm:755"],
+                ["Conditions", "All or either"],
+                ["Conditions", "Not"],
+                ["Conditions", "No text needed"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -8654,7 +8754,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
             {
               "shortcuts": [
                 {
@@ -9183,7 +9283,7 @@
               ]
             },
             {"shortcuts": [], "topic": "files", "rows": [["Archives", "Extract To"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Defaults"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Defaults"]]},
             {
               "shortcuts": [],
               "topic": "views",
@@ -9439,6 +9539,8 @@
               ],
               "topic": "search",
               "rows": [
+                ["Conditions", "kind:pdf"],
+                ["Conditions", "skip:node_modules"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -9514,9 +9616,19 @@
               "shortcuts": [],
               "topic": "search",
               "rows": [
-                ["Plain Text", "report (1).pdf"],
+                ["Plain Text", "!draft"],
+                ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"]
+                ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "size:>10mb"],
+                ["Conditions", "size:1.5mb"],
+                ["Conditions", "picture:>4k"],
+                ["Conditions", "Dates"],
+                ["Conditions", "is:locked"],
+                ["Conditions", "perm:755"],
+                ["Conditions", "All or either"],
+                ["Conditions", "Not"],
+                ["Conditions", "No text needed"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -9720,7 +9832,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Hidden files"]]}
           ],
           [
@@ -10179,7 +10291,7 @@
               ]
             },
             {"shortcuts": [], "topic": "files", "rows": [["Archives", "Extract To"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Defaults"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Defaults"]]},
             {
               "shortcuts": [],
               "topic": "views",
@@ -10435,6 +10547,8 @@
               ],
               "topic": "search",
               "rows": [
+                ["Conditions", "kind:pdf"],
+                ["Conditions", "skip:node_modules"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -10517,9 +10631,19 @@
               "shortcuts": [],
               "topic": "search",
               "rows": [
-                ["Plain Text", "report (1).pdf"],
+                ["Plain Text", "!draft"],
+                ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"]
+                ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "size:>10mb"],
+                ["Conditions", "size:1.5mb"],
+                ["Conditions", "picture:>4k"],
+                ["Conditions", "Dates"],
+                ["Conditions", "is:locked"],
+                ["Conditions", "perm:755"],
+                ["Conditions", "All or either"],
+                ["Conditions", "Not"],
+                ["Conditions", "No text needed"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -10728,7 +10852,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
             {
               "shortcuts": [
                 {
@@ -11242,7 +11366,7 @@
               ]
             },
             {"shortcuts": [], "topic": "files", "rows": [["Archives", "Extract To"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Defaults"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Defaults"]]},
             {
               "shortcuts": [],
               "topic": "views",
@@ -11498,6 +11622,8 @@
               ],
               "topic": "search",
               "rows": [
+                ["Conditions", "kind:pdf"],
+                ["Conditions", "skip:node_modules"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -11573,9 +11699,19 @@
               "shortcuts": [],
               "topic": "search",
               "rows": [
-                ["Plain Text", "report (1).pdf"],
+                ["Plain Text", "!draft"],
+                ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"]
+                ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "size:>10mb"],
+                ["Conditions", "size:1.5mb"],
+                ["Conditions", "picture:>4k"],
+                ["Conditions", "Dates"],
+                ["Conditions", "is:locked"],
+                ["Conditions", "perm:755"],
+                ["Conditions", "All or either"],
+                ["Conditions", "Not"],
+                ["Conditions", "No text needed"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -11779,7 +11915,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Hidden files"]]}
           ],
           [
@@ -12304,7 +12440,7 @@
               ]
             },
             {"shortcuts": [], "topic": "files", "rows": [["Archives", "Extract To"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Defaults"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Defaults"]]},
             {
               "shortcuts": [],
               "topic": "views",
@@ -12550,6 +12686,8 @@
               ],
               "topic": "search",
               "rows": [
+                ["Conditions", "kind:pdf"],
+                ["Conditions", "skip:node_modules"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -12632,9 +12770,19 @@
               "shortcuts": [],
               "topic": "search",
               "rows": [
-                ["Plain Text", "report (1).pdf"],
+                ["Plain Text", "!draft"],
+                ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"]
+                ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "size:>10mb"],
+                ["Conditions", "size:1.5mb"],
+                ["Conditions", "picture:>4k"],
+                ["Conditions", "Dates"],
+                ["Conditions", "is:locked"],
+                ["Conditions", "perm:755"],
+                ["Conditions", "All or either"],
+                ["Conditions", "Not"],
+                ["Conditions", "No text needed"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -12849,7 +12997,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
             {
               "shortcuts": [
                 {
@@ -13339,7 +13487,7 @@
               ]
             },
             {"shortcuts": [], "topic": "files", "rows": [["Archives", "Extract To"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Defaults"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Defaults"]]},
             {
               "shortcuts": [],
               "topic": "views",
@@ -13595,6 +13743,8 @@
               ],
               "topic": "search",
               "rows": [
+                ["Conditions", "kind:pdf"],
+                ["Conditions", "skip:node_modules"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -13677,9 +13827,19 @@
               "shortcuts": [],
               "topic": "search",
               "rows": [
-                ["Plain Text", "report (1).pdf"],
+                ["Plain Text", "!draft"],
+                ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"]
+                ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "size:>10mb"],
+                ["Conditions", "size:1.5mb"],
+                ["Conditions", "picture:>4k"],
+                ["Conditions", "Dates"],
+                ["Conditions", "is:locked"],
+                ["Conditions", "perm:755"],
+                ["Conditions", "All or either"],
+                ["Conditions", "Not"],
+                ["Conditions", "No text needed"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -13888,7 +14048,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
             {
               "shortcuts": [
                 {
@@ -14397,7 +14557,7 @@
               ]
             },
             {"shortcuts": [], "topic": "files", "rows": [["Archives", "Extract To"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Defaults"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Defaults"]]},
             {
               "shortcuts": [],
               "topic": "views",
@@ -14636,6 +14796,8 @@
               ],
               "topic": "search",
               "rows": [
+                ["Conditions", "kind:pdf"],
+                ["Conditions", "skip:node_modules"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -14711,9 +14873,19 @@
               "shortcuts": [],
               "topic": "search",
               "rows": [
-                ["Plain Text", "report (1).pdf"],
+                ["Plain Text", "!draft"],
+                ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"]
+                ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "size:>10mb"],
+                ["Conditions", "size:1.5mb"],
+                ["Conditions", "picture:>4k"],
+                ["Conditions", "Dates"],
+                ["Conditions", "is:locked"],
+                ["Conditions", "perm:755"],
+                ["Conditions", "All or either"],
+                ["Conditions", "Not"],
+                ["Conditions", "No text needed"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -14922,7 +15094,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
             {
               "shortcuts": [
                 {
@@ -15746,7 +15918,7 @@
               ]
             },
             {"shortcuts": [], "topic": "files", "rows": [["Archives", "Extract To"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Defaults"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Defaults"]]},
             {
               "shortcuts": [],
               "topic": "views",
@@ -15996,6 +16168,8 @@
               ],
               "topic": "search",
               "rows": [
+                ["Conditions", "kind:pdf"],
+                ["Conditions", "skip:node_modules"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
                 ["Options", "Search Subfolders"],
@@ -16083,9 +16257,19 @@
               "shortcuts": [],
               "topic": "search",
               "rows": [
-                ["Plain Text", "report (1).pdf"],
+                ["Plain Text", "!draft"],
+                ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
-                ["Glob patterns", "[a-c]*.txt"]
+                ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "size:>10mb"],
+                ["Conditions", "size:1.5mb"],
+                ["Conditions", "picture:>4k"],
+                ["Conditions", "Dates"],
+                ["Conditions", "is:locked"],
+                ["Conditions", "perm:755"],
+                ["Conditions", "All or either"],
+                ["Conditions", "Not"],
+                ["Conditions", "No text needed"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -16293,7 +16477,7 @@
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
-            {"shortcuts": [], "topic": "search", "rows": [["Options", "Hidden files"]]},
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Options", "Hidden files"]]},
             {
               "shortcuts": [
                 {

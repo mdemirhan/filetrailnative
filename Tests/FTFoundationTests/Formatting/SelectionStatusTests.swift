@@ -130,6 +130,13 @@ struct SelectionStatusTests {
             StatusSummary.search(
                 isSearching: false, shown: 3, totalCount: 40, selectedCount: 1, selectionSize: .calculating)
                 == "3 of 40 results · 1 selected · Calculating…")
+        // The items a search's conditions have read, while it runs only.
+        #expect(
+            StatusSummary.search(isSearching: true, shown: 120, totalCount: 120, selectedCount: 1, itemsRead: 3880)
+                == "Searching… 120 results · 3,880 items checked · 1 selected")
+        #expect(
+            StatusSummary.search(isSearching: false, shown: 120, totalCount: 120, selectedCount: 0, itemsRead: 3880)
+                == "120 results")
         // Folders the search couldn't read: said last, with no full stop, while it runs and after.
         #expect(
             StatusSummary.search(

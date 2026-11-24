@@ -42,7 +42,7 @@
         "patternMode": "text",
         "matchScope": "name"
       },
-      "output": {"match": {"start": 14, "end": 27}, "ranges": [{"start": 14, "end": 18}]}
+      "output": {"match": {"start": 14, "end": 17}, "ranges": [{"start": 14, "end": 18}]}
     },
     {
       "name": "4: text name \"do Monte\" in Panorama from the Miradouro do Monte.jpeg as Panorama from the…Monte.jpeg",
@@ -53,7 +53,7 @@
         "patternMode": "text",
         "matchScope": "name"
       },
-      "output": {"match": {"start": 28, "end": 36}, "ranges": [{"start": 17, "end": 23}]}
+      "output": {"match": {"start": 22, "end": 24}, "ranges": [{"start": 17, "end": 23}]}
     },
     {
       "name": "5: text name \"jpeg\" in Panorama from the Miradouro do Monte.jpeg as Panorama from the…Monte.jpeg",
@@ -140,7 +140,7 @@
         "patternMode": "text",
         "matchScope": "name"
       },
-      "output": {"match": {"start": 4, "end": 9}, "ranges": [{"start": 4, "end": 6}]}
+      "output": {"match": {"start": 4, "end": 5}, "ranges": [{"start": 4, "end": 6}]}
     },
     {
       "name": "14: text name \"nte\" in Monte.jpeg as Mo…eg",
@@ -4111,6 +4111,33 @@
         "matchScope": "name"
       },
       "output": {"match": null, "ranges": []}
+    },
+    {
+      "name": "400: text words \"annual report\" in Report, annual.pdf, in the other order: each word marked",
+      "input": {
+        "name": "Report, annual.pdf",
+        "label": "Report, annual.pdf",
+        "query": "annual report",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {"match": {"start": 0, "end": 6}, "ranges": [{"start": 0, "end": 6}, {"start": 8, "end": 14}]}
+    },
+    {
+      "name": "401: text phrase \"\\\"annual report\\\"\" in My annual report.pdf: one run, the space in it",
+      "input": {
+        "name": "My annual report.pdf",
+        "label": "My annual report.pdf",
+        "query": "\"annual report\"",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {"match": {"start": 3, "end": 16}, "ranges": [{"start": 3, "end": 16}]}
+    },
+    {
+      "name": "402: text words \"ab cd\" in abcd.txt: words that meet are one mark",
+      "input": {"name": "abcd.txt", "label": "abcd.txt", "query": "ab cd", "patternMode": "text", "matchScope": "name"},
+      "output": {"match": {"start": 0, "end": 4}, "ranges": [{"start": 0, "end": 4}]}
     }
   ]
 }

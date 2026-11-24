@@ -4,6 +4,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <sys/stat.h>
 
 /// What a search walks and leaves out.
 typedef struct {
@@ -22,6 +23,9 @@ typedef struct {
     int qos_class;
     /// Symbolic links are listed too (never followed), for a search that asks for them.
     int include_links;
+    /// Each item kept is read (`fstatat`, from its folder) and the read passed to `ft_search_keep`, for conditions
+    /// that need what it holds. Otherwise an item is read only for the flag that hides it, when its name doesn't.
+    int wants_stat;
     /// Folders of these names (`skip_count` of them, as the disk spells them) aren't listed or gone into.
     const char *const *skip_names;
     int skip_count;
@@ -41,9 +45,10 @@ typedef int (*ft_search_match)(void *context, int worker, const char *path, size
                                int is_folder, int is_link);
 
 /// Called on a worker thread for each item matched that the walk keeps, with whether it is hidden (a name starting
-/// with a dot, or the flag that hides one) and whether it is a symbolic link. Returns 0 to go on, 1 to end the walk.
+/// with a dot, or the flag that hides one), whether it is a symbolic link, and what reading it gave (NULL when it
+/// wasn't read, or couldn't be). Returns 0 to go on, 1 to end the walk.
 typedef int (*ft_search_keep)(void *context, int worker, const char *path, size_t length, size_t name_offset,
-                              int is_folder, int is_hidden, int is_link);
+                              int is_folder, int is_hidden, int is_link, const struct stat *info);
 
 /// How a walk ended: valid once `ft_search_run` has returned.
 typedef struct {

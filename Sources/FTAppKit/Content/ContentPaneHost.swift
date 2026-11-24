@@ -165,7 +165,7 @@ extension ContentPaneHost {
     var clipboardMarks: ClipboardMarks? { nil }
     func dropState(for path: String) -> DropTargetState? { nil }
     var search: ContentSearchContext? { nil }
-    func nameMarks(_ name: String) -> [HighlightRange] { search?.match(in: name).map { [$0] } ?? [] }
+    func nameMarks(_ name: String) -> [HighlightRange] { search?.marks(in: name) ?? [] }
 }
 
 /// A pane's root view, whose rows start below the card of a state (a folder left on screen under its error).

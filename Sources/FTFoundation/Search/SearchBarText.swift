@@ -60,6 +60,8 @@ public enum SearchBarText {
 
     /// The toolbar's field.
     public static let fieldPlaceholder = "Search"
+    /// Edit Search's button at the field's end, and its tooltip before its key.
+    public static let editSearchName = "Edit Search"
     public static let fieldName = "Find files in current folder"
     public static let clearSearchTitle = "Clear Search"
     public static let clearSearchName = "Clear file search"
@@ -149,7 +151,7 @@ public enum SearchResultsState: Equatable, Sendable {
         case .failed(let message): message
         case .searching: nil
         case .filteredOut: "Nothing found has that in its name or folder. Press Esc to see all the results."
-        case .noMatches: "Try other text, or another location above."
+        case .noMatches: "Try other text or conditions, or another location above."
         }
     }
 }

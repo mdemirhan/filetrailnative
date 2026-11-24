@@ -184,7 +184,7 @@ public enum SearchResults {
             return nil
         }
         if patternMode == .text {
-            return NameMatcher(trimmed, mode: .contains).map(HighlightPattern.init(names:))
+            return NameTerms(trimmed).map(HighlightPattern.init(names:))
         }
         return HighlightPattern(regex: trimmed, ignoreCase: !SmartCase.regexHasUppercase(trimmed))
     }

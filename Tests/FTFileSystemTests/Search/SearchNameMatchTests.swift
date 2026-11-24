@@ -23,6 +23,32 @@ import Testing
         #expect(try matches("", .glob, names) == names)
     }
 
+    // Plain Text finds a name holding every word, in any order; words in quotes are one run, spaces and all.
+    @Test func plainTextFindsEveryWordInAnyOrder() throws {
+        let names = [
+            "annual report.pdf", "Report, Annual 2025.pdf", "annual.pdf", "report.pdf", "annual  report.pdf",
+            "My Annual Report.key", "kind:pdf notes.txt", "caf\u{E9} menu.txt", "cafe\u{301} carte.txt",
+        ]
+        #expect(
+            try matches("annual report", .text, names) == [
+                "annual report.pdf", "Report, Annual 2025.pdf", "annual  report.pdf", "My Annual Report.key",
+            ])
+        #expect(try matches("report   annual", .text, names) == (try matches("annual report", .text, names)))
+        #expect(try matches("\"annual report\"", .text, names) == ["annual report.pdf", "My Annual Report.key"])
+        #expect(try matches("\"annual  report\"", .text, names) == ["annual  report.pdf"])
+        #expect(try matches("annual 2025 pdf", .text, names) == ["Report, Annual 2025.pdf"])
+        #expect(try matches("\"kind:pdf\"", .text, names) == ["kind:pdf notes.txt"])
+        // Each word as Contains matches it: a plain letter finds its accented forms, however they are stored.
+        #expect(try matches("cafe txt", .text, names) == ["caf\u{E9} menu.txt", "cafe\u{301} carte.txt"])
+        #expect(try matches("caf\u{E9} carte", .text, names) == ["cafe\u{301} carte.txt"])
+        // Quotes with nothing in them, or only spaces typed, find everything as empty text does.
+        #expect(try matches("\"\"", .text, names) == names)
+        #expect(try matches("   ", .text, names) == names)
+        // A glob or a regular expression is the pattern as typed, spaces and quotes and all.
+        #expect(try matches("annual report*", .glob, names) == ["annual report.pdf"])
+        #expect(try matches("annual report", .regex, names) == ["annual report.pdf", "My Annual Report.key"])
+    }
+
     @Test func aGlobsStarsStopAtASlashAndDoubleStarsCrossFolders() throws {
         let path = { (glob: String) in try GlobPattern.regex(for: glob) }
         #expect(try path("*.swift") == "^[^/]*\\.swift$")
@@ -71,6 +97,9 @@ import Testing
         ]
         let requests: [(SearchPatternModePreference, String)] = [
             (.text, "re"), (.text, "\u{E9}"), (.text, "e"), (.text, "fi"), (.text, "k"), (.text, "ss"),
+            (.text, "re pdf"), (.text, "caf\u{E9} txt"), (.text, "\"report 2024\""), (.text, "e k"), (.text, "fi le"),
+            (.text, "md notes"), (.text, "\"\" a"), (.text, "!re"), (.text, "re !pdf"), (.text, "!\u{E9}"),
+            (.text, "!caf\u{E9}"), (.text, "!fi"), (.text, "!k e"), (.text, "!\"report 2024\""), (.text, "!a !b !c"),
             (.glob, "*.md"), (.glob, "*.PDF"), (.glob, "k*"), (.glob, "caf*"), (.regex, "^c"), (.regex, "k"),
             (.regex, "\\d+"),
         ]
@@ -94,7 +123,8 @@ import Testing
         let names = ["report.pdf", "caf\u{E9}.txt", "\u{FB01}le", "e\u{301}t\u{E9}", "b/x", "\u{301}mark"]
         let queries = [
             "caf\u{E9}/r", "cafe", "e b/caf", "\u{65E5}\u{672C}/f", "/f", "y/\u{FB01}", "demo", "\u{E9}t\u{E9}", "r/re",
-            "\u{1EAD}", "a", "x",
+            "\u{1EAD}", "a", "x", "demo report", "caf\u{E9} txt", "\"e b/caf\"", "x y", "\u{65E5} f", "plain mark",
+            "!demo", "demo !report", "!caf\u{E9}", "!\"e b/caf\"", "x !y", "!\u{65E5}", "a !a",
         ]
         let scratch = SearchNameMatch.Scratch()
         for query in queries {

@@ -82,6 +82,8 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
     public var canGoBack: Bool?
     public var canGoForward: Bool?
     public var hasCachedSearch: Bool?
+    /// The search on screen has conditions; nil, a context that doesn't say, for yes.
+    public var hasSearchConditions: Bool?
     public var tabCount: Int?
     /// How many panes the tab shows.
     public var paneCount: Int?
@@ -124,7 +126,8 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         selectionOnClipboard: Bool = false,
         pasteDestinationPath: String? = nil, isSearchMode: Bool = false, openItemLimit: Int = 5,
         writeOperationLocked: Bool = false, canGoBack: Bool? = nil, canGoForward: Bool? = nil,
-        hasCachedSearch: Bool? = nil, tabCount: Int? = nil, paneCount: Int? = nil, otherPanePath: String? = nil,
+        hasCachedSearch: Bool? = nil, hasSearchConditions: Bool? = nil, tabCount: Int? = nil, paneCount: Int? = nil,
+        otherPanePath: String? = nil,
         otherPaneFolder: String? = nil, trashPath: String? = nil,
         homePath: String? = nil,
         trashIsEmpty: Bool? = nil, ejectTargetPath: String? = nil, trashIsFavorite: Bool = false,
@@ -147,6 +150,7 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         self.canGoBack = canGoBack
         self.canGoForward = canGoForward
         self.hasCachedSearch = hasCachedSearch
+        self.hasSearchConditions = hasSearchConditions
         self.tabCount = tabCount
         self.paneCount = paneCount
         self.otherPanePath = otherPanePath
@@ -388,6 +392,7 @@ public enum CommandAvailability {
             .showLastOpenedColumn, .showPermissionsColumn, .showFolderColumn, .rememberFolderView, .updateFolderView,
             .revertFolderView,
             .folderViewOptions, .resetFolderView, .togglePinFilter, .focusFileSearch, .showLastSearchResults,
+            .editSearch, .clearSearchConditions,
             .refreshOrApplySearchSort, .newFolder, .newTextFile, .pasteSelection, .pasteAsFile, .moveItemsHere,
             .calculateSize, .showFolderInOtherPane, .copyToOtherPane, .moveToOtherPane,
             // Going elsewhere would do it under the file, out of sight: Back, Forward and Enclosing Folder go to its
@@ -570,6 +575,8 @@ public enum CommandAvailability {
             return !showInFinderPaths(target).isEmpty
         case .showLastSearchResults:
             return context.hasCachedSearch != false && !context.isSearchMode
+        case .clearSearchConditions:
+            return context.isSearchMode && context.hasSearchConditions != false
         // Search results group by what each result carries; a folder by any of its fields but the folder.
         case .groupByNone, .groupByName, .groupByModified, .groupByCreated, .groupByLastOpened, .groupByAdded,
             .groupBySize, .groupByKind, .groupByTags, .groupByFolder:

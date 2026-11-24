@@ -1,0 +1,649 @@
+// The search syntax beyond words and conditions: a size to its last digit, permissions, and `!` for not, as read, as
+// worded, and as the list under the field offers them.
+import FTFoundation
+import Foundation
+import Testing
+
+@Suite struct SearchSyntaxTests {
+    let calendar: Calendar = {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "UTC")!
+        return calendar
+    }()
+
+    private func query(_ text: String) -> SearchQuery { SearchQuery(text, calendar: calendar) }
+
+    private func rule(_ text: String) -> SearchSizeRule? {
+        guard case .size(let rule)? = query("size:" + text).conditions.first else { return nil }
+        return rule
+    }
+
+    /// Whether a file of `size` bytes meets the rule `text` reads as.
+    private func holds(_ text: String, _ size: Int64) -> Bool {
+        guard let bounds = rule(text)?.bounds else { return false }
+        return (bounds.above.map { size > $0 } ?? true) && (bounds.below.map { size < $0 } ?? true)
+    }
+
+    /// The sizes from `from` up to `upTo` meet `text`, and the byte on either side doesn't.
+    private func expectRange(
+        _ text: String, from: Int64, upTo: Int64, sourceLocation: SourceLocation = #_sourceLocation
+    ) {
+        #expect(!holds(text, from - 1), "\(text) at \(from - 1)", sourceLocation: sourceLocation)
+        #expect(holds(text, from), "\(text) at \(from)", sourceLocation: sourceLocation)
+        #expect(holds(text, upTo - 1), "\(text) at \(upTo - 1)", sourceLocation: sourceLocation)
+        #expect(!holds(text, upTo), "\(text) at \(upTo)", sourceLocation: sourceLocation)
+    }
+
+    // MARK: A size alone
+
+    // A size alone is that size to its last digit: from it, up to one more of that digit.
+    @Test func aSizeAloneIsItsLastDigit() {
+        expectRange("1mb", from: 1_000_000, upTo: 2_000_000)
+        expectRange("1.5mb", from: 1_500_000, upTo: 1_600_000)
+        expectRange("2.11kb", from: 2110, upTo: 2120)
+        expectRange("1000b", from: 1000, upTo: 1001)
+        expectRange("1b", from: 1, upTo: 2)
+        expectRange("10mb", from: 10_000_000, upTo: 11_000_000)
+        expectRange("0.5mb", from: 500_000, upTo: 600_000)
+        expectRange("1.25gb", from: 1_250_000_000, upTo: 1_260_000_000)
+        expectRange("1k", from: 1000, upTo: 2000)
+        expectRange("3m", from: 3_000_000, upTo: 4_000_000)
+        expectRange("2g", from: 2_000_000_000, upTo: 3_000_000_000)
+    }
+
+    // Digits typed after the point count, zeros too, though the number alone loses them.
+    @Test func trailingZerosKeepTheirPlaces() {
+        expectRange("2.10kb", from: 2100, upTo: 2110)
+        expectRange("2.1kb", from: 2100, upTo: 2200)
+        expectRange("1.50mb", from: 1_500_000, upTo: 1_510_000)
+        expectRange("1.0mb", from: 1_000_000, upTo: 1_100_000)
+        #expect(rule("2.10kb")?.places == 2)
+        #expect(rule("2.1kb")?.places == nil)
+        #expect(rule("1.0mb")?.places == 1)
+    }
+
+    // Decimals a computer can't hold exactly still count whole bytes: 2.11 × 1000 is 2110.0000000000002.
+    @Test func decimalsAreCountedInWholeBytes() {
+        expectRange("3.3mb", from: 3_300_000, upTo: 3_400_000)
+        expectRange("0.1kb", from: 100, upTo: 200)
+        expectRange("0.7kb", from: 700, upTo: 800)
+        expectRange("4.35mb", from: 4_350_000, upTo: 4_360_000)
+        expectRange("9.99kb", from: 9990, upTo: 10_000)
+        expectRange("1.001mb", from: 1_001_000, upTo: 1_002_000)
+    }
+
+    @Test func largerSmallerAndBetweenAreAsTyped() {
+        #expect(!holds(">1mb", 1_000_000))
+        #expect(holds(">1mb", 1_000_001))
+        #expect(holds("<1mb", 999_999))
+        #expect(!holds("<1mb", 1_000_000))
+        // Between takes both ends.
+        #expect(holds("1mb..2mb", 1_000_000))
+        #expect(holds("1mb..2mb", 2_000_000))
+        #expect(!holds("1mb..2mb", 2_000_001))
+        #expect(!holds("1mb..2mb", 999_999))
+        #expect(holds("500kb..2mb", 500_000))
+        #expect(holds("2mb..500kb", 1_000_000))
+        #expect(rule(">1mb")?.comparison == .larger)
+        #expect(rule("<1mb")?.comparison == .smaller)
+        #expect(rule("1mb")?.comparison == .equal)
+        #expect(rule("1mb..2mb")?.comparison == .between)
+    }
+
+    // Two sizes are both asked for: larger than one and smaller than the other is between them.
+    @Test func twoSizesAreBothAskedFor() {
+        let both = query("size:>1mb size:<2mb").conditions
+        #expect(both.count == 2)
+        #expect(query("size:1mb size:1.5mb").conditions.count == 2)
+    }
+
+    @Test func sizesThatCantBeRead() {
+        for text in [
+            "size:0mb", "size:0", "size:>0b", "size:-1mb", "size:>-1mb", "size:1tb", "size:mb", "size:1.mb.",
+            "size:1mb..", "size:..1mb", "size:1mb..2", "size:1 mb", "size:1.2.3mb", "size:>", "size:<", "size:><1mb",
+            "size:1mbb", "size:1kib", "size:one",
+        ] {
+            #expect(query(text).hasUnfinished, "\(text)")
+            #expect(query(text).conditions.isEmpty, "\(text)")
+        }
+    }
+
+    @Test func sizesSayWhatTheyMean() {
+        func words(_ text: String) -> String? {
+            query("size:" + text).conditions.first.map { SearchConditionText.chip($0) }
+        }
+        #expect(words("1mb") == "Size is 1 MB to under 2 MB")
+        #expect(words("1.5mb") == "Size is 1.5 MB to under 1.6 MB")
+        #expect(words("2.11kb") == "Size is 2.11 KB to under 2.12 KB")
+        #expect(words("1000b") == "Size is 1,000 bytes")
+        #expect(words("1b") == "Size is 1 byte")
+        #expect(words(">1b") == "Size is larger than 1 byte")
+        #expect(words("<5b") == "Size is smaller than 5 bytes")
+        #expect(words(">10mb") == "Size is larger than 10 MB")
+        #expect(words("1mb..10mb") == "Size is between 1 and 10 MB")
+    }
+
+    // MARK: Permissions
+
+    @Test func permissionsAreDigitsOrLetters() {
+        let modes: [(String, UInt16)] = [
+            ("755", 0o755), ("0755", 0o755), ("644", 0o644), ("0644", 0o644), ("4755", 0o4755), ("2755", 0o2755),
+            ("1777", 0o1777), ("7777", 0o7777), ("000", 0), ("777", 0o777), ("rwxr-xr-x", 0o755),
+            ("rw-r--r--", 0o644), ("-rw-r--r--", 0o644), ("drwxr-xr-x", 0o755), ("rwsr-xr-x", 0o4755),
+            ("rwSr--r--", 0o4644), ("rwxr-sr-x", 0o2755), ("rwxr-Sr-x", 0o2745), ("rwxrwxrwt", 0o1777),
+            ("rw-rw-rwT", 0o1666), ("---------", 0), ("r-xr-xr-x", 0o555),
+        ]
+        for (text, mode) in modes { #expect(SearchPermissions.mode(text) == mode, "\(text)") }
+        for text in [
+            "800", "75", "7", "77777", "abc", "", "rwx", "rwxr-xr-", "rwxr-xr-xx", "rwxr-xr-y", "wrx------",
+            "rwsr-xr-s", "rwtr-xr-x", "RWXR-XR-X", "rwx r-x r-x", "0o755", "-755", "7a5",
+        ] {
+            #expect(SearchPermissions.mode(text) == nil, "\(text)")
+        }
+    }
+
+    @Test func permissionsAreWrittenAsLsWritesThem() {
+        #expect(SearchPermissions.letters(0o755) == "rwxr-xr-x")
+        #expect(SearchPermissions.letters(0o644) == "rw-r--r--")
+        #expect(SearchPermissions.letters(0o4755) == "rwsr-xr-x")
+        #expect(SearchPermissions.letters(0o4644) == "rwSr--r--")
+        #expect(SearchPermissions.letters(0o2755) == "rwxr-sr-x")
+        #expect(SearchPermissions.letters(0o1777) == "rwxrwxrwt")
+        #expect(SearchPermissions.letters(0o1666) == "rw-rw-rwT")
+        #expect(SearchPermissions.octal(0o755) == "755")
+        #expect(SearchPermissions.octal(0o4755) == "4755")
+        #expect(SearchPermissions.octal(0o7) == "007")
+        #expect(SearchPermissions.octal(0) == "000")
+        #expect(SearchPermissions.words(0o644) == "644 (rw-r--r--)")
+    }
+
+    // A mode written either way reads back as itself.
+    @Test func modesReadBackAsThemselves() {
+        for mode in modes {
+            #expect(SearchPermissions.mode(SearchPermissions.letters(mode)) == mode, "\(mode)")
+            #expect(SearchPermissions.octal(mode).flatMap(SearchPermissions.mode) == mode, "\(mode)")
+        }
+    }
+
+    // MARK: Permissions with `?`, against every mode
+
+    /// A mode's four octal digits, as `stat -f %Mp%Lp` shows them: "0755", "4755".
+    private func octalDigits(_ mode: UInt16) -> [Character] { Array(String(format: "%04o", Int(mode))) }
+
+    /// Whether digits typed as `pattern` say `mode`, digit by digit: each typed digit is the mode's or `?`. Three
+    /// digits leave the fourth unsaid: any when one of them is `?`, 0 when none is (`755` is one mode, 0755).
+    private func digitsSay(_ pattern: String, _ mode: UInt16) -> Bool {
+        var typed = Array(pattern)
+        if typed.count == 3 { typed.insert(typed.contains("?") ? "?" : "0", at: 0) }
+        return zip(typed, octalDigits(mode)).allSatisfy { $0 == "?" || $0 == $1 }
+    }
+
+    /// The letters `ls -l` shows for a mode, written here from `ls`'s own rules rather than the app's.
+    private func lsLetters(_ mode: UInt16) -> [Character] {
+        func has(_ bit: UInt16) -> Bool { mode & bit != 0 }
+        let owner: [Character] = [
+            has(0o400) ? "r" : "-", has(0o200) ? "w" : "-",
+            has(0o4000) ? (has(0o100) ? "s" : "S") : (has(0o100) ? "x" : "-"),
+        ]
+        let group: [Character] = [
+            has(0o40) ? "r" : "-", has(0o20) ? "w" : "-",
+            has(0o2000) ? (has(0o10) ? "s" : "S") : (has(0o10) ? "x" : "-"),
+        ]
+        let others: [Character] = [
+            has(0o4) ? "r" : "-", has(0o2) ? "w" : "-",
+            has(0o1000) ? (has(0o1) ? "t" : "T") : (has(0o1) ? "x" : "-"),
+        ]
+        return owner + group + others
+    }
+
+    /// Whether letters typed as `pattern` say `mode`, letter by letter: each is the mode's or `?`.
+    private func lettersSay(_ pattern: String, _ mode: UInt16) -> Bool {
+        var typed = Array(pattern)
+        if typed.count == 10 { typed.removeFirst() }
+        return zip(typed, lsLetters(mode)).allSatisfy { $0 == "?" || $0 == $1 }
+    }
+
+    /// Modes worth telling apart: none, the usual ones, and each special bit.
+    private let modes: [UInt16] = [
+        0o000, 0o600, 0o640, 0o644, 0o700, 0o750, 0o751, 0o755, 0o775, 0o777, 0o1777, 0o2755, 0o4755, 0o6755,
+    ]
+
+    // Each pattern finds exactly the modes its own characters say: digits by the mode's octal digits, letters by the
+    // letters `ls` shows.
+    @Test func patternsFindWhatTheirCharactersSay() throws {
+        let digitPatterns = [
+            "755", "644", "000", "?5?", "?4?", "??5", "5??", "7??", "??7", "?55", "7?5", "???", "0?5?", "?755", "4???",
+            "2?5?", "?7??", "4755", "6755", "1777",
+        ]
+        for pattern in digitPatterns {
+            let permission = try #require(SearchPermissions.permission(pattern), "\(pattern)")
+            for mode in modes {
+                #expect(permission.holds(mode) == digitsSay(pattern, mode), "\(pattern) and \(String(mode, radix: 8))")
+            }
+        }
+        let letterPatterns = [
+            "rwxr-xr-x", "-rw-r--r--", "???r-x???", "???r-s???", "rwx??????", "rws??????", "??????rwx", "??????rwt",
+            "r????????", "?????????",
+        ]
+        for pattern in letterPatterns {
+            let permission = try #require(SearchPermissions.permission(pattern), "\(pattern)")
+            for mode in modes {
+                #expect(permission.holds(mode) == lettersSay(pattern, mode), "\(pattern) and \(String(mode, radix: 8))")
+            }
+        }
+    }
+
+    // The cases worth naming, each said both ways where both can say it.
+    @Test func wildcardPermissionsNamed() throws {
+        let groupFive = try #require(SearchPermissions.permission("?5?"))
+        for mode: UInt16 in [0o755, 0o750, 0o751, 0o4755, 0o2755, 0o1757, 0o7757, 0o057] {
+            #expect(groupFive.holds(mode), "?5? and \(String(mode, radix: 8))")
+        }
+        for mode: UInt16 in [0o644, 0o640, 0o600, 0o745, 0o775, 0o705, 0o777, 0o000, 0o7777] {
+            #expect(!groupFive.holds(mode), "?5? and \(String(mode, radix: 8))")
+        }
+        // In letters, `x` is not `s`: a set-group 2755 shows `r-s`.
+        let groupReadRun = try #require(SearchPermissions.permission("???r-x???"))
+        #expect(groupReadRun.holds(0o755) && groupReadRun.holds(0o4755) && !groupReadRun.holds(0o2755))
+        #expect(try #require(SearchPermissions.permission("???r-s???")).holds(0o2755))
+        // A fourth digit says the special digit: `0?5?` has none of them.
+        let noSpecial = try #require(SearchPermissions.permission("0?5?"))
+        #expect(noSpecial.holds(0o755) && !noSpecial.holds(0o4755) && !noSpecial.holds(0o2755))
+        #expect(try #require(SearchPermissions.permission("?755")).holds(0o4755))
+        // Three digits without `?` are one mode.
+        let exact = try #require(SearchPermissions.permission("755"))
+        #expect(modes.filter(exact.holds) == [0o755])
+        #expect(modes.filter(try #require(SearchPermissions.permission("4755")).holds) == [0o4755])
+        #expect(modes.filter(try #require(SearchPermissions.permission("rwxr-xr-x")).holds) == [0o755])
+        // All `?`: anything.
+        #expect(modes.allSatisfy(try #require(SearchPermissions.permission("???")).holds))
+        #expect(modes.allSatisfy(try #require(SearchPermissions.permission("?????????")).holds))
+        for text in ["?", "??", "?????", "7?a", "?8?", "rwx?", "r?x??????x", "*5*", "?5", "x5x", ".5."] {
+            #expect(SearchPermissions.permission(text) == nil, "\(text)")
+        }
+        #expect(SearchPermissions.mode("?5?") == nil)
+    }
+
+    @Test func wildcardPermissionsAreWrittenBackAsTyped() {
+        func words(_ text: String) -> String? { SearchPermissions.permission(text).map(SearchPermissions.words) }
+        #expect(words("?5?") == "?5?")
+        #expect(words("7??") == "7??")
+        #expect(words("0?5?") == "0?5?")
+        #expect(words("?755") == "?755")
+        #expect(words("755") == "755 (rwxr-xr-x)")
+        #expect(words("4755") == "4755 (rwsr-xr-x)")
+        // Letters that no digits say stay letters.
+        #expect(words("???r-x???") == "???r-x???")
+        #expect(words("r????????") == "r????????")
+        #expect(words("rw-r--r-?") == "rw-r--r-?")
+    }
+
+    // What is written back reads back as the same permissions.
+    @Test func writtenPermissionsReadBack() throws {
+        for text in ["755", "4755", "?5?", "0?5?", "7??", "?755", "???r-x???", "r????????", "rw-r--r-?", "rwSr--r--"] {
+            let permission = try #require(SearchPermissions.permission(text), "\(text)")
+            #expect(
+                SearchPermissions.permission(SearchPermissions.letters(permission.mode, mask: permission.mask))
+                    == permission || SearchPermissions.octal(permission.mode, mask: permission.mask) != nil, "\(text)")
+            if let octal = SearchPermissions.octal(permission.mode, mask: permission.mask) {
+                #expect(SearchPermissions.permission(octal) == permission, "\(text) as \(octal)")
+            }
+        }
+    }
+
+    @Test func permissionWords() {
+        #expect(query("perm:755").conditions == [.permissions([0o755])])
+        #expect(query("perm:?5?").conditions == [.permissions([SearchPermission(mode: 0o050, mask: 0o070)])])
+        #expect(query("perm:!?5?").conditions == [.not(.permissions([SearchPermission(mode: 0o050, mask: 0o070)]))])
+        #expect(query("perm:?5?,?4?").conditions.count == 1)
+        #expect(query("perm:755,644").conditions == [.permissions([0o755, 0o644])])
+        #expect(query("perm:rwxr-xr-x").conditions == [.permissions([0o755])])
+        // Letters as typed: `S` isn't `s`.
+        #expect(query("perm:rwSr--r--").conditions == [.permissions([0o4644])])
+        #expect(query("PERM:644").conditions == [.permissions([0o644])])
+        #expect(query("perm:755 perm:644").conditions == [.permissions([0o755]), .permissions([0o644])])
+        for text in ["perm:", "perm:8", "perm:75", "perm:755,8", "perm:rwx", "perm:,"] {
+            #expect(query(text).hasUnfinished, "\(text)")
+        }
+        #expect(query("perm:755,").conditions == [.permissions([0o755])])
+        #expect(
+            SearchConditionText.chip(.permissions([0o755, 0o644]))
+                == "Permissions are 755 (rwxr-xr-x) or 644 (rw-r--r--)")
+    }
+
+    // MARK: Not
+
+    @Test func anExclamationMarkAsksForWhatItDoesntSay() {
+        #expect(query("kind:!pdf").conditions == [.not(.kind([.pdf]))])
+        #expect(query("kind:!pdf,picture").conditions == [.not(.kind([.pdf, .picture]))])
+        #expect(query("ext:!tmp").conditions == [.not(.fileExtension(["tmp"]))])
+        #expect(query("ext:!.tmp,log").conditions == [.not(.fileExtension(["tmp", "log"]))])
+        #expect(query("tag:!red").conditions == [.not(.tags(["red"], all: false))])
+        #expect(query("perm:!777").conditions == [.not(.permissions([0o777]))])
+        #expect(query("perm:!rwxrwxrwx").conditions == [.not(.permissions([0o777]))])
+    }
+
+    // Before the word, the same as before its value.
+    @Test func anExclamationMarkBeforeTheWord() {
+        #expect(query("!kind:pdf").conditions == query("kind:!pdf").conditions)
+        #expect(query("!tag:Red,blue").conditions == [.not(.tags(["Red", "blue"], all: false))])
+        #expect(query("!ext:tmp").conditions == [.not(.fileExtension(["tmp"]))])
+        #expect(query("!perm:777").conditions == [.not(.permissions([0o777]))])
+        #expect(query("!KIND:PDF").conditions == [.not(.kind([.pdf]))])
+        let words = SearchQuery.words("!kind:pdf", calendar: calendar)
+        #expect(words.first?.keyLength == 6)
+        #expect(words.first?.key == .kind)
+    }
+
+    // An attribute's not is its other side: `is:!hidden` is `not:hidden`.
+    @Test func anAttributesNotIsItsOtherSide() {
+        #expect(query("is:!hidden").conditions == [.attribute(.hidden, is: false)])
+        #expect(query("not:!hidden").conditions == [.attribute(.hidden, is: true)])
+        #expect(query("!is:locked").conditions == [.attribute(.locked, is: false)])
+        #expect(query("!not:locked").conditions == [.attribute(.locked, is: true)])
+        #expect(query("is:!hidden").conditions == query("not:hidden").conditions)
+    }
+
+    // A skipped folder is already left out; two marks are one too many.
+    @Test func notWhereItHasNoMeaning() {
+        for text in [
+            "picture:!!4k", "!picture:!4k", "picture:>!4k", "skip:!build", "!skip:build", "kind:!!pdf", "!kind:!pdf",
+            "!!kind:pdf",
+            "kind:!", "kind:!,", "tag:!", "!kind:", "kind:!nothing", "perm:!8", "is:!nothing", "size:!!1mb",
+            "!size:!1mb", "modified:!!today", "size:!", "modified:!",
+        ] {
+            #expect(query(text).hasUnfinished, "\(text)")
+            #expect(query(text).conditions.isEmpty, "\(text)")
+        }
+    }
+
+    // MARK: At least and at most
+
+    // `>=` and `<=` include the size itself, as typed, to the byte; `=>` and `=<` are read the same.
+    @Test func atLeastAndAtMostIncludeTheSize() {
+        #expect(rule(">=1mb") == SearchSizeRule(comparison: .atLeast, value: 1, unit: .megabytes))
+        #expect(rule("<=1mb") == SearchSizeRule(comparison: .atMost, value: 1, unit: .megabytes))
+        #expect(rule("=>1mb") == rule(">=1mb"))
+        #expect(rule("=<1mb") == rule("<=1mb"))
+        #expect(rule(">=1MB") == rule(">=1mb"))
+        let edges: [(String, Int64, Bool)] = [
+            (">=1mb", 999_999, false), (">=1mb", 1_000_000, true), (">=1mb", 5_000_000_000, true),
+            ("<=1mb", 1_000_000, true), ("<=1mb", 1_000_001, false), ("<=1mb", 0, true),
+            (">=1000b", 999, false), (">=1000b", 1000, true), ("<=1000b", 1000, true), ("<=1000b", 1001, false),
+            (">=2.11kb", 2109, false), (">=2.11kb", 2110, true), ("<=2.11kb", 2110, true), ("<=2.11kb", 2111, false),
+            // Part of a byte: at least 1234.5 is 1235 on; at most is to 1234.
+            (">=1.2345kb", 1234, false), (">=1.2345kb", 1235, true), ("<=1.2345kb", 1234, true),
+            ("<=1.2345kb", 1235, false),
+            // `>` and `<` leave the size itself out.
+            (">1mb", 1_000_000, false), (">1mb", 1_000_001, true), ("<1mb", 1_000_000, false), ("<1mb", 999_999, true),
+        ]
+        for (text, size, meets) in edges { #expect(holds(text, size) == meets, "\(text) at \(size)") }
+        func words(_ text: String) -> String? { query(text).conditions.first.map { SearchConditionText.chip($0) } }
+        #expect(words("size:>=1mb") == "Size is at least 1 MB")
+        #expect(words("size:<=500kb") == "Size is at most 500 KB")
+        #expect(words("size:!>=1mb") == "Size is not at least 1 MB")
+        #expect(words("picture:>=hd") == "Picture is at least 1,920 px")
+        #expect(words("picture:=<4k") == "Picture is at most 3,840 px")
+        // A sign, then a range, or two signs, or `=` alone: none of them reads.
+        for text in [
+            "size:>=1mb..2mb", "size:>=>1mb", "size:==1mb", "size:=1mb", "size:>==1mb", "size:<>1mb", "size:>=",
+            "picture:=1920", "picture:>=", "picture:>=0", "modified:=7d", "modified:<=7d",
+            "modified:>=2026-03..2026-04",
+        ] {
+            #expect(query(text).hasUnfinished, "\(text)")
+            #expect(query(text).conditions.isEmpty, "\(text)")
+        }
+    }
+
+    @Test func atLeastAndAtMostForPictures() {
+        #expect(query("picture:>=hd").conditions == [.pictureSize(SearchPixelRule(comparison: .atLeast, pixels: 1920))])
+        #expect(query("picture:=>1920").conditions == query("picture:>=hd").conditions)
+        #expect(query("picture:<=4k").conditions == [.pictureSize(SearchPixelRule(comparison: .atMost, pixels: 3840))])
+        #expect(
+            query("picture:!>=4k").conditions == [
+                .not(.pictureSize(SearchPixelRule(comparison: .atLeast, pixels: 3840)))
+            ])
+        let atLeast = SearchPixelRule(comparison: .atLeast, pixels: 1920)
+        let atMost = SearchPixelRule(comparison: .atMost, pixels: 1920)
+        #expect(!atLeast.holds(1919) && atLeast.holds(1920) && atLeast.holds(1921))
+        #expect(atMost.holds(1919) && atMost.holds(1920) && !atMost.holds(1921))
+    }
+
+    // A day or a month: `>=` from its first day on, `<=` to the end of its last; a count is more than so long ago.
+    @Test func atLeastAndAtMostForDates() throws {
+        func day(_ year: Int, _ month: Int, _ day: Int) throws -> Date {
+            try #require(calendar.date(from: DateComponents(year: year, month: month, day: day)))
+        }
+        #expect(query("modified:>=2026-03").conditions == [.date(.modified, .onOrAfter(try day(2026, 3, 1)))])
+        #expect(query("modified:<=2026-03").conditions == [.date(.modified, .onOrBefore(try day(2026, 3, 31)))])
+        #expect(query("modified:>=2026-03-15").conditions == [.date(.modified, .onOrAfter(try day(2026, 3, 15)))])
+        #expect(query("modified:=<2026-03-15").conditions == [.date(.modified, .onOrBefore(try day(2026, 3, 15)))])
+        #expect(query("taken:>=1y").conditions == [.date(.taken, .moreThanAgo(1, .years))])
+        #expect(query("added:!>=2026-03").conditions == [.not(.date(.added, .onOrAfter(try day(2026, 3, 1))))])
+        let now = try day(2026, 6, 1)
+        let from = SearchDateRule.onOrAfter(try day(2026, 3, 1)).span(now: now, calendar: calendar)
+        #expect(from == SearchDateSpan(start: try day(2026, 3, 1), end: nil))
+        let to = SearchDateRule.onOrBefore(try day(2026, 3, 31)).span(now: now, calendar: calendar)
+        #expect(to == SearchDateSpan(start: nil, end: try day(2026, 4, 1)))
+        // `>` is after the month's last day; `>=` takes it in.
+        let after = SearchDateRule.after(try day(2026, 3, 31)).span(now: now, calendar: calendar)
+        #expect(after == SearchDateSpan(start: try day(2026, 4, 1), end: nil))
+        // Never opened counts as long ago: to a day, not from one.
+        #expect(SearchDateRule.onOrBefore(now).takesNoDate)
+        #expect(!SearchDateRule.onOrAfter(now).takesNoDate)
+        let words = query("modified:>=2026-03").conditions.first.map { SearchConditionText.chip($0) }
+        #expect(words?.contains("on or after") == true)
+        #expect(
+            query("modified:<=2026-03").conditions.first.map { SearchConditionText.chip($0) }?.contains("on or before")
+                == true)
+    }
+
+    // Sizes and dates take `!` too: anything but that size, or that day, span or range.
+    @Test func notOnSizesAndDates() {
+        let oneMegabyte = SearchSizeRule(comparison: .equal, value: 1, unit: .megabytes)
+        #expect(query("size:!1mb").conditions == [.not(.size(oneMegabyte))])
+        #expect(
+            query("size:!>10mb").conditions == [
+                .not(.size(SearchSizeRule(comparison: .larger, value: 10, unit: .megabytes)))
+            ])
+        #expect(
+            query("size:!1mb..2mb").conditions.first.map { if case .not(.size) = $0 { true } else { false } } == true)
+        #expect(query("modified:!today").conditions == [.not(.date(.modified, .today))])
+        #expect(query("opened:!7d").conditions == [.not(.date(.lastOpened, .withinLast(7, .days)))])
+        #expect(query("taken:!>1y").conditions == [.not(.date(.taken, .moreThanAgo(1, .years)))])
+        #expect(query("added:!2026-03").conditions.count == 1)
+        func words(_ text: String) -> String? { query(text).conditions.first.map { SearchConditionText.chip($0) } }
+        #expect(words("size:!1mb") == "Size is not 1 MB to under 2 MB")
+        #expect(words("size:!>10mb") == "Size is not larger than 10 MB")
+        #expect(words("modified:!today") == "Not modified today")
+        #expect(words("opened:!7d")?.hasPrefix("Not last opened") == true)
+    }
+
+    // `!` before the word is `!` before its value, for every word that takes it.
+    @Test func notBeforeTheWordIsNotBeforeItsValue() {
+        let pairs = [
+            ("kind", "pdf"), ("ext", "tmp"), ("tag", "red"), ("perm", "?5?"), ("size", "1mb"), ("size", ">5k"),
+            ("modified", "today"), ("created", "7d"), ("added", "2026-03"), ("opened", ">1y"), ("taken", "week"),
+            ("is", "hidden"), ("not", "locked"),
+        ]
+        for (key, value) in pairs {
+            let before = query("!\(key):\(value)").conditions
+            #expect(!before.isEmpty, "!\(key):\(value)")
+            #expect(before == query("\(key):!\(value)").conditions, "!\(key):\(value)")
+        }
+    }
+
+    @Test func notIsWorded() {
+        func words(_ text: String) -> String? { query(text).conditions.first.map { SearchConditionText.chip($0) } }
+        #expect(words("kind:!pdf") == "Kind is not PDF")
+        #expect(
+            words("kind:!pdf,picture") == "Kind is not Picture or PDF"
+                || words("kind:!pdf,picture") == "Kind is not PDF or Picture")
+        #expect(words("ext:!tmp,log") == "Extension is not tmp or log")
+        #expect(words("tag:!red") == "Not tagged red")
+        #expect(words("perm:!777") == "Permissions are not 777 (rwxrwxrwx)")
+        #expect(words("is:!locked") == words("not:locked"))
+    }
+
+    // A name word after `!` is one a name must not hold; in quotes, `!` is text.
+    @Test func aNameWordLeftOut() {
+        let read = query("report !draft kind:pdf")
+        #expect(read.names == ["report"])
+        #expect(read.leftOutNames == ["draft"])
+        #expect(read.conditions == [.kind([.pdf])])
+        #expect(query("!draft").names.isEmpty)
+        #expect(query("!draft").leftOutNames == ["draft"])
+        #expect(query("\"!draft\"").names == ["!draft"])
+        #expect(query("\"!draft\"").leftOutNames.isEmpty)
+        #expect(query("!\"old copy\"").leftOutNames == ["old copy"])
+        // A condition inside a left-out phrase stays text.
+        let phrase = query("!\"a kind:pdf b\"")
+        #expect(phrase.conditions.isEmpty)
+        #expect(phrase.leftOutNames == ["a kind:pdf b"])
+        // A word that isn't a condition's, after `!`, is a name left out.
+        #expect(query("!note:draft").leftOutNames == ["note:draft"])
+        #expect(query("!").names == ["!"])
+        #expect(query("a!b").names == ["a!b"])
+        #expect(query("!!draft").leftOutNames == ["!draft"])
+        #expect(query("! draft").names == ["!", "draft"])
+    }
+
+    // MARK: Suggestions
+
+    private func suggest(
+        _ text: String, caret: Int? = nil, newWord: Bool = false, conditionWords: Bool = true
+    ) -> SearchQuerySuggestions? {
+        SearchQuerySuggestions.make(
+            query: text, caret: caret ?? text.utf16.count, tags: ["Red", "Work"], folders: ["node_modules"],
+            listsWordsForNewWord: newWord, offersConditionWords: conditionWords,
+            now: calendar.date(from: DateComponents(year: 2026, month: 11, day: 24))!, calendar: calendar)
+    }
+
+    // A size that reads as it is is offered as itself, said, and nothing is chosen for Return to take instead: the
+    // same in every unit.
+    @Test func aWholeSizeIsKeptAsTyped() throws {
+        for (typed, title) in [
+            ("1mb", "1 MB to under 2 MB"), ("1kb", "1 KB to under 2 KB"), ("1gb", "1 GB to under 2 GB"),
+            ("1000b", "1,000 bytes"), (">1kb", "Larger than 1 KB"), ("<5mb", "Smaller than 5 MB"),
+            ("1mb..10mb", "Between 1 and 10 MB"),
+        ] {
+            let list = try #require(suggest("size:" + typed), "\(typed)")
+            #expect(list.rows.map(\.hint) == [typed], "\(typed)")
+            #expect(list.rows.first?.title == title, "\(typed)")
+            #expect(!list.highlightsFirst, "\(typed)")
+            #expect(list.typedIsComplete, "\(typed)")
+        }
+    }
+
+    // A range is offered only once `..` is typed, from what is before it, ends only above it.
+    @Test func rangesComeAfterTwoDots() throws {
+        #expect(try #require(suggest("size:1mb..")).rows.map(\.hint) == ["1mb..10mb", "1mb..100mb"])
+        #expect(try #require(suggest("size:1kb..")).rows.map(\.hint) == ["1kb..10kb", "1kb..100kb"])
+        #expect(try #require(suggest("size:1mb..5")).rows.map(\.hint) == ["1mb..5mb", "1mb..5gb"])
+        #expect(try #require(suggest("size:500kb..2")).rows.map(\.hint) == ["500kb..2mb", "500kb..2gb"])
+        // A range has no sign, and starts with a size: the list says so.
+        #expect(suggest("size:..")?.rows.first?.tone == .problem)
+        #expect(suggest("size:>1mb..")?.rows.first?.tone == .problem)
+        for typed in ["1", "1m", "1mb", "1kb", ">1", "<2"] {
+            let list = suggest("size:" + typed)
+            #expect(list?.rows.contains { $0.hint.contains("..") } != true, "\(typed)")
+        }
+    }
+
+    @Test func aNumberIsOfferedInEachUnit() throws {
+        let equal = try #require(suggest("size:1"))
+        #expect(equal.rows.map(\.hint) == ["1kb", "1mb", "1gb", "1b"])
+        #expect(equal.rows.first?.title == "1 KB to under 2 KB")
+        #expect(equal.highlightsFirst)
+        #expect(!equal.typedIsComplete)
+        let larger = try #require(suggest("size:>2.5"))
+        #expect(larger.rows.map(\.hint) == [">2.5kb", ">2.5mb", ">2.5gb", ">2.5b"])
+        #expect(try #require(suggest("size:<7")).rows.first?.title == "Smaller than 7 KB")
+    }
+
+    @Test func theExamplesShowEachKindOfSize() throws {
+        let list = try #require(suggest("size:"))
+        #expect(list.rows.map(\.hint) == [">10mb", ">100mb", ">1gb", "<1mb", "1mb", "1mb..10mb"])
+        // Typing narrows them, never to a range.
+        #expect(try #require(suggest("size:>1")).rows.map(\.hint) == [">1kb", ">1mb", ">1gb", ">1b"])
+    }
+
+    @Test func notIsOfferedAsTyped() throws {
+        let kinds = try #require(suggest("kind:!pd"))
+        #expect(kinds.rows.first == SearchQuerySuggestion(title: "Not PDF", hint: "!pdf", replacement: "kind:!pdf "))
+        let before = try #require(suggest("!kind:pd"))
+        #expect(before.rows.first?.replacement == "!kind:pdf ")
+        let tags = try #require(suggest("tag:!r"))
+        #expect(tags.rows.first?.replacement == "tag:!Red ")
+        let after = try #require(suggest("kind:!pdf,pic"))
+        #expect(after.rows.first?.replacement == "kind:!pdf,picture ")
+        // Sizes and dates take it, their rows said as a sentence goes on.
+        let sizes = try #require(suggest("size:!1"))
+        #expect(sizes.rows.first?.hint == "!1kb")
+        #expect(sizes.rows.first?.title == "Not 1 KB to under 2 KB")
+        #expect(sizes.rows.first?.replacement == "size:!1kb ")
+        let days = try #require(suggest("modified:!7"))
+        #expect(days.rows.first?.hint == "!7d")
+        #expect(days.rows.first?.title == "Not within the last 7 days")
+        #expect(try #require(suggest("kind:!pd")).rows.first?.title == "Not PDF")
+        // A picture's size takes it: anything but that size.
+        let pictures = try #require(suggest("picture:!4"))
+        #expect(pictures.rows.first?.hint == "!4k")
+        #expect(pictures.rows.first?.title == "Not 3,840 px (4K)")
+        #expect(try #require(suggest("picture:!>4")).rows.first?.title == "Not larger than 4K")
+        // Where `!` means nothing, the list says so.
+        #expect(suggest("skip:!x")?.rows.first?.tone == .problem)
+    }
+
+    @Test func permissionsAreOffered() throws {
+        let all = try #require(suggest("perm:"))
+        #expect(all.rows.map(\.hint) == ["755", "644", "700", "600", "750", "640", "777", "666", "444"])
+        #expect(all.rows.first?.title == "rwxr-xr-x")
+        #expect(try #require(suggest("perm:7")).rows.map(\.hint) == ["755", "700", "750", "777"])
+        #expect(try #require(suggest("perm:rwx")).rows.map(\.hint) == ["755", "700", "750", "777"])
+        let typed = try #require(suggest("perm:751"))
+        #expect(typed.rows.first?.hint == "751")
+        #expect(typed.typedIsComplete)
+        #expect(try #require(suggest("perm:!6")).rows.first?.title == "Not rw-r--r--")
+    }
+
+    // A value that reads as it is isn't replaced by one nobody chose; one being typed is completed.
+    @Test func whatIsCompleteIsKept() throws {
+        #expect(try #require(suggest("kind:pdf")).typedIsComplete)
+        #expect(try !#require(suggest("kind:pdf")).highlightsFirst)
+        #expect(try #require(suggest("kind:pd")).highlightsFirst)
+        #expect(try !#require(suggest("kind:pdf,pic")).typedIsComplete)
+        #expect(try #require(suggest("modified:7d")).typedIsComplete)
+        #expect(try !#require(suggest("modified:7")).typedIsComplete)
+        // A tag or a folder, free names, is whole only as one listed.
+        #expect(try #require(suggest("tag:red")).typedIsComplete)
+        #expect(try !#require(suggest("tag:r")).typedIsComplete)
+        #expect(try #require(suggest("skip:node_modules")).typedIsComplete)
+    }
+
+    // The box lists the words below its text: it offers only a condition's values.
+    @Test func theBoxOffersOnlyValues() throws {
+        #expect(suggest("", newWord: false, conditionWords: false) == nil)
+        #expect(suggest("pdf", conditionWords: false) == nil)
+        #expect(suggest("d", conditionWords: false) == nil)
+        #expect(suggest("kind:pdf ", conditionWords: false) == nil)
+        #expect(try #require(suggest("kind:pd", conditionWords: false)).rows.first?.hint == "pdf")
+        #expect(try #require(suggest("size:1", conditionWords: false)).rows.count == 4)
+    }
+
+    // Every row's end is what it types: Help is the link at the list's foot, not a row.
+    @Test func everyRowTypesWhatItsEndSays() throws {
+        let words = try #require(suggest("", newWord: true))
+        #expect(words.rows.allSatisfy { !$0.opensHelp && $0.replacement == $0.hint })
+        #expect(words.rows.map(\.hint).last == "skip:")
+        #expect(words.rows.map(\.hint).contains("perm:"))
+        #expect(try #require(suggest("kind:")).rows.allSatisfy { !$0.opensHelp })
+    }
+
+    // A name left out offers nothing: it is a name.
+    @Test func aNameLeftOutOffersNothing() {
+        #expect(suggest("!d") == nil)
+        #expect(suggest("!pdf") == nil)
+        #expect(suggest("report !draft ", newWord: true) == nil)
+    }
+}

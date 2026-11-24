@@ -70,6 +70,10 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         field.onFocus = { [weak self] in self?.fieldFocused() }
         field.onOptions = { [weak self] fromKeyboard in self?.openOptions(fromKeyboard: fromKeyboard) }
         field.onClear = { [weak self] in self?.clearPressed() }
+        field.onEditSearch = { [weak self] in self?.openEditSearch() }
+        field.onEditorChange = { [weak self] in self?.fieldEditorChanged() }
+        dropdown.view.onChoose = { [weak self] index in self?.chooseSuggestion(index) }
+        dropdown.view.onHelp = { [weak self] in self?.openSyntaxHelp() }
         if field.stringValue != session.draftQuery { field.stringValue = session.draftQuery }
         showOptionMarks()
     }
@@ -202,7 +206,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
                 results: session.shownResults, sortBy: session.sortBy, sortDirection: session.sortDirection,
                 highlight: session.highlightPattern, isRunning: session.isRunning, error: session.error,
                 errorIsQuiet: session.errorIsQuiet, unreadableFolders: session.unreadableFolders,
-                startupDiskName: disk))
+                itemsRead: session.itemsRead, startupDiskName: disk))
         // Results opened start in the mode new views start with; results brought back are given theirs after.
         if opening { content.setViewFilterMode(tab.preferences.listFilterMatch) }
         header.show(
@@ -248,7 +252,9 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     }
 
     func control(_ control: NSControl, textView: NSTextView, doCommandBy selector: Selector) -> Bool {
-        // An open options menu is the system's, which has the keys first.
+        // An open options menu is the system's, which has the keys first; then the list of what the word at the caret
+        // can be.
+        if dropdown.isShown, handleListKey(selector) { return true }
         switch selector {
         case #selector(NSResponder.insertNewline(_:)):
             submit()
@@ -286,6 +292,9 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     /// the search has finished.
     private func submit() {
         let text = field?.stringValue ?? session.draftQuery
+        // A word that can't be read is never searched without: the field keeps the keyboard, every such word is
+        // marked, and the list says what is wrong with each and what would do.
+        if !SearchQuery.problems(text).isEmpty, showProblems(in: text) { return }
         let onScreen = session.submit(text)
         // The list takes the keyboard every time, also after an empty field put the search away.
         dismissField()
@@ -423,6 +432,205 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     }
 
     /// The bar's Options: the same menu as the magnifier's, under the button. The keyboard stays where it is.
+    // MARK: Conditions
+
+    /// Finder's color tags, which `tag:` offers.
+    static let colorTags = ["Red", "Orange", "Yellow", "Green", "Blue", "Purple", "Gray"]
+
+    /// The list under the toolbar of what the word at the field's caret can be.
+    let dropdown = SearchFieldDropdown()
+    /// Esc closed the list for this text, or the field took the keyboard with it: the list waits for it to change.
+    private var listClosedFor: String?
+    /// The field had the keyboard when it last changed.
+    private var fieldWasActive = false
+
+    /// The field's text or caret changed, or it took or let go of the keyboard: the condition words are tinted and the
+    /// list follows the word at the caret.
+    /// The text whose words that can't be read Return showed, every one, until it changes.
+    private var problemsShownFor: String?
+
+    /// Shows what Return found wrong with `text`; false when the field hasn't the keyboard to show it in.
+    private func showProblems(in text: String) -> Bool {
+        guard let field, field.isActive, let editor = field.currentEditor() as? NSTextView,
+            let list = SearchQuerySuggestions.problems(SearchQuery.problems(text))
+        else { return false }
+        problemsShownFor = text
+        listClosedFor = nil
+        SearchQueryTint.apply(to: editor, marksAll: true)
+        dropdown.show(list, under: field)
+        return true
+    }
+
+    func fieldEditorChanged() {
+        guard drivesField, let field, field.isActive, let editor = field.currentEditor() as? NSTextView,
+            tab.window?.attachedSheet == nil, DialogScrim.front(in: tab.window) == nil
+        else {
+            fieldWasActive = false
+            dropdown.hide()
+            return
+        }
+        let text = editor.string
+        if problemsShownFor != nil, problemsShownFor != text { problemsShownFor = nil }
+        SearchQueryTint.apply(to: editor, marksAll: problemsShownFor != nil)
+        if problemsShownFor != nil { return }
+        // Coming to the field, the list doesn't open on the word the caret lands on: it waits for typing. An empty field
+        // lists every condition's word at once, to show what can be typed.
+        if !fieldWasActive {
+            fieldWasActive = true
+            listClosedFor = text.allSatisfy(\.isWhitespace) ? nil : text
+        }
+        if listClosedFor != nil, listClosedFor != text { listClosedFor = nil }
+        let selection = editor.selectedRange()
+        guard listClosedFor == nil, selection.length == 0,
+            let list = SearchQuerySuggestions.make(
+                query: text, caret: selection.location, tags: Self.colorTags,
+                folders: Self.folderNames(in: session.results), listsWordsForNewWord: true)
+        else {
+            dropdown.hide()
+            return
+        }
+        dropdown.show(list, under: field)
+    }
+
+    /// ↑ ↓ move in the list, Tab takes the highlighted row, Return takes it unless it is the name itself, and Esc
+    /// closes the list.
+    private func handleListKey(_ selector: Selector) -> Bool {
+        switch selector {
+        case #selector(NSResponder.moveDown(_:)):
+            dropdown.view.move(1)
+            return true
+        case #selector(NSResponder.moveUp(_:)):
+            dropdown.view.move(-1)
+            return true
+        case #selector(NSResponder.insertTab(_:)):
+            // With nothing highlighted, Tab completes the word being typed; at a new word, or one that reads as it is,
+            // it moves on, as it does anywhere else.
+            let list = dropdown.suggestions
+            guard dropdown.view.highlighted >= 0 || (list?.range.length ?? 0 > 0 && list?.typedIsComplete == false)
+            else {
+                dropdown.hide()
+                return false
+            }
+            chooseSuggestion(max(0, dropdown.view.highlighted))
+            return true
+        case #selector(NSResponder.insertNewline(_:)):
+            // With no row highlighted, Return searches for the text as it is.
+            guard dropdown.view.highlightedRow?.replacement != nil else {
+                dropdown.hide()
+                return false
+            }
+            chooseSuggestion(dropdown.view.highlighted)
+            return true
+        case #selector(NSResponder.cancelOperation(_:)):
+            // In an empty field the list is only the words, shown unasked: Esc lets the field go, as it always has.
+            // With text, it closes the list and the text stays.
+            let empty = field?.stringValue.trimmingCharacters(in: .whitespaces).isEmpty ?? true
+            listClosedFor = field?.stringValue
+            dropdown.hide()
+            return !empty
+        default:
+            return false
+        }
+    }
+
+    /// Help, at Search: the words a search takes and how they combine. The list closes for it.
+    func openSyntaxHelp() {
+        dropdown.hide()
+        listClosedFor = field?.stringValue
+        (NSApp.delegate as? AppDelegate)?.pageWindows?.openHelp(topic: .search)
+    }
+
+    /// The list's row at `index` replaces the word at the caret, as typing it would: the field's text changes and is
+    /// searched.
+    func chooseSuggestion(_ index: Int) {
+        guard let list = dropdown.suggestions, list.rows.indices.contains(index), list.rows[index].canBeChosen else {
+            return
+        }
+        if list.rows[index].opensHelp {
+            openSyntaxHelp()
+            return
+        }
+        guard let replacement = list.rows[index].replacement else {
+            listClosedFor = field?.stringValue
+            dropdown.hide()
+            return
+        }
+        guard let field, let editor = field.currentEditor() as? NSTextView else { return }
+        editor.insertText(replacement, replacementRange: list.range)
+    }
+
+    /// A condition's word from the field's menu, typed after the word at the caret: its values are listed.
+    func typeConditionWord(_ key: SearchQueryKey) {
+        guard let field, let window = tab.window else { return }
+        if !field.isActive {
+            tab.explorerToolbar.beginSearch()
+            if !field.isActive { window.makeFirstResponder(field) }
+            field.currentEditor()?.selectedRange = NSRange(location: (field.stringValue as NSString).length, length: 0)
+        }
+        guard let editor = field.currentEditor() as? NSTextView else { return }
+        let string = editor.string as NSString
+        var location = editor.selectedRange().location
+        while location < string.length, let scalar = Unicode.Scalar(string.character(at: location)),
+            !CharacterSet.whitespaces.contains(scalar)
+        {
+            location += 1
+        }
+        let before = location > 0 ? Unicode.Scalar(string.character(at: location - 1)) : nil
+        let space = before.map { !CharacterSet.whitespaces.contains($0) } ?? false
+        editor.insertText((space ? " " : "") + key.word, replacementRange: NSRange(location: location, length: 0))
+    }
+
+    /// Edit Search: the search's text in the Edit Search box, over the window. Search there searches for it, as Return
+    /// in the field does; Cancel leaves the search as it was.
+    func openEditSearch() {
+        guard let window = tab.window, DialogScrim.front(in: window) == nil, window.attachedSheet == nil else { return }
+        AppMenuPresenter.shared.close()
+        dropdown.hide()
+        let text = field?.stringValue ?? session.draftQuery
+        let root = session.isSearchMode ? session.rootPath : pane.shownFolderPath
+        let box = EditSearchBox(
+            text: text,
+            folderName: ExplorerTabs.folderDisplayName(
+                root, homePath: tab.trashHomePath, startupDiskName: tab.services.startupDisk.name),
+            nameVerb: session.patternMode == .text ? "contains" : "matches", tags: Self.colorTags,
+            folders: { [weak self] in Self.folderNames(in: self?.session.results ?? []) })
+        let scrim = DialogScrim(panel: box, placement: .sheet)
+        scrim.onScrimPress = { [weak box] in box?.onClose() }
+        box.onClose = { [weak scrim] in scrim?.dismiss() }
+        box.onHelp = { (NSApp.delegate as? AppDelegate)?.pageWindows?.openHelp(topic: .search) }
+        box.onSubmit = { [weak self, weak scrim] text in
+            scrim?.dismiss()
+            self?.searchFromEditor(text)
+        }
+        scrim.present(in: window)
+        box.opened()
+    }
+
+    /// What the Edit Search box gives is searched for as Return in the field would: the field shows it, and the results
+    /// take the keyboard.
+    private func searchFromEditor(_ text: String) {
+        session.setDraft(text)
+        if drivesField, let field, field.stringValue != text { field.stringValue = text }
+        submit()
+    }
+
+    /// The names of the folders the results are in, below the folder searched, those holding the most results first.
+    static func folderNames(in results: [SearchResultItem]) -> [String] {
+        var counts: [Substring: Int] = [:]
+        for item in results where item.relativeParentPath != "." {
+            for name in Set(item.relativeParentPath.split(separator: "/")) { counts[name, default: 0] += 1 }
+        }
+        return counts.sorted { $0.value != $1.value ? $0.value > $1.value : $0.key < $1.key }.map { String($0.key) }
+    }
+
+    /// Clear Search Conditions: the condition words go from the text, and what is left is searched.
+    func clearConditions() {
+        let text = SearchQuery.removingConditions(from: field?.stringValue ?? session.draftQuery)
+        session.setDraft(text)
+        if drivesField, let field, field.stringValue != text { field.stringValue = text }
+        session.submit(text)
+    }
+
     func openOptionsFromBar() {
         let presenter = AppMenuPresenter.shared
         let button = header.optionsButton
@@ -483,6 +691,13 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
             item("Skip .git Folders", search.skipGitFolders, .skipGitFolders) {
                 search.setSkipGitFolders(!search.skipGitFolders)
             },
+            .separator,
+            .heading("Conditions"),
         ]
+            + SearchQueryKey.menuOrder.map { key in
+                AppMenuItem(title: key.title, detail: key == .is ? "is: · not:" : key.word) { [weak self] in
+                    self?.typeConditionWord(key)
+                }
+            }
     }
 }

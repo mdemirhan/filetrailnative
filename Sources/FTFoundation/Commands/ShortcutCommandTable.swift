@@ -127,6 +127,8 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case toggleFavorite
     case focusFileSearch
     case showLastSearchResults
+    case editSearch
+    case clearSearchConditions
     case revealInFolder
     case viewAsIcons
     case viewAsDetails
@@ -484,6 +486,12 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .showLastSearchResults, label: "Show Last Search Results", group: .search, defaults: ["Cmd+Shift+F"],
             menuPath: "Edit > Show Last Search Results"),
+        ShortcutCommandDefinition(
+            id: .editSearch, label: "Edit Search…", group: .search, defaults: ["Cmd+Option+F"],
+            menuPath: "Edit > Edit Search…"),
+        ShortcutCommandDefinition(
+            id: .clearSearchConditions, label: "Clear Search Conditions", group: .search, defaults: [],
+            menuPath: "Edit > Clear Search Conditions"),
         ShortcutCommandDefinition(
             id: .revealInFolder, label: "Reveal in Folder", group: .search, defaults: [],
             menuPath: "File > Reveal in Folder"),

@@ -1,0 +1,254 @@
+// The list under the toolbar's search field and the Edit Search box, typed into as a person types: what each lists,
+// what Return, Tab and Esc do with it, and how the box reads the search back.
+import AppKit
+import FTFileSystem
+import FTFoundation
+import Foundation
+import Testing
+
+@testable import FTAppKit
+
+extension ExplorerWindowlessTests {
+    @MainActor
+    @Suite struct SearchListAndEditSearchTests {
+        private func open() async throws -> (ExplorerHarness, MainWindowController, FakeSearchEngine, ManualTimers) {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.openList()
+            let engine = FakeSearchEngine()
+            let timers = ManualTimers()
+            tab.tab.search.session.engine = engine
+            tab.tab.search.session.timers = timers
+            return (harness, tab.tab, engine, timers)
+        }
+
+        /// The field with the keyboard, and its editor.
+        private func focus(_ tab: MainWindowController) throws -> NSTextView {
+            let field = try #require(tab.searchField)
+            #expect(tab.window?.makeFirstResponder(field) == true)
+            return try #require(field.currentEditor() as? NSTextView)
+        }
+
+        /// Typed at the caret, as keys type it.
+        private func type(_ text: String, into editor: NSTextView) {
+            editor.insertText(text, replacementRange: editor.selectedRange())
+        }
+
+        private func list(_ tab: MainWindowController) -> SearchQuerySuggestions? { tab.search.dropdown.suggestions }
+
+        // MARK: The field's list
+
+        @Test func anEmptyFieldListsTheWordsAndHelp() async throws {
+            let (harness, tab, _, _) = try await open()
+            _ = try focus(tab)
+            let shown = try #require(list(tab))
+            #expect(shown.rows.map(\.hint).prefix(3) == ["kind:", "ext:", "size:"])
+            #expect(shown.rows.allSatisfy { !$0.opensHelp })
+            #expect(tab.search.dropdown.view.highlighted == -1)
+            // The foot of the list has the link to Help.
+            #expect(!tab.search.dropdown.view.helpLink.isHidden)
+            await harness.close()
+        }
+
+        @Test func tabCompletesAValueBeingTyped() async throws {
+            let (harness, tab, _, _) = try await open()
+            let editor = try focus(tab)
+            type("kind:pd", into: editor)
+            #expect(list(tab)?.sections.first?.title == "Kind")
+            #expect(tab.search.dropdown.view.highlighted == 0)
+            editor.doCommand(by: #selector(NSResponder.insertTab(_:)))
+            #expect(editor.string == "kind:pdf ")
+            // After a whole condition, the words again.
+            #expect(list(tab)?.rows.first?.hint == "kind:")
+            await harness.close()
+        }
+
+        // A value that reads as it is isn't replaced by a row nobody chose: Return searches for what is typed.
+        @Test func returnKeepsAWholeValue() async throws {
+            let (harness, tab, engine, timers) = try await open()
+            let editor = try focus(tab)
+            type("size:1mb", into: editor)
+            let shown = try #require(list(tab))
+            #expect(shown.rows.map(\.hint) == ["1mb"])
+            #expect(tab.search.dropdown.view.highlighted == -1)
+            editor.doCommand(by: #selector(NSResponder.insertNewline(_:)))
+            timers.advance(0.4)
+            // The results take the keyboard; the field keeps what was typed.
+            #expect(tab.searchField?.stringValue == "size:1mb")
+            let rule = SearchSizeRule(comparison: .equal, value: 1, unit: .megabytes)
+            #expect(engine.starts.last?.conditions == [.size(rule)])
+            await harness.close()
+        }
+
+        // After a word of the name, the name goes on: nothing is listed.
+        @Test func nothingAfterAWordOfTheName() async throws {
+            let (harness, tab, _, _) = try await open()
+            let editor = try focus(tab)
+            type("report ", into: editor)
+            #expect(list(tab) == nil)
+            type("!draft ", into: editor)
+            #expect(list(tab) == nil)
+            await harness.close()
+        }
+
+        @Test func escClosesTheListUntilTheTextChanges() async throws {
+            let (harness, tab, _, _) = try await open()
+            let editor = try focus(tab)
+            type("kind:pd", into: editor)
+            #expect(list(tab) != nil)
+            editor.doCommand(by: #selector(NSResponder.cancelOperation(_:)))
+            #expect(list(tab) == nil)
+            #expect(tab.searchField?.isActive == true)
+            type("f", into: editor)
+            #expect(list(tab)?.rows.first?.hint == "pdf")
+            await harness.close()
+        }
+
+        // In an empty field the list is only the words, shown unasked: one Esc lets the field go, as it did before the
+        // list, not a first to close the list and a second for the field.
+        @Test func escInAnEmptyFieldLetsItGo() async throws {
+            let (harness, tab, _, _) = try await open()
+            let editor = try focus(tab)
+            #expect(list(tab) != nil)
+            editor.doCommand(by: #selector(NSResponder.cancelOperation(_:)))
+            #expect(list(tab) == nil)
+            #expect(tab.searchField?.currentEditor() == nil)
+            await harness.close()
+        }
+
+        // The link at the list's foot opens Help and closes the list.
+        @Test func theHelpLinkClosesTheList() async throws {
+            let (harness, tab, _, _) = try await open()
+            _ = try focus(tab)
+            #expect(list(tab) != nil)
+            tab.search.dropdown.view.helpLink.onPress()
+            #expect(list(tab) == nil)
+            await harness.close()
+        }
+
+        // MARK: The Edit Search box
+
+        private func box(_ tab: MainWindowController) throws -> EditSearchBox {
+            tab.search.openEditSearch()
+            return try #require(DialogScrim.front(in: tab.window)?.panel as? EditSearchBox)
+        }
+
+        private func typeInBox(_ text: String, _ box: EditSearchBox) {
+            box.textView.insertText(text, replacementRange: box.textView.selectedRange())
+        }
+
+        // The words are the buttons below: the box lists only a condition's values.
+        @Test func theBoxListsOnlyValues() async throws {
+            let (harness, tab, _, _) = try await open()
+            let box = try box(tab)
+            #expect(box.window?.firstResponder === box.textView)
+            #expect(box.suggestions.isHidden)
+            typeInBox("pdf ", box)
+            #expect(box.suggestions.isHidden)
+            typeInBox("kind:pd", box)
+            #expect(!box.suggestions.isHidden)
+            #expect(box.suggestions.suggestions?.rows.first?.hint == "pdf")
+            typeInBox("f ", box)
+            #expect(box.suggestions.isHidden)
+            await harness.close()
+        }
+
+        @Test func theBoxReadsTheSearchBack() async throws {
+            let (harness, tab, _, _) = try await open()
+            let box = try box(tab)
+            typeInBox("annual report !draft kind:!pdf size:1mb tag:red,blue", box)
+            #expect(
+                box.readsLabel.stringValue
+                    == "Finds: Name contains “annual” and “report”  ·  Name doesn’t contain “draft”  ·  Kind is not PDF"
+                    + "  ·  Size is 1 MB to under 2 MB  ·  Tagged red or blue")
+            await harness.close()
+        }
+
+        // A word that can't be read is marked once the caret has left it, not while it is typed.
+        @Test func aWordBeingTypedIsntMarkedYet() async throws {
+            let (harness, tab, _, _) = try await open()
+            let box = try box(tab)
+            typeInBox("file size:1", box)
+            #expect(!box.readsLabel.stringValue.contains("can’t be read"))
+            typeInBox(" ", box)
+            #expect(box.readsLabel.stringValue.contains("“size:1” can’t be read. Not a size"))
+            await harness.close()
+        }
+
+        // The notes are to read: a click doesn't turn them into text in an editor, which drew them in its own font.
+        @Test func theBoxsNotesAreNotSelectable() async throws {
+            let (harness, tab, _, _) = try await open()
+            let box = try box(tab)
+            #expect(!box.readsLabel.isSelectable)
+            #expect(!box.combineLabel.isSelectable)
+            #expect(box.combineLabel.stringValue.contains("Every word must match"))
+            #expect(box.combineLabel.stringValue.contains("\"annual report\""))
+            await harness.close()
+        }
+
+        // The box's text is edited as a field's is: ⌘A, ⌘C, ⌘V and ⌘Z go to it, not to the files behind it.
+        @Test func editCommandsGoToTheBoxsText() async throws {
+            let (harness, tab, _, _) = try await open()
+            let box = try box(tab)
+            typeInBox("report kind:pdf", box)
+            #expect(tab.isTextFieldEditing)
+            #expect(box.textView.tryToPerform(#selector(NSResponder.selectAll(_:)), with: nil))
+            #expect(box.textView.selectedRange() == NSRange(location: 0, length: 15))
+            await harness.close()
+        }
+
+        // Search waits while a word can't be read; Return says every such word, the one being typed too, and the box
+        // stays open.
+        @Test func theBoxWontSearchWithAWordThatCantBeRead() async throws {
+            let (harness, tab, engine, _) = try await open()
+            let box = try box(tab)
+            typeInBox("report size:1", box)
+            #expect(!box.submitButton.isEnabled)
+            #expect(!box.readsLabel.stringValue.contains("can’t be read"))
+            let event = try #require(
+                NSEvent.keyEvent(
+                    with: .keyDown, location: .zero, modifierFlags: [], timestamp: 0,
+                    windowNumber: tab.window?.windowNumber ?? 0, context: nil, characters: "\r",
+                    charactersIgnoringModifiers: "\r", isARepeat: false, keyCode: 36))
+            // The list's first row would complete it: closed, Return has only the word as typed.
+            let escape = try #require(
+                NSEvent.keyEvent(
+                    with: .keyDown, location: .zero, modifierFlags: [], timestamp: 0,
+                    windowNumber: tab.window?.windowNumber ?? 0, context: nil, characters: "\u{1b}",
+                    charactersIgnoringModifiers: "\u{1b}", isARepeat: false, keyCode: 53))
+            #expect(box.handleKey(escape))
+            #expect(box.suggestions.isHidden)
+            #expect(box.handleKey(event))
+            #expect(DialogScrim.front(in: tab.window) != nil)
+            #expect(engine.starts.isEmpty)
+            #expect(box.readsLabel.stringValue.contains("“size:1” can’t be read. Not a size"))
+            // A word nothing can save is said at once, the caret in it or not.
+            box.textView.string = ""
+            typeInBox("perm:www", box)
+            #expect(box.readsLabel.stringValue.contains("“perm:www” can’t be read"))
+            #expect(box.suggestions.suggestions?.rows.first?.tone == .problem)
+            typeInBox(" ", box)
+            box.textView.string = "report perm:755"
+            box.render()
+            #expect(box.submitButton.isEnabled)
+            await harness.close()
+        }
+
+        @Test func searchInTheBoxSearchesForWhatIsTyped() async throws {
+            let (harness, tab, engine, timers) = try await open()
+            let box = try box(tab)
+            typeInBox("report perm:?5?", box)
+            let event = try #require(
+                NSEvent.keyEvent(
+                    with: .keyDown, location: .zero, modifierFlags: [], timestamp: 0,
+                    windowNumber: tab.window?.windowNumber ?? 0, context: nil, characters: "\r",
+                    charactersIgnoringModifiers: "\r", isARepeat: false, keyCode: 36))
+            #expect(box.handleKey(event))
+            timers.advance(0.4)
+            #expect(DialogScrim.front(in: tab.window) == nil)
+            #expect(tab.search.session.draftQuery == "report perm:?5?")
+            #expect(engine.starts.last?.query == "report")
+            #expect(engine.starts.last?.conditions == [.permissions([SearchPermission(mode: 0o050, mask: 0o070)])])
+            await harness.close()
+        }
+    }
+}

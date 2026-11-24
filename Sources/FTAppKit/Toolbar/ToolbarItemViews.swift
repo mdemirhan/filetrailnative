@@ -386,7 +386,39 @@ final class LeadingIconCell: NSButtonCell {
 /// The toolbar's search field, the system's, in an `NSSearchToolbarItem`: the magnifier with its small chevron is the
 /// Search Options button, the placeholder is "Search", the system's clear button shows once the trimmed text is not
 /// empty.
+/// The search field's cell: room at the field's right end, after the ✕, for Edit Search's button, and no ✕ for text of
+/// only spaces. A field with a cell of its own has the cell draw the ✕ (no button of the system's), so the ✕'s
+/// tooltip and name are on the field's stop over it (`ToolbarSearchField.clearStop`).
+final class ToolbarSearchFieldCell: NSSearchFieldCell {
+    static let editButtonRoom = 20.0
+
+    override func searchTextRect(forBounds rect: NSRect) -> NSRect {
+        var text = super.searchTextRect(forBounds: rect)
+        text.size.width = max(0, text.width - Self.editButtonRoom)
+        return text
+    }
+
+    /// Nowhere for text of only spaces, so the ✕ is neither drawn nor pressed.
+    override func cancelButtonRect(forBounds rect: NSRect) -> NSRect {
+        guard (controlView as? ToolbarSearchField)?.clearButtonShows ?? true else { return .zero }
+        return super.cancelButtonRect(forBounds: rect).offsetBy(dx: -Self.editButtonRoom, dy: 0)
+    }
+
+    /// Where Edit Search's button is drawn: at the field's right end, as far in from it as the magnifier is from its
+    /// left, whether or not there is text (the system places the ✕ only once there is).
+    func editButtonRect(forBounds rect: NSRect) -> NSRect {
+        let magnifier = searchButtonRect(forBounds: rect)
+        let size = 18.0
+        let inset = max(4, magnifier.minX - rect.minX)
+        return NSRect(x: rect.maxX - inset - size, y: rect.midY - size / 2, width: size, height: size)
+    }
+}
+
 final class ToolbarSearchField: NSSearchField {
+    override class var cellClass: AnyClass? {
+        get { ToolbarSearchFieldCell.self }
+        set { super.cellClass = newValue }
+    }
     /// The field took the keyboard (`onFocus` of the field: the cached search may come back).
     var onFocus: () -> Void = {}
     /// The magnifier was pressed: the options menu opens, the keyboard staying in the field; or Return or Space on it
@@ -394,6 +426,16 @@ final class ToolbarSearchField: NSSearchField {
     var onOptions: (_ fromKeyboard: Bool) -> Void = { _ in }
     /// The ✕ was clicked.
     var onClear: () -> Void = {}
+    /// Edit Search's button at the field's end was pressed.
+    var onEditSearch: () -> Void = {}
+    /// The text or the caret changed, or the field took or let go of the keyboard: the condition words are tinted again
+    /// and the list of what the word at the caret can be follows.
+    var onEditorChange: () -> Void = {}
+    /// What is typed changed: the toolbar widens the field once the text outgrows it.
+    var onTextChange: () -> Void = {}
+    private var selectionObserver: NSObjectProtocol?
+    /// Edit Search's button, after the ✕; the press comes from the toolbar, as the magnifier's does.
+    let editButton = ToolbarSearchEditButton()
     /// The field took the keyboard or let it go: the toolbar decides again whether it stays open (`updateSearchWidth`).
     var onEditingChange: () -> Void = {}
     /// The field is about to take the keyboard: it widens first, so its editor starts at the width it will have while
@@ -419,12 +461,17 @@ final class ToolbarSearchField: NSSearchField {
         optionsButton.onPress = { [weak self] fromKeyboard in self?.onOptions(fromKeyboard) }
         addSubview(optionsButton)
         clearStop.isHidden = true
+        clearStop.toolTip = SearchBarText.clearSearchTitle
+        clearStop.setAccessibilityLabel(SearchBarText.clearSearchName)
+        clearStop.setAccessibilityIdentifier("toolbar.search.clear")
         clearStop.onPress = { [weak self] in self?.onClear() }
         clearStop.onTab = { [weak self] backward in
             guard let self else { return }
             ToolbarKeyboard.move(from: self.clearStop, backward: backward)
         }
         addSubview(clearStop)
+        editButton.onPress = { [weak self] in self?.onEditSearch() }
+        addSubview(editButton)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
@@ -438,34 +485,28 @@ final class ToolbarSearchField: NSSearchField {
         syncClearButton()
     }
 
-    @objc private func clearPressed(_ sender: Any?) { onClear() }
-
-    /// The button the system makes for the field's cancel cell.
-    var clearButton: NSButton? {
-        (cell as? NSSearchFieldCell)?.cancelButtonCell?.controlView as? NSButton
-    }
+    @objc func clearPressed(_ sender: Any?) { onClear() }
 
     /// The ✕ shows once the trimmed text is not empty.
     var clearButtonShows: Bool {
         !SearchTiming.trimmed(currentEditor()?.string ?? stringValue).isEmpty
     }
 
-    /// The system shows and hides the button by whether there is any text, as it updates the field, so its `isHidden`
-    /// isn't ours: for text of only spaces it is see-through and does nothing.
+    /// The ✕ and its stop show once the trimmed text is not empty: the cell draws the ✕ where it says
+    /// (`ToolbarSearchFieldCell.cancelButtonRect`), so it is drawn again and the stop moved to it.
     private func syncClearButton() {
         let shows = clearButtonShows
         clearStop.isHidden = !shows
-        guard let button = clearButton else { return }
-        button.toolTip = SearchBarText.clearSearchTitle
-        button.setAccessibilityLabel(SearchBarText.clearSearchName)
-        button.setAccessibilityIdentifier("toolbar.search.clear")
-        button.setAccessibilityElement(shows)
-        button.alphaValue = shows ? 1 : 0
-        button.isEnabled = shows && isEnabled
+        clearStop.setAccessibilityElement(shows)
+        if let cell = cell as? ToolbarSearchFieldCell { clearStop.frame = cell.cancelButtonRect(forBounds: bounds) }
+        needsDisplay = true
     }
 
     override var stringValue: String {
-        didSet { syncClearButton() }
+        didSet {
+            syncClearButton()
+            onEditorChange()
+        }
     }
 
     override func textDidBeginEditing(_ notification: Notification) {
@@ -477,16 +518,38 @@ final class ToolbarSearchField: NSSearchField {
         super.textDidChange(notification)
         syncClearButton()
         fitEditor()
+        onTextChange()
+        onEditorChange()
+    }
+
+    /// Whether what is typed is wider than the room the field has for it.
+    var textOverflows: Bool {
+        guard let cell = cell as? NSSearchFieldCell else { return false }
+        let text = currentEditor()?.string ?? stringValue
+        let width = (text as NSString).size(withAttributes: [.font: font ?? NSFont.systemFont(ofSize: 13)]).width
+        return width > cell.searchTextRect(forBounds: bounds).width - 4
     }
 
     override func becomeFirstResponder() -> Bool {
         onWillTakeKeyboard()
         let took = super.becomeFirstResponder()
         if took {
+            followCaret()
             onFocus()
             onEditingChange()
+            onEditorChange()
         }
         return took
+    }
+
+    /// The caret moves in the field's editor, which doesn't tell the field: the list follows it all the same.
+    private func followCaret() {
+        if let selectionObserver { NotificationCenter.default.removeObserver(selectionObserver) }
+        selectionObserver = currentEditor().map { editor in
+            NotificationCenter.default.addObserver(
+                forName: NSTextView.didChangeSelectionNotification, object: editor, queue: .main
+            ) { [weak self] _ in MainActor.assumeIsolated { self?.onEditorChange() } }
+        }
     }
 
     /// The field's editor is set up for the field's width, and never grows: text typed past its end was cut off out of
@@ -507,8 +570,13 @@ final class ToolbarSearchField: NSSearchField {
     }
 
     override func textDidEndEditing(_ notification: Notification) {
+        // The window's field editor goes on to other fields: it leaves the tint behind.
+        if let editor = notification.object as? NSTextView { SearchQueryTint.clear(editor) }
         super.textDidEndEditing(notification)
+        if let selectionObserver { NotificationCenter.default.removeObserver(selectionObserver) }
+        selectionObserver = nil
         onEditingChange()
+        onEditorChange()
     }
 
     /// Whether an option of the search the field drives differs from the defaults.
@@ -533,6 +601,9 @@ final class ToolbarSearchField: NSSearchField {
     private func applyOptionsMark() {
         // Being edited: the field's own answer, which holds through every step of taking the keyboard.
         optionsButton.marked = optionsChanged && (currentEditor() != nil || isActive)
+        // Every move of the keyboard passes here, ⌘F's too, which the field's own becomeFirstResponder doesn't see.
+        if isActive, selectionObserver == nil { followCaret() }
+        onEditorChange()
     }
 
     /// Whether the field has the keyboard.
@@ -550,11 +621,82 @@ final class ToolbarSearchField: NSSearchField {
 
     override func layout() {
         super.layout()
-        guard let cell = cell as? NSSearchFieldCell else { return }
+        guard let cell = cell as? ToolbarSearchFieldCell else { return }
         optionsButton.frame = cell.searchButtonRect(forBounds: bounds)
         clearStop.frame = cell.cancelButtonRect(forBounds: bounds)
+        editButton.frame = cell.editButtonRect(forBounds: bounds)
         // The system makes its button when the field first goes on screen.
         syncClearButton()
+    }
+}
+
+/// Edit Search's button at the search field's end: opens the search in the Edit Search box, where a long one has room.
+/// The system's field holds a press back from the views in it, so the press comes from the toolbar
+/// (`ExplorerToolbar.pressSearchOptions`); VoiceOver presses it itself.
+final class ToolbarSearchEditButton: NSView {
+    var onPress: () -> Void = {}
+    private var hovered = false {
+        didSet { if hovered != oldValue { needsDisplay = true } }
+    }
+    private var trackingArea: NSTrackingArea?
+
+    override init(frame: NSRect) {
+        super.init(frame: frame)
+        setAccessibilityIdentifier("toolbar.search.edit")
+        setAccessibilityElement(true)
+        setAccessibilityRole(.button)
+        setAccessibilityLabel(SearchBarText.editSearchName)
+        toolTip = SearchBarText.editSearchName
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    override var isFlipped: Bool { true }
+    override var mouseDownCanMoveWindow: Bool { false }
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        if let trackingArea { removeTrackingArea(trackingArea) }
+        let area = NSTrackingArea(
+            rect: .zero, options: [.mouseEnteredAndExited, .activeInKeyWindow, .inVisibleRect], owner: self,
+            userInfo: nil)
+        addTrackingArea(area)
+        trackingArea = area
+    }
+
+    override func mouseEntered(with event: NSEvent) { hovered = true }
+    override func mouseExited(with event: NSEvent) { hovered = false }
+    override func mouseDown(with event: NSEvent) { onPress() }
+
+    override func draw(_ dirtyRect: NSRect) {
+        let palette = AppearanceModel.shared.theme.palette
+        if hovered {
+            NSColor(palette.bgHover).setFill()
+            NSBezierPath(roundedRect: bounds, xRadius: 4, yRadius: 4).fill()
+        }
+        guard
+            let symbol = NSImage(
+                systemSymbolName: "arrow.up.left.and.arrow.down.right", accessibilityDescription: nil)?
+                .withSymbolConfiguration(.init(pointSize: 10, weight: .semibold))
+        else { return }
+        let color = NSColor(hovered ? palette.textPrimary : palette.textSecondary)
+        let size = symbol.size
+        let image = NSImage(size: size, flipped: false) { rect in
+            symbol.draw(in: rect)
+            color.set()
+            rect.fill(using: .sourceAtop)
+            return true
+        }
+        image.draw(
+            in: NSRect(
+                x: (bounds.width - size.width) / 2, y: (bounds.height - size.height) / 2, width: size.width,
+                height: size.height))
+    }
+
+    override func accessibilityPerformPress() -> Bool {
+        onPress()
+        return true
     }
 }
 

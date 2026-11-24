@@ -842,30 +842,39 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // The system's ✕ has the search bar's tooltip and name, and text of only spaces has none.
-        @Test func theSystemsClearButtonIsLabelled() async throws {
+        // The ✕ has the search bar's tooltip and name, on the stop over it, and text of only spaces has no ✕: none is
+        // drawn and none can be pressed.
+        @Test func theClearButtonIsLabelled() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             let field = try #require(tab.searchField)
+            let cell = try #require(field.cell as? ToolbarSearchFieldCell)
             field.stringValue = "abc"
-            #expect(await waitUntil { field.clearButton?.isHidden == false })
-            let clear = try #require(field.clearButton)
+            let clear = field.clearStop
+            #expect(!clear.isHidden)
             #expect(clear.toolTip == SearchBarText.clearSearchTitle)
             #expect(clear.accessibilityLabel() == SearchBarText.clearSearchName)
             #expect(clear.accessibilityIdentifier() == "toolbar.search.clear")
-            #expect(clear.alphaValue == 1 && clear.isEnabled)
+            #expect(cell.cancelButtonRect(forBounds: field.bounds) != .zero)
+            // The ✕ is before Edit Search's button, never under it.
+            #expect(
+                cell.cancelButtonRect(forBounds: field.bounds).maxX
+                    <= cell.editButtonRect(forBounds: field.bounds).minX)
             field.stringValue = "   "
-            #expect(await waitUntil { field.clearButton?.alphaValue == 0 })
-            #expect(field.clearButton?.isEnabled == false)
+            #expect(clear.isHidden)
+            #expect(cell.cancelButtonRect(forBounds: field.bounds) == .zero)
             field.stringValue = "abc"
-            #expect(await waitUntil { field.clearButton?.alphaValue == 1 })
+            #expect(!clear.isHidden)
             var cleared = 0
             let onClear = field.onClear
             field.onClear = {
                 cleared += 1
                 onClear()
             }
-            field.clearButton?.performClick(nil)
+            // A click on the ✕ sends the cancel cell's action, which is the field's.
+            let cancel = try #require(cell.cancelButtonCell)
+            let action = try #require(cancel.action)
+            #expect(NSApp.sendAction(action, to: cancel.target, from: cancel))
             #expect(cleared == 1)
             await harness.close()
         }

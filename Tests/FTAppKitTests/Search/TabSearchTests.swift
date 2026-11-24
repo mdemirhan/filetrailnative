@@ -72,7 +72,7 @@ extension ExplorerWindowlessTests {
             try type("note.", in: tab)
             #expect(names(tab) == ["note.txt"])
             // The marks: the match in the name.
-            #expect(tab.content.search?.match(in: "note.txt") == HighlightRange(start: 0, end: 5))
+            #expect(tab.content.search?.marks(in: "note.txt") == [HighlightRange(start: 0, end: 5)])
             await harness.close()
         }
 
@@ -185,11 +185,14 @@ extension ExplorerWindowlessTests {
             tab.search.openOptions()
             let menu = try #require(AppMenuPresenter.shared.menu)
             #expect(menu.identifier == "searchOptionsMenu")
+            // The options, then each condition's word to type.
             #expect(
                 menu.rows.map(\.title) == [
                     "Name", "Full Path", "Plain Text", "Glob", "Regex", "Search Subfolders", "Skip .git Folders",
+                    "Kind", "Extension", "Size", "Picture Size", "Date Modified", "Date Created", "Date Added",
+                    "Date Last Opened", "Date Taken", "Tags", "Attribute", "Permissions", "Skip a Folder",
                 ])
-            #expect(menu.nsMenu.items.filter(\.isSectionHeader).map(\.title) == ["Match", "Match As"])
+            #expect(menu.nsMenu.items.filter(\.isSectionHeader).map(\.title) == ["Match", "Match As", "Conditions"])
             #expect(
                 menu.nsMenu.items.filter { $0.state == .on }.map(\.title) == [
                     "Name", "Plain Text", "Search Subfolders", "Skip .git Folders",

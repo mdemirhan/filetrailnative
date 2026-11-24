@@ -92,6 +92,8 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case toggleFavorite
     case showInFinder
     case showLastSearchResults
+    case editSearch
+    case clearSearchConditions
     case viewAsIcons
     case viewAsList
     case viewAsDetails

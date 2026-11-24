@@ -15,13 +15,13 @@ public enum SearchMatchScope: String, Codable, Sendable {
 /// running (or has finished) is kept and its results are narrowed here, instead of walking the disk
 /// again for every pause in typing.
 public enum SearchRefinement {
-    /// Whether a plain-text search for `query` would find this item: as the filters match names (`NameMatcher` in
-    /// Contains), which is how the search's own results are judged.
+    /// Whether a plain-text search for `query` would find this item: each of its words as the filters match names
+    /// (`NameTerms`, `NameMatcher` in Contains), which is how the search's own results are judged.
     public static func matchesTextQuery(_ item: some SearchRefinementItem, query: String, scope: SearchMatchScope)
         -> Bool
     {
-        guard let matcher = NameMatcher(query, mode: .contains) else { return true }
-        return matcher.matches(scope == .path ? item.path : item.name)
+        guard let terms = NameTerms(query) else { return true }
+        return terms.matches(scope == .path ? item.path : item.name)
     }
 
     /// The results a plain-text search for `query` would find, in their order: judged by one matcher, the names (or
@@ -29,17 +29,14 @@ public enum SearchRefinement {
     public static func matching<T: SearchRefinementItem>(
         _ results: [T], query: String, scope: SearchMatchScope, cache: FoldedNameCache? = nil
     ) -> [T] {
-        guard let matcher = NameMatcher(query, mode: .contains) else { return results }
-        return results.filter { matcher.matches(scope == .path ? $0.path : $0.name, cache: cache) }
+        guard let terms = NameTerms(query) else { return results }
+        return results.filter { terms.matches(scope == .path ? $0.path : $0.name, cache: cache) }
     }
 
-    /// Whether everything a plain-text search for `next` finds is also found by one for `base`: `next` holds `base`
-    /// as a run of letters, a plain letter of `base` standing for its accented forms in `next`.
+    /// Whether everything a plain-text search for `next` finds is also found by one for `base`: each word of `base`
+    /// is in a word of `next` (`NameTerms.isNarrower`).
     public static func isNarrower(base: String, next: String) -> Bool {
-        if base.isEmpty || next.utf16.count < base.utf16.count {
-            return false
-        }
-        return NameMatcher(base, mode: .contains)?.matches(next) ?? false
+        NameTerms.isNarrower(base: base, next: next)
     }
 
     /// The results a search for `query` and one for `previousQuery` have in common: whichever of the

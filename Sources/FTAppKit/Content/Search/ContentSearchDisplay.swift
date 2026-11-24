@@ -22,6 +22,8 @@ struct ContentSearchDisplay {
     var errorIsQuiet: Bool
     /// The search met folders it couldn't read: the status bar says so beside the count.
     var unreadableFolders = false
+    /// How many items the conditions have read so far, for the status bar while the search runs.
+    var itemsRead = 0
     /// What a result right in `/` shows in its Folder column.
     var startupDiskName = VolumePaths.defaultStartupDiskName
 }
@@ -40,7 +42,7 @@ final class ContentSearchContext {
     let setSort: (SearchResultsSortByPreference, SortDirectionPreference) -> Void
     private let startupDiskName: String
     private var folderLabels: [DiskPath: String] = [:]
-    private var matches: [StoredName: HighlightRange?] = [:]
+    private var matches: [StoredName: [HighlightRange]] = [:]
 
     init(
         display: ContentSearchDisplay, requestSort: @escaping (SearchResultsSortByPreference) -> Void,
@@ -63,12 +65,12 @@ final class ContentSearchContext {
         return made
     }
 
-    /// The match in a whole name, remembered per name as stored.
-    func match(in name: String) -> HighlightRange? {
-        guard highlight != nil else { return nil }
+    /// What the search matched in a whole name, each word of it, remembered per name as stored.
+    func marks(in name: String) -> [HighlightRange] {
+        guard highlight != nil else { return [] }
         let key = StoredName(name)
         if let known = matches[key] { return known }
-        let found = NameHighlight.match(highlight, in: name)
+        let found = NameHighlight.marks(highlight, in: name)
         matches[key] = found
         return found
     }

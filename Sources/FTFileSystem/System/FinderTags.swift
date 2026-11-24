@@ -50,18 +50,51 @@ public enum FinderTags {
     static let attribute = "com.apple.metadata:_kMDItemUserTags"
 
     public static func read(_ path: String) throws -> [FinderTag] {
+        // Asking for one attribute costs over ten times what listing an item's attributes does (getxattr 15 µs,
+        // listxattr 1.7 µs, an lstat 1.3 µs on an M-series Mac), and most items have no tags: the list is looked at
+        // first, and the tags read only when it names them.
+        guard mayHaveTags(path) else { return [] }
+        return try readListed(path)
+    }
+
+    /// The tags of an item whose list of attributes names them, or wasn't read (`mayHaveTags`).
+    static func readListed(_ path: String) throws -> [FinderTag] {
+        // The tags in one call, as the usual few fit `firstRead`; a longer list is sized first.
+        let data: Data? = try withUnsafeTemporaryAllocation(byteCount: firstRead, alignment: 1) { buffer in
+            let length = getxattr(path, attribute, buffer.baseAddress, firstRead, 0, 0)
+            if length >= 0 { return Data(bytes: buffer.baseAddress!, count: length) }
+            if errno == ENOATTR { return Data() }
+            if errno == ERANGE { return nil }
+            throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO)
+        }
+        let stored = try data ?? readLong(path)
+        if stored.isEmpty { return [] }
+        guard let names = try PropertyListSerialization.propertyList(from: stored, format: nil) as? [String] else {
+            throw CocoaError(.propertyListReadCorrupt)
+        }
+        return names.map(FinderTag.init(stored:))
+    }
+
+    /// Bytes read at once: a list of a dozen tags of ordinary names fits.
+    static let firstRead = 512
+
+    /// Whether the item's attributes include its tags: false only when its list of attributes was read and doesn't name
+    /// them; a list too long to read at once, or one that can't be read, leaves the tags to be asked for.
+    static func mayHaveTags(_ path: String) -> Bool {
+        ExtendedAttributes.names(path)?.contains(attribute) ?? true
+    }
+
+    /// A list longer than `firstRead`: its size, then the list.
+    private static func readLong(_ path: String) throws -> Data {
         let length = getxattr(path, attribute, nil, 0, 0, 0)
         if length < 0 {
-            if errno == ENOATTR { return [] }
+            if errno == ENOATTR { return Data() }
             throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO)
         }
         var data = Data(count: length)
         let read = data.withUnsafeMutableBytes { getxattr(path, attribute, $0.baseAddress, length, 0, 0) }
         guard read >= 0 else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
-        guard let stored = try PropertyListSerialization.propertyList(from: data, format: nil) as? [String] else {
-            throw CocoaError(.propertyListReadCorrupt)
-        }
-        return stored.map(FinderTag.init(stored:))
+        return data.prefix(read)
     }
 
     /// The colors of an item's tags in their order, each once; none for an item that can't be read. The home folder's

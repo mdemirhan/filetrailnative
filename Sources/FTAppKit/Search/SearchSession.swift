@@ -60,6 +60,11 @@ final class SearchSession {
 
     private(set) var draftQuery = ""
     private(set) var committedQuery = ""
+    /// What the walk running or done was asked of an item besides its name: the condition words of its text
+    /// (`SearchQuery`).
+    private(set) var conditions: [SearchCondition] = []
+    /// How many items the running search's conditions have read beyond their folder's entry.
+    private(set) var itemsRead = 0
     /// The text the running or finished walk was started with.
     private(set) var baseQuery = ""
     private(set) var rootPath = ""
@@ -143,7 +148,7 @@ final class SearchSession {
 
     // MARK: What the tab shows
 
-    /// `hasCachedSearch`: a committed search exists, shown or not.
+    /// `hasCachedSearch`: a committed search exists, shown or not: text, conditions, or both.
     var hasCachedSearch: Bool { !SearchTiming.trimmed(committedQuery).isEmpty }
     /// Whether the tab is searching: a committed search, with its results on screen.
     var isSearchMode: Bool { resultsVisible && hasCachedSearch }
@@ -181,7 +186,7 @@ final class SearchSession {
     /// what the shorter text kept. Narrowing keeps the order, so this is the list sorting the narrowed results gives.
     private func refinedResults() -> [SearchResultItem] {
         let scope = refinementScope
-        let query = committedQuery
+        let query = SearchQuery(committedQuery).text
         if let cache = refinedCache, cache.generation == resultsGeneration, cache.count <= results.count,
             cache.sortBy == sortBy, cache.direction == sortDirection, cache.scope == scope,
             cache.query == query || SearchRefinement.isNarrower(base: cache.query, next: query)
@@ -244,7 +249,7 @@ final class SearchSession {
     var highlightPattern: HighlightPattern? {
         if let cache = highlightCache, cache.key == highlightKey { return cache.pattern }
         let pattern = SearchResults.highlightPattern(
-            query: committedQuery, patternMode: patternMode, matchScope: matchScope)
+            query: SearchQuery(committedQuery).text, patternMode: patternMode, matchScope: matchScope)
         highlightCache = (highlightKey, pattern)
         return pattern
     }
@@ -358,6 +363,7 @@ final class SearchSession {
         committedQuery = ""
         baseQuery = ""
         rootPath = ""
+        conditions = []
         results = []
         resultsGeneration += 1
         keptResultPaths = []
@@ -368,6 +374,7 @@ final class SearchSession {
         error = nil
         truncated = false
         unreadableFolders = false
+        itemsRead = 0
         mayBeMissingItems = false
         resultsVisible = false
         cachedSearchSelection = .empty
@@ -433,7 +440,13 @@ final class SearchSession {
         draftQuery = text
         cancelLiveSearch()
         let trimmed = SearchTiming.trimmed(text)
-        if trimmed.utf16.count < SearchTiming.liveSearchMinLength {
+        let parsed = SearchQuery(trimmed)
+        // A word more typing can't make a value: nothing is searched without it; what shows stays until it is fixed.
+        if SearchQuery.problems(trimmed).contains(where: { !$0.word.canStillBeRead }) { return }
+        // A finished condition is a search of its own, whatever the text.
+        if parsed.conditions.isEmpty, name(of: parsed).utf16.count < SearchTiming.liveSearchMinLength {
+            // A condition's word still being typed: what is searched stays until it is finished.
+            if parsed.hasUnfinished { return }
             if hasCachedSearch { clearCommittedSearch() }
             return
         }
@@ -504,23 +517,32 @@ final class SearchSession {
         return continues ? rootPath : current
     }
 
-    private func canRefine(_ query: String) -> Bool {
-        patternMode == .text && resultsVisible && (status == .running || status == .complete) && !truncated
-            && resolveRootPath() == rootPath && searchedOptions == options
-            && SearchRefinement.isNarrower(base: baseQuery, next: query)
+    /// The name a search looks for, without the white space and quotes between Plain Text's words: `""` is none.
+    private func name(of query: SearchQuery) -> String {
+        patternMode == .text ? (query.names + query.leftOutNames).joined() : query.text
     }
 
-    /// The options a search is started with, besides hidden files.
+    /// The text, its conditions aside, only grew, and the conditions are those searched.
+    private func canRefine(_ query: String) -> Bool {
+        let next = SearchQuery(query)
+        return patternMode == .text && resultsVisible && (status == .running || status == .complete) && !truncated
+            && resolveRootPath() == rootPath && searchedOptions == options && next.conditions == conditions
+            && SearchRefinement.isNarrower(base: SearchQuery(baseQuery).text, next: next.text)
+    }
+
+    /// The options a search is started with, besides hidden files, and its conditions.
     private struct SearchOptions: Equatable {
         var patternMode: SearchPatternModePreference
         var matchScope: SearchMatchScopePreference
         var recursive: Bool
         var skipGitFolders: Bool
+        var conditions: [SearchCondition]
     }
 
     private var options: SearchOptions {
         SearchOptions(
-            patternMode: patternMode, matchScope: matchScope, recursive: recursive, skipGitFolders: skipGitFolders)
+            patternMode: patternMode, matchScope: matchScope, recursive: recursive, skipGitFolders: skipGitFolders,
+            conditions: conditions)
     }
 
     private func refine(_ query: String) {
@@ -624,20 +646,24 @@ final class SearchSession {
     ) {
         guard let host else { return }
         let trimmed = SearchTiming.trimmed(query)
+        let parsed = SearchQuery(trimmed)
         let root = requestedRoot ?? host.searchCurrentPath
         cancelLiveSearch()
-        if trimmed.isEmpty {
-            clearCommittedSearch()
+        if name(of: parsed).isEmpty && parsed.conditions.isEmpty {
+            // Only a condition's word not finished yet: nothing new to search for until it is.
+            if !parsed.hasUnfinished { clearCommittedSearch() }
             return
         }
         if root.isEmpty { return }
+        conditions = parsed.conditions
         sessionCounter += 1
         cancelActiveSearch()
         let wasVisible = resultsVisible
         let kept =
             keepMatching && resultsVisible && patternMode == .text && root == rootPath && searchedOptions == options
             ? SearchRefinement.keepMatching(
-                results, previousQuery: baseQuery, query: trimmed, scope: refinementScope, cache: foldedNames)
+                results, previousQuery: SearchQuery(baseQuery).text, query: parsed.text, scope: refinementScope,
+                cache: foldedNames)
             : []
         // The names folded are those of the results kept, or of none.
         if kept.isEmpty { foldedNames.removeAll() }
@@ -660,6 +686,7 @@ final class SearchSession {
         error = nil
         truncated = false
         unreadableFolders = false
+        itemsRead = 0
         mayBeMissingItems = false
         searchedHidden = host.searchIncludeHidden
         searchedOptions = options
@@ -671,8 +698,8 @@ final class SearchSession {
 
         let counter = sessionCounter
         let request = SearchRequest(
-            rootPath: root, query: trimmed, patternMode: patternMode, matchScope: matchScope, recursive: recursive,
-            includeHidden: host.searchIncludeHidden, skipGitFolders: skipGitFolders)
+            rootPath: root, query: parsed.text, patternMode: patternMode, matchScope: matchScope, recursive: recursive,
+            includeHidden: host.searchIncludeHidden, skipGitFolders: skipGitFolders, conditions: parsed.conditions)
         do {
             let started = try engine.start(request)
             jobID = started
@@ -749,6 +776,7 @@ final class SearchSession {
         error = update.error
         truncated = update.truncated
         unreadableFolders = update.unreadableFolders
+        itemsRead = update.itemsRead
         if update.done {
             jobID = nil
             clearPolling()

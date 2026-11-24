@@ -853,7 +853,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             filterMarks[key] = found
             if !found.isEmpty { return found }
         }
-        return search?.match(in: name).map { [$0] } ?? []
+        return search?.marks(in: name) ?? []
     }
 
     /// The filter's matcher for the text and mode now (the pinned filter's while none is typed), its marks forgotten
@@ -1863,7 +1863,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             status.stringValue = StatusSummary.search(
                 isSearching: searchDisplay.isRunning, shown: entries.count, totalCount: listed.count,
                 selectedCount: selection.paths.count, selectionSize: size,
-                unreadableFolders: searchDisplay.unreadableFolders)
+                unreadableFolders: searchDisplay.unreadableFolders, itemsRead: searchDisplay.itemsRead)
         } else {
             status.stringValue = StatusSummary.content(
                 itemCount: listed.count, shownCount: filter.isEmpty && pinnedFilter == nil ? nil : entries.count,

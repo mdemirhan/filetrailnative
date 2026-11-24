@@ -11,7 +11,21 @@ final class ExplorerTabWindow: NSWindow {
     private var refusingFieldEditor: FileRefusingFieldEditor?
     private let firstClickGate = FirstClickGate()
 
+    /// The search field's own editor: a search's words aren't prose, so it guesses no word after them, and Tab stays
+    /// the list's, to complete a condition's word.
+    private var searchFieldEditor: FileRefusingFieldEditor?
+
     override func fieldEditor(_ createFlag: Bool, for object: Any?) -> NSText? {
+        if object is ToolbarSearchField {
+            if searchFieldEditor == nil, createFlag {
+                let editor = FileRefusingFieldEditor()
+                editor.isFieldEditor = true
+                editor.allowsUndo = true
+                editor.inlinePredictionType = .no
+                searchFieldEditor = editor
+            }
+            return searchFieldEditor
+        }
         if refusingFieldEditor == nil, createFlag {
             let editor = FileRefusingFieldEditor()
             editor.isFieldEditor = true
@@ -613,8 +627,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// Whether a text field of the tab (the search field, the results' filter, a rename) has the keyboard.
     var isTextFieldEditing: Bool {
         guard let editor = window?.firstResponder as? NSTextView else { return false }
-        // The viewer's text is edited as a field is: ⌘C, ⌘V, ⌘A and ⌘Z act on its text, not on files.
-        return editor.isFieldEditor || editor is ViewerTextView
+        // The viewer's text, and any text typed in (the Edit Search box's), is edited as a field is: ⌘C, ⌘V, ⌘A and
+        // ⌘Z act on its text, not on files.
+        return editor.isFieldEditor || editor.isEditable || editor is ViewerTextView
     }
 
     /// Reveal in Folder: the folder a result is in opens, with the result selected and the list focused.
@@ -1929,6 +1944,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         explorerToolbar.windowResized()
     }
 
+    /// A search field that grew for long text grows again once the window is let go (`growSearchFieldIfLong`).
+    func windowDidEndLiveResize(_ notification: Notification) {
+        explorerToolbar.windowResized()
+    }
+
     func windowDidExitFullScreen(_ notification: Notification) {
         group?.tabBoundsChanged(self)
     }
@@ -2131,6 +2151,10 @@ extension MainWindowController: ExplorerWindowHandle {
             if let session = searchStore?.session, session.isSearchMode { session.rerun() } else { refresh() }
         case .showLastSearchResults:
             if searchStore?.session.hasCachedSearch == true { search.showLastResults() }
+        case .editSearch:
+            search.openEditSearch()
+        case .clearSearchConditions:
+            search.clearConditions()
         case .revealInFolder:
             // The lead result's folder, or the first selected's when there is no lead.
             if searchRootPath != nil, let path = content.selection.leadPath ?? selectedPaths.first {
@@ -2375,6 +2399,7 @@ extension MainWindowController: ExplorerWindowContext {
             isSearchMode: searchRootPath != nil, openItemLimit: preferences.openItemLimit,
             writeOperationLocked: isWriteLocked, canGoBack: canGoBack,
             canGoForward: canGoForward, hasCachedSearch: searchStore?.session.hasCachedSearch ?? false,
+            hasSearchConditions: !(searchStore?.session.conditions.isEmpty ?? true),
             tabCount: group?.tabs.count ?? 1, paneCount: panes.count,
             otherPanePath: otherPane.map { otherPaneDestination($0) ?? "" },
             otherPaneFolder: otherPane.map(\.shownFolderPath),

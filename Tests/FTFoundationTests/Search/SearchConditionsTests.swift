@@ -30,6 +30,19 @@ import Testing
             chip(.size(SearchSizeRule(comparison: .smaller, value: 1.5, unit: .kilobytes)))
                 == "Size is smaller than 1.5 KB")
         #expect(chip(.pictureSize(SearchPixelRule(larger: true, pixels: 3840))) == "Picture is larger than 3,840 px")
+        #expect(chip(.pictureSize(SearchPixelRule(larger: false, pixels: 100))) == "Picture is smaller than 100 px")
+        #expect(chip(.pictureSize(SearchPixelRule(comparison: .equal, pixels: 1920))) == "Picture is 1,920 px")
+        #expect(
+            chip(.not(.pictureSize(SearchPixelRule(comparison: .equal, pixels: 1920)))) == "Picture is not 1,920 px")
+        #expect(
+            chip(.not(.pictureSize(SearchPixelRule(larger: true, pixels: 3840))))
+                == "Picture is not larger than 3,840 px")
+        // Pixels are whole: exactly is exactly.
+        let exactly = SearchPixelRule(comparison: .equal, pixels: 300)
+        #expect(exactly.holds(300) && !exactly.holds(299) && !exactly.holds(301))
+        #expect(
+            SearchPixelRule(larger: true, pixels: 300).holds(301)
+                && !SearchPixelRule(larger: true, pixels: 300).holds(300))
         #expect(chip(.date(.modified, .withinLast(2, .weeks))) == "Modified within the last 2 weeks")
         #expect(chip(.date(.lastOpened, .moreThanAgo(1, .years))) == "Last opened more than 1 year ago")
         #expect(chip(.date(.created, .thisMonth)) == "Created this month")

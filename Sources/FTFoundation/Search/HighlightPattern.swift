@@ -13,8 +13,8 @@ public struct HighlightPattern: @unchecked Sendable {
         case regex(NSRegularExpression, GaveUp)
         /// The text's UTF-16 units, folded when case doesn't matter.
         case text([UInt16], ignoreCase: Bool)
-        /// Plain Text, matched as the filters match names.
-        case names(NameMatcher)
+        /// Plain Text, each word matched as the filters match names.
+        case names(NameTerms)
     }
 
     /// Set once a name took the pattern too long: it marks no more names, as the next would likely take as long.
@@ -41,9 +41,16 @@ public struct HighlightPattern: @unchecked Sendable {
         matcher = .text(ignoreCase ? Self.folded(text) : Array(text.utf16), ignoreCase: ignoreCase)
     }
 
-    /// Plain Text as a search matches it (`NameMatcher`): the run of letters a filter in Contains would mark.
-    public init(names matcher: NameMatcher) {
-        self.matcher = .names(matcher)
+    /// Plain Text as a search matches it (`NameTerms`): each word's run of letters, as a filter in Contains marks it.
+    public init(names terms: NameTerms) {
+        self.matcher = .names(terms)
+    }
+
+    /// What to mark in `name`: each word's run for Plain Text, otherwise the first match (`firstMatch`).
+    public func marks(in name: String) -> [HighlightRange] {
+        if case .names(let terms) = matcher { return terms.marks(in: name) }
+        guard let found = firstMatch(in: name), found.length > 0 else { return [] }
+        return [HighlightRange(start: found.location, end: found.location + found.length)]
     }
 
     /// Where the first match in `name` is, in UTF-16 units; nil when there is none, or when a regular expression took
@@ -68,8 +75,8 @@ public struct HighlightPattern: @unchecked Sendable {
                 }
             }
             return found
-        case .names(let matcher):
-            return matcher.marks(in: name).first.map { NSRange(location: $0.start, length: $0.end - $0.start) }
+        case .names(let terms):
+            return terms.marks(in: name).first.map { NSRange(location: $0.start, length: $0.end - $0.start) }
         case .text(let text, let ignoreCase):
             let units = ignoreCase ? Self.folded(name) : Array(name.utf16)
             guard units.count >= text.count else { return nil }

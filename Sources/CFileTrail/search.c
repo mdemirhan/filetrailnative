@@ -306,16 +306,17 @@ static void search_list(search_worker *worker, int fd, const char *folder, size_
             break;
         }
         if (matched == FT_SEARCH_MATCH) {
-            /* Hidden by its flag, read now it is wanted. */
+            /* Hidden by its flag, read now it is wanted: one read, from the folder, that the conditions get too. */
             int is_hidden = dotted;
             struct stat info;
-            if (!is_hidden && fstatat(fd, listed_name, &info, AT_SYMLINK_NOFOLLOW) == 0 &&
-                (info.st_flags & UF_HIDDEN) != 0) {
-                is_hidden = 1;
+            int read = 0;
+            if ((!is_hidden || options->wants_stat) && fstatat(fd, listed_name, &info, AT_SYMLINK_NOFOLLOW) == 0) {
+                read = 1;
+                if ((info.st_flags & UF_HIDDEN) != 0) is_hidden = 1;
             }
             if (!is_hidden || options->include_hidden) {
                 if (search->keep(search->context, worker->index, worker->path, length, prefix, is_folder, is_hidden,
-                                 is_link) != 0) {
+                                 is_link, read ? &info : NULL) != 0) {
                     search_stop(search);
                     break;
                 }

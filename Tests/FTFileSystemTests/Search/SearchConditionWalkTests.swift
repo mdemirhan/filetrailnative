@@ -90,6 +90,31 @@ import UniformTypeIdentifiers
                     .isEmpty)
             #expect(try found([.pictureSize(SearchPixelRule(larger: true, pixels: 100))]) == ["wide.png"])
             #expect(try found([.pictureSize(SearchPixelRule(larger: false, pixels: 100))]) == ["tiny.png"])
+            // A size alone is that size exactly; the longer side counts (wide.png is 300 by 20).
+            #expect(try found([.pictureSize(SearchPixelRule(comparison: .equal, pixels: 300))]) == ["wide.png"])
+            #expect(try found([.pictureSize(SearchPixelRule(comparison: .equal, pixels: 10))]) == ["tiny.png"])
+            #expect(try found([.pictureSize(SearchPixelRule(comparison: .equal, pixels: 20))]).isEmpty)
+            #expect(try found([.pictureSize(SearchPixelRule(comparison: .equal, pixels: 299))]).isEmpty)
+            #expect(try found([.pictureSize(SearchPixelRule(larger: true, pixels: 300))]).isEmpty)
+            #expect(try found([.pictureSize(SearchPixelRule(comparison: .atLeast, pixels: 300))]) == ["wide.png"])
+            #expect(try found([.pictureSize(SearchPixelRule(comparison: .atLeast, pixels: 301))]).isEmpty)
+            #expect(try found([.pictureSize(SearchPixelRule(comparison: .atMost, pixels: 10))]) == ["tiny.png"])
+            #expect(
+                try found([.pictureSize(SearchPixelRule(comparison: .atMost, pixels: 300))]) == [
+                    "wide.png", "tiny.png",
+                ])
+            // Not that size is still a picture: no document or folder is found by it.
+            #expect(try found([.not(.pictureSize(SearchPixelRule(comparison: .equal, pixels: 300)))]) == ["tiny.png"])
+            #expect(try found([.not(.pictureSize(SearchPixelRule(larger: true, pixels: 100)))]) == ["tiny.png"])
+            #expect(
+                try found([.not(.pictureSize(SearchPixelRule(comparison: .equal, pixels: 5)))]) == [
+                    "wide.png", "tiny.png",
+                ])
+            #expect(
+                try found([
+                    .pictureSize(SearchPixelRule(larger: true, pixels: 5)),
+                    .not(.pictureSize(SearchPixelRule(comparison: .equal, pixels: 10))),
+                ]) == ["wide.png"])
             #expect(try found([.date(.modified, .moreThanAgo(1, .years))]) == ["notes.txt"])
             #expect(
                 try found([.date(.modified, .withinLast(1, .years)), .kind([.text])]) == [
@@ -106,6 +131,96 @@ import UniformTypeIdentifiers
             // A folder skipped isn't gone into.
             #expect(try found([.skipFolders(["node_modules"]), .fileExtension(["js"])]).isEmpty)
             #expect(try found([.fileExtension(["js"])]) == ["index.js"])
+        }
+    }
+
+    // Only the conditions that need an item's details have the walk read them: its size, the dates modified and
+    // created, the flag that locks it, a file's size for "empty".
+    @Test func onlyWhatNeedsTheItemsDetailsHasThemRead() {
+        let needs: [SearchCondition] = [
+            .size(SearchSizeRule(comparison: .larger, value: 1, unit: .megabytes)), .date(.modified, .today),
+            .date(.created, .thisWeek), .attribute(.locked, is: true), .attribute(.readOnly, is: false),
+            .attribute(.empty, is: true),
+        ]
+        let needsNot: [SearchCondition] = [
+            .tags(["red"], all: false), .date(.added, .today), .date(.lastOpened, .today), .date(.taken, .today),
+            .attribute(.executable, is: true), .attribute(.alias, is: true), .attribute(.hidden, is: true),
+            .pictureSize(SearchPixelRule(larger: true, pixels: 100)), .kind([.pdf]), .fileExtension(["txt"]),
+            .skipFolders(["build"]),
+        ]
+        for condition in needs { #expect(SearchConditionCheck([condition]).needsStat, "\(condition)") }
+        for condition in needsNot { #expect(!SearchConditionCheck([condition]).needsStat, "\(condition)") }
+        #expect(SearchConditionCheck([.tags(["red"], all: false), .date(.modified, .today)]).needsStat)
+    }
+
+    // The walk's own read of an item, a read of the check's own, and none where no condition needs one: each condition
+    // keeps the same items.
+    @Test func theWalksReadAndTheChecksOwnAgree() throws {
+        try withTemporaryDirectory { folder in
+            let top = folder.path
+            try makeTree(top)
+            let conditions: [[SearchCondition]] = [
+                [.size(SearchSizeRule(comparison: .larger, value: 1, unit: .megabytes))],
+                [.size(SearchSizeRule(comparison: .smaller, value: 10, unit: .bytes))],
+                [.date(.modified, .moreThanAgo(1, .years))], [.date(.created, .today)], [.date(.added, .today)],
+                [.attribute(.locked, is: true)], [.attribute(.readOnly, is: true)], [.attribute(.empty, is: true)],
+                [.attribute(.empty, is: false)], [.attribute(.executable, is: true)], [.tags(["work"], all: false)],
+                [.tags(["work", "red"], all: true)], [.tags(["work"], all: false), .attribute(.locked, is: false)],
+                [.pictureSize(SearchPixelRule(larger: true, pixels: 100))],
+            ]
+            let items = try FileManager.default.subpathsOfDirectory(atPath: top).map { top + "/" + $0 }
+            for condition in conditions {
+                let check = SearchConditionCheck(condition)
+                for path in items {
+                    var info = stat()
+                    guard lstat(path, &info) == 0 else { continue }
+                    let isFolder = (info.st_mode & S_IFMT) == S_IFDIR
+                    let isLink = (info.st_mode & S_IFMT) == S_IFLNK
+                    let given = check.keepsByItem(
+                        path: path, isFolder: isFolder, isHidden: false, isLink: isLink, info: info)
+                    let own = check.keepsByItem(path: path, isFolder: isFolder, isHidden: false, isLink: isLink)
+                    #expect(given == own, "\(condition) \(path)")
+                }
+            }
+        }
+    }
+
+    // Not a kind leaves out what that kind finds, and only that: a folder named "x.pdf" is no PDF, so not PDF keeps
+    // it; a package is its kind, not a folder.
+    @Test func notAKindLeavesOutExactlyWhatTheKindFinds() throws {
+        let runtime = WalkSearchRuntime()
+        defer { runtime.close() }
+        try withTemporaryDirectory { folder in
+            let top = folder.path
+            try makeTree(top)
+            let found = { (conditions: [SearchCondition]) in try names(runtime, top, conditions) }
+            let everything = try found([.not(.kind([.audio]))])
+            for kinds: Set<SearchKind> in [
+                [.pdf], [.folder], [.application], [.presentation], [.picture, .pdf], [.text],
+            ] {
+                let of = try found([.kind(kinds)])
+                let notOf = try found([.not(.kind(kinds))])
+                #expect(of.isDisjoint(with: notOf), "\(kinds)")
+                #expect(of.union(notOf) == everything, "\(kinds)")
+            }
+            #expect(try found([.not(.kind([.pdf]))]).contains("x.pdf"))
+            #expect(try !found([.not(.kind([.pdf]))]).contains("small.pdf"))
+            #expect(try found([.not(.kind([.folder]))]).contains("Deck.key"))
+            #expect(try !found([.not(.kind([.presentation]))]).contains("Deck.key"))
+            #expect(try !found([.not(.kind([.application]))]).contains("Tool.app"))
+            // An extension, likewise: a folder isn't by its extension, a package is.
+            for extensions in [["pdf"], ["key"], ["app"], ["txt", "sh"], ["swift"]] {
+                let of = try found([.fileExtension(extensions)])
+                let notOf = try found([.not(.fileExtension(extensions))])
+                #expect(of.isDisjoint(with: notOf), "\(extensions)")
+                #expect(of.union(notOf) == everything, "\(extensions)")
+            }
+            // Not a tag keeps what has none.
+            let tagged = try found([.tags(["work"], all: false)])
+            let untagged = try found([.not(.tags(["work"], all: false))])
+            #expect(tagged.isDisjoint(with: untagged))
+            #expect(tagged.union(untagged) == everything)
+            #expect(untagged.contains("docs"))
         }
     }
 

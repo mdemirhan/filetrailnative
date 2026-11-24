@@ -1,6 +1,6 @@
 # Apple Intelligence, on this Mac only: set aside
 
-Set aside by the owner (2026-11-24), to be taken up again after [search-conditions.md](search-conditions.md). What was planned, what was built and where it is, and what was learned, so a later start doesn't begin from nothing.
+Set aside by the owner (2026-11-24), to be taken up again after [search-conditions.md](../records/search-conditions.md). What was planned, what was built and where it is, and what was learned, so a later start doesn't begin from nothing.
 
 ## Where the work is
 

@@ -22,7 +22,7 @@ extension ShortcutPolicy {
             .openSelectionInOtherPane, .swapPanes,
             .showFolderInOtherPane, .goToOtherPaneFolder, .equalizePanes, .calculateSize, .toggleFavorite,
             .showInFinder,
-            .showLastSearchResults, .viewAsIcons,
+            .showLastSearchResults, .editSearch, .clearSearchConditions, .viewAsIcons,
             .viewAsList, .viewAsDetails, .viewAsPreviews, .showPreviews9, .showPreviews4, .showPreviews2,
             .showPreviews1, .increaseSize, .decreaseSize, .resetSize, .zoomToFit, .goToPage, .groupByNone, .groupByName,
             .groupByModified,

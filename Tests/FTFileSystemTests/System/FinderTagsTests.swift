@@ -133,4 +133,59 @@ import Testing
             #expect(FinderTags.colors(path).isEmpty)
         }
     }
+    // The list of attributes is read first, and the tags only when it names them: whatever the item holds, the tags
+    // read are those stored.
+    @Test func readsTheTagsWhateverElseTheItemHolds() throws {
+        try withFile { path in
+            #expect(try FinderTags.read(path).isEmpty)
+            #expect(!FinderTags.mayHaveTags(path))
+            // Other attributes, but no tags.
+            let other = Data("x".utf8)
+            _ = other.withUnsafeBytes { setxattr(path, "com.example.other", $0.baseAddress, other.count, 0, 0) }
+            #expect(try FinderTags.read(path).isEmpty)
+            #expect(!FinderTags.mayHaveTags(path))
+            // An attribute whose name holds the tags' name isn't them.
+            _ = other.withUnsafeBytes {
+                setxattr(path, FinderTags.attribute + ".copy", $0.baseAddress, other.count, 0, 0)
+            }
+            #expect(!FinderTags.mayHaveTags(path))
+            try FinderTags.write([FinderTag(name: "Work", color: nil)], to: path)
+            #expect(FinderTags.mayHaveTags(path))
+            #expect(try FinderTags.read(path) == [FinderTag(name: "Work", color: nil)])
+        }
+    }
+
+    // A list of attributes too long to read at once leaves the tags to be asked for, and they are read.
+    @Test func manyAttributesStillGiveTheTags() throws {
+        try withFile { path in
+            let value = Data("x".utf8)
+            for index in 0..<60 {
+                let name = "com.example.a-rather-long-attribute-name-\(index)"
+                _ = value.withUnsafeBytes { setxattr(path, name, $0.baseAddress, value.count, 0, 0) }
+            }
+            #expect(listxattr(path, nil, 0, 0) > 1024)
+            try FinderTags.write([FinderTag(name: "Red", color: .red)], to: path)
+            #expect(try FinderTags.read(path) == [FinderTag(name: "Red", color: .red)])
+        }
+    }
+
+    // A list of tags longer than one read is sized and read whole.
+    @Test func aLongListOfTagsIsReadWhole() throws {
+        try withFile { path in
+            let tags = (0..<40).map { FinderTag(name: "A tag with a fairly long name \($0)", color: nil) }
+            try FinderTags.write(tags, to: path)
+            #expect(getxattr(path, FinderTags.attribute, nil, 0, 0, 0) > FinderTags.firstRead)
+            #expect(try FinderTags.read(path) == tags)
+        }
+    }
+
+    // A folder's tags are read as a file's are.
+    @Test func aFoldersTagsAreRead() throws {
+        try withFile { path in
+            let folder = (path as NSString).deletingLastPathComponent + "/folder"
+            try FileManager.default.createDirectory(atPath: folder, withIntermediateDirectories: false)
+            try FinderTags.write([FinderTag(name: "Blue", color: .blue)], to: folder)
+            #expect(try FinderTags.read(folder) == [FinderTag(name: "Blue", color: .blue)])
+        }
+    }
 }

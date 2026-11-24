@@ -1,5 +1,5 @@
-// What a search marks in names, against the golden: the pattern the query makes, its match in the name, and where
-// that shows in a label shortened in the middle
+// What a search marks in names, against the golden: the pattern the query makes, its first match in the name, and
+// where every word's shows in a label shortened in the middle
 import FTFileSystem
 import FTFoundation
 import FTTestSupport
@@ -28,8 +28,10 @@ import Testing
         Golden.expectMatches(cases) { input in
             let pattern = SearchResults.highlightPattern(
                 query: input.query, patternMode: input.patternMode, matchScope: input.matchScope)
+            // The first word's run, and every word's as the label shows them.
             let match = NameHighlight.match(pattern, in: input.name)
-            let ranges = match.map { NameHighlight.mapToLabel(name: input.name, label: input.label, match: $0) } ?? []
+            let marks = NameHighlight.marks(pattern, in: input.name)
+            let ranges = NameHighlight.mapToLabel(name: input.name, label: input.label, marks: marks)
             return Output(match: match, ranges: ranges)
         }
     }

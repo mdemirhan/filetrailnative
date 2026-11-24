@@ -161,7 +161,7 @@ struct FilterNarrowingTests {
         let composed = "\u{E9}mile.txt"
         let decomposed = "e\u{301}mile.txt"
         let content = pane()
-        let highlight = HighlightPattern(names: try #require(NameMatcher("mile", mode: .contains)))
+        let highlight = HighlightPattern(names: try #require(NameTerms("mile")))
         content.showSearch(
             ContentSearchDisplay(
                 rootPath: "/f", viewKey: "search:/f:mile",

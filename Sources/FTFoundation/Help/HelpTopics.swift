@@ -464,11 +464,21 @@ extension HelpContent {
                             label: "draft", code: true,
                             description: "Names containing “draft”"),
                         HelpRow(
-                            label: "report (1).pdf", code: true,
+                            label: "annual report", code: true,
+                            description: "Names containing both words, in any order: Report, annual.pdf too"),
+                        HelpRow(
+                            label: "\"annual report\"", code: true,
+                            description: "Words in double quotes are found together, spaces and all"),
+                        HelpRow(
+                            label: "!draft", code: true,
+                            description: "Names without “draft”: `report !draft` finds report.pdf, not report-draft.pdf"
+                        ),
+                        HelpRow(
+                            label: "\"report (1).pdf\"", code: true,
                             description: "Found exactly as typed: brackets, dots and `+` have no special meaning"),
                     ],
                     note:
-                        "Plain text is how a new search matches. Choose Glob or Regex under Match As in the options to search with a pattern instead."
+                        "Plain text is how a new search matches. Choose Glob or Regex under Match As in the options to search with a pattern instead: a pattern is taken as typed, spaces and quotes and all."
                 ),
                 HelpSection(
                     title: "Glob patterns",
@@ -530,6 +540,83 @@ extension HelpContent {
                             label: "Report", code: true,
                             description:
                                 "In a glob or a regex, a capital letter makes the search case-sensitive: only Report-final.pdf"
+                        ),
+                    ]),
+                HelpSection(
+                    title: "Conditions",
+                    rows: [
+                        HelpRow(
+                            label: "Typing one",
+                            description:
+                                "A word and a colon in the search field starts a condition, and the list under the field offers its values. The rest of the text is the name to find. Syntax Help at the foot of the list opens this page."
+                        ),
+                        HelpRow(
+                            label: "kind:pdf", code: true,
+                            description:
+                                "Kind: pdf, picture, video, audio, document, spreadsheet, presentation, archive, code, text, folder or application"
+                        ),
+                        HelpRow(
+                            label: "ext:docx", code: true,
+                            description: "The name’s extension, typed without its dot"),
+                        HelpRow(
+                            label: "size:>10mb", code: true,
+                            description:
+                                "Larger than 10 MB; `<500kb` smaller; `>=1mb` and `<=1mb` take 1 MB itself in; `1mb..10mb` between. Units are `b`, `kb`, `mb` and `gb`, or `k`, `m` and `g`."
+                        ),
+                        HelpRow(
+                            label: "size:1.5mb", code: true,
+                            description:
+                                "A size alone is that size to its last digit: 1.5 MB up to 1.6 MB; `size:1mb` is 1 MB up to 2 MB, and `size:1000b` exactly 1,000 bytes"
+                        ),
+                        HelpRow(
+                            label: "picture:>4k", code: true,
+                            description:
+                                "A picture’s longer side: `1920` or `hd` exactly, `>4k` larger, `>=hd` HD or larger, `<1920` smaller"
+                        ),
+                        HelpRow(
+                            label: "Dates",
+                            description:
+                                "`modified:`, `created:`, `added:`, `opened:` and `taken:` take today, yesterday, week, month or year; `7d` within the last 7 days, `>1y` more than a year ago; a day `2026-03-15` or a month `2026-03`, with `<` before or `>` after it, `>=` from it on or `<=` to its end; or `2026-01..2026-03` between. Never opened counts as long ago."
+                        ),
+                        HelpRow(
+                            label: "tag:red", code: true,
+                            description: "Finder’s tags, by name"),
+                        HelpRow(
+                            label: "is:locked", code: true,
+                            description:
+                                "Locked, readonly, executable, empty, alias, link or hidden; `not:` for the other side"),
+                        HelpRow(
+                            label: "perm:755", code: true,
+                            description:
+                                "Permissions exactly: three or four digits (`644`, `4755`) or the letters `ls` shows (`rwxr-xr-x`). `?` is any digit or letter: `?5?` is a group of 5, whatever else; `???r-x???` a group of r-x."
+                        ),
+                        HelpRow(
+                            label: "skip:node_modules", code: true,
+                            description: "Leaves out every folder of that name, and what is in it"),
+                        HelpRow(
+                            label: "All or either",
+                            description:
+                                "Every word must match: `tag:red tag:blue` finds items with both tags, and `size:>1mb size:<10mb` those between 1 and 10 MB. A comma gives a choice: `tag:red,blue` finds items with either tag, and `kind:pdf,picture` PDFs and pictures."
+                        ),
+                        HelpRow(
+                            label: "Not",
+                            description:
+                                "`!` before a value asks for anything else: `kind:!pdf`, `tag:!red`, `ext:!tmp`, `perm:!777`, `size:!1mb`, `picture:!hd`, `modified:!today`; `kind:!pdf,picture` is neither. Before the whole word it is the same: `!tag:red` is `tag:!red`. A name without a word: `!draft`."
+                        ),
+                        HelpRow(
+                            label: "No text needed",
+                            description:
+                                "A condition alone is a search: `kind:pdf size:>100mb` finds every PDF over 100 MB in the place searched."
+                        ),
+                        HelpRow(
+                            label: "From the menu",
+                            description:
+                                "The magnifier’s menu lists each condition after the options: picking one types its word into the field. Edit ▸ Clear Search Conditions takes them out of the text."
+                        ),
+                        HelpRow(
+                            label: "More room",
+                            description:
+                                "Edit ▸ Edit Search…, or the button at the field’s end, opens the search in a larger box that wraps, says how the search reads, and lists every condition’s word to click. Search searches for it; Cancel leaves the search as it was."
                         ),
                     ]),
                 HelpSection(
@@ -912,6 +999,9 @@ extension HelpContent {
         HelpShortcutItem(
             group: .search, .fixed("Down"), "Move from the search field into the results (Return also works)"),
         HelpShortcutItem(group: .search, .command(.showLastSearchResults), "Show the last results again"),
+        HelpShortcutItem(
+            group: .search, .command(.editSearch), "Open the search in a larger editor, with every condition's word"),
+        HelpShortcutItem(group: .search, .command(.clearSearchConditions), "Take every condition out of the search"),
         HelpShortcutItem(group: .search, .command(.revealInFolder), "Show the selected result in its folder"),
         HelpShortcutItem(group: .search, .command(.refreshOrApplySearchSort), "Run the search again"),
         HelpShortcutItem(group: .search, .fixed("Esc"), "Close the results"),

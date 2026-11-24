@@ -31,7 +31,7 @@ public enum SearchMatchOutcome: Equatable, Sendable {
 public struct SearchNameMatch: @unchecked Sendable {
     private enum Test {
         case anything
-        case text(NameMatcher)
+        case text(NameTerms)
         /// One for each thread that asks: one shared by several makes them wait on each other.
         case expressions([NSRegularExpression])
     }
@@ -63,7 +63,7 @@ public struct SearchNameMatch: @unchecked Sendable {
         switch request.patternMode {
         case .text:
             // Text that folds to nothing finds everything, as an empty pattern does.
-            test = NameMatcher(request.query, mode: .contains).map(Test.text) ?? .anything
+            test = NameTerms(request.query).map(Test.text) ?? .anything
         case .glob:
             guard !request.query.isEmpty else {
                 test = .anything
@@ -117,7 +117,8 @@ public struct SearchNameMatch: @unchecked Sendable {
     /// Text search of paths beyond ASCII. Each thread has its own, so nothing is shared.
     public final class Scratch: @unchecked Sendable {
         var folderBytes: [UInt8] = []
-        var folder: FoldedFolder?
+        /// The folder, folded for each word.
+        var folders: [FoldedFolder]?
 
         public init() {}
     }
@@ -137,13 +138,14 @@ public struct SearchNameMatch: @unchecked Sendable {
         if let fast = matcher.matches(asciiBytes: path) { return fast ? .match : .noMatch }
         // The folder is the path up to the slash before the name ("" for an item at the top of the disk).
         let folderBytes = UnsafeBufferPointer(rebasing: path[..<max(0, nameOffset - 1)])
-        if scratch.folder == nil || !scratch.folderBytes.elementsEqual(folderBytes) {
+        if scratch.folders == nil || !scratch.folderBytes.elementsEqual(folderBytes) {
             scratch.folderBytes = Array(folderBytes)
-            scratch.folder = FoldedFolder(String(decoding: folderBytes, as: UTF8.self), for: matcher)
+            let folder = String(decoding: folderBytes, as: UTF8.self)
+            scratch.folders = matcher.allMatchers.map { FoldedFolder(folder, for: $0) }
         }
-        guard let folder = scratch.folder else { return .noMatch }
+        guard let folders = scratch.folders else { return .noMatch }
         let name = String(decoding: UnsafeBufferPointer(rebasing: path[nameOffset...]), as: UTF8.self)
-        return matcher.matches(name: name, in: folder) ? .match : .noMatch
+        return matcher.matches(name: name, in: folders) ? .match : .noMatch
     }
 
     /// Whether the subject given as its UTF-8 bytes is kept; `text` makes it a string, only when one is needed (a name

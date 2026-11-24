@@ -178,6 +178,8 @@ enum ApplicationMenuBuilder {
             menu.addItem(.separator())
             menu.addItem(context.command(.focusFileSearch, "Find Files…"))
             menu.addItem(context.command(.showLastSearchResults, "Show Last Search Results"))
+            menu.addItem(context.command(.editSearch, "Edit Search…"))
+            menu.addItem(context.command(.clearSearchConditions, "Clear Search Conditions"))
         }
 
         context.addSubmenu(to: main, title: "View") { menu in

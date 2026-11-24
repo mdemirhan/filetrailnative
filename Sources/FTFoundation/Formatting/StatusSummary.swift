@@ -59,15 +59,18 @@ public enum StatusSummary {
     public static let unreadableFoldersNote = "Some folders couldn\u{2019}t be read"
 
     /// One line of search status: the result count, the selection with its size when known, and that folders
-    /// couldn't be read.
+    /// couldn't be read. While a search with conditions that read items runs, how many it has looked at.
     public static func search(
         isSearching: Bool, shown: Int, totalCount: Int, selectedCount: Int, selectionSize: StatusSize? = nil,
-        unreadableFolders: Bool = false
+        unreadableFolders: Bool = false, itemsRead: Int = 0
     ) -> String {
         let noun = totalCount == 1 ? "result" : "results"
         let total = FormatLocale.count(totalCount)
         let count = shown == totalCount ? "\(total) \(noun)" : "\(FormatLocale.count(shown)) of \(total) \(noun)"
         var parts = [isSearching ? "Searching… \(count)" : count]
+        if isSearching && itemsRead > 0 {
+            parts.append("\(FormatLocale.count(itemsRead)) \(itemsRead == 1 ? "item" : "items") checked")
+        }
         if selectedCount > 0 {
             parts.append("\(FormatLocale.count(selectedCount)) selected")
             if let text = sizeText(selectionSize) {

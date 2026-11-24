@@ -85,6 +85,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         }
         searchField.onEditingChange = { [weak self] in self?.scheduleSearchWidth() }
         searchField.onWillTakeKeyboard = { [weak self] in self?.widenSearchField(true) }
+        searchField.onTextChange = { [weak self] in self?.growSearchFieldIfLong() }
     }
 
     func attach(_ context: ExplorerWindowContext) {
@@ -435,6 +436,8 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
             // A search of the folder under a file the pane shows would run out of sight.
             searchField.isEnabled = !isCustomizing && !context.activePaneShowsFile
             searchField.takeClearButton()
+            searchField.editButton.toolTip = Tooltips.format(
+                SearchBarText.editSearchName, shortcut: shortcuts.written(.editSearch))
             if let magnifier = item.view as? ToolbarButton {
                 magnifier.tooltip = Tooltips.format(
                     SearchBarText.fieldPlaceholder, shortcut: shortcuts.written(.focusFileSearch))
@@ -521,7 +524,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
 
     // MARK: Search
 
-    /// A press on the magnifier is the options button's. It has to be taken before the window sends it on: the button is
+    /// A press on the magnifier is the options button's, and one on the button at the field's end is Edit Search's. It has to be taken before the window sends it on: the button is
     /// the view under the mouse, but the system's search field has a gesture recognizer that holds the press back from
     /// the views in it and only starts editing. Whatever is over the magnifier, a dialog's scrim or a folded item, keeps it,
     /// and a sheet or a modal window keeps the press, as AppKit does. Taken here, it skips the step of AppKit that brings
@@ -532,11 +535,12 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
             let window = context?.window, window.attachedSheet == nil,
             NSApp.modalWindow == nil || NSApp.modalWindow === window,
             let frame = window.contentView?.superview,
-            frame.hitTest(frame.superview?.convert(event.locationInWindow, from: nil) ?? event.locationInWindow)
-                === button
+            let hit = frame.hitTest(
+                frame.superview?.convert(event.locationInWindow, from: nil) ?? event.locationInWindow),
+            hit === button || hit === searchField.editButton
         else { return false }
         if !window.isKeyWindow, window.canBecomeKey { bringForward(window) }
-        button.mouseDown(with: event)
+        hit.mouseDown(with: event)
         return true
     }
 
@@ -594,6 +598,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         searchWidthPending = false
         guard !isCustomizing, let id = searchID else { return }
         widenSearchField(searchField.holdsKeyboard)
+        growSearchFieldIfLong()
         if searchInUse {
             setSearchOpen(true)
         } else if id == .compactSearch {
@@ -609,6 +614,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     /// out the new width with the item it will hold; it opens first only while no item waits in the » menu, as those
     /// come back before it opens.
     func windowWillResize(toWidth width: Double) {
+        dropSearchFieldGrowth()
         guard searchID == .search, !isCustomizing, !searchInUse, let window = context?.window, window.isVisible,
             let title = titleView
         else { return }
@@ -627,11 +633,157 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     /// no room for it, folded, and opened again in the room it left, over and over.
     private func widenSearchField(_ wide: Bool) {
         let layout = DesignTokens.toolbar
-        let width = wide ? layout.searchFocusedWidth : layout.searchWidth
-        guard let preferred = searchFieldWidths.last, preferred.constant != width else { return }
+        if !wide, searchFieldLong != nil {
+            searchFieldLong = nil
+            restoreItemPriorities()
+        }
+        let width = wide ? (searchFieldLong ?? layout.searchFocusedWidth) : layout.searchWidth
+        // Grown, the field's width is also its least, so the items before it give it their room.
+        let least = searchFieldLong ?? layout.searchMinWidth
+        // Each time: a search item made again, as the toolbar is customized, holds its field to its limit again.
+        liftSystemSearchWidthLimit()
+        guard let preferred = searchFieldWidths.last, let minimum = searchFieldWidths.first,
+            preferred.constant != width || minimum.constant != least
+        else { return }
+        minimum.constant = least
         preferred.constant = width
+        searchItem?.preferredWidthForSearchField = searchFieldLong ?? layout.searchWidth
         context?.window?.standardWindowButton(.closeButton)?.superview?.layoutSubtreeIfNeeded()
     }
+
+    /// The width the field grew to once its text outgrew its focused width, until it lets the keyboard go.
+    private var searchFieldLong: Double?
+    /// The items' priorities before the field grew, given back as it narrows.
+    private var savedPriorities: [(NSToolbarItem, NSToolbarItem.VisibilityPriority)] = []
+
+    /// A search typed past the field's focused width widens it once more, as far as back and forward when they come
+    /// before it: the title and the items between go to the » menu for it, and those after it stay. It doesn't grow
+    /// again while typed in, and goes back to its own width, the items with it, when it lets the keyboard go. Where
+    /// there isn't room for more than its focused width, it doesn't grow.
+    private func growSearchFieldIfLong() {
+        guard searchFieldLong == nil, !isCustomizing, searchField.holdsKeyboard, searchField.textOverflows,
+            let window = searchField.window, !window.inLiveResize
+        else { return }
+        let items = toolbar.items
+        guard
+            let search = items.firstIndex(where: {
+                Self.itemID($0.itemIdentifier).map(ToolbarItems.isSearchField) ?? false
+            }),
+            let history = items[..<search].lastIndex(where: {
+                [.back, .forward].contains(Self.itemID($0.itemIdentifier))
+            }),
+            items[history].view?.window === window,
+            searchFieldRoom(search: search, history: history, overflowComing: true) ?? 0
+                > DesignTokens.toolbar.searchFocusedWidth
+        else { return }
+        savedPriorities = items.map { ($0, $0.visibilityPriority) }
+        for (index, item) in items.enumerated() where index != search {
+            item.visibilityPriority = index > history && index < search ? .low : .user
+        }
+        // Each width laid out moves what is around the field (items between go to the » menu, the » button comes,
+        // items after the field come back from it), so the room is measured again until it stays the same.
+        for _ in 0..<Self.growthPasses {
+            guard let room = searchFieldRoom(search: search, history: history, overflowComing: false),
+                room > DesignTokens.toolbar.searchFocusedWidth
+            else {
+                dropSearchFieldGrowth()
+                return
+            }
+            if let current = searchFieldLong, abs(current - room) < 1 { break }
+            searchFieldLong = room
+            widenSearchField(true)
+        }
+    }
+
+    /// How many times the grown field's room is measured, at most: twice settles it, as the second width leaves the
+    /// items where the first put them.
+    static let growthPasses = 3
+
+    /// The room between the glass of back and forward (the item at `history`) and what follows the field (the next
+    /// item's glass, the » button, or the toolbar's end), a gap from each, as the toolbar is laid out now; nil once
+    /// back and forward aren't in the toolbar. `overflowComing`: the » button isn't there yet and will be, once the
+    /// items between go to it, and the items after the field move over for it.
+    private func searchFieldRoom(search: Int, history: Int, overflowComing: Bool) -> Double? {
+        guard let window = searchField.window, let historyView = toolbar.items[history].view,
+            historyView.window === window, toolbar.items[history].isVisible
+        else { return nil }
+        let left = Self.glassFrame(of: historyView).maxX + Self.searchGrowthGap
+        let next = toolbar.items[(search + 1)...].first { $0.isVisible && $0.view?.window === window }?.view
+        let overflow = overflowButtonFrame
+        var right: CGFloat
+        if let next {
+            right = Self.glassFrame(of: next).minX - Self.searchGrowthGap
+        } else if let overflow {
+            right = overflow.minX - Self.searchGrowthGap
+        } else {
+            right = searchField.convert(searchField.bounds, to: nil).maxX
+        }
+        if overflowComing, overflow == nil { right -= Self.overflowButtonRoom }
+        return Double(right - left)
+    }
+
+    /// The frame, in the window, of the glass `view` is drawn on: the toolbar's platter behind it and the items grouped
+    /// with it, or the view's own where there is none.
+    private static func glassFrame(of view: NSView) -> NSRect {
+        var glass: NSView? = view
+        while let current = glass, !String(describing: type(of: current)).contains("Platter") {
+            glass = current.superview
+        }
+        let holder = glass ?? view
+        return holder.convert(holder.bounds, to: nil)
+    }
+
+    /// The frame, in the window, of the system's » button while it shows: the glass of its button, without the room
+    /// around it.
+    private var overflowButtonFrame: NSRect? {
+        guard let titlebar = searchField.window?.standardWindowButton(.closeButton)?.superview?.superview else {
+            return nil
+        }
+        func find(_ view: NSView) -> NSView? {
+            if String(describing: type(of: view)) == "NSToolbarClippedItemsIndicator",
+                !view.isHiddenOrHasHiddenAncestor,
+                view.window != nil
+            {
+                return view
+            }
+            for child in view.subviews { if let found = find(child) { return found } }
+            return nil
+        }
+        return find(titlebar).map { $0.convert($0.bounds, to: nil) }
+    }
+
+    /// The window changes width: the grown field goes back to its focused width, so the toolbar lays the new width out
+    /// with the items in their own places, and grows again, to the new back and forward, once the toolbar has settled
+    /// (`updateSearchWidth`) and the window is no longer being dragged.
+    private func dropSearchFieldGrowth() {
+        guard searchFieldLong != nil else { return }
+        searchFieldLong = nil
+        restoreItemPriorities()
+        widenSearchField(true)
+    }
+
+    /// The system holds a search item's field to 325 points, whatever width the item is asked for, by a constraint of
+    /// its own on the view that holds the field; raising it didn't last, as the item set it back as it laid out.
+    /// Switched off, it stays off, and the field's own constraints (`searchFieldWidths`) decide its width.
+    private func liftSystemSearchWidthLimit() {
+        guard let holder = searchField.superview else { return }
+        for limit in holder.constraints
+        where limit.firstItem === holder && limit.firstAttribute == .width && limit.relation == .lessThanOrEqual
+            && limit.secondItem == nil
+        {
+            limit.isActive = false
+        }
+    }
+
+    private func restoreItemPriorities() {
+        for (item, priority) in savedPriorities { item.visibilityPriority = priority }
+        savedPriorities = []
+    }
+
+    /// What the grown field leaves between itself and back and forward: the toolbar's gap between items.
+    static let searchGrowthGap = 8.0
+    /// The room the toolbar's » button takes once items go to its menu: its 44 points and the 4 before it.
+    static let overflowButtonRoom = 48.0
 
     /// Whether any of the app's items is in the » menu: the system's separator over the sidebar never counts as shown.
     private var hasOverflowedItems: Bool {

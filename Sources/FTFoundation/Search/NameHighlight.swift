@@ -21,6 +21,11 @@ public enum NameHighlight {
         return HighlightRange(start: found.location, end: found.location + found.length)
     }
 
+    /// Everything `pattern` marks in `name`: each word of a Plain Text search.
+    public static func marks(_ pattern: HighlightPattern?, in name: String) -> [HighlightRange] {
+        pattern?.marks(in: name) ?? []
+    }
+
     /// The match in a name as it shows in a label that may have lost its middle
     /// ("Annual…Report.pdf"). The part before the "…" is the start of the name and the part after it the end. What of
     /// the match is still on show is marked; a match (or part of one) that fell in the missing middle marks the "…", so
