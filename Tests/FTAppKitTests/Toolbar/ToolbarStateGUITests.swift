@@ -132,4 +132,115 @@ extension ExplorerWindowGUITests.ToolbarGUITests {
         tab.goToBox?.onClose()
         await harness.close()
     }
+
+    // In a full toolbar the field takes its wider width from the title and the items the system moves to its » menu.
+    // Let go empty with Esc, it is back at its own width in one step, the items with it, and stays open: no folding to
+    // the magnifier and opening again. A click and ⌘F both widen it before it takes the keyboard.
+    @Test func aFieldInAFullToolbarWidensAndNarrowsInOneStep() async throws {
+        let harness = try ExplorerHarness()
+        let tab = try await harness.open()
+        let window = try #require(tab.window)
+        let toolbar = tab.explorerToolbar
+        setItems(
+            tab,
+            [
+                .folderTree, .back, .forward, .refresh, .title, .newFolder, .view, .viewOptions, .search, .up,
+                .hidden, .newTab, .infoPanel,
+            ], harness)
+        let title = try #require(toolbar.titleView)
+        let field = try #require(tab.searchField)
+        let layout = DesignTokens.toolbar
+        // Room for the field at its own width, with some to spare, and not for its wider one.
+        let spare = Double(title.frame.width) - layout.titleMinWidth
+        window.setContentSize(NSSize(width: window.contentLayoutRect.width - spare + 60, height: 600))
+        harness.layout(tab)
+        #expect(await waitUntil { toolbar.searchOpen && title.frame.width > layout.titleMinWidth + 30 })
+        try await Task.sleep(for: .milliseconds(200))
+
+        func widened(_ way: String) {
+            #expect(field.holdsKeyboard, "\(way)")
+            #expect(field.frame.width > layout.searchWidth + 50, "\(way): the field took the keyboard narrow")
+            #expect(!overflowed(toolbar).isEmpty, "\(way): nothing went to the » menu")
+        }
+        func letGoAndWatch(_ way: String) async throws {
+            key(53, "\u{1b}", in: window)
+            #expect(!field.holdsKeyboard, "\(way): Esc left the keyboard in the field")
+            try await Task.sleep(for: .milliseconds(30))
+            #expect(abs(Double(field.frame.width) - layout.searchWidth) < 1, "\(way): \(field.frame.width)")
+            #expect(overflowed(toolbar).isEmpty, "\(way): items stayed in the » menu: \(overflowed(toolbar))")
+            var seen: Set<String> = []
+            let end = ContinuousClock.now + .milliseconds(500)
+            while ContinuousClock.now < end {
+                seen.insert(toolbar.searchOpen && field.window != nil ? "\(Int(field.frame.width))" : "folded")
+                try await Task.sleep(for: .milliseconds(4))
+            }
+            #expect(seen == ["\(Int(layout.searchWidth))"], "\(way): \(seen)")
+        }
+
+        mouse(.leftMouseDown, at: center(of: field), in: window)
+        mouse(.leftMouseUp, at: center(of: field), in: window)
+        widened("a click")
+        try await letGoAndWatch("a click")
+
+        // ⌘F: the system's item gives the field the keyboard without the field's becomeFirstResponder.
+        tab.search.focusField()
+        widened("⌘F")
+        // As a person would: Esc at once comes before the system's item is done giving the field the keyboard, and it
+        // gives it back.
+        try await Task.sleep(for: .milliseconds(400))
+        try await letGoAndWatch("⌘F")
+        await harness.close()
+    }
+
+    // A toolbar with room for the field only folded. Opened by its magnifier and let go empty, the field folds again
+    // once it is back at its own width, and the items it put in the » menu come back: it rests as it was, not open
+    // with them in the » menu.
+    @Test func aFieldLetGoWhereItDoesntFitFoldsAgain() async throws {
+        let harness = try ExplorerHarness()
+        let tab = try await harness.open()
+        let window = try #require(tab.window)
+        let toolbar = tab.explorerToolbar
+        setItems(
+            tab,
+            [
+                .folderTree, .back, .forward, .refresh, .title, .newFolder, .view, .viewOptions, .search, .up,
+                .hidden, .newTab, .infoPanel,
+            ], harness)
+        let title = try #require(toolbar.titleView)
+        let layout = DesignTokens.toolbar
+        // The title would have 100 pt to spare with the field folded: short of what it needs to open.
+        let spare = Double(title.frame.width) - layout.titleMinWidth
+        let folded = layout.searchWidth - ToolbarButton.iconOnlyWidth
+        window.setContentSize(NSSize(width: window.contentLayoutRect.width - spare - folded + 100, height: 600))
+        harness.layout(tab)
+        #expect(await waitUntil { !toolbar.searchOpen && overflowed(toolbar).isEmpty })
+        try await Task.sleep(for: .milliseconds(300))
+        let resting = title.frame.width
+
+        let magnifier = try #require(toolbar.item(.search)?.view as? ToolbarButton)
+        magnifier.onClick?()
+        let field = try #require(tab.searchField)
+        #expect(toolbar.searchOpen && field.holdsKeyboard)
+        // As a person would: Esc at once comes before the system's item is done giving the field the keyboard, and it
+        // gives it back.
+        try await Task.sleep(for: .milliseconds(400))
+        key(53, "\u{1b}", in: window)
+        #expect(!field.holdsKeyboard)
+        try await Task.sleep(for: .milliseconds(900))
+        #expect(!toolbar.searchOpen, "the field stayed open")
+        #expect(overflowed(toolbar).isEmpty, "items stayed in the » menu: \(overflowed(toolbar))")
+        #expect(abs(title.frame.width - resting) < 1)
+        await harness.close()
+    }
+}
+
+/// The app's items in the system's » menu.
+@MainActor
+private func overflowed(_ toolbar: ExplorerToolbar) -> [String] {
+    toolbar.toolbar.items.compactMap { item in
+        guard let id = ExplorerToolbar.itemID(item.itemIdentifier), id != .topSeparator, !item.isVisible,
+            !item.isHidden
+        else { return nil }
+        return id.rawValue
+    }
 }

@@ -84,7 +84,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
             MainActor.assumeIsolated { self?.toolbarChanged() }
         }
         searchField.onEditingChange = { [weak self] in self?.scheduleSearchWidth() }
-        searchField.onWillTakeKeyboard = { [weak self] in self?.widenSearchField(true, animated: false) }
+        searchField.onWillTakeKeyboard = { [weak self] in self?.widenSearchField(true) }
     }
 
     func attach(_ context: ExplorerWindowContext) {
@@ -543,6 +543,8 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     /// The search field takes the keyboard, the folded search item opening first.
     func beginSearch() {
         setSearchOpen(true)
+        // The system's item gives the field the keyboard without asking it (`becomeFirstResponder`): it widens here.
+        widenSearchField(true)
         searchItem?.beginSearchInteraction()
         if !searchField.isActive { searchField.window?.makeFirstResponder(searchField) }
     }
@@ -617,25 +619,18 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     }
 
     /// The field is wider while it has the keyboard, so what is typed shows: the title gives way first, as it does to
-    /// the field's own width (`searchFieldWidths`). It widens at once, before it takes the keyboard
-    /// (`ToolbarSearchField.onWillTakeKeyboard`), and eases back once it has let it go: its width never changes while
-    /// it is typed in.
-    private func widenSearchField(_ wide: Bool, animated: Bool = true) {
+    /// the field's own width (`searchFieldWidths`), then the items the system puts in the » menu. It widens before it
+    /// takes the keyboard (`ToolbarSearchField.onWillTakeKeyboard`, `beginSearch`), so its width never
+    /// changes while it is typed in, and narrows as soon as it has let it go, before the toolbar decides whether it
+    /// folds (`updateSearchWidth`). Both in one step: eased, the items the system put in the » menu came back one at a
+    /// time as it narrowed, and a field that had let go of the keyboard but was still wide looked like a toolbar with
+    /// no room for it, folded, and opened again in the room it left, over and over.
+    private func widenSearchField(_ wide: Bool) {
         let layout = DesignTokens.toolbar
         let width = wide ? layout.searchFocusedWidth : layout.searchWidth
         guard let preferred = searchFieldWidths.last, preferred.constant != width else { return }
-        let window = context?.window
-        guard animated, window?.isVisible == true, !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion else {
-            preferred.constant = width
-            window?.standardWindowButton(.closeButton)?.superview?.layoutSubtreeIfNeeded()
-            return
-        }
-        NSAnimationContext.runAnimationGroup { context in
-            context.duration = 0.18
-            context.allowsImplicitAnimation = true
-            preferred.animator().constant = width
-            window?.standardWindowButton(.closeButton)?.superview?.layoutSubtreeIfNeeded()
-        }
+        preferred.constant = width
+        context?.window?.standardWindowButton(.closeButton)?.superview?.layoutSubtreeIfNeeded()
     }
 
     /// Whether any of the app's items is in the » menu: the system's separator over the sidebar never counts as shown.
