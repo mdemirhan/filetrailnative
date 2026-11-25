@@ -1,5 +1,6 @@
-// The release's frame times: a real window on a folder of 3,000 files, each view scrolled at its default size and at its
-// largest, the main thread's time over each frame measured as the scenario's `scroll` step measures it
+// The frame times of scrolling, measured on demand by scripts/frame-times.sh: a real window on a folder of 3,000 files,
+// each view scrolled at its default size and at its largest, the main thread's time over each frame measured as the
+// scenario's `scroll` step measures it
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -9,7 +10,7 @@ import Testing
 
 @testable import FTAppKit
 
-/// One view at one size, as the release keeps it: the median of three scrolls for each number.
+/// One view at one size: the median of three scrolls for each number.
 struct FrameTiming: Codable, Equatable {
     var view: String
     var size: String
@@ -18,10 +19,15 @@ struct FrameTiming: Codable, Equatable {
     var slowestMs: Double
 }
 
-/// Puts a window on screen: only with FILETRAIL_GUI_TESTS=1, and with the fixture trees built. The results go to the
-/// file FILETRAIL_FRAME_TIMINGS_OUT names, which scripts/release.sh reads.
+/// Puts a window on screen: only with FILETRAIL_FRAME_TIMES=1 beside FILETRAIL_GUI_TESTS=1, so the other tests of real
+/// windows (a release's among them) leave it out, and with the fixture trees built. The results go to the file
+/// FILETRAIL_FRAME_TIMINGS_OUT names, which scripts/frame-times.sh reads.
 @MainActor
-@Suite(.serialized, .holdsMainLoop, .enabled(if: ProcessInfo.processInfo.environment["FILETRAIL_GUI_TESTS"] == "1"))
+@Suite(
+    .serialized, .holdsMainLoop,
+    .enabled(
+        if: ProcessInfo.processInfo.environment["FILETRAIL_GUI_TESTS"] == "1"
+            && ProcessInfo.processInfo.environment["FILETRAIL_FRAME_TIMES"] == "1"))
 struct FrameTimeGUITests {
     private static let folder: URL = {
         let cache =

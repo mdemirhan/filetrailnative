@@ -7,7 +7,7 @@ import Testing
         .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
         .deletingLastPathComponent()
     private static let library = repositoryRoot.appendingPathComponent("scripts/lib/release-lib.sh").path
-    private static let limits = repositoryRoot.appendingPathComponent("scripts/lib/frame-timing-limits.sh").path
+    private static let frameTimes = repositoryRoot.appendingPathComponent("scripts/lib/frame-times-lib.sh").path
     private static let testRuns = repositoryRoot.appendingPathComponent("scripts/lib/test-runs.sh").path
     private static let testLock = repositoryRoot.appendingPathComponent("scripts/lib/test-lock.sh").path
     private static let script = repositoryRoot.appendingPathComponent("scripts/release.sh").path
@@ -30,7 +30,7 @@ import Testing
         let releaseSwitches: Set = [
             "FILETRAIL_LARGE_FILE_TESTS", "FILETRAIL_RELEASE_TESTS", "UNDO_FUZZ_CASES", "UNDO_FUZZ_SEED",
             "BATCH_RENAME_FUZZ_CASES", "BATCH_RENAME_FUZZ_SEED", "FILETRAIL_NO_DISK_IMAGES", "FILETRAIL_GUI_TESTS",
-            "FILETRAIL_FRAME_TIMINGS_OUT", "FILETRAIL_MACHINE_MODEL",
+            "FILETRAIL_FRAME_TIMES", "FILETRAIL_FRAME_TIMINGS_OUT",
         ]
         var environment = ProcessInfo.processInfo.environment.filter {
             !$0.key.hasPrefix("GIT_") && !releaseSwitches.contains($0.key)
@@ -128,9 +128,9 @@ import Testing
         #expect(try Self.call("latest_release", input: "v0.3.0-beta\n").output.isEmpty)
     }
 
-    // MARK: - Frame times
+    // MARK: - Frame times, on demand
 
-    /// A release's frame times: the List and the Icons view at their default size.
+    /// A run's frame times: the List and the Icons view at their default size.
     private static func timings(list: Double, icons: Double, late: Double = 0.1) -> String {
         """
         {"timings": [
@@ -140,8 +140,8 @@ import Testing
         """
     }
 
-    /// `frame_timings_report` of `now` against the history `history` (nil: none) for `machine`.
-    private static func report(_ now: String, history: String?, machine: String = "Mac16,5") throws -> Outcome {
+    /// `frame_timings_table` of `now` against the last record in `history` (nil: none) for `machine`.
+    private static func table(_ now: String, history: String?, machine: String = "Mac16,5") throws -> Outcome {
         try withTemporaryDirectory(prefix: "filetrail-frames") { folder throws in
             let timings = folder.appending("now.json").path
             try now.write(toFile: timings, atomically: true, encoding: .utf8)
@@ -150,9 +150,8 @@ import Testing
             return try run(
                 "/bin/bash",
                 [
-                    "-c",
-                    "source \"$0\"; frame_timings_report \"$1\" \"$(frame_timings_previous \"$2\" \"$3\")\" \"$3\"",
-                    library, timings, file, machine,
+                    "-c", "source \"$0\"; frame_timings_table \"$1\" \"$(frame_timings_previous \"$2\" \"$3\")\"",
+                    frameTimes, timings, file, machine,
                 ])
         }
     }
@@ -168,82 +167,22 @@ import Testing
         return "{\"releases\": [\(releases.joined(separator: ","))]}"
     }
 
-    // With no earlier release from this Mac model, only the ceilings apply; the table has the numbers alone.
-    @Test func framesWithNoEarlierRecordMeetOnlyTheCeilings() throws {
-        let fine = try Self.report(Self.timings(list: 6.6, icons: 5.6), history: nil)
-        #expect(fine.succeeded)
-        #expect(fine.output.contains("No earlier release was measured on this Mac model (Mac16,5)"))
-        #expect(fine.output.contains("list     default   6.60 ms"))
-        // A record from another Mac model is no comparison.
-        let elsewhere = try Self.report(
+    // scripts/frame-times.sh's table: with no record from this Mac model it has the numbers alone; with one, each
+    // number before and the change, from the last release measured on that model.
+    @Test func frameTimesAreShownAgainstTheLastReleaseOnTheSameMacModel() throws {
+        let alone = try Self.table(
             Self.timings(list: 6.6, icons: 5.6),
             history: Self.history([("0.16.0", "Mac14,2", Self.timings(list: 2, icons: 2))]))
-        #expect(elsewhere.succeeded)
-        #expect(elsewhere.output.contains("only the ceilings apply"))
-        let ceiling = try Self.report(Self.timings(list: 40, icons: 5.6), history: nil)
-        #expect(!ceiling.succeeded)
-        #expect(ceiling.output.contains("list at the default size: the median frame took 40 ms"))
-        let late = try Self.report(Self.timings(list: 6.6, icons: 5.6, late: 0.9), history: nil)
-        #expect(!late.succeeded)
-        #expect(late.output.contains("of frames were late"))
-    }
-
-    // Against the last release made on this Mac model: the table says each number before and the change, and a clear
-    // slowdown of a median or of the late frames fails; the slowest frame fails nothing.
-    @Test func framesAreComparedWithTheLastReleaseOnTheSameMacModel() throws {
+        #expect(alone.succeeded)
+        #expect(alone.output.contains("list     default   6.60 ms                       10.0%"))
         let history = Self.history([
             ("0.15.0", "Mac16,5", Self.timings(list: 1, icons: 1)),
             ("0.16.0", "Mac16,5", Self.timings(list: 6.0, icons: 5.0)),
             ("0.16.1", "Mac14,2", Self.timings(list: 9, icons: 9)),
         ])
-        let fine = try Self.report(Self.timings(list: 6.6, icons: 5.0), history: history)
-        #expect(fine.succeeded)
-        #expect(fine.output.contains("against 0.16.0 (2026-11-01) on the same Mac model (Mac16,5)"))
-        #expect(fine.output.contains("list     default   6.60 ms  6.00 ms     +10%"))
-        let slower = try Self.report(Self.timings(list: 12, icons: 5.0), history: history)
-        #expect(!slower.succeeded)
-        #expect(slower.output.contains("list at the default size: the median frame took 12 ms, 6 ms before"))
-        #expect(!slower.output.contains("icons at the default size"))
-        let late = try Self.report(Self.timings(list: 6.0, icons: 5.0, late: 0.5), history: history)
-        #expect(!late.succeeded)
-        #expect(late.output.contains("50 % of frames were late, 10 % before"))
-    }
-
-    // The ceilings hold against an earlier record too, and for a view and size that record lacks: releases each a
-    // little slower than the last don't pass for ever, and a new view isn't left unchecked.
-    @Test func theCeilingsApplyWithAnEarlierRecordToo() throws {
-        let creeping = Self.history([("0.16.0", "Mac16,5", Self.timings(list: 14, icons: 5.0))])
-        let over = try Self.report(Self.timings(list: 17, icons: 5.0), history: creeping)
-        #expect(!over.succeeded)
-        #expect(over.output.contains("list at the default size: the median frame took 17 ms"))
-        let renamed = Self.history([
-            (
-                "0.16.0", "Mac16,5",
-                Self.timings(list: 6, icons: 5).replacingOccurrences(of: "\"list\"", with: "\"rows\"")
-            )
-        ])
-        let unmatched = try Self.report(Self.timings(list: 40, icons: 5.0), history: renamed)
-        #expect(!unmatched.succeeded)
-        #expect(unmatched.output.contains("list at the default size: the median frame took 40 ms"))
-    }
-
-    // Timings or an earlier record that can't be read stop the release instead of passing unchecked.
-    @Test func framesThatCantBeComparedFail() throws {
-        let noNumbers = Self.history([
-            ("0.16.0", "Mac16,5", Self.timings(list: 6, icons: 5).replacingOccurrences(of: "medianMs", with: "median"))
-        ])
-        let earlier = try Self.report(Self.timings(list: 40, icons: 5.0), history: noNumbers)
-        #expect(!earlier.succeeded)
-        #expect(earlier.output.contains("couldn't be compared"))
-        let noTimings = """
-            {"releases": [{"version": "0.16.0", "date": "2026-11-01", "machine": "Mac16,5"}]}
-            """
-        #expect(try Self.report(Self.timings(list: 6, icons: 5.0), history: noTimings).succeeded == false)
-        #expect(try Self.report("{\"timings\": []}", history: nil).succeeded == false)
-        let noNumbersNow = """
-            {"timings": [{"view": "list", "size": "default"}]}
-            """
-        #expect(try Self.report(noNumbersNow, history: nil).succeeded == false)
+        let compared = try Self.table(Self.timings(list: 6.6, icons: 5.0, late: 0.2), history: history)
+        #expect(compared.succeeded)
+        #expect(compared.output.contains("list     default   6.60 ms  6.00 ms     +10%     20.0%   10.0% +10.0 pt"))
     }
 
     // scripts/ci.sh --scope and the release's tests of real windows: a run that matched no test fails.
@@ -292,9 +231,6 @@ import Testing
                 atPath: ReleaseScriptTests.script, toPath: root.appendingPathComponent("work/scripts/release.sh").path)
             try FileManager.default.copyItem(
                 atPath: ReleaseScriptTests.library, toPath: scripts.appendingPathComponent("release-lib.sh").path)
-            try FileManager.default.copyItem(
-                atPath: ReleaseScriptTests.limits, toPath: scripts.appendingPathComponent("frame-timing-limits.sh").path
-            )
             try FileManager.default.copyItem(
                 atPath: ReleaseScriptTests.testRuns, toPath: scripts.appendingPathComponent("test-runs.sh").path)
             try FileManager.default.copyItem(
@@ -357,8 +293,7 @@ import Testing
         ) throws -> Outcome {
             try ReleaseScriptTests.run(
                 path + "/scripts/release.sh", arguments + (withNotes ? ["--notes", notes.path] : []),
-                in: folder ?? path, path: bin, devCache: devCache.path,
-                extra: ["FILETRAIL_MACHINE_MODEL": "Mac16,5"].merging(extra) { $1 })
+                in: folder ?? path, path: bin, devCache: devCache.path, extra: extra)
         }
 
         /// A stand-in at `relative` (in the checkout) or in the bin folder, running `body`.
@@ -368,17 +303,14 @@ import Testing
             try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: file)
         }
 
-        /// Stand-ins for the checks that pass, a swift whose tests of real windows write `timings` as the frame times,
-        /// and a release build that makes the app and its files for the version tagged.
-        func passingChecks(timings: String) throws {
+        /// Stand-ins for the checks that pass, a swift whose tests of real windows pass, and a release build that makes
+        /// the app and its files for the version tagged.
+        func passingChecks() throws {
             try stub("scripts/ci.sh", "exit 0")
-            let timingsFile = root.appendingPathComponent("timings.json").path
-            try timings.write(toFile: timingsFile, atomically: true, encoding: .utf8)
             try stub(
                 "swift", inBin: true,
                 """
                 echo "◇ Test run started."
-                cp "\(timingsFile)" "$FILETRAIL_FRAME_TIMINGS_OUT"
                 echo "✔ Test run with 3 tests in 2 suites passed after 1.0 seconds."
                 """)
             try stub(
@@ -599,34 +531,11 @@ import Testing
         }
     }
 
-    // The frame times are compared with the last release on this Mac model: one clearly slower stops the release before
-    // anything is committed or tagged.
-    @Test func aReleaseWhoseScrollingGotSlowerStops() throws {
+    // A release whose build fails after the tag was made takes the tag back: nothing reached GitHub, and it can simply be
+    // run again.
+    @Test func aReleaseThatStopsAfterTaggingTakesTheTagBack() throws {
         try withCheckout { checkout throws in
-            let history = Self.history([("0.2.0", "Mac16,5", Self.timings(list: 6, icons: 5))])
-            try FileManager.default.createDirectory(
-                at: checkout.root.appendingPathComponent("work/docs"), withIntermediateDirectories: true)
-            try history.write(
-                to: checkout.root.appendingPathComponent("work/docs/frame-timings.json"), atomically: true,
-                encoding: .utf8)
-            try checkout.passingChecks(timings: Self.timings(list: 12, icons: 5))
-            let head = try checkout.git("rev-parse", "HEAD")
-            let remote = try checkout.git("ls-remote", "origin")
-
-            let outcome = try checkout.release("0.3.0", "--yes")
-            #expect(!outcome.succeeded)
-            #expect(outcome.output.contains("against 0.2.0"))
-            #expect(outcome.output.contains("list at the default size: the median frame took 12 ms, 6 ms before"))
-            #expect(outcome.output.contains("Scrolling got slower than the frame-time limits allow"))
-            #expect(try checkout.git("rev-parse", "HEAD") == head)
-            try checkout.expectNothingDone(tagsBefore: "", remoteBefore: remote)
-        }
-    }
-
-    // A release that stops after the frame times were committed and tagged takes both back.
-    @Test func aReleaseThatStopsAfterRecordingTheFrameTimesTakesThemBack() throws {
-        try withCheckout { checkout throws in
-            try checkout.passingChecks(timings: Self.timings(list: 6, icons: 5))
+            try checkout.passingChecks()
             try checkout.stub("scripts/make-release-app.sh", "exit 1")
             try checkout.git("add", ".")
             try checkout.commit("a build that fails")
@@ -636,42 +545,35 @@ import Testing
 
             let outcome = try checkout.release("0.3.0", "--yes")
             #expect(!outcome.succeeded)
-            #expect(outcome.output.contains("only the ceilings apply"))
-            #expect(outcome.output.contains("v0.3.0 and its frame times were taken back"))
+            #expect(outcome.output.contains("v0.3.0 was taken back; nothing reached GitHub"))
             #expect(try checkout.git("rev-parse", "HEAD") == head)
             #expect(try checkout.git("status", "--porcelain").isEmpty)
             try checkout.expectNothingDone(tagsBefore: "", remoteBefore: remote)
         }
     }
 
-    // A release adds its frame times to the history in a commit of its own on the checked one, tags that commit, pushes
-    // main and the tag together, and shows the frame times again once the draft is made.
-    @Test func aReleaseKeepsItsFrameTimesInTheCommitItTags() throws {
+    // A release tags the commit it checked, adds no commit of its own, pushes the tag alone and leaves main on GitHub
+    // where it was; it measures no frame times.
+    @Test func aReleaseTagsTheCommitItChecked() throws {
         try withCheckout { checkout throws in
-            try checkout.passingChecks(timings: Self.timings(list: 6, icons: 5))
+            try checkout.passingChecks()
             let checked = try checkout.git("rev-parse", "HEAD").trimmingCharacters(in: .newlines)
 
             let outcome = try checkout.release("0.3.0", "--yes")
             #expect(outcome.succeeded, "\(outcome.output)")
-            let tagged = try checkout.git("rev-list", "-n", "1", "v0.3.0").trimmingCharacters(in: .newlines)
-            #expect(try checkout.git("rev-parse", "HEAD").trimmingCharacters(in: .newlines) == tagged)
-            #expect(try checkout.git("rev-parse", "\(tagged)^").trimmingCharacters(in: .newlines) == checked)
-            #expect(try checkout.git("diff", "--name-only", checked, tagged) == "docs/frame-timings.json\n")
-            #expect(try checkout.git("ls-remote", "origin", "refs/heads/main").hasPrefix(tagged))
-            #expect(try checkout.git("ls-remote", "origin", "refs/tags/v0.3.0^{}").hasPrefix(tagged))
-            let history = try checkout.git("show", "\(tagged):docs/frame-timings.json")
-            #expect(history.contains("\"version\": \"0.3.0\""))
-            #expect(history.contains("\"machine\": \"Mac16,5\""))
-            let afterDraft = try #require(outcome.output.components(separatedBy: "Draft release v0.3.0 is ready").last)
-            #expect(afterDraft.contains("list     default   6.00 ms"))
-            #expect(afterDraft.contains("Read the draft over, then press Publish release."))
+            #expect(try checkout.git("rev-list", "-n", "1", "v0.3.0").trimmingCharacters(in: .newlines) == checked)
+            #expect(try checkout.git("rev-parse", "HEAD").trimmingCharacters(in: .newlines) == checked)
+            #expect(try checkout.git("ls-remote", "origin", "refs/heads/main").hasPrefix(checked))
+            #expect(try checkout.git("ls-remote", "origin", "refs/tags/v0.3.0^{}").hasPrefix(checked))
+            #expect(!outcome.output.contains("Frame times"))
+            #expect(outcome.output.contains("Read the draft over, then press Publish release."))
         }
     }
 
     // Tests of real windows that matched none would pass with nothing checked: the release stops.
     @Test func aReleaseWhoseTestsOfRealWindowsRanNoneStops() throws {
         try withCheckout { checkout throws in
-            try checkout.passingChecks(timings: Self.timings(list: 6, icons: 5))
+            try checkout.passingChecks()
             try checkout.stub("swift", inBin: true, "echo 'warning: No matching test cases were run'")
             let remote = try checkout.git("ls-remote", "origin")
             let outcome = try checkout.release("0.3.0", "--yes")
@@ -716,7 +618,7 @@ import Testing
     // stays in the tag. A relative path is taken from where the script was started.
     @Test func aReleaseKeepsItsNotesInTheTagAndTheDraft() throws {
         try withCheckout { checkout throws in
-            try checkout.passingChecks(timings: Self.timings(list: 6, icons: 5))
+            try checkout.passingChecks()
 
             let outcome = try checkout.release(
                 "0.3.0", "--yes", "--notes=notes.md", withNotes: false, from: checkout.root.path)

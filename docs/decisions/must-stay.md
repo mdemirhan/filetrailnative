@@ -66,7 +66,7 @@ Things in the code that look removable and are not. Don't change them; if a chan
 
 - **The `vtool` restamp in `build-app.sh`**: SwiftPM stamps the deployment target (26.0) as the SDK too, and macOS gives an app stamped with an old SDK the old look.
 - **`FTTestSupport` as a regular target**: all four test bundles share its goldens, snapshots and temporary folders, and a SwiftPM test target can't depend on another test target (inferred).
-- **The release-script tests**: `release.sh` and `build-app.sh` run only at a release; these run their rules (versions, tags, frame-time limits) on every CI run, with stand-ins for the tools (inferred).
+- **The release-script tests**: `release.sh` and `build-app.sh` run only at a release; these run their rules (versions, tags, notes) on every CI run, with stand-ins for the tools (inferred).
 - **`AppClock` and `FILETRAIL_NOW`**: freeze "now" so relative dates ("Today at 14:38") are the same in every screenshot and capture.
 - **The read-only test seams** (`jobCount`, `watchedPaths`, `rowViewsShown` and the like): each is a test's only way to see something.
 - **`ElementFinder`, `MouseEvents`, `KeyEvents`, `AutomationPrefs`, `AutomationDraggingInfo`/`AutomationDrag`**: many tests press things through them.

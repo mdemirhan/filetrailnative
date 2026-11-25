@@ -2,12 +2,10 @@
 # Scripts/release.sh <major|minor|patch|X.Y.Z> --notes <file> [--yes] [--dry-run]
 #
 # From a clean main that is already on GitHub, it checks the commit (scripts/ci.sh --full with the large-file tests, the
-# release-only tests and the fuzz tests at more cases from a seed of the day, then the tests of real windows with the frame
-# times of scrolling), adds those frame times to docs/frame-timings.json in a commit of their own, tags that commit vX.Y.Z
-# (the version comes from the tag, see scripts/version.sh), builds the signed and notarized app, pushes main and the tag,
-# and makes a draft GitHub release with the disk image and the ZIP. The frame times are shown against the last release
-# made on the same Mac model, and a clear slowdown stops the release (scripts/lib/frame-timing-limits.sh). Nothing is
-# published by this script: publish the draft on GitHub.
+# release-only tests and the fuzz tests at more cases from a seed of the day, then the tests of real windows), tags it
+# vX.Y.Z (the version comes from the tag, see scripts/version.sh), builds the signed and notarized app, pushes the tag,
+# and makes a draft GitHub release with the disk image and the ZIP. Nothing is published by this script: publish the
+# draft on GitHub. The frame times of scrolling aren't part of a release: scripts/frame-times.sh measures them on demand.
 #
 # The notes are written for people before the release starts, in Markdown, in a file outside the checkout (or under
 # build/, which git ignores). They are the draft release's text and the tag's message after its "File Trail X.Y.Z" line,
@@ -125,9 +123,6 @@ done
 if [[ -n "${FILETRAIL_NO_DISK_IMAGES:-}" ]]; then
     add_problem "FILETRAIL_NO_DISK_IMAGES is set, which skips the tests on disk images: unset it first."
 fi
-if ! command -v jq >/dev/null; then
-    add_problem "jq isn't installed: the frame times are read with it."
-fi
 
 # What is checked, tagged and built: the commit found clean and on GitHub here.
 CHECKED_COMMIT="$(git rev-parse HEAD)"
@@ -211,33 +206,19 @@ run "Clean build with zero warnings, every test including the large-file and rel
     env FILETRAIL_LARGE_FILE_TESTS=1 FILETRAIL_RELEASE_TESTS=1 UNDO_FUZZ_CASES=1000 UNDO_FUZZ_SEED="${FUZZ_SEED}" \
     BATCH_RENAME_FUZZ_CASES=4000 BATCH_RENAME_FUZZ_SEED="${FUZZ_SEED}" scripts/ci.sh --full
 
-# The tests that put windows, menus and a disk on screen: the only tests of real windows, so a release runs them. They
-# include the frame times of scrolling (FrameTimeGUITests), written to a file for the comparison after.
-FRAME_TIMINGS="build/release-frame-timings.json"
+# The tests that put windows, menus and a disk on screen: the only tests of real windows, so a release runs them.
 GUI_LOG="build/logs/release-gui-tests.log"
 mkdir -p build/logs
-rm -f "${FRAME_TIMINGS}"
 printf '\n==> %s\n' "The tests that drive real windows"
 # Behind the lock scripts/ci.sh takes, so no other test run on this Mac goes on beside them.
 with_test_lock "the release's tests of real windows" \
-    env FILETRAIL_GUI_TESTS=1 FILETRAIL_FRAME_TIMINGS_OUT="${PWD}/${FRAME_TIMINGS}" swift test --filter GUITests 2>&1 |
+    env FILETRAIL_GUI_TESTS=1 swift test --filter GUITests 2>&1 |
     tee "${GUI_LOG}" || die "The tests that drive real windows failed."
 ran_some_tests "${GUI_LOG}" || die "The tests that drive real windows ran no test: --filter GUITests matched none."
-[[ -f "${FRAME_TIMINGS}" ]] || die "The frame-time tests left no timings in ${FRAME_TIMINGS}."
-
-# The frame times against the last release made on this Mac model, or the ceilings with none.
-HISTORY="docs/frame-timings.json"
-MACHINE="${FILETRAIL_MACHINE_MODEL:-$(sysctl -n hw.model)}"
-MACOS="$(sw_vers -productVersion)"
-PREVIOUS="$(frame_timings_previous "${HISTORY}" "${MACHINE}")" || die "${HISTORY} couldn't be read."
-printf '\n==> %s\n' "Frame times of scrolling"
-frame_timings_report "${FRAME_TIMINGS}" "${PREVIOUS}" "${MACHINE}" ||
-    die "Scrolling got slower than the frame-time limits allow (scripts/lib/frame-timing-limits.sh)."
 
 # The checks take minutes: what is tagged must still be what was checked.
 assert_unchanged_since "${CHECKED_COMMIT}" "the checks"
 
-COMMITTED=0
 TAGGED=0
 PUSHED=0
 DRAFTED=0
@@ -246,14 +227,10 @@ finish() {
     local status=$?
     [[ -z "${NOTES_DIR}" ]] || rm -rf "${NOTES_DIR}"
     if [[ "${status}" != 0 && "${PUSHED}" == 0 ]]; then
-        # Not on GitHub yet: the tag and the frame times' commit go, so the release can simply be tried again.
-        [[ "${TAGGED}" == 0 ]] || git tag -d "${TAG}" >/dev/null 2>&1 || true
-        if [[ "${COMMITTED}" == 1 ]]; then
-            git reset -q --keep "${CHECKED_COMMIT}" || true
-            git checkout -q "${CHECKED_COMMIT}" -- "${HISTORY}" 2>/dev/null || rm -f "${HISTORY}"
-        fi
-        if [[ "${TAGGED}" == 1 || "${COMMITTED}" == 1 ]]; then
-            printf '\n%s and its frame times were taken back; nothing reached GitHub.\n' "${TAG}" >&2
+        # Not on GitHub yet: the tag goes, so the release can simply be tried again.
+        if [[ "${TAGGED}" == 1 ]]; then
+            git tag -d "${TAG}" >/dev/null 2>&1 || true
+            printf '\n%s was taken back; nothing reached GitHub.\n' "${TAG}" >&2
         fi
     elif [[ "${status}" != 0 && "${TAGGED}" == 1 ]]; then
         if [[ "${DRAFTED}" == 0 ]]; then
@@ -268,29 +245,13 @@ trap finish EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM HUP
 
-# The frame times join the history in a commit of their own, which is the one tagged: it holds the checked commit and that
-# file alone.
-RECORD="$(frame_timings_record "${VERSION}" "$(date +%Y-%m-%d)" "${MACHINE}" "${MACOS}" "${FRAME_TIMINGS}")" ||
-    die "The frame times couldn't be read."
-COMMITTED=1
-mkdir -p "$(dirname "${HISTORY}")"
-frame_timings_append "${HISTORY}" "${RECORD}" >"${HISTORY}.new" || die "${HISTORY} couldn't be written."
-mv "${HISTORY}.new" "${HISTORY}"
-git add "${HISTORY}"
-run "Recording the frame times in ${HISTORY}" git commit -q -m "The frame times of scrolling in File Trail ${VERSION} are kept"
-RELEASE_COMMIT="$(git rev-parse HEAD)"
-if [[ "$(git rev-parse HEAD^)" != "${CHECKED_COMMIT}" || "$(git diff --name-only "${CHECKED_COMMIT}" HEAD)" != "${HISTORY}" ]]
-then
-    die "The commit to tag isn't the checked one with the frame times alone added."
-fi
-
 # The tag's message is the release's name and its notes, word for word: a Markdown heading starts with #, which git
 # would otherwise take for a comment and drop. The draft gets the same notes, from the same copy.
 NOTES_DIR="$(mktemp -d -t filetrail-release)"
 cp "${NOTES}" "${NOTES_DIR}/notes.md" || die "The release notes ${NOTES} couldn't be read."
 { printf 'File Trail %s\n\n' "${VERSION}"; cat "${NOTES_DIR}/notes.md"; } >"${NOTES_DIR}/tag-message.txt"
 run "Tagging ${TAG} with the release notes" \
-    git tag -a --cleanup=verbatim -F "${NOTES_DIR}/tag-message.txt" "${TAG}" "${RELEASE_COMMIT}"
+    git tag -a --cleanup=verbatim -F "${NOTES_DIR}/tag-message.txt" "${TAG}" "${CHECKED_COMMIT}"
 TAGGED=1
 
 run "Building, signing and notarizing the app" scripts/make-release-app.sh --notarize
@@ -305,9 +266,9 @@ for file in "${SHARE_FILES[@]}"; do
 done
 
 # The app was built from the working tree: it must still be the tagged commit.
-assert_unchanged_since "${RELEASE_COMMIT}" "the build"
-# Main and the tag together, or neither.
-run "Pushing main and ${TAG} to GitHub" git push --atomic origin main "${TAG}"
+assert_unchanged_since "${CHECKED_COMMIT}" "the build"
+# Main is on GitHub already: the release's commit is the one checked there.
+run "Pushing ${TAG} to GitHub" git push origin "${TAG}"
 PUSHED=1
 
 run "Making a draft release on GitHub" gh release create "${TAG}" --draft --verify-tag --title "${TAG}" \
@@ -315,6 +276,5 @@ run "Making a draft release on GitHub" gh release create "${TAG}" --draft --veri
 DRAFTED=1
 
 URL="$(gh release view "${TAG}" --json url --jq .url || true)"
-printf '\nDraft release %s is ready: %s\n\n' "${TAG}" "${URL:-see the releases page on GitHub}"
-frame_timings_report "${FRAME_TIMINGS}" "${PREVIOUS}" "${MACHINE}" || true
-printf '\nRead the draft over, then press Publish release.\n'
+printf '\nDraft release %s is ready: %s\n' "${TAG}" "${URL:-see the releases page on GitHub}"
+printf 'Read the draft over, then press Publish release.\n'

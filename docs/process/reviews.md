@@ -28,7 +28,7 @@ A finding blocks a release when:
 5. A new feature's main path doesn't work: what the release notes would name has to do what they say.
 6. It comes from a fix made in the same review, until it is fixed or the fix taken back.
 
-Not blockers: what is rare and harmless, what only looks off, slowness that doesn't trip the release's frame-time gate, missing tests (unless the path untested is one of the six), docs and comments, and code that goes against a decision without hurting anyone, which is "should fix".
+Not blockers: what is rare and harmless, what only looks off, slowness no one would notice, missing tests (unless the path untested is one of the six), docs and comments, and code that goes against a decision without hurting anyone, which is "should fix".
 
 A loss that can't be undone but needs a contrived case (a power cut in a given moment, a disk that lies, an archive made to hurt whoever made it) is not a blocker by itself. It goes under "It needs a choice from the owner", with what guarding against it would cost the ordinary case.
 

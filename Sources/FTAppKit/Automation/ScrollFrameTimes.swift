@@ -1,5 +1,5 @@
 // How long the main thread takes over each frame while the folder's view scrolls: the scenario's `scroll` step and the
-// release's frame-time tests measure the same way
+// frame-time test (`FrameTimeGUITests`, run by scripts/frame-times.sh) measure the same way
 #if DEBUG
     import AppKit
 

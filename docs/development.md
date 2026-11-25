@@ -48,14 +48,16 @@ scripts/release.sh <major|minor|patch|X.Y.Z> --notes <file> [--yes] [--dry-run]
 From a clean `main` that is already on GitHub, with the test fixtures built, it:
 
 1. runs `scripts/ci.sh --full` with the large-file tests, the release-only tests and the fuzz tests at more cases, from a seed of the day;
-2. runs the tests of real windows, which also time scrolling in the List, Icons and Compact List, and shows those frame times against the last release made on the same Mac model, stopping on a clear slowdown (the limits are in `scripts/lib/frame-timing-limits.sh`);
-3. adds the frame times to `docs/frame-timings.json` in a commit of their own and tags that commit;
+2. runs the tests of real windows;
+3. tags the commit it checked;
 4. builds the notarized app and checks that its version is the tag and that nothing moved meanwhile;
-5. pushes `main` and the tag together, and makes a draft GitHub release with the disk image and the ZIP.
+5. pushes the tag, and makes a draft GitHub release with the disk image and the ZIP.
 
-A failure before the push takes back the tag and the frame-times commit. It stops if an earlier release was left unfinished, and it never publishes: read the draft over, then press Publish release on GitHub.
+A failure before the push takes back the tag. It stops if an earlier release was left unfinished, and it never publishes: read the draft over, then press Publish release on GitHub.
 
 The notes are written for people before the release starts, in a Markdown file outside the checkout (or under `build/`), and named with `--notes <file>`. They become both the draft's text and the tag's message, so `git show vX.Y.Z` keeps them. The tag gets the file as it is when the commit is tagged: change the notes in the file, not on GitHub, or the tag and the release page will differ. The first release is asked for by exact version, as there is nothing yet for `major`, `minor` or `patch` to count from. `--dry-run` only says what it would release and what would stop it.
+
+The frame times of scrolling are measured on demand, not by a release: `scripts/frame-times.sh` scrolls the List, Icons and Compact List in a real window and shows the numbers against an earlier run's file (`--against <file>`) or the last release measured on the same Mac model. Load and power move them, so compare with a run made just before on the same Mac.
 
 The README's screenshots come from `scripts/readme-screenshots.sh`, which shows the demo project in a throwaway home folder. Each is a scene in `tools/capture/readme/`, and one run takes them all again; the demo's photos are public-domain pictures kept in `tools/capture/readme/photos/`, with where each came from.
 

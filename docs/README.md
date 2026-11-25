@@ -15,6 +15,6 @@ What is kept here, by what it is for. A new file goes into the folder that fits 
 | [privacy.md](privacy.md) | The privacy policy, for the App Store listing and anyone who asks. |
 | [app-store-listing.md](app-store-listing.md) | The text, screenshots and review notes of the Mac App Store page, ready for App Store Connect. What the app needs first is in [plans/app-store.md](plans/app-store.md). |
 | [screenshots/](screenshots/) | The pictures of the README and of features.md, made by `scripts/readme-screenshots.sh`. They stay here: the README and the script name this place. |
-| [frame-timings.json](frame-timings.json) | The frame times of each release, written by `scripts/release.sh`, which names this place. |
+| [frame-timings.json](frame-timings.json) | The frame times of scrolling of each release from 0.20.1 to 1.7.0, when a release measured them. `scripts/frame-times.sh` compares with them and names this place. |
 
 How the commands, the tests and the tools work is in [CLAUDE.md](../CLAUDE.md) and [tools/capture/README.md](../tools/capture/README.md).
