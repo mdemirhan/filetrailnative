@@ -58,6 +58,48 @@ import Testing
         // Still read-only.
         #expect(!editor.isEditable)
     }
+    // Copied, the text is plain: its color and fonts are the label's, and near-white text pasted into another app
+    // can't be read there.
+    @Test(arguments: ["TextBoxField", "PlainLabel", "FlushTextField", "ThemedText"])
+    func textCopiedFromALabelIsPlain(_ kind: String) throws {
+        let string = NSMutableAttributedString(
+            string: "Names without draft: ",
+            attributes: [.font: NSFont.systemFont(ofSize: 13), .foregroundColor: NSColor.white])
+        string.append(
+            NSAttributedString(
+                string: "report !draft",
+                attributes: [.font: NSFont.monospacedSystemFont(ofSize: 12, weight: .regular)]))
+        let (field, window) = label(kind, string)
+        defer { window.close() }
+        field.selectText(nil)
+        let editor = try #require(field.currentEditor() as? NSTextView)
+        // Shown with its runs, and all of it selected.
+        #expect(editor.isRichText)
+        #expect(editor.selectedRange().length == string.length)
+        let pasteboard = NSPasteboard.withUniqueName()
+        defer { pasteboard.releaseGlobally() }
+        #expect(!editor.writablePasteboardTypes.isEmpty, "nothing to copy")
+        #expect(
+            editor.writablePasteboardTypes.allSatisfy(PlainCopyFieldEditor.plainTypes.contains),
+            "\(editor.writablePasteboardTypes.map(\.rawValue))")
+        pasteboard.declareTypes(editor.writablePasteboardTypes, owner: nil)
+        for type in editor.writablePasteboardTypes { #expect(editor.writeSelection(to: pasteboard, type: type)) }
+        #expect(pasteboard.string(forType: .string) == "Names without draft: report !draft")
+        #expect(pasteboard.data(forType: .rtf) == nil)
+        #expect(pasteboard.types?.contains(.rtf) != true)
+    }
+
+    // A field that is typed in keeps its window's editor, and what it copies is its own affair.
+    @Test func aFieldTypedInKeepsItsWindowsEditor() throws {
+        let (field, window) = label("TextBoxField", NSAttributedString(string: "typed"))
+        defer { window.close() }
+        field.isEditable = true
+        field.selectText(nil)
+        let editor = try #require(field.currentEditor())
+        #expect(!(editor is PlainCopyFieldEditor))
+        #expect(editor === window.fieldEditor(false, for: field))
+    }
+
     /// A label of each of the app's kinds, read-only and selectable, showing `string` in a window.
     private func label(_ kind: String, _ string: NSAttributedString) -> (NSTextField, NSWindow) {
         let window = NSWindow(

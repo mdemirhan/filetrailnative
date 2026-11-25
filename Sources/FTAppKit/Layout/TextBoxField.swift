@@ -46,6 +46,15 @@ class TextBoxCell: NSTextFieldCell {
             event: event)
     }
 
+    /// Text that can only be read is selected in an editor that copies it plain (`PlainCopyFieldEditor`); a field that
+    /// is typed in has its window's own.
+    override func fieldEditor(for controlView: NSView) -> NSTextView? {
+        guard let field = controlView as? NSTextField, !field.isEditable, let window = field.window else {
+            return super.fieldEditor(for: controlView)
+        }
+        return PlainCopyFieldEditor.editor(for: window)
+    }
+
     /// Where the field editor goes. Read-only text also keeps its runs (code, a mark) in it: without
     /// `allowsEditingTextAttributes` the editor shows it plain, in the field's one font. It still can't be edited.
     private func editorFrame(_ rect: NSRect, in controlView: NSView) -> NSRect {
@@ -136,4 +145,29 @@ class TextBoxCell: NSTextFieldCell {
         }
         return text.size().width > box.width
     }
+}
+
+/// The field editor of text that can only be read. It shows the text with its runs (code, emphasis, the label's own
+/// color), and copies or drags it out as plain text: with its runs, text copied from a label in the dark look pasted
+/// near-white into Mail or Notes, where it couldn't be seen.
+final class PlainCopyFieldEditor: NSTextView {
+    /// One for each window, as a window has one field editor, for as long as the window is there.
+    private static let editors = NSMapTable<NSWindow, PlainCopyFieldEditor>.weakToStrongObjects()
+
+    static func editor(for window: NSWindow) -> PlainCopyFieldEditor {
+        if let editor = editors.object(forKey: window) { return editor }
+        let editor = PlainCopyFieldEditor(frame: .zero)
+        editor.isFieldEditor = true
+        editors.setObject(editor, forKey: window)
+        return editor
+    }
+
+    /// The plain-text types among those a text view writes, under the names it knows them by.
+    override var writablePasteboardTypes: [NSPasteboard.PasteboardType] {
+        super.writablePasteboardTypes.filter { Self.plainTypes.contains($0) }
+    }
+
+    static let plainTypes: Set<NSPasteboard.PasteboardType> = [
+        .string, NSPasteboard.PasteboardType("NSStringPboardType"),
+    ]
 }
