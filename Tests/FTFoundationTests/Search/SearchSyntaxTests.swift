@@ -673,6 +673,86 @@ import Testing
                 == "Modified between Jan 1, 2026 and Mar 31, 2026")
     }
 
+    // A day to its own month is in order: from the day to the month's end.
+    @Test func aDayToItsOwnMonthRunsToTheMonthsEnd() {
+        #expect(
+            query("modified:2026-03-15..2026-03").conditions == query("modified:2026-03-15..2026-03-31").conditions)
+        #expect(
+            query("modified:2026-03..2026-03-15").conditions == query("modified:2026-03-01..2026-03-15").conditions)
+        #expect(
+            query("modified:2026-03-20..2026-02").conditions == query("modified:2026-02-01..2026-03-20").conditions)
+    }
+
+    // A day is read as it is written, whatever calendar the Mac counts its years in.
+    @Test func daysAreReadInTheCalendarTheyAreWrittenIn() throws {
+        for identifier in [Calendar.Identifier.buddhist, .japanese, .persian, .islamicUmmAlQura] {
+            var other = Calendar(identifier: identifier)
+            other.timeZone = calendar.timeZone
+            #expect(
+                SearchQuery("modified:2026-03-15", calendar: other).conditions
+                    == query("modified:2026-03-15").conditions,
+                "\(identifier)")
+            // The row of two days types days that are read.
+            let list = try #require(
+                SearchQuerySuggestions.make(query: "modified:", caret: 9, tags: [], folders: [], calendar: other))
+            for row in list.rows {
+                let typed = try #require(row.replacement)
+                #expect(!SearchQuery(typed, calendar: other).hasUnfinished, "\(identifier) \(typed)")
+            }
+        }
+    }
+
+    // Larger and smaller than a part of a byte: the whole bytes on that side.
+    @Test func aPartOfAByteIsComparedByWholeBytes() {
+        #expect(holds(">1.5b", 2))
+        #expect(!holds(">1.5b", 1))
+        #expect(holds("<1.4b", 1))
+        #expect(!holds("<1.4b", 2))
+        #expect(holds(">1.2345kb", 1235))
+        #expect(!holds(">1.2345kb", 1234))
+        #expect(!holds(">2.3kb", 2300))
+        #expect(holds(">2.3kb", 2301))
+        #expect(holds("<2.3kb", 2299))
+        #expect(!holds("<2.3kb", 2300))
+    }
+
+    // A size says every digit typed, and a range the smaller first.
+    @Test func aSizeIsSaidAsTyped() {
+        func said(_ text: String) -> String? {
+            query(text).conditions.first.map { SearchConditionText.chip($0, locale: Locale(identifier: "en_US")) }
+        }
+        #expect(said("size:1.234kb") == "Size is 1.234 KB to under 1.235 KB")
+        #expect(said("size:1.005gb") == "Size is 1.005 GB to under 1.006 GB")
+        #expect(said("size:0.001kb") == "Size is 0.001 KB to under 0.002 KB")
+        #expect(said("size:>1.234kb") == "Size is larger than 1.234 KB")
+        #expect(said("size:1.1234567gb") == "Size is 1.1234567 GB to under 1.1234568 GB")
+        #expect(said("size:1mb..500kb") == said("size:500kb..1mb"))
+        #expect(said("size:2mb..1mb") == "Size is between 1 and 2 MB")
+    }
+
+    // A range's rows type the number as someone would.
+    @Test func aRangesRowsTypePlainNumbers() throws {
+        #expect(try #require(suggest("size:1.1mb..")).rows.map(\.hint) == ["1.1mb..11mb", "1.1mb..110mb"])
+        #expect(try #require(suggest("size:2.11mb..")).rows.map(\.hint) == ["2.11mb..21.1mb", "2.11mb..211mb"])
+    }
+
+    // Permissions pasted from `ls -l`, which ends them with `@` or `+` for an item with more to say.
+    @Test func permissionsPastedFromLsAreRead() {
+        #expect(query("perm:-rw-r--r--@").conditions == query("perm:644").conditions)
+        #expect(query("perm:drwxr-xr-x+").conditions == query("perm:755").conditions)
+        #expect(query("perm:rw-r--r--@").conditions == query("perm:644").conditions)
+        #expect(query("perm:755@").hasUnfinished)
+    }
+
+    // A tag or a folder of one's own may start as a listed one does: Return searches for it, Tab completes it.
+    @Test func aNameThatReadsIsNotReplaced() throws {
+        let typed = try #require(suggest("tag:r"))
+        #expect(!typed.highlightsFirst)
+        #expect(!typed.typedIsComplete)
+        #expect(try !#require(suggest("tag:red,")).highlightsFirst)
+        #expect(try !#require(suggest("skip:node")).highlightsFirst)
+    }
+
     // MARK: Names with a space
 
     // A tag or a folder with a space in its name is typed in quotes, after the colon, a comma or the `!`.

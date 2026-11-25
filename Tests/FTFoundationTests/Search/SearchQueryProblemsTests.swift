@@ -101,4 +101,23 @@ import Testing
         #expect(all.rows.map(\.tone) == [.problem, .note, .problem, .note])
         #expect(all.typedIsComplete)
     }
+
+    // Each thing wrong with names, a kind's values or a day has its own words, and is marked as soon as it can't be
+    // saved.
+    @Test func eachFaultHasItsOwnWords() {
+        func detail(_ text: String) -> String? { SearchQuery.problems(text).first?.detail }
+        #expect(detail("tag:\"To Do\"x") == "Only a comma follows a closing quote: tag:\"a name\",another")
+        #expect(detail("skip:\"My Builds\"x") == "Only a comma follows a closing quote: skip:\"a name\",another")
+        #expect(detail("tag:\"\"") == "Give a tag")
+        #expect(detail("skip:\"\"") == "Give a folder's name")
+        #expect(detail("tag:\"To Do") == "Close the quote: tag:\"a name\"")
+        #expect(detail("kind:pdf,!doc") == "One ! before the first is for all of them: kind:!pdf,picture is neither")
+        for text in ["kind:pdf,!doc,", "ext:pdf,!doc,", "perm:755,!644,", "modified:2026-02-30", "modified:2026-04-31"]
+        {
+            #expect(word(text)?.canStillBeRead == false, "\(text)")
+        }
+        for text in ["modified:2026-02-2", "modified:2024-02-29", "kind:!pdf,doc", "tag:\"\""] {
+            #expect(word(text)?.canStillBeRead == true, "\(text)")
+        }
+    }
 }

@@ -70,6 +70,12 @@ import Testing
         // Escape closes Help, as it does Settings and About, once its search has nothing to clear: with text, the
         // search field keeps the key and clears it first (`ThemedSearchField`).
         #expect((window as? PageWindow)?.closesOnEscape == true)
+        // With the keyboard in the page, not the field, Escape still clears a search first.
+        controller.helpView.searchField.text = "copy"
+        #expect(controller.helpView.isSearching)
+        #expect((window as? PageWindow)?.escapeFirst?() == true)
+        #expect(!controller.helpView.isSearching)
+        #expect((window as? PageWindow)?.escapeFirst?() == false)
     }
 
     // Customize… opens Settings on the shortcuts tab

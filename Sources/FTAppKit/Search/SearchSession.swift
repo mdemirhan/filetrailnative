@@ -277,7 +277,9 @@ final class SearchSession {
     func showCachedResults(focusPane: Bool = false, fromField: Bool = false) {
         guard hasCachedSearch, let host else { return }
         if fromField, originPath != host.searchCurrentPath { return }
-        draftQuery = committedQuery
+        // With the results on screen the field holds what was typed since, a condition's word not finished among
+        // it: coming back to the field keeps it. Results brought back come with the text they are for.
+        if !resultsVisible { draftQuery = committedQuery }
         if searchedHidden != host.searchIncludeHidden || interrupted {
             emit(.draft)
             startSearch(committedQuery, rootPath: rootPath.isEmpty ? host.searchCurrentPath : rootPath)
@@ -481,6 +483,16 @@ final class SearchSession {
                 self.startSearch(trimmed, rootPath: self.resolveRootPath(), live: true, keepMatching: true)
             }
         }
+    }
+
+    /// The keyboard is leaving the field: results still waiting to be narrowed are narrowed now, so that what is
+    /// selected next is one of them.
+    func settleRefine() {
+        guard let pending = pendingLiveQuery, SearchTiming.trimmed(draftQuery) == pending, canRefine(pending),
+            !searchesTheSame(pending, as: committedQuery)
+        else { return }
+        cancelLiveSearch()
+        refine(pending)
     }
 
     /// Return. Whether the results for the query were already on screen and final.

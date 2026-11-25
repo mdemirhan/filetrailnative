@@ -42,6 +42,40 @@ import Testing
         #expect(abs(letter.y - drawn.minY) < 0.5, "drawn at \(drawn.minY), selected at \(letter.y)")
     }
 
+    // A line that fits only by the point of slack the text is drawn with stays one line when selected.
+    @Test func selectingTextKeepsItsLines() throws {
+        let string = NSAttributedString(
+            string: "Names containing both words", attributes: [.font: NSFont.systemFont(ofSize: 13)])
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 600, height: 300), styleMask: [.titled], backing: .buffered,
+            defer: false)
+        window.isReleasedWhenClosed = false
+        defer { window.close() }
+        let host = NSView(frame: NSRect(x: 0, y: 0, width: 600, height: 300))
+        window.contentView = host
+        let text = ThemedText(wrapping: true, selectable: true) { _ in string }
+        // As wide as the text, less half a point: drawn on one line, with the slack.
+        let cell = try #require(text.cell as? ThemedTextCell)
+        let inset = 300 - cell.textFrame(forBounds: NSRect(x: 0, y: 0, width: 300, height: 100)).width
+        let width = string.size().width + inset - 0.5
+        #expect(text.height(forWidth: width) < 2 * string.size().height)
+        text.frame = NSRect(x: 100, y: 50, width: width, height: text.height(forWidth: width))
+        host.addSubview(text)
+        #expect(window.makeFirstResponder(text))
+        text.selectText(nil)
+        let editor = try #require(text.currentEditor() as? NSTextView)
+        let layout = try #require(editor.layoutManager)
+        var lines = 0
+        var index = 0
+        while index < layout.numberOfGlyphs {
+            var range = NSRange()
+            layout.lineFragmentRect(forGlyphAt: index, effectiveRange: &range)
+            index = NSMaxRange(range)
+            lines += 1
+        }
+        #expect(lines == 1)
+    }
+
     @Test func selectingTextKeepsItsRuns() throws {
         let string = NSMutableAttributedString(
             string: "Names without draft: ", attributes: [.font: NSFont.systemFont(ofSize: 13)])

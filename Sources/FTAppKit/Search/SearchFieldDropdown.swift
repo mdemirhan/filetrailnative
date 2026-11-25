@@ -10,6 +10,8 @@ final class SearchFieldDropdown {
     /// Gap between the toolbar's bottom and the list, and between the list and the window's edges.
     static let gap = 6.0
     static let minWidth = 300.0
+    /// The look the list was last given.
+    private var shownTheme: Theme?
 
     var isShown: Bool { view.superview != nil }
     var suggestions: SearchQuerySuggestions? { isShown ? view.suggestions : nil }
@@ -21,10 +23,14 @@ final class SearchFieldDropdown {
             return
         }
         view.show(suggestions)
+        // The list is made with its pane, and shows in the look the app has now: light or dark and the accent may
+        // have changed since, while it was open too.
+        let theme = AppearanceModel.shared.theme
+        if view.superview !== host || shownTheme != theme {
+            view.applyTheme(theme)
+            shownTheme = theme
+        }
         if view.superview !== host {
-            // The list is made with its pane, and shows in the look the app has now: light or dark and the accent may
-            // have changed since.
-            view.applyTheme(AppearanceModel.shared.theme)
             view.removeFromSuperview()
             host.addSubview(view, positioned: .above, relativeTo: nil)
         }

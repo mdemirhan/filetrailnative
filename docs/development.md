@@ -26,7 +26,7 @@ Each step prints one line, and the full logs are in `build/logs/`.
 
 Open issues are in [state/known-issues.md](state/known-issues.md) and [state/battery.md](state/battery.md).
 
-`scripts/ci.sh` leaves out the few tests that write large files to disk images (stopping a long copy, filling a disk), the tests that put real windows, menus and disks on screen, and a few slow release-only tests. Run them with `FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh`, `FILETRAIL_GUI_TESTS=1 swift test --filter GUITests` and `FILETRAIL_RELEASE_TESTS=1 scripts/ci.sh`; `scripts/release.sh` runs all three.
+`scripts/ci.sh` leaves out the few tests that write large files to disk images (stopping a long copy, filling a disk), the tests that put real windows, menus and disks on screen, and a few slow release-only tests. Run them with `FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh`, `FILETRAIL_GUI_TESTS=1 scripts/with-test-lock.sh swift test --filter GUITests` and `FILETRAIL_RELEASE_TESTS=1 scripts/ci.sh`; `scripts/release.sh` runs all three.
 
 ## Making a signed app and a release
 

@@ -53,13 +53,8 @@ public struct SearchNameMatch: @unchecked Sendable {
         let copies = max(1, copies)
         fullPath = request.matchScope == .path
         // Searches that would find nothing, said so rather than run.
-        if !fullPath && request.query.contains("/") { throw .slashInName }
-        if !request.includeHidden
-            && (request.patternMode == .glob && request.query.hasPrefix(".")
-                || request.patternMode == .regex && request.query.hasPrefix("^\\."))
-        {
-            throw .onlyHidden
-        }
+        if !fullPath && Self.needsSlash(request.query, request.patternMode) { throw .slashInName }
+        if !request.includeHidden && Self.needsLeadingDot(request.query, request.patternMode) { throw .onlyHidden }
         switch request.patternMode {
         case .text:
             // Text that folds to nothing finds everything, as an empty pattern does.
@@ -84,6 +79,53 @@ public struct SearchNameMatch: @unchecked Sendable {
             test = .expressions(
                 try Self.expressions(
                     request.query, ignoreCase: !SmartCase.regexHasUppercase(request.query), copies: copies))
+        }
+    }
+
+    /// Whether every name `query` finds has a "/" in it, which no name has. Only where the pattern leaves no doubt:
+    /// a slash in a set (`[^./]`), beside a choice (`config|a/b`, `{a,b/c}`) or that may be absent (`a/?b`) is one
+    /// the pattern can do without, and the search runs.
+    static func needsSlash(_ query: String, _ mode: SearchPatternModePreference) -> Bool {
+        guard query.contains("/") else { return false }
+        switch mode {
+        case .text:
+            return true
+        case .regex:
+            return !query.contains { "|[?*{\\".contains($0) }
+        case .glob:
+            guard !query.contains("{") else { return false }
+            var inSet = false
+            var previous: Character?
+            var setStart = 0
+            for (index, letter) in query.enumerated() {
+                if inSet {
+                    // A `]` right after the set opens (`[]`, `[!]`, `[^]`) is a letter of it.
+                    let opening = index == setStart + 1 || (index == setStart + 2 && "!^".contains(previous ?? " "))
+                    if letter == "]" && !opening { inSet = false }
+                } else if letter == "[" {
+                    inSet = true
+                    setStart = index
+                } else if letter == "/" {
+                    return true
+                }
+                previous = letter
+            }
+            // A set never closed is letters as they are.
+            return inSet
+        }
+    }
+
+    /// Whether every name `query` finds starts with a dot, so that only hidden items have one. A regular expression
+    /// whose dot may be absent (`^\.?config`) or is one side of a choice finds others too.
+    static func needsLeadingDot(_ query: String, _ mode: SearchPatternModePreference) -> Bool {
+        switch mode {
+        case .text:
+            return false
+        case .glob:
+            return query.hasPrefix(".")
+        case .regex:
+            guard query.hasPrefix("^\\."), !query.contains("|") else { return false }
+            return !(query.dropFirst(3).first.map { "?*{".contains($0) } ?? false)
         }
     }
 

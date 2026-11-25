@@ -423,7 +423,8 @@ public struct SearchQuery: Equatable, Sendable {
                 let second = days(value[dots.upperBound...], calendar)
             else { return nil }
             // Typed the later one first, it is the same days: from the start of the earlier to the end of the later.
-            return first.first <= second.first
+            // A day to its own month (`2026-03-15..2026-03`) is in order: from the day to the month's end.
+            return first.first <= second.last
                 ? .between(first.first, second.last) : .between(second.first, first.last)
         }
         if let compared, let span = days(rest, calendar) {
@@ -439,8 +440,18 @@ public struct SearchQuery: Equatable, Sendable {
         return .between(span.first, span.last)
     }
 
+    /// The calendar a typed day is read in: the one `2026-03-15` is written in everywhere, in `calendar`'s time zone.
+    /// A Mac whose own calendar counts years otherwise (2569, or 8 of an era) reads the same days from the same text.
+    static func typedCalendar(_ calendar: Calendar) -> Calendar {
+        guard calendar.identifier != .gregorian else { return calendar }
+        var typed = Calendar(identifier: .gregorian)
+        typed.timeZone = calendar.timeZone
+        return typed
+    }
+
     /// The first and last day of `2026-03-15` (the same day) or `2026-03` (the month).
     static func days(_ text: Substring, _ calendar: Calendar) -> (first: Date, last: Date)? {
+        let calendar = typedCalendar(calendar)
         let parts = text.split(separator: "-", omittingEmptySubsequences: false)
         guard parts.allSatisfy({ $0.allSatisfy(isDigit) }) else { return nil }
         guard parts.count == 2 || parts.count == 3, parts[0].count == 4, let year = Int(parts[0]),

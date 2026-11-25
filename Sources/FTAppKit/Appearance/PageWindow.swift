@@ -5,6 +5,9 @@ import FTFoundation
 /// `spec.trafficLights`. Escape closes it when `closesOnEscape` (the windows that are only read).
 public final class PageWindow: NSWindow {
     public var closesOnEscape = false
+    /// What Escape does before it closes the window, wherever the keyboard is: true when it did something, and the
+    /// window stays.
+    public var escapeFirst: (() -> Bool)?
     private let firstClickGate = FirstClickGate()
 
     public override func sendEvent(_ event: NSEvent) {
@@ -13,6 +16,7 @@ public final class PageWindow: NSWindow {
     }
 
     public override func cancelOperation(_ sender: Any?) {
+        if escapeFirst?() == true { return }
         if closesOnEscape { performClose(sender) } else { super.cancelOperation(sender) }
     }
 }

@@ -256,6 +256,131 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // A condition's word not finished yet is in the field and not in the search: leaving the field for the
+        // results and coming back keeps it, and so does Cancel in the Advanced Search box.
+        @Test func aWordBeingTypedStaysWhenTheFieldIsComeBackTo() async throws {
+            let (harness, tab, engine, timers) = try await open()
+            engine.finds = { _ in (["report.txt"], false, false) }
+            var editor = try focus(tab)
+            type("report", into: editor)
+            timers.advance(0.4)
+            type(" size:>10", into: editor)
+            timers.advance(0.4)
+            tab.content.focusList()
+            #expect(tab.searchField?.currentEditor() == nil)
+            editor = try focus(tab)
+            #expect(editor.string == "report size:>10")
+            let box = try box(tab)
+            box.cancelButton.perform()
+            #expect(tab.searchField?.stringValue == "report size:>10")
+            #expect(tab.search.session.committedQuery == "report")
+            await harness.close()
+        }
+
+        // ↓ pressed before the results have narrowed to the last key narrows them first: what it selects is one of
+        // them, and stays selected.
+        @Test func downRightAfterAKeyNarrowsTheResultsFirst() async throws {
+            let (harness, tab, engine, timers) = try await open()
+            engine.finds = { _ in (["red.txt", "rep.txt"], false, false) }
+            let editor = try focus(tab)
+            type("re", into: editor)
+            timers.advance(0.4)
+            #expect(tab.content.entryPaths.count == 2)
+            type("p", into: editor)
+            editor.doCommand(by: #selector(NSResponder.moveDown(_:)))
+            #expect(tab.content.entryPaths.map { ($0 as NSString).lastPathComponent } == ["rep.txt"])
+            #expect(tab.content.selection.paths.map { ($0 as NSString).lastPathComponent } == ["rep.txt"])
+            timers.advance(SearchTiming.refineDelay)
+            #expect(tab.content.selection.paths.count == 1)
+            await harness.close()
+        }
+
+        // Clear Search Conditions from the results, where it is usually chosen, goes through the field too: the
+        // field takes the keyboard and ⌘Z there brings the words back.
+        @Test func clearingConditionsFromTheResultsCanBeUndone() async throws {
+            let (harness, tab, engine, timers) = try await open()
+            engine.finds = { _ in (["annual report.pdf"], false, false) }
+            var editor = try focus(tab)
+            // Each step is an event of its own, as a key and a menu item are.
+            let undo = try #require(editor.undoManager)
+            undo.groupsByEvent = false
+            undo.beginUndoGrouping()
+            type("annual kind:pdf", into: editor)
+            undo.endUndoGrouping()
+            timers.advance(0.4)
+            tab.content.focusList()
+            #expect(tab.searchField?.currentEditor() == nil)
+            undo.beginUndoGrouping()
+            tab.perform(.clearSearchConditions)
+            undo.endUndoGrouping()
+            #expect(tab.searchField?.stringValue == "annual")
+            #expect(engine.starts.last?.conditions.isEmpty == true)
+            editor = try #require(tab.searchField?.currentEditor() as? NSTextView)
+            #expect(editor.undoManager === undo)
+            undo.undo()
+            #expect(editor.string == "annual kind:pdf")
+            await harness.close()
+        }
+
+        // The pointer passing over the list doesn't choose for Return: with no row highlighted none becomes so, and
+        // with one, the pointer moves it as the arrows do.
+        @Test func thePointerHighlightsOnlyWhereARowAlreadyIs() async throws {
+            let (harness, tab, _, _) = try await open()
+            let editor = try focus(tab)
+            type("doc", into: editor)
+            let view = tab.search.dropdown.view
+            #expect(view.highlighted == -1)
+            func sweep() throws {
+                for y in stride(from: 2.0, to: view.rows.bounds.height, by: 4) {
+                    let event = try #require(
+                        NSEvent.mouseEvent(
+                            with: .mouseMoved, location: view.rows.convert(NSPoint(x: 30, y: y), to: nil),
+                            modifierFlags: [], timestamp: 0, windowNumber: tab.window?.windowNumber ?? 0,
+                            context: nil, eventNumber: 0, clickCount: 0, pressure: 0))
+                    view.rows.mouseMoved(with: event)
+                }
+            }
+            try sweep()
+            #expect(view.highlighted == -1)
+            editor.doCommand(by: #selector(NSResponder.moveUp(_:)))
+            let byKey = view.highlighted
+            #expect(byKey >= 0)
+            editor.doCommand(by: #selector(NSResponder.moveDown(_:)))
+            try sweep()
+            #expect(view.highlighted >= 0)
+            await harness.close()
+        }
+
+        // A condition chosen from the results bar of the pane that isn't active goes into that pane's search: the
+        // pane is made active first, and the field is its own.
+        @Test func aConditionFromTheOtherPanesBarGoesToItsOwnSearch() async throws {
+            let (harness, tab, _, _) = try await open()
+            tab.perform(.toggleTwoPanes)
+            let first = tab.activePane
+            let editor = try focus(tab)
+            type("mine", into: editor)
+            tab.perform(.switchToOtherPane)
+            let second = tab.activePane
+            #expect(second !== first)
+            #expect(tab.searchField?.stringValue == "")
+            first.search.typeConditionWord(.kind)
+            #expect(tab.activePane === first)
+            #expect(tab.searchField?.stringValue == "mine kind:")
+            #expect(second.search.session.draftQuery == "")
+            await harness.close()
+        }
+
+        // A glob or a regular expression is read back as the one pattern it is, and can be searched for whatever
+        // words it would make.
+        @Test func theBoxReadsAPatternBackWhole() async throws {
+            let (harness, tab, _, _) = try await open()
+            tab.search.session.setPatternMode(.regex)
+            let box = try box(tab)
+            typeInBox("^a !b$ kind:pdf", box)
+            #expect(box.readsLabel.stringValue == "Finds: Name matches “^a !b$”  ·  Kind is PDF")
+            await harness.close()
+        }
+
         // MARK: The Advanced Search box
 
         private func box(_ tab: MainWindowController) throws -> AdvancedSearchBox {

@@ -309,6 +309,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
 
     /// The field lets go of the keyboard, which goes to the results.
     private func dismissField() {
+        session.settleRefine()
         AppMenuPresenter.shared.close()
         tab.explorerToolbar.endSearch()
         pane.content.focusList()
@@ -465,6 +466,8 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         guard drivesField, let field, field.isActive, let editor = field.currentEditor() as? NSTextView,
             tab.window?.attachedSheet == nil, DialogScrim.front(in: tab.window) == nil
         else {
+            // The keyboard left the field, by a key or a click in the results.
+            if fieldWasActive { session.settleRefine() }
             fieldWasActive = false
             dropdown.hide()
             return
@@ -484,7 +487,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         guard listClosedFor == nil, selection.length == 0,
             let list = SearchQuerySuggestions.make(
                 query: text, caret: selection.location, tags: Self.colorTags,
-                folders: Self.folderNames(in: session.results), listsWordsForNewWord: true)
+                folders: resultFolderNames(), listsWordsForNewWord: true)
         else {
             dropdown.hide()
             return
@@ -583,7 +586,9 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
 
     /// A condition's word from the field's menu, typed after the word at the caret: its values are listed.
     func typeConditionWord(_ key: SearchQueryKey) {
-        guard let field, let window = tab.window else { return }
+        // From the other pane's results bar: the field is this pane's first, so the word goes into this search.
+        if !drivesField { tab.activate(pane) }
+        guard drivesField, let field, let window = tab.window else { return }
         if !field.isActive {
             tab.explorerToolbar.beginSearch()
             if !field.isActive { window.makeFirstResponder(field) }
@@ -620,7 +625,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
             folderName: ExplorerTabs.folderDisplayName(
                 root, homePath: tab.trashHomePath, startupDiskName: tab.services.startupDisk.name),
             nameVerb: session.patternMode == .text ? "contains" : "matches", tags: Self.colorTags,
-            folders: { [weak self] in Self.folderNames(in: self?.session.results ?? []) })
+            folders: { [weak self] in self?.resultFolderNames() ?? [] })
         let scrim = DialogScrim(panel: box, placement: .sheet)
         scrim.onScrimPress = { [weak box] in box?.onClose() }
         box.onClose = { [weak scrim] in scrim?.dismiss() }
@@ -641,6 +646,24 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         submit()
     }
 
+    /// `folderNames` of the results on screen, counted once for the same results: a `skip:` word asks at every key.
+    private func resultFolderNames() -> [String] {
+        let results = session.results
+        let key = FolderNamesKey(count: results.count, first: results.first?.path, last: results.last?.path)
+        if let counted = countedFolderNames, counted.key == key { return counted.names }
+        let names = Self.folderNames(in: results)
+        countedFolderNames = (key, names)
+        return names
+    }
+
+    private struct FolderNamesKey: Equatable {
+        var count: Int
+        var first: String?
+        var last: String?
+    }
+
+    private var countedFolderNames: (key: FolderNamesKey, names: [String])?
+
     /// The names of the folders the results are in, below the folder searched, those holding the most results first.
     static func folderNames(in results: [SearchResultItem]) -> [String] {
         var counts: [Substring: Int] = [:]
@@ -652,12 +675,23 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
 
     /// Clear Search Conditions: the condition words go from the text, and what is left is searched.
     func clearConditions() {
-        let text = SearchQuery.removingConditions(from: field?.stringValue ?? session.draftQuery)
-        // Through the field's editor while it is typed in, as typing would change it: ⌘Z brings the words back.
+        let text = SearchQuery.removingConditions(
+            from: drivesField ? field?.stringValue ?? session.draftQuery : session.draftQuery)
+        // Through the field's editor, as typing would change it: ⌘Z in the field brings the words back. The field
+        // takes the keyboard for it, from the results too.
+        if drivesField, let field, let window = tab.window, field.stringValue != text {
+            if !field.isActive {
+                tab.explorerToolbar.beginSearch()
+                if !field.isActive { window.makeFirstResponder(field) }
+            }
+        }
         if drivesField, let field, field.isActive, let editor = field.currentEditor() as? NSTextView,
             editor.string != text
         {
+            // A step of its own for ⌘Z, apart from what was typed before it and what is typed after.
+            editor.breakUndoCoalescing()
             editor.insertText(text, replacementRange: NSRange(location: 0, length: (editor.string as NSString).length))
+            editor.breakUndoCoalescing()
         }
         session.setDraft(text)
         if drivesField, let field, field.stringValue != text { field.stringValue = text }

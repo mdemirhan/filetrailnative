@@ -27,6 +27,14 @@ public final class HelpWindowController: PageWindowController {
         window?.initialFirstResponder = helpView
         // Help is read, as Settings and About are: Esc closes it, once its search field has nothing left to clear.
         (window as? PageWindow)?.closesOnEscape = true
+        // With the keyboard in the page, a search typed earlier is still what the page shows: Escape clears it there
+        // too, and the field has the keyboard for the next.
+        (window as? PageWindow)?.escapeFirst = { [weak helpView] in
+            guard let helpView, helpView.isSearching else { return false }
+            helpView.searchField.clear()
+            helpView.window?.makeFirstResponder(helpView.searchField.input)
+            return true
+        }
         window?.setContentSize(Self.size)
         themeChanged(model.theme)
         helpView.announceTopic()

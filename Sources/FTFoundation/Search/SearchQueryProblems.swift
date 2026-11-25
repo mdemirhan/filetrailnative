@@ -59,12 +59,21 @@ extension SearchQuery {
         }
         let value = word.value.hasPrefix("!") ? String(word.value.dropFirst()) : word.value
         if key == .tag || key == .skip {
-            if !namesCanBecome(value) {
+            switch namesFault(value) {
+            case .notBeforeLater:
                 return key == .tag
                     ? "One ! before the first tag is for all of them: tag:!red,blue is neither"
                     : "A folder skipped is already left out: no ! before it"
+            case .afterQuote: return "Only a comma follows a closing quote: \(key.word)\"a name\",another"
+            case .emptyQuotes: return key.expects.replacingOccurrences(of: "Not ", with: "Give ")
+            case .openQuote: return "Close the quote: \(key.word)\"a name\""
+            case nil: break
             }
-            if value.contains("\"") { return "Close the quote: \(key.word)\"a name\"" }
+        }
+        if [.kind, .ext, .perm].contains(key),
+            value.split(separator: ",").dropFirst().contains(where: { $0.hasPrefix("!") })
+        {
+            return "One ! before the first is for all of them: \(key.word)!\(example(key)) is neither"
         }
         if (key == .is || key == .not) && value.contains(",") {
             return "One attribute to a word: is:hidden is:locked for both"
@@ -87,8 +96,10 @@ extension SearchQuery {
         // An attribute is one to a word: a comma after one starts nothing.
         case .is, .not: return !value.contains(",") && valueCanBecome(key, value)
         case .kind, .ext, .perm:
-            // Values before the last comma are whole ones; the last is the start of one.
+            // Values before the last comma are whole ones; the last is the start of one. One `!` before the first
+            // is for all of them, so none stands before a later one.
             let parts = value.split(separator: ",", omittingEmptySubsequences: false).map(String.init)
+            guard !parts.contains(where: { $0.hasPrefix("!") }) else { return false }
             guard parts.dropLast().allSatisfy({ $0.isEmpty || condition(key, $0) != nil }) else { return false }
             return valueCanBecome(key, parts.last ?? "")
         }
@@ -97,21 +108,45 @@ extension SearchQuery {
     /// Names being typed after `tag:` or `skip:`: anything, a quote left open too, but for a `!` before a name that
     /// isn't the first, and for something after a closing quote that isn't a comma.
     static func namesCanBecome(_ value: String) -> Bool {
+        switch namesFault(value) {
+        case nil, .openQuote, .emptyQuotes: true
+        case .notBeforeLater, .afterQuote: false
+        }
+    }
+
+    /// What keeps names after `tag:` or `skip:` from being read.
+    enum NamesFault { case notBeforeLater, afterQuote, openQuote, emptyQuotes }
+
+    /// The first thing wrong with the names of `value`, or nil.
+    static func namesFault(_ value: String) -> NamesFault? {
         var rest = Substring(value)
+        // Quotes with nothing in them are no name, and the fault only where nothing else is.
+        var empty = false
         while !rest.isEmpty {
             if rest.hasPrefix("\"") {
                 let inside = rest.dropFirst()
-                guard let close = inside.firstIndex(of: "\"") else { return true }
+                guard let close = inside.firstIndex(of: "\"") else { return .openQuote }
+                if close == inside.startIndex { empty = true }
                 rest = inside[inside.index(after: close)...]
-                guard rest.isEmpty || rest.hasPrefix(",") else { return false }
+                guard rest.isEmpty || rest.hasPrefix(",") else { return .afterQuote }
                 rest = rest.dropFirst()
             } else {
                 let name = rest.prefix { $0 != "," }
-                if name.hasPrefix("!") { return false }
+                if name.hasPrefix("!") { return .notBeforeLater }
                 rest = rest.dropFirst(name.count).dropFirst()
             }
         }
-        return true
+        return empty ? .emptyQuotes : nil
+    }
+
+    /// Two values of `key` for a message: `pdf,doc`.
+    private static func example(_ key: SearchQueryKey) -> String {
+        switch key {
+        case .kind: "pdf,picture"
+        case .ext: "pdf,docx"
+        case .perm: "755,644"
+        default: ""
+        }
     }
 
     private static func valueCanBecome(_ key: SearchQueryKey, _ value: String) -> Bool {
@@ -236,7 +271,8 @@ extension SearchQuery {
             let day = parts[2]
             guard day.count <= 2 else { return false }
             if day.count == 1, !"0123".contains(day) { return false }
-            if day.count == 2, !(1...31).contains(Int(day) ?? 0) { return false }
+            // A whole day is one its month has: 02-30 never will be.
+            if day.count == 2 { return days(Substring(text), .current) != nil }
         }
         return true
     }

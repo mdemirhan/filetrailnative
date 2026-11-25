@@ -1014,7 +1014,8 @@
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
-                ["Conditions", "No text needed"]
+                ["Conditions", "No text needed"],
+                ["Results", "Limits"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -2368,7 +2369,8 @@
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
-                ["Conditions", "No text needed"]
+                ["Conditions", "No text needed"],
+                ["Results", "Limits"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -3382,7 +3384,8 @@
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
-                ["Conditions", "No text needed"]
+                ["Conditions", "No text needed"],
+                ["Results", "Limits"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -4437,7 +4440,8 @@
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
-                ["Conditions", "No text needed"]
+                ["Conditions", "No text needed"],
+                ["Results", "Limits"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -5468,7 +5472,8 @@
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
-                ["Conditions", "No text needed"]
+                ["Conditions", "No text needed"],
+                ["Results", "Limits"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -6545,7 +6550,8 @@
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
-                ["Conditions", "No text needed"]
+                ["Conditions", "No text needed"],
+                ["Results", "Limits"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -7526,7 +7532,8 @@
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
-                ["Conditions", "No text needed"]
+                ["Conditions", "No text needed"],
+                ["Results", "Limits"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -8569,7 +8576,8 @@
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
-                ["Conditions", "No text needed"]
+                ["Conditions", "No text needed"],
+                ["Results", "Limits"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -9655,7 +9663,8 @@
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
-                ["Conditions", "No text needed"]
+                ["Conditions", "No text needed"],
+                ["Results", "Limits"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -10673,7 +10682,8 @@
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
-                ["Conditions", "No text needed"]
+                ["Conditions", "No text needed"],
+                ["Results", "Limits"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -11744,7 +11754,8 @@
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
-                ["Conditions", "No text needed"]
+                ["Conditions", "No text needed"],
+                ["Results", "Limits"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -12818,7 +12829,8 @@
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
-                ["Conditions", "No text needed"]
+                ["Conditions", "No text needed"],
+                ["Results", "Limits"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -13878,7 +13890,8 @@
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
-                ["Conditions", "No text needed"]
+                ["Conditions", "No text needed"],
+                ["Results", "Limits"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -14927,7 +14940,8 @@
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
-                ["Conditions", "No text needed"]
+                ["Conditions", "No text needed"],
+                ["Results", "Limits"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}
@@ -16314,7 +16328,8 @@
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
-                ["Conditions", "No text needed"]
+                ["Conditions", "No text needed"],
+                ["Results", "Limits"]
               ]
             },
             {"shortcuts": [], "topic": "views", "rows": [["The list", "Permissions"]]}

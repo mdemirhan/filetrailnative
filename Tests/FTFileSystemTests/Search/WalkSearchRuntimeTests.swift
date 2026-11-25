@@ -203,6 +203,19 @@ private func waitUntil(seconds: Double, _ condition: () -> Bool) async throws ->
                     SearchRequest(rootPath: folder.path, query: query, patternMode: mode, includeHidden: true))
                 #expect(hidden.status == .complete)
             }
+            // A pattern that can do without its slash or its dot is searched for: it finds what it finds.
+            try makeSearchFile(folder.path + "/config")
+            for (mode, query, names) in [
+                (SearchPatternModePreference.regex, "^[^./]+$", ["config", "lib"]),
+                (.regex, "config|a/b", ["config"]), (.regex, "^\\.?config", ["config"]),
+                (.regex, "^\\.env|config", ["config"]), (.glob, "[!/]onfig", ["config"]),
+                (.glob, "{config,a/b}", ["config"]),
+            ] {
+                let (update, found) = try runWalk(
+                    runtime, SearchRequest(rootPath: folder.path, query: query, patternMode: mode))
+                #expect(update.status == .complete, "\(mode) \(query)")
+                #expect(found.map(\.name).sorted() == names, "\(mode) \(query)")
+            }
         }
     }
 

@@ -136,9 +136,12 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
                 word.role != .unfinished
                 && ((key != .tag && key != .skip)
                     || rows.contains { $0.hint.lowercased() == (not + Self.typedLast(value)).lowercased() })
+            // A name that reads as typed may be a tag or a folder of its own ("B" beside Blue): Return searches for
+            // it, and Tab completes it to the one listed.
+            let free = (key == .tag || key == .skip) && word.role != .unfinished
             return SearchQuerySuggestions(
-                range: word.range, sections: [Section(title: key.title, rows: rows)], highlightsFirst: !complete,
-                typedIsComplete: complete)
+                range: word.range, sections: [Section(title: key.title, rows: rows)],
+                highlightsFirst: !complete && !free, typedIsComplete: complete)
         }
         // A name left out (`!draft`), or the box's plain words: nothing to offer.
         guard offersConditionWords, !word.text.hasPrefix("!") else { return nil }
@@ -202,6 +205,8 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
                     ("More than \(number) \(SearchTimeUnit.years.label(number)) ago", ">\(number)y"),
                 ]
             }
+            // Days are typed in the calendar the examples are in, whatever the Mac's own is.
+            let calendar = SearchQuery.typedCalendar(calendar)
             let year = calendar.component(.year, from: now)
             let lastMonth = calendar.date(byAdding: .month, value: -1, to: now) ?? now
             let monthName = lastMonth.formatted(.dateTime.month(.wide).year().locale(Locale(identifier: "en_US")))
@@ -335,7 +340,9 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
 
     /// A number as typed: no point for a whole one.
     private static func number(_ value: Double) -> String {
-        Int(exactly: value).map { String($0) } ?? String(value)
+        // Ten times 1.1 is 11, not what the multiplying leaves over (11.000000000000002).
+        let value = (value * 1e9).rounded() / 1e9
+        return Int(exactly: value).map { String($0) } ?? String(value)
     }
 
     /// A title inside a sentence: "Larger than 1 MB" is "larger than 1 MB", "Today" "today"; a name in capitals stays

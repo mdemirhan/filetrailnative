@@ -683,7 +683,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Limits",
                             description:
-                                "Search stops at \(FormatLocale.count(SearchLimits.resultLimit)) results. Symbolic links are not searched for; aliases are. What you have no permission to read is passed over."
+                                "Search stops at \(FormatLocale.count(SearchLimits.resultLimit)) results. Symbolic links are found only by `is:link`; aliases always are. What you have no permission to read is passed over."
                         ),
                     ]),
             ]),

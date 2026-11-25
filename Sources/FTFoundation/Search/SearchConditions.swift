@@ -192,8 +192,9 @@ public struct SearchSizeRule: Equatable, Codable, Sendable, Hashable {
         }
         let low = count((value * unit.bytes).rounded())
         switch comparison {
-        case .larger: return (low, nil)
-        case .smaller: return (nil, low)
+        // A part of a byte: larger than 1.5 bytes is 2 and up, smaller than 1.4 is 1 and down.
+        case .larger: return (count((value * unit.bytes + 1e-6).rounded(.down)), nil)
+        case .smaller: return (nil, count((value * unit.bytes - 1e-6).rounded(.up)))
         case .atLeast: return (count((value * unit.bytes - 1e-6).rounded(.up)) - 1, nil)
         case .atMost: return (nil, count((value * unit.bytes + 1e-6).rounded(.down)) + 1)
         case .between:
@@ -212,11 +213,11 @@ public struct SearchSizeRule: Equatable, Codable, Sendable, Hashable {
     /// Where an equal size ends, not included: one more of its last digit (2 for 1, 1.6 for 1.5).
     public var upTo: Double { value + 1 / pow(10, Double(places ?? Self.decimals(value))) }
 
-    /// The digits typed after the point: 0 for 1, 1 for 1.5, 2 for 1.25 (up to 6).
+    /// The digits typed after the point: 0 for 1, 1 for 1.5, 2 for 1.25 (up to 9, a byte of a gigabyte).
     public static func decimals(_ value: Double) -> Int {
         var places = 0
         var scaled = value
-        while places < 6, abs(scaled - scaled.rounded()) > 1e-9 {
+        while places < 9, abs(scaled - scaled.rounded()) > 1e-9 * max(1, scaled) {
             scaled *= 10
             places += 1
         }
@@ -455,8 +456,10 @@ public enum SearchConditionText {
                 return
                     "Size is \(number(rule.value, locale)) \(rule.unit.label) to under \(number(rule.upTo, locale)) \(rule.unit.label)"
             case .between:
+                // The smaller first, whichever was typed first.
+                let (low, high) = (min(rule.value, rule.upper), max(rule.value, rule.upper))
                 return
-                    "Size is between \(number(rule.value, locale)) and \(number(rule.upper, locale)) \(rule.unit.label(rule.upper))"
+                    "Size is between \(number(low, locale)) and \(number(high, locale)) \(rule.unit.label(high))"
             }
         case .date(let field, let rule):
             return field.chipLabel + " " + dateWords(rule, locale: locale)
@@ -517,11 +520,12 @@ public enum SearchConditionText {
         }
     }
 
+    /// A size's number with every digit typed after its point: a gigabyte has nine.
     static func number(_ value: Double, _ locale: Locale) -> String {
         let formatter = NumberFormatter()
         formatter.locale = locale
         formatter.numberStyle = .decimal
-        formatter.maximumFractionDigits = 2
+        formatter.maximumFractionDigits = 9
         return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
     }
 
@@ -592,6 +596,8 @@ public enum SearchPermissions {
             return SearchPermission(mode: mode, mask: mask)
         }
         var letters = Array(text)
+        // `ls -l` ends the letters with `@` or `+` for an item with more to say; pasted with them, they are the same.
+        if letters.count > 9, let last = letters.last, last == "@" || last == "+" { letters.removeLast() }
         // `ls`'s ten letters start with the item's type.
         if letters.count == 10, typeLetters.contains(letters[0]) { letters.removeFirst() }
         guard letters.count == 9 else { return nil }

@@ -60,7 +60,11 @@ class TextBoxCell: NSTextFieldCell {
     private func editorFrame(_ rect: NSRect, in controlView: NSView) -> NSRect {
         guard let field = controlView as? NSTextField, !field.isEditable else { return rect }
         field.allowsEditingTextAttributes = true
-        return textFrame(forBounds: rect).insetBy(dx: -2, dy: 0)
+        // Lines wrap where they were drawn: with the slack, on the side the text grows toward.
+        let frame = textFrame(forBounds: rect)
+        let text = drawnText()
+        let box = isMultiline && text.length > 0 ? Self.box(frame, alignment: drawnAlignment(text)) : frame
+        return box.insetBy(dx: -2, dy: 0)
     }
 
     override func drawInterior(withFrame cellFrame: NSRect, in controlView: NSView) {

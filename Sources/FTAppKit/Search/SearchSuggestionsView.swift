@@ -22,7 +22,7 @@ final class SearchSuggestionsView: NSView, ThemeApplying {
     var highlightedRow: SearchQuerySuggestion? { rows.highlightedRow }
 
     private let scroll = NSScrollView()
-    private let rows = SearchSuggestionRows()
+    let rows = SearchSuggestionRows()
     private var theme = AppearanceModel.shared.theme
     /// Drawn over what is under it, with a shadow.
     private let floating: Bool
@@ -142,7 +142,9 @@ final class SearchSuggestionsView: NSView, ThemeApplying {
         foot.draw(at: NSPoint(x: inset, y: top + 1 + (Self.footHeight - foot.size().height) / 2))
     }
 
-    override func accessibilityChildren() -> [Any]? { rows.accessibilityRows(parent: self) }
+    override func accessibilityChildren() -> [Any]? {
+        rows.accessibilityRows(parent: self) + (helpLink.isHidden ? [] : [helpLink])
+    }
 }
 
 /// The rows themselves, in the list's scroll view.
@@ -314,9 +316,11 @@ final class SearchSuggestionRows: NSView {
     }
 
     override func mouseMoved(with event: NSEvent) {
-        guard let index = row(at: event), index != highlighted, suggestions?.rows[index].canBeChosen == true else {
-            return
-        }
+        // While no row is highlighted the list is only an offer, and Return searches for the text as it is: the
+        // pointer passing over a row doesn't make it the one Return takes. A click still takes it.
+        guard highlighted >= 0, let index = row(at: event), index != highlighted,
+            suggestions?.rows[index].canBeChosen == true
+        else { return }
         highlighted = index
         needsDisplay = true
     }
@@ -344,7 +348,7 @@ final class SearchSuggestionRows: NSView {
             element.setAccessibilityLabel(Self.spoken(row))
             if row.canBeChosen { element.press = { [weak self] in self?.onChoose(index) } }
             element.setAccessibilityParent(parent)
-            element.setAccessibilityFrameInParentSpace(convert(layout.rows[index], to: parent))
+            element.setAccessibilityFrame(NSAccessibility.screenRect(fromView: self, rect: layout.rows[index]))
             element.setAccessibilitySelected(index == highlighted)
             return element
         }

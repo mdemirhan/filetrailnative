@@ -33,6 +33,8 @@ final class AdvancedSearchBox: DialogPanelView, NSTextViewDelegate {
     private let folders: () -> [String]
     /// How a name is matched, for the line saying how the search reads: "contains" or "matches".
     private let nameVerb: String
+    /// The name is a glob or a regular expression, matched whole, not words each looked for.
+    private var isPattern: Bool { nameVerb == "matches" }
     /// Escape closed the list for this text: it stays closed until the text changes.
     private var listClosedFor: String?
 
@@ -327,8 +329,12 @@ final class AdvancedSearchBox: DialogPanelView, NSTextViewDelegate {
         readsLabel.attributedStringValue = reads(text, caret: selection.length == 0 ? selection.location : nil)
         let query = SearchQuery(text)
         // Nothing is searched without a word that can't be read: Search waits until each can.
+        let hasName =
+            isPattern
+            ? !query.text.trimmingCharacters(in: .whitespaces).isEmpty
+            : !query.names.isEmpty || !query.leftOutNames.isEmpty
         submitButton.isEnabled =
-            (!query.names.isEmpty || !query.leftOutNames.isEmpty || !query.conditions.isEmpty)
+            (hasName || !query.conditions.isEmpty)
             && SearchQuery.problems(text).isEmpty
         shell.needsDisplay = true
         needsLayout = true
@@ -349,8 +355,16 @@ final class AdvancedSearchBox: DialogPanelView, NSTextViewDelegate {
             return quoted.count > 1
                 ? quoted.dropLast().joined(separator: ", ") + " \(join) " + quoted[quoted.count - 1] : quoted[0]
         }
-        if !query.names.isEmpty { parts.append("Name \(nameVerb) \(listed(query.names, "and"))") }
-        if !query.leftOutNames.isEmpty { parts.append("Name doesn’t contain \(listed(query.leftOutNames, "or"))") }
+        if isPattern {
+            // A glob or a regular expression is one pattern, spaces and `!` and all.
+            let pattern = query.text.trimmingCharacters(in: .whitespaces)
+            if !pattern.isEmpty { parts.append("Name \(nameVerb) “\(pattern)”") }
+        } else {
+            if !query.names.isEmpty { parts.append("Name \(nameVerb) \(listed(query.names, "and"))") }
+            if !query.leftOutNames.isEmpty {
+                parts.append("Name doesn’t contain \(listed(query.leftOutNames, "or"))")
+            }
+        }
         parts += query.conditions.map { SearchConditionText.chip($0) }
         let result = NSMutableAttributedString(
             string: parts.isEmpty
