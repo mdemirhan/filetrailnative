@@ -26,11 +26,22 @@ final class QuickLookHost: NSView {
     /// one shown; 0 for a page of another kind, and until the page has said.
     private var webPages = (count: 0, current: 0)
     private var pagesMessages: PagesMessages?
+    /// Watches the web view's page load, to see whether Quick Look's answer came empty (`checkEmptyPage`).
+    private var webLoadObservation: NSKeyValueObservation?
+    /// How many times the file shown was asked for again after its page came empty.
+    private(set) var emptyPageRetries = 0
+    /// The file was asked for again, and its page hasn't come yet.
+    private var askedAgain = false
+    /// The preview had the keyboard as its file was asked for again.
+    private var keyboardWhenAskedAgain = false
+    /// How many times an empty page is asked for again.
+    static let emptyPageRetryLimit = 3
 
     /// The file shown, or none.
     var item: URL? {
         didSet {
             guard item != oldValue else { return }
+            emptyPageRetries = 0
             show()
         }
     }
@@ -40,6 +51,7 @@ final class QuickLookHost: NSView {
         pageFind.stopFinding()
         textFind.stopFinding()
         webPages = (0, 0)
+        webLoadObservation = nil
         guard let item else {
             preview?.previewItem = nil
             return
@@ -58,9 +70,67 @@ final class QuickLookHost: NSView {
     }
 
     private func loaded() {
+        if askedAgain { pageCameAgain() }
+        pageShown()
+        watchWebLoad()
+    }
+
+    /// The page of a file asked for again came, in the web view it was asked in or a new one. Loading again takes the
+    /// keyboard from the page, to the window: it is given back unless taken since.
+    private func pageCameAgain() {
+        askedAgain = false
+        guard keyboardWhenAskedAgain, let window, let keyboard = keyboardView else { return }
+        let responder = window.firstResponder
+        if responder === window || (responder as? NSView)?.window == nil {
+            window.makeFirstResponder(keyboard)
+        }
+    }
+
+    /// Quick Look shows its page: what is done to it, and the viewer told.
+    private func pageShown() {
         allowSelecting()
         readWebPages()
         onLoad()
+    }
+
+    /// Quick Look makes a Word document's or a spreadsheet's page in quicklookd, and its web view asks quicklookd for it
+    /// as it loads. quicklookd can quit between the two, and does now and then on a busy Mac: the page then asks a
+    /// quicklookd that launchd starts again only a second later, which has no page to give, and the web view stays empty,
+    /// the document never shown. A page that comes empty is asked for again, a few times (`emptyPageRetryLimit`), as a
+    /// file with nothing in it would show it empty each time. Quick Look shows the page asked for again in a new web view,
+    /// which `loaded` hears of, or in the same one, heard of here; either way with its own style sheet again, and without
+    /// the keyboard.
+    private func watchWebLoad() {
+        webLoadObservation = nil
+        guard let webView else { return }
+        webLoadObservation = webView.observe(\.isLoading, options: [.initial]) { [weak self] web, _ in
+            MainActor.assumeIsolated {
+                // Not loading and no address yet: the load hasn't begun.
+                guard !web.isLoading, web.url != nil else { return }
+                self?.checkEmptyPage(web)
+            }
+        }
+    }
+
+    /// Asks Quick Look for the file again if `web`'s page is empty. Told as each page load ends; a test tells it too.
+    func checkEmptyPage(_ web: WKWebView) {
+        let shown = item
+        Task { [weak self] in
+            let script =
+                "document.head.childNodes.length == 0 && (!document.body || document.body.childNodes.length == 0)"
+            let empty = (try? await web.evaluateJavaScript(script) as? Bool) ?? false
+            guard let self, self.item == shown, self.webView === web, let preview = self.preview else { return }
+            if empty, self.emptyPageRetries < Self.emptyPageRetryLimit {
+                self.emptyPageRetries += 1
+                self.askedAgain = true
+                self.keyboardWhenAskedAgain =
+                    (self.window?.firstResponder as? NSView)?.isDescendant(of: preview) == true
+                preview.refreshPreviewItem()
+            } else if !empty, self.askedAgain {
+                self.pageCameAgain()
+                self.pageShown()
+            }
+        }
     }
 
     /// Asks the page whether it is one picture after another, and has it say the page shown as it scrolls.
@@ -102,6 +172,7 @@ final class QuickLookHost: NSView {
             controller.removeScriptMessageHandler(forName: QuickLookPageScript.pagesMessage, contentWorld: .page)
         }
         pagesMessages = nil
+        webLoadObservation = nil
         guard let preview else { return }
         self.preview = nil
         loadObservation = nil

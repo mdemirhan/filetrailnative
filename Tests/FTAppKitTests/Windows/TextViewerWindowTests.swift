@@ -1120,7 +1120,10 @@ extension ExplorerWindowlessTests {
                     try? await Task.sleep(for: .milliseconds(100))
                 }
                 let page = await evaluate("document.body ? document.body.innerText.slice(0, 80) : 'no body'")
-                return "page \"\(page)\", selected \"\(await selected())\", keyboard \(viewer.hasKeyboard)"
+                // 39 characters, `<html><head></head><body></body></html>`: Quick Look's answer was empty.
+                let html = await evaluate("String(document.documentElement.outerHTML.length)")
+                return "page \"\(page)\" (\(html) characters of HTML), selected \"\(await selected())\", "
+                    + "keyboard \(viewer.hasKeyboard), asked again \(viewer.quickLook.emptyPageRetries) times"
             }
             let first = await selectsAll("First document's words")
             #expect(first == nil, "\(first ?? "")")
@@ -1128,6 +1131,58 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { viewer.path == w2 })
             let second = await selectsAll("Second document's words")
             #expect(second == nil, "\(second ?? "")")
+        }
+
+        // Quick Look's page of a Word document that comes empty, as it does when quicklookd quits between making the page
+        // and the web view asking it for it, is asked for again: the document shows, its text selectable, the keyboard
+        // still in it. Quick Look's page emptied stands in for its empty answer, which only stopping quicklookd at that
+        // moment brings on (`docs/process/debugging.md`).
+        @Test func aWordDocumentsPageThatComesEmptyIsAskedForAgain() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let text = NSAttributedString(string: "The document's words.\n")
+            try text.data(
+                from: NSRange(location: 0, length: text.length),
+                documentAttributes: [.documentType: NSAttributedString.DocumentType.officeOpenXML]
+            ).write(to: harness.folder.appending("e.docx"))
+            let tab = try await tabWithFiles(harness)
+            let pane = tab.activePane
+            let docx = real(harness, "e.docx")
+            #expect(await waitUntil { pane.content.listedEntry(at: docx) != nil })
+            select(docx, in: tab)
+            tab.perform(.viewFile)
+            let viewer = try #require(pane.viewer)
+            func evaluate(_ script: String) async -> String {
+                guard let web = viewer.quickLook.webView else { return "" }
+                return (try? await web.evaluateJavaScript(script) as? String) ?? ""
+            }
+            // By the clock, as `waitUntil` waits, which can't wait on the page's answers.
+            func eventually(_ condition: () async -> Bool) async -> Bool {
+                let deadline = ContinuousClock.now + .seconds(30)
+                while ContinuousClock.now < deadline {
+                    if await condition() { return true }
+                    try? await Task.sleep(for: .milliseconds(100))
+                }
+                return false
+            }
+            func selectsAll() async -> Bool {
+                guard viewer.hasKeyboard, viewer.performEdit(.editSelectAll) else { return false }
+                return await evaluate("window.getSelection().toString()").contains("The document's words")
+            }
+            let shown = await eventually(selectsAll)
+            let first = await evaluate("document.body.innerText")
+            #expect(shown, "page \"\(first)\"")
+            let web = try #require(viewer.quickLook.webView)
+            _ = try? await web.evaluateJavaScript("document.head.replaceChildren(); document.body.replaceChildren(); 0")
+            let emptied = await evaluate("String(document.head.childNodes.length + document.body.childNodes.length)")
+            #expect(emptied == "0")
+            viewer.quickLook.checkEmptyPage(web)
+            let askedAgain = await eventually {
+                guard viewer.quickLook.emptyPageRetries == 1 else { return false }
+                return await selectsAll()
+            }
+            let page = await evaluate("document.body.innerText")
+            #expect(askedAgain, "asked again \(viewer.quickLook.emptyPageRetries) times, page \"\(page)\"")
         }
 
         /// ⌘F finds in a Word document as in a PDF, in the page Quick Look shows it in: without regard to case or
