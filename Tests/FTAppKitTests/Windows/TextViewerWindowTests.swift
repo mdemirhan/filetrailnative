@@ -1104,23 +1104,30 @@ extension ExplorerWindowlessTests {
             tab.perform(.viewFile)
             let viewer = try #require(pane.viewer)
             #expect(await waitUntil { viewer.hasKeyboard && viewer.quickLook.webView != nil }, "\(shown(viewer))")
-            func selected() async -> String {
+            func evaluate(_ script: String) async -> String {
                 guard let web = viewer.quickLook.webView else { return "" }
-                return (try? await web.evaluateJavaScript("window.getSelection().toString()") as? String) ?? ""
+                return (try? await web.evaluateJavaScript(script) as? String) ?? ""
             }
-            func selectsAll(_ words: String) async -> Bool {
-                for _ in 0..<40 {
+            func selected() async -> String { await evaluate("window.getSelection().toString()") }
+            // By the clock, as `waitUntil` waits: Quick Look reads the next document in a process of its own, which a
+            // busy Mac can keep for seconds. Giving up, it says what the page showed and what was selected.
+            func selectsAll(_ words: String) async -> String? {
+                let deadline = ContinuousClock.now + .seconds(30)
+                while ContinuousClock.now < deadline {
                     if viewer.hasKeyboard, viewer.performEdit(.editSelectAll), await selected().contains(words) {
-                        return true
+                        return nil
                     }
                     try? await Task.sleep(for: .milliseconds(100))
                 }
-                return false
+                let page = await evaluate("document.body ? document.body.innerText.slice(0, 80) : 'no body'")
+                return "page \"\(page)\", selected \"\(await selected())\", keyboard \(viewer.hasKeyboard)"
             }
-            #expect(await selectsAll("First document's words"))
+            let first = await selectsAll("First document's words")
+            #expect(first == nil, "\(first ?? "")")
             tab.stepFile(by: 1)
             #expect(await waitUntil { viewer.path == w2 })
-            #expect(await selectsAll("Second document's words"))
+            let second = await selectsAll("Second document's words")
+            #expect(second == nil, "\(second ?? "")")
         }
 
         /// ⌘F finds in a Word document as in a PDF, in the page Quick Look shows it in: without regard to case or
