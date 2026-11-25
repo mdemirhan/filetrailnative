@@ -100,8 +100,9 @@ struct ContentKeysTests {
         #expect(action("Backspace", code: "Backspace", alt: true, filter: typed, pinned: true) == nil)
         #expect(action("Escape", code: "Escape", filter: typed, pinned: true) == .typeToSelect(nil))
         #expect(action("s", code: "KeyS", filter: typed, pinned: true) == .typeToSelect("s"))
-        // Space types into the field's text, and with the pin it is Open in Viewer.
-        #expect(action(" ", code: "Space", filter: typed) == .filter(.type(" ")))
+        // Space is Open in Viewer and ⇧Space types into the field's text; with the pin both leave the text alone.
+        #expect(action(" ", code: "Space", filter: typed) == .command(.viewFile))
+        #expect(action(" ", code: "Space", shift: true, filter: typed) == .filter(.type(" ")))
         #expect(action(" ", code: "Space", filter: typed, pinned: true) == .command(.viewFile))
     }
 
@@ -169,23 +170,27 @@ struct ContentKeysTests {
         filter.type("my")
         #expect(action("Backspace", code: "Backspace", filter: filter) == .filter(.erase))
         #expect(action("Escape", code: "Escape", filter: filter) == .filter(.clear))
-        #expect(action(" ", code: "Space", filter: filter) == .filter(.type(" ")))
+        #expect(action(" ", code: "Space", shift: true, filter: filter) == .filter(.type(" ")))
         // ⇧⌘E is Open in Viewer, ⌘E Edit in Text Editor and ⌘Y Quick Look while the filter is there.
         #expect(action("E", code: "KeyE", meta: true, shift: true, filter: filter) == .command(.viewFile))
         #expect(action("e", code: "KeyE", meta: true, filter: filter) == .command(.editSelection))
         #expect(action("y", code: "KeyY", meta: true, filter: filter) == .command(.quickLookSelection))
-        // With no filter (Esc ended it) Space is Open in Viewer.
+        // Space is Open in Viewer, with the filter and without it (Esc ended it).
+        #expect(action(" ", code: "Space", filter: filter) == .command(.viewFile))
         filter.clear()
         #expect(action(" ", code: "Space", filter: filter) == .command(.viewFile))
     }
 
-    // Space never starts a filter. While one is typed it always types a space, whether Open in Viewer has it, Quick
-    // Look was given it or Settings took it off (no other command can have it).
-    @Test func spaceTypesIntoAFilterWhateverCommandHasIt() {
-        func action(_ overrides: ShortcutOverrides, filter: ListFilterTyping) -> ContentKeyAction? {
+    // Space never starts a filter. While one is typed Space runs the command it has, Open in Viewer or Quick Look, and
+    // ⇧Space types a space; once Settings takes Space off, Space types a space as well.
+    @Test func spaceRunsItsCommandOverAFilterAndShiftSpaceTypesASpace() {
+        func action(
+            _ overrides: ShortcutOverrides, filter: ListFilterTyping, shift: Bool = false, selected: Bool = true
+        ) -> ContentKeyAction? {
             ContentKeys.action(
-                for: ShortcutKeyEvent(key: " ", code: "Space"), shortcuts: ShortcutCommands.resolve(overrides),
-                filter: filter, hasEntries: true, hasSelection: true)
+                for: ShortcutKeyEvent(key: " ", code: "Space", shiftKey: shift),
+                shortcuts: ShortcutCommands.resolve(overrides), filter: filter, hasEntries: true,
+                hasSelection: selected)
         }
         var typed = ListFilterTyping()
         typed.type("my")
@@ -193,11 +198,18 @@ struct ContentKeysTests {
         unassigned["viewFile"] = ["Cmd+Shift+E"]
         #expect(action(unassigned, filter: ListFilterTyping()) == nil)
         #expect(action(unassigned, filter: typed) == .filter(.type(" ")))
+        #expect(action(unassigned, filter: typed, shift: true) == .filter(.type(" ")))
         let quickLook: ShortcutOverrides = ["quickLookSelection": ["Cmd+Y", "Space"]]
-        #expect(action(quickLook, filter: typed) == .filter(.type(" ")))
+        #expect(action(quickLook, filter: typed) == .command(.quickLookSelection))
+        #expect(action(quickLook, filter: typed, shift: true) == .filter(.type(" ")))
+        // Quick Look with nothing selected leaves the key alone: it types no space either.
+        #expect(action(quickLook, filter: typed, selected: false) == nil)
         #expect(action(quickLook, filter: ListFilterTyping()) == .command(.quickLookSelection))
-        #expect(action([:], filter: typed) == .filter(.type(" ")))
+        #expect(action([:], filter: typed) == .command(.viewFile))
+        #expect(action([:], filter: typed, shift: true) == .filter(.type(" ")))
         #expect(action([:], filter: ListFilterTyping()) == .command(.viewFile))
+        // ⇧Space without a filter starts none.
+        #expect(action([:], filter: ListFilterTyping(), shift: true) == nil)
     }
 
     @Test func returnWithAnItemSelectedAndTabSwitchesPanes() {

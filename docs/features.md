@@ -55,7 +55,7 @@ The [README](../README.md) has the highlights. This page lists everything, by ar
 - **Results in any view**, with columns of their own that you choose and sort, and a filter field that trims them by name or by folder without searching again. A search stops at 50,000 results.
 - **Each tab keeps its own search**, a search keeps running while you look at another tab, and ⇧⌘F shows the last results again.
 - **Results stay put while you work in them**: what you move away or delete leaves the list, what you rename keeps its place, and when you add something to the folder searched a note offers Search Again rather than searching on its own.
-- **Type in the file list** to narrow the folder on screen. Fuzzy keeps the names with your letters in order, and marks them; Contains keeps the names with the letters side by side. Backspace edits what you typed, Space types a space in it (⇧⌘E opens the viewer meanwhile), Esc brings the rest back, and ⌘F turns the same text into a search of the subfolders.
+- **Type in the file list** to narrow the folder on screen. Fuzzy keeps the names with your letters in order, and marks them; Contains keeps the names with the letters side by side. Backspace edits what you typed, Space still opens the viewer and ⇧Space types a space in it (Space types it while Settings gives Space to no command), Esc brings the rest back, and ⌘F turns the same text into a search of the subfolders.
 - **A pinned filter** stays while you go from folder to folder and search.
 
 ## Copying, moving and undoing

@@ -15,6 +15,8 @@ public enum SelectionLayout {
         public static let symbolSize = 13.0
         /// The red wash over the bar while nothing matches.
         public static let dangerWashAlpha = 0.1
+        /// The width of the filter's text kept before ⇧Space's hint gives way to it.
+        public static let textKeptBesideHint = 80.0
     }
 
     /// The mode chip in the search results' filter field (Fuzzy or Contains): a rounded rectangle of the accent

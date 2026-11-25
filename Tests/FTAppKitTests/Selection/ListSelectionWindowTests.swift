@@ -1,5 +1,5 @@
 // A List selection made from outside reaches the window, Edit › Select All selects the list, Deselect All and Invert
-// Selection act on what the list shows, Space is the filter's text while there is one, the filter bar's ✕ clears it, and a filter nothing matches is said in place of the whole view
+// Selection act on what the list shows, ⇧Space types the filter's space while there is one, the filter bar's ✕ clears it, and a filter nothing matches is said in place of the whole view
 import AppKit
 import FTFoundation
 import Foundation
@@ -204,10 +204,11 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // Space sent through the window is the filter's text while there is one, not Quick Look; nothing matching hides
-        // the column header and says so in place of the view; the ✕ brings the list back and leaves it the keyboard;
-        // with the filter gone Space is Quick Look.
-        @Test func spaceIsTheFiltersAndTheClearButtonClearsIt() async throws {
+        // ⇧Space sent through the window types the filter's space while there is one, and the filter bar says so;
+        // Space opens the viewer and the filter stays; nothing matching hides the column header and says so in place
+        // of the view; the ✕ brings the list back and leaves it the keyboard; with the filter gone Space still opens
+        // the viewer, never Quick Look.
+        @Test func shiftSpaceIsTheFiltersAndTheClearButtonClearsIt() async throws {
             let harness = try ExplorerHarness.windowless()
             let folder = try harness.makeFolder(named: "Files", files: 0)
             for name in ["Report.txt", "my doc.txt", "Readme.md", "notes.txt", "Amy.txt"] {
@@ -221,11 +222,36 @@ extension ExplorerWindowlessTests {
             let (tab, list) = try await harness.openList(folder.path)
             tab.content.focusList()
             list.type("my")
-            list.key("Space")
+            list.key("Space", modifiers: .shift)
             list.type("d")
             #expect(tab.content.filter == "my d")
             #expect(list.rowNames == ["my doc.txt"])
             #expect(fake.presented == 0)
+            let bar = tab.content.container.filterBar
+            bar.frame.size.width = 600
+            bar.layoutSubtreeIfNeeded()
+            #expect(bar.showsSpaceHint)
+            // Too narrow for it, the hint gives way to the text.
+            bar.frame.size.width = 260
+            bar.layoutSubtreeIfNeeded()
+            #expect(!bar.showsSpaceHint)
+            list.key("Space")
+            #expect(tab.activePane.viewer?.path == path(tab, "my doc.txt"))
+            #expect(tab.content.filter == "my d")
+            #expect(await tab.closeViewer(in: tab.activePane))
+            #expect(tab.content.filter == "my d")
+            tab.content.focusList()
+            // Space taken off in Settings types a space itself, and the bar no longer speaks of ⇧Space.
+            let keys = tab.content.shortcutsProvider
+            let unassigned: ShortcutOverrides = ["viewFile": ["Cmd+Shift+E"]]
+            tab.content.shortcutsProvider = { ShortcutCommands.resolve(unassigned) }
+            list.key("Space")
+            #expect(tab.content.filter == "my d ")
+            bar.frame.size.width = 600
+            bar.layoutSubtreeIfNeeded()
+            #expect(!bar.showsSpaceHint)
+            list.key("Backspace")
+            tab.content.shortcutsProvider = keys
             #expect(!identified("list.header", in: tab.content.container).isEmpty)
             list.type("zzz")
             #expect(list.rowNames.isEmpty)

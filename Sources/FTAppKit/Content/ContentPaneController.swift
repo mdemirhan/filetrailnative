@@ -1077,9 +1077,19 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         } else {
             container.filterBar.show(
                 query: searchDisplay == nil ? filter : "", mode: filterMode, shown: entries.count,
-                total: listed.count, theme: theme)
+                total: listed.count, theme: theme, spaceCommand: spaceCommandOverFilter)
         }
         container.layoutFilterBar()
+    }
+
+    /// The name of the command Space runs while a filter is typed, when ⇧Space is left to type the spaces
+    /// (`ContentKeys`); nil while Space types them itself.
+    private var spaceCommandOverFilter: String? {
+        let keys = shortcuts
+        guard let command = keys.command(pressed: "Space"), keys.command(pressed: "Shift+Space") == nil else {
+            return nil
+        }
+        return ShortcutCommands.definition(command).label
     }
 
     private func refreshState() {

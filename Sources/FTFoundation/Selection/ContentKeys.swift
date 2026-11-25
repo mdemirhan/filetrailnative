@@ -62,10 +62,12 @@ public enum ContentKeys {
         // ? opens Help from anywhere.
         if command == .openHelp { return .command(.openHelp) }
         if let move = pageMove(command) { return .page(forward: move.forward, size: move.size, extend: false) }
-        // Space never starts a filter. While one is typed Space is always the filter's, and ⇧⌘E opens the viewer;
-        // once Esc ends it, Space is its command's again. A pinned filter leaves Space to its command.
-        if event.key == " ", !event.metaKey, !event.ctrlKey, !event.altKey, !event.shiftKey, filter.isActive, !pinned {
-            return .filter(.type(" "))
+        // Space never starts a filter. While one is typed Space runs the command it is given, as it does without one,
+        // and ⇧Space types a space; a Space no command has types one too, and so does ⇧Space while no command has it.
+        // A pinned filter leaves Space to its command.
+        if event.key == " ", !event.metaKey, !event.ctrlKey, !event.altKey, filter.isActive, !pinned {
+            guard let command else { return .filter(.type(" ")) }
+            if command == .quickLookSelection { return hasSelection ? .command(command) : nil }
         }
         // Quick Look is the last of the raw bindings, so a filter's keys come before it.
         if let command, command != .selectAll, command != .quickLookSelection {

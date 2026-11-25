@@ -5,7 +5,8 @@ import FTFoundation
 /// side by side), a pin and a way to bring the rest back. It is a bar of the pane's own across the foot of the list,
 /// opaque and tinted with the accent, and the list ends above it, so no item is ever under it. It shows while there is
 /// a filter and goes with it. Text that matches nothing turns it red. Its pin pins the filter to the pane, and shows
-/// filled while it is: the mode is then locked.
+/// filled while it is: the mode is then locked. While Space has a command, a typed filter says that ⇧Space types a
+/// space, before the modes, where there is room for it.
 final class ListFilterBarView: NSView, TextStyleSource {
     private let backdrop = ContentBackdrop()
     /// The accent's wash over the backdrop, red while nothing matches.
@@ -13,6 +14,8 @@ final class ListFilterBarView: NSView, TextStyleSource {
     private let symbol = NSImageView()
     private let value = ListLabel()
     private let count = ListLabel()
+    /// "⇧Space types a space", while Space runs a command of its own.
+    private let spaceHint = ListLabel()
     let modes = ListFilterModeControl()
     let pin = ListFilterPinButton()
     private let clear = ClearButton()
@@ -23,6 +26,8 @@ final class ListFilterBarView: NSView, TextStyleSource {
     private(set) var isPinned = false
     /// Whether the bar shows a filter.
     private(set) var isShowingFilter = false
+    /// Space has a command while the filter is typed: the hint shows where it fits.
+    private var wantsSpaceHint = false
 
     /// Told of a press anywhere on the bar, its buttons too: the list above it takes the keyboard, and with it its
     /// pane becomes the active one, as a press on the pane's other bars does.
@@ -55,6 +60,10 @@ final class ListFilterBarView: NSView, TextStyleSource {
         value.setAccessibilityIdentifier("listFilter.value")
         count.font = NSFont.monospacedDigitSystemFont(ofSize: CGFloat(DesignTokens.typeScale.callout), weight: .regular)
         count.setAccessibilityIdentifier("listFilter.count")
+        spaceHint.font = ThemeFonts.sans(DesignTokens.typeScale.small)
+        spaceHint.stringValue = Self.spaceHintText
+        spaceHint.setAccessibilityIdentifier("listFilter.spaceHint")
+        spaceHint.isHidden = true
         modes.onPress = { [weak self] in self?.onFocusList() }
         modes.onChoose = { [weak self] _ in self?.onToggleMode() }
         clear.setAccessibilityLabel("Clear filter")
@@ -65,7 +74,7 @@ final class ListFilterBarView: NSView, TextStyleSource {
         pin.setAccessibilityIdentifier("listFilter.pin")
         pin.target = self
         pin.action = #selector(toggledPin(_:))
-        for view in [symbol, value, count, modes, pin, clear] as [NSView] { addSubview(view) }
+        for view in [symbol, value, count, spaceHint, modes, pin, clear] as [NSView] { addSubview(view) }
         setAccessibilityElement(true)
         setAccessibilityRole(.group)
         setAccessibilityIdentifier("listFilter")
@@ -85,8 +94,17 @@ final class ListFilterBarView: NSView, TextStyleSource {
         onTogglePin()
     }
 
-    /// Shows the filter, or takes the bar away when there is none.
-    func show(query: String, mode: NameMatchMode, shown: Int, total: Int, theme: Theme, pinned: Bool = false) {
+    static let spaceHintText = ShortcutLabels.format("Shift+Space") + " types a space"
+
+    /// Whether the bar says how a space is typed.
+    var showsSpaceHint: Bool { !spaceHint.isHidden }
+
+    /// Shows the filter, or takes the bar away when there is none. `spaceCommand` is the name of the command Space runs
+    /// while the filter is typed, when ⇧Space types its spaces: the bar says so.
+    func show(
+        query: String, mode: NameMatchMode, shown: Int, total: Int, theme: Theme, pinned: Bool = false,
+        spaceCommand: String? = nil
+    ) {
         self.theme = theme
         guard !query.isEmpty else {
             isShowingFilter = false
@@ -104,6 +122,8 @@ final class ListFilterBarView: NSView, TextStyleSource {
         nothingMatches = shown == 0 && total > 0
         value.stringValue = query
         count.stringValue = "\(FormatLocale.count(shown)) of \(FormatLocale.count(total))"
+        wantsSpaceHint = spaceCommand != nil && !pinned
+        spaceHint.toolTip = spaceCommand.map { "Space: \($0). \(Self.spaceHintText) into the filter." }
         clear.applyTheme(theme)
         modes.applyTheme(theme)
         applyColors()
@@ -116,6 +136,7 @@ final class ListFilterBarView: NSView, TextStyleSource {
         symbol.contentTintColor = NSColor(nothingMatches ? palette.dangerText : theme.accent.solid)
         value.textColor = NSColor(palette.textPrimary)
         count.textColor = NSColor(nothingMatches ? palette.dangerText : palette.textSecondary)
+        spaceHint.textColor = NSColor(palette.textSecondary)
         pin.theme = theme
         let wash =
             nothingMatches ? palette.danger.withAlpha(SelectionLayout.FilterBar.dangerWashAlpha) : theme.accent.softBg
@@ -152,12 +173,21 @@ final class ListFilterBarView: NSView, TextStyleSource {
         let modesSize = modes.intrinsicContentSize
         right -= gap + modesSize.width
         place(modes, x: right, size: modesSize)
-        // From the left: the symbol, the text and the count; the text gives way first.
         var x = CGFloat(layout.paddingLeft)
         let symbolSide = CGFloat(layout.symbolSize)
+        let countWidth = count.textWidth
+        // The hint, before the modes, while the symbol, the count and a few letters of the text fit beside it.
+        let hintWidth = spaceHint.textWidth
+        let keptText = min(value.textWidth, CGFloat(layout.textKeptBesideHint))
+        let leftNeeds = x + symbolSide + gap + keptText + gap + countWidth
+        spaceHint.isHidden = !wantsSpaceHint || right - gap - hintWidth - gap < leftNeeds
+        if !spaceHint.isHidden {
+            right -= gap + hintWidth
+            place(spaceHint, x: right, size: NSSize(width: hintWidth, height: spaceHint.lineHeight))
+        }
+        // From the left: the symbol, the text and the count; the text gives way first.
         place(symbol, x: x, size: NSSize(width: symbolSide, height: symbolSide))
         x += symbolSide + gap
-        let countWidth = count.textWidth
         let valueWidth = min(value.textWidth, max(0, right - gap - countWidth - gap - x))
         place(value, x: x, size: NSSize(width: valueWidth, height: value.lineHeight))
         x += valueWidth + gap
