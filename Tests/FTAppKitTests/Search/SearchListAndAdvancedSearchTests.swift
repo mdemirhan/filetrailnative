@@ -1,4 +1,4 @@
-// The list under the toolbar's search field and the Edit Search box, typed into as a person types: what each lists,
+// The list under the toolbar's search field and the Advanced Search box, typed into as a person types: what each lists,
 // what Return, Tab and Esc do with it, and how the box reads the search back.
 import AppKit
 import FTFileSystem
@@ -10,7 +10,7 @@ import Testing
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite struct SearchListAndEditSearchTests {
+    @Suite struct SearchListAndAdvancedSearchTests {
         private func open() async throws -> (ExplorerHarness, MainWindowController, FakeSearchEngine, ManualTimers) {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.openList()
@@ -256,14 +256,14 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // MARK: The Edit Search box
+        // MARK: The Advanced Search box
 
-        private func box(_ tab: MainWindowController) throws -> EditSearchBox {
-            tab.search.openEditSearch()
-            return try #require(DialogScrim.front(in: tab.window)?.panel as? EditSearchBox)
+        private func box(_ tab: MainWindowController) throws -> AdvancedSearchBox {
+            tab.search.openAdvancedSearch()
+            return try #require(DialogScrim.front(in: tab.window)?.panel as? AdvancedSearchBox)
         }
 
-        private func typeInBox(_ text: String, _ box: EditSearchBox) {
+        private func typeInBox(_ text: String, _ box: AdvancedSearchBox) {
             box.textView.insertText(text, replacementRange: box.textView.selectedRange())
         }
 

@@ -21,7 +21,7 @@
             "switchToOtherPane", "openSelectionInOtherPane", "viewFile",
             "quickLookSelection",
             "calculateSize", "revealInFolder", "showOriginal", "makeAlias", "toggleFavorite", "showInFinder",
-            "showLastSearchResults", "editSearch", "clearSearchConditions",
+            "showLastSearchResults", "advancedSearch", "clearSearchConditions",
             "viewAsIcons", "viewAsList", "viewAsDetails", "viewAsPreviews", "showPreviews9", "showPreviews4",
             "showPreviews2", "showPreviews1", "increaseSize", "decreaseSize", "resetSize",
             "groupByNone", "groupByName", "groupByModified", "groupByCreated", "groupByLastOpened", "groupByAdded",

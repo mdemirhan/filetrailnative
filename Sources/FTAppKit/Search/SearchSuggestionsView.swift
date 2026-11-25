@@ -1,4 +1,4 @@
-// What the word at the caret of a search can be: a list under the toolbar's field, and under the Edit Search box's
+// What the word at the caret of a search can be: a list under the toolbar's field, and under the Advanced Search box's
 // text. Rows in sections ("Kind", "Or a condition"), each with what it types at its end; one is highlighted, which
 // Return or Tab takes and the arrows move. A press on a row takes it; the keyboard stays where it is typed. Given less
 // room than its rows want, the rows scroll and the keys stay at the bottom.

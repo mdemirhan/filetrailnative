@@ -627,7 +627,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// Whether a text field of the tab (the search field, the results' filter, a rename) has the keyboard.
     var isTextFieldEditing: Bool {
         guard let editor = window?.firstResponder as? NSTextView else { return false }
-        // The viewer's text, and any text typed in (the Edit Search box's), is edited as a field is: ⌘C, ⌘V, ⌘A and
+        // The viewer's text, and any text typed in (the Advanced Search box's), is edited as a field is: ⌘C, ⌘V, ⌘A and
         // ⌘Z act on its text, not on files.
         return editor.isFieldEditor || editor.isEditable || editor is ViewerTextView
     }
@@ -2151,8 +2151,8 @@ extension MainWindowController: ExplorerWindowHandle {
             if let session = searchStore?.session, session.isSearchMode { session.rerun() } else { refresh() }
         case .showLastSearchResults:
             if searchStore?.session.hasCachedSearch == true { search.showLastResults() }
-        case .editSearch:
-            search.openEditSearch()
+        case .advancedSearch:
+            search.openAdvancedSearch()
         case .clearSearchConditions:
             search.clearConditions()
         case .revealInFolder:

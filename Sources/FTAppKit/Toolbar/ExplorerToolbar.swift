@@ -437,7 +437,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
             searchField.isEnabled = !isCustomizing && !context.activePaneShowsFile
             searchField.takeClearButton()
             searchField.editButton.toolTip = Tooltips.format(
-                SearchBarText.editSearchName, shortcut: shortcuts.written(.editSearch))
+                SearchBarText.advancedSearchName, shortcut: shortcuts.written(.advancedSearch))
             if let magnifier = item.view as? ToolbarButton {
                 magnifier.tooltip = Tooltips.format(
                     SearchBarText.fieldPlaceholder, shortcut: shortcuts.written(.focusFileSearch))
@@ -524,7 +524,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
 
     // MARK: Search
 
-    /// A press on the magnifier is the options button's, and one on the button at the field's end is Edit Search's. It has to be taken before the window sends it on: the button is
+    /// A press on the magnifier is the options button's, and one on the button at the field's end is Advanced Search's. It has to be taken before the window sends it on: the button is
     /// the view under the mouse, but the system's search field has a gesture recognizer that holds the press back from
     /// the views in it and only starts editing. Whatever is over the magnifier, a dialog's scrim or a folded item, keeps it,
     /// and a sheet or a modal window keeps the press, as AppKit does. Taken here, it skips the step of AppKit that brings

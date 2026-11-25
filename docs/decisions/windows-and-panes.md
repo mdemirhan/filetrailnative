@@ -86,7 +86,7 @@ Two panes, tabs, saved views, the toolbar, the menus and their keys, Back and Fo
   | ⇧⌘I | iCloud Drive | Info Row | (no reason recorded) |
   | ⇧⌘R | AirDrop | Use as Tree Root | (no reason recorded) |
   | ⌥⌘T | Hide Toolbar | Open in Terminal | (no reason recorded) |
-  | ⌥⌘F | Go to the search field | Edit Search… | ⌘F already goes to the field, results or none; the box is the field made larger (inferred, 2026-11-25). |
+  | ⌥⌘F | Go to the search field | Advanced Search… | ⌘F already goes to the field, results or none; the box is the field made larger (inferred, 2026-11-25). |
   | ⌥⌘W | Close All (Close Other Tabs in a window of tabs) | Close Tab | ⌘W closes the pane first ("⌘W closes the pane it is in first"). |
   | ⌥⌘⌫ | Delete Immediately, anywhere | Delete Immediately, in the Trash only, always asking Finder's question first | Outside the Trash the key does nothing, whichever way it arrives, so a slip can't delete for good. |
   | ⌃⌘1–⌃⌘5 | Group By, Sort By | Open a window view | The window views' keys; Sort By and Group By have none. |

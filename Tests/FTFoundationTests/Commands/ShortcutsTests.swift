@@ -460,7 +460,7 @@ struct ShortcutsTests {
             (.removeFromClipboard, []), (.showClipboard, ["Ctrl+Cmd+V"]), (.clearClipboard, []), (.showInFinder, []),
             (.toggleFavorite, ["Ctrl+Cmd+T"]),
             (.focusFileSearch, ["Cmd+F"]), (.showLastSearchResults, ["Cmd+Shift+F"]),
-            (.editSearch, ["Cmd+Option+F"]), (.clearSearchConditions, []), (.revealInFolder, []),
+            (.advancedSearch, ["Cmd+Option+F"]), (.clearSearchConditions, []), (.revealInFolder, []),
             (.viewAsIcons, ["Cmd+1"]), (.viewAsDetails, ["Cmd+2"]), (.viewAsList, ["Cmd+3"]),
             (.viewAsPreviews, ["Cmd+4"]), (.showPreviews9, []), (.showPreviews4, []), (.showPreviews2, []),
             (.showPreviews1, []),

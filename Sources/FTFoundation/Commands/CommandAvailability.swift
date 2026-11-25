@@ -392,7 +392,7 @@ public enum CommandAvailability {
             .showLastOpenedColumn, .showPermissionsColumn, .showFolderColumn, .rememberFolderView, .updateFolderView,
             .revertFolderView,
             .folderViewOptions, .resetFolderView, .togglePinFilter, .focusFileSearch, .showLastSearchResults,
-            .editSearch, .clearSearchConditions,
+            .advancedSearch, .clearSearchConditions,
             .refreshOrApplySearchSort, .newFolder, .newTextFile, .pasteSelection, .pasteAsFile, .moveItemsHere,
             .calculateSize, .showFolderInOtherPane, .copyToOtherPane, .moveToOtherPane,
             // Going elsewhere would do it under the file, out of sight: Back, Forward and Enclosing Folder go to its

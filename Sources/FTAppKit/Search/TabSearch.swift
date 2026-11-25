@@ -70,7 +70,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         field.onFocus = { [weak self] in self?.fieldFocused() }
         field.onOptions = { [weak self] fromKeyboard in self?.openOptions(fromKeyboard: fromKeyboard) }
         field.onClear = { [weak self] in self?.clearPressed() }
-        field.onEditSearch = { [weak self] in self?.openEditSearch() }
+        field.onAdvancedSearch = { [weak self] in self?.openAdvancedSearch() }
         field.onEditorChange = { [weak self] in self?.fieldEditorChanged() }
         dropdown.view.onChoose = { [weak self] index in self?.chooseSuggestion(index) }
         dropdown.view.onHelp = { [weak self] in self?.openSyntaxHelp() }
@@ -602,10 +602,10 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         editor.insertText((space ? " " : "") + key.word, replacementRange: NSRange(location: location, length: 0))
     }
 
-    /// Edit Search: the search's text in the Edit Search box, over the window. Search there searches for it, as Return
+    /// Advanced Search: the search's text in the Advanced Search box, over the window. Search there searches for it, as Return
     /// in the field does; Cancel leaves the search as it was. With nothing typed and no results shown, the pane's last
     /// search comes back first, text and results, as ⌘F brings it back: only in the folder it was made from.
-    func openEditSearch() {
+    func openAdvancedSearch() {
         guard let window = tab.window, DialogScrim.front(in: window) == nil, window.attachedSheet == nil else { return }
         AppMenuPresenter.shared.close()
         dropdown.hide()
@@ -615,7 +615,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
             text = session.draftQuery
         }
         let root = session.isSearchMode ? session.rootPath : pane.shownFolderPath
-        let box = EditSearchBox(
+        let box = AdvancedSearchBox(
             text: text,
             folderName: ExplorerTabs.folderDisplayName(
                 root, homePath: tab.trashHomePath, startupDiskName: tab.services.startupDisk.name),
@@ -633,7 +633,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         box.opened()
     }
 
-    /// What the Edit Search box gives is searched for as Return in the field would: the field shows it, and the results
+    /// What the Advanced Search box gives is searched for as Return in the field would: the field shows it, and the results
     /// take the keyboard.
     private func searchFromEditor(_ text: String) {
         session.setDraft(text)

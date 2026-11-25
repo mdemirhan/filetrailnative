@@ -62,8 +62,8 @@ public enum SearchBarText {
 
     /// The toolbar's field.
     public static let fieldPlaceholder = "Search"
-    /// Edit Search's button at the field's end, and its tooltip before its key.
-    public static let editSearchName = "Edit Search"
+    /// Advanced Search's button at the field's end, and its tooltip before its key.
+    public static let advancedSearchName = "Advanced Search"
     public static let fieldName = "Find files in current folder"
     public static let clearSearchTitle = "Clear Search"
     public static let clearSearchName = "Clear file search"

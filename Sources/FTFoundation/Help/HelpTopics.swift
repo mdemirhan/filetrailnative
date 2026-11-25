@@ -613,7 +613,7 @@ extension HelpContent {
                         HelpRow(
                             label: "More room",
                             description:
-                                "Edit ▸ Edit Search…, or the button at the field’s end, opens the search in a larger box that wraps, says how the search reads, and lists every condition’s word to click. With the results closed and nothing typed, it opens with the last search made in this folder, and shows its results again. Search searches for it; Cancel leaves the search as it was."
+                                "Edit ▸ Advanced Search…, or the button at the field’s end, opens the search in a larger box that wraps, says how the search reads, and lists every condition’s word to click. With the results closed and nothing typed, it opens with the last search made in this folder, and shows its results again. Search searches for it; Cancel leaves the search as it was."
                         ),
                     ]),
                 HelpSection(
@@ -997,7 +997,8 @@ extension HelpContent {
             group: .search, .fixed("Down"), "Move from the search field into the results (Return also works)"),
         HelpShortcutItem(group: .search, .command(.showLastSearchResults), "Show the last results again"),
         HelpShortcutItem(
-            group: .search, .command(.editSearch), "Open the search in a larger editor, with every condition's word"),
+            group: .search, .command(.advancedSearch), "Open the search in a larger editor, with every condition's word"
+        ),
         HelpShortcutItem(group: .search, .command(.clearSearchConditions), "Take every condition out of the search"),
         HelpShortcutItem(group: .search, .command(.revealInFolder), "Show the selected result in its folder"),
         HelpShortcutItem(group: .search, .command(.refreshOrApplySearchSort), "Run the search again"),

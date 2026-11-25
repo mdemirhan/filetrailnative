@@ -1,4 +1,4 @@
-// The condition words of a search's text, tinted where the text is typed: the toolbar's field and the Edit Search box.
+// The condition words of a search's text, tinted where the text is typed: the toolbar's field and the Advanced Search box.
 // Drawn over the text, never stored in it: what the field holds stays plain text.
 import AppKit
 import FTFoundation

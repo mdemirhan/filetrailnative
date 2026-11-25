@@ -77,7 +77,7 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
     }
 
     /// What to offer for `query` with the caret at `caret`; nil for nothing. `listsWordsForNewWord`: where a new word
-    /// starts, in an empty field or after a whole condition, every condition's word is listed, none highlighted. `offersConditionWords`: a plain word offers the conditions it could be; the Edit Search
+    /// starts, in an empty field or after a whole condition, every condition's word is listed, none highlighted. `offersConditionWords`: a plain word offers the conditions it could be; the Advanced Search
     /// box, which lists the words below, offers only a condition's values. `tags` and `folders` are offered after
     /// `tag:` and `skip:`, and are asked for only then: the folders of 50,000 results aren't tallied at every key
     /// of a name.

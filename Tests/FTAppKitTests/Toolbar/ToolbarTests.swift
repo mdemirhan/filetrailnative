@@ -856,7 +856,7 @@ extension ExplorerWindowlessTests {
             #expect(clear.accessibilityLabel() == SearchBarText.clearSearchName)
             #expect(clear.accessibilityIdentifier() == "toolbar.search.clear")
             #expect(cell.cancelButtonRect(forBounds: field.bounds) != .zero)
-            // The ✕ is before Edit Search's button, never under it.
+            // The ✕ is before Advanced Search's button, never under it.
             #expect(
                 cell.cancelButtonRect(forBounds: field.bounds).maxX
                     <= cell.editButtonRect(forBounds: field.bounds).minX)

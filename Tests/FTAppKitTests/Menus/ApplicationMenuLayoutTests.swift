@@ -45,7 +45,7 @@ import Testing
                 "Invert Selection", "-", "Copy Path", "Copy Contents", "Paste as File", "-", "Copy to Other Pane",
                 "Move to Other Pane", "-", "Add to Copied Items", "Add to Cut Items", "Remove from Clipboard",
                 "Show Clipboard", "Clear Clipboard", "-", "Find Files…", "Show Last Search Results",
-                "Edit Search…", "Clear Search Conditions",
+                "Advanced Search…", "Clear Search Conditions",
             ])
         #expect(
             titles(submenu(main, "View")) == [

@@ -386,7 +386,7 @@ final class LeadingIconCell: NSButtonCell {
 /// The toolbar's search field, the system's, in an `NSSearchToolbarItem`: the magnifier with its small chevron is the
 /// Search Options button, the placeholder is "Search", the system's clear button shows once the trimmed text is not
 /// empty.
-/// The search field's cell: room at the field's right end, after the ✕, for Edit Search's button, and no ✕ for text of
+/// The search field's cell: room at the field's right end, after the ✕, for Advanced Search's button, and no ✕ for text of
 /// only spaces. A field with a cell of its own has the cell draw the ✕ (no button of the system's), so the ✕'s
 /// tooltip and name are on the field's stop over it (`ToolbarSearchField.clearStop`).
 final class ToolbarSearchFieldCell: NSSearchFieldCell {
@@ -404,7 +404,7 @@ final class ToolbarSearchFieldCell: NSSearchFieldCell {
         return super.cancelButtonRect(forBounds: rect).offsetBy(dx: -Self.editButtonRoom, dy: 0)
     }
 
-    /// Where Edit Search's button is drawn: at the field's right end, as far in from it as the magnifier is from its
+    /// Where Advanced Search's button is drawn: at the field's right end, as far in from it as the magnifier is from its
     /// left, whether or not there is text (the system places the ✕ only once there is).
     func editButtonRect(forBounds rect: NSRect) -> NSRect {
         let magnifier = searchButtonRect(forBounds: rect)
@@ -426,15 +426,15 @@ final class ToolbarSearchField: NSSearchField {
     var onOptions: (_ fromKeyboard: Bool) -> Void = { _ in }
     /// The ✕ was clicked.
     var onClear: () -> Void = {}
-    /// Edit Search's button at the field's end was pressed.
-    var onEditSearch: () -> Void = {}
+    /// Advanced Search's button at the field's end was pressed.
+    var onAdvancedSearch: () -> Void = {}
     /// The text or the caret changed, or the field took or let go of the keyboard: the condition words are tinted again
     /// and the list of what the word at the caret can be follows.
     var onEditorChange: () -> Void = {}
     /// What is typed changed: the toolbar widens the field once the text outgrows it.
     var onTextChange: () -> Void = {}
     private var selectionObserver: NSObjectProtocol?
-    /// Edit Search's button, after the ✕; the press comes from the toolbar, as the magnifier's does.
+    /// Advanced Search's button, after the ✕; the press comes from the toolbar, as the magnifier's does.
     let editButton = ToolbarSearchEditButton()
     /// The field took the keyboard or let it go: the toolbar decides again whether it stays open (`updateSearchWidth`).
     var onEditingChange: () -> Void = {}
@@ -470,7 +470,7 @@ final class ToolbarSearchField: NSSearchField {
             ToolbarKeyboard.move(from: self.clearStop, backward: backward)
         }
         addSubview(clearStop)
-        editButton.onPress = { [weak self] in self?.onEditSearch() }
+        editButton.onPress = { [weak self] in self?.onAdvancedSearch() }
         addSubview(editButton)
     }
 
@@ -630,7 +630,7 @@ final class ToolbarSearchField: NSSearchField {
     }
 }
 
-/// Edit Search's button at the search field's end: opens the search in the Edit Search box, where a long one has room.
+/// Advanced Search's button at the search field's end: opens the search in the Advanced Search box, where a long one has room.
 /// The system's field holds a press back from the views in it, so the press comes from the toolbar
 /// (`ExplorerToolbar.pressSearchOptions`); VoiceOver presses it itself.
 final class ToolbarSearchEditButton: NSView {
@@ -645,8 +645,8 @@ final class ToolbarSearchEditButton: NSView {
         setAccessibilityIdentifier("toolbar.search.edit")
         setAccessibilityElement(true)
         setAccessibilityRole(.button)
-        setAccessibilityLabel(SearchBarText.editSearchName)
-        toolTip = SearchBarText.editSearchName
+        setAccessibilityLabel(SearchBarText.advancedSearchName)
+        toolTip = SearchBarText.advancedSearchName
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }

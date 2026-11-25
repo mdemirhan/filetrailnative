@@ -1,11 +1,11 @@
-// Edit Search (⌥⌘F, and the button at the search field's end): the search's text in a box with room for all of it,
+// Advanced Search (⌥⌘F, and the button at the search field's end): the search's text in a box with room for all of it,
 // over the window as Go To is. A text view that wraps, the condition words tinted and the list of what the word at the
 // caret can be under it; a line saying how the search reads; the words to click; Cancel and Search.
 import AppKit
 import FTFoundation
 
 @MainActor
-final class EditSearchBox: DialogPanelView, NSTextViewDelegate {
+final class AdvancedSearchBox: DialogPanelView, NSTextViewDelegate {
     /// Search, or Return: the text to search for.
     var onSubmit: (String) -> Void = { _ in }
     /// Cancel, Escape, or a press on the scrim: the search stays as it was.
@@ -13,18 +13,18 @@ final class EditSearchBox: DialogPanelView, NSTextViewDelegate {
     /// The list's Syntax Help: Help opens at Search, the box staying open.
     var onHelp: () -> Void = {}
 
-    let textView: EditSearchTextView
+    let textView: AdvancedSearchTextView
     private let scroll = NSScrollView()
-    let shell = EditSearchShell()
+    let shell = AdvancedSearchShell()
     /// Over what is under the text, as a menu would be: the box keeps its size as the list comes and goes.
-    let suggestions = SearchSuggestionsView(floating: true, identifier: "editSearch.suggestions")
-    let titleLabel = PlainLabel(labelWithString: "Edit Search")
+    let suggestions = SearchSuggestionsView(floating: true, identifier: "advancedSearch.suggestions")
+    let titleLabel = PlainLabel(labelWithString: "Advanced Search")
     let scopeLabel = PlainLabel(labelWithString: "")
     let readsLabel = PlainLabel(wrappingLabelWithString: "")
     let wordsLabel = PlainLabel(labelWithString: "Add a condition")
     /// How words combine: each must match, and a comma gives a choice.
     let combineLabel = PlainLabel(wrappingLabelWithString: "")
-    private(set) var wordButtons: [EditSearchWordButton] = []
+    private(set) var wordButtons: [AdvancedSearchWordButton] = []
     let footer = DialogFooterLine(thickness: DialogLayout.GoTo.footerBorder)
     let cancelButton = SystemButton(title: "Cancel")
     let submitButton = SystemButton(title: "Search")
@@ -52,15 +52,15 @@ final class EditSearchBox: DialogPanelView, NSTextViewDelegate {
         self.tags = tags
         self.folders = folders
         self.nameVerb = nameVerb
-        textView = EditSearchTextView(usingTextLayoutManager: true)
+        textView = AdvancedSearchTextView(usingTextLayoutManager: true)
         super.init(cornerRadius: GlassSurface.sheetRadius)
         setAccessibilityElement(true)
         setAccessibilityRole(.sheet)
-        setAccessibilityLabel("Edit Search")
-        setAccessibilityIdentifier("editSearch")
+        setAccessibilityLabel("Advanced Search")
+        setAccessibilityIdentifier("advancedSearch")
 
         titleLabel.font = Self.titleFont
-        titleLabel.setAccessibilityIdentifier("editSearch.title")
+        titleLabel.setAccessibilityIdentifier("advancedSearch.title")
         scopeLabel.font = Self.smallFont
         scopeLabel.stringValue = "in “\(folderName)”"
         scopeLabel.lineBreakMode = .byTruncatingMiddle
@@ -90,7 +90,7 @@ final class EditSearchBox: DialogPanelView, NSTextViewDelegate {
         textView.delegate = self
         textView.string = text
         textView.setAccessibilityLabel("Search")
-        textView.setAccessibilityIdentifier("editSearch.text")
+        textView.setAccessibilityIdentifier("advancedSearch.text")
         scroll.drawsBackground = false
         scroll.hasVerticalScroller = true
         scroll.autohidesScrollers = true
@@ -108,29 +108,29 @@ final class EditSearchBox: DialogPanelView, NSTextViewDelegate {
         // Notes to read: a click would put the label in the field editor, which draws it in its own font.
         readsLabel.isSelectable = false
         readsLabel.font = Self.smallFont
-        readsLabel.setAccessibilityIdentifier("editSearch.reads")
+        readsLabel.setAccessibilityIdentifier("advancedSearch.reads")
         addSubview(readsLabel)
         wordsLabel.font = Self.headingFont
         addSubview(wordsLabel)
         wordButtons = SearchQueryKey.menuOrder.map { key in
-            let button = EditSearchWordButton(title: key.title, word: key.word)
+            let button = AdvancedSearchWordButton(title: key.title, word: key.word)
             button.onPress = { [weak self] in self?.insertWord(key.word) }
             addSubview(button)
             return button
         }
         combineLabel.isSelectable = false
-        combineLabel.setAccessibilityIdentifier("editSearch.combine")
+        combineLabel.setAccessibilityIdentifier("advancedSearch.combine")
         addSubview(combineLabel)
 
-        footer.setAccessibilityIdentifier("editSearch.footer")
+        footer.setAccessibilityIdentifier("advancedSearch.footer")
         addSubview(footer)
         cancelButton.target = self
         cancelButton.action = #selector(cancelPressed(_:))
-        cancelButton.setAccessibilityIdentifier("editSearch.cancel")
+        cancelButton.setAccessibilityIdentifier("advancedSearch.cancel")
         submitButton.isDefault = true
         submitButton.target = self
         submitButton.action = #selector(submitPressed(_:))
-        submitButton.setAccessibilityIdentifier("editSearch.submit")
+        submitButton.setAccessibilityIdentifier("advancedSearch.submit")
         footer.addSubview(cancelButton)
         footer.addSubview(submitButton)
         // Over everything else in the box.
@@ -436,7 +436,7 @@ final class EditSearchBox: DialogPanelView, NSTextViewDelegate {
         var frames: [NSRect] = []
         var cursorX = x
         var cursorY = y
-        let height = EditSearchWordButton.height
+        let height = AdvancedSearchWordButton.height
         for button in wordButtons {
             let w = button.preferredWidth
             if cursorX > x, cursorX + w > x + width {
@@ -530,15 +530,15 @@ final class EditSearchBox: DialogPanelView, NSTextViewDelegate {
     }
 }
 
-/// The box's text view: Return and Tab are the box's (`EditSearchBox.handleKey`), never a line break.
-final class EditSearchTextView: NSTextView {
+/// The box's text view: Return and Tab are the box's (`AdvancedSearchBox.handleKey`), never a line break.
+final class AdvancedSearchTextView: NSTextView {
     override func insertNewline(_ sender: Any?) {}
     override func insertLineBreak(_ sender: Any?) {}
     override func insertParagraphSeparator(_ sender: Any?) {}
 }
 
 /// The box around the text: the field's fill and edge, and the focus ring while the text has the keyboard.
-final class EditSearchShell: NSView, ThemeApplying {
+final class AdvancedSearchShell: NSView, ThemeApplying {
     var holdsKeyboard: () -> Bool = { false }
     private var theme = AppearanceModel.shared.theme
 
@@ -573,7 +573,7 @@ final class EditSearchShell: NSView, ThemeApplying {
 
 /// A condition's name, which types its word into the box: "Kind" types `kind:`. The mouse's way in; the keyboard types
 /// the word.
-final class EditSearchWordButton: NSView, ThemeApplying {
+final class AdvancedSearchWordButton: NSView, ThemeApplying {
     var onPress: () -> Void = {}
     private let title: String
     private let word: String
@@ -593,7 +593,7 @@ final class EditSearchWordButton: NSView, ThemeApplying {
         setAccessibilityElement(true)
         setAccessibilityRole(.button)
         setAccessibilityLabel("Add \(title)")
-        setAccessibilityIdentifier("editSearch.word")
+        setAccessibilityIdentifier("advancedSearch.word")
         toolTip = "Types \(word)"
     }
 
