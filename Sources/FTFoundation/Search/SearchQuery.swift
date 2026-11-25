@@ -35,9 +35,9 @@ public enum SearchQueryKey: String, CaseIterable, Sendable {
         }
     }
 
-    /// The words the field's menu lists, in its order: `is:` stands for the attributes, `not:` being its other side.
+    /// The words the field's menu lists, in its order: `not:` after `is:`, as its other side.
     public static let menuOrder: [SearchQueryKey] = [
-        .kind, .ext, .size, .modified, .created, .added, .opened, .tag, .is, .perm, .skip,
+        .kind, .ext, .size, .modified, .created, .added, .opened, .tag, .is, .not, .perm, .skip,
     ]
 
     /// Whether `!` before its value, or before the word, asks for what it doesn't say: `kind:!pdf`, `!tag:red`,
@@ -244,8 +244,8 @@ public struct SearchQuery: Equatable, Sendable {
 
     static let attributeWords: [String: SearchAttribute] = [
         "hidden": .hidden, "executable": .executable, "runnable": .executable, "readonly": .readOnly,
-        "read-only": .readOnly, "locked": .locked, "empty": .empty, "alias": .alias, "link": .symbolicLink,
-        "symlink": .symbolicLink,
+        "read-only": .readOnly, "locked": .locked, "empty": .empty, "tagged": .tagged, "file": .file,
+        "folder": .folder, "alias": .alias, "link": .symbolicLink, "symlink": .symbolicLink,
     ]
 
     /// The word each attribute is typed as.
@@ -256,6 +256,9 @@ public struct SearchQuery: Equatable, Sendable {
         case .readOnly: "readonly"
         case .locked: "locked"
         case .empty: "empty"
+        case .tagged: "tagged"
+        case .file: "file"
+        case .folder: "folder"
         case .alias: "alias"
         case .symbolicLink: "link"
         }
@@ -275,7 +278,7 @@ public struct SearchQuery: Equatable, Sendable {
             guard key.takesNot, !value.dropFirst().hasPrefix("!"),
                 let asked = condition(key, String(value.dropFirst()), calendar: calendar)
             else { return nil }
-            if case .attribute(let attribute, let isSo) = asked { return .attribute(attribute, is: !isSo) }
+            if case .attributes(let attributes, let isSo) = asked { return .attributes(attributes, is: !isSo) }
             return .not(asked)
         }
         let lower = value.lowercased()
@@ -298,8 +301,11 @@ public struct SearchQuery: Equatable, Sendable {
             // Tags by name, as typed: they are compared case aside.
             return names(value).map { .tags($0, all: false) }
         case .is, .not:
-            guard let attribute = attributeWords[lower] else { return nil }
-            return .attribute(attribute, is: key == .is)
+            // Any of them (`is:link,alias`); after `not:`, none of them. Each once, in the order typed.
+            let attributes = list.map { attributeWords[$0] }
+            guard attributes.allSatisfy({ $0 != nil }) else { return nil }
+            var seen = Set<SearchAttribute>()
+            return .attributes(attributes.compactMap { $0 }.filter { seen.insert($0).inserted }, is: key == .is)
         case .skip:
             return names(value).map { .skipFolders($0) }
         case .perm:

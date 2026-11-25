@@ -20,7 +20,11 @@ struct SearchConditionCheck: Sendable {
     private let excludedSizes: [(above: Int64?, below: Int64?)]
     /// Each date asked about, and whether it is asked for not (`modified:!today`).
     private let dates: [(SearchDateField, SearchDateRule, SearchDateSpan, not: Bool)]
+    /// Attributes asked of an item one by one, each to be so or not.
     private let attributes: [(SearchAttribute, Bool)]
+    /// Attributes asked as a choice (`is:link,alias`): an item has one of each group, which are in the order they
+    /// cost to tell, the cheapest first.
+    private let eitherGroups: [[SearchAttribute]]
     /// Lowercased: an item has a tag of each group. A tag word's tags, given with commas, are one group, any of which
     /// will do; each tag of a condition that asks for all of them is a group of its own.
     private let tagGroups: [[String]]
@@ -59,6 +63,7 @@ struct SearchConditionCheck: Sendable {
         var dates: [(SearchDateField, SearchDateRule, SearchDateSpan, not: Bool)] = []
         var excludedSizes: [(above: Int64?, below: Int64?)] = []
         var attributes: [(SearchAttribute, Bool)] = []
+        var eitherGroups: [[SearchAttribute]] = []
         var tagGroups: [[String]] = []
         var excludedTags = Set<String>()
         var excludedKinds = Set<SearchKind>()
@@ -68,7 +73,7 @@ struct SearchConditionCheck: Sendable {
         var skipped: [String] = []
         // `is:!hidden` is `not:hidden`: an attribute's not is its other value.
         let conditions = conditions.map { condition -> SearchCondition in
-            if case .not(.attribute(let attribute, let value)) = condition { return .attribute(attribute, is: !value) }
+            if case .not(.attributes(let chosen, let value)) = condition { return .attributes(chosen, is: !value) }
             return condition
         }
         for condition in conditions where condition.asksForSomething {
@@ -106,12 +111,17 @@ struct SearchConditionCheck: Sendable {
             case .tags(let chosen, let all):
                 let lowered = chosen.map { $0.lowercased() }
                 tagGroups += all ? lowered.map { [$0] } : [lowered]
-            case .attribute(.symbolicLink, let value):
-                link = value
-            case .attribute(.hidden, let value):
-                hidden = value
-            case .attribute(let attribute, let value):
-                attributes.append((attribute, value))
+            case .attributes(let chosen, true) where chosen.count > 1:
+                eitherGroups.append(chosen.sorted { Self.cost($0) < Self.cost($1) })
+            case .attributes(let chosen, let value):
+                // One attribute, or none of several (`not:hidden,locked`): each is asked on its own.
+                for attribute in chosen {
+                    switch attribute {
+                    case .symbolicLink: link = value
+                    case .hidden: hidden = value
+                    default: attributes.append((attribute, value))
+                    }
+                }
             case .skipFolders(let names):
                 skipped += names
             }
@@ -132,6 +142,7 @@ struct SearchConditionCheck: Sendable {
         self.excludedSizes = excludedSizes
         self.dates = dates
         self.attributes = attributes
+        self.eitherGroups = eitherGroups
         self.tagGroups = tagGroups
         self.excludedTags = excludedTags
         self.excludedKinds = excludedKinds
@@ -144,23 +155,25 @@ struct SearchConditionCheck: Sendable {
             lastOpened = { _ in nil }
         }
         skippedFolders = skipped.compactMap { NameMatcher($0, mode: .contains) }
-        wantsHidden = hidden == true
-        wantsLinks = link == true
+        // A choice that hidden items or links can meet lists them, as the walk leaves them out otherwise.
+        wantsHidden = hidden == true || (hidden == nil && eitherGroups.contains { $0.contains(.hidden) })
+        wantsLinks = link == true || (link == nil && eitherGroups.contains { $0.contains(.symbolicLink) })
         let permissions = !modeGroups.isEmpty || !excludedModes.isEmpty
+        let asked = attributes.map(\.0) + eitherGroups.joined()
         readsEachItem =
             sized || !excludedSizes.isEmpty || !dates.isEmpty
-            || !attributes.isEmpty
+            || asked.contains { Self.cost($0) > Self.entryCost }
             || !tagGroups.isEmpty
             || !excludedTags.isEmpty || permissions
         needsStat =
             sized || !excludedSizes.isEmpty || permissions || dates.contains { $0.0 == .modified || $0.0 == .created }
-            || attributes.contains { [.locked, .readOnly, .empty].contains($0.0) }
+            || asked.contains { [.locked, .readOnly, .empty].contains($0) }
     }
 
     /// Whether there is anything to check.
     var isEmpty: Bool {
         extensions == nil && named == nil && link == nil && hidden == nil && !readsEachItem && excludedKinds.isEmpty
-            && excludedExtensions.isEmpty
+            && excludedExtensions.isEmpty && attributes.isEmpty && eitherGroups.isEmpty
     }
 
     // MARK: From the folder's entry
@@ -181,13 +194,22 @@ struct SearchConditionCheck: Sendable {
         return false
     }
 
-    /// What the item's name and type tell, as it is matched: kind, extension, whether it is a link.
+    /// What the item's name and type tell, as it is matched: kind, extension, whether it is a link, a file or a
+    /// folder.
     func keepsByEntry(name: String, isFolder: Bool, isLink: Bool) -> Bool {
         if let link, link != isLink { return false }
+        for (attribute, value) in attributes where attribute == .file || attribute == .folder {
+            if Self.isOf(attribute, name: name, isFolder: isFolder, isLink: isLink) != value { return false }
+        }
+        // A choice the entry alone tells: `is:file,link`.
+        for group in eitherGroups where group.allSatisfy({ Self.cost($0) == 0 && $0 != .hidden }) {
+            guard group.contains(where: { Self.isOf($0, name: name, isFolder: isFolder, isLink: isLink) }) else {
+                return false
+            }
+        }
         if extensions == nil && named == nil && excludedKinds.isEmpty && excludedExtensions.isEmpty { return true }
         let fileExtension = SearchResults.extensionOf(name)
-        // A folder counts by its extension only as a package (Keynote's .key, .rtfd): a folder named "x.pdf" is no PDF.
-        let package = isFolder && ItemNames.isPackageFolder(named: name) { SystemPackages.isPackageType(fileExtension) }
+        let package = isFolder && Self.isPackage(name)
         let byExtension = !isFolder || package
         if let named, !(byExtension && named.contains(fileExtension)) { return false }
         if byExtension && excludedExtensions.contains(fileExtension) { return false }
@@ -206,16 +228,48 @@ struct SearchConditionCheck: Sendable {
         return true
     }
 
+    /// A folder counts by its extension only as a package (Keynote's .key, .rtfd): a folder named "x.pdf" is no
+    /// PDF. As Finder shows one, a package is a file.
+    private static func isPackage(_ name: String) -> Bool {
+        ItemNames.isPackageFolder(named: name) { SystemPackages.isPackageType(SearchResults.extensionOf(name)) }
+    }
+
+    /// Whether an item is a file, a folder or a link, from its folder's entry: what `kind:folder` calls a folder
+    /// (a package isn't one), and anything else that isn't a link is a file.
+    private static func isOf(_ attribute: SearchAttribute, name: String, isFolder: Bool, isLink: Bool) -> Bool {
+        switch attribute {
+        case .symbolicLink: isLink
+        case .folder: isFolder && !isPackage(name)
+        case .file: !isLink && (!isFolder || isPackage(name))
+        default: false
+        }
+    }
+
     // MARK: Read of the item
 
     /// What reading the item tells: run only for an item kept by its name and entry. `info` is the walk's own read
     /// of it (`needsStat`); it is read here only when a condition needs it and the walk didn't. Each check makes the
     /// calls it needs and no others, the cheapest first: what `info` holds, then a call each (can be run, writable,
     /// an alias, an empty folder, the date added, last opened, tags). Nothing opens a file to read what is in it.
-    func keepsByItem(path: String, isFolder: Bool, isHidden: Bool, isLink: Bool = false, info given: stat? = nil)
-        -> Bool
-    {
+    func keepsByItem(
+        path: String, name: String? = nil, isFolder: Bool, isHidden: Bool, isLink: Bool = false, info given: stat? = nil
+    ) -> Bool {
         if let hidden, hidden != isHidden { return false }
+        // The choices the entry doesn't settle alone: those it says yes to are met, and what is left of the others is
+        // asked as it comes, the cheapest first.
+        let name = eitherGroups.isEmpty ? "" : name ?? (path as NSString).lastPathComponent
+        var open: [[SearchAttribute]] = []
+        for group in eitherGroups {
+            let free = group.filter { Self.cost($0) == Self.entryCost }
+            if free.contains(where: {
+                $0 == .hidden ? isHidden : Self.isOf($0, name: name, isFolder: isFolder, isLink: isLink)
+            }) {
+                continue
+            }
+            let left = group.filter { Self.cost($0) > Self.entryCost }
+            guard !left.isEmpty else { return false }
+            open.append(left)
+        }
         guard readsEachItem else { return true }
         var info = given
         if needsStat, info == nil {
@@ -257,22 +311,60 @@ struct SearchConditionCheck: Sendable {
             let time = field == .modified ? info.st_mtimespec : info.st_birthtimespec
             if Self.holds(Date(timeIntervalSince1970: Self.seconds(time)), rule, span) == not { return false }
         }
-        for (attribute, value) in attributes where attribute == .locked || (attribute == .empty && !isFolder) {
-            let has = attribute == .locked ? locked : (info?.st_size ?? 0) == 0
-            if has != value { return false }
-        }
         // One list of the item's attributes, for its tags and the date it was last opened: most items have neither,
-        // and are told so without asking for either.
-        let asksLastOpened = dates.contains { $0.0 == .lastOpened }
-        let listed =
-            !tagGroups.isEmpty || !excludedTags.isEmpty || asksLastOpened ? ExtendedAttributes.names(path) : nil
-        if !tagGroups.isEmpty || !excludedTags.isEmpty {
-            let stored = listed.map { $0.contains(FinderTags.attribute) } ?? true
+        // and are told so without asking for either. Read once, when first needed.
+        var listing: Set<String>??
+        var heldTags: Set<String>?
+        func held() -> Set<String> {
+            if let heldTags { return heldTags }
+            if listing == nil { listing = .some(ExtendedAttributes.names(path)) }
+            let stored = listing.flatMap { $0 }.map { $0.contains(FinderTags.attribute) } ?? true
             let tags = stored ? ((try? FinderTags.readListed(path)) ?? []) : []
-            let held = Set(tags.map { $0.name.lowercased() })
+            let read = Set(tags.map { $0.name.lowercased() })
+            heldTags = read
+            return read
+        }
+        func has(_ attribute: SearchAttribute) -> Bool {
+            switch attribute {
+            case .hidden: isHidden
+            case .symbolicLink, .file, .folder: Self.isOf(attribute, name: name, isFolder: isFolder, isLink: isLink)
+            case .locked: locked
+            case .tagged: !held().isEmpty
+            case .alias: Links.isFinderAlias(path)
+            case .executable: isFile && access(path, X_OK) == 0
+            // A locked item can't be changed, whatever its permissions say.
+            case .readOnly: locked || access(path, W_OK) != 0
+            case .empty: isFolder ? Self.isEmptyFolder(path) : (info?.st_size ?? 0) == 0
+            }
+        }
+        // Each choice not yet met, by what costs no more than `limit`: one met leaves, one with nothing left fails.
+        func settle(upTo limit: Int) -> Bool {
+            var left: [[SearchAttribute]] = []
+            for group in open {
+                if group.contains(where: { Self.cost($0, isFolder: isFolder) <= limit && has($0) }) { continue }
+                let later = group.filter { Self.cost($0, isFolder: isFolder) > limit }
+                if later.isEmpty { return false }
+                left.append(later)
+            }
+            open = left
+            return true
+        }
+        for (attribute, value) in attributes where Self.cost(attribute, isFolder: isFolder) == Self.statCost {
+            if has(attribute) != value { return false }
+        }
+        if !settle(upTo: Self.statCost) { return false }
+        let asksLastOpened = dates.contains { $0.0 == .lastOpened }
+        if asksLastOpened { listing = .some(ExtendedAttributes.names(path)) }
+        if !tagGroups.isEmpty || !excludedTags.isEmpty {
+            let held = held()
             if !tagGroups.allSatisfy({ $0.contains(where: held.contains) }) { return false }
             if !excludedTags.isDisjoint(with: held) { return false }
         }
+        for (attribute, value) in attributes where attribute == .tagged {
+            if has(attribute) != value { return false }
+        }
+        if !settle(upTo: Self.cost(.tagged)) { return false }
+        let listed = listing.flatMap { $0 }
         for (_, rule, span, not) in dates.filter({ $0.0 == .lastOpened }) {
             let stored = listed.map { $0.contains(FileTimes.lastUsedAttribute) } ?? true
             let date = stored ? lastOpened(path).map { Date(timeIntervalSince1970: TimeInterval($0) / 1000) } : nil
@@ -284,19 +376,10 @@ struct SearchConditionCheck: Sendable {
             if Self.holds(date, rule, span) == not { return false }
         }
         for (attribute, value) in attributes.sorted(by: { Self.cost($0.0) < Self.cost($1.0) })
-        where Self.cost(attribute) > 0 && !(attribute == .empty && !isFolder) {
-            let has: Bool
-            switch attribute {
-            case .alias: has = Links.isFinderAlias(path)
-            case .executable: has = isFile && access(path, X_OK) == 0
-            // A locked item can't be changed, whatever its permissions say.
-            case .readOnly: has = locked || access(path, W_OK) != 0
-            case .empty: has = Self.isEmptyFolder(path)
-            case .locked, .hidden, .symbolicLink: continue
-            }
-            if has != value { return false }
+        where Self.cost(attribute, isFolder: isFolder) > Self.cost(.tagged) {
+            if has(attribute) != value { return false }
         }
-        return true
+        return settle(upTo: Int.max)
     }
 
     /// Whether a date read meets its rule: an item with no such date meets only a rule that takes none.
@@ -305,16 +388,24 @@ struct SearchConditionCheck: Sendable {
         return span.contains(date)
     }
 
-    /// What an attribute costs to tell, in its order: 0 from the walk's read of the item; then a call of its own, the
-    /// cheapest first (measured: Finder's flags about 1.3 µs, `access` 8 µs, a folder opened 20 to 45 µs).
-    private static func cost(_ attribute: SearchAttribute) -> Int {
+    /// What an attribute costs to tell, in its order: nothing, from the folder's entry (a link, a file, a folder) or
+    /// the walk (hidden); the walk's read of the item (locked); the list of its attributes (tagged); then a call of its
+    /// own, the cheapest first (measured: Finder's flags about 1.3 µs, `access` 8 µs, a folder opened 20 to 45 µs).
+    /// A file is empty by its size, read with the item; a folder by being opened.
+    private static func cost(_ attribute: SearchAttribute, isFolder: Bool? = nil) -> Int {
         switch attribute {
-        case .locked, .hidden, .symbolicLink: 0
-        case .alias: 1
-        case .executable, .readOnly: 2
-        case .empty: 3
+        case .hidden, .symbolicLink, .file, .folder: entryCost
+        case .locked: statCost
+        case .empty where isFolder == false: statCost
+        case .tagged: 2
+        case .alias: 3
+        case .executable, .readOnly: 4
+        case .empty: 5
         }
     }
+
+    private static let entryCost = 0
+    private static let statCost = 1
 
     private static func cost(_ field: SearchDateField) -> Int {
         switch field {

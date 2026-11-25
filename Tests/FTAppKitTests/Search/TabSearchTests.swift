@@ -185,7 +185,7 @@ extension ExplorerWindowlessTests {
                 menu.rows.map(\.title) == [
                     "Name", "Full Path", "Plain Text", "Glob", "Regex", "Search Subfolders", "Skip .git Folders",
                     "Kind", "Extension", "Size", "Date Modified", "Date Created", "Date Added", "Date Last Opened",
-                    "Tags", "Attribute", "Permissions", "Skip a Folder",
+                    "Tags", "Attribute", "Attribute Is Not", "Permissions", "Skip a Folder",
                 ])
             #expect(menu.nsMenu.items.filter(\.isSectionHeader).map(\.title) == ["Match", "Match As", "Conditions"])
             #expect(

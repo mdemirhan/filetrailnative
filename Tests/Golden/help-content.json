@@ -916,6 +916,7 @@
               "topic": "search",
               "rows": [
                 ["Conditions", "kind:pdf"],
+                ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "More room"],
@@ -2266,6 +2267,7 @@
               "topic": "search",
               "rows": [
                 ["Conditions", "kind:pdf"],
+                ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "More room"],
@@ -3286,6 +3288,7 @@
               "topic": "search",
               "rows": [
                 ["Conditions", "kind:pdf"],
+                ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "More room"],
@@ -4342,6 +4345,7 @@
               "topic": "search",
               "rows": [
                 ["Conditions", "kind:pdf"],
+                ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "More room"],
@@ -5374,6 +5378,7 @@
               "topic": "search",
               "rows": [
                 ["Conditions", "kind:pdf"],
+                ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "More room"],
@@ -6470,6 +6475,7 @@
               "topic": "search",
               "rows": [
                 ["Conditions", "kind:pdf"],
+                ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "More room"],
@@ -7434,6 +7440,7 @@
               "topic": "search",
               "rows": [
                 ["Conditions", "kind:pdf"],
+                ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "More room"],
@@ -8478,6 +8485,7 @@
               "topic": "search",
               "rows": [
                 ["Conditions", "kind:pdf"],
+                ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "More room"],
@@ -9572,6 +9580,7 @@
               "topic": "search",
               "rows": [
                 ["Conditions", "kind:pdf"],
+                ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "More room"],
@@ -10584,6 +10593,7 @@
               "topic": "search",
               "rows": [
                 ["Conditions", "kind:pdf"],
+                ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "More room"],
@@ -11663,6 +11673,7 @@
               "topic": "search",
               "rows": [
                 ["Conditions", "kind:pdf"],
+                ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "More room"],
@@ -12731,6 +12742,7 @@
               "topic": "search",
               "rows": [
                 ["Conditions", "kind:pdf"],
+                ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "More room"],
@@ -13792,6 +13804,7 @@
               "topic": "search",
               "rows": [
                 ["Conditions", "kind:pdf"],
+                ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "More room"],
@@ -14849,6 +14862,7 @@
               "topic": "search",
               "rows": [
                 ["Conditions", "kind:pdf"],
+                ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "More room"],
@@ -16225,6 +16239,7 @@
               "topic": "search",
               "rows": [
                 ["Conditions", "kind:pdf"],
+                ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "More room"],

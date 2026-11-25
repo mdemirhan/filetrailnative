@@ -80,7 +80,7 @@ public enum SearchDateField: String, CaseIterable, Codable, Sendable, Hashable {
 
 /// What about an item a condition can ask, beyond its name, kind, size and dates.
 public enum SearchAttribute: String, CaseIterable, Codable, Sendable, Hashable {
-    case hidden, executable, readOnly, locked, empty, alias, symbolicLink
+    case hidden, executable, readOnly, locked, empty, tagged, file, folder, alias, symbolicLink
 
     /// As the Attribute menu names it.
     public var label: String {
@@ -90,6 +90,9 @@ public enum SearchAttribute: String, CaseIterable, Codable, Sendable, Hashable {
         case .readOnly: "Read-only"
         case .locked: "Locked"
         case .empty: "Empty"
+        case .tagged: "Tagged"
+        case .file: "File"
+        case .folder: "Folder"
         case .alias: "Alias"
         case .symbolicLink: "Symbolic Link"
         }
@@ -108,6 +111,12 @@ public enum SearchAttribute: String, CaseIterable, Codable, Sendable, Hashable {
         case (.locked, false): "Not locked"
         case (.empty, true): "Empty"
         case (.empty, false): "Not empty"
+        case (.tagged, true): "Tagged"
+        case (.tagged, false): "Not tagged"
+        case (.file, true): "File"
+        case (.file, false): "Not a file"
+        case (.folder, true): "Folder"
+        case (.folder, false): "Not a folder"
         case (.alias, true): "Alias"
         case (.alias, false): "Not an alias"
         case (.symbolicLink, true): "Symbolic link"
@@ -394,7 +403,8 @@ public enum SearchCondition: Equatable, Codable, Sendable, Hashable {
     case date(SearchDateField, SearchDateRule)
     /// Tags by name; with `all`, every one of them, else any.
     case tags([String], all: Bool)
-    case attribute(SearchAttribute, is: Bool)
+    /// Any of these attributes, or with `is` false none of them (`is:link,alias`, `not:hidden,locked`).
+    case attributes([SearchAttribute], is: Bool)
     /// Folders of these names, wherever they are, aren't gone into.
     case skipFolders([String])
     /// An item's permissions are any of these modes (`0o7777`: the read, write and run bits of its owner, its group and
@@ -414,6 +424,11 @@ public enum SearchCondition: Equatable, Codable, Sendable, Hashable {
     public static func attributeDefault(_ attribute: SearchAttribute) -> SearchCondition {
         .attribute(attribute, is: true)
     }
+
+    /// One attribute, or with `is` false its other side.
+    public static func attribute(_ attribute: SearchAttribute, is value: Bool) -> SearchCondition {
+        .attributes([attribute], is: value)
+    }
     public static let skipFoldersDefault = SearchCondition.skipFolders([])
 
     /// Whether it asks for anything yet: a chip whose list is still empty asks for nothing.
@@ -424,6 +439,7 @@ public enum SearchCondition: Equatable, Codable, Sendable, Hashable {
         case .tags(let tags, _): !tags.isEmpty
         case .skipFolders(let names): !names.isEmpty
         case .permissions(let modes): !modes.isEmpty
+        case .attributes(let attributes, _): !attributes.isEmpty
         case .not(let condition): condition.asksForSomething
         default: true
         }
@@ -433,7 +449,8 @@ public enum SearchCondition: Equatable, Codable, Sendable, Hashable {
     public var readsEachItem: Bool {
         switch self {
         case .kind, .fileExtension, .skipFolders: false
-        case .attribute(.hidden, _), .attribute(.symbolicLink, _): false
+        case .attributes(let attributes, _):
+            !attributes.allSatisfy { [.hidden, .symbolicLink, .file, .folder].contains($0) }
         case .not(let condition): condition.readsEachItem
         default: true
         }
@@ -475,8 +492,9 @@ public enum SearchConditionText {
             return field.chipLabel + " " + dateWords(rule, locale: locale)
         case .tags(let tags, let all):
             return tags.isEmpty ? "Tagged with any tag" : "Tagged " + tags.joined(separator: all ? " and " : " or ")
-        case .attribute(let attribute, let value):
-            return attribute.chip(is: value)
+        case .attributes(let attributes, let value):
+            // "Symbolic link or alias", "Not hidden and not locked".
+            return sentence(attributes.map { $0.chip(is: value) }, joinedBy: value ? " or " : " and ")
         case .skipFolders(let names):
             return names.isEmpty ? "Skipping no folders" : "Skipping " + names.joined(separator: ", ")
         case .permissions(let modes):
@@ -505,11 +523,17 @@ public enum SearchConditionText {
             // "Not modified today", "Not last opened within the last 7 days".
             let said = chip(condition, locale: locale)
             return "Not " + said.prefix(1).lowercased() + said.dropFirst()
-        case .attribute(let attribute, let value):
-            return attribute.chip(is: !value)
+        case .attributes(let attributes, let value):
+            return chip(.attributes(attributes, is: !value), locale: locale)
         default:
             return "Not: " + chip(condition, locale: locale)
         }
+    }
+
+    /// Chips said as one: the first as it is, the others from a small letter.
+    private static func sentence(_ chips: [String], joinedBy joint: String) -> String {
+        guard let first = chips.first else { return "" }
+        return ([first] + chips.dropFirst().map { $0.prefix(1).lowercased() + $0.dropFirst() }).joined(separator: joint)
     }
 
     /// What a chip says of when: "within the last 2 weeks", "today", "before Nov 1, 2026".

@@ -133,10 +133,13 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
             value.removeFirst(not.count)
             let isNot = !not.isEmpty || (key.takesNot && word.text.hasPrefix("!"))
             let (head, partial) = Self.lastValue(of: value, names: key == .tag || key == .skip)
+            // An attribute already in the list isn't offered again (`is:link,` offers no link).
+            let listed = key == .is || key == .not ? Set(head.lowercased().split(separator: ",").map(String.init)) : []
             let rows = values(
                 key, partial: partial, tags: key == .tag ? tags() : [], folders: key == .skip ? folders() : [],
                 now: now, calendar: calendar
             )
+            .filter { !listed.contains($0.1) }
             .map { title, typed in
                 SearchQuerySuggestion(
                     title: isNot ? Self.not(title, key: key) : title, hint: not + typed,

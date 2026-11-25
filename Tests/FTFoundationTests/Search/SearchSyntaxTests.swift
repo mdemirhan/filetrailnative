@@ -877,16 +877,59 @@ import Testing
         #expect(query("tag:red,\"!blue\"").conditions == [.tags(["red", "!blue"], all: false)])
     }
 
-    // An attribute is one to a word: after a comma nothing is offered, and the word says what to type.
-    @Test func anAttributeIsOneToAWord() {
-        for text in ["is:hidden,", "is:hidden,locked", "not:hidden,lo", "is:!hidden,locked"] {
+    // A comma in an attribute's value is a choice: any of them after `is:`, none of them after `not:`, the `!`
+    // before the first for all of them.
+    @Test func attributesTakeAComma() {
+        #expect(query("is:link,alias").conditions == [.attributes([.symbolicLink, .alias], is: true)])
+        #expect(query("not:hidden,locked").conditions == [.attributes([.hidden, .locked], is: false)])
+        #expect(query("is:!hidden,locked").conditions == [.attributes([.hidden, .locked], is: false)])
+        #expect(query("!is:hidden,locked").conditions == query("not:hidden,locked").conditions)
+        #expect(query("not:!file,folder").conditions == [.attributes([.file, .folder], is: true)])
+        // Each once, in the order typed.
+        #expect(query("is:alias,link,alias").conditions == [.attributes([.alias, .symbolicLink], is: true)])
+        #expect(query("is:link,").conditions == [.attribute(.symbolicLink, is: true)])
+        for text in ["is:hidden,", "is:hidden,lo", "not:hidden,"] {
+            #expect(SearchQuery.words(text).first?.canStillBeRead == true, "\(text)")
+        }
+        for text in ["is:hidden,!locked", "is:hidden,nope"] {
             #expect(query(text).hasUnfinished, "\(text)")
             #expect(SearchQuery.words(text).first?.canStillBeRead == false, "\(text)")
-            #expect(suggest(text)?.rows.contains { $0.canBeChosen } != true, "\(text)")
         }
         #expect(
-            SearchQuery.problems("is:hidden,locked").first?.detail
-                == "One attribute to a word: is:hidden is:locked for both")
+            SearchQuery.problems("is:hidden,!locked").first?.detail
+                == "One ! before the first is for all of them: is:!hidden,locked is neither")
+        #expect(
+            SearchQuery.problems("not:hidden,!locked").first?.detail
+                == "One ! before the first is for all of them: not:!hidden,locked is either")
+    }
+
+    // After a comma the list offers the attributes not yet typed, and a row types the whole list.
+    @Test func anAttributeListOffersTheRest() throws {
+        let rows = try #require(suggest("is:link,")?.rows)
+        #expect(!rows.contains { $0.hint == "link" })
+        let alias = try #require(rows.first { $0.hint == "alias" })
+        #expect(alias.replacement == "is:link,alias ")
+        #expect(suggest("is:link,al")?.rows.first?.hint == "alias")
+    }
+
+    @Test func fileFolderAndTaggedAreAttributes() {
+        #expect(query("is:file").conditions == [.attribute(.file, is: true)])
+        #expect(query("is:folder").conditions == [.attribute(.folder, is: true)])
+        #expect(query("is:tagged").conditions == [.attribute(.tagged, is: true)])
+        #expect(query("not:tagged").conditions == [.attribute(.tagged, is: false)])
+        #expect(SearchConditionText.chip(.attributes([.symbolicLink, .alias], is: true)) == "Symbolic link or alias")
+        #expect(SearchConditionText.chip(.attributes([.hidden, .locked], is: false)) == "Not hidden and not locked")
+        #expect(SearchConditionText.chip(.attribute(.tagged, is: false)) == "Not tagged")
+    }
+
+    // A word has one `!` or one `not:` that turns it: more can't be read.
+    @Test func doubleNegativesAreOneTurn() {
+        #expect(query("!not:executable").conditions == [.attribute(.executable, is: true)])
+        #expect(query("not:!executable").conditions == [.attribute(.executable, is: true)])
+        for text in ["!not:!executable", "!is:!executable", "not:not:!executable", "not:!!executable"] {
+            #expect(query(text).hasUnfinished, "\(text)")
+        }
+        #expect(SearchQuery.problems("!not:!executable").first?.detail == "One ! is enough")
     }
 
     // `!` before the word and `!` before its value are one too many, and say so.
@@ -927,7 +970,7 @@ import Testing
                 let isNot: Bool
                 switch condition {
                 case .not: isNot = true
-                case .attribute(_, let isSo): isNot = !isSo
+                case .attributes(_, let isSo): isNot = !isSo
                 default: isNot = false
                 }
                 let saysNot = row.title.hasPrefix("Not ") || row.title.contains(" not ") || row.title.hasPrefix("Can't")

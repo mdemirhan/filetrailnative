@@ -774,7 +774,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
             .heading("Conditions"),
         ]
             + SearchQueryKey.menuOrder.map { key in
-                AppMenuItem(title: key.title, detail: key == .is ? "is: · not:" : key.word) { [weak self] in
+                AppMenuItem(title: key.title, detail: key.word) { [weak self] in
                     self?.typeConditionWord(key)
                 }
             }

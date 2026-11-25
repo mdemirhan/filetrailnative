@@ -579,7 +579,8 @@ extension HelpContent {
                         HelpRow(
                             label: "is:locked", code: true,
                             description:
-                                "Locked, readonly, executable, empty, alias, link or hidden; `not:` for the other side"),
+                                "File, folder, alias, link, hidden, locked, readonly, executable, empty or tagged; a comma for either (`is:link,alias`), `not:` for the other side (`not:hidden,locked` is neither). `is:file` takes in apps and other packages, and aliases."
+                        ),
                         HelpRow(
                             label: "perm:755", code: true,
                             description:
@@ -593,12 +594,12 @@ extension HelpContent {
                         HelpRow(
                             label: "All or either",
                             description:
-                                "Every word must match: `tag:red tag:blue` finds items with both tags, and `size:>1mb size:<10mb` those between 1 and 10 MB. A comma gives a choice: `tag:red,blue` finds items with either tag, and `kind:pdf,picture` PDFs and pictures. Kinds, extensions, tags, permissions and folders skipped take a comma; an attribute is one to a word, so `is:hidden is:locked` for both."
+                                "Every word must match: `tag:red tag:blue` finds items with both tags, and `size:>1mb size:<10mb` those between 1 and 10 MB. A comma gives a choice: `tag:red,blue` finds items with either tag, and `kind:pdf,picture` PDFs and pictures. Kinds, extensions, tags, attributes, permissions and folders skipped take a comma: `is:link,alias` is either, `is:hidden is:locked` both."
                         ),
                         HelpRow(
                             label: "Not",
                             description:
-                                "`!` before a value asks for anything else: `kind:!pdf`, `tag:!red`, `ext:!tmp`, `perm:!777`, `size:!1mb`, `modified:!today`; `kind:!pdf,picture` is neither. Before the whole word it is the same: `!tag:red` is `tag:!red`. A name without a word: `!draft`."
+                                "`!` before a value asks for anything else: `kind:!pdf`, `tag:!red`, `ext:!tmp`, `perm:!777`, `size:!1mb`, `modified:!today`, `is:!locked`; `kind:!pdf,picture` is neither. Before the whole word it is the same: `!tag:red` is `tag:!red`. A name without a word: `!draft`."
                         ),
                         HelpRow(
                             label: "No text needed",

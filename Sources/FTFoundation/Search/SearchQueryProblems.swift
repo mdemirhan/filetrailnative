@@ -14,7 +14,8 @@ extension SearchQueryKey {
         case .modified, .created, .added, .opened:
             "Not a date: today, week, 7d, >1y, 2026-03-15, <2026-03, >=2026-03 or 2026-01..2026-03"
         case .tag: "Not a tag"
-        case .is, .not: "Not an attribute: locked, readonly, executable, empty, alias, link or hidden"
+        case .is, .not:
+            "Not an attribute: file, folder, alias, link, hidden, locked, readonly, executable, empty or tagged"
         case .perm: "Not permissions: three digits like 755, or letters like rwxr-xr-x; ? for any"
         case .skip: "Not a folder's name"
         }
@@ -70,13 +71,11 @@ extension SearchQuery {
             case nil: break
             }
         }
-        if [.kind, .ext, .perm].contains(key),
+        if [.kind, .ext, .perm, .is, .not].contains(key),
             value.split(separator: ",").dropFirst().contains(where: { $0.hasPrefix("!") })
         {
-            return "One ! before the first is for all of them: \(key.word)!\(example(key)) is neither"
-        }
-        if (key == .is || key == .not) && value.contains(",") {
-            return "One attribute to a word: is:hidden is:locked for both"
+            let reads = key == .not ? "either" : "neither"
+            return "One ! before the first is for all of them: \(key.word)!\(example(key)) is \(reads)"
         }
         if word.value.isEmpty { return key.expects.replacingOccurrences(of: "Not ", with: "Give ") }
         return key.expects
@@ -93,9 +92,7 @@ extension SearchQuery {
         case .size: return sizeCanBecome(value)
         case .modified, .created, .added, .opened: return dateCanBecome(value)
         case .tag, .skip: return namesCanBecome(value)
-        // An attribute is one to a word: a comma after one starts nothing.
-        case .is, .not: return !value.contains(",") && valueCanBecome(key, value)
-        case .kind, .ext, .perm:
+        case .kind, .ext, .perm, .is, .not:
             // Values before the last comma are whole ones; the last is the start of one. One `!` before the first
             // is for all of them, so none stands before a later one.
             let parts = value.split(separator: ",", omittingEmptySubsequences: false).map(String.init)
@@ -145,6 +142,7 @@ extension SearchQuery {
         case .kind: "pdf,picture"
         case .ext: "pdf,docx"
         case .perm: "755,644"
+        case .is, .not: "hidden,locked"
         default: ""
         }
     }

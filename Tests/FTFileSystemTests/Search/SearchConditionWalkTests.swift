@@ -107,6 +107,57 @@ import UniformTypeIdentifiers
         }
     }
 
+    // A file, a folder and tagged are attributes, and a comma in one is a choice: any of them, or with `not:` none.
+    @Test func attributesAreAskedOneByOneOrAsAChoice() throws {
+        let runtime = WalkSearchRuntime()
+        defer { runtime.close() }
+        try withTemporaryDirectory { folder in
+            let top = folder.path
+            try makeTree(top)
+            try Links.writeAlias(of: top + "/run.sh", at: top + "/run alias")
+            let found = { (conditions: [SearchCondition]) in try names(runtime, top, conditions) }
+            let folders: Set<String> = ["docs", "x.pdf", "empty", "node_modules", "pkg", "src"]
+            #expect(try found([.attribute(.folder, is: true)]) == folders)
+            #expect(try found([.attribute(.folder, is: true)]) == found([.kind([.folder])]))
+            // A package is a file, and so is an alias; a link is neither, and found only when asked for.
+            let files = try found([.attribute(.file, is: true)])
+            #expect(files.isSuperset(of: ["Deck.key", "Tool.app", "run alias", "run.sh", "small.pdf"]))
+            #expect(files.isDisjoint(with: folders.union(["link-to-docs"])))
+            #expect(try found([.attribute(.folder, is: false)]) == files)
+            #expect(try found([.attribute(.tagged, is: true)]) == ["notes.txt", "main.swift"])
+            #expect(try !found([.attribute(.tagged, is: false)]).contains("notes.txt"))
+            #expect(try found([.attributes([.symbolicLink, .alias], is: true)]) == ["link-to-docs", "run alias"])
+            #expect(try found([.attributes([.folder, .symbolicLink], is: true)]) == folders.union(["link-to-docs"]))
+            #expect(try found([.attributes([.locked, .executable], is: true)]) == ["locked.txt", "run.sh"])
+            #expect(
+                try found([.attributes([.tagged, .empty], is: true), .attribute(.file, is: true)]) == [
+                    "notes.txt", "main.swift", "empty.txt", "Tool.app",
+                ])
+            // None of them: each is asked on its own.
+            #expect(
+                try found([.attributes([.file, .folder], is: false), .attribute(.symbolicLink, is: true)]) == [
+                    "link-to-docs"
+                ])
+            let neither = try found([.attributes([.locked, .readOnly], is: false), .kind([.text])])
+            #expect(neither == ["notes.txt", "empty.txt"])
+        }
+    }
+
+    // A choice that hidden items can meet lists them, though the folder doesn't show them.
+    @Test func aChoiceOfHiddenListsHiddenItems() throws {
+        let runtime = WalkSearchRuntime()
+        defer { runtime.close() }
+        try withTemporaryDirectory { folder in
+            let top = folder.path
+            try makeSearchFile(top + "/.env", "A=1")
+            try makeSearchFile(top + "/locked.txt")
+            try makeSearchFile(top + "/plain.txt")
+            #expect(chflags(top + "/locked.txt", UInt32(UF_IMMUTABLE)) == 0)
+            #expect(
+                try names(runtime, top, [.attributes([.hidden, .locked], is: true)]) == [".env", "locked.txt"])
+        }
+    }
+
     // Only the conditions that need an item's details have the walk read them: its size, the dates modified and
     // created, the flag that locks it, a file's size for "empty".
     @Test func onlyWhatNeedsTheItemsDetailsHasThemRead() {

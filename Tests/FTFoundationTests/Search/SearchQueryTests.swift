@@ -134,8 +134,8 @@ import Testing
         #expect(query("is:read-only").conditions == [.attribute(.readOnly, is: true)])
         #expect(query("skip:node_modules,build").conditions == [.skipFolders(["node_modules", "build"])])
         #expect(query("is:sleepy").hasUnfinished)
-        // An attribute is one at a time: no choice of two.
-        #expect(query("is:hidden,locked").hasUnfinished)
+        // A comma is a choice of attributes, as of kinds.
+        #expect(query("is:hidden,locked").conditions == [.attributes([.hidden, .locked], is: true)])
     }
 
     @Test func sizes() {

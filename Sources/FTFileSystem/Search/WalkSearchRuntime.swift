@@ -110,6 +110,7 @@ public final class WalkSearchRuntime: @unchecked Sendable {
             info: UnsafePointer<stat>? = nil, folder: Int32 = -1
         ) -> Bool {
             let fullPath = String(decoding: path, as: UTF8.self)
+            let name = String(decoding: path[nameOffset...], as: UTF8.self)
             if conditions.readsEachItem {
                 read.withLock { $0 += 1 }
                 // The walk goes deeper than a path one call takes (`PATH_MAX`): the conditions' reads, which are by
@@ -120,12 +121,14 @@ public final class WalkSearchRuntime: @unchecked Sendable {
                     ? Self.pathByNumber(path, nameOffset: nameOffset, folder: folder, info: &read) : nil
                 guard
                     conditions.keepsByItem(
-                        path: readPath ?? fullPath, isFolder: isFolder, isHidden: isHidden, isLink: isLink, info: read)
+                        path: readPath ?? fullPath, name: name, isFolder: isFolder, isHidden: isHidden, isLink: isLink,
+                        info: read)
                 else { return false }
-            } else if !conditions.keepsByItem(path: fullPath, isFolder: isFolder, isHidden: isHidden, isLink: isLink) {
+            } else if !conditions.keepsByItem(
+                path: fullPath, name: name, isFolder: isFolder, isHidden: isHidden, isLink: isLink)
+            {
                 return false
             }
-            let name = String(decoding: path[nameOffset...], as: UTF8.self)
             // The folder is the path up to the slash before the name ("/" for an item at the top of the disk).
             let parentPath =
                 nameOffset <= 1 ? "/" : String(decoding: path[..<(nameOffset - 1)], as: UTF8.self)
