@@ -127,6 +127,7 @@ final class ExplorerWindowList: ExplorerWindowListing {
 
     var front: (any ExplorerWindowHandle)? { all.first }
     var count: Int { all.count }
+    var hasOneOnScreen: Bool { all.contains { $0.isOnScreen } }
 
     func add(_ handle: any ExplorerWindowHandle, inFront: Bool = true) {
         remove(handle)

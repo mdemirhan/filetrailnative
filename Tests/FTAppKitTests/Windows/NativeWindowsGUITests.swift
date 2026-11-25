@@ -343,7 +343,7 @@ struct NativeWindowsGUITests {
         #expect(disabled.contains(AppCommand.emptyTrash.rawValue))
 
         // The Dock icon is clicked: a window opens where the last one was.
-        ShellActions.activate(hasVisibleWindows: false, shutdownInProgress: false, host: app.windows)
+        ShellActions.activate(shutdownInProgress: false, host: app.windows)
         #expect(await waitUntil { app.groupCount == 1 && app.frontTab?.loaded == true })
         #expect(await waitUntil { app.frontTab?.folderPath == folder.appending("Sub").path })
         await closeOnlyWindow()

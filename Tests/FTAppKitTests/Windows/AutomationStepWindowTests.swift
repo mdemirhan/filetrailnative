@@ -45,6 +45,7 @@
         init(_ inner: any ExplorerWindowListing) { self.inner = inner }
         var front: (any ExplorerWindowHandle)? { inner.front.map(ShownHandle.init) }
         var count: Int { inner.count }
+        var hasOneOnScreen: Bool { inner.count > 0 }
         func handle(for window: NSWindow) -> (any ExplorerWindowHandle)? {
             inner.handle(for: window).map(ShownHandle.init)
         }

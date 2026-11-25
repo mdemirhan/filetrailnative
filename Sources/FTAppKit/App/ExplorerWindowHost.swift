@@ -30,6 +30,8 @@ extension ExplorerWindowHandle {
 public protocol ExplorerWindowListing: AnyObject {
     var front: (any ExplorerWindowHandle)? { get }
     var count: Int { get }
+    /// Whether one of them is visible and not minimized.
+    var hasOneOnScreen: Bool { get }
     /// The explorer window a window belongs to (a sheet of it too); nil for Settings and the other windows.
     func handle(for window: NSWindow) -> (any ExplorerWindowHandle)?
     func handle(windowID: Int) -> (any ExplorerWindowHandle)?

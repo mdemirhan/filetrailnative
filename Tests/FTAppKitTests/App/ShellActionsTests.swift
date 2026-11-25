@@ -9,26 +9,39 @@ import Testing
 @Suite struct ShellActionsTests {
     @Test func opensAWindowFromTheDockIconOnlyWithNoneOpen() {
         let host = FakeWindowHost()
-        ShellActions.activate(hasVisibleWindows: false, shutdownInProgress: false, host: host)
+        ShellActions.activate(shutdownInProgress: false, host: host)
         #expect(host.calls == ["default -"])
 
         host.list.add(FakeExplorerWindow(id: 1))
-        ShellActions.activate(hasVisibleWindows: true, shutdownInProgress: false, host: host)
+        ShellActions.activate(shutdownInProgress: false, host: host)
         #expect(host.calls == ["default -"])
     }
 
+    // Whether minimized into the Dock or into the app's icon, where AppKit counts the window as visible.
     @Test func bringsBackTheWindowInFrontFromTheDockIconWhenEveryWindowIsMinimized() {
         let host = FakeWindowHost()
-        host.list.add(FakeExplorerWindow(id: 1))
+        let first = FakeExplorerWindow(id: 1)
+        let second = FakeExplorerWindow(id: 2)
+        first.isOnScreen = false
+        second.isOnScreen = false
+        host.list.add(first)
+        host.list.add(second)
 
-        ShellActions.activate(hasVisibleWindows: false, shutdownInProgress: false, host: host)
+        ShellActions.activate(shutdownInProgress: false, host: host)
+        #expect(host.calls == ["bringToFront"])
 
+        second.isOnScreen = true
+        ShellActions.activate(shutdownInProgress: false, host: host)
         #expect(host.calls == ["bringToFront"])
     }
 
     @Test func opensNoWindowWhileQuitting() {
         let host = FakeWindowHost()
-        ShellActions.activate(hasVisibleWindows: false, shutdownInProgress: true, host: host)
+        ShellActions.activate(shutdownInProgress: true, host: host)
+        let minimized = FakeExplorerWindow(id: 1)
+        minimized.isOnScreen = false
+        host.list.add(minimized)
+        ShellActions.activate(shutdownInProgress: true, host: host)
         #expect(host.calls.isEmpty)
     }
 

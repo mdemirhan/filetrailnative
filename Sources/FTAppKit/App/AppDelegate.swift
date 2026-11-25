@@ -350,15 +350,16 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         false
     }
 
-    /// A click on the Dock icon. With no explorer window open one opens, even while Settings is open; with every window
-    /// minimized the one in front comes back.
+    /// A click on the Dock icon. With no explorer window open one opens, even while Settings is open; with every explorer
+    /// window minimized the one in front comes back, even into the app's icon, where AppKit counts it as visible.
     public func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         logger?.info(
             "[filetrail] app activate",
             .context([
-                "explorerWindowCount": .number(Double(host.windows.count)), "hasVisibleWindows": .bool(flag),
+                "explorerWindowCount": .number(Double(host.windows.count)),
+                "explorerWindowOnScreen": .bool(host.windows.hasOneOnScreen), "hasVisibleWindows": .bool(flag),
             ]))
-        ShellActions.activate(hasVisibleWindows: flag, shutdownInProgress: quit.shutdownInProgress, host: host)
+        ShellActions.activate(shutdownInProgress: quit.shutdownInProgress, host: host)
         return false
     }
 

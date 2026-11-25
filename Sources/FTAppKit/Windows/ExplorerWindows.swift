@@ -261,6 +261,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     /// The tab in front of the explorer window in front.
     var front: (any ExplorerWindowHandle)? { controller.frontWindow()?.selected }
     var count: Int { controller.windows.count }
+    var hasOneOnScreen: Bool { liveGroups.contains { $0.isVisible && !$0.isMinimized } }
 
     func handle(for window: NSWindow) -> (any ExplorerWindowHandle)? {
         var current: NSWindow? = window

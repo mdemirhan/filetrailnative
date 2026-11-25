@@ -6,16 +6,17 @@ import Foundation
 /// What the shell does about a click on the Dock icon and an item from another app, apart from AppKit.
 @MainActor
 enum ShellActions {
-    /// A click on the Dock icon. With no explorer window open one opens; with every window of the app minimized the one
-    /// in front comes back.
-    static func activate(hasVisibleWindows: Bool, shutdownInProgress: Bool, host: any ExplorerWindowHost) {
+    /// A click on the Dock icon. With no explorer window open one opens; with none on screen, every one minimized, the
+    /// one in front comes back. The explorer windows are asked, not AppKit's `hasVisibleWindows`: with windows minimized
+    /// into the app's icon (the Dock's setting) AppKit says one is visible when none is.
+    static func activate(shutdownInProgress: Bool, host: any ExplorerWindowHost) {
         if QuitWhileBusy.shouldOpenWindowOnActivate(
             shutdownInProgress: shutdownInProgress, explorerWindowCount: host.windows.count)
         {
             host.openDefaultWindow(initialCommand: nil)
             return
         }
-        if !hasVisibleWindows, !shutdownInProgress {
+        if !shutdownInProgress, !host.windows.hasOneOnScreen {
             host.bringToFront()
         }
     }
