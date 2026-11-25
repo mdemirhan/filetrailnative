@@ -267,8 +267,7 @@ public struct SearchQuery: Equatable, Sendable {
     public static func ownerID(_ word: String) -> uid_t? {
         if word.lowercased() == "me" { return getuid() }
         if !word.isEmpty, word.allSatisfy(isDigit) { return uid_t(word) }
-        guard let entry = getpwnam(word) else { return nil }
-        return entry.pointee.pw_uid
+        return SearchOwners.id(named: word)
     }
 
     /// The word each attribute is typed as.

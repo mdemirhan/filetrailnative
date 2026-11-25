@@ -173,5 +173,21 @@ import Testing
         #expect(!broken("a alias"))
         #expect(!broken("unplugged link", link: true))
         #expect(!broken("a.txt"))
+        // A relative link to a disk not connected, by as many `..` as lead to the top.
+        let up = String(repeating: "../", count: real(folder).split(separator: "/").count)
+        try FileManager.default.createSymbolicLink(
+            atPath: folder.path + "/unplugged relative link", withDestinationPath: up + "Volumes/No Such Disk 7f72e9/a")
+        #expect(!broken("unplugged relative link", link: true))
+        // An original that is there, in a folder that can't be entered, isn't gone.
+        try FileManager.default.createDirectory(atPath: folder.path + "/shut", withIntermediateDirectories: false)
+        _ = try file(folder, "shut/in.txt")
+        try FileManager.default.createSymbolicLink(
+            atPath: folder.path + "/shut link", withDestinationPath: "shut/in.txt")
+        chmod(folder.path + "/shut", 0)
+        defer { chmod(folder.path + "/shut", 0o700) }
+        #expect(!broken("shut link", link: true))
+        // A link that leads round to itself leads nowhere.
+        try FileManager.default.createSymbolicLink(atPath: folder.path + "/round", withDestinationPath: "round")
+        #expect(broken("round", link: true))
     }
 }

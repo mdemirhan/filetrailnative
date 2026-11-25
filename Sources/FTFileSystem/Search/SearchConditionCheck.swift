@@ -387,7 +387,8 @@ struct SearchConditionCheck: Sendable {
             case .symbolicLink, .file, .folder: Self.isOf(attribute, name: name, isFolder: isFolder, isLink: isLink)
             case .locked: locked
             // Its data not on this Mac: only a placeholder until it is opened, which this doesn't do.
-            case .cloud: info.map { $0.st_flags & UInt32(SF_DATALESS) != 0 } ?? false
+            // A file: a folder not yet downloaded isn't one.
+            case .cloud: isFile && (info.map { $0.st_flags & UInt32(SF_DATALESS) != 0 } ?? false)
             case .tagged: !held().isEmpty
             case .downloaded:
                 listed().map { $0.contains(DownloadMarks.quarantine) } ?? DownloadMarks.isQuarantined(path)

@@ -33,7 +33,7 @@ Type in the search field and results appear as you type: everything under the fo
 
 - **Plain text, glob or regex.** Case and accents don't get in the way (`resume` finds Résumé), and `*.test.ts` or a regular expression is a click away. Match against names or full paths.
 - **Widen or narrow in one step.** Move the search from this folder to Home or the whole disk with one click, and filter what was found without searching again.
-- **Conditions as you type.** Add `kind:pdf`, `size:>10mb`, `modified:7d` or `tag:red` to the name, or search by them alone. `skip:node_modules` leaves a folder out wherever it is, and one option leaves out every `.git` folder.
+- **Conditions as you type.** Add `kind:pdf`, `size:>10mb`, `modified:7d` or `tag:red` to the name, or search by them alone; `is:cloud`, `is:downloaded`, `is:broken`, `owner:me` and `from:github.com` find what a name can't say. `skip:node_modules` leaves a folder out wherever it is, and one option leaves out every `.git` folder.
 - **Group and sort results** by folder, kind, date, size or tag, in any view.
 - **Nothing to set up.** Search walks the disk itself, with nothing to index or install. Each tab keeps its own search, and it keeps running while you work in another.
 

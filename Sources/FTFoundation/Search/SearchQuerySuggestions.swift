@@ -285,22 +285,13 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
         }
     }
 
-    /// Me, root, and the people who sign in to this Mac: (what the row says, what it types).
+    /// Me, root, and the people who sign in to this Mac (`SearchOwners.people`, read once): (what the row says,
+    /// what it types).
     private static func owners() -> [(String, String)] {
-        var rows: [(String, String)] = []
-        let me = getpwuid(getuid()).map { String(cString: $0.pointee.pw_name) }
-        rows.append((me.map { "Me (\($0))" } ?? "Me", "me"))
-        rows.append(("root", "root"))
-        setpwent()
-        defer { endpwent() }
-        while let entry = getpwent() {
-            let name = String(cString: entry.pointee.pw_name)
-            // The system's own accounts start with an underscore, or are below 500.
-            guard entry.pointee.pw_uid >= 500, !name.hasPrefix("_"), name != me, rows.count < maxValues else {
-                continue
-            }
-            rows.append((name, name))
-        }
+        let people = SearchOwners.people
+        let me = people.first { $0.id == getuid() }?.name
+        var rows = [(me.map { "Me (\($0))" } ?? "Me", "me"), ("root", "root")]
+        rows += people.filter { $0.name != me }.prefix(maxValues - rows.count).map { ($0.name, $0.name) }
         return rows
     }
 

@@ -993,6 +993,12 @@ import Testing
         #expect(try #require(suggest("color:red,")?.rows.map(\.hint)).contains("red") == false)
         let owners = try #require(suggest("owner:")?.rows.map(\.hint))
         #expect(owners.prefix(2) == ["me", "root"])
+        // The people of this Mac, each once, the one signed in only as "me"; a name not found is asked once.
+        #expect(Set(owners).count == owners.count)
+        #expect(owners.count <= SearchQuerySuggestions.maxValues)
+        let me = SearchOwners.people.first { $0.id == getuid() }?.name
+        #expect(me == nil || !owners.contains(me ?? ""))
+        #expect(SearchOwners.people.allSatisfy { $0.id >= 500 && SearchQuery.ownerID($0.name) == $0.id })
         #expect(try #require(suggest("ext:no")?.rows.first?.hint) == "none")
         let attributes = try #require(suggest("is:")?.rows.map(\.hint))
         #expect(attributes.count == SearchAttribute.allCases.count)

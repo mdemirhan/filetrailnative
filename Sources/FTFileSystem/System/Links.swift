@@ -29,15 +29,21 @@ public enum Links {
 
     /// Whether the symbolic link or alias at `path` leads nowhere: its original is gone. One whose original is on a
     /// disk or a server not connected isn't counted, as the original may still be there: nothing is mounted to look,
-    /// and nothing asked. Anything else isn't broken.
+    /// and nothing asked. Nor is one whose original can't be reached (a folder on the way that can't be entered), or
+    /// an alias kept only in a cloud. Anything else isn't broken.
     public static func isBroken(_ path: String, isLink: Bool) -> Bool {
         if isLink {
             var info = stat()
             if fstatat(AT_FDCWD, path, &info, 0) == 0 { return false }
+            // Gone only when the system says so: an original in a folder that can't be entered may well be there.
+            guard [ENOENT, ENOTDIR, ELOOP].contains(errno) else { return false }
             guard let target = linkTarget(path) else { return true }
             return !isOnDiskNotConnected(target)
         }
         guard isFinderAlias(path) else { return false }
+        // An alias whose own data is only in a cloud would be downloaded to be resolved: it isn't, and isn't counted.
+        var own = stat()
+        if lstat(path, &own) == 0, own.st_flags & UInt32(SF_DATALESS) != 0 { return false }
         let url = DiskPath(path).url(isDirectory: false)
         if (try? URL(resolvingAliasFileAt: url, options: [.withoutUI, .withoutMounting])) != nil { return false }
         guard let data = try? URL.bookmarkData(withContentsOf: url),
@@ -46,10 +52,16 @@ public enum Links {
         return FileManager.default.fileExists(atPath: volume.path)
     }
 
-    /// What the symbolic link at `path` holds, made whole from its folder when it is relative.
+    /// What the symbolic link at `path` holds, made whole from its folder when it is relative, its `..` taken out
+    /// (`../../Volumes/Disk/a` from a folder two deep is on that disk).
     private static func linkTarget(_ path: String) -> String? {
         guard let target = try? FileManager.default.destinationOfSymbolicLink(atPath: path) else { return nil }
-        return target.hasPrefix("/") ? target : (path as NSString).deletingLastPathComponent + "/" + target
+        if target.hasPrefix("/") { return target }
+        var parts: [Substring] = []
+        for part in ((path as NSString).deletingLastPathComponent + "/" + target).split(separator: "/") {
+            if part == ".." { _ = parts.popLast() } else if part != "." { parts.append(part) }
+        }
+        return "/" + parts.joined(separator: "/")
     }
 
     /// Whether `path` is on a disk that would be under /Volumes and isn't there.
