@@ -603,12 +603,17 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     }
 
     /// Edit Search: the search's text in the Edit Search box, over the window. Search there searches for it, as Return
-    /// in the field does; Cancel leaves the search as it was.
+    /// in the field does; Cancel leaves the search as it was. With nothing typed and no results shown, the pane's last
+    /// search comes back first, text and results, as ⌘F brings it back: only in the folder it was made from.
     func openEditSearch() {
         guard let window = tab.window, DialogScrim.front(in: window) == nil, window.attachedSheet == nil else { return }
         AppMenuPresenter.shared.close()
         dropdown.hide()
-        let text = field?.stringValue ?? session.draftQuery
+        var text = field?.stringValue ?? session.draftQuery
+        if !session.isSearchMode, text.allSatisfy(\.isWhitespace) {
+            session.showCachedResults(fromField: true)
+            text = session.draftQuery
+        }
         let root = session.isSearchMode ? session.rootPath : pane.shownFolderPath
         let box = EditSearchBox(
             text: text,

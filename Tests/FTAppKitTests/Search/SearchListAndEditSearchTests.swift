@@ -388,6 +388,46 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // With the results closed, the box brings the pane's last search back as ⌘F does, text and results, and
+        // nothing is searched again; in another folder it opens empty.
+        @Test func theBoxBringsTheLastSearchBack() async throws {
+            let (harness, tab, engine, timers) = try await open()
+            engine.finds = { _ in (["note.txt"], false, false) }
+            let editor = try focus(tab)
+            type("note kind:text", into: editor)
+            timers.advance(0.4)
+            let starts = engine.starts.count
+            tab.search.session.hideResults()
+            tab.content.focusList()
+            #expect(tab.searchField?.stringValue == "")
+            #expect(!tab.search.session.isSearchMode)
+            let box = try box(tab)
+            #expect(box.textView.string == "note kind:text")
+            #expect(tab.search.session.isSearchMode)
+            #expect(tab.searchField?.stringValue == "note kind:text")
+            #expect(engine.starts.count == starts)
+            // Cancel leaves the results there, as Esc in the field after ⌘F would.
+            box.onClose()
+            #expect(tab.search.session.isSearchMode)
+            // Text typed in the field since is what the box opens with, not the last search.
+            tab.search.session.hideResults()
+            tab.search.session.setDraft("other")
+            tab.searchField?.stringValue = "other"
+            let typed = try self.box(tab)
+            #expect(typed.textView.string == "other")
+            #expect(!tab.search.session.isSearchMode)
+            typed.onClose()
+            // In another folder the last search isn't this folder's.
+            tab.search.session.abandonDraft()
+            tab.searchField?.stringValue = ""
+            _ = await tab.navigate(to: tab.folderPath + "/Beta")
+            let empty = try self.box(tab)
+            #expect(empty.textView.string == "")
+            #expect(!tab.search.session.isSearchMode)
+            empty.onClose()
+            await harness.close()
+        }
+
         @Test func searchInTheBoxSearchesForWhatIsTyped() async throws {
             let (harness, tab, engine, timers) = try await open()
             let box = try box(tab)

@@ -613,7 +613,7 @@ extension HelpContent {
                         HelpRow(
                             label: "More room",
                             description:
-                                "Edit ▸ Edit Search…, or the button at the field’s end, opens the search in a larger box that wraps, says how the search reads, and lists every condition’s word to click. Search searches for it; Cancel leaves the search as it was."
+                                "Edit ▸ Edit Search…, or the button at the field’s end, opens the search in a larger box that wraps, says how the search reads, and lists every condition’s word to click. With the results closed and nothing typed, it opens with the last search made in this folder, and shows its results again. Search searches for it; Cancel leaves the search as it was."
                         ),
                     ]),
                 HelpSection(
