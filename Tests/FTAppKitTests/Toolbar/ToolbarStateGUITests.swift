@@ -159,7 +159,12 @@ extension ExplorerWindowGUITests.ToolbarGUITests {
 
         func widened(_ way: String) {
             #expect(field.holdsKeyboard, "\(way)")
-            #expect(field.frame.width > layout.searchWidth + 50, "\(way): the field took the keyboard narrow")
+            // Its whole wider width, not only wider than its own: a system that kept the field to its own limit of
+            // 325 points (`ExplorerToolbar.liftSystemSearchWidthLimit` lifts it, by what AppKit's views are today)
+            // fails here.
+            #expect(
+                abs(Double(field.frame.width) - layout.searchFocusedWidth) < 1,
+                "\(way): the field is \(field.frame.width) wide with the keyboard, not \(layout.searchFocusedWidth)")
             #expect(!overflowed(toolbar).isEmpty, "\(way): nothing went to the » menu")
         }
         func letGoAndWatch(_ way: String) async throws {
