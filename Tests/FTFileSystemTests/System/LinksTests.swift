@@ -1,7 +1,9 @@
-import FTFileSystem
+import Darwin
 import FTTestSupport
 import Foundation
 import Testing
+
+@testable import FTFileSystem
 
 /// What a Finder alias and a symbolic link are told apart by, and where each leads.
 @Suite struct LinksTests {
@@ -110,5 +112,66 @@ import Testing
         let snapshot = try await DirectoryService().snapshot(path: base, foldersFirst: true)
         #expect(snapshot.entries.map(\.name) == ["Zeta", "Zeta alias", "a.txt", "a.txt alias"])
         #expect(snapshot.entries.map(\.kind) == [.directory, .aliasDirectory, .file, .alias])
+    }
+
+    /// Finder's flag tells an alias as the system's own check by its URL does: of an alias of a file and of a folder,
+    /// a file, a folder, a package, a symbolic link to an alias, and what isn't there.
+    @Test func theFlagTellsAnAliasAsTheSystemDoes() throws {
+        let folder = try TemporaryDirectory(prefix: "filetrail-links")
+        defer { folder.remove() }
+        let original = try file(folder, "a.txt")
+        try FileManager.default.createDirectory(atPath: folder.path + "/Inner", withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(atPath: folder.path + "/Tool.app", withIntermediateDirectories: true)
+        try Links.writeAlias(of: original, at: folder.path + "/a alias")
+        try Links.writeAlias(of: folder.path + "/Inner", at: folder.path + "/Inner alias")
+        try FileManager.default.createSymbolicLink(atPath: folder.path + "/link", withDestinationPath: "a alias")
+        let paths = ["a.txt", "Inner", "Tool.app", "a alias", "Inner alias", "link", "missing"].map {
+            folder.path + "/" + $0
+        }
+        for path in paths {
+            #expect(Links.isFinderAlias(path) == Links.isFinderAliasByURL(path), "\(path)")
+        }
+        #expect(
+            paths.filter(Links.isFinderAlias).map { ($0 as NSString).lastPathComponent } == ["a alias", "Inner alias"])
+    }
+
+    /// A search may ask each file it passes whether it is an alias: Finder's flag, read with one call, costs well under
+    /// half of asking through the item's URL.
+    @Test func anAliasIsToldWithOneCall() throws {
+        let folder = try TemporaryDirectory(prefix: "filetrail-links")
+        defer { folder.remove() }
+        let paths = try (0..<2_000).map { try file(folder, "file \($0).txt") }
+        var flag = Double.infinity
+        var url = Double.infinity
+        for _ in 0..<3 {
+            flag = min(flag, CPUTime.measureThread { for path in paths { _ = Links.isFinderAlias(path) } }.seconds)
+            url = min(url, CPUTime.measureThread { for path in paths { _ = Links.isFinderAliasByURL(path) } }.seconds)
+        }
+        #expect(flag * 2 < url, "flag \(flag), URL \(url)")
+    }
+
+    /// A link or an alias whose original is gone is broken; one whose original is there, on a disk not connected,
+    /// or anything else isn't.
+    @Test func brokenIsALinkOrAnAliasLeadingNowhere() throws {
+        let folder = try TemporaryDirectory(prefix: "filetrail-links")
+        defer { folder.remove() }
+        let original = try file(folder, "a.txt")
+        let gone = try file(folder, "gone.txt")
+        try Links.writeAlias(of: original, at: folder.path + "/a alias")
+        try Links.writeAlias(of: gone, at: folder.path + "/gone alias")
+        try FileManager.default.createSymbolicLink(atPath: folder.path + "/a link", withDestinationPath: "a.txt")
+        try FileManager.default.createSymbolicLink(atPath: folder.path + "/gone link", withDestinationPath: "gone.txt")
+        try FileManager.default.createSymbolicLink(
+            atPath: folder.path + "/unplugged link", withDestinationPath: "/Volumes/No Such Disk 7f72e9/a.txt")
+        try FileManager.default.removeItem(atPath: gone)
+        func broken(_ name: String, link: Bool = false) -> Bool {
+            Links.isBroken(folder.path + "/" + name, isLink: link)
+        }
+        #expect(broken("gone link", link: true))
+        #expect(broken("gone alias"))
+        #expect(!broken("a link", link: true))
+        #expect(!broken("a alias"))
+        #expect(!broken("unplugged link", link: true))
+        #expect(!broken("a.txt"))
     }
 }

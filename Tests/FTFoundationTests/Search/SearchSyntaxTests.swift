@@ -922,6 +922,71 @@ import Testing
         #expect(SearchConditionText.chip(.attribute(.tagged, is: false)) == "Not tagged")
     }
 
+    @Test func cloudDownloadedAndBrokenAreAttributes() {
+        #expect(query("is:cloud").conditions == [.attribute(.cloud, is: true)])
+        #expect(query("not:downloaded").conditions == [.attribute(.downloaded, is: false)])
+        #expect(query("is:broken,alias").conditions == [.attributes([.broken, .alias], is: true)])
+        #expect(SearchConditionText.chip(.attribute(.cloud, is: true)) == "Only in the cloud")
+        #expect(SearchConditionText.chip(.attribute(.broken, is: false)) == "Not a broken link or alias")
+    }
+
+    // A name without an extension is `ext:none`; the extension "none" is `ext:.none`.
+    @Test func noExtensionIsNone() {
+        #expect(query("ext:none").conditions == [.fileExtension([""])])
+        #expect(query("ext:pdf,none").conditions == [.fileExtension(["pdf", ""])])
+        #expect(query("ext:.none").conditions == [.fileExtension(["none"])])
+        #expect(query("ext:!none").conditions == [.not(.fileExtension([""]))])
+        #expect(SearchConditionText.chip(.fileExtension(["pdf", ""])) == "Extension is pdf, none")
+    }
+
+    // A tag's color, whatever its name; grey is gray.
+    @Test func aColorIsATagsColor() {
+        #expect(query("color:red").conditions == [.tagColors([.red])])
+        #expect(query("color:Red,grey,red").conditions == [.tagColors([.red, .gray])])
+        #expect(query("color:!blue").conditions == [.not(.tagColors([.blue]))])
+        #expect(query("color:pink").hasUnfinished)
+        #expect(SearchQuery.words("color:re").first?.canStillBeRead == true)
+        #expect(SearchQuery.words("color:x").first?.canStillBeRead == false)
+        #expect(SearchConditionText.chip(.tagColors([.red, .blue])) == "Has a red or blue tag")
+        #expect(SearchConditionText.chip(.not(.tagColors([.red]))) == "Has no red tag")
+    }
+
+    // An owner is me, a user's name or a number; a name no user has can't be read once the caret leaves it.
+    @Test func anOwnerIsAUserOfThisMac() {
+        #expect(query("owner:me").conditions == [.owners(["me"])])
+        #expect(query("owner:root,0").conditions == [.owners(["root", "0"])])
+        #expect(query("owner:!root").conditions == [.not(.owners(["root"]))])
+        #expect(SearchQuery.ownerID("me") == getuid())
+        #expect(SearchQuery.ownerID("root") == 0)
+        #expect(SearchQuery.ownerID("no-such-user-7f72e9") == nil)
+        #expect(query("owner:no-such-user-7f72e9").hasUnfinished)
+        #expect(SearchQuery.words("owner:no-such-user-7f72e9").first?.canStillBeRead == true)
+        #expect(SearchQuery.problems("owner:no-such-user-7f72e9").first?.detail.hasPrefix("Not a user") == true)
+        #expect(SearchConditionText.chip(.owners(["root", "me"])) == "Owned by root or me")
+    }
+
+    // Where from is any part of an address, in quotes when it has a space or a comma.
+    @Test func fromIsPartOfAnAddress() {
+        #expect(query("from:github.com").conditions == [.downloadedFrom(["github.com"])])
+        #expect(query("from:github.com,\"a,b\"").conditions == [.downloadedFrom(["github.com", "a,b"])])
+        #expect(query("from:!example.com").conditions == [.not(.downloadedFrom(["example.com"]))])
+        #expect(query("from:a,!b").hasUnfinished)
+        #expect(SearchConditionText.chip(.downloadedFrom(["github.com"])) == "Downloaded from github.com")
+    }
+
+    // The new words' lists: every color and attribute, me and root among the owners, none among the extensions.
+    @Test func theNewWordsOfferTheirValues() throws {
+        let colors = try #require(suggest("color:")?.rows.map(\.hint))
+        #expect(colors == SearchTagColor.allCases.map(\.rawValue))
+        #expect(try #require(suggest("color:red,")?.rows.map(\.hint)).contains("red") == false)
+        let owners = try #require(suggest("owner:")?.rows.map(\.hint))
+        #expect(owners.prefix(2) == ["me", "root"])
+        #expect(try #require(suggest("ext:no")?.rows.first?.hint) == "none")
+        let attributes = try #require(suggest("is:")?.rows.map(\.hint))
+        #expect(attributes.count == SearchAttribute.allCases.count)
+        #expect(try #require(suggest("from:git")?.rows.first?.hint) == "git")
+    }
+
     // A word has one `!` or one `not:` that turns it: more can't be read.
     @Test func doubleNegativesAreOneTurn() {
         #expect(query("!not:executable").conditions == [.attribute(.executable, is: true)])

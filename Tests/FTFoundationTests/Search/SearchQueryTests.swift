@@ -351,7 +351,8 @@ import Testing
     // A word is found by its name's words as well as by what is typed for it.
     @Test func aWordIsFoundByItsName() throws {
         let dates = try #require(suggest("d"))
-        #expect(dates.rows.map(\.hint) == ["modified:", "created:", "added:", "opened:"])
+        // "d" is also Downloaded From's first word.
+        #expect(dates.rows.map(\.hint) == ["modified:", "created:", "added:", "opened:", "from:"])
         #expect(try #require(suggest("date")).rows.count == 4)
         #expect(try #require(suggest("mod")).rows.map(\.hint) == ["modified:"])
         #expect(try #require(suggest("si")).rows.map(\.hint) == ["size:"])

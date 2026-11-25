@@ -93,6 +93,10 @@ int ft_name_has_accent_bytes(const char *name, size_t length);
 /// When the item at `path` (a link itself, not what it points to) was put in its folder. Returns 0, ENOATTR when the
 /// disk doesn't keep it, or an errno.
 int ft_added_time(const char *path, int64_t *seconds, int32_t *nanoseconds);
+
+/// Whether the item at `path` (a link itself, not what it points to) has Finder's alias flag: 1 when it has, 0 when
+/// it hasn't (no Finder information at all included) or is a symbolic link, -1 when it can't be read.
+int ft_has_alias_flag(const char *path);
 void ft_free_listing(FTDirListing *listing);
 
 #endif

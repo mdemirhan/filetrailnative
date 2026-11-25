@@ -166,6 +166,28 @@ private func result(_ path: String, kind: FTFileSystem.EntryKind = .file) -> Sea
         #expect(root.kind == .file)
         #expect(SearchResults.relative(from: "/a/b", to: "/a") == "..")
         #expect(SearchResults.relative(from: "/", to: "/x/y") == "x/y")
+        // From the name's bytes as from its UTF-16 units, ASCII or not.
+        for name in [
+            "", ".", "..", "...", ".env", "a.", "..a", "a.b.c", "Report.PDF", "noext", "x.Ünï", "café.TXT", "a.ΣΑΣ",
+            "e\u{0301}.JPG", "x.İ", "emoji.🙂", "dots...", "trailing. ", "MiXeD.TaR.gZ",
+        ] {
+            #expect(SearchResults.extensionOf(name) == SearchResults.extensionOfAny(name), "\(name)")
+        }
+    }
+
+    // Each item a search passes may ask for its extension (`kind:`, `ext:`): told from the name's bytes, it costs far
+    // less than going through the name's UTF-16 units, which cost more than the walk's read of the item.
+    @Test func anExtensionIsToldWithoutCopyingTheName() {
+        let names = (0..<20_000).map { "Some File Name \($0).\(["PDF", "txt", "Swift", "jpeg"][$0 % 4])" }
+        var fast = Double.infinity
+        var any = Double.infinity
+        for _ in 0..<3 {
+            fast = min(
+                fast, CPUTime.measureThread { for name in names { _ = SearchResults.extensionOf(name) } }.seconds)
+            any = min(
+                any, CPUTime.measureThread { for name in names { _ = SearchResults.extensionOfAny(name) } }.seconds)
+        }
+        #expect(fast * 3 < any, "bytes \(fast), units \(any)")
     }
 }
 

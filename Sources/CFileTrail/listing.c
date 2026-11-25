@@ -307,3 +307,25 @@ int ft_added_time(const char *path, int64_t *seconds, int32_t *nanoseconds) {
     *nanoseconds = (int32_t)reply.added.tv_nsec;
     return 0;
 }
+
+int ft_has_alias_flag(const char *path) {
+    struct attrlist request;
+    memset(&request, 0, sizeof(request));
+    request.bitmapcount = ATTR_BIT_MAP_COUNT;
+    request.commonattr = ATTR_CMN_RETURNED_ATTRS | ATTR_CMN_OBJTYPE | ATTR_CMN_FNDRINFO;
+    struct {
+        uint32_t length;
+        attribute_set_t returned;
+        fsobj_type_t type;
+        uint8_t finder[32];
+    } __attribute__((aligned(4), packed)) reply;
+    memset(&reply, 0, sizeof(reply));
+    if (getattrlist(path, &request, &reply, sizeof(reply), FSOPT_NOFOLLOW) != 0) return -1;
+    if (!(reply.returned.commonattr & ATTR_CMN_OBJTYPE)) return -1;
+    if (reply.type == VLNK) return 0;
+    /* Asked of one item, the system reads Finder's information as an attribute, the same on every disk (from the
+       AppleDouble file where the disk keeps none itself): left out, the item has none, and so no flags. */
+    if (!(reply.returned.commonattr & ATTR_CMN_FNDRINFO)) return 0;
+    /* Bytes 8 and 9 of Finder's information are its flags; kIsAlias is 0x8000. */
+    return (reply.finder[8] & 0x80) != 0;
+}

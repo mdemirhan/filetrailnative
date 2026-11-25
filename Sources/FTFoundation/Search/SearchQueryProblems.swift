@@ -9,13 +9,16 @@ extension SearchQueryKey {
         switch self {
         case .kind:
             "Not a kind: pdf, picture, video, audio, document, spreadsheet, presentation, archive, code, text, folder or application"
-        case .ext: "Not an extension: letters and digits, like docx or mp4"
+        case .ext: "Not an extension: letters and digits, like docx or mp4, or none for a name without one"
         case .size: "Not a size: a number and a unit, like 10mb, >1gb, <500kb, >=1mb or 1mb..10mb"
         case .modified, .created, .added, .opened:
             "Not a date: today, week, 7d, >1y, 2026-03-15, <2026-03, >=2026-03 or 2026-01..2026-03"
         case .tag: "Not a tag"
+        case .color: "Not a tag color: red, orange, yellow, green, blue, purple or gray"
+        case .owner: "Not a user on this Mac: a name, a number, or me"
+        case .from: "Not a place: part of an address, like github.com"
         case .is, .not:
-            "Not an attribute: file, folder, alias, link, hidden, locked, readonly, executable, empty or tagged"
+            "Not an attribute: file, folder, alias, link, hidden, locked, readonly, executable, empty, tagged, cloud, downloaded or broken"
         case .perm: "Not permissions: three digits like 755, or letters like rwxr-xr-x; ? for any"
         case .skip: "Not a folder's name"
         }
@@ -59,19 +62,21 @@ extension SearchQuery {
             return "A folder skipped is already left out: no ! before it"
         }
         let value = word.value.hasPrefix("!") ? String(word.value.dropFirst()) : word.value
-        if key == .tag || key == .skip {
+        if key.takesNames {
             switch namesFault(value) {
             case .notBeforeLater:
-                return key == .tag
-                    ? "One ! before the first tag is for all of them: tag:!red,blue is neither"
-                    : "A folder skipped is already left out: no ! before it"
+                switch key {
+                case .tag: return "One ! before the first tag is for all of them: tag:!red,blue is neither"
+                case .from: return "One ! before the first is for all of them: from:!github.com,gitlab.com is neither"
+                default: return "A folder skipped is already left out: no ! before it"
+                }
             case .afterQuote: return "Only a comma follows a closing quote: \(key.word)\"a name\",another"
             case .emptyQuotes: return key.expects.replacingOccurrences(of: "Not ", with: "Give ")
             case .openQuote: return "Close the quote: \(key.word)\"a name\""
             case nil: break
             }
         }
-        if [.kind, .ext, .perm, .is, .not].contains(key),
+        if [.kind, .ext, .perm, .is, .not, .color, .owner].contains(key),
             value.split(separator: ",").dropFirst().contains(where: { $0.hasPrefix("!") })
         {
             let reads = key == .not ? "either" : "neither"
@@ -91,8 +96,8 @@ extension SearchQuery {
         switch key {
         case .size: return sizeCanBecome(value)
         case .modified, .created, .added, .opened: return dateCanBecome(value)
-        case .tag, .skip: return namesCanBecome(value)
-        case .kind, .ext, .perm, .is, .not:
+        case .tag, .skip, .from: return namesCanBecome(value)
+        case .kind, .ext, .perm, .is, .not, .color, .owner:
             // Values before the last comma are whole ones; the last is the start of one. One `!` before the first
             // is for all of them, so none stands before a later one.
             let parts = value.split(separator: ",", omittingEmptySubsequences: false).map(String.init)
@@ -143,6 +148,8 @@ extension SearchQuery {
         case .ext: "pdf,docx"
         case .perm: "755,644"
         case .is, .not: "hidden,locked"
+        case .color: "red,blue"
+        case .owner: "root,me"
         default: ""
         }
     }
@@ -161,6 +168,11 @@ extension SearchQuery {
             return name.allSatisfy { $0.isLetter || $0.isNumber }
         case .is, .not:
             return attributeWords.keys.contains { $0.hasPrefix(lower) }
+        case .color:
+            return colorWords.keys.contains { $0.hasPrefix(lower) }
+        case .owner:
+            // A user's name is told only once it is whole: letters, digits and what names hold.
+            return value.allSatisfy { $0.isLetter || $0.isNumber || "_-.@".contains($0) }
         case .perm:
             return permissionCanBecome(value)
         default:

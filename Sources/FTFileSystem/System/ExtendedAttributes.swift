@@ -1,5 +1,6 @@
 // The names of an item's extended attributes, listed in one call: telling from it that an item has no tags, or no date
-// last opened, costs a tenth of asking for either (listxattr about 1.7 µs, getxattr about 15 µs, on an M-series Mac).
+// last opened, costs about a third of asking for either (listxattr about 3.5 µs, getxattr 12 to 15 µs, warm, on an
+// M-series Mac), and the list is read once for all of them.
 import Darwin
 
 enum ExtendedAttributes {

@@ -1,5 +1,6 @@
 // What the search field's list offers for the word at the caret: a condition's values after its word and colon, and,
 // for a plain word, the conditions it could be besides the text to find.
+import Darwin
 import Foundation
 
 public struct SearchQuerySuggestion: Equatable, Sendable {
@@ -107,7 +108,7 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
         }
         // A name in quotes being typed before other words: the quote, not closed yet, runs to the text's end, but
         // the name is what is before the caret, and only that is replaced.
-        if let key = word.key, key == .tag || key == .skip, word.role == .unfinished,
+        if let key = word.key, key.takesNames, word.role == .unfinished,
             caret < NSMaxRange(word.range), caret > word.range.location + word.keyLength,
             SearchQuery.namesFault(word.value.hasPrefix("!") ? String(word.value.dropFirst()) : word.value)
                 == .openQuote
@@ -132,14 +133,16 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
             let not = key.takesNot && value.hasPrefix("!") ? "!" : ""
             value.removeFirst(not.count)
             let isNot = !not.isEmpty || (key.takesNot && word.text.hasPrefix("!"))
-            let (head, partial) = Self.lastValue(of: value, names: key == .tag || key == .skip)
-            // An attribute already in the list isn't offered again (`is:link,` offers no link).
-            let listed = key == .is || key == .not ? Set(head.lowercased().split(separator: ",").map(String.init)) : []
+            let (head, partial) = Self.lastValue(of: value, names: key.takesNames)
+            // A value already in the list isn't offered again (`is:link,` offers no link).
+            let listed =
+                [.is, .not, .color, .owner].contains(key)
+                ? Set(head.lowercased().split(separator: ",").map(String.init)) : []
             let rows = values(
                 key, partial: partial, tags: key == .tag ? tags() : [], folders: key == .skip ? folders() : [],
                 now: now, calendar: calendar
             )
-            .filter { !listed.contains($0.1) }
+            .filter { !listed.contains($0.1.lowercased()) }
             .map { title, typed in
                 SearchQuerySuggestion(
                     title: isNot ? Self.not(title, key: key) : title, hint: not + typed,
@@ -149,11 +152,11 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
             // A free name (a tag, a folder) is whole only once it is one listed.
             let complete =
                 word.role != .unfinished
-                && ((key != .tag && key != .skip)
+                && (!key.takesNames
                     || rows.contains { $0.hint.lowercased() == (not + Self.typedLast(value)).lowercased() })
             // A name that reads as typed may be a tag or a folder of its own ("B" beside Blue): Return searches for
             // it, and Tab completes it to the one listed.
-            let free = (key == .tag || key == .skip) && word.role != .unfinished
+            let free = key.takesNames && word.role != .unfinished
             return SearchQuerySuggestions(
                 range: word.range, sections: [Section(title: key.title, rows: rows)],
                 highlightsFirst: !complete && !free, typedIsComplete: complete)
@@ -205,7 +208,7 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
                 "pdf", "jpg", "png", "heic", "mov", "mp4", "mp3", "docx", "xlsx", "key", "zip", "swift", "txt",
             ]
             // Typed without a dot, and listed without one: "DOCX files" types `docx`.
-            all = common.map { ("\($0.uppercased()) files", $0) }
+            all = common.map { ("\($0.uppercased()) files", $0) } + [("No extension", "none")]
         case .size:
             return sizes(typed)
         case .modified, .created, .added, .opened:
@@ -245,6 +248,13 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
             return names(tags, partial: partial)
         case .is, .not:
             all = SearchAttribute.allCases.map { ($0.chip(is: key == .is), SearchQuery.attributeWord($0)) }
+        case .color:
+            all = SearchTagColor.allCases.map { ($0.label, $0.rawValue) }
+        case .owner:
+            all = owners()
+        case .from:
+            // Any part of an address: what is typed is all there is to offer.
+            return names([], partial: partial)
         case .skip:
             return names(folders, partial: partial)
         case .perm:
@@ -260,7 +270,27 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
         {
             shown.insert((sentence(condition, key), partial), at: 0)
         }
-        return Array(shown.prefix(maxValues))
+        // A list of its own is short, and shown whole; only names, which can be any number, are cut.
+        return shown
+    }
+
+    /// Me, root, and the people who sign in to this Mac: (what the row says, what it types).
+    private static func owners() -> [(String, String)] {
+        var rows: [(String, String)] = []
+        let me = getpwuid(getuid()).map { String(cString: $0.pointee.pw_name) }
+        rows.append((me.map { "Me (\($0))" } ?? "Me", "me"))
+        rows.append(("root", "root"))
+        setpwent()
+        defer { endpwent() }
+        while let entry = getpwent() {
+            let name = String(cString: entry.pointee.pw_name)
+            // The system's own accounts start with an underscore, or are below 500.
+            guard entry.pointee.pw_uid >= 500, !name.hasPrefix("_"), name != me, rows.count < maxValues else {
+                continue
+            }
+            rows.append((name, name))
+        }
+        return rows
     }
 
     /// Tags or folders whose name starts with what is typed, or holds it: (the name, what types it). A tag or a

@@ -143,6 +143,75 @@ import UniformTypeIdentifiers
         }
     }
 
+    // What a download, a tag's color, an owner, a broken link or alias and a name without an extension each find.
+    @Test func theMarksOfADownloadColorsOwnersAndBrokenItems() throws {
+        let runtime = WalkSearchRuntime()
+        defer { runtime.close() }
+        try withTemporaryDirectory { folder in
+            let top = folder.path
+            for name in ["page.html", "tool.zip", "plain.txt", "Makefile", "Urgent.txt", "Red.txt", "a.txt"] {
+                try makeSearchFile(top + "/" + name, "x")
+            }
+            func download(_ name: String, _ places: [String]) throws {
+                let mark = "0081;67a0b0c0;Safari;"
+                #expect(setxattr(top + "/" + name, DownloadMarks.quarantine, mark, mark.utf8.count, 0, 0) == 0)
+                let list = try PropertyListSerialization.data(fromPropertyList: places, format: .binary, options: 0)
+                let written = list.withUnsafeBytes {
+                    setxattr(top + "/" + name, DownloadMarks.whereFrom, $0.baseAddress, list.count, 0, 0)
+                }
+                #expect(written == 0)
+            }
+            try download("page.html", ["https://GitHub.com/x/page.html", "https://github.com/x"])
+            try download("tool.zip", ["https://example.com/tool.zip"])
+            try FinderTags.write([FinderTag(name: "Urgent", color: .red)], to: top + "/Urgent.txt")
+            try FinderTags.write([FinderTag(name: "Red", color: .blue)], to: top + "/Red.txt")
+            try makeSearchFile(top + "/gone.txt")
+            try Links.writeAlias(of: top + "/a.txt", at: top + "/a alias")
+            try Links.writeAlias(of: top + "/gone.txt", at: top + "/gone alias")
+            #expect(symlink(top + "/a.txt", top + "/a link") == 0)
+            #expect(symlink(top + "/gone.txt", top + "/gone link") == 0)
+            #expect(unlink(top + "/gone.txt") == 0)
+            let found = { (query: String) in try names(runtime, top, SearchQuery(query).conditions) }
+            #expect(try found("is:downloaded") == ["page.html", "tool.zip"])
+            #expect(try found("from:github.com") == ["page.html"])
+            #expect(try found("from:github.com,example") == ["page.html", "tool.zip"])
+            #expect(try !found("from:!github.com").contains("page.html"))
+            #expect(try found("from:!github.com").contains("plain.txt"))
+            // A color whatever the tag's name, a name whatever its color.
+            #expect(try found("color:red") == ["Urgent.txt"])
+            #expect(try found("tag:red") == ["Red.txt"])
+            #expect(try found("color:red,blue") == ["Urgent.txt", "Red.txt"])
+            #expect(try !found("color:!red").contains("Urgent.txt"))
+            #expect(try found("is:broken") == ["gone alias", "gone link"])
+            #expect(try found("is:broken,alias") == ["a alias", "gone alias", "gone link"])
+            #expect(try !found("not:broken").contains("gone alias"))
+            #expect(try found("ext:none is:file") == ["Makefile", "a alias", "gone alias"])
+            let mine = try found("owner:me")
+            #expect(mine.isSuperset(of: ["plain.txt", "Makefile"]))
+            #expect(try found("owner:root").isEmpty)
+            #expect(try found("owner:!me").isEmpty)
+        }
+    }
+
+    // Only in the cloud is told from the walk's read of the item, the flag the system sets on a file whose data isn't
+    // on this Mac: nothing else is read of it, so nothing downloads it.
+    @Test func onlyInTheCloudIsToldFromTheItemsRead() throws {
+        try withTemporaryDirectory { folder in
+            let path = folder.path + "/a.txt"
+            try makeSearchFile(path, "x")
+            var info = stat()
+            #expect(lstat(path, &info) == 0)
+            let cloud = SearchConditionCheck(SearchQuery("is:cloud").conditions)
+            let local = SearchConditionCheck(SearchQuery("not:cloud").conditions)
+            #expect(cloud.needsStat)
+            #expect(!cloud.keepsByItem(path: path, isFolder: false, isHidden: false, info: info))
+            #expect(local.keepsByItem(path: path, isFolder: false, isHidden: false, info: info))
+            info.st_flags |= UInt32(SF_DATALESS)
+            #expect(cloud.keepsByItem(path: path, isFolder: false, isHidden: false, info: info))
+            #expect(!local.keepsByItem(path: path, isFolder: false, isHidden: false, info: info))
+        }
+    }
+
     // A choice that hidden items can meet lists them, though the folder doesn't show them.
     @Test func aChoiceOfHiddenListsHiddenItems() throws {
         let runtime = WalkSearchRuntime()

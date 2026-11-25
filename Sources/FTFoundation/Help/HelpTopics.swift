@@ -557,7 +557,9 @@ extension HelpContent {
                         ),
                         HelpRow(
                             label: "ext:docx", code: true,
-                            description: "The name’s extension, typed without its dot"),
+                            description:
+                                "The name’s extension, typed without its dot; `ext:none` for names without one, `ext:.none` for the extension “none”"
+                        ),
                         HelpRow(
                             label: "size:>10mb", code: true,
                             description:
@@ -577,14 +579,27 @@ extension HelpContent {
                             label: "tag:red", code: true,
                             description: "Finder’s tags, by name, in quotes when the name has a space: `tag:\"To Do\"`"),
                         HelpRow(
+                            label: "color:red", code: true,
+                            description:
+                                "A tag of that color, whatever its name: red, orange, yellow, green, blue, purple or gray"
+                        ),
+                        HelpRow(
                             label: "is:locked", code: true,
                             description:
-                                "File, folder, alias, link, hidden, locked, readonly, executable, empty or tagged; a comma for either (`is:link,alias`), `not:` for the other side (`not:hidden,locked` is neither). `is:file` takes in apps and other packages, and aliases."
+                                "File, folder, alias, link, hidden, locked, readonly, executable, empty, tagged, cloud, downloaded or broken; a comma for either (`is:link,alias`), `not:` for the other side (`not:hidden,locked` is neither). `is:file` takes in apps and other packages, and aliases. `is:cloud` is a file kept only in iCloud or another cloud, not on this Mac, and finding it doesn’t download it. `is:downloaded` has the mark macOS gives what a browser or Mail downloads. `is:broken` is a link or an alias whose original is gone; one on a disk not connected isn’t counted."
                         ),
+                        HelpRow(
+                            label: "owner:me", code: true,
+                            description: "Who owns an item: `me`, a user’s name such as `root`, or a user’s number"),
                         HelpRow(
                             label: "perm:755", code: true,
                             description:
                                 "Permissions exactly: three or four digits (`644`, `4755`) or the letters `ls` shows (`rwxr-xr-x`). `?` is any digit or letter: `?5?` is a group of 5, whatever else; `???r-x???` a group of r-x."
+                        ),
+                        HelpRow(
+                            label: "from:github.com", code: true,
+                            description:
+                                "Downloaded from an address that holds those letters, whatever their capitals, as Get Info shows under Where from"
                         ),
                         HelpRow(
                             label: "skip:node_modules", code: true,
@@ -594,7 +609,7 @@ extension HelpContent {
                         HelpRow(
                             label: "All or either",
                             description:
-                                "Every word must match: `tag:red tag:blue` finds items with both tags, and `size:>1mb size:<10mb` those between 1 and 10 MB. A comma gives a choice: `tag:red,blue` finds items with either tag, and `kind:pdf,picture` PDFs and pictures. Kinds, extensions, tags, attributes, permissions and folders skipped take a comma: `is:link,alias` is either, `is:hidden is:locked` both."
+                                "Every word must match: `tag:red tag:blue` finds items with both tags, and `size:>1mb size:<10mb` those between 1 and 10 MB. A comma gives a choice: `tag:red,blue` finds items with either tag, and `kind:pdf,picture` PDFs and pictures. Kinds, extensions, tags, colors, attributes, owners, permissions, places downloaded from and folders skipped take a comma: `is:link,alias` is either, `is:hidden is:locked` both."
                         ),
                         HelpRow(
                             label: "Not",

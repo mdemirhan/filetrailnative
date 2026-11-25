@@ -1,10 +1,11 @@
 // The search field's text read as a search: the words that are conditions ("kind:pdf", "size:>10mb", "modified:7d"),
 // and the rest, the text names are matched against. A word whose value can't be read is left out of both until it can.
+import Darwin
 import Foundation
 
 /// A condition's word, as typed before its colon.
 public enum SearchQueryKey: String, CaseIterable, Sendable {
-    case kind, ext, size, modified, created, added, opened, tag, `is`, not, perm, skip
+    case kind, ext, size, modified, created, added, opened, tag, color, `is`, not, owner, perm, from, skip
 
     /// The word as typed, with its colon.
     public var word: String { rawValue + ":" }
@@ -16,6 +17,9 @@ public enum SearchQueryKey: String, CaseIterable, Sendable {
         case .ext: "Extension"
         case .size: "Size"
         case .tag: "Tags"
+        case .color: "Tag Color"
+        case .owner: "Owner"
+        case .from: "Downloaded From"
         case .is: "Attribute"
         case .not: "Attribute Is Not"
         case .perm: "Permissions"
@@ -37,8 +41,13 @@ public enum SearchQueryKey: String, CaseIterable, Sendable {
 
     /// The words the field's menu lists, in its order: `not:` after `is:`, as its other side.
     public static let menuOrder: [SearchQueryKey] = [
-        .kind, .ext, .size, .modified, .created, .added, .opened, .tag, .is, .not, .perm, .skip,
+        .kind, .ext, .size, .modified, .created, .added, .opened, .tag, .color, .is, .not, .owner, .perm, .from,
+        .skip,
     ]
+
+    /// Whether its values are names, any text, a name with a space or a comma in quotes: tags, places downloaded
+    /// from, folders skipped.
+    public var takesNames: Bool { self == .tag || self == .from || self == .skip }
 
     /// Whether `!` before its value, or before the word, asks for what it doesn't say: `kind:!pdf`, `!tag:red`,
     /// `size:!1mb`, `modified:!today`. A folder skipped is already left out.
@@ -168,7 +177,9 @@ public struct SearchQuery: Equatable, Sendable {
     private static func opensName(_ source: NSString, wordStart: Int, at location: Int) -> Bool {
         var head = source.substring(with: NSRange(location: wordStart, length: location - wordStart)).lowercased()
         if head.hasPrefix("!") { head.removeFirst() }
-        guard let key = [SearchQueryKey.tag, .skip].first(where: { head.hasPrefix($0.word) }) else { return false }
+        guard let key = SearchQueryKey.allCases.first(where: { $0.takesNames && head.hasPrefix($0.word) }) else {
+            return false
+        }
         let value = head.dropFirst(key.word.count)
         return value.isEmpty || value == "!" || value.hasSuffix(",")
     }
@@ -245,8 +256,20 @@ public struct SearchQuery: Equatable, Sendable {
     static let attributeWords: [String: SearchAttribute] = [
         "hidden": .hidden, "executable": .executable, "runnable": .executable, "readonly": .readOnly,
         "read-only": .readOnly, "locked": .locked, "empty": .empty, "tagged": .tagged, "file": .file,
-        "folder": .folder, "alias": .alias, "link": .symbolicLink, "symlink": .symbolicLink,
+        "folder": .folder, "alias": .alias, "link": .symbolicLink, "symlink": .symbolicLink, "cloud": .cloud,
+        "downloaded": .downloaded, "broken": .broken,
     ]
+
+    static let colorWords: [String: SearchTagColor] = Dictionary(
+        uniqueKeysWithValues: SearchTagColor.allCases.map { ($0.rawValue, $0) } + [("grey", .gray)])
+
+    /// The user a word of `owner:` names: `me`, a number, or a user's name on this Mac; nil for none.
+    public static func ownerID(_ word: String) -> uid_t? {
+        if word.lowercased() == "me" { return getuid() }
+        if !word.isEmpty, word.allSatisfy(isDigit) { return uid_t(word) }
+        guard let entry = getpwnam(word) else { return nil }
+        return entry.pointee.pw_uid
+    }
 
     /// The word each attribute is typed as.
     public static func attributeWord(_ attribute: SearchAttribute) -> String {
@@ -261,6 +284,9 @@ public struct SearchQuery: Equatable, Sendable {
         case .folder: "folder"
         case .alias: "alias"
         case .symbolicLink: "link"
+        case .cloud: "cloud"
+        case .downloaded: "downloaded"
+        case .broken: "broken"
         }
     }
 
@@ -283,17 +309,20 @@ public struct SearchQuery: Equatable, Sendable {
         }
         let lower = value.lowercased()
         let list = lower.split(separator: ",").map(String.init).filter { !$0.isEmpty }
-        guard !list.isEmpty || key == .tag || key == .skip else { return nil }
+        guard !list.isEmpty || key.takesNames else { return nil }
         switch key {
         case .kind:
             let kinds = list.map(kind)
             guard kinds.allSatisfy({ $0 != nil }) else { return nil }
             return .kind(Set(kinds.compactMap { $0 }))
         case .ext:
-            let extensions = list.map { $0.hasPrefix(".") ? String($0.dropFirst()) : $0 }
-            guard extensions.allSatisfy({ !$0.isEmpty && $0.allSatisfy { $0.isLetter || $0.isNumber } }) else {
-                return nil
-            }
+            // `none` is a name without an extension; `.none` the extension itself.
+            let extensions = list.map { $0 == "none" ? "" : $0.hasPrefix(".") ? String($0.dropFirst()) : $0 }
+            guard
+                zip(list, extensions).allSatisfy({ typed, ext in
+                    typed == "none" || (!ext.isEmpty && ext.allSatisfy { $0.isLetter || $0.isNumber })
+                })
+            else { return nil }
             return .fileExtension(extensions)
         case .size:
             return size(lower).map { .size($0) }
@@ -308,6 +337,18 @@ public struct SearchQuery: Equatable, Sendable {
             return .attributes(attributes.compactMap { $0 }.filter { seen.insert($0).inserted }, is: key == .is)
         case .skip:
             return names(value).map { .skipFolders($0) }
+        case .from:
+            return names(value).map { .downloadedFrom($0) }
+        case .color:
+            let colors = list.map { colorWords[$0] }
+            guard colors.allSatisfy({ $0 != nil }) else { return nil }
+            var seen = Set<SearchTagColor>()
+            return .tagColors(colors.compactMap { $0 }.filter { seen.insert($0).inserted })
+        case .owner:
+            // As typed: a user's name is told by the system, which may not take it case aside.
+            let owners = value.split(separator: ",").map(String.init).filter { !$0.isEmpty }
+            guard !owners.isEmpty, owners.allSatisfy({ ownerID($0) != nil }) else { return nil }
+            return .owners(owners)
         case .perm:
             // As typed: `S` and `T` aren't `s` and `t`.
             let modes = value.split(separator: ",").map { SearchPermissions.permission(String($0)) }

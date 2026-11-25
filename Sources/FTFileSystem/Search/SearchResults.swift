@@ -43,7 +43,39 @@ public enum SearchResults {
     private static let slash = UInt16(UInt8(ascii: "/"))
 
     /// The extension of `name`, from its last dot, lowercased; "" when the name has no dot or only one at its start.
+    /// An ASCII extension, nearly every one, is lowered from the name's bytes, with no copy of the name: once each item
+    /// a search passes asks for it (`kind:`, `ext:`), it cost more than reading the item.
     static func extensionOf(_ name: String) -> String {
+        var name = name
+        let fast = name.withUTF8 { bytes -> String? in
+            // From the end to the last dot: whether the extension is ASCII, and has a capital to lower.
+            var index = bytes.count - 1
+            var capitals = false
+            while index >= 0 {
+                let byte = bytes[index]
+                if byte == UInt8(ascii: ".") { break }
+                if byte >= 0x80 { return nil }
+                if byte >= UInt8(ascii: "A") && byte <= UInt8(ascii: "Z") { capitals = true }
+                index -= 1
+            }
+            // No dot, or only one that starts the name: no extension. One of dots alone has nothing after its last.
+            if index <= 0 { return "" }
+            let ext = UnsafeBufferPointer(rebasing: bytes[(index + 1)...])
+            guard capitals else { return String(decoding: ext, as: UTF8.self) }
+            return String(unsafeUninitializedCapacity: ext.count) { buffer in
+                for offset in 0..<ext.count {
+                    let byte = ext[offset]
+                    buffer[offset] = byte >= UInt8(ascii: "A") && byte <= UInt8(ascii: "Z") ? byte | 0x20 : byte
+                }
+                return ext.count
+            }
+        }
+        if let fast { return fast }
+        return extensionOfAny(name)
+    }
+
+    /// `extensionOf` for any name, by its UTF-16 units.
+    static func extensionOfAny(_ name: String) -> String {
         let units = Array(name.utf16)
         let dot = UInt16(UInt8(ascii: "."))
         guard let last = units.lastIndex(of: dot) else { return "" }

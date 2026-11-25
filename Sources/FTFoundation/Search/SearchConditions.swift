@@ -80,7 +80,8 @@ public enum SearchDateField: String, CaseIterable, Codable, Sendable, Hashable {
 
 /// What about an item a condition can ask, beyond its name, kind, size and dates.
 public enum SearchAttribute: String, CaseIterable, Codable, Sendable, Hashable {
-    case hidden, executable, readOnly, locked, empty, tagged, file, folder, alias, symbolicLink
+    case hidden, executable, readOnly, locked, empty, tagged, file, folder, alias, symbolicLink, cloud, downloaded,
+        broken
 
     /// As the Attribute menu names it.
     public var label: String {
@@ -95,6 +96,9 @@ public enum SearchAttribute: String, CaseIterable, Codable, Sendable, Hashable {
         case .folder: "Folder"
         case .alias: "Alias"
         case .symbolicLink: "Symbolic Link"
+        case .cloud: "Only in the Cloud"
+        case .downloaded: "Downloaded"
+        case .broken: "Broken Link or Alias"
         }
     }
 
@@ -121,8 +125,34 @@ public enum SearchAttribute: String, CaseIterable, Codable, Sendable, Hashable {
         case (.alias, false): "Not an alias"
         case (.symbolicLink, true): "Symbolic link"
         case (.symbolicLink, false): "Not a symbolic link"
+        case (.cloud, true): "Only in the cloud"
+        case (.cloud, false): "Not only in the cloud"
+        case (.downloaded, true): "Downloaded from the internet"
+        case (.downloaded, false): "Not downloaded from the internet"
+        case (.broken, true): "Broken link or alias"
+        case (.broken, false): "Not a broken link or alias"
         }
     }
+}
+
+/// The seven colors a Finder tag can have, by the words typed for them.
+public enum SearchTagColor: String, CaseIterable, Codable, Sendable, Hashable {
+    case red, orange, yellow, green, blue, purple, gray
+
+    /// The number Finder stores for the color.
+    public var finderNumber: Int {
+        switch self {
+        case .gray: 1
+        case .green: 2
+        case .purple: 3
+        case .blue: 4
+        case .yellow: 5
+        case .red: 6
+        case .orange: 7
+        }
+    }
+
+    public var label: String { rawValue.prefix(1).uppercased() + rawValue.dropFirst() }
 }
 
 /// How a size compares.
@@ -397,7 +427,8 @@ public struct SearchDateSpan: Equatable, Sendable, Hashable {
 public enum SearchCondition: Equatable, Codable, Sendable, Hashable {
     /// Any of these kinds; none chosen asks for nothing.
     case kind(Set<SearchKind>)
-    /// Any of these extensions, lowercase, without the dot; none asks for nothing.
+    /// Any of these extensions, lowercase, without the dot, "" being a name without one (`ext:none`); none asks for
+    /// nothing.
     case fileExtension([String])
     case size(SearchSizeRule)
     case date(SearchDateField, SearchDateRule)
@@ -407,11 +438,17 @@ public enum SearchCondition: Equatable, Codable, Sendable, Hashable {
     case attributes([SearchAttribute], is: Bool)
     /// Folders of these names, wherever they are, aren't gone into.
     case skipFolders([String])
+    /// Owned by any of these users, by name, by number, or `me`.
+    case owners([String])
+    /// A tag of any of these colors, whatever its name.
+    case tagColors([SearchTagColor])
+    /// Downloaded from a place whose address holds any of these, case aside (`from:github.com`).
+    case downloadedFrom([String])
     /// An item's permissions are any of these modes (`0o7777`: the read, write and run bits of its owner, its group and
     /// everyone, with set-user, set-group and sticky).
     case permissions([SearchPermission])
-    /// What the condition asks for, not: for a kind, an extension, tags, permissions, a size and a date
-    /// (`kind:!pdf`, `size:!1mb`, `modified:!today`).
+    /// What the condition asks for, not: for a kind, an extension, tags, colors, owners, permissions, where from, a
+    /// size and a date (`kind:!pdf`, `size:!1mb`, `modified:!today`).
     indirect case not(SearchCondition)
 
     /// What the Add a Condition menu offers, in its order, with what each starts as.
@@ -440,6 +477,9 @@ public enum SearchCondition: Equatable, Codable, Sendable, Hashable {
         case .skipFolders(let names): !names.isEmpty
         case .permissions(let modes): !modes.isEmpty
         case .attributes(let attributes, _): !attributes.isEmpty
+        case .owners(let names): !names.isEmpty
+        case .tagColors(let colors): !colors.isEmpty
+        case .downloadedFrom(let places): !places.isEmpty
         case .not(let condition): condition.asksForSomething
         default: true
         }
@@ -449,6 +489,7 @@ public enum SearchCondition: Equatable, Codable, Sendable, Hashable {
     public var readsEachItem: Bool {
         switch self {
         case .kind, .fileExtension, .skipFolders: false
+        case .owners, .tagColors, .downloadedFrom: true
         case .attributes(let attributes, _):
             !attributes.allSatisfy { [.hidden, .symbolicLink, .file, .folder].contains($0) }
         case .not(let condition): condition.readsEachItem
@@ -470,7 +511,8 @@ public enum SearchConditionText {
             let names = SearchKind.allCases.filter(kinds.contains).map(\.label)
             return names.isEmpty ? "Kind is any" : "Kind is " + names.joined(separator: ", ")
         case .fileExtension(let extensions):
-            return extensions.isEmpty ? "Extension is any" : "Extension is " + extensions.joined(separator: ", ")
+            return extensions.isEmpty
+                ? "Extension is any" : "Extension is " + extensions.map(extensionWords).joined(separator: ", ")
         case .size(let rule):
             switch rule.comparison {
             case .larger: return "Size is larger than \(number(rule.value, locale)) \(rule.unit.label(rule.value))"
@@ -497,6 +539,12 @@ public enum SearchConditionText {
             return sentence(attributes.map { $0.chip(is: value) }, joinedBy: value ? " or " : " and ")
         case .skipFolders(let names):
             return names.isEmpty ? "Skipping no folders" : "Skipping " + names.joined(separator: ", ")
+        case .owners(let names):
+            return "Owned by " + names.joined(separator: " or ")
+        case .tagColors(let colors):
+            return "Has a " + colors.map(\.rawValue).joined(separator: " or ") + " tag"
+        case .downloadedFrom(let places):
+            return "Downloaded from " + places.joined(separator: " or ")
         case .permissions(let modes):
             return "Permissions are " + modes.map(SearchPermissions.words).joined(separator: " or ")
         case .not(let condition):
@@ -510,7 +558,13 @@ public enum SearchConditionText {
         case .kind(let kinds):
             return "Kind is not " + SearchKind.allCases.filter(kinds.contains).map(\.label).joined(separator: " or ")
         case .fileExtension(let extensions):
-            return "Extension is not " + extensions.joined(separator: " or ")
+            return "Extension is not " + extensions.map(extensionWords).joined(separator: " or ")
+        case .owners(let names):
+            return "Not owned by " + names.joined(separator: " or ")
+        case .tagColors(let colors):
+            return "Has no " + colors.map(\.rawValue).joined(separator: " or ") + " tag"
+        case .downloadedFrom(let places):
+            return "Not downloaded from " + places.joined(separator: " or ")
         case .tags(let tags, _):
             return "Not tagged " + tags.joined(separator: " or ")
         case .permissions(let modes):
@@ -528,6 +582,11 @@ public enum SearchConditionText {
         default:
             return "Not: " + chip(condition, locale: locale)
         }
+    }
+
+    /// An extension as a chip says it: none for the names without one.
+    private static func extensionWords(_ fileExtension: String) -> String {
+        fileExtension.isEmpty ? "none" : fileExtension
     }
 
     /// Chips said as one: the first as it is, the others from a small letter.
