@@ -564,10 +564,20 @@ final class InfoController {
         let hidden = window?.isBehindAnotherTab == true || window?.isMiniaturized == true
         let measures = preferences.autoCalculateFolderSizes && !hidden
         let shown = targetOverride == nil ? nil : resolved?.item
-        auto.setPath(
-            AutoFolderSize.path(
+        // Several selected: the folders among those shown, from the top of the list down.
+        var several: [(path: String, kind: FTFoundation.EntryKind)] = []
+        if measures, panelOpen || rowOpen, content.selection.paths.count > 1 {
+            let placed = content.selectedEntries.filter(\.isFolderSizeEligible).compactMap { entry in
+                content.position(of: entry.path).map { (entry, $0) }
+            }
+            several = placed.sorted { $0.1 < $1.1 }.map {
+                ($0.0.path, FTFoundation.EntryKind(rawValue: $0.0.kind.rawValue) ?? .other)
+            }
+        }
+        auto.setPaths(
+            AutoFolderSize.paths(
                 infoPanelOpen: measures && panelOpen, infoRowOpen: measures && rowOpen,
-                selectedPaths: content.selection.paths, selected: selected, shownFolder: folder,
+                selectedPaths: content.selection.paths, selected: selected, selection: several, shownFolder: folder,
                 showInfoPath: targetOverride, infoItem: shown.map { ($0.path, $0.kind) }, homePath: homePath))
     }
 

@@ -273,6 +273,40 @@ struct InfoPanelModelTests {
         #expect(AutoFolderSize.delayMilliseconds == 500)
     }
 
+    @Test func severalSelectedFoldersAreMeasuredAutomaticallyByTheSameRules() {
+        let home = "/Users/demo"
+        let selection: [(path: String, kind: EntryKind)] = [
+            ("/Users/demo/Projects", .directory), ("/Users/demo/notes.txt", .file), ("/Applications", .directory),
+            ("/Applications/Keynote.app", .bundle), ("/Users/demo/link", .symlinkDirectory),
+            ("/Users/demo/Music", .directory),
+        ]
+        let selected = selection.map(\.path)
+        func paths(
+            panel: Bool = true, row: Bool = false, showInfo: String? = nil,
+            item: (path: String, kind: EntryKind)? = nil
+        ) -> [String] {
+            AutoFolderSize.paths(
+                infoPanelOpen: panel, infoRowOpen: row, selectedPaths: selected, selected: nil, selection: selection,
+                showInfoPath: showInfo, infoItem: item, homePath: home)
+        }
+        #expect(paths() == ["/Users/demo/Projects", "/Applications/Keynote.app", "/Users/demo/Music"])
+        #expect(paths(panel: false, row: true) == paths())
+        #expect(paths(panel: false) == [])
+        // Get Info's item in the panel goes first; the row still measures the selection.
+        let shown = (path: "/Users/demo/Pictures", kind: EntryKind.directory)
+        #expect(paths(showInfo: shown.path, item: shown) == [shown.path])
+        #expect(paths(panel: false, row: true, showInfo: shown.path, item: shown) == paths())
+        // One item selected, or none, is what `path` names.
+        let one = (path: "/Users/demo/Projects", kind: EntryKind.directory)
+        #expect(
+            AutoFolderSize.paths(infoPanelOpen: true, selectedPaths: [one.path], selected: one, homePath: home)
+                == [one.path])
+        #expect(
+            AutoFolderSize.paths(
+                infoPanelOpen: true, selectedPaths: [], selected: nil, shownFolder: (home, .directory),
+                homePath: home) == [home])
+    }
+
     private let autoHome = "/Users/demo"
     private let autoFolder = (path: "/Users/demo/Projects", kind: EntryKind.directory)
 

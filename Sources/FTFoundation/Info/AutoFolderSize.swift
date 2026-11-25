@@ -23,11 +23,36 @@ public enum AutoFolderSize {
         } else {
             item = selectedPaths.count == 1 && selected?.path == selectedPaths[0] ? selected : nil
         }
-        guard let item, item.kind.isFolderSizeEligible else { return nil }
-        if item.kind == .bundle { return item.path }
+        guard let item, isMeasured(item, homePath: homePath) else { return nil }
+        return item.path
+    }
+
+    /// The folders the Info panel or the Info Row measures by themselves, one after another: what `path` names, or,
+    /// with several items selected and nothing from Get Info in the panel, those of `selection` (the selected items
+    /// shown, in the list's order) measured by the same rules, the home folder, folders in it and bundles anywhere.
+    public static func paths(
+        infoPanelOpen: Bool, infoRowOpen: Bool = false, selectedPaths: [String],
+        selected: (path: String, kind: EntryKind)?, selection: [(path: String, kind: EntryKind)] = [],
+        shownFolder: (path: String, kind: EntryKind)? = nil, showInfoPath: String? = nil,
+        infoItem: (path: String, kind: EntryKind)? = nil, homePath: String
+    ) -> [String] {
+        guard infoPanelOpen || infoRowOpen else { return [] }
+        if selectedPaths.count > 1, !(infoPanelOpen && showInfoPath != nil) {
+            return selection.filter { isMeasured($0, homePath: homePath) }.map(\.path)
+        }
+        let one = path(
+            infoPanelOpen: infoPanelOpen, infoRowOpen: infoRowOpen, selectedPaths: selectedPaths, selected: selected,
+            shownFolder: shownFolder, showInfoPath: showInfoPath, infoItem: infoItem, homePath: homePath)
+        return one.map { [$0] } ?? []
+    }
+
+    /// Whether the app measures `item` by itself: a bundle anywhere, else a folder that is the home folder or in it.
+    private static func isMeasured(_ item: (path: String, kind: EntryKind), homePath: String) -> Bool {
+        guard item.kind.isFolderSizeEligible else { return false }
+        if item.kind == .bundle { return true }
         var home = homePath
         while home.hasSuffix("/") { home.removeLast() }
-        guard !home.isEmpty else { return nil }
-        return item.path == home || item.path.hasPrefix(home + "/") ? item.path : nil
+        guard !home.isEmpty else { return false }
+        return item.path == home || item.path.hasPrefix(home + "/")
     }
 }
