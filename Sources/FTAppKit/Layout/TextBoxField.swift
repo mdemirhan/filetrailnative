@@ -162,6 +162,9 @@ final class PlainCopyFieldEditor: NSTextView {
         if let editor = editors.object(forKey: window) { return editor }
         let editor = PlainCopyFieldEditor(frame: .zero)
         editor.isFieldEditor = true
+        // Lines as far apart as the label drew them: a text view of its own would add the font's leading, where the
+        // paragraph says how tall a line is.
+        editor.textLayoutManager?.usesFontLeading = false
         editors.setObject(editor, forKey: window)
         return editor
     }

@@ -160,7 +160,7 @@ final class SearchSession {
         return shown
     }
 
-    private var resultsVersion = 0
+    private(set) var resultsVersion = 0
     private var shownCache: (version: Int, items: [SearchResultItem])?
     /// What the committed text kept of the results, in order, and what it was judged for: the text, the results (their
     /// generation and how many had come), the order and the scope.
@@ -493,6 +493,16 @@ final class SearchSession {
         else { return }
         cancelLiveSearch()
         refine(pending)
+    }
+
+    /// The keyboard is going to the results while a new search waits for the keyboard to rest: the search starts
+    /// now, so that what is selected next is one of its results. False when none waits.
+    func startPendingSearch() -> Bool {
+        guard let pending = pendingLiveQuery, SearchTiming.trimmed(draftQuery) == pending, !canRefine(pending)
+        else { return false }
+        cancelLiveSearch()
+        startSearch(pending, rootPath: resolveRootPath(), live: true, keepMatching: true)
+        return true
     }
 
     /// Return. Whether the results for the query were already on screen and final.

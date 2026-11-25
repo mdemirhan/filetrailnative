@@ -67,7 +67,9 @@ public struct SearchNameMatch: @unchecked Sendable {
             let pattern = try GlobPattern.regex(for: request.query)
             let ignoreCase = !SmartCase.globHasUppercase(request.query)
             test = .expressions(try Self.expressions(pattern, ignoreCase: ignoreCase, copies: copies))
-            required = GlobPattern.requiredText(request.query).map {
+            // A name is looked at without its folders, so not for the slash of a `**/` the glob starts with.
+            let plain = fullPath ? request.query : String(Self.withoutLeadingFolders(request.query))
+            required = GlobPattern.requiredText(plain).map {
                 ignoreCase ? Array($0.lowercased().utf8) : Array($0.utf8)
             }
             requiredIgnoresCase = ignoreCase
@@ -89,11 +91,14 @@ public struct SearchNameMatch: @unchecked Sendable {
         guard query.contains("/") else { return false }
         switch mode {
         case .text:
-            return true
+            // Only a word the name must hold: one left out (`report !a/b`) leaves nothing out, and the rest is found.
+            return NameTerms.words(query).contains { $0.contains("/") }
         case .regex:
             return !query.contains { "|[?*{\\".contains($0) }
         case .glob:
             guard !query.contains("{") else { return false }
+            // `**/` at the start is any folders or none: what follows is matched against the name.
+            let query = Self.withoutLeadingFolders(query)
             var inSet = false
             var previous: Character?
             var setStart = 0
@@ -113,6 +118,13 @@ public struct SearchNameMatch: @unchecked Sendable {
             // A set never closed is letters as they are.
             return inSet
         }
+    }
+
+    /// A glob without the `**/` it starts with, however many.
+    static func withoutLeadingFolders(_ glob: String) -> Substring {
+        var rest = Substring(glob)
+        while rest.hasPrefix("**/") { rest = rest.dropFirst(3) }
+        return rest
     }
 
     /// Whether every name `query` finds starts with a dot, so that only hidden items have one. A regular expression

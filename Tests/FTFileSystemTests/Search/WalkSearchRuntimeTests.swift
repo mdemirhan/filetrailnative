@@ -209,7 +209,8 @@ private func waitUntil(seconds: Double, _ condition: () -> Bool) async throws ->
                 (SearchPatternModePreference.regex, "^[^./]+$", ["config", "lib"]),
                 (.regex, "config|a/b", ["config"]), (.regex, "^\\.?config", ["config"]),
                 (.regex, "^\\.env|config", ["config"]), (.glob, "[!/]onfig", ["config"]),
-                (.glob, "{config,a/b}", ["config"]),
+                (.glob, "{config,a/b}", ["config"]), (.glob, "**/conf*", ["config"]),
+                (.glob, "**/**/deep.*", ["deep.txt"]), (.text, "config !a/b", ["config"]),
             ] {
                 let (update, found) = try runWalk(
                     runtime, SearchRequest(rootPath: folder.path, query: query, patternMode: mode))

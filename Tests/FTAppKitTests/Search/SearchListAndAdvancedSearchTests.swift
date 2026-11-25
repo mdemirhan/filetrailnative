@@ -295,6 +295,44 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // ↓ pressed before a new search has started starts it: its first result is the one selected, not one of
+        // the search before.
+        @Test func downBeforeANewSearchStartsIt() async throws {
+            let (harness, tab, engine, timers) = try await open()
+            engine.finds = { request in ([request.query + "-one.txt"], false, false) }
+            let editor = try focus(tab)
+            type("foo", into: editor)
+            timers.advance(0.4)
+            editor.selectAll(nil)
+            type("bar", into: editor)
+            #expect(engine.starts.last?.query == "foo")
+            editor.doCommand(by: #selector(NSResponder.moveDown(_:)))
+            #expect(engine.starts.last?.query == "bar")
+            #expect(tab.searchField?.currentEditor() == nil)
+            timers.advance(0.4)
+            #expect(engine.starts.filter { $0.query == "bar" }.count == 1)
+            await harness.close()
+        }
+
+        // Clear Search Conditions keeps the place searched, also when the name left is one letter, too short for
+        // typing to search for.
+        @Test func clearingConditionsKeepsThePlaceSearched() async throws {
+            let (harness, tab, engine, timers) = try await open()
+            engine.finds = { _ in (["a.pdf"], false, false) }
+            let editor = try focus(tab)
+            type("a kind:pdf", into: editor)
+            timers.advance(0.4)
+            tab.search.session.changeRoot("/usr")
+            #expect(engine.starts.last?.rootPath == "/usr")
+            tab.content.focusList()
+            tab.perform(.clearSearchConditions)
+            #expect(engine.starts.last?.query == "a")
+            #expect(engine.starts.last?.conditions.isEmpty == true)
+            #expect(engine.starts.last?.rootPath == "/usr")
+            #expect(tab.search.session.isSearchMode)
+            await harness.close()
+        }
+
         // Clear Search Conditions from the results, where it is usually chosen, goes through the field too: the
         // field takes the keyboard and ⌘Z there brings the words back.
         @Test func clearingConditionsFromTheResultsCanBeUndone() async throws {
@@ -367,6 +405,12 @@ extension ExplorerWindowlessTests {
             #expect(tab.activePane === first)
             #expect(tab.searchField?.stringValue == "mine kind:")
             #expect(second.search.session.draftQuery == "")
+            // With the keyboard in the field for the other pane, the word still goes at the end of this pane's text.
+            tab.perform(.switchToOtherPane)
+            let other = try focus(tab)
+            type("ab", into: other)
+            first.search.typeConditionWord(.size)
+            #expect(tab.searchField?.stringValue == "mine kind: size:")
             await harness.close()
         }
 

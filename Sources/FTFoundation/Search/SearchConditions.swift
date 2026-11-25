@@ -190,20 +190,27 @@ public struct SearchSizeRule: Equatable, Codable, Sendable, Hashable {
             guard bytes.isFinite else { return bytes > 0 ? Self.most : 0 }
             return bytes >= Double(Self.most) ? Self.most : bytes <= 0 ? 0 : Int64(bytes)
         }
-        let low = count((value * unit.bytes).rounded())
+        // What a decimal leaves over when multiplied (2.11 × 1000 is 2110.0000000000002, and more the larger the
+        // size) isn't a part of a byte: within it, the size is the whole byte beside it.
+        func snapped(_ bytes: Double) -> Double {
+            let whole = bytes.rounded()
+            return abs(bytes - whole) <= max(1e-6, bytes.ulp * 4) ? whole : bytes
+        }
+        func up(_ bytes: Double) -> Int64 { count(snapped(bytes).rounded(.up)) }
+        func down(_ bytes: Double) -> Int64 { count(snapped(bytes).rounded(.down)) }
+        let bytes = value * unit.bytes
         switch comparison {
         // A part of a byte: larger than 1.5 bytes is 2 and up, smaller than 1.4 is 1 and down.
-        case .larger: return (count((value * unit.bytes + 1e-6).rounded(.down)), nil)
-        case .smaller: return (nil, count((value * unit.bytes - 1e-6).rounded(.up)))
-        case .atLeast: return (count((value * unit.bytes - 1e-6).rounded(.up)) - 1, nil)
-        case .atMost: return (nil, count((value * unit.bytes + 1e-6).rounded(.down)) + 1)
+        case .larger: return (down(bytes), nil)
+        case .smaller: return (nil, up(bytes))
+        case .atLeast: return (up(bytes) - 1, nil)
+        case .atMost: return (nil, down(bytes) + 1)
         case .between:
-            let high = count((upper * unit.bytes).rounded())
-            return (min(low, high) - 1, max(low, high) + 1)
+            // From the first whole byte in the range to the last.
+            let other = upper * unit.bytes
+            return (up(min(bytes, other)) - 1, down(max(bytes, other)) + 1)
         case .equal:
-            // Up to a whole byte, past what a decimal leaves over (2.11 × 1000 is 2110.0000000000002).
-            func whole(_ bytes: Double) -> Int64 { count((bytes - 1e-6).rounded(.up)) }
-            return (whole(value * unit.bytes) - 1, whole(upTo * unit.bytes))
+            return (up(bytes) - 1, up(upTo * unit.bytes))
         }
     }
 
@@ -315,12 +322,17 @@ public enum SearchDateRule: Equatable, Codable, Sendable, Hashable {
             return SearchDateSpan(start: interval.start, end: interval.end)
         }
         let today = calendar.startOfDay(for: now)
+        // Where the day of `day` ends: the next day's start, also where the clock skips midnight and the day starts
+        // at one.
+        func end(of day: Date) -> Date? {
+            calendar.dateInterval(of: .day, for: day)?.end
+                ?? calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: day))
+        }
         // Where "the last N" starts and "more than N ago" ends: the days are counted whole, today being the first, so
         // "the last 2 days" is yesterday and today, a week is 7 days as `7d` is, and what one leaves out the other
         // finds.
         func edge(_ count: Int, _ unit: SearchTimeUnit) -> Date? {
-            calendar.date(byAdding: unit.component, value: -count, to: today)
-                .flatMap { calendar.date(byAdding: .day, value: 1, to: $0) }
+            calendar.date(byAdding: unit.component, value: -count, to: today).flatMap(end(of:))
         }
         switch self {
         case .today: return period(.day)
@@ -335,16 +347,14 @@ public enum SearchDateRule: Equatable, Codable, Sendable, Hashable {
         case .before(let day):
             return SearchDateSpan(end: calendar.startOfDay(for: day))
         case .after(let day):
-            return SearchDateSpan(start: calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: day)))
+            return SearchDateSpan(start: end(of: day))
         case .onOrAfter(let day):
             return SearchDateSpan(start: calendar.startOfDay(for: day))
         case .onOrBefore(let day):
-            return SearchDateSpan(end: calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: day)))
+            return SearchDateSpan(end: end(of: day))
         case .between(let first, let second):
             let (from, to) = first <= second ? (first, second) : (second, first)
-            return SearchDateSpan(
-                start: calendar.startOfDay(for: from),
-                end: calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: to)))
+            return SearchDateSpan(start: calendar.startOfDay(for: from), end: end(of: to))
         }
     }
 

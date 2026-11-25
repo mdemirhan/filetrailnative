@@ -105,6 +105,18 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
                 range: NSRange(location: caret, length: 0), sections: [Section(title: "Conditions", rows: rows)],
                 highlightsFirst: false)
         }
+        // A name in quotes being typed before other words: the quote, not closed yet, runs to the text's end, but
+        // the name is what is before the caret, and only that is replaced.
+        if let key = word.key, key == .tag || key == .skip, word.role == .unfinished,
+            caret < NSMaxRange(word.range), caret > word.range.location + word.keyLength,
+            SearchQuery.namesFault(word.value.hasPrefix("!") ? String(word.value.dropFirst()) : word.value)
+                == .openQuote
+        {
+            return make(
+                query: (query as NSString).substring(to: caret), caret: caret, tags: tags(), folders: folders(),
+                listsWordsForNewWord: listsWordsForNewWord, offersConditionWords: offersConditionWords, now: now,
+                calendar: calendar)
+        }
         if let key = word.key {
             // A word more typing can't save says what is wrong with it, and what would do.
             if !word.canStillBeRead {
@@ -197,7 +209,9 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
             if typed.count <= SearchQuery.largestCountDigits, typed.allSatisfy(SearchQuery.isDigit),
                 let number = Int(typed), number > 0
             {
-                return [
+                // Four digits may be a year, which alone is no date: the year is offered first, as its months.
+                let year = typed.count == 4 && number >= 1000 ? [("In \(typed)", "\(typed)-01..\(typed)-12")] : []
+                return year + [
                     ("Within the last \(number) \(SearchTimeUnit.days.label(number))", "\(number)d"),
                     ("Within the last \(number) \(SearchTimeUnit.weeks.label(number))", "\(number)w"),
                     ("Within the last \(number) \(SearchTimeUnit.months.label(number))", "\(number)m"),
@@ -209,7 +223,10 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
             let calendar = SearchQuery.typedCalendar(calendar)
             let year = calendar.component(.year, from: now)
             let lastMonth = calendar.date(byAdding: .month, value: -1, to: now) ?? now
-            let monthName = lastMonth.formatted(.dateTime.month(.wide).year().locale(Locale(identifier: "en_US")))
+            // Named in the calendar it is typed in: the row searches the month it says.
+            let monthName = lastMonth.formatted(
+                Date.FormatStyle(locale: Locale(identifier: "en_US"), calendar: calendar, timeZone: calendar.timeZone)
+                    .month(.wide).year())
             let monthWord = String(
                 format: "%04d-%02d", calendar.component(.year, from: lastMonth),
                 calendar.component(.month, from: lastMonth))

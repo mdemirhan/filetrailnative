@@ -234,7 +234,7 @@
     "search stop spinner": {"swift": "searchBar.spinner"},
     "search done button": {"swift": "searchBar.done"},
     "search suggestions": {"swift": "searchSuggestions"},
-    "search edit button": {"swift": "toolbar.search.edit"},
+    "advanced search button": {"swift": "toolbar.search.advanced"},
     "advanced search box": {"swift": "advancedSearch"},
     "advanced search text": {"swift": "advancedSearch.text"},
     "advanced search suggestions": {"swift": "advancedSearch.suggestions"},

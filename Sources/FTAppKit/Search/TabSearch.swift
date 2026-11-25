@@ -247,7 +247,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     }
 
     func controlTextDidChange(_ notification: Notification) {
-        guard let field else { return }
+        guard let field, !replacingText else { return }
         session.updateDraft(field.stringValue)
     }
 
@@ -260,7 +260,14 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
             submit()
             return true
         case #selector(NSResponder.moveDown(_:)):
-            // ↓ goes into the results, selecting the first if nothing is.
+            // ↓ goes into the results, selecting the first if nothing is. A search still waiting for the keyboard to
+            // rest starts now, and its first result is the one selected, as after Return.
+            if session.startPendingSearch() {
+                dismissField()
+                session.selectFirstResultWhenDone = true
+                if !session.isRunning { selectFirstResultWhenDone() }
+                return true
+            }
             guard session.isSearchMode else { return true }
             dismissField()
             selectFirstResultIfNone()
@@ -587,11 +594,16 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     /// A condition's word from the field's menu, typed after the word at the caret: its values are listed.
     func typeConditionWord(_ key: SearchQueryKey) {
         // From the other pane's results bar: the field is this pane's first, so the word goes into this search.
-        if !drivesField { tab.activate(pane) }
+        let switched = !drivesField
+        let hadKeyboard = field?.isActive ?? false
+        if switched { tab.activate(pane) }
         guard drivesField, let field, let window = tab.window else { return }
         if !field.isActive {
             tab.explorerToolbar.beginSearch()
             if !field.isActive { window.makeFirstResponder(field) }
+        }
+        // The field took the keyboard, or its text is this pane's only now: the word goes at the end.
+        if switched || !hadKeyboard {
             field.currentEditor()?.selectedRange = NSRange(location: (field.stringValue as NSString).length, length: 0)
         }
         guard let editor = field.currentEditor() as? NSTextView else { return }
@@ -618,6 +630,8 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         if !session.isSearchMode, text.allSatisfy(\.isWhitespace) {
             session.showCachedResults(fromField: true)
             text = session.draftQuery
+            // In the field, the text brought back is selected, as ⌘F leaves it: Cancel comes back to it so.
+            if drivesField, let field, field.isActive { field.currentEditor()?.selectAll(nil) }
         }
         let root = session.isSearchMode ? session.rootPath : pane.shownFolderPath
         let box = AdvancedSearchBox(
@@ -648,21 +662,16 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
 
     /// `folderNames` of the results on screen, counted once for the same results: a `skip:` word asks at every key.
     private func resultFolderNames() -> [String] {
-        let results = session.results
-        let key = FolderNamesKey(count: results.count, first: results.first?.path, last: results.last?.path)
+        let key = session.resultsVersion
         if let counted = countedFolderNames, counted.key == key { return counted.names }
-        let names = Self.folderNames(in: results)
+        let names = Self.folderNames(in: session.results)
         countedFolderNames = (key, names)
         return names
     }
 
-    private struct FolderNamesKey: Equatable {
-        var count: Int
-        var first: String?
-        var last: String?
-    }
-
-    private var countedFolderNames: (key: FolderNamesKey, names: [String])?
+    private var countedFolderNames: (key: Int, names: [String])?
+    /// The field's text is being replaced whole by a command, which sends the search itself.
+    private var replacingText = false
 
     /// The names of the folders the results are in, below the folder searched, those holding the most results first.
     static func folderNames(in results: [SearchResultItem]) -> [String] {
@@ -690,7 +699,10 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         {
             // A step of its own for ⌘Z, apart from what was typed before it and what is typed after.
             editor.breakUndoCoalescing()
+            // The search is sent below, where it was: typed, a name of one letter would put the search away first.
+            replacingText = true
             editor.insertText(text, replacementRange: NSRange(location: 0, length: (editor.string as NSString).length))
+            replacingText = false
             editor.breakUndoCoalescing()
         }
         session.setDraft(text)

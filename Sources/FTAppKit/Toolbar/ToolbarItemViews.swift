@@ -435,7 +435,7 @@ final class ToolbarSearchField: NSSearchField {
     var onTextChange: () -> Void = {}
     private var selectionObserver: NSObjectProtocol?
     /// Advanced Search's button, after the ✕; the press comes from the toolbar, as the magnifier's does.
-    let editButton = ToolbarSearchEditButton()
+    let editButton = ToolbarAdvancedSearchButton()
     /// The field took the keyboard or let it go: the toolbar decides again whether it stays open (`updateSearchWidth`).
     var onEditingChange: () -> Void = {}
     /// The field is about to take the keyboard: it widens first, so its editor starts at the width it will have while
@@ -633,7 +633,7 @@ final class ToolbarSearchField: NSSearchField {
 /// Advanced Search's button at the search field's end: opens the search in the Advanced Search box, where a long one has room.
 /// The system's field holds a press back from the views in it, so the press comes from the toolbar
 /// (`ExplorerToolbar.pressSearchOptions`); VoiceOver presses it itself.
-final class ToolbarSearchEditButton: NSView {
+final class ToolbarAdvancedSearchButton: NSView {
     var onPress: () -> Void = {}
     private var hovered = false {
         didSet { if hovered != oldValue { needsDisplay = true } }
@@ -642,7 +642,7 @@ final class ToolbarSearchEditButton: NSView {
 
     override init(frame: NSRect) {
         super.init(frame: frame)
-        setAccessibilityIdentifier("toolbar.search.edit")
+        setAccessibilityIdentifier("toolbar.search.advanced")
         setAccessibilityElement(true)
         setAccessibilityRole(.button)
         setAccessibilityLabel(SearchBarText.advancedSearchName)

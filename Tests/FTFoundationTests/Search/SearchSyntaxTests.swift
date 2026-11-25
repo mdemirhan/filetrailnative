@@ -753,6 +753,87 @@ import Testing
         #expect(try !#require(suggest("skip:node")).highlightsFirst)
     }
 
+    // A size of many gigabytes is compared to the byte, whatever a decimal leaves over when multiplied.
+    @Test func largeSizesAreComparedToTheByte() {
+        #expect(!holds(">32.3gb", 32_300_000_000))
+        #expect(holds(">32.3gb", 32_300_000_001))
+        #expect(!holds("<32.2gb", 32_200_000_000))
+        #expect(holds("<32.2gb", 32_199_999_999))
+        #expect(holds(">=32.2gb", 32_200_000_000))
+        #expect(!holds(">=32.2gb", 32_199_999_999))
+        #expect(!holds("17.1gb", 17_200_000_000))
+        #expect(holds("17.1gb", 17_199_999_999))
+        #expect(holds("17.1gb", 17_100_000_000))
+        // Tenths of a gigabyte up to 2,000 GB, against whole-number arithmetic.
+        for tenths in stride(from: 1, through: 20_000, by: 7) {
+            let bytes = Int64(tenths) * 100_000_000
+            let text = "\(tenths / 10).\(tenths % 10)gb"
+            #expect(!holds(">" + text, bytes) && holds(">" + text, bytes + 1), "\(text)")
+            #expect(!holds("<" + text, bytes) && holds("<" + text, bytes - 1), "\(text)")
+            #expect(holds(">=" + text, bytes) && !holds(">=" + text, bytes - 1), "\(text)")
+            #expect(holds("<=" + text, bytes) && !holds("<=" + text, bytes + 1), "\(text)")
+            #expect(holds(text, bytes) && !holds(text, bytes - 1), "\(text)")
+            #expect(holds(text, bytes + 99_999_999) && !holds(text, bytes + 100_000_000), "\(text)")
+        }
+    }
+
+    // A range with a part of a byte at its ends is the whole bytes between them.
+    @Test func aRangeOfPartsOfABYteIsTheWholeBytesBetween() {
+        #expect(!holds("1.5b..2.5b", 1))
+        #expect(holds("1.5b..2.5b", 2))
+        #expect(!holds("1.5b..2.5b", 3))
+        #expect(holds("1.2345kb..2.0005kb", 2000))
+        #expect(!holds("1.2345kb..2.0005kb", 2001))
+        #expect(!holds("1.2345kb..2.0005kb", 1234))
+        #expect(holds("1mb..10mb", 1_000_000) && holds("1mb..10mb", 10_000_000))
+    }
+
+    // A day on which the clock skips midnight ends where the next starts.
+    @Test func aDayWithoutAMidnightEndsAtTheNext() throws {
+        var cairo = Calendar(identifier: .gregorian)
+        cairo.timeZone = try #require(TimeZone(identifier: "Africa/Cairo"))
+        let now = try #require(cairo.date(from: DateComponents(year: 2026, month: 6, day: 1)))
+        let next = try #require(cairo.date(from: DateComponents(year: 2026, month: 4, day: 25)))
+        for text in ["modified:2026-04-24", "modified:<=2026-04-24", "modified:2026-04-20..2026-04-24"] {
+            guard case .date(_, let rule)? = SearchQuery(text, calendar: cairo).conditions.first else {
+                Issue.record("\(text) is no date")
+                continue
+            }
+            #expect(rule.span(now: now, calendar: cairo).end == next, "\(text)")
+        }
+        guard case .date(_, let after)? = SearchQuery("modified:>2026-04-24", calendar: cairo).conditions.first
+        else {
+            Issue.record("no date")
+            return
+        }
+        #expect(after.span(now: now, calendar: cairo).start == next)
+    }
+
+    // The month's row says the month it types, whatever the Mac's calendar; a year alone is offered as its months.
+    @Test func dateRowsSayWhatTheyType() throws {
+        var persian = Calendar(identifier: .persian)
+        persian.timeZone = calendar.timeZone
+        let now = try #require(calendar.date(from: DateComponents(year: 2026, month: 11, day: 24)))
+        let list = try #require(
+            SearchQuerySuggestions.make(
+                query: "modified:", caret: 9, tags: [], folders: [], now: now, calendar: persian))
+        #expect(list.rows.contains { $0.title == "In October 2026" && $0.hint == "2026-10" })
+        let year = try #require(suggest("modified:2026"))
+        #expect(year.rows.first?.title == "In 2026")
+        #expect(year.rows.first?.hint == "2026-01..2026-12")
+        #expect(!query("modified:2026-01..2026-12").hasUnfinished)
+        #expect(try #require(suggest("modified:30")).rows.first?.hint == "30d")
+    }
+
+    // A name in quotes typed before other words is the name up to the caret: the words after it stay.
+    @Test func aQuotedNameTypedMidTextEndsAtTheCaret() throws {
+        let text = "tag:\"W kind:pdf"
+        let list = try #require(suggest(text, caret: 6))
+        #expect(list.range == NSRange(location: 0, length: 6))
+        #expect(list.rows.map(\.hint) == ["Work"])
+        #expect(list.rows.first?.replacement == "tag:Work ")
+    }
+
     // MARK: Names with a space
 
     // A tag or a folder with a space in its name is typed in quotes, after the colon, a comma or the `!`.

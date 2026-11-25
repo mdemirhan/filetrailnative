@@ -76,6 +76,16 @@ import Testing
         #expect(lines == 1)
     }
 
+    // The label's editor sets lines as far apart as the label drew them, not by the font's own leading.
+    @Test func theLabelsEditorKeepsTheLinesHeight() throws {
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 200, height: 100), styleMask: [.titled], backing: .buffered,
+            defer: false)
+        window.isReleasedWhenClosed = false
+        defer { window.close() }
+        #expect(PlainCopyFieldEditor.editor(for: window).textLayoutManager?.usesFontLeading == false)
+    }
+
     @Test func selectingTextKeepsItsRuns() throws {
         let string = NSMutableAttributedString(
             string: "Names without draft: ", attributes: [.font: NSFont.systemFont(ofSize: 13)])
