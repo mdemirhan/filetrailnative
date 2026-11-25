@@ -542,7 +542,8 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Upper and lower case, and accents", "Report"],
                 ["Matching the full path", "**/src/**/*.ts"],
-                ["Matching the full path", "**/docs/*"]
+                ["Matching the full path", "**/docs/*"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -557,7 +558,8 @@
                 ["Regex patterns", "\\.(jpg|png)$"],
                 ["Regex patterns", "^photo-\\d{2}\\.jpg$"],
                 ["Upper and lower case, and accents", "Report"],
-                ["Matching the full path", "/src/.*\\.ts$"]
+                ["Matching the full path", "/src/.*\\.ts$"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -919,6 +921,7 @@
                 ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
+                ["Conditions", "Not"],
                 ["Conditions", "More room"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
@@ -1006,14 +1009,17 @@
                 ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
                 ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "kind:pdf"],
                 ["Conditions", "ext:docx"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
                 ["Conditions", "Dates"],
                 ["Conditions", "tag:red"],
+                ["Conditions", "color:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "owner:me"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "from:github.com"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
@@ -1896,7 +1902,8 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Upper and lower case, and accents", "Report"],
                 ["Matching the full path", "**/src/**/*.ts"],
-                ["Matching the full path", "**/docs/*"]
+                ["Matching the full path", "**/docs/*"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -1911,7 +1918,8 @@
                 ["Regex patterns", "\\.(jpg|png)$"],
                 ["Regex patterns", "^photo-\\d{2}\\.jpg$"],
                 ["Upper and lower case, and accents", "Report"],
-                ["Matching the full path", "/src/.*\\.ts$"]
+                ["Matching the full path", "/src/.*\\.ts$"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -2273,6 +2281,7 @@
                 ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
+                ["Conditions", "Not"],
                 ["Conditions", "More room"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
@@ -2365,14 +2374,17 @@
                 ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
                 ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "kind:pdf"],
                 ["Conditions", "ext:docx"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
                 ["Conditions", "Dates"],
                 ["Conditions", "tag:red"],
+                ["Conditions", "color:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "owner:me"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "from:github.com"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
@@ -2920,7 +2932,8 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Upper and lower case, and accents", "Report"],
                 ["Matching the full path", "**/src/**/*.ts"],
-                ["Matching the full path", "**/docs/*"]
+                ["Matching the full path", "**/docs/*"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -2935,7 +2948,8 @@
                 ["Regex patterns", "\\.(jpg|png)$"],
                 ["Regex patterns", "^photo-\\d{2}\\.jpg$"],
                 ["Upper and lower case, and accents", "Report"],
-                ["Matching the full path", "/src/.*\\.ts$"]
+                ["Matching the full path", "/src/.*\\.ts$"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -3297,6 +3311,7 @@
                 ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
+                ["Conditions", "Not"],
                 ["Conditions", "More room"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
@@ -3384,14 +3399,17 @@
                 ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
                 ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "kind:pdf"],
                 ["Conditions", "ext:docx"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
                 ["Conditions", "Dates"],
                 ["Conditions", "tag:red"],
+                ["Conditions", "color:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "owner:me"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "from:github.com"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
@@ -3994,7 +4012,8 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Upper and lower case, and accents", "Report"],
                 ["Matching the full path", "**/src/**/*.ts"],
-                ["Matching the full path", "**/docs/*"]
+                ["Matching the full path", "**/docs/*"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -4009,7 +4028,8 @@
                 ["Regex patterns", "\\.(jpg|png)$"],
                 ["Regex patterns", "^photo-\\d{2}\\.jpg$"],
                 ["Upper and lower case, and accents", "Report"],
-                ["Matching the full path", "/src/.*\\.ts$"]
+                ["Matching the full path", "/src/.*\\.ts$"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -4357,6 +4377,7 @@
                 ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
+                ["Conditions", "Not"],
                 ["Conditions", "More room"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
@@ -4444,14 +4465,17 @@
                 ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
                 ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "kind:pdf"],
                 ["Conditions", "ext:docx"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
                 ["Conditions", "Dates"],
                 ["Conditions", "tag:red"],
+                ["Conditions", "color:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "owner:me"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "from:github.com"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
@@ -5016,7 +5040,8 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Upper and lower case, and accents", "Report"],
                 ["Matching the full path", "**/src/**/*.ts"],
-                ["Matching the full path", "**/docs/*"]
+                ["Matching the full path", "**/docs/*"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -5031,7 +5056,8 @@
                 ["Regex patterns", "\\.(jpg|png)$"],
                 ["Regex patterns", "^photo-\\d{2}\\.jpg$"],
                 ["Upper and lower case, and accents", "Report"],
-                ["Matching the full path", "/src/.*\\.ts$"]
+                ["Matching the full path", "/src/.*\\.ts$"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -5393,6 +5419,7 @@
                 ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
+                ["Conditions", "Not"],
                 ["Conditions", "More room"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
@@ -5480,14 +5507,17 @@
                 ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
                 ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "kind:pdf"],
                 ["Conditions", "ext:docx"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
                 ["Conditions", "Dates"],
                 ["Conditions", "tag:red"],
+                ["Conditions", "color:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "owner:me"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "from:github.com"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
@@ -6254,7 +6284,8 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Upper and lower case, and accents", "Report"],
                 ["Matching the full path", "**/src/**/*.ts"],
-                ["Matching the full path", "**/docs/*"]
+                ["Matching the full path", "**/docs/*"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -6269,7 +6300,8 @@
                 ["Regex patterns", "\\.(jpg|png)$"],
                 ["Regex patterns", "^photo-\\d{2}\\.jpg$"],
                 ["Upper and lower case, and accents", "Report"],
-                ["Matching the full path", "/src/.*\\.ts$"]
+                ["Matching the full path", "/src/.*\\.ts$"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -6493,6 +6525,7 @@
                 ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
+                ["Conditions", "Not"],
                 ["Conditions", "More room"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
@@ -6562,14 +6595,17 @@
                 ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
                 ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "kind:pdf"],
                 ["Conditions", "ext:docx"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
                 ["Conditions", "Dates"],
                 ["Conditions", "tag:red"],
+                ["Conditions", "color:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "owner:me"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "from:github.com"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
@@ -7097,7 +7133,8 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Upper and lower case, and accents", "Report"],
                 ["Matching the full path", "**/src/**/*.ts"],
-                ["Matching the full path", "**/docs/*"]
+                ["Matching the full path", "**/docs/*"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -7112,7 +7149,8 @@
                 ["Regex patterns", "\\.(jpg|png)$"],
                 ["Regex patterns", "^photo-\\d{2}\\.jpg$"],
                 ["Upper and lower case, and accents", "Report"],
-                ["Matching the full path", "/src/.*\\.ts$"]
+                ["Matching the full path", "/src/.*\\.ts$"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -7461,6 +7499,7 @@
                 ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
+                ["Conditions", "Not"],
                 ["Conditions", "More room"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
@@ -7548,14 +7587,17 @@
                 ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
                 ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "kind:pdf"],
                 ["Conditions", "ext:docx"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
                 ["Conditions", "Dates"],
                 ["Conditions", "tag:red"],
+                ["Conditions", "color:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "owner:me"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "from:github.com"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
@@ -8132,7 +8174,8 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Upper and lower case, and accents", "Report"],
                 ["Matching the full path", "**/src/**/*.ts"],
-                ["Matching the full path", "**/docs/*"]
+                ["Matching the full path", "**/docs/*"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -8147,7 +8190,8 @@
                 ["Regex patterns", "\\.(jpg|png)$"],
                 ["Regex patterns", "^photo-\\d{2}\\.jpg$"],
                 ["Upper and lower case, and accents", "Report"],
-                ["Matching the full path", "/src/.*\\.ts$"]
+                ["Matching the full path", "/src/.*\\.ts$"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -8509,6 +8553,7 @@
                 ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
+                ["Conditions", "Not"],
                 ["Conditions", "More room"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
@@ -8596,14 +8641,17 @@
                 ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
                 ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "kind:pdf"],
                 ["Conditions", "ext:docx"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
                 ["Conditions", "Dates"],
                 ["Conditions", "tag:red"],
+                ["Conditions", "color:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "owner:me"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "from:github.com"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
@@ -9234,7 +9282,8 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Upper and lower case, and accents", "Report"],
                 ["Matching the full path", "**/src/**/*.ts"],
-                ["Matching the full path", "**/docs/*"]
+                ["Matching the full path", "**/docs/*"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -9249,7 +9298,8 @@
                 ["Regex patterns", "\\.(jpg|png)$"],
                 ["Regex patterns", "^photo-\\d{2}\\.jpg$"],
                 ["Upper and lower case, and accents", "Report"],
-                ["Matching the full path", "/src/.*\\.ts$"]
+                ["Matching the full path", "/src/.*\\.ts$"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -9607,6 +9657,7 @@
                 ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
+                ["Conditions", "Not"],
                 ["Conditions", "More room"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
@@ -9687,14 +9738,17 @@
                 ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
                 ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "kind:pdf"],
                 ["Conditions", "ext:docx"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
                 ["Conditions", "Dates"],
                 ["Conditions", "tag:red"],
+                ["Conditions", "color:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "owner:me"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "from:github.com"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
@@ -10241,7 +10295,8 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Upper and lower case, and accents", "Report"],
                 ["Matching the full path", "**/src/**/*.ts"],
-                ["Matching the full path", "**/docs/*"]
+                ["Matching the full path", "**/docs/*"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -10256,7 +10311,8 @@
                 ["Regex patterns", "\\.(jpg|png)$"],
                 ["Regex patterns", "^photo-\\d{2}\\.jpg$"],
                 ["Upper and lower case, and accents", "Report"],
-                ["Matching the full path", "/src/.*\\.ts$"]
+                ["Matching the full path", "/src/.*\\.ts$"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -10623,6 +10679,7 @@
                 ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
+                ["Conditions", "Not"],
                 ["Conditions", "More room"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
@@ -10710,14 +10767,17 @@
                 ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
                 ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "kind:pdf"],
                 ["Conditions", "ext:docx"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
                 ["Conditions", "Dates"],
                 ["Conditions", "tag:red"],
+                ["Conditions", "color:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "owner:me"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "from:github.com"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
@@ -11329,7 +11389,8 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Upper and lower case, and accents", "Report"],
                 ["Matching the full path", "**/src/**/*.ts"],
-                ["Matching the full path", "**/docs/*"]
+                ["Matching the full path", "**/docs/*"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -11344,7 +11405,8 @@
                 ["Regex patterns", "\\.(jpg|png)$"],
                 ["Regex patterns", "^photo-\\d{2}\\.jpg$"],
                 ["Upper and lower case, and accents", "Report"],
-                ["Matching the full path", "/src/.*\\.ts$"]
+                ["Matching the full path", "/src/.*\\.ts$"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -11706,6 +11768,7 @@
                 ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
+                ["Conditions", "Not"],
                 ["Conditions", "More room"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
@@ -11786,14 +11849,17 @@
                 ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
                 ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "kind:pdf"],
                 ["Conditions", "ext:docx"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
                 ["Conditions", "Dates"],
                 ["Conditions", "tag:red"],
+                ["Conditions", "color:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "owner:me"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "from:github.com"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
@@ -12411,7 +12477,8 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Upper and lower case, and accents", "Report"],
                 ["Matching the full path", "**/src/**/*.ts"],
-                ["Matching the full path", "**/docs/*"]
+                ["Matching the full path", "**/docs/*"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -12426,7 +12493,8 @@
                 ["Regex patterns", "\\.(jpg|png)$"],
                 ["Regex patterns", "^photo-\\d{2}\\.jpg$"],
                 ["Upper and lower case, and accents", "Report"],
-                ["Matching the full path", "/src/.*\\.ts$"]
+                ["Matching the full path", "/src/.*\\.ts$"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -12778,6 +12846,7 @@
                 ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
+                ["Conditions", "Not"],
                 ["Conditions", "More room"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
@@ -12865,14 +12934,17 @@
                 ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
                 ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "kind:pdf"],
                 ["Conditions", "ext:docx"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
                 ["Conditions", "Dates"],
                 ["Conditions", "tag:red"],
+                ["Conditions", "color:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "owner:me"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "from:github.com"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
@@ -13466,7 +13538,8 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Upper and lower case, and accents", "Report"],
                 ["Matching the full path", "**/src/**/*.ts"],
-                ["Matching the full path", "**/docs/*"]
+                ["Matching the full path", "**/docs/*"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -13481,7 +13554,8 @@
                 ["Regex patterns", "\\.(jpg|png)$"],
                 ["Regex patterns", "^photo-\\d{2}\\.jpg$"],
                 ["Upper and lower case, and accents", "Report"],
-                ["Matching the full path", "/src/.*\\.ts$"]
+                ["Matching the full path", "/src/.*\\.ts$"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -13843,6 +13917,7 @@
                 ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
+                ["Conditions", "Not"],
                 ["Conditions", "More room"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
@@ -13930,14 +14005,17 @@
                 ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
                 ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "kind:pdf"],
                 ["Conditions", "ext:docx"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
                 ["Conditions", "Dates"],
                 ["Conditions", "tag:red"],
+                ["Conditions", "color:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "owner:me"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "from:github.com"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
@@ -14540,7 +14618,8 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Upper and lower case, and accents", "Report"],
                 ["Matching the full path", "**/src/**/*.ts"],
-                ["Matching the full path", "**/docs/*"]
+                ["Matching the full path", "**/docs/*"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -14555,7 +14634,8 @@
                 ["Regex patterns", "\\.(jpg|png)$"],
                 ["Regex patterns", "^photo-\\d{2}\\.jpg$"],
                 ["Upper and lower case, and accents", "Report"],
-                ["Matching the full path", "/src/.*\\.ts$"]
+                ["Matching the full path", "/src/.*\\.ts$"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -14904,6 +14984,7 @@
                 ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
+                ["Conditions", "Not"],
                 ["Conditions", "More room"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
@@ -14984,14 +15065,17 @@
                 ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
                 ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "kind:pdf"],
                 ["Conditions", "ext:docx"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
                 ["Conditions", "Dates"],
                 ["Conditions", "tag:red"],
+                ["Conditions", "color:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "owner:me"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "from:github.com"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],
@@ -15914,7 +15998,8 @@
                 ["Glob patterns", "[a-c]*.txt"],
                 ["Upper and lower case, and accents", "Report"],
                 ["Matching the full path", "**/src/**/*.ts"],
-                ["Matching the full path", "**/docs/*"]
+                ["Matching the full path", "**/docs/*"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -15929,7 +16014,8 @@
                 ["Regex patterns", "\\.(jpg|png)$"],
                 ["Regex patterns", "^photo-\\d{2}\\.jpg$"],
                 ["Upper and lower case, and accents", "Report"],
-                ["Matching the full path", "/src/.*\\.ts$"]
+                ["Matching the full path", "/src/.*\\.ts$"],
+                ["Options", "Match As"]
               ]
             }
           ],
@@ -16284,6 +16370,7 @@
                 ["Conditions", "is:locked"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
+                ["Conditions", "Not"],
                 ["Conditions", "More room"],
                 ["Matching the full path", "**/src/**/*.ts"],
                 ["Matching the full path", "**/docs/*"],
@@ -16376,14 +16463,17 @@
                 ["Plain Text", "\"report (1).pdf\""],
                 ["Glob patterns", "photo-??.jpg"],
                 ["Glob patterns", "[a-c]*.txt"],
+                ["Conditions", "kind:pdf"],
                 ["Conditions", "ext:docx"],
                 ["Conditions", "size:>10mb"],
                 ["Conditions", "size:1.5mb"],
                 ["Conditions", "Dates"],
                 ["Conditions", "tag:red"],
+                ["Conditions", "color:red"],
                 ["Conditions", "is:locked"],
                 ["Conditions", "owner:me"],
                 ["Conditions", "perm:755"],
+                ["Conditions", "from:github.com"],
                 ["Conditions", "skip:node_modules"],
                 ["Conditions", "All or either"],
                 ["Conditions", "Not"],

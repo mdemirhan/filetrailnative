@@ -553,7 +553,7 @@ extension HelpContent {
                         HelpRow(
                             label: "kind:pdf", code: true,
                             description:
-                                "Kind: pdf, picture, video, audio, document, spreadsheet, presentation, archive, code, text, folder or application"
+                                "Kind: pdf, picture, video, audio, document, spreadsheet, presentation, archive, code, text, folder or application. Other words read the same: `image` or `photo` for picture, `movie` for video, `music` or `sound` for audio, `doc` for document, `sheet` for spreadsheet, `slides` for presentation, `zip` for archive, `source` for code, `app` for application, and most plurals (`pdfs`, `photos`, `folders`)."
                         ),
                         HelpRow(
                             label: "ext:docx", code: true,
@@ -573,7 +573,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Dates",
                             description:
-                                "`modified:`, `created:`, `added:` and `opened:` take today, yesterday, week, month or year; `7d` within the last 7 days, `>1y` more than a year ago; a day `2026-03-15` or a month `2026-03`, with `<` before or `>` after it, `>=` from it on or `<=` to its end; or `2026-01..2026-03` between. Never opened counts as long ago."
+                                "`modified:`, `created:`, `added:` and `opened:` take today, yesterday, week, month or year; `7d` within the last 7 days, with `d`, `w`, `m` or `y` for days, weeks, months or years (`2w`, `3m`), `>1y` more than a year ago; a day `2026-03-15` or a month `2026-03`, with `<` before or `>` after it, `>=` from it on or `<=` to its end; or `2026-01..2026-03` between, the days in either order. Never opened counts as long ago."
                         ),
                         HelpRow(
                             label: "tag:red", code: true,
@@ -581,12 +581,12 @@ extension HelpContent {
                         HelpRow(
                             label: "color:red", code: true,
                             description:
-                                "A tag of that color, whatever its name: red, orange, yellow, green, blue, purple or gray"
+                                "A tag of that color, whatever its name: red, orange, yellow, green, blue, purple or gray (`grey` too)"
                         ),
                         HelpRow(
                             label: "is:locked", code: true,
                             description:
-                                "File, folder, alias, link, hidden, locked, readonly, executable, empty, tagged, cloud, downloaded or broken; a comma for either (`is:link,alias`), `not:` for the other side (`not:hidden,locked` is neither). `is:file` takes in apps and other packages, and aliases. `is:cloud` is a file kept only in iCloud or another cloud, not on this Mac, and finding it doesn’t download it. `is:downloaded` has the mark macOS gives what a browser or Mail downloads. `is:broken` is a link or an alias whose original is gone; one on a disk not connected isn’t counted."
+                                "File, folder, alias, link, hidden, locked, readonly, executable, empty, tagged, cloud, downloaded or broken; a comma for either (`is:link,alias`), `not:` for the other side (`not:hidden,locked` is neither). `symlink` reads as `link`, `runnable` as `executable` and `read-only` as `readonly`. `is:file` takes in apps and other packages, and aliases. `is:cloud` is a file kept only in iCloud or another cloud, not on this Mac, and finding it doesn’t download it. `is:downloaded` has the mark macOS gives what a browser or Mail downloads. `is:broken` is a link or an alias whose original is gone; one whose original is on a disk not connected, or in a folder that can’t be opened, isn’t counted, nor is an alias kept only in a cloud."
                         ),
                         HelpRow(
                             label: "owner:me", code: true,
@@ -599,7 +599,7 @@ extension HelpContent {
                         HelpRow(
                             label: "from:github.com", code: true,
                             description:
-                                "Downloaded from an address that holds those letters, whatever their capitals, as Get Info shows under Where from"
+                                "Downloaded from an address that holds those letters, whatever their capitals, as Get Info shows under Where from; quotes for letters with a space or a comma: `from:\"my site\"`"
                         ),
                         HelpRow(
                             label: "skip:node_modules", code: true,
@@ -614,7 +614,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Not",
                             description:
-                                "`!` before a value asks for anything else: `kind:!pdf`, `tag:!red`, `ext:!tmp`, `perm:!777`, `size:!1mb`, `modified:!today`, `is:!locked`; `kind:!pdf,picture` is neither. Before the whole word it is the same: `!tag:red` is `tag:!red`. A name without a word: `!draft`."
+                                "`!` before a value asks for anything else: `kind:!pdf`, `tag:!red`, `ext:!tmp`, `perm:!777`, `size:!1mb`, `modified:!today`, `is:!locked`, `color:!red`, `owner:!root`, `from:!github.com`; `kind:!pdf,picture` is neither. Before the whole word it is the same: `!tag:red` is `tag:!red`. `skip:` takes no `!`, as a folder skipped is already left out. A name without a word: `!draft`."
                         ),
                         HelpRow(
                             label: "No text needed",
@@ -651,6 +651,16 @@ extension HelpContent {
                 HelpSection(
                     title: "Options",
                     rows: [
+                        HelpRow(
+                            label: "Match",
+                            description:
+                                "Name compares what you type with each item’s name; Full Path with its whole path, as Matching the full path above shows."
+                        ),
+                        HelpRow(
+                            label: "Match As",
+                            description:
+                                "How the text is read: Plain Text, a Glob pattern or a Regex pattern, each with its section above. Conditions are read the same in all three."
+                        ),
                         HelpRow(
                             label: "Search Subfolders",
                             description: "Also look in the folders below the current one."),
