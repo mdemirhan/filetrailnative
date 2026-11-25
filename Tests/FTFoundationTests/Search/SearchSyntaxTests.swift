@@ -912,6 +912,18 @@ import Testing
         #expect(suggest("is:link,al")?.rows.first?.hint == "alias")
     }
 
+    // A value typed by its other word is still one already in the list: `symlink` is `link`, `grey` is `gray`.
+    @Test func aListOffersNoValueTypedByItsOtherWord() throws {
+        let attributes = try #require(suggest("is:symlink,")?.rows).map(\.hint)
+        #expect(!attributes.contains("link"))
+        #expect(attributes.contains("alias"))
+        let others = try #require(suggest("not:runnable,read-only,")?.rows).map(\.hint)
+        #expect(!others.contains("executable") && !others.contains("readonly"))
+        let colors = try #require(suggest("color:grey,")?.rows).map(\.hint)
+        #expect(!colors.contains("gray"))
+        #expect(colors.contains("red"))
+    }
+
     @Test func fileFolderAndTaggedAreAttributes() {
         #expect(query("is:file").conditions == [.attribute(.file, is: true)])
         #expect(query("is:folder").conditions == [.attribute(.folder, is: true)])

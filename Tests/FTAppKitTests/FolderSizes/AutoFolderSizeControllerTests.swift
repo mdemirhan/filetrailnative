@@ -219,4 +219,72 @@ struct AutoFolderSizeControllerTests {
         wait()
         #expect(jobs.starts.map(\.path) == ["/Users/demo/a", "/Users/demo/b"])
     }
+
+    // Stop on a size asked for stays stopped: a folder whose size was known, measured again (the refresh button)
+    // and stopped, isn't started again by itself.
+    @Test func aRecalculationStoppedIsNotStartedAgainByItself() {
+        jobs.known = ["/Users/demo/known": 5]
+        _ = sizes.entry("/Users/demo/known")
+        sizes.flushProbes()
+        auto.setPath("/Users/demo/known")
+        wait()
+        #expect(jobs.starts.isEmpty)
+        jobs.known = [:]
+        jobs.nextStart = FolderSizeStartResponse(jobId: "asked", status: .running)
+        sizes.recalculate("/Users/demo/known")
+        jobs.nextStart = FolderSizeStartResponse(jobId: "again", status: .running)
+        sizes.cancel("/Users/demo/known")
+        timers.advance(WindowFolderSizes.repaintInterval)
+        #expect(jobs.starts.map(\.automatic) == [false])
+        // Selected again, it is measured as any folder without a size.
+        auto.setPath(nil)
+        auto.setPath("/Users/demo/known")
+        wait()
+        #expect(jobs.starts.map(\.automatic) == [false, true])
+    }
+
+    // Calculate Size on the rest of the selection, then Stop on it: the folder it measures itself goes on, and the
+    // stopped ones aren't started by itself once that one ends.
+    @Test func foldersAskedForAndStoppedAreNotStartedByItself() {
+        auto.setPaths(["/Users/demo/a", "/Users/demo/b", "/Users/demo/c"])
+        wait()
+        jobs.nextStart = FolderSizeStartResponse(jobId: "job-2", status: .queued)
+        sizes.calculate(["/Users/demo/a", "/Users/demo/b", "/Users/demo/c"], recalculate: true)
+        sizes.cancel(["/Users/demo/b", "/Users/demo/c"])
+        timers.advance(WindowFolderSizes.repaintInterval)
+        #expect(jobs.cancels == ["job-2"])
+        jobs.nextStart = FolderSizeStartResponse(jobId: "job-3", status: .running)
+        finish("job-1", "/Users/demo/a")
+        #expect(jobs.starts.filter(\.automatic).map(\.path) == ["/Users/demo/a"])
+    }
+
+    // A measurement the jobs say was stopped (Stop in the Activity list) ends the rest too.
+    @Test func aMeasurementTheJobsStoppedEndsTheRest() {
+        jobs.nextStart = FolderSizeStartResponse(jobId: "asked", status: .running)
+        sizes.calculate("/Users/demo/a")
+        jobs.nextStart = FolderSizeStartResponse(jobId: "auto", status: .running)
+        auto.setPaths(["/Users/demo/a", "/Users/demo/b"])
+        wait()
+        #expect(jobs.starts.map(\.path) == ["/Users/demo/a", "/Users/demo/b"])
+        jobs.statuses["asked"] = FolderSizeJob(jobId: "asked", path: "/Users/demo/a", status: .cancelled)
+        sizes.settled(jobId: "asked")
+        timers.advance(WindowFolderSizes.repaintInterval)
+        finish("auto", "/Users/demo/b")
+        #expect(jobs.starts.map(\.path) == ["/Users/demo/a", "/Users/demo/b"])
+    }
+
+    // A folder it measured, its size forgotten after a change under it, is measured again, as one whose size came
+    // from another measurement is.
+    @Test func aSizeForgottenAfterAChangeIsMeasuredAgain() {
+        auto.setPath("/Users/demo/a")
+        wait()
+        finish("job-1", "/Users/demo/a")
+        #expect(sizes.readySize("/Users/demo/a") == 5)
+        jobs.nextStart = FolderSizeStartResponse(jobId: "job-2", status: .running)
+        sizes.forgetChangedSizes(["/Users/demo/a/new.txt"], intoTrash: false)
+        sizes.flushProbes()
+        timers.advance(WindowFolderSizes.repaintInterval)
+        #expect(jobs.starts.map(\.path) == ["/Users/demo/a", "/Users/demo/a"])
+        #expect(jobs.starts.map(\.automatic) == [true, true])
+    }
 }

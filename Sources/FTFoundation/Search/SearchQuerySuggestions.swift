@@ -134,15 +134,16 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
             value.removeFirst(not.count)
             let isNot = !not.isEmpty || (key.takesNot && word.text.hasPrefix("!"))
             let (head, partial) = Self.lastValue(of: value, names: key.takesNames)
-            // A value already in the list isn't offered again (`is:link,` offers no link).
+            // A value already in the list isn't offered again (`is:link,` offers no link), by whichever of its words
+            // it was typed (`is:symlink,`, `color:grey,`).
             let listed =
                 [.is, .not, .color, .owner].contains(key)
-                ? Set(head.lowercased().split(separator: ",").map(String.init)) : []
+                ? Set(head.lowercased().split(separator: ",").map { Self.listedValue(key, String($0)) }) : []
             let rows = values(
                 key, partial: partial, tags: key == .tag ? tags() : [], folders: key == .skip ? folders() : [],
                 now: now, calendar: calendar
             )
-            .filter { !listed.contains($0.1.lowercased()) }
+            .filter { !listed.contains(Self.listedValue(key, $0.1.lowercased())) }
             .map { title, typed in
                 SearchQuerySuggestion(
                     title: isNot ? Self.not(title, key: key) : title, hint: not + typed,
@@ -272,6 +273,16 @@ public struct SearchQuerySuggestions: Equatable, Sendable {
         }
         // A list of its own is short, and shown whole; only names, which can be any number, are cut.
         return shown
+    }
+
+    /// A value of a word's list by the one word the list types for it, lowercased, so that two words for one value
+    /// are the same: `symlink` is `link`, `grey` is `gray`. Any other value is itself.
+    private static func listedValue(_ key: SearchQueryKey, _ word: String) -> String {
+        switch key {
+        case .is, .not: SearchQuery.attributeWords[word].map(SearchQuery.attributeWord) ?? word
+        case .color: SearchQuery.colorWords[word]?.rawValue ?? word
+        default: word
+        }
     }
 
     /// Me, root, and the people who sign in to this Mac: (what the row says, what it types).

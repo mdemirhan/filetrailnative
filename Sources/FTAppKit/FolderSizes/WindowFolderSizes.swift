@@ -102,6 +102,11 @@ final class WindowFolderSizes {
     /// waits. One the app started by itself that was then asked for keeps its job, and is no longer the app's own
     /// to stop.
     private var askedJobs: [DiskPath: String] = [:]
+    /// How many measurements in this window have ended stopped, running or waiting their turn (Stop by any route,
+    /// or the jobs letting one go): what measures folders by itself leaves alone what was stopped since it began.
+    private(set) var stops = 0
+    /// What `stops` was when each folder's measurement was last stopped.
+    private var stoppedAt: [DiskPath: Int] = [:]
     private var probeMissedAt: [DiskPath: (time: TimeInterval, sequence: Int)] = [:]
     private var probeSequence = 0
     private var probeQueue: [DiskPath: ProbeKind] = [:]
@@ -398,6 +403,7 @@ final class WindowFolderSizes {
             askAgainInside(path, includeKnown: true, kind: .refresh)
         case .cancelled:
             stopPolling(path)
+            noteStop(path)
             updateEntry(path, .idle)
             askAgainInside(path, includeKnown: false)
         default:
@@ -458,6 +464,14 @@ final class WindowFolderSizes {
         updateEntry(path, .calculating(jobID: response.jobId, waiting: response.status == .queued))
         startPolling(path, response.jobId)
         if asked { askedJobs[path] = response.jobId }
+    }
+
+    /// Whether a measurement of `path` has ended stopped since `stops` was `mark`.
+    func wasStopped(_ path: String, since mark: Int) -> Bool { (stoppedAt[DiskPath(path)] ?? 0) > mark }
+
+    private func noteStop(_ path: DiskPath) {
+        stops += 1
+        stoppedAt[path] = stops
     }
 
     /// Whether the measurement of `path` under way, running or waiting, was asked for, not only started by the app
@@ -595,6 +609,7 @@ final class WindowFolderSizes {
         leaveRun(path)
         if case .calculating(let jobID, _)? = cache[path]?.entry {
             stopPolling(path)
+            noteStop(path)
             if !jobID.isEmpty { backend.cancel(jobId: jobID, owner: owner) }
         }
         updateEntry(path, .idle)
@@ -608,6 +623,8 @@ final class WindowFolderSizes {
 
     private func cancel(keys paths: [DiskPath]) {
         let stopping = Set(paths)
+        // Those waiting their turn in a run are stopped with it; those being measured, each below.
+        for path in stopping where runWaiting[path] != nil { noteStop(path) }
         for (run, runPaths) in folderRuns where !runPaths.isDisjoint(with: stopping) {
             endRun(run, completed: false)
         }

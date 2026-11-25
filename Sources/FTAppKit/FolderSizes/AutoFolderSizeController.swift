@@ -6,8 +6,10 @@ import Foundation
 /// never stopped for them: the jobs run what was asked for first. Only one measurement of its own runs or waits at a
 /// time, so the window keeps one automatic request.
 /// When the folders change, a calculation started here, running or waiting, is stopped unless its folder is still
-/// among them; one started by Calculate Size is left alone. What it measured inside is kept. One of its own stopped
-/// part way (Stop) ends the rest until the folders change.
+/// among them; one started by Calculate Size is left alone. What it measured inside is kept. A measurement of any of
+/// the folders stopped part way (Stop), its own or one asked for, ends the rest until the folders change: what was
+/// stopped isn't started again behind the person's back. A folder whose size is forgotten after a change is measured
+/// again.
 @MainActor
 final class AutoFolderSizeController {
     private let sizes: WindowFolderSizes
@@ -17,10 +19,11 @@ final class AutoFolderSizeController {
     private var timer: TimerToken?
     /// The folders have stayed the same for the moment: they are measured.
     private var due = false
-    /// One of its own was stopped part way: the rest wait for other folders.
+    /// A measurement of one of the folders was stopped part way: the rest wait for other folders.
     private var halted = false
-    /// The folders it started a measurement of since the folders changed, so none is started twice.
-    private var tried = Set<DiskPath>()
+    /// The window's count of stops when the folders last changed, and when it was last looked at.
+    private var stopsAtChange = 0
+    private var stopsSeen = 0
     /// While it starts one: what the start repaints doesn't move it on.
     private var starting = false
     private var startedPath: String?
@@ -51,7 +54,9 @@ final class AutoFolderSizeController {
         paths = next
         due = false
         halted = false
-        tried = startedPath.map { [DiskPath($0)] } ?? []
+        // After its own stop above, which is not one of these folders'.
+        stopsAtChange = sizes.stops
+        stopsSeen = sizes.stops
         guard !next.isEmpty else { return }
         timer = scheduler.schedule(after: delay) { [weak self] in
             guard let self else { return }
@@ -79,6 +84,15 @@ final class AutoFolderSizeController {
     /// Once its own measurement is over, the next folder not known, not being measured and not failed.
     private func advance() {
         guard due, !halted, !starting else { return }
+        // Stop on any of the folders, its own or one asked for: the one still being measured goes on, nothing more
+        // is started.
+        if sizes.stops != stopsSeen {
+            stopsSeen = sizes.stops
+            if paths.contains(where: { sizes.wasStopped($0, since: stopsAtChange) }) {
+                halted = true
+                return
+            }
+        }
         if let path = startedPath, let job = startedJob {
             if isOwn(path, job) { return }
             startedPath = nil
@@ -89,9 +103,8 @@ final class AutoFolderSizeController {
                 return
             }
         }
-        for path in paths where !tried.contains(DiskPath(path)) {
+        for path in paths {
             guard case .idle = sizes.entry(path) else { continue }
-            tried.insert(DiskPath(path))
             starting = true
             sizes.calculate(path, recalculate: false, automatic: true)
             starting = false
