@@ -96,6 +96,40 @@ extension ExplorerWindowlessTests {
             #expect(pane.navigationHistory.current == real(harness, "b.json"))
         }
 
+        // Under a filter, typed or pinned, Next File steps only through the files it shows, and the filter stays:
+        // stepping to a file it hid would select that file, which takes the filter away.
+        @Test func nextFileStepsOnlyThroughWhatTheFilterShowsAndKeepsIt() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            try "let c = 3\n".write(to: harness.folder.appending("c.swift"), atomically: true, encoding: .utf8)
+            try "{\"d\": 4}\n".write(to: harness.folder.appending("d.json"), atomically: true, encoding: .utf8)
+            let tab = try await tabWithFiles(harness)
+            let pane = tab.activePane
+            let (a, c) = (real(harness, "a.swift"), real(harness, "c.swift"))
+            #expect(await waitUntil { pane.content.listedEntry(at: real(harness, "d.json")) != nil })
+            pane.content.setFilter(".swift", mode: .contains)
+            select(a, in: tab)
+            tab.perform(.viewFile)
+            let viewer = try #require(pane.viewer)
+            #expect(await waitUntil { viewer.isText })
+            #expect(viewer.position.map { [$0.index, $0.count] } == [0, 2])
+
+            tab.stepFile(by: 1)
+            #expect(await waitUntil { viewer.path == c && viewer.isText }, "\(shown(viewer))")
+            #expect(pane.content.filter == ".swift")
+            #expect(viewer.position.map { [$0.index, $0.count] } == [1, 2])
+
+            pane.content.pinFilter()
+            #expect(pane.content.pinnedFilter != nil)
+            tab.stepFile(by: 1)
+            #expect(await waitUntil { viewer.path == a && viewer.isText }, "\(shown(viewer))")
+            #expect(pane.content.pinnedFilter?.query == ".swift")
+            tab.stepFile(by: -1)
+            #expect(await waitUntil { viewer.path == c && viewer.isText }, "\(shown(viewer))")
+            #expect(pane.content.pinnedFilter?.query == ".swift")
+            #expect(pane.content.selection.paths == [c])
+        }
+
         @Test func openInOtherPaneShowsAFileThereAndFollowsTheList() async throws {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }

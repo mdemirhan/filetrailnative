@@ -48,7 +48,8 @@ extension MainWindowController {
     }
 
     /// Next File and Previous File, from the viewer's bar, its menu or its keys: the file in place steps to the
-    /// folder's next or previous file as the list orders them, which the list selects under it, so Back lands on it.
+    /// folder's next or previous file as the list shows them, which the list selects under it, so Back lands on it.
+    /// A filter, typed or pinned, narrows the files stepped through and stays.
     func stepFile(by step: Int) {
         guard let pane = panes.first(where: { $0.viewer?.mode == .inPlace && $0.viewer === commandViewer }),
             let viewer = pane.viewer, let path = viewer.path
@@ -67,8 +68,9 @@ extension MainWindowController {
     }
 
     private func viewableFiles(of pane: BrowserPane) -> [String] {
-        // An alias not looked up yet is stepped to as well: the viewer says so if it leads to a folder.
-        pane.content.listed.filter { $0.kind.isViewableFile || $0.kind == .alias }.map(\.path)
+        // What the list shows, in its order: a file the filter hides would be selected, and selecting it takes the
+        // filter away. An alias not looked up yet is stepped to as well: the viewer says so if it leads to a folder.
+        pane.content.entries.filter { $0.kind.isViewableFile || $0.kind == .alias }.map(\.path)
     }
 
     private func updatePosition(of viewer: TextViewerController, in pane: BrowserPane) {
