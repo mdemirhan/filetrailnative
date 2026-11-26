@@ -5,7 +5,8 @@ import FTFoundation
 /// counts having a row of their own; until then the shared cell offers Calculate, or the spinner and Stop.
 final class InfoPanelSizeView: NSView {
     private let cell: FolderSizeCellView
-    private let sizeLine = FlushTextField(labelWithString: "")
+    /// Selectable as every other value of the panel is.
+    private let sizeLine = SelectableTextField.label("")
     private let refresh: InfoIconButton
     private var isMeasured = false
 
@@ -93,7 +94,7 @@ final class InfoPanelSizeView: NSView {
         let textWidth = max(0, bounds.width - side - FolderSizeCellView.gap)
         let shown = min(textWidth, textExtent(sizeLine.stringValue, sizeLine.font))
         let height = lineBox(sizeLine.font)
-        sizeLine.frame = NSRect(x: textWidth - shown, y: (bounds.height - height) / 2, width: shown, height: height)
+        sizeLine.place(NSRect(x: textWidth - shown, y: (bounds.height - height) / 2, width: shown, height: height))
     }
 
     override func viewDidChangeEffectiveAppearance() {
