@@ -246,6 +246,46 @@ struct InfoPanelModelTests {
         #expect(Self.labels(content(ignores: nil), .permissions) == ["Owner", "Group", "Everyone", "Ownership"])
     }
 
+    // A disk image, a file or a sparse bundle's folder, has a section of its own: the same rows for every one, a dash
+    // where it doesn't say.
+    @Test func aDiskImageSaysWhatItHolds() {
+        func content(_ name: String, kind: EntryKind = .file, _ image: InfoDetails.DiskImage?)
+            -> InfoPanelModel.ItemContent
+        {
+            var item = Self.file()
+            item.name = name
+            item.fileExtension = String(name.split(separator: ".").last ?? "")
+            item.kind = kind
+            var details = InfoDetails()
+            details.diskImage = image
+            return InfoPanelModel.itemContent(
+                item: item, pending: false, volume: nil, isVolumeRoot: false, hasFolderSize: false, folderSize: nil,
+                opensWith: .hidden, dates: Self.dates, details: image == nil ? .pending : .read(details))
+        }
+        let read = content(
+            "Installer.dmg",
+            .init(format: .compressed("LZFSE"), fileSystems: ["APFS"], capacity: 734_003_200, encrypted: false))
+        #expect(read.sections.map(\.id) == [.general, .dates, .permissions, .diskImage, .more])
+        #expect(Self.labels(read, .diskImage) == ["Format", "File system", "Capacity", "Encrypted"])
+        #expect(
+            read.section(.diskImage)?.rows.map(\.value)
+                == [.text("Compressed (LZFSE)"), .text("APFS"), .text("734 MB"), .text("No")])
+        let pending = content("Installer.dmg", nil)
+        #expect(pending.section(.diskImage)?.rows.map(\.value) == Array(repeating: .text("—"), count: 4))
+        // Encrypted: the rest can't be read.
+        let encrypted = content("Secret.sparsebundle", kind: .bundle, .init(format: .sparseBundle, encrypted: true))
+        #expect(
+            encrypted.section(.diskImage)?.rows.map(\.value)
+                == [.text("Sparse bundle"), .text("—"), .text("—"), .text("Yes")])
+        // Several file systems on one line, or how many where they don't fit.
+        let two = content("Disc.iso", .init(format: .cdMaster, fileSystems: ["UDF", "ISO 9660"], encrypted: false))
+        #expect(
+            Self.row(two, .diskImage, "File system")?.value
+                == .fitting(full: "UDF, ISO 9660", shorter: ["2 file systems"]))
+        #expect(Self.row(two, .diskImage, "Format")?.value == .text("DVD/CD master"))
+        #expect(InfoContentKind.of(extension: "SPARSEIMAGE") == .diskImage)
+    }
+
     // A picture's rows are one line each, what was their second line going first where it doesn't fit.
     @Test func aPicturesRowsAreOneLineEach() {
         var item = Self.file()

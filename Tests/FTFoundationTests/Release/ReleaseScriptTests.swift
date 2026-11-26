@@ -237,7 +237,7 @@ import Testing
                 atPath: ReleaseScriptTests.testLock, toPath: scripts.appendingPathComponent("test-lock.sh").path)
             try "/build/\n".write(
                 to: root.appendingPathComponent("work/.gitignore"), atomically: true, encoding: .utf8)
-            for tree in ["names", "lighthouse", "large"] {
+            for tree in ["names", "lighthouse", "large", "diskimages"] {
                 let folder = devCache.appendingPathComponent("fixtures/\(tree)")
                 try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
                 try "1".write(to: folder.appendingPathComponent(".fixture-version"), atomically: true, encoding: .utf8)

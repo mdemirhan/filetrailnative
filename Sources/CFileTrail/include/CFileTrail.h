@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <sys/types.h>
 #include "ft_archive.h"
+#include "ft_bunzip.h"
 #include "ft_copyfile.h"
 #include "ft_foldersize.h"
 #include "ft_search.h"

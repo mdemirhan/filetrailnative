@@ -1,5 +1,5 @@
 // Deterministic fixture trees under $FILETRAIL_DEV_CACHE/fixtures (default ~/Library/Caches/filetrail-dev).
-// Usage: bun tools/fixtures/generate.ts [lighthouse|large|names ...]
+// Usage: bun tools/fixtures/generate.ts [lighthouse|large|names|diskimages ...]
 // Each tree is rebuilt only when its version stamp is missing or differs.
 
 import { execFileSync, spawnSync } from "node:child_process";
@@ -9,6 +9,7 @@ import {
   readdirSync,
   mkdirSync,
   readFileSync,
+  renameSync,
   rmSync,
   symlinkSync,
   truncateSync,
@@ -28,7 +29,7 @@ export const FIXTURE_NOW = new Date(2026, 9, 13, 14, 38, 0);
 const MIN = 60_000;
 const DAY = 24 * 60 * MIN;
 const STAMP_NAME = ".fixture-version";
-const VERSIONS = { lighthouse: "1", large: "1", names: "1" } as const;
+const VERSIONS = { lighthouse: "1", large: "1", names: "1", diskimages: "1" } as const;
 
 // ---- helpers ----------------------------------------------------------------
 
@@ -445,10 +446,62 @@ function names(): void {
   finish("names");
 }
 
+// ---- diskimages -----------------------------------------------------------------
+
+// One small disk image of each format, compression, partition map and file system hdiutil makes, for the Info
+// panel's reader of their headers to be checked against. Only this script runs hdiutil; the app reads the bytes.
+// The name says what each holds; the tests that read them say what the panel should show.
+function diskimages(): void {
+  const dir = freshTree("diskimages");
+  if (!dir) return;
+  const src = join(dir, ".src");
+  write(join(src, "a.txt"), "hello\n");
+  const hdiutil = (...args: string[]) => execFileSync("hdiutil", args, { stdio: "ignore", timeout: 120_000 });
+  const image = (name: string) => join(dir, name);
+  // A blank image: `size`, file system `fs`, partition `layout` (hdiutil's default when not given).
+  const blank = (name: string, size: string, fs: string, layout?: string, extra: string[] = []) =>
+    hdiutil("create", "-quiet", "-size", size, "-fs", fs, "-volname", "FTI", ...(layout ? ["-layout", layout] : []), ...extra, image(name));
+  const convert = (from: string, format: string, name: string) =>
+    hdiutil("convert", "-quiet", image(from), "-format", format, "-o", image(name));
+
+  // Read/write images: raw bytes, no trailer.
+  blank("rw-apfs.dmg", "20m", "APFS");
+  blank("rw-hfs-journaled.dmg", "20m", "Journaled HFS+");
+  blank("rw-hfs-casesensitive.dmg", "20m", "Case-sensitive Journaled HFS+");
+  blank("rw-hfs-apm.dmg", "20m", "HFS+", "SPUD");
+  blank("rw-hfs-nomap.dmg", "20m", "Journaled HFS+", "NONE");
+  blank("rw-exfat-mbr.dmg", "40m", "ExFAT", "MBRSPUD");
+  blank("rw-fat32-gpt.dmg", "40m", "MS-DOS FAT32", "GPTSPUD");
+  blank("rw-fat16-mbr.dmg", "20m", "MS-DOS FAT16", "MBRSPUD");
+  // A floppy's: hdiutil names it .dmg.
+  blank("rw-fat12-nomap.dmg", "2m", "MS-DOS FAT12", "NONE");
+  renameSync(image("rw-fat12-nomap.dmg"), image("rw-fat12-nomap.img"));
+  // UDIF: a trailer, a table of chunks, compressed or not.
+  hdiutil("create", "-quiet", "-srcfolder", src, "-format", "UDZO", "-fs", "APFS", "-volname", "FTI", image("zlib-apfs.dmg"));
+  convert("rw-hfs-journaled.dmg", "ULFO", "lzfse-hfs.dmg");
+  convert("rw-hfs-journaled.dmg", "UDBZ", "bzip2-hfs.dmg");
+  convert("rw-apfs.dmg", "ULMO", "lzma-apfs.dmg");
+  convert("rw-hfs-casesensitive.dmg", "UDRO", "readonly-hfs-casesensitive.dmg");
+  // CD and DVD images.
+  hdiutil("makehybrid", "-quiet", "-iso", "-o", image("iso9660.iso"), src);
+  hdiutil("makehybrid", "-quiet", "-udf", "-o", image("udf.iso"), src);
+  hdiutil("makehybrid", "-quiet", "-iso", "-udf", "-o", image("iso-udf.iso"), src);
+  // Sparse: a 50 MB one, and a 2 TB one (an EFI partition beside APFS), which holds little.
+  blank("sparse-hfs.sparseimage", "50m", "Journaled HFS+", undefined, ["-type", "SPARSE"]);
+  blank("sparse-apfs-2t.sparseimage", "2t", "APFS", undefined, ["-type", "SPARSE"]);
+  blank("bundle-apfs.sparsebundle", "100m", "APFS", undefined, ["-type", "SPARSEBUNDLE"]);
+  // Encrypted (the password is "fixture").
+  for (const [name, type] of [["encrypted.dmg", "UDIF"], ["encrypted.sparsebundle", "SPARSEBUNDLE"]]) {
+    execFileSync("hdiutil", ["create", "-quiet", "-size", "20m", "-fs", "APFS", "-volname", "FTI", "-type", type, "-encryption", "AES-256", "-stdinpass", image(name)], { input: "fixture", stdio: ["pipe", "ignore", "ignore"], timeout: 120_000 });
+  }
+  rmSync(src, { recursive: true, force: true });
+  finish("diskimages");
+}
+
 // ---- main ---------------------------------------------------------------------
 
 const wanted = process.argv.slice(2);
-const all = { lighthouse, large, names };
+const all = { lighthouse, large, names, diskimages };
 mkdirSync(ROOT, { recursive: true });
 for (const [key, run] of Object.entries(all)) {
   if (wanted.length === 0 || wanted.includes(key)) run();

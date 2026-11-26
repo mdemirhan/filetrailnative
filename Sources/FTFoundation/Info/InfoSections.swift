@@ -6,7 +6,7 @@ import UniformTypeIdentifiers
 public struct InfoSection: Equatable, Sendable {
     public enum ID: String, Sendable, CaseIterable {
         case general, dates, permissions
-        case image, movie, sound, document, text, application, volume
+        case image, movie, sound, document, text, application, volume, diskImage
         case downloaded, more
 
         public var title: String {
@@ -21,6 +21,7 @@ public struct InfoSection: Equatable, Sendable {
             case .text: "Text"
             case .application: "Application"
             case .volume: "Volume"
+            case .diskImage: "Disk Image"
             case .downloaded: "Downloaded"
             case .more: "More"
             }
@@ -44,13 +45,22 @@ public struct InfoSection: Equatable, Sendable {
     public var title: String { id.title }
 }
 
+/// The disk images macOS mounts when one is opened: the extensions DiskImageMounter opens.
+public enum DiskImageTypes {
+    public static let extensions: Set<String> = [
+        "dmg", "udif", "img", "toast", "dvdr", "cdr", "dmgpart", "iso", "sparseimage", "asif", "sparsebundle",
+        "backupbundle",
+    ]
+}
+
 /// What kind of content a file is, which says the section of its own it has. The reader and the panel ask the same
 /// question, the panel from the name before anything is read, so the section is there, with dashes, from the start.
 public enum InfoContentKind: Equatable, Sendable {
-    case image, movie, sound, pdf, document, text, other
+    case image, movie, sound, pdf, document, text, diskImage, other
 
     public static func of(_ type: UTType?) -> InfoContentKind {
         guard let type else { return .other }
+        if type.conforms(to: .diskImage) { return .diskImage }
         if type.conforms(to: .image) { return .image }
         if type.conforms(to: .movie) || type.conforms(to: .video) { return .movie }
         if type.conforms(to: .audio) { return .sound }
@@ -66,7 +76,8 @@ public enum InfoContentKind: Equatable, Sendable {
     }
 
     public static func of(extension fileExtension: String) -> InfoContentKind {
-        fileExtension.isEmpty ? .other : of(UTType(filenameExtension: fileExtension))
+        if DiskImageTypes.extensions.contains(fileExtension.lowercased()) { return .diskImage }
+        return fileExtension.isEmpty ? .other : of(UTType(filenameExtension: fileExtension))
     }
 
     var section: InfoSection.ID? {
@@ -76,6 +87,7 @@ public enum InfoContentKind: Equatable, Sendable {
         case .sound: .sound
         case .pdf, .document: .document
         case .text: .text
+        case .diskImage: .diskImage
         case .other: nil
         }
     }

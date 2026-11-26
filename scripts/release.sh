@@ -112,7 +112,7 @@ fi
 
 # The tests that read the fixture trees are skipped without them, which a release mustn't do quietly.
 FIXTURES="${FILETRAIL_DEV_CACHE:-${HOME}/Library/Caches/filetrail-dev}/fixtures"
-for tree in names lighthouse large; do
+for tree in names lighthouse large diskimages; do
     if [[ ! -f "${FIXTURES}/${tree}/.fixture-version" ]]; then
         add_problem "The test fixtures aren't built (${FIXTURES}/${tree} is missing): run bun tools/fixtures/generate.ts first."
         break

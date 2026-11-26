@@ -17,6 +17,7 @@ public struct InfoDetails: Equatable, Sendable {
     public var text: Text?
     public var app: App?
     public var volume: Volume?
+    public var diskImage: DiskImage?
 
     public init() {}
 
@@ -194,6 +195,37 @@ public struct InfoDetails: Equatable, Sendable {
         public init(signedBy: String, notarized: Bool?) {
             self.signedBy = signedBy
             self.notarized = notarized
+        }
+    }
+
+    /// What a disk image says of itself, read from its own bytes (`DiskImageReader`): each part nil, or no file
+    /// system, where the image doesn't say or isn't of a kind that is read.
+    public struct DiskImage: Equatable, Sendable {
+        public enum Format: Equatable, Sendable {
+            /// A UDIF image whose chunks are compressed: "zlib", "bzip2", "LZFSE", "LZMA", "ADC".
+            case compressed(String)
+            /// A UDIF image whose chunks are stored as they are.
+            case readOnly
+            /// The disk's bytes as they are, with nothing around them.
+            case readWrite
+            /// The same, as a CD or DVD's (.iso, .cdr).
+            case cdMaster
+            case sparse
+            case sparseBundle
+        }
+
+        public var format: Format?
+        /// The file systems on it, in the order of its partitions; empty where none is recognized.
+        public var fileSystems: [String] = []
+        /// What it holds once mounted, in bytes.
+        public var capacity: Int64?
+        public var encrypted: Bool?
+
+        public init(format: Format? = nil, fileSystems: [String] = [], capacity: Int64? = nil, encrypted: Bool? = nil) {
+            self.format = format
+            self.fileSystems = fileSystems
+            self.capacity = capacity
+            self.encrypted = encrypted
         }
     }
 

@@ -156,6 +156,11 @@ extension InfoPanelModel {
             sections.append(InfoSection(id: .volume, rows: volumeRows(details?.volume)))
         } else if item.kind == .bundle, item.fileExtension.lowercased() == "app" {
             sections.append(InfoSection(id: .application, rows: appRows(details?.app, signing: signing)))
+        } else if InfoContentKind.of(extension: item.fileExtension) == .diskImage,
+            isFile || item.kind == .bundle || item.kind == .directory
+        {
+            // A file, or a sparse bundle, which is a folder.
+            sections.append(InfoSection(id: .diskImage, rows: diskImageRows(details?.diskImage)))
         } else if isFile {
             switch InfoContentKind.of(extension: item.fileExtension) {
             case .image: sections.append(InfoSection(id: .image, rows: imageRows(details?.image)))
@@ -163,7 +168,7 @@ extension InfoPanelModel {
             case .sound: sections.append(InfoSection(id: .sound, rows: soundRows(details?.media)))
             case .pdf, .document: sections.append(InfoSection(id: .document, rows: documentRows(details?.document)))
             case .text: sections.append(InfoSection(id: .text, rows: textRows(details?.text)))
-            case .other: break
+            case .diskImage, .other: break
             }
         }
         if let download = details?.download {
@@ -365,6 +370,35 @@ extension InfoPanelModel {
             row("Version", version), row("Identifier", app?.identifier), row("Runs on", app?.runsOn),
             row("Requires", app?.minimumSystem.map { "macOS \($0) or later" }), row("Signed by", signedBy),
             row("Notarized", notarized), row("Copyright", app?.copyright),
+        ]
+    }
+
+    /// Format, File system, Capacity and Encrypted, for every disk image: a dash where the image doesn't say, or is of
+    /// a kind that isn't read.
+    private static func diskImageRows(_ image: InfoDetails.DiskImage?) -> [InfoRow] {
+        let format: String? = image?.format.map {
+            switch $0 {
+            case .compressed(let method): "Compressed (\(method))"
+            case .readOnly: "Read-only"
+            case .readWrite: "Read/write"
+            case .cdMaster: "DVD/CD master"
+            case .sparse: "Sparse"
+            case .sparseBundle: "Sparse bundle"
+            }
+        }
+        let systems = image?.fileSystems ?? []
+        let fileSystem: InfoRow
+        switch systems.count {
+        case 0: fileSystem = row("File system", nil)
+        case 1: fileSystem = row("File system", systems[0])
+        default:
+            fileSystem = fitting(
+                "File system", systems.joined(separator: ", "),
+                shorter: ["\(FormatLocale.count(systems.count)) file systems"])
+        }
+        return [
+            row("Format", format), fileSystem, row("Capacity", image?.capacity.map { SizeText.size($0) }),
+            row("Encrypted", image?.encrypted.map { $0 ? "Yes" : "No" }),
         ]
     }
 

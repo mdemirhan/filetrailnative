@@ -1330,7 +1330,8 @@
                 ["Undo and Redo: if something has changed since", "A disk was ejected"]
               ]
             },
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]}
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]},
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Folders", "Disks"]]},
@@ -2689,7 +2690,8 @@
                 ["Undo and Redo: if something has changed since", "A disk was ejected"]
               ]
             },
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]}
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]},
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Folders", "Disks"]]},
@@ -3732,7 +3734,8 @@
                 ["Undo and Redo: if something has changed since", "A disk was ejected"]
               ]
             },
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]}
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]},
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Folders", "Disks"]]},
@@ -4812,7 +4815,8 @@
                 ["Undo and Redo: if something has changed since", "A disk was ejected"]
               ]
             },
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]}
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]},
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Folders", "Disks"]]},
@@ -5851,7 +5855,8 @@
                 ["Undo and Redo: if something has changed since", "A disk was ejected"]
               ]
             },
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]}
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]},
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Folders", "Disks"]]},
@@ -6907,7 +6912,8 @@
                 ["Undo and Redo: if something has changed since", "A disk was ejected"]
               ]
             },
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]}
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]},
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Folders", "Disks"]]},
@@ -7947,7 +7953,8 @@
                 ["Undo and Redo: if something has changed since", "A disk was ejected"]
               ]
             },
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]}
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]},
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Folders", "Disks"]]},
@@ -9018,7 +9025,8 @@
                 ["Undo and Redo: if something has changed since", "A disk was ejected"]
               ]
             },
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]}
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]},
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Folders", "Disks"]]},
@@ -10103,7 +10111,8 @@
                 ["Undo and Redo: if something has changed since", "A disk was ejected"]
               ]
             },
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]}
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]},
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Folders", "Disks"]]},
@@ -11162,7 +11171,8 @@
                 ["Undo and Redo: if something has changed since", "A disk was ejected"]
               ]
             },
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]}
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]},
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Folders", "Disks"]]},
@@ -12244,7 +12254,8 @@
                 ["Undo and Redo: if something has changed since", "A disk was ejected"]
               ]
             },
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]}
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]},
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Folders", "Disks"]]},
@@ -13357,7 +13368,8 @@
                 ["Undo and Redo: if something has changed since", "A disk was ejected"]
               ]
             },
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]}
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]},
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Folders", "Disks"]]},
@@ -14427,7 +14439,8 @@
                 ["Undo and Redo: if something has changed since", "A disk was ejected"]
               ]
             },
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]}
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]},
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Folders", "Disks"]]},
@@ -15502,7 +15515,8 @@
                 ["Undo and Redo: if something has changed since", "A disk was ejected"]
               ]
             },
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]}
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]},
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Folders", "Disks"]]},
@@ -16915,7 +16929,8 @@
                 ["Undo and Redo: if something has changed since", "A disk was ejected"]
               ]
             },
-            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]}
+            {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Results", "Search elsewhere"]]},
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Folders", "Disks"]]},

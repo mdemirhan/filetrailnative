@@ -8,7 +8,7 @@ let package = Package(
         // libarchive is the system's; its headers aren't in the SDK, so they are kept in libarchive/.
         .target(
             name: "CFileTrail", path: "Sources/CFileTrail", cSettings: [.headerSearchPath("libarchive")],
-            linkerSettings: [.linkedLibrary("archive")]),
+            linkerSettings: [.linkedLibrary("archive"), .linkedLibrary("bz2")]),
         .target(name: "FTFoundation", path: "Sources/FTFoundation"),
         .target(name: "FTFileSystem", dependencies: ["FTFoundation", "CFileTrail"], path: "Sources/FTFileSystem"),
         .target(

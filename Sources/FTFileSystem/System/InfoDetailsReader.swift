@@ -69,7 +69,7 @@ public enum InfoDetailsReader {
         case .movie, .sound: details.media = media(path: path, readFile: isFile && !dataless, cancel: cancel)
         case .pdf, .document:
             details.document = document(path: path, isPDF: kind == .pdf, readFile: isFile && !dataless)
-        case .text, .other: break
+        case .text, .diskImage, .other: break
         }
         if cancel.isCancelled { return nil }
         if isFile, !dataless, kind == .text, Int(info.st_size) <= textLimit {
@@ -80,6 +80,10 @@ public enum InfoDetailsReader {
             details.app = app.isEmpty ? nil : app
         }
         if VolumePaths.isVolumeRootPath(path) { details.volume = volume(path, url: url) }
+        // A disk image, a file or a sparse bundle's folder, from its own bytes.
+        if InfoContentKind.of(extension: String(NodePath.extname(path).dropFirst())) == .diskImage, !dataless {
+            details.diskImage = DiskImageReader.read(path)
+        }
         if cancel.isCancelled { return nil }
         return details
     }

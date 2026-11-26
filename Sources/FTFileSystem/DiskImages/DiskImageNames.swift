@@ -1,12 +1,10 @@
+import FTFoundation
 import Foundation
 
 /// The disk images macOS mounts when one is opened: the extensions DiskImageMounter opens. File Trail mounts
 /// them itself and opens the disk in a tab, where macOS would open a Finder window on it.
 public enum DiskImageNames {
-    public static let extensions: Set<String> = [
-        "dmg", "udif", "img", "toast", "dvdr", "cdr", "dmgpart", "iso", "sparseimage", "asif", "sparsebundle",
-        "backupbundle",
-    ]
+    public static let extensions = DiskImageTypes.extensions
 
     public static func isDiskImagePath(_ path: String) -> Bool {
         let name = lastComponent(path)
