@@ -48,6 +48,9 @@ public enum InfoValue: Equatable, Sendable {
     case fitting(full: String, short: String)
     /// How full a disk is: a bar, and the text under it.
     case usage(fraction: Double, text: String)
+    /// Who the owner or the group is and what it may do, on one line that shortens to fit
+    /// (`InfoText.access`): "demo (you) · Read & Write", "demo (you) · rw", "de… (you) · rw". No name until it is read.
+    case access(name: String?, isYou: Bool, words: String, letters: String)
 }
 
 /// A tag of the items the Info panel describes.
@@ -133,6 +136,7 @@ public struct InfoRow: Equatable, Sendable {
         case .tags(let tags): main = tags.summary
         case .fitting(let full, _): main = full
         case .usage(_, let text): main = text
+        case .access(let name, let isYou, let words, _): main = InfoText.access(name, isYou: isYou, words)
         case .folderSize, .opensWith: main = ""
         }
         return [main, detail].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: "\n")

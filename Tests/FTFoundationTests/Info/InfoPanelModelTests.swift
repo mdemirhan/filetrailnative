@@ -41,14 +41,20 @@ struct InfoPanelModelTests {
         #expect(content.sections.map(\.id) == [.general, .dates, .permissions, .text, .more])
         #expect(Self.labels(content, .general) == ["Kind", "Opens with", "Size", "Where"])
         #expect(Self.labels(content, .dates) == ["Created", "Modified", "Last opened", "Added"])
-        #expect(Self.labels(content, .permissions) == ["Owner", "Group", "Everyone", "Mode", "You can"])
+        #expect(Self.labels(content, .permissions) == ["Owner", "Group", "Everyone", "Mode"])
         #expect(content.subtitle == "Markdown document · 2.0 KB")
         #expect(
             Self.row(content, .general, "Size")
                 == InfoRow(label: "Size", value: .text("2.0 KB (2,000 bytes)"), muted: false, detail: "—"))
         #expect(Self.row(content, .dates, "Created")?.value == .text("Mar 1, 2026, 9:00 AM"))
-        #expect(Self.row(content, .permissions, "Owner")?.value == .text("Read & Write"))
-        #expect(Self.row(content, .permissions, "Group")?.value == .text("Read only"))
+        // Until the owner is read, what it may do alone.
+        #expect(
+            Self.row(content, .permissions, "Owner")?.value
+                == .access(name: nil, isYou: false, words: "Read & Write", letters: "rw"))
+        #expect(
+            Self.row(content, .permissions, "Group")?.value
+                == .access(name: nil, isYou: false, words: "Read only", letters: "r"))
+        #expect(Self.row(content, .permissions, "Owner")?.textToCopy == "Read & Write")
         #expect(Self.row(content, .permissions, "Mode")?.value == .text("644 · rw-r--r--"))
         #expect(
             Self.row(content, .general, "Where")
@@ -64,7 +70,7 @@ struct InfoPanelModelTests {
     @Test func theDetailsFillTheirPlaces() {
         var details = InfoDetails()
         details.sizeOnDisk = 4096
-        details.owner = .init(user: "demo", group: "staff", isYou: true, youCan: "Read & Write")
+        details.owner = .init(user: "demo", group: "staff", isYou: true)
         details.flags = .init(locked: true)
         details.text = .init(lines: 12, encoding: "UTF-8", lineEnding: "LF")
         let pending = Self.content(Self.file())
@@ -73,8 +79,13 @@ struct InfoPanelModelTests {
             folderSize: nil, opensWith: .hidden, dates: Self.dates, details: .read(details))
         for id in [InfoSection.ID.general, .dates] { #expect(Self.labels(pending, id) == Self.labels(read, id)) }
         #expect(Self.row(read, .general, "Size")?.detail == "4.1 KB on disk")
-        #expect(Self.row(read, .permissions, "Owner")?.detail == "demo (you)")
-        #expect(Self.row(read, .permissions, "Group")?.detail == "staff")
+        // Who and what it may do, on one line.
+        let owner = Self.row(read, .permissions, "Owner")
+        #expect(owner?.value == .access(name: "demo", isYou: true, words: "Read & Write", letters: "rw"))
+        #expect(owner?.detail == nil)
+        #expect(owner?.textToCopy == "demo (you) · Read & Write")
+        #expect(Self.row(read, .permissions, "Group")?.textToCopy == "staff · Read only")
+        #expect(Self.labels(read, .permissions) == ["Owner", "Group", "Everyone", "Mode", "Locked"])
         #expect(Self.row(read, .permissions, "Locked")?.value == .text("Yes"))
         #expect(Self.labels(read, .text) == Self.labels(pending, .text))
         #expect(Self.row(read, .text, "Lines")?.value == .text("12"))
@@ -169,7 +180,7 @@ struct InfoPanelModelTests {
         let size = Self.row(pending, .general, "Size")
         #expect(size?.value == .text("—") && size?.muted == true)
         #expect(Self.row(pending, .dates, "Created")?.value == .text("—"))
-        #expect(Self.labels(pending, .permissions) == ["Owner", "Group", "Everyone", "Mode", "You can"])
+        #expect(Self.labels(pending, .permissions) == ["Owner", "Group", "Everyone", "Mode"])
         #expect(Self.row(pending, .permissions, "Mode")?.value == .text("—"))
         #expect(pending.subtitle == "Markdown document")
         let final = Self.content(item)
@@ -444,11 +455,30 @@ struct InfoPanelModelTests {
             InfoText.pageSize(width: 612, height: 792, locale: Locale(identifier: "en_US")) == "Letter · 8.5 × 11 in")
         #expect(InfoText.privilege(0o640, shift: 3) == "Read only")
         #expect(InfoText.privilege(0o640, shift: 0) == "No Access")
+        #expect([6, 3, 0].map { InfoText.privilegeLetters(0o620, shift: $0) } == ["rw", "w", "none"])
+        #expect(InfoText.privilegeLetters(0o400, shift: 6) == "r")
         #expect(InfoText.sizeWithBytes(686) == "686 B")
         #expect(
             Self.dates.dayRange(
                 ISODateForTests.date("2026-03-01T09:00:00.000Z"), ISODateForTests.date("2025-12-30T09:00:00.000Z"))
                 == "Dec 30, 2025 – Mar 1, 2026")
+    }
+
+    // Owner and Group shorten to their room, a character a point here: the words, then the letters, then the name cut
+    // short at its end, never below its first letter.
+    @Test func whoAndWhatTheyMayDoShortenToFit() {
+        func shown(_ name: String?, isYou: Bool = true, room: Int) -> String {
+            InfoText.access(name, isYou: isYou, words: "Read & Write", letters: "rw") { $0.count <= room }
+        }
+        #expect(shown("tcmudemirhan", room: 40) == "tcmudemirhan (you) · Read & Write")
+        #expect(shown("tcmudemirhan", room: 30) == "tcmudemirhan (you) · rw")
+        #expect(shown("tcmudemirhan", room: 20) == "tcmudemi… (you) · rw")
+        #expect(shown("tcmudemirhan", room: 5) == "t… (you) · rw")
+        #expect(shown("staff", isYou: false, room: 10) == "staff · rw")
+        #expect(shown("staff", isYou: false, room: 8) == "st… · rw")
+        // Before the name is read, and a name of one letter, have nothing to cut.
+        #expect(shown(nil, room: 5) == "rw")
+        #expect(shown("x", room: 5) == "x (you) · rw")
     }
 
     @Test func onlyTheHomeFolderOrAFolderInsideItIsMeasuredAutomatically() {

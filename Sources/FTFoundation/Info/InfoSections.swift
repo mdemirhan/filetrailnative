@@ -166,6 +166,40 @@ public enum InfoText {
         return read && write ? "Read & Write" : read ? "Read only" : write ? "Write only" : "No Access"
     }
 
+    /// The same in letters: "rw", "r", "w", "none".
+    public static func privilegeLetters(_ mode: Int, shift: Int) -> String {
+        let read = mode >> (shift + 2) & 1 == 1
+        let write = mode >> (shift + 1) & 1 == 1
+        return read && write ? "rw" : read ? "r" : write ? "w" : "none"
+    }
+
+    /// Who the owner or the group is and what it may do, in full: "demo (you) · Read & Write"; what it may do alone
+    /// until the name is read.
+    public static func access(_ name: String?, isYou: Bool, _ access: String) -> String {
+        guard let name else { return access }
+        return "\(name)\(isYou ? " (you)" : "") · \(access)"
+    }
+
+    /// The same on one line of the room `fits` says there is: in words, else in letters, else in letters with the
+    /// name cut short at its end ("dem… (you) · rw"), to its first letter at the least.
+    public static func access(
+        _ name: String?, isYou: Bool, words: String, letters: String, fits: (String) -> Bool
+    ) -> String {
+        let full = access(name, isYou: isYou, words)
+        if fits(full) { return full }
+        let short = access(name, isYou: isYou, letters)
+        guard let name, name.count > 1, !fits(short) else { return short }
+        let tail = "\u{2026}\(isYou ? " (you)" : "") · \(letters)"
+        let characters = Array(name)
+        var low = 1
+        var high = max(1, characters.count - 1)
+        while low < high {
+            let middle = (low + high + 1) / 2
+            if fits(String(characters[..<middle]) + tail) { low = middle } else { high = middle - 1 }
+        }
+        return String(characters[..<low]) + tail
+    }
+
     /// The kinds of several items, the most first: "HEIF Image (9), QuickTime movie (2), Folder", and what stands for
     /// it where it doesn't fit on one line: "3 kinds".
     public static func kinds(_ labels: [String]) -> (full: String, short: String) {

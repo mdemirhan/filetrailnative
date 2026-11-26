@@ -21,32 +21,45 @@ enum InfoSectionFolds {
     static func reset() { folded = Set(InfoSection.ID.allCases.filter(\.foldedAtFirst)) }
 }
 
-/// A section's title: a click folds the section or opens it, the chevron saying which. Sharing & Permissions has
-/// Edit… at its right end, which opens the permissions popover.
+/// A section's title, in the text's own color: a click folds the section or opens it, the chevron at its right end
+/// saying which, on every section. Sharing & Permissions has a small Edit… button before the chevron, which opens the
+/// permissions popover.
 final class InfoSectionTitleView: NSView {
     let id: InfoSection.ID
     let title = TextBoxField(labelWithString: "")
     /// Sharing & Permissions' Edit….
-    let edit: TextLinkView?
+    let edit: NSButton?
     var onToggle: () -> Void = {}
     var onEdit: () -> Void = {}
     private var isHovered = false { didSet { needsDisplay = true } }
     static let chevronBox = 10.0
-    static let gap = 4.0
+    /// Between Edit… and the chevron.
+    static let gap = 8.0
+    /// Every title is as tall as the one with Edit…, so the sections keep one rhythm.
+    static let height = 20.0
 
     init(_ id: InfoSection.ID) {
         self.id = id
-        edit = id == .permissions ? TextLinkView(identifier: "infoPanel.permissions.edit") : nil
+        if id == .permissions {
+            let button = InfoEditButton(title: "Edit\u{2026}", target: nil, action: nil)
+            button.bezelStyle = .push
+            button.controlSize = .small
+            button.font = ChromeColors.font(size: DesignTokens.typeScale.small, weight: 400)
+            button.refusesFirstResponder = true
+            button.toolTip = "Change the permissions"
+            button.setAccessibilityIdentifier("infoPanel.permissions.edit")
+            edit = button
+        } else {
+            edit = nil
+        }
         super.init(frame: .zero)
         title.stringValue = id.title
-        title.font = ChromeColors.font(size: DesignTokens.typeScale.small, weight: 600)
+        title.font = ChromeColors.font(size: DesignTokens.typeScale.callout, weight: 600)
         title.setAccessibilityIdentifier("infoPanel.section.title")
         addSubview(title)
         if let edit {
-            edit.text = "Edit\u{2026}"
-            edit.font = ChromeColors.font(size: DesignTokens.typeScale.small, weight: 400)
-            edit.toolTip = "Change the permissions"
-            edit.onClick = { [weak self] in self?.onEdit() }
+            edit.target = self
+            edit.action = #selector(editClicked)
             addSubview(edit)
         }
         setAccessibilityElement(true)
@@ -57,35 +70,36 @@ final class InfoSectionTitleView: NSView {
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
+    @objc private func editClicked() { onEdit() }
+
     override var isFlipped: Bool { true }
     var isFolded: Bool { InfoSectionFolds.isFolded(id) }
 
     override func layout() {
         super.layout()
         let height = lineBox(title.font)
-        let x = Self.chevronBox + Self.gap
-        var right = bounds.width
+        var right = bounds.width - Self.chevronBox - Self.gap
         if let edit {
-            let width = ceil(edit.naturalWidth)
+            let size = edit.fittingSize
             edit.frame = NSRect(
-                x: bounds.width - width, y: (bounds.height - edit.naturalHeight) / 2, width: width,
-                height: edit.naturalHeight)
-            right = edit.frame.minX - 8
+                x: right - size.width, y: ((bounds.height - size.height) / 2).rounded(), width: size.width,
+                height: size.height)
+            right = edit.frame.minX - Self.gap
         }
         title.frame = NSRect(
-            x: x, y: (bounds.height - height) / 2,
-            width: max(0, min(textExtent(title.stringValue, title.font), right - x)),
-            height: height)
-        title.textColor = NSColor(isHovered ? infoTheme.palette.textPrimary : infoTheme.palette.textSecondary)
+            x: 0, y: (bounds.height - height) / 2,
+            width: max(0, min(textExtent(title.stringValue, title.font), right)), height: height)
+        title.textColor = NSColor(infoTheme.palette.textPrimary)
         setAccessibilityValue(isFolded ? 0 : 1)
     }
 
     override func draw(_ dirtyRect: NSRect) {
         let box = Self.chevronBox
-        let rect = NSRect(x: 0, y: (bounds.height - box) / 2, width: box, height: box)
+        let rect = NSRect(x: bounds.width - box, y: (bounds.height - box) / 2, width: box, height: box)
+        let palette = infoTheme.palette
         SymbolGlyph.draw(
             isFolded ? "chevron.right" : "chevron.down", in: rect.insetBy(dx: 1, dy: 1),
-            color: NSColor(infoTheme.palette.textDim), weight: .semibold)
+            color: NSColor(isHovered ? palette.textPrimary : palette.textSecondary), weight: .semibold)
     }
 
     override func updateTrackingAreas() {
@@ -96,15 +110,9 @@ final class InfoSectionTitleView: NSView {
                 rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self))
     }
 
-    override func mouseEntered(with event: NSEvent) {
-        isHovered = true
-        needsLayout = true
-    }
+    override func mouseEntered(with event: NSEvent) { isHovered = true }
 
-    override func mouseExited(with event: NSEvent) {
-        isHovered = false
-        needsLayout = true
-    }
+    override func mouseExited(with event: NSEvent) { isHovered = false }
 
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
     /// The whole title takes the click, its text too; Edit… takes its own.
@@ -122,6 +130,14 @@ final class InfoSectionTitleView: NSView {
     override func accessibilityPerformPress() -> Bool {
         onToggle()
         return true
+    }
+}
+
+/// Sharing & Permissions' Edit…: the system's small push button, which VoiceOver presses as a click does.
+final class InfoEditButton: NSButton {
+    override func accessibilityPerformPress() -> Bool {
+        guard isEnabled else { return false }
+        return sendAction(action, to: target)
     }
 }
 
@@ -304,6 +320,7 @@ final class InfoPanelContentView: NSView {
                     case .tags: kind = "tags"
                     case .fitting: kind = "fitting"
                     case .usage: kind = "usage"
+                    case .access: kind = "access"
                     }
                     return "\(row.label)|\(kind)|\(row.detail != nil)|\(row.copyText != nil)|\(row.wraps)"
                 }
@@ -361,6 +378,9 @@ final class InfoPanelContentView: NSView {
                 usage.fraction = fraction
                 usage.text.stringValue = text
             }
+        case .access(let name, let isYou, let words, _):
+            // Its text is chosen as the row is laid out.
+            (views.value as? NSTextField)?.toolTip = InfoText.access(name, isYou: isYou, words)
         case .originalLink(let text, _):
             (views.value as? TextLinkView)?.text = text
         case .tags(let tags):
@@ -493,7 +513,7 @@ final class InfoPanelContentView: NSView {
             title.onToggle = { InfoSectionFolds.toggle(section.id) }
             title.onEdit = { [weak self, weak title] in
                 guard let title else { return }
-                self?.owner?.onEditPermissions(title)
+                self?.owner?.onEditPermissions(title.edit ?? title)
             }
             addSubview(title)
             let rows = section.rows.map { buildRow($0, folderSize: folderSize, opensWith: app, kind: kind) }
@@ -530,6 +550,17 @@ final class InfoPanelContentView: NSView {
             value = valueField(text, wraps: row.wraps)
         case .fitting(let full, _):
             // Which of the two shows is chosen as the row is laid out, by the room it has.
+            let field = SelectableTextField.label(full)
+            field.alignment = .right
+            field.lineBreakMode = .byTruncatingTail
+            field.isSelectable = true
+            field.toolTip = full
+            field.setAccessibilityIdentifier("infoPanel.row.value")
+            addSubview(field)
+            value = field
+        case .access(let name, let isYou, let words, _):
+            // How short it is is chosen as the row is laid out, by the room it has.
+            let full = InfoText.access(name, isYou: isYou, words)
             let field = SelectableTextField.label(full)
             field.alignment = .right
             field.lineBreakMode = .byTruncatingTail
@@ -832,14 +863,19 @@ final class InfoPanelContentView: NSView {
         }
         let bodyLine = lineHeight(ChromeColors.font(size: DesignTokens.typeScale.callout))
         for (sectionIndex, section) in sectionViews.enumerated() {
-            if sectionIndex > 0 { y += InfoMetrics.sectionGap - InfoMetrics.rowPaddingBlock }
-            let titleHeight = max(lineHeight(section.title.title.font), InfoSectionTitleView.chevronBox)
+            // A rule between one section and the next, none between the rows.
+            if sectionIndex > 0 {
+                y += InfoMetrics.sectionGap
+                dividers.append(y)
+                y += 1 + InfoMetrics.sectionGap
+            }
+            let titleHeight = InfoSectionTitleView.height
             section.title.frame = NSRect(x: inset, y: y, width: width, height: titleHeight)
             titleBands.append((y...(y + titleHeight), sectionIndex))
             section.title.needsLayout = true
             y += titleHeight + InfoMetrics.sectionTitleGap
             let folded = InfoSectionFolds.isFolded(section.id)
-            for (index, views) in section.rows.enumerated() {
+            for views in section.rows {
                 let hidden = folded
                 for view in [views.label, views.value, views.extra, views.detail, views.copy, views.box]
                     .compactMap({ $0 }) as [NSView]
@@ -853,15 +889,9 @@ final class InfoPanelContentView: NSView {
                 rowBands.append(
                     ((top - InfoMetrics.rowPaddingBlock)...(top + rowHeight + InfoMetrics.rowPaddingBlock), views))
                 y = top + rowHeight + InfoMetrics.rowPaddingBlock
-                if index < section.rows.count - 1 {
-                    dividers.append(y)
-                    y += 1
-                }
             }
-            if folded { y += InfoMetrics.rowPaddingBlock }
         }
-        y += InfoMetrics.sectionGap
-        frame.size.height = y + 18 - InfoMetrics.sectionGap
+        frame.size.height = y + 18
         needsDisplay = true
     }
 
@@ -871,6 +901,14 @@ final class InfoPanelContentView: NSView {
             selectable.place(rect)
         } else {
             field.frame = rect
+        }
+    }
+
+    /// A value whose text is chosen to fit its one line.
+    private func isOneLine(_ value: InfoValue) -> Bool {
+        switch value {
+        case .fitting, .access: true
+        default: false
         }
     }
 
@@ -886,6 +924,12 @@ final class InfoPanelContentView: NSView {
         case let field as NSTextField:
             if case .fitting(let full, let short) = views.row.value {
                 field.stringValue = textExtent(full, field.font) <= maxValue ? full : short
+            }
+            if case .access(let name, let isYou, let words, let letters) = views.row.value {
+                let shown = InfoText.access(name, isYou: isYou, words: words, letters: letters) {
+                    textExtent($0, field.font) <= maxValue
+                }
+                if field.stringValue != shown { field.stringValue = shown }
             }
             valueWidth = textWidth(field)
             if let extra = views.extra { valueWidth += 6 + textWidth(extra) }
@@ -918,7 +962,7 @@ final class InfoPanelContentView: NSView {
                 let baselineShift = (field.font?.ascender ?? 0) - (extra.font?.ascender ?? 0)
                 extra.frame = NSRect(
                     x: inset + width - codeWidth, y: top + baselineShift, width: codeWidth, height: codeHeight)
-            } else if case .fitting = views.row.value {
+            } else if isOneLine(views.row.value) {
                 put(field, NSRect(x: valueX, y: top, width: valueWidth, height: bodyLine))
             } else if case .place = views.row.value {
                 // One line, its copy button at the row's end.
@@ -974,7 +1018,7 @@ final class InfoPanelContentView: NSView {
 
     override func draw(_ dirtyRect: NSRect) {
         let palette = infoTheme.palette
-        ChromeColors.color(palette.borderLight).setFill()
+        ChromeColors.color(palette.border).setFill()
         for y in dividers {
             NSRect(x: InfoMetrics.panelInset, y: y, width: bounds.width - 2 * InfoMetrics.panelInset, height: 1).fill()
         }

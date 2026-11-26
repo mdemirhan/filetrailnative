@@ -38,7 +38,8 @@ extension InfoPanelModel {
     /// - General: Kind; Opens with (a file) or Contains (a folder) in one place; Size; Tags; Where, the folder it is
     ///   in; Original for a link or an alias. A disk: Kind, Capacity, Used, Available, Tags.
     /// - Dates: Created, Modified, Last opened, Added.
-    /// - Sharing & Permissions: Owner, Group, Everyone, Mode, You can; Locked, Hidden and Extension hidden when set.
+    /// - Sharing & Permissions: Owner and Group (who, and what they may do), Everyone, Mode; Locked, Hidden and Extension
+    ///   hidden when set.
     /// - Image, Movie, Sound, Document, Text, Application or Volume, by what the item is: each with the same rows for
     ///   every item that has it, a dash where it has none.
     /// - Downloaded, for a file that says where it came from; More (folded at first).
@@ -192,18 +193,23 @@ extension InfoPanelModel {
     private static func permissionRows(_ item: InfoItem, details: InfoDetails?) -> [InfoRow] {
         let owner = details?.owner
         guard let mode = item.permissionMode, let parts = PermissionText.split(mode) else {
-            return ["Owner", "Group", "Everyone", "Mode", "You can"].map { row($0, nil) }
+            return ["Owner", "Group", "Everyone", "Mode"].map { row($0, nil) }
+        }
+        func access(_ label: String, _ name: String?, isYou: Bool, shift: Int) -> InfoRow {
+            InfoRow(
+                label: label,
+                value: .access(
+                    name: name, isYou: isYou, words: InfoText.privilege(mode, shift: shift),
+                    letters: InfoText.privilegeLetters(mode, shift: shift)),
+                muted: false)
         }
         var rows = [
-            row(
-                "Owner", InfoText.privilege(mode, shift: 6),
-                detail: owner.map { $0.isYou ? "\($0.user) (you)" : $0.user } ?? pending),
-            row("Group", InfoText.privilege(mode, shift: 3), detail: owner?.group ?? pending),
+            access("Owner", owner?.user, isYou: owner?.isYou ?? false, shift: 6),
+            access("Group", owner?.group, isYou: false, shift: 3),
             row("Everyone", InfoText.privilege(mode, shift: 0)),
             InfoRow(
                 label: "Mode", value: .text("\(parts.octal) · \(parts.symbolic)"), muted: false,
                 copyText: parts.octal),
-            row("You can", owner?.youCan),
         ]
         if let flags = details?.flags {
             if flags.locked { rows.append(row("Locked", "Yes")) }

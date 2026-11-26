@@ -22,7 +22,6 @@ struct InfoDetailsReaderTests {
             let details = try #require(InfoDetailsReader.read(path))
             #expect(details.text == InfoDetails.Text(lines: 3, encoding: "UTF-8", lineEnding: "CRLF"))
             #expect(details.owner?.isYou == true)
-            #expect(details.owner?.youCan == "Read & Write")
             #expect(details.sizeOnDisk.map { $0 > 0 } == true)
             #expect(details.more.contentType == "public.swift-source")
             #expect(details.more.linkCount == 1)

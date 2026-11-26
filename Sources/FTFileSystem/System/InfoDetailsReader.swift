@@ -26,7 +26,7 @@ public enum InfoDetailsReader {
         let isDirectory = stated && (info.st_mode & S_IFMT) == S_IFDIR
         let dataless = stated && info.st_flags & UInt32(SF_DATALESS) != 0
         if stated {
-            details.owner = owner(info, path: path)
+            details.owner = owner(info)
             details.flags = InfoDetails.Flags(
                 locked: info.st_flags & UInt32(UF_IMMUTABLE) != 0, hidden: info.st_flags & UInt32(UF_HIDDEN) != 0)
             details.more.fileID = UInt64(info.st_ino)
@@ -86,14 +86,10 @@ public enum InfoDetailsReader {
 
     // MARK: Owner
 
-    private static func owner(_ info: stat, path: String) -> InfoDetails.Owner {
+    private static func owner(_ info: stat) -> InfoDetails.Owner {
         let user = getpwuid(info.st_uid).flatMap { String(validatingCString: $0.pointee.pw_name) } ?? "\(info.st_uid)"
         let group = getgrgid(info.st_gid).flatMap { String(validatingCString: $0.pointee.gr_name) } ?? "\(info.st_gid)"
-        let read = access(path, R_OK) == 0
-        let write = access(path, W_OK) == 0
-        let youCan =
-            read && write ? "Read & Write" : read ? "Read only" : write ? "Write only" : "No Access"
-        return InfoDetails.Owner(user: user, group: group, isYou: info.st_uid == getuid(), youCan: youCan)
+        return InfoDetails.Owner(user: user, group: group, isYou: info.st_uid == getuid())
     }
 
     // MARK: Downloads

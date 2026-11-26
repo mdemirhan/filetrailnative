@@ -25,14 +25,11 @@ public struct InfoDetails: Equatable, Sendable {
         public var group: String
         /// Whether the user is the one running the app.
         public var isYou: Bool
-        /// What the one running the app may do, by `access`: "Read & Write", "Read only", "Write only", "No Access".
-        public var youCan: String
 
-        public init(user: String, group: String, isYou: Bool, youCan: String) {
+        public init(user: String, group: String, isYou: Bool) {
             self.user = user
             self.group = group
             self.isYou = isYou
-            self.youCan = youCan
         }
     }
 

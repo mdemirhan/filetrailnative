@@ -196,11 +196,39 @@ struct InfoPanelViewTests {
         #expect(
             labels == [
                 "Kind", "Opens with", "Size", "Where", "Created", "Modified", "Last opened", "Added", "Owner", "Group",
-                "Everyone", "Mode", "You can", "Lines", "Encoding", "Line endings",
+                "Everyone", "Mode", "Lines", "Encoding", "Line endings",
             ])
         let titles = findViews("infoPanel.section.title", in: view).map(fieldText)
         #expect(titles == ["General", "Dates", "Sharing & Permissions", "Text", "More"])
         #expect(findViews("infoPanel.row.value", in: view).map(fieldText).contains("644 · rw-r--r--"))
+    }
+
+    // Owner is who and what it may do on one line, shortened to the panel's width: in words where they fit, in
+    // letters with the name cut short in a narrow panel. Its whole text is its tooltip.
+    @Test func ownerIsOneLineThatShortensToThePanel() throws {
+        var details = InfoDetails()
+        details.owner = .init(user: "a.very.long.account.name", group: "staff", isYou: true)
+        let content = InfoPanelModel.itemContent(
+            item: Self.file, pending: false, volume: nil, isVolumeRoot: false, hasFolderSize: false, folderSize: nil,
+            opensWith: .available, dates: DateText(locale: Locale(identifier: "en_US"), timeZone: .gmt),
+            details: .read(details))
+        let shown = InfoPanelDisplay(
+            body: .item(.init(item: Self.file, content: content, folderSize: nil, openApp: nil)), wantsSpinner: false)
+        func owner(width: Double) throws -> NSTextField {
+            let view = InfoPanelView()
+            view.show(shown)
+            let values = findViews("infoPanel.row.value", in: laidOut(view, width: width, height: 900))
+            return try #require(
+                values.compactMap { $0 as? NSTextField }.first {
+                    $0.stringValue.contains("rw") || $0.stringValue.contains("Read & Write")
+                })
+        }
+        let wide = try owner(width: 420)
+        #expect(wide.stringValue == "a.very.long.account.name (you) · Read & Write")
+        let narrow = try owner(width: 260)
+        #expect(narrow.stringValue.hasSuffix("\u{2026} (you) · rw"))
+        #expect(narrow.toolTip == "a.very.long.account.name (you) · Read & Write")
+        #expect(narrow.frame.minX >= 16)
     }
 
     // A long Where is cut at its start within its row: it never reaches over its label or past the panel's edge,
@@ -244,7 +272,7 @@ struct InfoPanelViewTests {
 
     /// The tops of the rows every item has: General, Dates and Sharing & Permissions.
     func rowTops(_ view: NSView) -> [Double] {
-        Array(findViews("infoPanel.row.label", in: view).map { Double($0.frame.minY) }.prefix(13))
+        Array(findViews("infoPanel.row.label", in: view).map { Double($0.frame.minY) }.prefix(12))
     }
 
     // Every row is in the same place for an unmeasured folder, a measured one and a file.

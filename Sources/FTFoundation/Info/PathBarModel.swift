@@ -51,10 +51,12 @@ public enum InfoMetrics {
     public static let heroGap = 6.0
     public static let openButtonHeight = 24.0
     public static let openChevronWidth = 26.0
-    public static let rowPaddingBlock = 8.0
+    /// Above and below a row's text: the rows have no rules between them.
+    public static let rowPaddingBlock = 4.0
     public static let rowGap = 12.0
-    public static let sectionGap = 16.0
-    public static let sectionTitleGap = 4.0
+    /// Above and below the rule between two sections.
+    public static let sectionGap = 10.0
+    public static let sectionTitleGap = 2.0
     /// Where's copy button, and its glyph.
     public static let copyButton = 16.0
     public static let copyIcon = 11.0
