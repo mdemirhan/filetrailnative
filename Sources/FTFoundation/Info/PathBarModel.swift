@@ -60,8 +60,13 @@ public enum InfoMetrics {
     public static let copyIcon = 11.0
     public static let spinnerDelay = 0.3
     public static let fetchDelay = 0.08
+    /// How long the panel and the row keep showing the item they showed while another one's answers come: within it
+    /// they change once, whole; past it they show the new item with dashes where answers are still to come. Under the
+    /// tenth of a second within which a change still reads as immediate.
+    public static let holdGrace = 0.1
+    /// Answers that come within one frame of each other are shown in one change (at 120 Hz).
+    public static let frameInterval = 1.0 / 120
     public static let propertiesCacheLimit = 200
-    public static let openWithDelay = 0.08
     public static let openWithPatience = 0.25
 }
 

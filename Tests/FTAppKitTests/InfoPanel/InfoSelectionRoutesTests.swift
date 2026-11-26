@@ -214,20 +214,25 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // Until macOS answers the row is there with a dash, so the rows under it don't move.
-        @Test func theOpensWithRowWaitsForTheAnswer() async throws {
+        // Another item shows once, whole: until its quick answers are in (macOS's apps among them) the one before stays,
+        // so nothing empties and fills again. The row of Opens with keeps its place above Size.
+        @Test func anotherItemShowsOnceItsAnswersAreIn() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             tab.perform(.toggleInfoPanel)
             harness.layout(tab)
+            let folderName = harness.folder.path.split(separator: "/").last.map(String.init) ?? ""
+            #expect(await waitUntil { texts("infoPanel.name", in: tab) == [folderName] })
             tab.content.select(paths: [try path("note.txt", in: tab)])
-            // At once: the lookup starts 80 ms after the item changes.
+            // At once: still the folder, not the note with dashes.
+            #expect(texts("infoPanel.name", in: tab) == [folderName])
+            #expect(await waitUntil { texts("infoPanel.name", in: tab) == ["note.txt"] })
             let labels = texts("infoPanel.row.label", in: tab)
             let row = try #require(labels.firstIndex(of: "Opens with"))
             #expect(labels[row + 1] == "Size")
-            #expect(views("infoPanel.opensWith", in: tab).isEmpty)
-            #expect(texts("infoPanel.row.value", in: tab).contains("—"))
-            // Open doesn't wait for the answer.
+            // The apps were asked before it showed: the row has its answer, not a dash.
+            let info = try #require(tab.infoController)
+            #expect(info.openWithLookup != nil || !views("infoPanel.opensWith", in: tab).isEmpty)
             #expect(views("infoPanel.openGroup", in: tab).count == 1)
             await harness.close()
         }

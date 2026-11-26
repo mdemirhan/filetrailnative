@@ -37,6 +37,15 @@ final class InfoController {
     // Open With: what macOS is asked and answered (`OpenWithLookupLoad`), and the waits before asking and for it.
     private var lookup = OpenWithLookupLoad<OpenWithLookup>()
     private let lookupRead = LatestRead<String, OpenWithLookup?>()
+    /// The last answer for each kind of file, by its extension: the apps a kind opens with are the same for every
+    /// file of it, so the next file of a kind shows them at once while macOS is asked again.
+    private var lookupByType: [String: OpenWithLookup] = [:]
+    // What the panel and the row were last painted for, and the item being waited for (`InfoMetrics.holdGrace`).
+    private var paintedKey: String?
+    private var holding: (key: String, timer: DispatchWorkItem)?
+    /// How long another item is waited for before it shows with dashes (tests set it to 0).
+    var holdGrace = InfoMetrics.holdGrace
+    private var frameQueued = false
     private var lookupPatience: DispatchWorkItem?
     // The copy buttons.
     private var observation: ExplorerWindowObservation?
@@ -129,6 +138,7 @@ final class InfoController {
         wireRow()
         seenSelection = content.selection
         targetOverride = nil
+        paintedKey = nil
         update()
     }
 
@@ -303,7 +313,7 @@ final class InfoController {
                     permissionMode: item.permissionMode, addedAt: item.addedAt, lastOpenedAt: item.lastOpenedAt,
                     original: item.isLink ? item.originalPath.map(InfoOriginal.found) ?? .missing : nil)
                 guard self.propertiesLoad.answered(path, mapped, request: request) else { return }
-                self.update()
+                self.updateNextFrame()
             })
     }
 
@@ -320,11 +330,11 @@ final class InfoController {
         detailsStale = false
         let reader = detailsReader
         detailsRead.ask(
-            path, read: { reader(path, $0) },
+            path, after: 0, read: { reader(path, $0) },
             answered: { [weak self] value in
                 guard let self else { return }
                 if let value { self.details = (path, value) }
-                self.update()
+                self.updateNextFrame()
             })
     }
 
@@ -339,7 +349,7 @@ final class InfoController {
                 answered: { [weak self] value in
                     guard let self else { return }
                     self.signing = (path, value)
-                    self.update()
+                    self.updateNextFrame()
                 })
         }
         guard let read = signing, read.path == path else { return .pending }
@@ -371,12 +381,13 @@ final class InfoController {
         guard tagsLoad.asked != key else { return }
         tagsStale = false
         let reader = tagsReader
+        // One item's tags at once; several wait, so a selection grown item by item reads only where it stops.
         tagsLoad.ask(
-            key, read: { _ in reader(paths) },
+            key, after: paths.count > 1 ? InfoMetrics.fetchDelay : 0, read: { _ in reader(paths) },
             answered: { [weak self] read in
                 guard let self else { return }
                 self.tagsRead = (key, read)
-                self.update()
+                self.updateNextFrame()
             })
     }
 
@@ -401,7 +412,7 @@ final class InfoController {
             answered: { [weak self] sizes in
                 guard let self, self.volumeRequested == path else { return }
                 self.volume = (path, InfoVolume(totalBytes: sizes.totalBytes, availableBytes: sizes.availableBytes))
-                self.update()
+                self.updateNextFrame()
             })
     }
 
@@ -414,39 +425,54 @@ final class InfoController {
             answered: { [weak self] sizes in
                 guard let self, self.rowVolumeRequested == path else { return }
                 self.rowVolume = (path, sizes.availableBytes)
-                self.update()
+                self.updateNextFrame()
             })
     }
 
     // MARK: Open With
 
-    private func requestLookup(_ path: String) {
+    /// The extension a file's Open With answer is kept by; nil for one whose answer is its own (no extension, an
+    /// alias, which opens with its original's apps).
+    private static func lookupType(_ item: InfoItem) -> String? {
+        guard item.kind == .file, !item.fileExtension.isEmpty else { return nil }
+        return item.fileExtension.lowercased()
+    }
+
+    private func requestLookup(_ path: String, type: String? = nil) {
         guard let generation = lookup.request(path) else { return }
+        // The kind's last answer shows at once; macOS is asked all the same, and its answer takes its place.
+        if let type, let known = lookupByType[type] { _ = lookup.answered(generation, known) }
         lookupPatience?.cancel()
         let pinned = host.preferences.openWithApplications
         let patience = DispatchWorkItem { [weak self] in
             MainActor.assumeIsolated {
                 guard let self, self.lookup.patienceRanOut(generation) else { return }
-                self.update()
+                self.updateNextFrame()
             }
         }
         lookupPatience = patience
         DispatchQueue.main.asyncAfter(
-            deadline: .now() + InfoMetrics.openWithDelay + InfoMetrics.openWithPatience, execute: patience)
+            deadline: .now() + InfoMetrics.openWithPatience, execute: patience)
         lookupRead.askAsync(
-            path, after: InfoMetrics.openWithDelay,
+            path, after: 0,
             read: { _ in
                 await SystemActions.openWithApplications(paths: [path], pinnedAppPaths: pinned.map(\.appPath))
             },
             answered: { [weak self] answer in
-                guard let self, self.lookup.answered(generation, answer) else { return }
-                self.update()
+                guard let self else { return }
+                if let type, let answer {
+                    if self.lookupByType.count >= 64 { self.lookupByType.removeAll() }
+                    self.lookupByType[type] = answer
+                }
+                guard self.lookup.answered(generation, answer) else { return }
+                self.updateNextFrame()
             })
     }
 
     /// Always Open With changed what a kind opens in: every answer is forgotten and asked again.
     func forgetLookups() {
         OpenWithCatalog.shared.forget()
+        lookupByType = [:]
         if let path = lookup.forget() { requestLookup(path) }
     }
 
@@ -495,6 +521,9 @@ final class InfoController {
             volumeRequested = nil
             rowVolumeRequested = nil
             auto.setPath(nil)
+            paintedKey = nil
+            holding?.timer.cancel()
+            holding = nil
             return
         }
         let preferences = host.preferences
@@ -503,13 +532,84 @@ final class InfoController {
         let selection = selectionDetails()
         updateAutoSize(preferences)
         if !panelOpen { volumeRequested = nil }
+        // Another item: asked at once, as what it takes is under a millisecond and the panel waits for it
+        // (`holdGrace`); a folder read again waits instead (`folderChanged`).
         if let path = targetPath, propertiesLoad.needsAsking(path) {
-            scheduleFetch(path, immediately: false)
+            scheduleFetch(path, immediately: true)
         }
         // The row's fact of a kind comes from the details too, with the panel closed.
         if !panelOpen, selection == nil, let path = targetPath, path != folderPath { _ = detailsState(path) }
-        if panelOpen { shownPanel.show(panelDisplay(preferences, shortcuts, selection)) }
-        row.show(rowDisplay(selection))
+        let panelNext = panelOpen ? panelDisplay(preferences, shortcuts, selection) : nil
+        let rowNext = rowDisplay(selection)
+        guard paints(displayKey(selection), ready: answersReady(selection)) else { return }
+        if let panelNext { shownPanel.show(panelNext) }
+        row.show(rowNext)
+    }
+
+    // MARK: Painting once
+
+    /// What the panel and the row describe: the item, the items, or nothing.
+    private func displayKey(_ selection: SelectionDetails?) -> String {
+        if let selection { return "items\u{0}" + selection.entries.map(\.path).joined(separator: "\u{0}") }
+        return "item\u{0}" + (targetPath ?? "")
+    }
+
+    /// Whether the answers that are quick to come are in for what is described: the item's properties, its details,
+    /// its apps and its tags; for several items, their tags. What takes longer (an app's signing, a folder's size)
+    /// fills in where it is afterwards.
+    private func answersReady(_ selection: SelectionDetails?) -> Bool {
+        if let selection {
+            let key = selection.entries.map { DiskPath($0.path) }
+            return selection.entries.count > TagColorsMenuRow.stateLimit || (tagsRead?.key == key && !tagsStale)
+        }
+        guard let path = targetPath else { return true }
+        guard let resolved, resolved.item.path == path, !resolved.pending else { return false }
+        if details?.path != path { return false }
+        guard panelOpen else { return true }
+        let item = resolved.item
+        let isFile = item.kind == .file || item.kind == .symlinkFile
+        if lookup.opensWith(for: path, isFile: isFile, canAlways: OpenWithMenu.canAlwaysOpenWith) == .pending {
+            return false
+        }
+        if VolumePaths.isVolumeRootPath(path), volume?.path != path { return false }
+        return tagsRead?.key == [DiskPath(path)]
+    }
+
+    /// Whether to paint now: the same item again (its values change in place), the first item since the panel or the
+    /// row opened, or another item whose quick answers are in. Otherwise what is shown stays while they come, up to
+    /// `holdGrace`; past it the other item shows with dashes, and its answers fill in where they are.
+    private func paints(_ key: String, ready: Bool) -> Bool {
+        if key == paintedKey || paintedKey == nil || ready {
+            paintedKey = key
+            holding?.timer.cancel()
+            holding = nil
+            return true
+        }
+        guard holding?.key != key else { return false }
+        holding?.timer.cancel()
+        let timer = DispatchWorkItem { [weak self] in
+            MainActor.assumeIsolated {
+                guard let self, self.holding?.key == key else { return }
+                self.holding = nil
+                self.paintedKey = key
+                self.update()
+            }
+        }
+        holding = (key, timer)
+        DispatchQueue.main.asyncAfter(deadline: .now() + holdGrace, execute: timer)
+        return false
+    }
+
+    /// An answer came: what came within the same frame is shown in one change.
+    private func updateNextFrame() {
+        guard !frameQueued else { return }
+        frameQueued = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + InfoMetrics.frameInterval) { [weak self] in
+            MainActor.assumeIsolated {
+                self?.frameQueued = false
+                self?.update()
+            }
+        }
     }
 
     private func shortcutDisplay(_ preferences: AppPreferences) -> ShortcutDisplay {
@@ -585,7 +685,7 @@ final class InfoController {
         let item = resolved.item
         let isVolume = VolumePaths.isVolumeRootPath(item.path)
         if isVolume { requestVolume(item.path) }
-        requestLookup(item.path)
+        requestLookup(item.path, type: Self.lookupType(item))
         let isFile = item.kind == .file || item.kind == .symlinkFile
         let opens = lookup.opensWith(for: item.path, isFile: isFile, canAlways: OpenWithMenu.canAlwaysOpenWith)
         let folderPath = item.kind.isFolderSizeEligible ? item.path : nil
