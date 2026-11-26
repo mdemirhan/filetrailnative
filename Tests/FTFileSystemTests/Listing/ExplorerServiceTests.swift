@@ -770,6 +770,26 @@ struct ExplorerServiceFixtureTests {
         }
     }
 
+    /// An alias leads to its original whether that is a file or a folder: Get Info's Original names it for both.
+    @Test func readsTheOriginalOfAnAliasToAFileAndToAFolder() async throws {
+        try await withTemporaryDirectory { directory in
+            let root = try NativeFileSystem().realpath(directory.path)
+            try makeFolder(root + "/Folder")
+            try write("hello", to: root + "/notes.txt")
+            try Links.writeAlias(of: root + "/Folder", at: root + "/Folder alias")
+            try Links.writeAlias(of: root + "/notes.txt", at: root + "/notes.txt alias")
+            let service = DirectoryService(kinds: KindLabeler(describer: nil))
+            let folderAlias = await service.itemProperties(path: root + "/Folder alias")
+            let fileAlias = await service.itemProperties(path: root + "/notes.txt alias")
+            #expect(folderAlias.kind == .aliasDirectory)
+            #expect(folderAlias.isLink)
+            #expect(folderAlias.originalPath == root + "/Folder")
+            #expect(fileAlias.kind == .alias)
+            #expect(fileAlias.isLink)
+            #expect(fileAlias.originalPath == root + "/notes.txt")
+        }
+    }
+
     @Test func returnsImmediateChildDirectorySuggestionsForExistingAndPartialPaths() async throws {
         try await withTemporaryDirectory { directory in
             for name in ["lotus123/screenshots", "lotus123/specs", "dux", "tmp"] {

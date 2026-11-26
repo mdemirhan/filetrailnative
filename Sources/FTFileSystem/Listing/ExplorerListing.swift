@@ -613,7 +613,7 @@ enum ExplorerListing {
             isSymlink: details.isSymlink, createdAt: details.createdAt,
             modifiedAt: details.modifiedAt, sizeBytes: details.sizeBytes, sizeStatus: details.sizeStatus,
             permissionMode: details.permissionMode, addedAt: details.addedAt, lastOpenedAt: details.lastOpenedAt,
-            originalPath: details.isSymlink || details.kind == .alias ? Links.original(of: resolvedPath) : nil)
+            originalPath: details.isSymlink || details.kind.isAlias ? Links.original(of: resolvedPath) : nil)
     }
 
     // MARK: Suggestions
