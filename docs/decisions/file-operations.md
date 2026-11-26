@@ -316,6 +316,9 @@ The plan, built, is [records/folder-sizes.md](../records/folder-sizes.md).
     Finder writes an alias again when it opens one that was found another way than it holds, so it leads to that copy for good;
     File Trail only looks an alias up, so once the copy is gone it leads to the original again.
     The system holds this only when the alias's file is there as it is asked, so `Links.writeAlias` makes the file empty first.
+  - **An alias whose original is in the Trash leads to it there**, where Finder says its original can't be found (the owner, 2026-11-27).
+    The system's lookup finds it there, and it is still there to be put back: opening the alias opens it in the Trash, Show Original and Get Info's Original show it there, and the alias isn't marked as broken.
+    Put back, under any name, the alias leads to it again; once the Trash is emptied, the alias is broken, as in Finder.
   - **An alias is shown as Finder shows it**: its own size, tags and dates;
     the icon of its original's kind with the arrow macOS puts on a symbolic link (`IconSamples.aliasLink`), which is Finder's alias arrow at every size, so an alias of a file shows its type's icon and never a thumbnail, and an alias of a folder a plain folder with none of its original's tag color;
     an app's, a disk's or a special folder's alias shows that item's picture.
