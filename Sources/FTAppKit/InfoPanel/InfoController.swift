@@ -66,7 +66,11 @@ final class InfoController {
     // again; stale once its folder changed.
     private var details: (path: String, value: InfoDetails)?
     private let detailsRead = LatestRead<String, InfoDetails?>()
-    private var detailsStale = false
+    private var detailsStale = false {
+        didSet { if detailsStale { detailsChanges += 1 } }
+    }
+    /// Counts the times they went stale: an answer clears the mark only if none came after its read was asked for.
+    private var detailsChanges = 0
     /// Whether the read again waits `fetchDelay`: the folder changed, where a change this window made reads at once.
     private var detailsWait = false
     private var signing: (path: String, value: InfoDetails.Signing?)?
@@ -350,7 +354,9 @@ final class InfoController {
     }
 
     private func requestDetails(_ path: String) {
-        detailsStale = false
+        // The mark stays until the answer is in: a read that never runs (the panel and the row hidden while it
+        // waits) leaves the details to be read again when one shows.
+        let asked = detailsChanges
         let reader = detailsReader
         // Another item's at once, as the panel waits for them, and the same item's after this window changed it, so
         // its rows change together; the same item's again because its folder changed, after the wait a folder read
@@ -362,6 +368,7 @@ final class InfoController {
             answered: { [weak self] value in
                 guard let self else { return }
                 if let value { self.details = (path, value) }
+                if self.detailsChanges == asked { self.detailsStale = false }
                 self.updateNextFrame()
             })
     }

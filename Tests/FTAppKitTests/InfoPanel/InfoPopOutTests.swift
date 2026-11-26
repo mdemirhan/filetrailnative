@@ -1,6 +1,7 @@
 // The Info panel in a window of its own, and how the panel and the row keep an item while the next one's answers
 // come, on windows that are never shown
 import AppKit
+import FTFileSystem
 import FTFoundation
 import Foundation
 import Testing
@@ -65,6 +66,40 @@ extension ExplorerWindowlessTests {
             popOut.ownerGone(tab)
             #expect(popOut.owner == nil)
             #expect(!(popOut.window?.isVisible ?? false))
+            await harness.close()
+        }
+
+        // An item changed, and the Info Row hidden before its details were read again: they are read when it shows
+        // again, where the mark that they were stale went at the ask and the read never ran.
+        @Test func detailsStaleWhenTheRowWasHiddenAreReadWhenItShows() async throws {
+            final class Reads: @unchecked Sendable {
+                private let lock = NSLock()
+                private var count = 0
+                func add() { lock.withLock { count += 1 } }
+                var value: Int { lock.withLock { count } }
+            }
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let info = try #require(tab.infoController)
+            let reads = Reads()
+            info.detailsReader = { path, cancel in
+                reads.add()
+                return InfoDetailsReader.read(path, cancel: cancel)
+            }
+            tab.perform(.toggleInfoRow)
+            tab.content.select(paths: [harness.folder.appending("note.txt").path])
+            #expect(await waitUntil { reads.value == 1 })
+            try await Task.sleep(for: .milliseconds(100))
+            #expect(reads.value == 1)
+            info.itemsChanged()
+            tab.perform(.toggleInfoRow)
+            try await Task.sleep(for: .milliseconds(200))
+            #expect(reads.value == 1)
+            tab.perform(.toggleInfoRow)
+            #expect(await waitUntil { reads.value == 2 })
+            // And once: the answer cleared the mark.
+            try await Task.sleep(for: .milliseconds(200))
+            #expect(reads.value == 2)
             await harness.close()
         }
 
