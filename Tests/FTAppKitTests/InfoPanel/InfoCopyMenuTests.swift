@@ -59,7 +59,21 @@ import Testing
             let expected = ["Copy \(label.stringValue)"]
             #expect(menu(at: center(label), in: root, window: window) == expected, "title \(label.stringValue)")
             let value = NSPoint(x: root.bounds.width - 30, y: center(label).y)
-            #expect(menu(at: value, in: root, window: window) == expected, "value \(label.stringValue)")
+            // A value's text: the whole of it is selected, with the system's menu and its Copy; anything else, the
+            // row's Copy.
+            if let field = root.hitTest(value) as? SelectableTextField, field.lineBreakMode != .byTruncatingHead {
+                let event = try #require(
+                    NSEvent.mouseEvent(
+                        with: .rightMouseDown, location: root.convert(value, to: nil), modifierFlags: [], timestamp: 0,
+                        windowNumber: window.windowNumber, context: nil, eventNumber: 0, clickCount: 1, pressure: 1))
+                let shown = field.menuSelectingAll(for: event)
+                let editor = try #require(field.currentEditor())
+                #expect(editor.selectedRange.length == (field.stringValue as NSString).length, "\(label.stringValue)")
+                #expect(shown?.items.contains { $0.title == "Copy" } == true, "\(label.stringValue)")
+                window.makeFirstResponder(nil)
+            } else {
+                #expect(menu(at: value, in: root, window: window) == expected, "value \(label.stringValue)")
+            }
         }
         let name = try #require(findViews("infoPanel.name", in: panel).first)
         #expect(menu(at: center(name), in: root, window: window) == ["Copy Name"])

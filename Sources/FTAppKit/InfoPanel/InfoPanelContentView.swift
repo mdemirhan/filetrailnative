@@ -994,14 +994,19 @@ final class SelectableTextField: NSTextField {
 
     static let padding = 2.0
 
-    /// A right-click on a value doesn't start a selection: it shows the row's own menu, which copies the whole value.
-    /// Text already selected is the field editor's, with the system's menu. Where keeps the system's way: a
-    /// right-click selects in it (the owner, 2026-11-26).
+    /// A right-click on a value selects the whole of it, whichever word it lands on, and shows the system's text
+    /// menu, whose Copy copies it: every value alike. Where keeps the system's way, which selects the word under the
+    /// pointer (the owner, 2026-11-26).
     override func rightMouseDown(with event: NSEvent) {
-        guard lineBreakMode != .byTruncatingHead, let menu = superview?.menu(for: event) else {
-            return super.rightMouseDown(with: event)
-        }
-        NSMenu.popUpContextMenu(menu, with: event, for: self)
+        guard lineBreakMode != .byTruncatingHead, let menu = menuSelectingAll(for: event), let editor = currentEditor()
+        else { return super.rightMouseDown(with: event) }
+        NSMenu.popUpContextMenu(menu, with: event, for: editor)
+    }
+
+    /// Selects all of its text and answers the system's text menu for it.
+    func menuSelectingAll(for event: NSEvent) -> NSMenu? {
+        selectText(nil)
+        return (currentEditor() as? NSTextView)?.menu(for: event)
     }
     static let slack = 1.0
 

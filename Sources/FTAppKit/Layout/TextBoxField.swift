@@ -174,15 +174,17 @@ final class PlainCopyFieldEditor: NSTextView {
         super.writablePasteboardTypes.filter { Self.plainTypes.contains($0) }
     }
 
-    /// With nothing selected, a right-click in the Info panel's selectable text gives its row's own menu, which copies
-    /// the whole value, rather than the system's, whose Copy would be dimmed; Where keeps the system's.
-    override func menu(for event: NSEvent) -> NSMenu? {
-        if selectedRange().length == 0, let field = (delegate as AnyObject?) as? SelectableTextField,
-            field.lineBreakMode != .byTruncatingHead, let row = field.superview?.menu(for: event)
-        {
-            return row
+    /// A right-click in a value of the Info panel being selected selects the whole value, as a right-click on it does
+    /// before (`SelectableTextField`): not the word under the pointer. Where keeps the system's way.
+    override func rightMouseDown(with event: NSEvent) {
+        if let field = (delegate as AnyObject?) as? SelectableTextField, field.lineBreakMode != .byTruncatingHead {
+            selectAll(nil)
+            if let menu = menu(for: event) {
+                NSMenu.popUpContextMenu(menu, with: event, for: self)
+                return
+            }
         }
-        return super.menu(for: event)
+        super.rightMouseDown(with: event)
     }
 
     static let plainTypes: Set<NSPasteboard.PasteboardType> = [
