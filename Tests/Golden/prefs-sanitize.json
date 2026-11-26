@@ -73,6 +73,7 @@
           "detailRowOpen": false,
           "infoPanelPoppedOut": false,
           "infoPanelPopOutShown": false,
+          "infoFoldedSections": ["more"],
           "topToolbarItems": [
             "folderTree",
             "topSeparator",
@@ -302,6 +303,7 @@
           "detailRowOpen": false,
           "infoPanelPoppedOut": false,
           "infoPanelPopOutShown": false,
+          "infoFoldedSections": ["more"],
           "topToolbarItems": [
             "folderTree",
             "topSeparator",
@@ -6067,6 +6069,27 @@
       "name": "304: an accent that is neither system nor a color falls back to system",
       "base": "0: empty object",
       "input": {"defaultTheme": null, "text": "{\"preferences\":{\"accent\":\"systemblue\"}}"},
+      "changes": {}
+    },
+    {
+      "name": "305: the Info panel's folded sections are kept, unknown and repeated names left out",
+      "base": "0: empty object",
+      "input": {
+        "defaultTheme": null,
+        "text": "{\"preferences\":{\"infoFoldedSections\":[\"dates\",\"bogus\",\"more\",\"dates\",3]}}"
+      },
+      "changes": {"preferences": {"infoFoldedSections": ["dates", "more"]}}
+    },
+    {
+      "name": "306: no folded section is kept as none: every section open",
+      "base": "0: empty object",
+      "input": {"defaultTheme": null, "text": "{\"preferences\":{\"infoFoldedSections\":[]}}"},
+      "changes": {"preferences": {"infoFoldedSections": []}}
+    },
+    {
+      "name": "307: folded sections that aren't a list fall back to More folded",
+      "base": "0: empty object",
+      "input": {"defaultTheme": null, "text": "{\"preferences\":{\"infoFoldedSections\":\"more\"}}"},
       "changes": {}
     }
   ]

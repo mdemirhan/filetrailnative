@@ -156,7 +156,7 @@ struct AppPreferencesTests {
         // Every preference key is listed.
         let preferenceKeys = (try? JSONNode.of(AppPreferences.defaults()))?.object ?? [:]
         #expect(Set(preferenceKeys.keys) == Set(PreferenceKey.allCases.map(\.rawValue)))
-        #expect(PreferenceKey.allCases.count == 67)
+        #expect(PreferenceKey.allCases.count == 68)
     }
 
     // The Compact List keeps a width for each density; a saved one is kept within 160…600, a missing one is the

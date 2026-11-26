@@ -8,6 +8,15 @@ public enum PreferencesSanitizer {
         record[key]?.bool ?? fallback
     }
 
+    /// The Info panel's folded sections: the names of sections there are, each once; the default when it isn't a list.
+    private static func infoSections(_ node: JSONNode?, _ fallback: [InfoSection.ID]) -> [InfoSection.ID] {
+        guard let items = node?.array else { return fallback }
+        var seen = Set<InfoSection.ID>()
+        return items.compactMap { $0.string.flatMap(InfoSection.ID.init(rawValue:)) }.filter {
+            seen.insert($0).inserted
+        }
+    }
+
     private static func choice<Choice: RawRepresentable>(
         _ record: [String: JSONNode], _ key: String, _ fallback: Choice
     ) -> Choice where Choice.RawValue == String {
@@ -344,6 +353,7 @@ public enum PreferencesSanitizer {
             detailRowOpen: bool(record, "detailRowOpen", defaults.detailRowOpen),
             infoPanelPoppedOut: bool(record, "infoPanelPoppedOut", defaults.infoPanelPoppedOut),
             infoPanelPopOutShown: bool(record, "infoPanelPopOutShown", defaults.infoPanelPopOutShown),
+            infoFoldedSections: infoSections(record["infoFoldedSections"], defaults.infoFoldedSections),
             topToolbarItems: record["topToolbarItems"]?.array != nil
                 ? ToolbarItems.sanitizeTopItems(record["topToolbarItems"]) : defaults.topToolbarItems,
             terminalApp: application(record["terminalApp"]),

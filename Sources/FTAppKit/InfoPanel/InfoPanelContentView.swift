@@ -2,23 +2,44 @@ import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// Which of the panel's sections are folded: one set for the app while it runs, so a section folded in one window
-/// or the panel popped out stays folded in every other and for every item.
+/// Which of the panel's sections are folded: one set for the app, so a section folded in one window or the panel
+/// popped out stays folded in every other and for every item. It is a preference (`infoFoldedSections`), read the
+/// first time it is asked for and written at each fold, so it stays as it was from one launch to the next.
 @MainActor
 enum InfoSectionFolds {
-    private static var folded = Set(InfoSection.ID.allCases.filter(\.foldedAtFirst))
+    /// Nil until read from the preferences.
+    private static var stored: Set<InfoSection.ID>?
+    /// Where they are kept: the app's preferences, or a test's.
+    static var channel: () -> WindowPreferenceChannel? = { ExplorerServices.installed?.preferences }
     /// Told when a section is folded or opened, so every panel lays out again.
     static let changed = Notification.Name("InfoSectionFolds.changed")
+
+    private static var folded: Set<InfoSection.ID> {
+        if let stored { return stored }
+        let saved = Set(
+            channel()?.preferences(for: nil).infoFoldedSections
+                ?? AppPreferences.defaults().infoFoldedSections)
+        stored = saved
+        return saved
+    }
 
     static func isFolded(_ id: InfoSection.ID) -> Bool { folded.contains(id) }
 
     static func toggle(_ id: InfoSection.ID) {
-        if folded.remove(id) == nil { folded.insert(id) }
+        var next = folded
+        if next.remove(id) == nil { next.insert(id) }
+        stored = next
+        // In the sections' order, so the file reads as the panel does.
+        let saved = InfoSection.ID.allCases.filter(next.contains)
+        channel()?.update(from: nil) { $0.infoFoldedSections = saved }
         NotificationCenter.default.post(name: changed, object: nil)
     }
 
-    /// Back to how the app starts: a test seam.
-    static func reset() { folded = Set(InfoSection.ID.allCases.filter(\.foldedAtFirst)) }
+    /// Read from the preferences again when next asked for, every panel laid out again by them: a test seam.
+    static func reset() {
+        stored = nil
+        NotificationCenter.default.post(name: changed, object: nil)
+    }
 }
 
 /// A section's title, in the text's own color: a click folds the section or opens it, the chevron at its right end

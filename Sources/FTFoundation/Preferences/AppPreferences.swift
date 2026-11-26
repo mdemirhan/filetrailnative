@@ -44,6 +44,8 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     public var infoPanelPoppedOut: Bool
     /// Whether that window is shown.
     public var infoPanelPopOutShown: Bool
+    /// The Info panel's sections that are folded, for every window and item, kept from one launch to the next.
+    public var infoFoldedSections: [InfoSection.ID]
     public var topToolbarItems: [ToolbarItemID]
     @NullEncoded public var terminalApp: ApplicationSelection?
     public var defaultTextEditor: ApplicationSelection
@@ -110,7 +112,7 @@ public struct AppPreferences: Codable, Equatable, Sendable {
             notificationsEnabled: true,
             markClipboardItems: true,
             autoCalculateFolderSizes: true, folderTreeOpen: true, propertiesOpen: false, detailRowOpen: false,
-            infoPanelPoppedOut: false, infoPanelPopOutShown: false,
+            infoPanelPoppedOut: false, infoPanelPopOutShown: false, infoFoldedSections: [.more],
             topToolbarItems: ToolbarItems.defaultTopItems, terminalApp: nil,
             defaultTextEditor: AppPreferenceLimits.defaultTextEditor, openWithApplications: [],
             diskImageOpensIn: .window, returnKeyAction: .rename, shortcutOverrides: [:],

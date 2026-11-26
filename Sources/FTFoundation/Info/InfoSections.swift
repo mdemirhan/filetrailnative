@@ -4,7 +4,7 @@ import UniformTypeIdentifiers
 /// A section of the Info panel. The sections every item has come first and keep their rows from item to item, so
 /// what is read moving from one item to the next stays in its place; the sections only some items have come after.
 public struct InfoSection: Equatable, Sendable {
-    public enum ID: String, Sendable, CaseIterable {
+    public enum ID: String, Codable, Sendable, CaseIterable {
         case general, dates, permissions
         case image, movie, sound, document, text, application, volume, diskImage
         case downloaded, more
@@ -27,8 +27,6 @@ public struct InfoSection: Equatable, Sendable {
             }
         }
 
-        /// Folded until it is opened: what few look for.
-        public var foldedAtFirst: Bool { self == .more }
     }
 
     public var id: ID

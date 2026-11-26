@@ -6,7 +6,8 @@ public enum PreferenceKey: String, CaseIterable, Sendable, Hashable {
     case detailColumnOrder, detailColumnWidths, searchColumns, searchColumnOrder, searchColumnWidths
     case compactListWidths, iconSizes, previewCounts, searchCompactListWidths, searchIconSizes, searchPreviewCounts
     case notificationsEnabled, markClipboardItems, autoCalculateFolderSizes, folderTreeOpen, propertiesOpen
-    case detailRowOpen, infoPanelPoppedOut, infoPanelPopOutShown, topToolbarItems, terminalApp, defaultTextEditor,
+    case detailRowOpen, infoPanelPoppedOut, infoPanelPopOutShown, infoFoldedSections, topToolbarItems, terminalApp,
+        defaultTextEditor,
         openWithApplications
     case diskImageOpensIn, returnKeyAction, shortcutOverrides, openItemLimit, includeHidden, searchPatternMode
     case searchMatchScope, searchRecursive, searchSkipGitFolders, searchResultsSortBy
@@ -52,6 +53,7 @@ public enum PreferenceKey: String, CaseIterable, Sendable, Hashable {
         case .detailRowOpen: .of(\.detailRowOpen)
         case .infoPanelPoppedOut: .of(\.infoPanelPoppedOut)
         case .infoPanelPopOutShown: .of(\.infoPanelPopOutShown)
+        case .infoFoldedSections: .of(\.infoFoldedSections)
         case .topToolbarItems: .of(\.topToolbarItems)
         case .terminalApp: .of(\.terminalApp)
         case .defaultTextEditor: .of(\.defaultTextEditor)
