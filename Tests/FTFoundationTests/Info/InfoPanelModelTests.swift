@@ -337,6 +337,15 @@ struct InfoPanelModelTests {
                 == .fitting(full: "UDF, ISO 9660", shorter: ["2 file systems"]))
         #expect(Self.row(two, .diskImage, "Format")?.value == .text("DVD/CD master"))
         #expect(InfoContentKind.of(extension: "SPARSEIMAGE") == .diskImage)
+        // A folder named as an image file is a folder: only a sparse bundle is an image kept in one.
+        for kind in [EntryKind.directory, .bundle] {
+            #expect(content("Backups.img", kind: kind, .init()).section(.diskImage) == nil, "\(kind)")
+            #expect(content("Backups.dmg", kind: kind, nil).section(.diskImage) == nil, "\(kind)")
+            #expect(content("Mac.sparsebundle", kind: kind, nil).section(.diskImage) != nil, "\(kind)")
+            #expect(content("Mac.BackupBundle", kind: kind, nil).section(.diskImage) != nil, "\(kind)")
+        }
+        // A link to an image file has the section, as a link to a picture has Image.
+        #expect(content("link.dmg", kind: .symlinkFile, nil).section(.diskImage) != nil)
     }
 
     // A picture's rows are one line each, what was their second line going first where it doesn't fit.

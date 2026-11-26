@@ -20,11 +20,11 @@ public enum DiskImageReader {
     /// The most read in one piece: a UDIF image's plist, one chunk, compressed or not, or a sparse bundle's plist.
     static let limit = 16 << 20
 
-    /// The image at `path`, a file or a sparse bundle's folder; nil when it can't be read at all, or is kept only in
-    /// the cloud, which reading would download.
+    /// The image at `path`, a file or a sparse bundle's folder, or the one a link at `path` leads to; nil when it
+    /// can't be read at all, or is kept only in the cloud, which reading would download.
     public static func read(_ path: String) -> InfoDetails.DiskImage? {
         var info = stat()
-        guard lstat(path, &info) == 0, info.st_flags & UInt32(SF_DATALESS) == 0 else { return nil }
+        guard stat(path, &info) == 0, info.st_flags & UInt32(SF_DATALESS) == 0 else { return nil }
         switch info.st_mode & S_IFMT {
         case S_IFDIR: return bundle(path)
         case S_IFREG: break
@@ -124,7 +124,8 @@ protocol DiskBytes {
     func read(_ offset: Int64, _ count: Int) -> [UInt8]?
 }
 
-/// An image file, read with pread: the file stays closed between reads, so nothing is left open.
+/// An image file, read with pread: the file stays closed between reads, so nothing is left open. Only a plain file is
+/// read: a pipe under an image's name, or under a sparse bundle's band's, would keep the read waiting for good.
 struct ImageFile: DiskBytes {
     let path: String
 
@@ -134,10 +135,15 @@ struct ImageFile: DiskBytes {
     }
 
     func read(_ offset: Int64, _ count: Int) -> [UInt8]? {
-        guard offset >= 0, count >= 0, count <= DiskImageReader.limit else { return nil }
-        let fd = open(path, O_RDONLY | O_CLOEXEC)
+        guard offset >= 0, count >= 0, count <= DiskImageReader.limit, offset <= Int64.max - Int64(count) else {
+            return nil
+        }
+        // Opening a pipe waits for its other end unless told not to; a plain file opens the same either way.
+        let fd = open(path, O_RDONLY | O_CLOEXEC | O_NONBLOCK)
         guard fd >= 0 else { return nil }
         defer { close(fd) }
+        var info = stat()
+        guard fstat(fd, &info) == 0, info.st_mode & S_IFMT == S_IFREG else { return nil }
         var buffer = [UInt8](repeating: 0, count: count)
         var done = 0
         while done < count {
@@ -217,7 +223,7 @@ struct SparseImage: DiskBytes {
     }
 
     func read(_ offset: Int64, _ count: Int) -> [UInt8]? {
-        guard offset >= 0, count >= 0, offset + Int64(count) <= size else { return nil }
+        guard offset >= 0, count >= 0, offset <= size, Int64(count) <= size - offset else { return nil }
         var out: [UInt8] = []
         out.reserveCapacity(count)
         var at = offset
@@ -247,7 +253,7 @@ struct SparseBundle: DiskBytes {
     let size: Int64
 
     func read(_ offset: Int64, _ count: Int) -> [UInt8]? {
-        guard offset >= 0, count >= 0, offset + Int64(count) <= size else { return nil }
+        guard offset >= 0, count >= 0, offset <= size, Int64(count) <= size - offset else { return nil }
         var out: [UInt8] = []
         out.reserveCapacity(count)
         var at = offset
@@ -289,6 +295,10 @@ final class UDIFImage: DiskBytes {
         0x8000_0004: "ADC", 0x8000_0005: "zlib", 0x8000_0006: "bzip2", 0x8000_0007: "LZFSE", 0x8000_0008: "LZMA",
     ]
 
+    /// The most a table's first sector, a chunk's sector or its count of sectors may be: a chunk's start and end in
+    /// bytes, summed from them, stay within an Int64.
+    static let sectorLimit = UInt64(Int64.max / 4096)
+
     let file: ImageFile
     let chunks: [Chunk]
     /// How its chunks are compressed, the first method found; nil when none is.
@@ -317,14 +327,17 @@ final class UDIFImage: DiskBytes {
                     let offset = bytes.be64(at + 24), let length = bytes.be64(at + 32)
                 else { break }
                 if kind == 0xFFFF_FFFF { break }
-                guard sectors > 0, first < UInt64(Int64.max / 1024), sector < UInt64(Int64.max / 1024),
-                    sectors < UInt64(Int64.max / 1024), base + offset < UInt64(Int64.max), length < UInt64(Int64.max)
+                // Each well under what a sum of them can hold: a chunk's end, and its place in the file, are added
+                // up from these.
+                let place = base.addingReportingOverflow(offset)
+                guard sectors > 0, first < Self.sectorLimit, sector < Self.sectorLimit, sectors < Self.sectorLimit,
+                    !place.overflow, place.partialValue < UInt64(Int64.max), length < UInt64(Int64.max)
                 else { continue }
                 if compression == nil, let method = Self.methods[kind] { compression = method }
                 chunks.append(
                     Chunk(
                         start: Int64(first + sector) * 512, length: Int64(sectors) * 512, kind: kind,
-                        fileOffset: Int64(base + offset), fileLength: Int64(length)))
+                        fileOffset: Int64(place.partialValue), fileLength: Int64(length)))
             }
         }
         guard !chunks.isEmpty else { return nil }

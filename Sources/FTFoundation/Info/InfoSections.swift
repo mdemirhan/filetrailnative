@@ -49,6 +49,9 @@ public enum DiskImageTypes {
         "dmg", "udif", "img", "toast", "dvdr", "cdr", "dmgpart", "iso", "sparseimage", "asif", "sparsebundle",
         "backupbundle",
     ]
+
+    /// Those that are folders: a sparse bundle keeps its disk in files inside one.
+    public static let folderExtensions: Set<String> = ["sparsebundle", "backupbundle"]
 }
 
 /// What kind of content a file is, which says the section of its own it has. The reader and the panel ask the same

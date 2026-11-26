@@ -146,9 +146,12 @@ extension InfoPanelModel {
         } else if item.kind == .bundle, item.fileExtension.lowercased() == "app" {
             sections.append(InfoSection(id: .application, rows: appRows(details?.app, signing: signing)))
         } else if InfoContentKind.of(extension: item.fileExtension) == .diskImage,
-            isFile || item.kind == .bundle || item.kind == .directory
+            isFile
+                || ((item.kind == .bundle || item.kind == .directory)
+                    && DiskImageTypes.folderExtensions.contains(item.fileExtension.lowercased()))
         {
-            // A file, or a sparse bundle, which is a folder.
+            // A file, or a sparse bundle, which is a folder. Any other folder named as an image ("Backups.img") is a
+            // folder.
             sections.append(InfoSection(id: .diskImage, rows: diskImageRows(details?.diskImage)))
         } else if isFile {
             switch InfoContentKind.of(extension: item.fileExtension) {

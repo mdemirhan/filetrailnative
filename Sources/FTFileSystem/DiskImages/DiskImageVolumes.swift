@@ -7,6 +7,10 @@ enum DiskImageVolumes {
     /// The partitions followed at most, so a map that loops or lists thousands costs nothing.
     static let partitionLimit = 128
 
+    /// The furthest a file system is looked for: far past any disk, and far enough from Int64.max that what is added
+    /// to it (a CD's descriptors, an HFS catalog's place) can't overflow.
+    static let offsetLimit = Int64(1) << 62
+
     /// The file systems recognized on the disk, each once, in the order of its partitions; nil when nothing on it is
     /// recognized, not even a partition map.
     static func fileSystems(_ disk: some DiskBytes) -> [String]? {
@@ -114,6 +118,9 @@ enum DiskImageVolumes {
     /// The file system that starts at `offset`, by its own signature; nil when none is recognized. A CD or DVD's may
     /// be two at once (UDF with an ISO 9660 bridge).
     static func fileSystem(_ disk: some DiskBytes, at offset: Int64) -> [String]? {
+        // A partition map can place a partition anywhere: one past `offsetLimit` is on no disk, and the places looked
+        // at from it are sums that must stay within an Int64.
+        guard offset >= 0, offset <= offsetLimit else { return nil }
         if let start = disk.read(offset, 2048).map(Bytes.init) {
             // APFS's container superblock: "NXSB" at 32 (Apple File System Reference).
             if start.has("NXSB", at: 32) { return ["APFS"] }

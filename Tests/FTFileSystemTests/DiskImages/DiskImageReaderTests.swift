@@ -129,6 +129,113 @@ struct DiskImageReaderTests {
         }
     }
 
+    // An image made to hurt whoever looks at it: places near the largest number there is, which adding to would
+    // overflow. Nothing past the file is read, and what is certain is still said.
+    @Test func placesFarPastTheDiskAreNotFollowed() throws {
+        func put(_ value: UInt64, into bytes: inout [UInt8], at: Int, size: Int, bigEndian: Bool) {
+            for index in 0..<size {
+                let shift = UInt64(8 * (bigEndian ? size - 1 - index : index))
+                bytes[at + index] = UInt8(truncatingIfNeeded: value >> shift)
+            }
+        }
+        try withTemporaryDirectory { folder in
+            func write(_ name: String, _ bytes: [UInt8]) -> String {
+                let path = folder.appending(name).path
+                FileManager.default.createFile(atPath: path, contents: Data(bytes))
+                return path
+            }
+            // A GPT whose one partition starts within a sector of the largest place a disk can have.
+            var gpt = [UInt8](repeating: 0, count: 512 * 4)
+            gpt.replaceSubrange(512..<520, with: Array("EFI PART".utf8))
+            put(2, into: &gpt, at: 512 + 72, size: 8, bigEndian: false)
+            put(1, into: &gpt, at: 512 + 80, size: 4, bigEndian: false)
+            put(128, into: &gpt, at: 512 + 84, size: 4, bigEndian: false)
+            gpt[1024] = 0xAF
+            put(0x003F_FFFF_FFFF_FFFE, into: &gpt, at: 1024 + 32, size: 8, bigEndian: false)
+            #expect(
+                DiskImageReader.read(write("far.img", gpt))
+                    == Image(format: .readWrite, fileSystems: [], capacity: Int64(gpt.count), encrypted: false))
+            // The same from an MBR's extended partition, and a file system looked for at the limit itself.
+            #expect(DiskImageVolumes.fileSystem(ImageFile(write("zeros.img", gpt))!, at: Int64.max - 1024) == nil)
+            #expect(DiskImageVolumes.fileSystem(ImageFile(folder.appending("zeros.img").path)!, at: -512) == nil)
+
+            // A UDIF table whose chunks are placed from the largest number, and one whose sectors end past it.
+            var mish = [UInt8](repeating: 0, count: 204 + 2 * 40)
+            mish.replaceSubrange(0..<4, with: Array("mish".utf8))
+            put(UInt64.max, into: &mish, at: 24, size: 8, bigEndian: true)
+            put(2, into: &mish, at: 200, size: 4, bigEndian: true)
+            for (index, sector) in [UInt64(0), UInt64(Int64.max / 1024) - 1].enumerated() {
+                let at = 204 + index * 40
+                put(1, into: &mish, at: at, size: 4, bigEndian: true)
+                put(sector, into: &mish, at: at + 8, size: 8, bigEndian: true)
+                put(UInt64(Int64.max / 1024) - 1, into: &mish, at: at + 16, size: 8, bigEndian: true)
+                put(2, into: &mish, at: at + 24, size: 8, bigEndian: true)
+                put(512, into: &mish, at: at + 32, size: 8, bigEndian: true)
+            }
+            let plist = try PropertyListSerialization.data(
+                fromPropertyList: ["resource-fork": ["blkx": [["Data": Data(mish)]]]], format: .xml, options: 0)
+            var trailer = [UInt8](repeating: 0, count: 512)
+            trailer.replaceSubrange(0..<4, with: Array("koly".utf8))
+            put(0, into: &trailer, at: 216, size: 8, bigEndian: true)
+            put(UInt64(plist.count), into: &trailer, at: 224, size: 8, bigEndian: true)
+            put(8, into: &trailer, at: 492, size: 8, bigEndian: true)
+            #expect(
+                DiskImageReader.read(write("base.dmg", [UInt8](plist) + trailer))
+                    == Image(capacity: 8 * 512, encrypted: false))
+
+            // A sparse image read past its end, by a count that would overflow added to the place.
+            var header = [UInt8](repeating: 0, count: 4096)
+            header.replaceSubrange(0..<4, with: Array("sprs".utf8))
+            header.replaceSubrange(8..<12, with: [0, 0, 0x08, 0])
+            header.replaceSubrange(16..<20, with: [0, 0, 0x08, 0])
+            let sparse = try #require(SparseImage(ImageFile(write("s.sparseimage", header))!, header: Bytes(header)))
+            #expect(sparse.read(Int64.max - 8, 512) == nil)
+            #expect(SparseBundle(path: folder.path, bandSize: 1 << 20, size: 1 << 20).read(Int64.max - 8, 512) == nil)
+            #expect(ImageFile(folder.appending("s.sparseimage").path)?.read(Int64.max - 8, 512) == nil)
+        }
+    }
+
+    // A pipe where a sparse bundle keeps a file would keep a read of it waiting for good: only plain files are read.
+    @Test(.timeLimit(.minutes(1))) func aPipeInASparseBundleIsNotWaitedFor() throws {
+        try withTemporaryDirectory { folder in
+            let bundle = folder.appending("x.sparsebundle").path
+            try FileManager.default.createDirectory(atPath: bundle + "/bands", withIntermediateDirectories: true)
+            let info: [String: Any] = [
+                "diskimage-bundle-type": "com.apple.diskimage.sparsebundle", "size": 1 << 20, "band-size": 1 << 20,
+            ]
+            try PropertyListSerialization.data(fromPropertyList: info, format: .xml, options: 0)
+                .write(to: URL(fileURLWithPath: bundle + "/Info.plist"))
+            #expect(mkfifo(bundle + "/token", 0o644) == 0)
+            #expect(mkfifo(bundle + "/bands/0", 0o644) == 0)
+            #expect(DiskImageReader.read(bundle) == Image(format: .sparseBundle, capacity: 1 << 20, encrypted: false))
+            // One under an image's own name says nothing.
+            let pipe = folder.appending("pipe.dmg").path
+            #expect(mkfifo(pipe, 0o644) == 0)
+            #expect(DiskImageReader.read(pipe) == nil)
+            #expect(ImageFile(pipe)?.read(0, 8) == nil)
+        }
+    }
+
+    // A link to an image says what the image it leads to holds, as a link to a picture says the picture's size.
+    @Test func aLinkToAnImageIsReadAsTheImage() throws {
+        try withTemporaryDirectory { folder in
+            var sparse = [UInt8](repeating: 0, count: 4096)
+            sparse.replaceSubrange(0..<4, with: Array("sprs".utf8))
+            sparse.replaceSubrange(8..<12, with: [0, 0, 0x08, 0])
+            sparse.replaceSubrange(16..<20, with: [0, 0, 0x08, 0])
+            let image = folder.appending("disk.sparseimage").path
+            FileManager.default.createFile(atPath: image, contents: Data(sparse))
+            let link = folder.appending("link.sparseimage").path
+            try FileManager.default.createSymbolicLink(atPath: link, withDestinationPath: image)
+            #expect(DiskImageReader.read(link) == Image(format: .sparse, capacity: 1024 * 1024, encrypted: false))
+            #expect(DiskImageReader.read(link) == DiskImageReader.read(image))
+            // One that leads nowhere says nothing.
+            let broken = folder.appending("broken.dmg").path
+            try FileManager.default.createSymbolicLink(atPath: broken, withDestinationPath: folder.path + "/none")
+            #expect(DiskImageReader.read(broken) == nil)
+        }
+    }
+
     // NTFS can't be made on a Mac: its boot sector's name is what tells it.
     @Test func anNTFSBootSectorIsNamed() {
         var sector = [UInt8](repeating: 0, count: 2048)
