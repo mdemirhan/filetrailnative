@@ -47,6 +47,9 @@ extension InfoPanelModel {
 
     // MARK: One item
 
+    /// A disk's kind, as Finder names it: the listing calls its root a folder.
+    public static let volumeKind = "Volume"
+
     /// The sections of one item, in an order that keeps what every item has in its place:
     /// - General: Kind; Opens with (a file) or Contains (a folder) in one place; Size; Tags; Where, the folder it is
     ///   in; Original for a link or an alias. A disk: Kind, Capacity, Used, Available, Tags.
@@ -69,7 +72,8 @@ extension InfoPanelModel {
         let folderEligible = item.kind.isFolderSizeEligible
 
         // General.
-        var general: [InfoRow] = [InfoRow(label: "Kind", value: .text(item.kindLabel), muted: false)]
+        let kind = isVolumeRoot ? volumeKind : item.kindLabel
+        var general: [InfoRow] = [InfoRow(label: "Kind", value: .text(kind), muted: false)]
         if isVolumeRoot {
             let total = volume?.totalBytes
             let available = volume?.availableBytes
@@ -177,7 +181,7 @@ extension InfoPanelModel {
         } else {
             summary = SizeText.size(item.sizeBytes, status: item.sizeStatus)
         }
-        return ItemContent(sections: sections, subtitle: summary.map { "\(item.kindLabel) · \($0)" } ?? item.kindLabel)
+        return ItemContent(sections: sections, subtitle: summary.map { "\(kind) · \($0)" } ?? kind)
     }
 
     /// Size is one line for every item, so the rows under it stay where they are from a file to a folder and while a
@@ -539,7 +543,10 @@ extension InfoPanelModel {
             name: entry.name,
             kind: isShownFolder && entry.kind == .directory
                 ? nil
-                : known?.kind ?? InfoPreview.fallbackKindLabel(kind: entry.kind, fileExtension: entry.fileExtension),
+                : VolumePaths.isVolumeRootPath(entry.path)
+                    ? volumeKind
+                    : known?.kind
+                        ?? InfoPreview.fallbackKindLabel(kind: entry.kind, fileExtension: entry.fileExtension),
             fact: fact, showsFolderSize: showsFolderSize, modified: modified, modifiedTooltip: tooltip,
             available: isShownFolder ? availableBytes.map { "\(SizeText.size($0)) available" } : nil)
     }

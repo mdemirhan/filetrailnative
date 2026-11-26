@@ -200,12 +200,14 @@ struct InfoPanelModelTests {
         item.kindLabel = "Folder"
         let waiting = Self.content(item, root: true)
         #expect(Self.labels(waiting, .general) == ["Kind", "Capacity", "Used", "Available"])
+        // The listing calls it a folder; it is a disk.
+        #expect(Self.row(waiting, .general, "Kind")?.value == .text("Volume"))
         #expect(waiting.sections.map(\.id) == [.general, .dates, .permissions, .volume, .more])
         #expect(Self.row(waiting, .general, "Used")?.value == .text("—"))
         let known = Self.content(
             item, volume: InfoVolume(totalBytes: 500_000_000_000, availableBytes: 200_000_000_000), root: true)
         #expect(Self.row(known, .general, "Used")?.value == .usage(fraction: 0.6, text: "300 GB"))
-        #expect(known.subtitle == "Folder · 200 GB available")
+        #expect(known.subtitle == "Volume · 200 GB available")
         let over = Self.content(item, volume: InfoVolume(totalBytes: 10, availableBytes: 50), root: true)
         #expect(Self.row(over, .general, "Used")?.value == .usage(fraction: 0, text: "0 B"))
     }
@@ -462,6 +464,10 @@ struct InfoPanelModelTests {
         // The folder on screen: no "Folder", and the room left on its disk.
         let shown = facts(folder, metadata: listed, shown: true, available: 212_000_000_000)
         #expect(shown.kind == nil && shown.available == "212 GB available")
+        // A disk selected: a volume, not the folder its listing calls it.
+        let disk = InfoEntry(path: "/Volumes/Backup", name: "Backup", kind: .directory)
+        let folderKind = InfoMetadata(kindLabel: "Folder", modifiedAt: nil, sizeBytes: nil, sizeStatus: .ready)
+        #expect(facts(disk, metadata: folderKind).kind == "Volume")
         // An alias or a link: where it leads.
         var alias = Self.file()
         alias.path = "/Users/demo/Projects"
