@@ -58,6 +58,7 @@ public enum ClipboardTexts {
         case .extract: return "\(refused) \(subject) being extracted"
         case .convertImages: return "\(refused) \(subject) being converted"
         case .makeAlias: return "\(refused) aliases are being made"
+        case .changePermissions: return "\(refused) permissions are being changed"
         // An Undo or Redo may move, rename or put back items: it is named, not what it does to them.
         case .undo: return "\(refused) an Undo is running"
         case .redo: return "\(refused) a Redo is running"

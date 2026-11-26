@@ -72,4 +72,8 @@ final class InWindowNoticePresenter: ActionNoticePresenting {
                 message: ActionNoticeText.alwaysOpenWithMessage(kindName: kindName), confirmLabel: "Change All",
                 destructive: false, cancelIsDefault: false), window)
     }
+
+    func confirm(_ question: WriteQuestion, in window: NSWindow?) async -> Bool {
+        await WriteDialogs.drawQuestion(question, window)
+    }
 }

@@ -248,6 +248,7 @@ public enum UndoExecution {
         case .move(let move): move.from
         case .trash(let trash): trash.path
         case .batch(let items): items.first?.from ?? ""
+        case .permissions(let items): items.first?.path ?? ""
         }
     }
 
@@ -258,6 +259,7 @@ public enum UndoExecution {
         case .move(let move): moveBack(move, original, unitIds, context)
         case .trash(let trash): moveToTrash(trash, original, context)
         case .batch(let items): renameBack(items, context)
+        case .permissions(let items): setPermissionsBack(items, context)
         }
     }
 
@@ -820,9 +822,62 @@ public enum UndoExecution {
                     "\u{201C}\(NodePath.basename(trash.path))\u{201D} was left as it is, because the step before it couldn\u{2019}t be \(verb)."
                 )
             ]
-        case .batch:
+        case .batch, .permissions:
             return []
         }
+    }
+
+    // MARK: Permissions
+
+    /// `setPermissionsBack`: each item given the setting it had (`after`, as the reversed step holds it) where it
+    /// still has the one it was left with (`before`); one changed since is left as it is. A locked item is unlocked
+    /// to have its mode put back, and locked again if it was. What is done is what the other direction does again;
+    /// an item whose write failed for a reason that may pass (no permission) is left to try again.
+    private static func setPermissionsBack(_ planned: [PermissionsUndoItem], _ context: RunContext) -> StepOutcome {
+        let fileSystem = context.fileSystem
+        var items: [WriteOperationItem] = []
+        var done: [PermissionsUndoItem] = []
+        var leftover: [PermissionsUndoItem] = []
+        var allMissing = true
+        for item in planned {
+            // Told by its own path both ways: nothing moved, so the item isn't taken for one that went away.
+            if let refusal = UndoPlan.checkPermissions(fileSystem, item, exactItems: context.options.exactItems) {
+                if refusal.retry {
+                    leftover.append(item.reversed)
+                    items.append(failedItem(item.path, item.path, refusal.reason))
+                } else {
+                    items.append(skippedItem(item.path, item.path, refusal.reason))
+                }
+                allMissing = allMissing && refusal.missing
+                continue
+            }
+            allMissing = false
+            do {
+                let flags = try fileSystem.getFlags(item.path)
+                try PermissionsWrite.write(
+                    fileSystem, item.path, from: item.before, flags: flags, to: item.after, unlocking: true)
+                done.append(item)
+                items.append(WriteOperationItem(sourcePath: item.path, destinationPath: item.path, status: .completed))
+            } catch {
+                let name = NodePath.basename(item.path)
+                let reason =
+                    "\u{201C}\(name)\u{201D} couldn\u{2019}t be changed: \(PermissionsWrite.describe(error, item.path))"
+                if classifyUndoWriteError(errorCode(error)) == .retry {
+                    leftover.append(item.reversed)
+                    items.append(failedItem(item.path, item.path, reason))
+                } else {
+                    items.append(skippedItem(item.path, item.path, reason))
+                }
+            }
+        }
+        let produced: UndoStep? = done.isEmpty ? nil : .permissions(items: done)
+        if !leftover.isEmpty {
+            return .failed(produced: produced, items: items, leftover: .permissions(items: leftover))
+        }
+        if let produced {
+            return .done(produced: produced, items: items, removed: nil)
+        }
+        return .skipped(items: items, missing: allMissing)
     }
 }
 

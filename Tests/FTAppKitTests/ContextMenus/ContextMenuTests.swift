@@ -51,6 +51,13 @@ final class NoticeSpy: ActionNoticePresenting {
         asked.append((appName, kindName))
         return answer
     }
+
+    var questions: [WriteQuestion] = []
+
+    func confirm(_ question: WriteQuestion, in window: NSWindow?) async -> Bool {
+        questions.append(question)
+        return answer
+    }
 }
 
 extension ExplorerWindowlessTests {

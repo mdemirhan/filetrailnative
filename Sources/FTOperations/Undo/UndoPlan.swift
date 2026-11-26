@@ -56,6 +56,8 @@ public enum PlannedStep: Equatable, Sendable {
     case trash(PlannedTrash)
     /// Renames each item at `from` back to the name in `to`, as one batch.
     case batch(items: [BatchRenamedItem])
+    /// Gives each item its `after` where it still has its `before`.
+    case permissions(items: [PermissionsUndoItem])
 
     public init(reversing step: UndoStep) {
         switch step {
@@ -82,6 +84,8 @@ public enum PlannedStep: Equatable, Sendable {
         case .batchRenamed(let items):
             self = .batch(
                 items: items.map { BatchRenamedItem(from: $0.to, to: $0.from, id: $0.id, itemKind: $0.itemKind) })
+        case .permissions(let items):
+            self = .permissions(items: items.map(\.reversed))
         }
     }
 }
@@ -552,6 +556,39 @@ public enum UndoPlan {
         return !listsTwoItems(entries, NodePath.basename(from), NodePath.basename(target))
     }
 
+    /// `checkPermissions`: whether the item a change of permissions is about is still there, and still has the
+    /// setting it was left with (`item.before`, as the reversed step holds it): one changed since, by another app or
+    /// in another way, is left as it is. `exactItems` as for `checkMove`; otherwise another item put in its place (a
+    /// document saved by replacing its file) is taken for it. Nil when it can be done.
+    public static func checkPermissions(
+        _ fileSystem: some WriteServiceFileSystem, _ item: PermissionsUndoItem, exactItems: Bool = false
+    ) -> Refusal? {
+        let name = NodePath.basename(item.path)
+        switch lookUp(item.path, { try fileSystem.lstat($0) }) {
+        case .unreadable(let refusal): return refusal
+        case .missing: return Refusal(reason: missingReason(fileSystem, item.path), missing: true)
+        case .found(let stats):
+            if stats.isSymbolicLink || !isExpectedItem(stats, item.id, kindOfStats(stats), relaxed: !exactItems) {
+                return Refusal(reason: replacedReason(item.path, item.id, stats), missing: false)
+            }
+        }
+        let now: PermissionsSetting?
+        do {
+            now = try PermissionsWrite.read(fileSystem, item.path)?.setting
+        } catch {
+            return Refusal(
+                reason: "\u{201C}\(name)\u{201D} couldn\u{2019}t be checked: \(describeCopyPasteError(error))",
+                missing: false, retry: true)
+        }
+        guard now == item.before else {
+            return Refusal(
+                reason:
+                    "\u{201C}\(name)\u{201D} was left as it is, because its permissions were changed since.",
+                missing: false)
+        }
+        return nil
+    }
+
     // MARK: Questions
 
     /// `findQuestions`: what to ask before undoing `units`: the names that are taken where items would go back, and
@@ -652,6 +689,9 @@ public enum UndoPlan {
                     }
                     changes.noteMovedAway(planned.path, id)
                 }
+            case .permissions:
+                // Nothing to ask: an item changed since is left as it is, and said.
+                break
             case .batch(let items):
                 for check in checkBatch(fileSystem, items, progress: progress, exactItems: exactItems)
                 where check.nameTaken {
@@ -675,6 +715,7 @@ extension UndoPlan {
             case .created(_, let id, _): if let id { ids.insert(id) }
             case .trashed(_, _, let id, _, _): if let id { ids.insert(id) }
             case .batchRenamed(let items): ids.formUnion(items.compactMap(\.id))
+            case .permissions(let items): ids.formUnion(items.compactMap(\.id))
             }
         }
         return ids

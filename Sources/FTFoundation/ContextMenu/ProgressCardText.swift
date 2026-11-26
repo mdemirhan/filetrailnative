@@ -16,6 +16,9 @@ public enum WriteOperationAction: String, Sendable, CaseIterable, Equatable {
     case batchRename = "batch_rename"
     case convertImages = "convert_images"
     case makeAlias = "make_alias"
+    /// The permissions popover's changes to the mode and the Locked and Hidden flags, one Undo for each time it is
+    /// open.
+    case changePermissions = "change_permissions"
     case undo, redo
 }
 
@@ -85,6 +88,7 @@ public struct ProgressCardText: Equatable, Sendable {
         case .extract: pair = ("Extracting…", "Extract")
         case .convertImages: pair = ("Converting…", "Convert Images")
         case .makeAlias: pair = ("Making Aliases…", "Make Alias")
+        case .changePermissions: pair = ("Changing Permissions…", "Change Permissions")
         case .undo: pair = ("Undoing…", "Undo")
         case .redo: pair = ("Redoing…", "Redo")
         case .paste: pair = ("Pasting…", "Paste")

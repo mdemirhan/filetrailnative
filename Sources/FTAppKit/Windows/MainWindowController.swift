@@ -388,6 +388,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     var showSharePicker: (([String], NSRect, NSView) -> Void)?
     /// Told of each Tags popover made, whether or not it could come on screen (tests).
     var shownTagsPopover: ((TagsPopover) -> Void)?
+    /// Told of each permissions popover made, whether or not it could come on screen (tests).
+    var shownPermissionsPopover: ((PermissionsPopover) -> Void)?
     /// Carries out a rename and answers with its outcome, in place of the write coordinator (tests). Without it the
     /// coordinator renames (`WindowWriteActions.commitRename`), or, in a window without the app's file operations, the
     /// file system itself.

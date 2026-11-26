@@ -83,6 +83,40 @@ public struct BatchRenamedItem: Equatable, Codable, Sendable {
     }
 }
 
+/// What the permissions popover changes of an item: its mode (the nine bits and the three above them) and Finder's
+/// Locked and Hidden flags.
+public struct PermissionsSetting: Equatable, Codable, Sendable {
+    public var mode: Int
+    public var locked: Bool
+    public var hidden: Bool
+
+    public init(mode: Int, locked: Bool, hidden: Bool) {
+        self.mode = mode
+        self.locked = locked
+        self.hidden = hidden
+    }
+}
+
+/// One item whose permissions were changed: how they were before and after.
+public struct PermissionsUndoItem: Equatable, Codable, Sendable {
+    public var path: String
+    public var id: ItemId?
+    public var before: PermissionsSetting
+    public var after: PermissionsSetting
+
+    public init(path: String, id: ItemId?, before: PermissionsSetting, after: PermissionsSetting) {
+        self.path = path
+        self.id = id
+        self.before = before
+        self.after = after
+    }
+
+    /// The same change the other way: what an Undo did, for Redo to do again.
+    public var reversed: PermissionsUndoItem {
+        PermissionsUndoItem(path: path, id: id, before: after, after: before)
+    }
+}
+
 public enum UndoStep: Equatable, Sendable {
     /// A rename, or a move on one disk. `parentId` is the folder `from` was in, so Undo moves the item back only
     /// into that same folder. `itemKind` lets Undo still move back a file that an app saved under a new id.
@@ -100,6 +134,9 @@ public enum UndoStep: Equatable, Sendable {
     case trashed(from: String, trashPath: String, id: ItemId?, parentId: ItemId?, stamp: ItemStamp?)
     /// Several items renamed at once, undone as one batch.
     case batchRenamed(items: [BatchRenamedItem])
+    /// The permissions of items changed, all of one visit to the permissions popover: undone as one. Undo puts back
+    /// each item's `before` where it still has its `after`.
+    case permissions(items: [PermissionsUndoItem])
 
     public struct Moved: Equatable, Sendable {
         public var from: String
@@ -162,6 +199,8 @@ extension UndoStep: Codable {
                 stamp: try container.decodeIfPresent(ItemStamp.self, forKey: .stamp))
         case "batchRenamed":
             self = .batchRenamed(items: try container.decode([BatchRenamedItem].self, forKey: .items))
+        case "permissions":
+            self = .permissions(items: try container.decode([PermissionsUndoItem].self, forKey: .items))
         default:
             throw DecodingError.dataCorruptedError(
                 forKey: .kind, in: container, debugDescription: "unknown undo step \(kind)")
@@ -200,6 +239,9 @@ extension UndoStep: Codable {
             try container.encodeIfPresent(stamp, forKey: .stamp)
         case .batchRenamed(let items):
             try container.encode("batchRenamed", forKey: .kind)
+            try container.encode(items, forKey: .items)
+        case .permissions(let items):
+            try container.encode("permissions", forKey: .kind)
             try container.encode(items, forKey: .items)
         }
     }

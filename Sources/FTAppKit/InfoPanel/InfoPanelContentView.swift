@@ -21,22 +21,34 @@ enum InfoSectionFolds {
     static func reset() { folded = Set(InfoSection.ID.allCases.filter(\.foldedAtFirst)) }
 }
 
-/// A section's title: a click folds the section or opens it, the chevron saying which.
+/// A section's title: a click folds the section or opens it, the chevron saying which. Sharing & Permissions has
+/// Edit… at its right end, which opens the permissions popover.
 final class InfoSectionTitleView: NSView {
     let id: InfoSection.ID
     let title = TextBoxField(labelWithString: "")
+    /// Sharing & Permissions' Edit….
+    let edit: TextLinkView?
     var onToggle: () -> Void = {}
+    var onEdit: () -> Void = {}
     private var isHovered = false { didSet { needsDisplay = true } }
     static let chevronBox = 10.0
     static let gap = 4.0
 
     init(_ id: InfoSection.ID) {
         self.id = id
+        edit = id == .permissions ? TextLinkView(identifier: "infoPanel.permissions.edit") : nil
         super.init(frame: .zero)
         title.stringValue = id.title
         title.font = ChromeColors.font(size: DesignTokens.typeScale.small, weight: 600)
         title.setAccessibilityIdentifier("infoPanel.section.title")
         addSubview(title)
+        if let edit {
+            edit.text = "Edit\u{2026}"
+            edit.font = ChromeColors.font(size: DesignTokens.typeScale.small, weight: 400)
+            edit.toolTip = "Change the permissions"
+            edit.onClick = { [weak self] in self?.onEdit() }
+            addSubview(edit)
+        }
         setAccessibilityElement(true)
         setAccessibilityRole(.disclosureTriangle)
         setAccessibilityIdentifier("infoPanel.section.\(id.rawValue)")
@@ -52,9 +64,17 @@ final class InfoSectionTitleView: NSView {
         super.layout()
         let height = lineBox(title.font)
         let x = Self.chevronBox + Self.gap
+        var right = bounds.width
+        if let edit {
+            let width = ceil(edit.naturalWidth)
+            edit.frame = NSRect(
+                x: bounds.width - width, y: (bounds.height - edit.naturalHeight) / 2, width: width,
+                height: edit.naturalHeight)
+            right = edit.frame.minX - 8
+        }
         title.frame = NSRect(
             x: x, y: (bounds.height - height) / 2,
-            width: min(textExtent(title.stringValue, title.font), bounds.width - x),
+            width: max(0, min(textExtent(title.stringValue, title.font), right - x)),
             height: height)
         title.textColor = NSColor(isHovered ? infoTheme.palette.textPrimary : infoTheme.palette.textSecondary)
         setAccessibilityValue(isFolded ? 0 : 1)
@@ -87,8 +107,12 @@ final class InfoSectionTitleView: NSView {
     }
 
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
-    /// The whole title takes the click, its text too.
-    override func hitTest(_ point: NSPoint) -> NSView? { super.hitTest(point) == nil ? nil : self }
+    /// The whole title takes the click, its text too; Edit… takes its own.
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        let hit = super.hitTest(point)
+        if let edit, let hit, hit === edit || hit.isDescendant(of: edit) { return edit }
+        return hit == nil ? nil : self
+    }
     override func mouseDown(with event: NSEvent) {}
 
     override func mouseUp(with event: NSEvent) {
@@ -459,6 +483,10 @@ final class InfoPanelContentView: NSView {
         for section in sections {
             let title = InfoSectionTitleView(section.id)
             title.onToggle = { InfoSectionFolds.toggle(section.id) }
+            title.onEdit = { [weak self, weak title] in
+                guard let title else { return }
+                self?.owner?.onEditPermissions(title)
+            }
             addSubview(title)
             let rows = section.rows.map { buildRow($0, folderSize: folderSize, opensWith: app, kind: kind) }
             sectionViews.append(SectionViews(id: section.id, title: title, rows: rows))

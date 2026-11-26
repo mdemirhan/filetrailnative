@@ -10,6 +10,8 @@ protocol ActionNoticePresenting: AnyObject {
     func show(title: String, message: String, in window: NSWindow?)
     /// Finder's question before every file of a kind changes app; true to go ahead.
     func confirmAlwaysOpenWith(appName: String, kindName: String?, in window: NSWindow?) async -> Bool
+    /// A question: true when its action was chosen.
+    func confirm(_ question: WriteQuestion, in window: NSWindow?) async -> Bool
 }
 
 enum ActionNoticeText {

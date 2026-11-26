@@ -1,6 +1,7 @@
 import AppKit
 import FTFileSystem
 import FTFoundation
+import FTOperations
 
 /// The right-click menus of one tab: it builds a menu for a click on the file list, its background or a sidebar row,
 /// and carries out what is chosen. File operations (cut, paste, rename, trash and the rest) go to `fileOperation`, which
@@ -322,6 +323,49 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         tab.content.tagsChanged(paths)
         showTagFailures(failures)
         return read
+    }
+
+    /// A change of the permissions popover: written through the app's file operations, as one Undo with the popover's
+    /// other changes; the panes and the Info panel read the items again, and what couldn't be changed is said. The
+    /// items read again for the popover; nil when nothing could be written.
+    func changePermissions(_ change: PermissionsChange, paths: [String], visit: PermissionsVisit) async
+        -> PermissionsRead?
+    {
+        guard let coordinator = AppWriteOperations.current?.coordinator else { return nil }
+        let run: PermissionsWriteRun
+        do {
+            run = try await coordinator.changePermissions(change, paths: paths, visit: visit)
+        } catch {
+            let message = errorMessage(error)
+            notices.show(
+                title: Self.permissionsFailureTitle,
+                message: message.contains(WriteServiceMessages.writeOperationBusy) ? WriteDialogs.busyMessage : message,
+                in: tab.window)
+            return await BlockingWork.run(qos: .userInitiated) { PermissionsReader.read(paths) }
+        }
+        if !run.items.isEmpty { tab.permissionsChanged(run.items.map(\.path)) }
+        if let first = run.failures.first {
+            notices.show(
+                title: Self.permissionsFailureTitle,
+                message: "\(ClipboardSummary.leafName(first.path)): \(first.message)"
+                    + (run.failures.count > 1
+                        ? " \(FormatLocale.count(run.failures.count - 1)) more couldn’t be changed." : ""),
+                in: tab.window)
+        }
+        return await BlockingWork.run(qos: .userInitiated) { PermissionsReader.read(paths) }
+    }
+
+    static let permissionsFailureTitle = "Couldn’t Change the Permissions"
+
+    /// Asks before a change takes away your own Open of a folder of yours: `what` is the folder (“Projects”), or how
+    /// many.
+    func confirmLockOut(_ what: String) async -> Bool {
+        await notices.confirm(
+            WriteQuestion(
+                title: "Turn Off Open for You?",
+                message: "You won\u{2019}t be able to open \(what) until it is turned back on.",
+                confirmLabel: "Turn Off", destructive: false, cancelIsDefault: true),
+            in: tab.window)
     }
 
     private func showTagFailures(_ failures: [FinderTagFailure]) {

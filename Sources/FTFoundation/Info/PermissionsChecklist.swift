@@ -154,4 +154,49 @@ public struct PermissionsChecklist: Equatable, Sendable {
         }
         return next
     }
+
+    /// Under the popover's title: "1 item", or what the items are ("3 files and 2 folders").
+    public var itemsLine: String {
+        guard items.count > 1 else { return "1 item" }
+        let folders = items.filter(\.isFolder).count
+        let files = items.count - folders
+        if folders == 0 { return ReviewCount.pluralize(files, "file") }
+        if files == 0 { return ReviewCount.pluralize(folders, "folder") }
+        return "\(ReviewCount.pluralize(files, "file")) and \(ReviewCount.pluralize(folders, "folder"))"
+    }
+}
+
+/// Why the popover shows the items' permissions without letting them be changed. Only an item's owner changes its
+/// permissions without a password, which the app never asks for.
+public enum PermissionsRefusal: Equatable, Sendable {
+    /// Someone else's: `owner` is whose ("root", or "2 owners"), `youCan` what you may do with it ("read", "read and
+    /// write", nil for nothing), `several` whether there are several items.
+    case notYours(owner: String, youCan: String?, several: Bool)
+    case inTrash
+    /// On a disk that can only be read.
+    case readOnlyDisk
+    /// Only links are selected: a link's permissions are its original's.
+    case onlyLinks
+
+    /// The line the popover shows in place of its note.
+    public var text: String {
+        switch self {
+        case .notYours(let owner, let youCan, let several):
+            let who = owner.hasSuffix(" owners") ? "their owners" : owner
+            let what = several ? "these items" : "this item"
+            let can = youCan.map { "You can \($0) \(what)." } ?? "You can\u{2019}t open \(what)."
+            return "Only \(who) can change these. \(can)"
+        case .inTrash:
+            return "Items in the Trash can\u{2019}t be changed. Put them back first."
+        case .readOnlyDisk:
+            return "This disk can only be read."
+        case .onlyLinks:
+            return "A link\u{2019}s permissions are its original\u{2019}s. Change them there."
+        }
+    }
+
+    /// What you may do with an item you can read or write, as the line says it; nil for neither.
+    public static func youCan(read: Bool, write: Bool) -> String? {
+        read && write ? "read and write" : read ? "read" : write ? "write" : nil
+    }
 }

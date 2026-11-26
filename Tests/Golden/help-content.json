@@ -951,6 +951,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info panel"],
                 ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
@@ -1132,7 +1133,8 @@
                 ["Undo and Redo: if something has changed since", "Stopping"],
                 ["Undo and Redo: if something has changed since", "When you quit"]
               ]
-            }
+            },
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {
@@ -1215,7 +1217,8 @@
                 ["Copying and moving", "Sharing"],
                 ["Copying and moving", "Converting images"],
                 ["Changing", "Aliases and symbolic links"],
-                ["Changing", "Tags"]
+                ["Changing", "Tags"],
+                ["Undo and Redo", "What you can undo"]
               ]
             },
             {"shortcuts": [], "topic": "search", "rows": [["Conditions", "from:github.com"]]},
@@ -1254,7 +1257,7 @@
                 }
               ],
               "topic": "views",
-              "rows": [["The list", "Hidden files"]]
+              "rows": [["The list", "Hidden files"], ["Information", "Info panel"]]
             }
           ],
           [
@@ -2322,6 +2325,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info panel"],
                 ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
@@ -2503,7 +2507,8 @@
                 ["Undo and Redo: if something has changed since", "Stopping"],
                 ["Undo and Redo: if something has changed since", "When you quit"]
               ]
-            }
+            },
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {
@@ -2581,7 +2586,8 @@
                 ["Copying and moving", "Sharing"],
                 ["Copying and moving", "Converting images"],
                 ["Changing", "Aliases and symbolic links"],
-                ["Changing", "Tags"]
+                ["Changing", "Tags"],
+                ["Undo and Redo", "What you can undo"]
               ]
             },
             {"shortcuts": [], "topic": "search", "rows": [["Conditions", "from:github.com"]]},
@@ -2611,7 +2617,7 @@
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
             {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Conditions", "All or either"], ["Options", "Hidden files"]]},
-            {"shortcuts": [], "topic": "views", "rows": [["The list", "Hidden files"]]}
+            {"shortcuts": [], "topic": "views", "rows": [["The list", "Hidden files"], ["Information", "Info panel"]]}
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"]]},
@@ -3353,6 +3359,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info panel"],
                 ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
@@ -3528,7 +3535,8 @@
                 ["Undo and Redo: if something has changed since", "Stopping"],
                 ["Undo and Redo: if something has changed since", "When you quit"]
               ]
-            }
+            },
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {
@@ -3611,7 +3619,8 @@
                 ["Copying and moving", "Sharing"],
                 ["Copying and moving", "Converting images"],
                 ["Changing", "Aliases and symbolic links"],
-                ["Changing", "Tags"]
+                ["Changing", "Tags"],
+                ["Undo and Redo", "What you can undo"]
               ]
             },
             {"shortcuts": [], "topic": "search", "rows": [["Conditions", "from:github.com"]]},
@@ -3650,7 +3659,7 @@
                 }
               ],
               "topic": "views",
-              "rows": [["The list", "Hidden files"]]
+              "rows": [["The list", "Hidden files"], ["Information", "Info panel"]]
             }
           ],
           [
@@ -4425,6 +4434,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info panel"],
                 ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
@@ -4606,7 +4616,8 @@
                 ["Undo and Redo: if something has changed since", "Stopping"],
                 ["Undo and Redo: if something has changed since", "When you quit"]
               ]
-            }
+            },
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {
@@ -4688,7 +4699,8 @@
                 ["Copying and moving", "Sharing"],
                 ["Copying and moving", "Converting images"],
                 ["Changing", "Aliases and symbolic links"],
-                ["Changing", "Tags"]
+                ["Changing", "Tags"],
+                ["Undo and Redo", "What you can undo"]
               ]
             },
             {"shortcuts": [], "topic": "search", "rows": [["Conditions", "from:github.com"]]},
@@ -4727,7 +4739,7 @@
                 }
               ],
               "topic": "views",
-              "rows": [["The list", "Hidden files"]]
+              "rows": [["The list", "Hidden files"], ["Information", "Info panel"]]
             }
           ],
           [
@@ -5473,6 +5485,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info panel"],
                 ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
@@ -5648,7 +5661,8 @@
                 ["Undo and Redo: if something has changed since", "Stopping"],
                 ["Undo and Redo: if something has changed since", "When you quit"]
               ]
-            }
+            },
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {
@@ -5730,7 +5744,8 @@
                 ["Copying and moving", "Sharing"],
                 ["Copying and moving", "Converting images"],
                 ["Changing", "Aliases and symbolic links"],
-                ["Changing", "Tags"]
+                ["Changing", "Tags"],
+                ["Undo and Redo", "What you can undo"]
               ]
             },
             {"shortcuts": [], "topic": "search", "rows": [["Conditions", "from:github.com"]]},
@@ -5769,7 +5784,7 @@
                 }
               ],
               "topic": "views",
-              "rows": [["The list", "Hidden files"]]
+              "rows": [["The list", "Hidden files"], ["Information", "Info panel"]]
             }
           ],
           [
@@ -6584,6 +6599,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info panel"],
                 ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
@@ -6736,7 +6752,8 @@
                 ["Undo and Redo: if something has changed since", "Stopping"],
                 ["Undo and Redo: if something has changed since", "When you quit"]
               ]
-            }
+            },
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {
@@ -6804,7 +6821,8 @@
                 ["Copying and moving", "Sharing"],
                 ["Copying and moving", "Converting images"],
                 ["Changing", "Aliases and symbolic links"],
-                ["Changing", "Tags"]
+                ["Changing", "Tags"],
+                ["Undo and Redo", "What you can undo"]
               ]
             },
             {"shortcuts": [], "topic": "search", "rows": [["Conditions", "from:github.com"]]},
@@ -6823,7 +6841,7 @@
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
             {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Conditions", "All or either"], ["Options", "Hidden files"]]},
-            {"shortcuts": [], "topic": "views", "rows": [["The list", "Hidden files"]]}
+            {"shortcuts": [], "topic": "views", "rows": [["The list", "Hidden files"], ["Information", "Info panel"]]}
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"]]},
@@ -7564,6 +7582,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info panel"],
                 ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
@@ -7745,7 +7764,8 @@
                 ["Undo and Redo: if something has changed since", "Stopping"],
                 ["Undo and Redo: if something has changed since", "When you quit"]
               ]
-            }
+            },
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {
@@ -7824,7 +7844,8 @@
                 ["Copying and moving", "Sharing"],
                 ["Copying and moving", "Converting images"],
                 ["Changing", "Aliases and symbolic links"],
-                ["Changing", "Tags"]
+                ["Changing", "Tags"],
+                ["Undo and Redo", "What you can undo"]
               ]
             },
             {"shortcuts": [], "topic": "search", "rows": [["Conditions", "from:github.com"]]},
@@ -7854,7 +7875,7 @@
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
             {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Conditions", "All or either"], ["Options", "Hidden files"]]},
-            {"shortcuts": [], "topic": "views", "rows": [["The list", "Hidden files"]]}
+            {"shortcuts": [], "topic": "views", "rows": [["The list", "Hidden files"], ["Information", "Info panel"]]}
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"]]},
@@ -8624,6 +8645,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info panel"],
                 ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
@@ -8799,7 +8821,8 @@
                 ["Undo and Redo: if something has changed since", "Stopping"],
                 ["Undo and Redo: if something has changed since", "When you quit"]
               ]
-            }
+            },
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {
@@ -8882,7 +8905,8 @@
                 ["Copying and moving", "Sharing"],
                 ["Copying and moving", "Converting images"],
                 ["Changing", "Aliases and symbolic links"],
-                ["Changing", "Tags"]
+                ["Changing", "Tags"],
+                ["Undo and Redo", "What you can undo"]
               ]
             },
             {"shortcuts": [], "topic": "search", "rows": [["Conditions", "from:github.com"]]},
@@ -8921,7 +8945,7 @@
                 }
               ],
               "topic": "views",
-              "rows": [["The list", "Hidden files"]]
+              "rows": [["The list", "Hidden files"], ["Information", "Info panel"]]
             }
           ],
           [
@@ -9733,6 +9757,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info panel"],
                 ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
@@ -9902,7 +9927,8 @@
                 ["Undo and Redo: if something has changed since", "Stopping"],
                 ["Undo and Redo: if something has changed since", "When you quit"]
               ]
-            }
+            },
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {
@@ -9980,7 +10006,8 @@
                 ["Copying and moving", "Sharing"],
                 ["Copying and moving", "Converting images"],
                 ["Changing", "Aliases and symbolic links"],
-                ["Changing", "Tags"]
+                ["Changing", "Tags"],
+                ["Undo and Redo", "What you can undo"]
               ]
             },
             {"shortcuts": [], "topic": "search", "rows": [["Conditions", "from:github.com"]]},
@@ -10010,7 +10037,7 @@
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
             {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Conditions", "All or either"], ["Options", "Hidden files"]]},
-            {"shortcuts": [], "topic": "views", "rows": [["The list", "Hidden files"]]}
+            {"shortcuts": [], "topic": "views", "rows": [["The list", "Hidden files"], ["Information", "Info panel"]]}
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"]]},
@@ -10762,6 +10789,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info panel"],
                 ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
@@ -10937,7 +10965,8 @@
                 ["Undo and Redo: if something has changed since", "Stopping"],
                 ["Undo and Redo: if something has changed since", "When you quit"]
               ]
-            }
+            },
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {
@@ -11020,7 +11049,8 @@
                 ["Copying and moving", "Sharing"],
                 ["Copying and moving", "Converting images"],
                 ["Changing", "Aliases and symbolic links"],
-                ["Changing", "Tags"]
+                ["Changing", "Tags"],
+                ["Undo and Redo", "What you can undo"]
               ]
             },
             {"shortcuts": [], "topic": "search", "rows": [["Conditions", "from:github.com"]]},
@@ -11059,7 +11089,7 @@
                 }
               ],
               "topic": "views",
-              "rows": [["The list", "Hidden files"]]
+              "rows": [["The list", "Hidden files"], ["Information", "Info panel"]]
             }
           ],
           [
@@ -11856,6 +11886,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info panel"],
                 ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
@@ -12025,7 +12056,8 @@
                 ["Undo and Redo: if something has changed since", "Stopping"],
                 ["Undo and Redo: if something has changed since", "When you quit"]
               ]
-            }
+            },
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {
@@ -12103,7 +12135,8 @@
                 ["Copying and moving", "Sharing"],
                 ["Copying and moving", "Converting images"],
                 ["Changing", "Aliases and symbolic links"],
-                ["Changing", "Tags"]
+                ["Changing", "Tags"],
+                ["Undo and Redo", "What you can undo"]
               ]
             },
             {"shortcuts": [], "topic": "search", "rows": [["Conditions", "from:github.com"]]},
@@ -12133,7 +12166,7 @@
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"], ["Windows", "Tab views"]]},
             {"shortcuts": [], "topic": "search", "rows": [["Conditions", "is:locked"], ["Conditions", "All or either"], ["Options", "Hidden files"]]},
-            {"shortcuts": [], "topic": "views", "rows": [["The list", "Hidden files"]]}
+            {"shortcuts": [], "topic": "views", "rows": [["The list", "Hidden files"], ["Information", "Info panel"]]}
           ],
           [
             {"shortcuts": [], "topic": "navigation", "rows": [["Tabs", "Each tab"]]},
@@ -12941,6 +12974,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info panel"],
                 ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
@@ -13122,7 +13156,8 @@
                 ["Undo and Redo: if something has changed since", "Stopping"],
                 ["Undo and Redo: if something has changed since", "When you quit"]
               ]
-            }
+            },
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {
@@ -13205,7 +13240,8 @@
                 ["Copying and moving", "Sharing"],
                 ["Copying and moving", "Converting images"],
                 ["Changing", "Aliases and symbolic links"],
-                ["Changing", "Tags"]
+                ["Changing", "Tags"],
+                ["Undo and Redo", "What you can undo"]
               ]
             },
             {"shortcuts": [], "topic": "search", "rows": [["Conditions", "from:github.com"]]},
@@ -13244,7 +13280,7 @@
                 }
               ],
               "topic": "views",
-              "rows": [["The list", "Hidden files"]]
+              "rows": [["The list", "Hidden files"], ["Information", "Info panel"]]
             }
           ],
           [
@@ -14018,6 +14054,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info panel"],
                 ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
@@ -14193,7 +14230,8 @@
                 ["Undo and Redo: if something has changed since", "Stopping"],
                 ["Undo and Redo: if something has changed since", "When you quit"]
               ]
-            }
+            },
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {
@@ -14276,7 +14314,8 @@
                 ["Copying and moving", "Sharing"],
                 ["Copying and moving", "Converting images"],
                 ["Changing", "Aliases and symbolic links"],
-                ["Changing", "Tags"]
+                ["Changing", "Tags"],
+                ["Undo and Redo", "What you can undo"]
               ]
             },
             {"shortcuts": [], "topic": "search", "rows": [["Conditions", "from:github.com"]]},
@@ -14315,7 +14354,7 @@
                 }
               ],
               "topic": "views",
-              "rows": [["The list", "Hidden files"]]
+              "rows": [["The list", "Hidden files"], ["Information", "Info panel"]]
             }
           ],
           [
@@ -15090,6 +15129,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info panel"],
                 ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
@@ -15259,7 +15299,8 @@
                 ["Undo and Redo: if something has changed since", "Stopping"],
                 ["Undo and Redo: if something has changed since", "When you quit"]
               ]
-            }
+            },
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {
@@ -15342,7 +15383,8 @@
                 ["Copying and moving", "Sharing"],
                 ["Copying and moving", "Converting images"],
                 ["Changing", "Aliases and symbolic links"],
-                ["Changing", "Tags"]
+                ["Changing", "Tags"],
+                ["Undo and Redo", "What you can undo"]
               ]
             },
             {"shortcuts": [], "topic": "search", "rows": [["Conditions", "from:github.com"]]},
@@ -15381,7 +15423,7 @@
                 }
               ],
               "topic": "views",
-              "rows": [["The list", "Hidden files"]]
+              "rows": [["The list", "Hidden files"], ["Information", "Info panel"]]
             }
           ],
           [
@@ -15676,7 +15718,8 @@
                     ["Undo and Redo: if something has changed since", "Stopping"],
                     ["Undo and Redo: if something has changed since", "When you quit"]
                   ]
-                }
+                },
+                {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
               ],
               [
                 {
@@ -16485,6 +16528,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info panel"],
                 ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
@@ -16665,7 +16709,8 @@
                 ["Undo and Redo: if something has changed since", "Stopping"],
                 ["Undo and Redo: if something has changed since", "When you quit"]
               ]
-            }
+            },
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info panel"]]}
           ],
           [
             {
@@ -16747,7 +16792,8 @@
                 ["Copying and moving", "Sharing"],
                 ["Copying and moving", "Converting images"],
                 ["Changing", "Aliases and symbolic links"],
-                ["Changing", "Tags"]
+                ["Changing", "Tags"],
+                ["Undo and Redo", "What you can undo"]
               ]
             },
             {"shortcuts": [], "topic": "search", "rows": [["Conditions", "from:github.com"]]},
@@ -16786,7 +16832,7 @@
                 }
               ],
               "topic": "views",
-              "rows": [["The list", "Hidden files"]]
+              "rows": [["The list", "Hidden files"], ["Information", "Info panel"]]
             }
           ],
           [

@@ -391,7 +391,7 @@ extension HelpContent {
                         HelpRow(
                             label: "What you can undo",
                             description:
-                                "Renaming (one item or several at once), moving items to another folder on the same disk, Move to Trash, New Folder, Copy, Duplicate, Paste as File, Convert Images, Compress, Extract, and replacing an item when you paste."
+                                "Renaming (one item or several at once), moving items to another folder on the same disk, Move to Trash, New Folder, Copy, Duplicate, Paste as File, Convert Images, Compress, Extract, replacing an item when you paste, and the permissions changed from the Info panel."
                         ),
                         HelpRow(
                             label: "Nothing is deleted",
@@ -782,7 +782,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Info panel",
                             description:
-                                "Everything the selected item has, at the right, in sections: General, Dates, Sharing & Permissions, then what it is (a picture’s size and camera, a movie’s length, a document’s pages, an app’s version and who signed it), where a download came from, and More. Click a section’s title to fold it; it stays folded for every item. Right-click a row’s title to copy its value. The button beside its close button puts the panel in a window of its own, which follows the window in front; {toggleInfoPanel} then shows it there."
+                                "Everything the selected item has, at the right, in sections: General, Dates, Sharing & Permissions, then what it is (a picture’s size and camera, a movie’s length, a document’s pages, an app’s version and who signed it), where a download came from, and More. Click a section’s title to fold it; it stays folded for every item. Right-click a row’s title to copy its value. Click Edit… beside Sharing & Permissions to change Read, Write and Run (Open for a folder) for the owner, the group and everyone, type a mode such as 644, or set Locked and the Hidden flag, for the item or every selected item: each change is written as you make it, and one Undo puts back all you changed. Only items that are yours can be changed. The button beside its close button puts the panel in a window of its own, which follows the window in front; {toggleInfoPanel} then shows it there."
                         ),
                         HelpRow(
                             label: "Info row",

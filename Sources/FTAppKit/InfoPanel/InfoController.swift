@@ -70,6 +70,8 @@ final class InfoController {
     var tagsReader: @Sendable ([String]) -> FinderTagsOnItems = { FinderTags.onItems($0, sparingAsked: true) }
     /// The items the Tags row describes, for its popover.
     private var tagPaths: [String] = []
+    /// The items the panel describes, for the permissions popover its Sharing & Permissions title opens.
+    private var permissionPaths: [String] = []
     let actions: InfoActions
     /// Whether Option is held as the Open With menu opens, which opens it as Always Open With: the keyboard's own
     /// state, replaceable so a test doesn't go by the keys someone is holding.
@@ -165,6 +167,10 @@ final class InfoController {
         panel.onEditTags = { [weak self] anchor in
             guard let self, !self.tagPaths.isEmpty else { return }
             self.host.editTags(self.tagPaths, from: anchor)
+        }
+        panel.onEditPermissions = { [weak self] anchor in
+            guard let self, !self.permissionPaths.isEmpty else { return }
+            self.host.editPermissions(self.permissionPaths, from: anchor)
         }
         panel.onCalculate = { [weak self] in self?.calculate(forced: false) }
         panel.onRecalculate = { [weak self] in self?.calculate(forced: true) }
@@ -278,6 +284,13 @@ final class InfoController {
     }
 
     // MARK: Properties
+
+    /// This window changed the items' permissions: what the panel shows of them is read again now.
+    func itemsChanged() {
+        detailsStale = true
+        if let path = targetPath { scheduleFetch(path, immediately: true) }
+        update()
+    }
 
     private func folderChanged() {
         // The folder reloaded or another one opened: what is shown stays, and is asked for again.
@@ -656,7 +669,9 @@ final class InfoController {
     )
         -> InfoPanelDisplay
     {
+        permissionPaths = []
         if let selection {
+            permissionPaths = selection.entries.map(\.path)
             let files = selection.entries.filter { $0.kind != .directory }.count
             let parents = Set(selection.entries.map { PathBarModel.parentPath($0.path) })
             let summary = InfoSelection(
@@ -683,6 +698,7 @@ final class InfoController {
             return InfoPanelDisplay(body: loading ? .blank : .empty, wantsSpinner: wants)
         }
         let item = resolved.item
+        permissionPaths = [item.path]
         let isVolume = VolumePaths.isVolumeRootPath(item.path)
         if isVolume { requestVolume(item.path) }
         requestLookup(item.path, type: Self.lookupType(item))

@@ -157,7 +157,7 @@ public enum WriteEndNotices {
         // folder, with or without the selection in it, is selected and named.
         if [
             .newFolder, .newFolderWithSelection, .pasteAsFile, .newFile, .rename, .batchRename, .duplicate, .compress,
-            .extract,
+            .extract, .changePermissions,
         ]
         .contains(write.action) {
             return nil

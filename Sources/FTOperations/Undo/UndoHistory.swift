@@ -155,6 +155,26 @@ public final class UndoHistory {
         changed()
     }
 
+    /// `replaceTop`: the operation on top of the Undo list, `entryId`, holds `units` now: the permissions popover's
+    /// one entry for each time it is open, given each change made while it is. Taken out when `units` is empty (every
+    /// item is back as it was). Nothing changes, and it answers false, when `entryId` isn't on top: Undo took it, or
+    /// another operation came after it.
+    @discardableResult
+    public func replaceTop(_ entryId: Int, units: [UndoUnit]) -> Bool {
+        guard case .entry(var entry) = undoList.last, entry.id == entryId else { return false }
+        if units.isEmpty {
+            undoList.removeLast()
+        } else {
+            entry.units = units
+            entry.size = Self.itemStepCount(units)
+            entry.date = clock()
+            undoList[undoList.count - 1] = .entry(entry)
+            keepWithinSize([entry.id])
+        }
+        changed()
+        return true
+    }
+
     /// Where in the Undo list the next thing Undo meets is: the newest operation, past those that can't be undone
     /// and were said so.
     private var nextUndoIndex: Int? {
@@ -298,6 +318,13 @@ public final class UndoHistory {
         case .makeAlias:
             let count = itemStepCount(units)
             return count == 1 ? "Make Alias" : "Make \(FormatLocale.count(count)) Aliases"
+        case .changePermissions:
+            let count = itemStepCount(units)
+            guard count == 1, let path = units.first.flatMap({ mainPathOf($0.steps) }) else {
+                return "Permissions of \(FormatLocale.count(count)) Items"
+            }
+            let name = NodePath.basename(path)
+            return "Permissions of \(inMenu ? MenuName.quoted(name) : "\u{201C}\(name)\u{201D}")"
         case .trash:
             return "Move to Trash of \(itemsName(units, inMenu: inMenu))"
         case .duplicate:
@@ -311,13 +338,15 @@ public final class UndoHistory {
         }
     }
 
-    /// `itemStepCount`: how many steps `units` hold, each item of a batch rename counted as one: what an Undo's
-    /// progress counts, and what the history's size is kept by.
+    /// `itemStepCount`: how many steps `units` hold, each item of a batch rename or of a change of permissions
+    /// counted as one: what an Undo's progress counts, and what the history's size is kept by.
     public nonisolated static func itemStepCount(_ units: [UndoUnit]) -> Int {
         var count = 0
         for unit in units {
             for step in unit.steps {
                 if case .batchRenamed(let items) = step {
+                    count += items.count
+                } else if case .permissions(let items) = step {
                     count += items.count
                 } else {
                     count += 1
@@ -353,6 +382,7 @@ public final class UndoHistory {
             case .moved(let moved): return moved.to
             case .trashed(let from, _, _, _, _): return from
             case .batchRenamed: continue
+            case .permissions(let items): if let item = items.first { return item.path }
             }
         }
         return nil

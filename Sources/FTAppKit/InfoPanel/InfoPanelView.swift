@@ -70,6 +70,8 @@ final class InfoPanelView: NSView {
     var onOpensWithMenu: (NSView) -> Void = { _ in }
     /// The Tags row was clicked: the Tags popover hangs from it.
     var onEditTags: (NSView) -> Void = { _ in }
+    /// Sharing & Permissions' Edit… was clicked: the permissions popover hangs from its title.
+    var onEditPermissions: (NSView) -> Void = { _ in }
     var onCalculate: () -> Void = {}
     var onRecalculate: () -> Void = {}
     var onCancel: () -> Void = {}

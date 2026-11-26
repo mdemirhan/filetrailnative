@@ -122,6 +122,8 @@ public enum UndoHistoryRows {
         case made(String)
         case trashed(String)
         case putBack(String)
+        /// Its permissions changed: what changed, as the line says it ("644 → 600, locked").
+        case permissions(String, what: String)
     }
 
     /// `row`: the entry of the `direction` list, its folders written with `homePath` as "~". Where it happened is
@@ -137,9 +139,17 @@ public enum UndoHistoryRows {
             places.add(change)
         }
         for unit in entry.units {
-            // A batch rename's items are each a line.
-            if unit.steps.contains(where: { if case .batchRenamed = $0 { return true } else { return false } }) {
+            // A batch rename's items are each a line, and so are those whose permissions changed.
+            if unit.steps.contains(where: \.holdsItems) {
                 for step in unit.steps {
+                    if case .permissions(let items) = step {
+                        let read = min(items.count, max(0, maxItemsRead - count))
+                        for item in items.prefix(read) {
+                            take(permissionsChange(direction == .redo ? item.reversed : item), replacing: false)
+                        }
+                        count += items.count - read
+                        continue
+                    }
                     guard case .batchRenamed(let items) = step else {
                         if count < maxItemsRead, let change = change(step, direction) {
                             take(change, replacing: false)
@@ -197,13 +207,28 @@ public enum UndoHistoryRows {
             return .made(path)
         case .trashed(let from, _, _, _, _):
             return undone ? .made(from) : .trashed(from)
-        case .batchRenamed:
+        case .batchRenamed, .permissions:
             return nil
         }
     }
 
+    /// What a change of an item's permissions did: its mode from one to the other, and its Locked and Hidden flags
+    /// where they changed.
+    static func permissionsChange(_ item: PermissionsUndoItem) -> Change {
+        var parts: [String] = []
+        if item.before.mode & 0o777 != item.after.mode & 0o777 {
+            parts.append("\(PermissionText.mode(item.before.mode)) \u{2192} \(PermissionText.mode(item.after.mode))")
+        }
+        if item.before.locked != item.after.locked { parts.append(item.after.locked ? "locked" : "unlocked") }
+        if item.before.hidden != item.after.hidden { parts.append(item.after.hidden ? "hidden" : "shown") }
+        return .permissions(item.path, what: parts.joined(separator: ", "))
+    }
+
     /// What `step` did, as the person did it: on the Redo list, the reverse of what the Undo did.
     static func changes(_ step: UndoStep, _ direction: UndoDirection) -> [Change] {
+        if case .permissions(let items) = step {
+            return items.map { permissionsChange(direction == .redo ? $0.reversed : $0) }
+        }
         guard case .batchRenamed(let items) = step else { return change(step, direction).map { [$0] } ?? [] }
         let undone = direction == .redo
         return items.map { undone ? .moved(from: $0.to, to: $0.from) : .moved(from: $0.from, to: $0.to) }
@@ -225,7 +250,7 @@ public enum UndoHistoryRows {
                 sources.add(parentOf: from)
                 destinations.add(parentOf: to)
                 allTrashed = false
-            case .made(let path), .putBack(let path):
+            case .made(let path), .putBack(let path), .permissions(let path, _):
                 destinations.add(parentOf: path)
                 allMoved = false
                 allTrashed = false
@@ -284,6 +309,9 @@ public enum UndoHistoryRows {
         case .trashed(let path):
             text = NodePath.basename(path)
             folders = "from \(tilde(NodePath.dirname(path), homePath: homePath))"
+        case .permissions(let path, let what):
+            text = what.isEmpty ? NodePath.basename(path) : "\(NodePath.basename(path)): \(what)"
+            folders = "in \(tilde(NodePath.dirname(path), homePath: homePath))"
         }
         if replacing { text += ", replacing the one there" }
         return withFolders ? "\(text) (\(folders))" : text
@@ -308,6 +336,7 @@ public enum UndoHistoryRows {
         case .duplicate: .duplicate
         case .convertImages: .convertImages
         case .makeAlias: .makeAlias
+        case .changePermissions: .showInfo
         case .moveTo: .move
         case .copyTo: .copy
         case .paste, .undo, .redo: moves ? .move : .copy
@@ -346,6 +375,7 @@ public enum UndoHistoryRows {
             case .extract: return "Extract"
             case .convertImages: return ConvertImagesText.actionName
             case .makeAlias: return MakeAlias.commandLabel
+            case .changePermissions: return "Permissions"
             case .undo: return "Undo"
             case .redo: return "Redo"
             }
@@ -422,6 +452,16 @@ public enum UndoHistoryRows {
             guard folder.last != slash, path.count > folder.count + 1, path.starts(with: folder) else { return false }
             let rest = path.dropFirst(folder.count)
             return rest.first == slash && !rest.dropFirst().contains(slash)
+        }
+    }
+}
+
+extension UndoStep {
+    /// A step of many items, each a line of the list: a batch rename, a change of permissions.
+    fileprivate var holdsItems: Bool {
+        switch self {
+        case .batchRenamed, .permissions: true
+        case .moved, .created, .trashed: false
         }
     }
 }
