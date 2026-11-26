@@ -98,7 +98,7 @@ import Testing
                 windowNumber: window.windowNumber, context: nil, eventNumber: 0, clickCount: 1, pressure: 1))
         let copy = try #require(sizeField.menuSelectingAll(for: click)?.items.first { $0.title == "Copy" })
         #expect(copy.target === sizeField)
-        sizeField.perform(try #require(copy.action), with: copy)
+        sizeField.perform(copy.action, with: copy)
         window.makeFirstResponder(nil)
         let whole = try #require(view.copyText(forRow: "Size"))
         #expect(copied == [[whole, "Size"]])
