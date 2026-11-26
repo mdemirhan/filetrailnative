@@ -28,7 +28,15 @@ extension ExplorerWindowlessTests {
             info.isReleasedWhenClosed = false
             popOut.owner = tab
             #expect(harness.windows.handle(for: info) === tab)
+            // File ▸ the row of tag colors too, for the tab's selected item.
+            let colors = MenuBarTagColors()
+            colors.focusedWindow = { info }
+            #expect(colors.tab == nil)
+            let note = try #require(tab.content.listed.first { $0.name == "note.txt" }?.path)
+            tab.content.applySelection(ContentSelection(paths: [note], anchorPath: note, leadPath: note))
+            #expect(colors.tab === tab)
             popOut.owner = nil
+            #expect(colors.tab == nil)
             #expect(harness.windows.handle(for: info) == nil)
             // A popover's window is a child of the window it hangs from.
             let window = try #require(tab.window)

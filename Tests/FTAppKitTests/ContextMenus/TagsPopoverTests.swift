@@ -148,6 +148,47 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { gone == nil })
         }
 
+        // An item whose tags can't be read isn't counted against a tag every other item has: the tag reads as on all
+        // of them, and a choice of it takes it off, as the write itself decides.
+        @Test func aTagOnEveryItemReadIsOnAll() async throws {
+            let work = FinderTag(name: "Work", color: nil)
+            var asked: [TagChange] = []
+            let popover = TagsPopover(
+                paths: ["/tmp/a", "/tmp/b", "/tmp/c"],
+                items: FinderTagsOnItems(
+                    itemCount: 3, tags: [work], counts: [work.key: 2],
+                    failures: [FinderTagFailure(path: "/tmp/c", message: "It can\u{2019}t be read.")]),
+                title: "Tags"
+            ) { change, _ in
+                asked.append(change)
+                return nil
+            }
+            popover.choose(try row(popover, "Work"))
+            #expect(popover.items.counts[work.key] == nil)
+            #expect(!popover.items.tags.contains(work))
+            await popover.waitForWrites()
+            #expect(asked.count == 1)
+        }
+
+        // A choice written after its tab has gone (a slow disk, the window closed meanwhile) ends without reaching
+        // for the tab.
+        @Test func aChoiceWrittenAfterTheTabHasGoneEndsQuietly() async throws {
+            let harness = try ExplorerHarness.windowless()
+            var coordinator: ContextMenuCoordinator?
+            var path = ""
+            weak var gone: MainWindowController?
+            do {
+                let tab = try await opened(harness)
+                coordinator = tab.contextMenus
+                path = try #require(files(tab).first)
+                gone = tab
+            }
+            await harness.close()
+            #expect(await waitUntil(timeout: .seconds(10)) { gone == nil })
+            let read = await coordinator?.changeTags(.toggle(FinderTag(name: "Work", color: nil)), paths: [path])
+            #expect(read != nil)
+        }
+
         func tags(_ name: String) -> FinderTagsOnItems {
             FinderTagsOnItems(
                 itemCount: 1, tags: [FinderTag(name: name, color: nil)], counts: [name.lowercased(): 1], failures: [])

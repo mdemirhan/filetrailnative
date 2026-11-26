@@ -51,6 +51,57 @@ extension ExplorerWindowlessTests {
             return try #require(made)
         }
 
+        // A change written after its tab has gone (the window closed while an earlier one was being written) ends
+        // without reaching for the tab.
+        @Test func aChangeWrittenAfterTheTabHasGoneEndsQuietly() async throws {
+            var coordinator: ContextMenuCoordinator?
+            var file = ""
+            weak var gone: MainWindowController?
+            var kept: (ExplorerHarness, AppWriteOperations)?
+            do {
+                let (harness, tab, operations, _) = try await open()
+                coordinator = tab.contextMenus
+                file = path(harness, "a.txt")
+                gone = tab
+                kept = (harness, operations)
+            }
+            await kept?.0.close()
+            #expect(await waitUntil(timeout: .seconds(10)) { gone == nil })
+            // Whatever it answers (the harness's folder may be gone too): it must not reach for the tab.
+            _ = await coordinator?.changePermissions(
+                .bit(who: 1, what: 1, on: true), paths: [file], visit: PermissionsVisit())
+            withExtendedLifetime(kept) {}
+        }
+
+        // Two boxes clicked one after the other on a slow disk: the first write's answer, read before the second was
+        // written, doesn't untick the second box while its write waits.
+        @Test func anAnswerFromBeforeALaterClickIsntShown() async throws {
+            func read(_ mode: Int) -> PermissionsRead {
+                PermissionsRead(
+                    checklist: PermissionsChecklist(items: [
+                        PermissionsItem(
+                            path: "/tmp/a.txt", mode: mode, locked: false, hidden: false, isFolder: false,
+                            owner: "me", group: "staff", isYours: true)
+                    ]), refusal: nil)
+            }
+            var modes = [0o664, 0o666]
+            let popover = PermissionsPopover(
+                paths: ["/tmp/a.txt"], read: read(0o644), title: "a.txt",
+                change: { _, _, _ in
+                    try? await Task.sleep(for: .milliseconds(100))
+                    return read(modes.removeFirst())
+                }, readAgain: { _ in read(0o666) })
+            popover.toggle(who: 1, what: 1)
+            popover.toggle(who: 2, what: 1)
+            #expect(popover.checklist.state(who: 2, what: 1) == .on)
+            #expect(await waitUntil { modes.count == 1 })
+            // The first write has answered 664; the second box stays ticked.
+            try await Task.sleep(for: .milliseconds(30))
+            #expect(popover.checklist.state(who: 2, what: 1) == .on)
+            await popover.waitForWrites()
+            #expect(popover.checklist.items.first?.mode == 0o666)
+        }
+
         // Two files: what both have is checked, what one has is mixed, the third column is Run. A click on the
         // group's Write puts it on both and leaves the script's Run; the boxes show what was written.
         @Test func showsTheItemsAndWritesAClick() async throws {

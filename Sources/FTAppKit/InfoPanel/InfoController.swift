@@ -348,8 +348,11 @@ final class InfoController {
     private func requestDetails(_ path: String) {
         detailsStale = false
         let reader = detailsReader
+        // Another item's at once, as the panel waits for them; the same item's again (its folder changed) after the
+        // wait a folder read again has, so a folder changing over and over reads where it stops.
+        let again = details?.path == path
         detailsRead.ask(
-            path, after: 0, read: { reader(path, $0) },
+            path, after: again ? InfoMetrics.fetchDelay : 0, read: { reader(path, $0) },
             answered: { [weak self] value in
                 guard let self else { return }
                 if let value { self.details = (path, value) }
@@ -580,8 +583,14 @@ final class InfoController {
 
     /// What the panel and the row describe: the item, the items, or nothing.
     private func displayKey(_ selection: SelectionDetails?) -> String {
-        if let selection { return "items\u{0}" + selection.entries.map(\.path).joined(separator: "\u{0}") }
-        return "item\u{0}" + (targetPath ?? "")
+        guard let selection else { return "item\u{0}" + (targetPath ?? "") }
+        let entries = selection.entries
+        // More items than have a Tags row have nothing to wait for: how many they are and where they start and end
+        // says enough, where every path joined would cost more than the rest of an update.
+        if entries.count > TagColorsMenuRow.stateLimit, let first = entries.first, let last = entries.last {
+            return "items\u{0}\(entries.count)\u{0}\(first.path)\u{0}\(last.path)"
+        }
+        return "items\u{0}" + entries.map(\.path).joined(separator: "\u{0}")
     }
 
     /// Whether the answers that are quick to come are in for what is described: the item's properties, its details,
@@ -590,9 +599,9 @@ final class InfoController {
     private func answersReady(_ selection: SelectionDetails?) -> Bool {
         if let selection {
             // Several items' tags are read only for the panel: the row has nothing more to wait for.
-            guard panelOpen else { return true }
+            guard panelOpen, selection.entries.count <= TagColorsMenuRow.stateLimit else { return true }
             let key = selection.entries.map { DiskPath($0.path) }
-            return selection.entries.count > TagColorsMenuRow.stateLimit || (tagsRead?.key == key && !tagsStale)
+            return tagsRead?.key == key && !tagsStale
         }
         guard let path = targetPath else { return true }
         guard let resolved, resolved.item.path == path, !resolved.pending else { return false }
@@ -656,6 +665,8 @@ final class InfoController {
     private struct SelectionDetails {
         var entries: [DirectoryEntry]
         var size: SelectionSize
+        /// Their kinds, dates and modes, summed up once for the panel and the row.
+        var facts: InfoSelectionFacts
     }
 
     /// The selected entries the filter leaves shown.
@@ -682,7 +693,7 @@ final class InfoController {
                 return nil
             },
             folderSize: { [folderSizes = host.folderSizes] in folderSizes.entry($0) })
-        return SelectionDetails(entries: entries, size: size)
+        return SelectionDetails(entries: entries, size: size, facts: selectionFacts(entries))
     }
 
     private func panelDisplay(
@@ -694,24 +705,19 @@ final class InfoController {
         if let selection {
             permissionPaths = selection.entries.map(\.path)
             let files = selection.entries.filter { $0.kind != .directory }.count
-            let parents = Set(selection.entries.map { PathBarModel.parentPath($0.path) })
             let summary = InfoSelection(
                 count: selection.entries.count, folderCount: selection.entries.count - files, fileCount: files,
-                totalBytes: selection.size.totalBytes, parentPath: parents.count == 1 ? parents.first : nil)
+                totalBytes: selection.size.totalBytes, parentPath: Self.sharedParent(selection.entries))
             let hasFolders = selection.size.folderSizeEntry != nil
             return InfoPanelDisplay(
                 body: .selection(
                     .init(
                         summary: summary,
                         sections: InfoPanelModel.selectionContent(
-                            summary, facts: selectionFacts(selection.entries), hasFolderSize: hasFolders,
+                            summary, facts: selection.facts, hasFolderSize: hasFolders,
                             folderSize: selection.size.folderSizeEntry, homePath: homePath,
                             startupDiskName: startupDiskName,
-                            tags: tagsState(
-                                selection.entries.map(\.path),
-                                editable: !selection.entries.contains {
-                                    Paths.isInsideTrash($0.path, homePath: homePath)
-                                })),
+                            tags: selectionTags(selection.entries)),
                         folderSize: selection.size.folderSizeEntry)), wantsSpinner: false)
         }
         guard let resolved else {
@@ -744,6 +750,27 @@ final class InfoController {
             wantsSpinner: resolved.pending || (loading && properties == nil))
     }
 
+    /// The folder every one of `entries` is in; nil when they are in several (search results). Each is checked against
+    /// the first one's folder by its own name, which costs a comparison where taking each path apart cost far more
+    /// for a whole folder selected.
+    static func sharedParent(_ entries: [DirectoryEntry]) -> String? {
+        guard let first = entries.first else { return nil }
+        let parent = PathBarModel.parentPath(first.path)
+        let prefix = parent.hasSuffix("/") ? parent : parent + "/"
+        let shared = entries.allSatisfy {
+            $0.path.utf8.count == prefix.utf8.count + $0.name.utf8.count && $0.path.hasPrefix(prefix)
+                && $0.path.hasSuffix($0.name)
+        }
+        return shared ? parent : nil
+    }
+
+    /// The Tags row of several items: none for more than are read, which aren't looked at one by one either.
+    private func selectionTags(_ entries: [DirectoryEntry]) -> InfoTagsState {
+        guard entries.count <= TagColorsMenuRow.stateLimit else { return tagsState([], editable: false) }
+        return tagsState(
+            entries.map(\.path), editable: !entries.contains { Paths.isInsideTrash($0.path, homePath: homePath) })
+    }
+
     /// What the panel and the row sum up of several items, from the listing: their kinds, dates and modes.
     private func selectionFacts(_ entries: [DirectoryEntry]) -> InfoSelectionFacts {
         var facts = InfoSelectionFacts()
@@ -773,7 +800,7 @@ final class InfoController {
             // Several: what kinds they are and when they changed; their count and size are the status bar's.
             let leadPath = content.selection.leadPath.map(DiskPath.init)
             let lead = selection.entries.first { DiskPath($0.path) == leadPath } ?? selection.entries[0]
-            let summary = InfoPanelModel.selectionRowFacts(selectionFacts(selection.entries))
+            let summary = InfoPanelModel.selectionRowFacts(selection.facts)
             var facts: [InfoRowDisplay.Fact] = []
             if let entry = selection.size.folderSizeEntry, let control = sizeControl(entry) { facts.append(control) }
             if let modified = summary.modified { facts.append(.init(content: .text(modified), tooltip: nil)) }

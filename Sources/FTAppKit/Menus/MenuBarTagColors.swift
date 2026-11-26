@@ -27,21 +27,30 @@ final class MenuBarTagColors {
 
     static let itemID = "fileMenuTagColors"
 
-    /// The window whose selection the row acts on, when it can: items of a folder or of search results, as Tags….
-    private var tab: MainWindowController? {
-        guard let tab = (focusedWindow() as? ExplorerTabWindow)?.explorerTab, tab.canPerform(.editTags) else {
+    /// The tab whose selection the row acts on, when it can: items of a folder or of search results, as Tags…. It is
+    /// the tab the key window is part of, as for every other menu item: its own, or the one a popover of it or the
+    /// Info panel in a window of its own belongs to.
+    var tab: MainWindowController? {
+        guard let tab = focusedWindow().flatMap(ExplorerWindows.tab(for:)), tab.canPerform(.editTags) else {
             return nil
         }
         return tab
     }
 
+    /// Counts the times the menu opened: only the latest one's read sets the checks.
+    private var shows = 0
+
     private func show(in row: TagColorsMenuRow) {
         row.show([:])
+        shows += 1
+        let show = shows
         let paths = tab?.selectedPaths ?? []
         row.isEnabled = !paths.isEmpty
         guard !paths.isEmpty, paths.count <= TagColorsMenuRow.stateLimit else { return }
-        Task { @MainActor [weak row] in
+        Task { @MainActor [weak self, weak row] in
             let states = await BlockingWork.run { FinderTags.states(of: paths) }
+            // A read of an earlier opening that ends late would put that selection's checks back.
+            guard self?.shows == show else { return }
             row?.show(states)
         }
     }

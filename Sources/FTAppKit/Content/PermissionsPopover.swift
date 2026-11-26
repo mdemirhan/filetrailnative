@@ -53,13 +53,20 @@ final class PermissionsPopover: NSObject, NSPopoverDelegate {
         popover.contentSize = view.frame.size
     }
 
+    /// Counts the writes and reads asked for: only the latest one's answer is shown.
+    private var asked = 0
+
     var checklist: PermissionsChecklist { read.checklist }
     var canChange: Bool { read.refusal == nil && checklist.canChange }
 
     /// Shows it at `rect` of `anchor`, closing the one shown before.
     func show(relativeTo rect: NSRect, of anchor: NSView) {
         Self.shown?.close()
-        guard anchor.window?.isVisible == true else { return }
+        guard anchor.window?.isVisible == true else {
+            // Never shown, so never closed: what it listens to is let go of here.
+            ended()
+            return
+        }
         Self.shown = self
         popover.show(relativeTo: rect, of: anchor, preferredEdge: .minX)
         view.window?.makeFirstResponder(view)
@@ -146,10 +153,14 @@ final class PermissionsPopover: NSObject, NSPopoverDelegate {
         let write = self.change
         let paths = paths
         let visit = visit
+        asked += 1
+        let mine = asked
         writing = Task { @MainActor [weak self] in
             await previous?.value
             let readBack = await write(change, paths, visit)
-            guard let self, let readBack else { return }
+            // With another change waiting its turn, what was read back is from before it: shown, it would untick
+            // that change's box until its own write ended, and a click there meanwhile would ask the wrong way.
+            guard let self, let readBack, self.asked == mine else { return }
             self.read = readBack
             self.view.show(readBack)
         }
@@ -160,10 +171,12 @@ final class PermissionsPopover: NSObject, NSPopoverDelegate {
         let previous = writing
         let readAgain = readAgain
         let paths = paths
+        asked += 1
+        let mine = asked
         writing = Task { @MainActor [weak self] in
             await previous?.value
             let readBack = await readAgain(paths)
-            guard let self else { return }
+            guard let self, self.asked == mine else { return }
             self.read = readBack
             self.view.show(readBack)
         }

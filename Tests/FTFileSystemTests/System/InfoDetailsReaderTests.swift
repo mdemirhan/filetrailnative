@@ -30,6 +30,63 @@ struct InfoDetailsReaderTests {
         }
     }
 
+    // An app updated while File Trail runs shows its new version: its Info.plist is read from the file each time,
+    // where `Bundle` answered what it read first for as long as the app ran.
+    @Test func anAppUpdatedSaysItsNewVersion() throws {
+        try withTemporaryDirectory { folder in
+            let app = folder.appending("Tool.app")
+            try FileManager.default.createDirectory(
+                at: app.appendingPathComponent("Contents"), withIntermediateDirectories: true)
+            func write(_ version: String) throws {
+                let list: [String: Any] = ["CFBundleShortVersionString": version, "CFBundleIdentifier": "demo.tool"]
+                try PropertyListSerialization.data(fromPropertyList: list, format: .xml, options: 0)
+                    .write(to: app.appendingPathComponent("Contents/Info.plist"))
+            }
+            try write("1.0")
+            #expect(InfoDetailsReader.app(app.path).version == "1.0")
+            try write("2.0")
+            #expect(InfoDetailsReader.app(app.path).version == "2.0")
+            #expect(InfoDetailsReader.app(app.path).identifier == "demo.tool")
+        }
+    }
+
+    // A text file that hasn't changed isn't read whole again for the same answer (its folder read again asks for
+    // its details again); one that changed is.
+    @Test func aTextFileUnchangedIsCountedOnce() throws {
+        try withTemporaryDirectory { folder in
+            let path = folder.appending("log.txt").path
+            write("one\ntwo\n", to: path)
+            var counted = 0
+            func facts() -> InfoDetails.Text? {
+                var info = stat()
+                #expect(lstat(path, &info) == 0)
+                return TextFacts.of(path, info) {
+                    counted += 1
+                    return InfoDetailsReader.text(path)
+                }
+            }
+            #expect(facts()?.lines == 2)
+            #expect(facts()?.lines == 2)
+            #expect(counted == 1)
+            write("one\ntwo\nthree\n", to: path)
+            #expect(facts()?.lines == 3)
+            #expect(counted == 2)
+        }
+    }
+
+    // A read no longer wanted stops before the file is read, and what it would have answered isn't kept.
+    @Test func aTextReadNoLongerWantedStops() throws {
+        try withTemporaryDirectory { folder in
+            let path = folder.appending("gone.txt").path
+            write("one\ntwo\n", to: path)
+            let cancel = ReadCancel()
+            cancel.cancel()
+            #expect(InfoDetailsReader.text(path, cancel: cancel) == nil)
+            #expect(InfoDetailsReader.read(path, cancel: cancel) == nil)
+            #expect(InfoDetailsReader.read(path)?.text?.lines == 2)
+        }
+    }
+
     // A line with no ending counts; an empty file has none.
     @Test func linesAreCountedAsAnEditorShowsThem() throws {
         try withTemporaryDirectory { folder in

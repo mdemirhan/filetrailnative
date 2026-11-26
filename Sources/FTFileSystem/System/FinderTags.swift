@@ -265,4 +265,8 @@ public struct FinderTagsOnItems: Sendable, Equatable {
 
     /// How many of the items have the tag.
     public func count(of tag: FinderTag) -> Int { counts[tag.key] ?? 0 }
+
+    /// How many of the items had their tags read: a tag on all of these is on every item it can be taken off, which
+    /// is what a choice of it does (`FinderTags.toggle`).
+    public var readCount: Int { itemCount - failures.count }
 }

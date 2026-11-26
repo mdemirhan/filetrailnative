@@ -406,12 +406,19 @@ extension InfoPanelModel {
         // The modes on one line, the most first, or how many there are where they don't fit ("3 modes").
         var modes = row("Mode", nil)
         if !facts.modes.isEmpty, !facts.modes.contains(where: { $0 == nil }) {
+            // Counted as numbers, and each mode there is written out once: a folder's items share a few.
+            var numbers: [Int] = []
+            var numberCounts: [Int: Int] = [:]
+            for case let mode? in facts.modes {
+                if numberCounts[mode] == nil { numbers.append(mode) }
+                numberCounts[mode, default: 0] += 1
+            }
             var order: [String] = []
             var counts: [String: Int] = [:]
-            for mode in facts.modes.compactMap({ $0 }) {
+            for mode in numbers {
                 let octal = PermissionText.mode(mode)
                 if counts[octal] == nil { order.append(octal) }
-                counts[octal, default: 0] += 1
+                counts[octal, default: 0] += numberCounts[mode] ?? 0
             }
             if order.count == 1 {
                 modes = row("Mode", order[0])

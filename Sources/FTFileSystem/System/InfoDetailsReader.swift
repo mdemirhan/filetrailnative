@@ -72,7 +72,9 @@ public enum InfoDetailsReader {
         case .text, .other: break
         }
         if cancel.isCancelled { return nil }
-        if isFile, !dataless, kind == .text, Int(info.st_size) <= textLimit { details.text = text(path) }
+        if isFile, !dataless, kind == .text, Int(info.st_size) <= textLimit {
+            details.text = TextFacts.of(path, info, cancel: cancel) { text(path, cancel: cancel) }
+        }
         if isDirectory, let type, type.conforms(to: .application) || type.conforms(to: .bundle) {
             let app = app(path)
             details.app = app.isEmpty ? nil : app
@@ -264,14 +266,18 @@ public enum InfoDetailsReader {
         let box = AssetFacts()
         let done = DispatchSemaphore(value: 0)
         // This runs on a thread of its own (`BlockingWork`), not one of Swift's, so waiting here holds no one up.
-        Task.detached {
+        let load = Task.detached {
             await box.load(URL(fileURLWithPath: path))
             done.signal()
         }
-        // Waited in steps, so a read no longer wanted lets go of its thread at once.
+        // Waited in steps, so a read no longer wanted lets go of its thread at once; AVFoundation is told to stop
+        // too, so it lets go of the file instead of reading on for an answer no one takes.
         let deadline = DispatchTime.now() + assetPatience
         while done.wait(timeout: .now() + 0.05) == .timedOut {
-            if cancel.isCancelled || DispatchTime.now() >= deadline { return }
+            if cancel.isCancelled || DispatchTime.now() >= deadline {
+                load.cancel()
+                return
+            }
         }
         guard let read = box.media else { return }
         media.seconds = media.seconds ?? read.seconds
@@ -398,9 +404,10 @@ public enum InfoDetailsReader {
 
     // MARK: Text
 
-    /// Its lines, encoding and line endings, decoded as the viewer decodes it. Nil for one that doesn't decode as text.
-    static func text(_ path: String) -> InfoDetails.Text? {
-        guard let data = FileManager.default.contents(atPath: path) else { return nil }
+    /// Its lines, encoding and line endings, decoded as the viewer decodes it. Nil for one that doesn't decode as text,
+    /// or once `cancel` says the answer is no longer wanted.
+    static func text(_ path: String, cancel: ReadCancel = ReadCancel()) -> InfoDetails.Text? {
+        guard let data = contents(path, cancel: cancel) else { return nil }
         if data.isEmpty { return InfoDetails.Text(lines: 0, encoding: "UTF-8", lineEnding: "None") }
         guard let decoded = TextDecoding.decode(data) else { return nil }
         // Counted on its UTF-8 bytes: a line ends at LF, CRLF or a CR alone, and a last line with no ending counts.
@@ -420,22 +427,60 @@ public enum InfoDetailsReader {
             lineEnding: lines > 1 ? decoded.format.lineEnding.rawValue : "None")
     }
 
+    /// The file's bytes, read a piece at a time so a read no longer wanted stops within a piece. Nil when it can't
+    /// be read or was cancelled.
+    private static func contents(_ path: String, cancel: ReadCancel) -> Data? {
+        guard let handle = FileHandle(forReadingAtPath: path) else { return nil }
+        defer { try? handle.close() }
+        var data = Data()
+        while true {
+            if cancel.isCancelled { return nil }
+            do {
+                // Nothing more, or nothing at all, at the file's end.
+                guard let piece = try handle.read(upToCount: 1 << 20), !piece.isEmpty else { return data }
+                data.append(piece)
+            } catch {
+                return nil
+            }
+        }
+    }
+
     // MARK: Apps
 
+    /// What the app's own Info.plist says, read from the file each time: `Bundle` keeps the one it read first for as
+    /// long as the app runs, so an app updated meanwhile would go on showing its version of before.
     static func app(_ path: String) -> InfoDetails.App {
         var app = InfoDetails.App()
-        guard let bundle = Bundle(path: path), let info = bundle.infoDictionary else { return app }
+        let url = URL(fileURLWithPath: path)
+        // A Mac app keeps it in Contents; one made for iPhone or iPad, in the app wrapped inside it.
+        let lists = ["Contents/Info.plist", "WrappedBundle/Info.plist", "Info.plist"].map {
+            url.appendingPathComponent($0)
+        }
+        guard
+            let info = lists.lazy.compactMap({ list -> [String: Any]? in
+                guard let data = try? Data(contentsOf: list) else { return nil }
+                return (try? PropertyListSerialization.propertyList(from: data, format: nil)) as? [String: Any]
+            }).first
+        else { return app }
         app.version = info["CFBundleShortVersionString"] as? String
         app.build = info["CFBundleVersion"] as? String
         if app.build == app.version { app.build = nil }
         app.identifier = info["CFBundleIdentifier"] as? String
         app.minimumSystem = info["LSMinimumSystemVersion"] as? String
         app.copyright = info["NSHumanReadableCopyright"] as? String
-        let architectures = Set((bundle.executableArchitectures ?? []).map(\.intValue))
+        let architectures = Set(executableArchitectures(of: url, info: info))
         let arm = architectures.contains(NSBundleExecutableArchitectureARM64)
         let intel = architectures.contains(NSBundleExecutableArchitectureX86_64)
         app.runsOn = arm && intel ? "Apple Silicon and Intel" : arm ? "Apple Silicon" : intel ? "Intel" : nil
         return app
+    }
+
+    /// The processors the app's program is built for, read from the program itself.
+    private static func executableArchitectures(of app: URL, info: [String: Any]) -> [Int] {
+        guard let name = info["CFBundleExecutable"] as? String, !name.isEmpty else { return [] }
+        let places = ["Contents/MacOS/\(name)", "WrappedBundle/\(name)", name].map { app.appendingPathComponent($0) }
+        guard let program = places.first(where: { FileManager.default.fileExists(atPath: $0.path) }) else { return [] }
+        return (CFBundleCopyExecutableArchitecturesForURL(program as CFURL) as? [NSNumber])?.map(\.intValue) ?? []
     }
 
     /// Who signed the app and whether Apple notarized it, without checking its files or going online: a few
@@ -556,5 +601,40 @@ enum VolumeNames {
         let read = (values?.volumeLocalizedName, values?.volumeLocalizedFormatDescription)
         lock.withLock { known[key] = read }
         return read
+    }
+}
+
+/// The lines, encoding and line endings counted of text files, kept while the app runs by the file as it was then (its
+/// file ID, size and the time it changed): a folder read again asks for its selected item's details again, and a file
+/// that hasn't changed isn't read whole a second time for the same answer.
+enum TextFacts {
+    private struct Stamp: Equatable {
+        var file: ino_t
+        var device: dev_t
+        var size: off_t
+        var seconds: Int
+        var nanoseconds: Int
+    }
+
+    private static let lock = NSLock()
+    nonisolated(unsafe) private static var known: [String: (stamp: Stamp, text: InfoDetails.Text?)] = [:]
+    static let limit = 64
+
+    /// What was counted of the file as `info` describes it, else what `count` answers, kept unless `count` was
+    /// cancelled (it answers nil then, as for a file that isn't text; the next ask counts again).
+    static func of(_ path: String, _ info: stat, cancel: ReadCancel = ReadCancel(), count: () -> InfoDetails.Text?)
+        -> InfoDetails.Text?
+    {
+        let stamp = Stamp(
+            file: info.st_ino, device: info.st_dev, size: info.st_size, seconds: info.st_mtimespec.tv_sec,
+            nanoseconds: info.st_mtimespec.tv_nsec)
+        if let kept = lock.withLock({ known[path] }), kept.stamp == stamp { return kept.text }
+        let text = count()
+        if cancel.isCancelled { return text }
+        lock.withLock {
+            if known.count >= limit { known.removeAll() }
+            known[path] = (stamp, text)
+        }
+        return text
     }
 }

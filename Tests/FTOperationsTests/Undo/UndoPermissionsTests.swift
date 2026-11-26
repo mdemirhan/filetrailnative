@@ -34,6 +34,54 @@ struct UndoPermissionsTests {
         for path in paths { Darwin.lchflags(path, 0) }
     }
 
+    // A disk that keeps no permissions (exFAT, FAT) takes the write and changes nothing: that is said for the item,
+    // and nothing is kept for Undo. Its flags are kept there, so Hidden still goes on.
+    @Test func aDiskThatKeepsNoPermissionsIsSaid() async throws {
+        try await withUndoFolder { root, trashDir in
+            let a = "\(root)/a.txt"
+            try file(a, mode: 0o644)
+            let t = UndoTest(root: root, trashDir: trashDir, configure: { $0.chmodImpl = { _, _ in } })
+            let visit = PermissionsVisit()
+            var run = try await t.coordinator.changePermissions(
+                .bit(who: 1, what: 1, on: true), paths: [a], visit: visit)
+            #expect(run.items.isEmpty)
+            let said = "Its disk doesn\u{2019}t keep these permissions."
+            #expect(run.failures == [PermissionsFailure(path: a, message: said)])
+            #expect(mode(a) == 0o644)
+            #expect(t.history.entries(.undo).isEmpty)
+            run = try await t.coordinator.changePermissions(.hidden(true), paths: [a], visit: visit)
+            #expect(run.failures.isEmpty)
+            #expect(hidden(a))
+            #expect(t.history.entries(.undo).count == 1)
+            await t.shutDown()
+        }
+    }
+
+    // A visit over tens of thousands of items takes each change in without looking through all of them for each
+    // one: 30,000 items took 7 seconds a click before. An item changed twice keeps its first setting and takes the
+    // newest, and one back as it was is left out.
+    @Test func aVisitOfThousandsOfItemsTakesAChangeInAtOnce() {
+        func item(_ index: Int, _ before: Int, _ after: Int) -> PermissionsUndoItem {
+            PermissionsUndoItem(
+                path: "/demo/item-\(index)", id: nil,
+                before: PermissionsSetting(mode: before, locked: false, hidden: false),
+                after: PermissionsSetting(mode: after, locked: false, hidden: false))
+        }
+        let visit = PermissionsVisit()
+        let first = (0..<30_000).map { item($0, 0o644, 0o664) }
+        let second = (0..<30_000).map { item($0, 0o664, $0 % 2 == 0 ? 0o644 : 0o666) }
+        // CPU time of this thread, not wall time, so a busy machine does not fail it.
+        let (kept, seconds) = CPUTime.measureThread {
+            _ = visit.merge(first, restarting: true)
+            return visit.merge(second, restarting: false)
+        }
+        #expect(kept.count == 15_000)
+        #expect(kept.first == item(1, 0o644, 0o666))
+        #expect(seconds < 2)
+        // What is left is still found by its path.
+        #expect(visit.merge([item(1, 0o666, 0o644)], restarting: false).count == 14_999)
+    }
+
     // Everything changed in one visit is one Undo: a Write for the group on a script and a file leaves the script's
     // Run, the Hidden flag goes on both, a mode typed sets the nine bits. Undo puts back each item as it was when the
     // visit began; Redo gives them the last of it again.

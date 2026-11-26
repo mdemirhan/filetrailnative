@@ -265,7 +265,10 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
 
     /// The explorer tab a window is part of: its own, a sheet's or a popover's (Tags…, the permissions), or the one
     /// the Info panel in a window of its own describes, so the menus act on that tab while those have the keyboard.
-    func handle(for window: NSWindow) -> (any ExplorerWindowHandle)? {
+    func handle(for window: NSWindow) -> (any ExplorerWindowHandle)? { Self.tab(for: window) }
+
+    /// The same, for what asks without the app's windows at hand (the File menu's row of tag colors).
+    static func tab(for window: NSWindow) -> MainWindowController? {
         var current: NSWindow? = window
         while let candidate = current {
             if let tab = (candidate as? ExplorerTabWindow)?.explorerTab, tab.group != nil { return tab }

@@ -33,6 +33,38 @@ extension ExplorerWindowlessTests {
             }
         }
 
+        // MARK: Where
+
+        // Items of one folder say it; items of several (search results), or one named as another's folder ends,
+        // don't.
+        @Test func severalItemsShareAFolderOrDont() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let entries = tab.content.listed
+            #expect(entries.count > 1)
+            #expect(InfoController.sharedParent(entries) == PathBarModel.parentPath(entries[0].path))
+            var elsewhere = entries[1]
+            elsewhere.path = "/elsewhere/" + elsewhere.name
+            #expect(InfoController.sharedParent([entries[0], elsewhere]) == nil)
+            // As long as a path in the folder would be, and not in it.
+            var deeper = entries[1]
+            deeper.name = "b"
+            deeper.path = PathBarModel.parentPath(PathBarModel.parentPath(entries[0].path)) + "/x/b"
+            var sibling = entries[0]
+            sibling.name = "a"
+            sibling.path = PathBarModel.parentPath(PathBarModel.parentPath(entries[0].path)) + "/y/a"
+            #expect(InfoController.sharedParent([sibling, deeper]) == nil)
+            var top = entries[0]
+            top.name = "Users"
+            top.path = "/Users"
+            var other = entries[1]
+            other.name = "Library"
+            other.path = "/Library"
+            #expect(InfoController.sharedParent([top, other]) == "/")
+            #expect(InfoController.sharedParent([]) == nil)
+            await harness.close()
+        }
+
         // MARK: Counting
 
         // Only real folders count as folders; a package and a link count as files; and only the entries shown

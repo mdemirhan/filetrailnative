@@ -111,13 +111,13 @@ final class TagsPopover: NSObject, NSPopoverDelegate {
         for tag in items.tags where !seen.contains(where: { $0.key == tag.key }) { seen.append(tag) }
         allRows = FinderTagChecklist.rows(on: items, inUse: TagCatalog.known + seen, colorNames: colorNames)
         rows = FinderTagChecklist.filter(allRows, by: view.filter.stringValue)
-        view.show(rows, itemCount: items.itemCount, hasTags: !items.tags.isEmpty, keeping: key)
+        view.show(rows, itemCount: items.readCount, hasTags: !items.tags.isEmpty, keeping: key)
         resize()
     }
 
     func filterChanged() {
         rows = FinderTagChecklist.filter(allRows, by: view.filter.stringValue)
-        view.show(rows, itemCount: items.itemCount, hasTags: !items.tags.isEmpty, keeping: nil)
+        view.show(rows, itemCount: items.readCount, hasTags: !items.tags.isEmpty, keeping: nil)
         // Return then takes the first that matches.
         if !view.filter.stringValue.isEmpty, !rows.isEmpty { view.select(0) }
     }
@@ -135,7 +135,9 @@ final class TagsPopover: NSObject, NSPopoverDelegate {
     /// A tag was clicked, or Return pressed on it: shown changed at once, written after the writes before it.
     func choose(_ row: FinderTagChecklistRow) {
         let key = row.tag.key
-        items.counts[key] = row.count == items.itemCount ? nil : items.itemCount
+        // Counted over the items whose tags were read, as the write decides: one that can't be read doesn't make a
+        // tag on all the others read as on only some, which a click would then take off instead of putting on.
+        items.counts[key] = row.count == items.readCount ? nil : items.readCount
         if items.counts[key] != nil, !items.tags.contains(where: { $0.key == key }) { items.tags.append(row.tag) }
         if items.counts[key] == nil { items.tags.removeAll { $0.key == key } }
         rebuild(keeping: key)

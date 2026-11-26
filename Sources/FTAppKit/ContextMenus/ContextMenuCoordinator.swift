@@ -31,7 +31,12 @@ final class ContextMenuCoordinator: ContextMenuResponder {
 
     init(tab: MainWindowController) {
         self.tab = tab
+        liveTab = tab
     }
+
+    /// The tab while it is still there: what runs after it may have closed (a write of the Tags popover, which goes on
+    /// though the popover and its window close) asks this, as `tab` is unowned.
+    private weak var liveTab: MainWindowController?
 
     /// Puts the menus on the file list's rows and background, and on the sidebar's rows.
     func install() {
@@ -305,13 +310,15 @@ final class ContextMenuCoordinator: ContextMenuResponder {
                 FinderTags.toggle(color, name: name, on: paths)
             }
             tab.content.tagsChanged(paths)
-            showTagFailures(failures)
+            showTagFailures(failures, in: tab.window)
         }
     }
 
     /// A choice of the Tags popover: written, the items' tags read again for it, and what couldn't be written said.
     /// Nil when the tags couldn't be read again.
     func changeTags(_ change: TagChange, paths: [String]) async -> FinderTagsOnItems? {
+        // The tab can have closed before this choice's turn came, or close while the write runs (a choice is written
+        // though Tags… closes): it is looked for again after.
         let (failures, read) = await BlockingWork.run(qos: .userInitiated) {
             let failures =
                 switch change {
@@ -320,8 +327,8 @@ final class ContextMenuCoordinator: ContextMenuResponder {
                 }
             return (failures, FinderTags.onItems(paths))
         }
-        tab.content.tagsChanged(paths)
-        showTagFailures(failures)
+        liveTab?.content.tagsChanged(paths)
+        if let liveTab { showTagFailures(failures, in: liveTab.window) }
         return read
     }
 
@@ -332,9 +339,9 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         -> PermissionsRead?
     {
         guard let coordinator = AppWriteOperations.current?.coordinator else { return nil }
-        // The tab can close while the write runs: it is looked for again after.
-        weak let window = tab.window
-        weak let liveTab = tab
+        // The tab can have closed before this change's turn came, or close while the write runs: it is looked for
+        // again after (`liveTab`).
+        weak let window = liveTab?.window
         let run: PermissionsWriteRun
         do {
             run = try await coordinator.changePermissions(change, paths: paths, visit: visit)
@@ -372,14 +379,14 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             in: window ?? tab.window)
     }
 
-    private func showTagFailures(_ failures: [FinderTagFailure]) {
+    private func showTagFailures(_ failures: [FinderTagFailure], in window: NSWindow?) {
         guard let first = failures.first else { return }
         notices.show(
             title: "Couldn’t Change the Tag",
             message: "\(ClipboardSummary.leafName(first.path)): \(first.message)"
                 + (failures.count > 1
                     ? " \(FormatLocale.count(failures.count - 1)) more couldn’t be changed." : ""),
-            in: tab.window)
+            in: window)
     }
 
     func contextMenu(perform action: ContextMenuActionID, subject: ContextMenuSubject) {

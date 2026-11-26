@@ -36,21 +36,34 @@ public final class PermissionsVisit {
     public private(set) var entryId: Int?
     /// Each item changed, by path, with its setting before the visit's first change of it and its newest one.
     private var items: [PermissionsUndoItem] = []
+    /// Where each item is in `items`, by its path: a change of thousands of items finds each at once, where looking
+    /// through the list for each one took seconds a click.
+    private var places: [NameKeys.Exact: Int] = [:]
 
     public init() {}
 
     /// The items as the entry holds them, for the history: those left as they were taken out.
-    fileprivate func merge(_ changed: [PermissionsUndoItem], restarting: Bool) -> [PermissionsUndoItem] {
-        if restarting { items = [] }
+    func merge(_ changed: [PermissionsUndoItem], restarting: Bool) -> [PermissionsUndoItem] {
+        if restarting {
+            items = []
+            places = [:]
+        }
         for item in changed {
-            if let index = items.firstIndex(where: { NameKeys.Exact($0.path) == NameKeys.Exact(item.path) }) {
+            let key = NameKeys.Exact(item.path)
+            if let index = places[key] {
                 items[index].after = item.after
                 items[index].id = item.id
             } else {
+                places[key] = items.count
                 items.append(item)
             }
         }
-        items.removeAll { $0.before == $0.after }
+        if items.contains(where: { $0.before == $0.after }) {
+            items.removeAll { $0.before == $0.after }
+            places = Dictionary(
+                items.enumerated().map { (NameKeys.Exact($0.element.path), $0.offset) },
+                uniquingKeysWith: { first, _ in first })
+        }
         return items
     }
 
@@ -106,9 +119,13 @@ public enum PermissionsWrite {
     /// A locked item asked for a new mode by the popover.
     struct LockedError: Error {}
 
+    /// The write was taken and the item is as it was: a disk that keeps no permissions (exFAT, FAT) answers so.
+    struct NotKeptError: Error {}
+
     /// Why the write to the item at `path` failed, said about it.
     static func describe(_ error: any Error, _ path: String) -> String {
         if error is LockedError { return "It is locked. Turn off Locked to change its permissions." }
+        if error is NotKeptError { return "Its disk doesn\u{2019}t keep these permissions." }
         if errorCode(error) == .errno(ENOENT) { return "It no longer exists." }
         if errorCode(error) == .errno(EROFS) { return "Its disk can only be read." }
         return describeCopyPasteError(error)
@@ -134,6 +151,9 @@ public enum PermissionsWrite {
                 if target == now.setting { continue }
                 try write(fileSystem, path, from: now.setting, flags: now.flags, to: target, unlocking: false)
                 let after = (try? read(fileSystem, path))??.setting ?? target
+                // Written without a refusal, and nothing changed: said, where it would otherwise pass as done with
+                // the box going back by itself.
+                if after == now.setting { throw NotKeptError() }
                 run.items.append(PermissionsUndoItem(path: path, id: now.id, before: now.setting, after: after))
             } catch {
                 run.failures.append(PermissionsFailure(path: path, message: describe(error, path)))

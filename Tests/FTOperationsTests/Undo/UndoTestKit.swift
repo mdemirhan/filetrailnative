@@ -24,6 +24,7 @@ final class UndoTestFileSystem: UndoFileSystem, @unchecked Sendable {
     var isPackageImpl: ((String) throws -> Bool?)?
     var rmImpl: ((String, Bool, Bool) throws -> Void)?
     var itemSizeImpl: ((String) throws -> ItemSize)?
+    var chmodImpl: ((String, UInt32) throws -> Void)?
 
     /// The disk, with a Trash that is the folder `trashDir`.
     init(trashDir: String) {
@@ -87,7 +88,10 @@ final class UndoTestFileSystem: UndoFileSystem, @unchecked Sendable {
         if let setFlagsImpl = impl(\.setFlagsImpl) { return try setFlagsImpl(path, flags) }
         try base.setFlags(path, flags)
     }
-    func chmod(_ path: String, _ mode: UInt32) throws { try base.chmod(path, mode) }
+    func chmod(_ path: String, _ mode: UInt32) throws {
+        if let chmodImpl = impl(\.chmodImpl) { return try chmodImpl(path, mode) }
+        try base.chmod(path, mode)
+    }
     func utimes(_ path: String, _ atimeMs: Double, _ mtimeMs: Double) throws {
         try base.utimes(path, atimeMs, mtimeMs)
     }
