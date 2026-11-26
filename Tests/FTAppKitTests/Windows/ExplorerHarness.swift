@@ -71,6 +71,14 @@ final class ExplorerHarness {
             preferences: channel)
     }
 
+    /// The app's file operations (`writeOperations`), made once and kept for as long as the harness, as the app keeps
+    /// them from launch: what goes through them (a tag) does nothing without them.
+    private var keptOperations: AppWriteOperations?
+
+    func keepWriteOperations() throws {
+        if keptOperations == nil { keptOperations = try writeOperations() }
+    }
+
     /// For a test of the tree above the folder: windows opened after this start it at the disk, as the app's do.
     func startsTheTreeAtTheDisk() {
         windows.home = FileManager.default.homeDirectoryForCurrentUser.path

@@ -1831,6 +1831,17 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         }
     }
 
+    /// An Undo or Redo changed items in place (their tags, their permissions), perhaps through a link to them or by
+    /// another of their names: the tags of every item read so far, which are those near the rows on screen, are read
+    /// again. Search results aren't watched, and a folder read again marks no tags as changed.
+    func readTagsAgain() {
+        let known = tags.values.keys.map(\.string)
+        tags.markChanged(nil)
+        if !known.isEmpty { requestTags(for: known) }
+        // The Info panel reads the tags of what it shows itself, whatever the rows read.
+        onTagsChanged?()
+    }
+
     /// This window changed the items' tags: they are read again now, before the change on disk is heard of.
     func tagsChanged(_ paths: [String]) {
         tags.markChanged(paths)

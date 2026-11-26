@@ -118,7 +118,7 @@ import Testing
         try withFile { path in
             let junk = Data("not a list".utf8)
             _ = junk.withUnsafeBytes { setxattr(path, FinderTags.attribute, $0.baseAddress, junk.count, 0, 0) }
-            let failures = FinderTags.toggle(.red, name: "Red", on: [path])
+            let failures = FinderTags.toggle(.red, name: "Red", on: [path]).failures
             #expect(failures.count == 1)
             var stored = Data(count: junk.count)
             _ = stored.withUnsafeMutableBytes { getxattr(path, FinderTags.attribute, $0.baseAddress, junk.count, 0, 0) }
@@ -130,7 +130,7 @@ import Testing
         try withFile { path in
             try FileManager.default.setAttributes([.immutable: true], ofItemAtPath: path)
             defer { try? FileManager.default.setAttributes([.immutable: false], ofItemAtPath: path) }
-            #expect(FinderTags.toggle(.red, name: "Red", on: [path]).count == 1)
+            #expect(FinderTags.toggle(.red, name: "Red", on: [path]).failures.count == 1)
             #expect(FinderTags.colors(path).isEmpty)
         }
     }
@@ -199,7 +199,7 @@ import Testing
             try FinderTags.write(
                 [FinderTag(name: "work", color: .blue), FinderTag(name: "Red", color: .red)], to: first)
             let work = FinderTag(name: "Work", color: nil)
-            #expect(FinderTags.toggle(work, on: [first, second]).isEmpty)
+            #expect(FinderTags.toggle(work, on: [first, second]).failures.isEmpty)
             #expect(
                 try FinderTags.read(first) == [
                     FinderTag(name: "work", color: .blue), FinderTag(name: "Red", color: .red),
@@ -223,7 +223,7 @@ import Testing
             FileManager.default.createFile(atPath: second, contents: Data())
             try FinderTags.write(
                 [FinderTag(name: "Work", color: nil), FinderTag(name: "Blue", color: .blue)], to: first)
-            #expect(FinderTags.removeAll(from: [first, second]).isEmpty)
+            #expect(FinderTags.removeAll(from: [first, second]).failures.isEmpty)
             #expect(try FinderTags.read(first).isEmpty)
             #expect(try labelNumber(first) == 0)
             #expect(FinderTags.onItems([first, second]).tags.isEmpty)
@@ -238,7 +238,7 @@ import Testing
             let read = FinderTags.onItems([path])
             #expect(read.failures.map(\.path) == [path])
             #expect(read.tags.isEmpty)
-            #expect(FinderTags.removeAll(from: [path]).count == 1)
+            #expect(FinderTags.removeAll(from: [path]).failures.count == 1)
         }
     }
 }

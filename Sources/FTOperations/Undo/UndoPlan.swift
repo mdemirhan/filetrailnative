@@ -1,3 +1,4 @@
+import FTFileSystem
 import FTFoundation
 import Foundation
 import os
@@ -77,6 +78,8 @@ public enum PlannedStep: Equatable, Sendable {
     case batch(items: [BatchRenamedItem])
     /// Gives each item its `after` where it still has its `before`.
     case permissions(items: [PermissionsUndoItem])
+    /// Gives each item the tags `after` where it still has the tags `before`.
+    case tags(items: [TagsUndoItem])
     case merge(PlannedMerge)
 
     public init(reversing step: UndoStep) {
@@ -106,6 +109,8 @@ public enum PlannedStep: Equatable, Sendable {
                 items: items.map { BatchRenamedItem(from: $0.to, to: $0.from, id: $0.id, itemKind: $0.itemKind) })
         case .permissions(let items):
             self = .permissions(items: items.map(\.reversed))
+        case .tags(let items):
+            self = .tags(items: items.map(\.reversed))
         case .merged(let merged):
             self = .merge(
                 PlannedMerge(
@@ -614,6 +619,39 @@ public enum UndoPlan {
         return nil
     }
 
+    /// `checkTags`: whether the item a change of tags is about is still there, and still has the tags it was left
+    /// with (`item.before`, as the reversed step holds it): one whose tags were changed since, by another app or in
+    /// another way, is left as it is. `exactItems` as for `checkMove`; otherwise another item put in its place (a
+    /// document saved by replacing its file) is taken for it. A link is followed, as its tags are. Nil when it can be
+    /// done.
+    public static func checkTags(_ fileSystem: some IdentityFileSystem, _ item: TagsUndoItem, exactItems: Bool = false)
+        -> Refusal?
+    {
+        let name = NodePath.basename(item.path)
+        switch lookUp(item.path, { try fileSystem.stat($0) }) {
+        case .unreadable(let refusal): return refusal
+        case .missing: return Refusal(reason: missingReason(fileSystem, item.path), missing: true)
+        case .found(let stats):
+            if !isExpectedItem(stats, item.id, kindOfStats(stats), relaxed: !exactItems) {
+                return Refusal(reason: replacedReason(item.path, item.id, stats), missing: false)
+            }
+        }
+        let now: [FinderTag]
+        do {
+            now = try FinderTags.read(item.path)
+        } catch {
+            return Refusal(
+                reason: "\u{201C}\(name)\u{201D} couldn\u{2019}t be checked: \(describeCopyPasteError(error))",
+                missing: false, retry: true)
+        }
+        guard TagsWrite.undoTags(now) == item.before else {
+            return Refusal(
+                reason: "\u{201C}\(name)\u{201D} was left as it is, because its tags were changed since.",
+                missing: false)
+        }
+        return nil
+    }
+
     // MARK: Questions
 
     /// `findQuestions`: what to ask before undoing `units`: the names that are taken where items would go back, and
@@ -731,7 +769,7 @@ public enum UndoPlan {
                     }
                     changes.noteMovedAway(planned.path, id)
                 }
-            case .permissions:
+            case .permissions, .tags:
                 // Nothing to ask: an item changed since is left as it is, and said.
                 break
             case .merge(let merge):
@@ -772,6 +810,7 @@ extension UndoPlan {
             case .trashed(_, _, let id, _, _): if let id { ids.insert(id) }
             case .batchRenamed(let items): ids.formUnion(items.compactMap(\.id))
             case .permissions(let items): ids.formUnion(items.compactMap(\.id))
+            case .tags(let items): ids.formUnion(items.compactMap(\.id))
             // Its items are each undone as a unit of their own, with their own ids.
             case .merged: break
             }
@@ -850,6 +889,11 @@ extension UndoPlan {
                         return .permissions(
                             items: items.map {
                                 PermissionsUndoItem(path: $0.path, id: map($0.id), before: $0.before, after: $0.after)
+                            })
+                    case .tags(let items):
+                        return .tags(
+                            items: items.map {
+                                TagsUndoItem(path: $0.path, id: map($0.id), before: $0.before, after: $0.after)
                             })
                     case .merged(var merged):
                         if var removed = merged.removed {

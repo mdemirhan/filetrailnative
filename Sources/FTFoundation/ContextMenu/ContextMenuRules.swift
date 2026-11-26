@@ -76,7 +76,7 @@ public enum ContextMenuRules {
     public static let writeLockedActions: [ContextMenuActionID] = [
         .paste, .pasteAsFile, .move, .rename, .duplicate, .makeAlias, .convertImages, .newFolder,
         .newFolderWithSelection, .newFile, .saveAsTemplate, .trash, .deleteImmediately, .emptyTrash, .compress,
-        .extract, .extractTo,
+        .extract, .extractTo, .tags,
     ]
 
     /// What the menus leave out in the Trash: nothing is pasted, made, duplicated, converted, compressed or extracted

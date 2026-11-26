@@ -91,9 +91,9 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // A menu opened while an operation runs leaves out what would start another, and keeps the row of colors and
-        // Tags… under it.
-        @Test func aMenuOpenedWhileAnOperationRunsKeepsTheRowOfColors() async throws {
+        // A menu opened while an operation runs leaves out what would start another: the row of colors and Tags…
+        // too, as a tag changed is a file operation, kept for Undo.
+        @Test func aMenuOpenedWhileAnOperationRunsLeavesOutTheColorsAndTags() async throws {
             let window = try await open()
             let actions = try #require(window.tab.writeActions)
             actions.session.applyCard(
@@ -102,12 +102,39 @@ extension ExplorerWindowlessTests {
                     currentSourcePath: nil))
             let menu = try contentMenu(window, ["note.txt"])
             #expect(!menu.items.contains { $0.title == "Rename" || $0.title == "Move to Trash" })
-            #expect(menu.items.filter { $0.view is TagColorsMenuRow }.count == 1)
-            let row = try #require(menu.items.firstIndex { $0.view is TagColorsMenuRow })
-            #expect(menu.items.indices.contains(row + 1) && menu.items[row + 1].identifier?.rawValue == "tags")
-            // The folder's own menu has no items to color.
-            #expect(try backgroundMenu(window).items.contains { $0.view is TagColorsMenuRow } == false)
+            #expect(!menu.items.contains { $0.view is TagColorsMenuRow })
+            #expect(!menu.items.contains { $0.identifier?.rawValue == "tags" })
+            #expect(menu.items.last?.isSeparatorItem == false)
             actions.session.applyCard(nil)
+            // Once it has ended, both are back, Tags… under the colors.
+            let after = try contentMenu(window, ["note.txt"])
+            let row = try #require(after.items.firstIndex { $0.view is TagColorsMenuRow })
+            #expect(after.items.indices.contains(row + 1) && after.items[row + 1].identifier?.rawValue == "tags")
+            await window.close()
+        }
+
+        // Tags… asked for while an operation runs (the Info panel's Tags row, which no menu leaves out) says the app is
+        // busy, and opens nothing.
+        @Test func tagsAskedForWhileAnOperationRunsSaysItIsBusy() async throws {
+            let window = try await open()
+            let actions = try #require(window.tab.writeActions)
+            actions.session.applyCard(
+                WriteOperationCardState(
+                    action: .paste, stage: .starting, targetPath: nil, totalItemCount: 1, totalBytes: nil,
+                    currentSourcePath: nil))
+            // File ▸ Tag Colors has no tab to act for: its row is off.
+            window.tab.content.select(paths: [path(window, "note.txt")])
+            let colors = MenuBarTagColors()
+            colors.focusedWindow = { window.tab.window }
+            #expect(colors.tab == nil)
+            var shown: TagsPopover?
+            window.tab.shownTagsPopover = { shown = $0 }
+            window.tab.editTags([path(window, "note.txt")], from: window.tab.window?.contentView)
+            #expect(window.recorder.shown.map(\.message) == [WriteDialogs.busyMessage])
+            try? await Task.sleep(for: .milliseconds(200))
+            #expect(shown == nil)
+            actions.session.applyCard(nil)
+            #expect(colors.tab === window.tab)
             await window.close()
         }
 

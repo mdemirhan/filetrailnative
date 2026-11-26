@@ -2,6 +2,7 @@
 import AppKit
 import FTFileSystem
 import FTFoundation
+import FTOperations
 
 /// What a choice in the Tags popover does to the items.
 enum TagChange: Sendable, Equatable {
@@ -465,16 +466,20 @@ extension MainWindowController {
         guard !paths.isEmpty, !paths.contains(where: { Paths.isInsideTrash($0, homePath: trashHomePath) }) else {
             return
         }
+        // A change of tags is a file operation: while another runs, it is said, as for the others.
+        if let actions = writeActions, actions.refuseWhileBusy(.operation(.changeTags)) { return }
         let title =
             paths.count == 1
             ? "Tags for \u{201C}\(ClipboardSummary.leafName(paths[0]))\u{201D}"
             : "Tags for \(FormatLocale.count(paths.count)) Items"
         let coordinator = contextMenus
+        // Everything chosen while it is open is one Undo.
+        let visit = TagsVisit()
         Task { @MainActor [weak self] in
             let items = await BlockingWork.run(qos: .userInitiated) { FinderTags.onItems(paths) }
             guard let self else { return }
             let popover = TagsPopover(paths: paths, items: items, title: title) { choice, paths in
-                await coordinator.changeTags(choice, paths: paths)
+                await coordinator.changeTags(choice, paths: paths, visit: visit)
             }
             if let place = self.tagsPopoverPlace(for: paths, anchor: anchor) {
                 popover.show(relativeTo: place.rect, of: place.view)

@@ -303,34 +303,47 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         holdingTheTab { [self] in await openWith(paths: paths, choice: choice, kind: kind) }
     }
 
+    /// A color of the row chosen: one Undo of its own.
     func contextMenu(toggleTag color: FinderTagColor, paths: [String]) {
         let name = color.systemName
         holdingTheTab { [self] in
-            let failures = await BlockingWork.run {
-                FinderTags.toggle(color, name: name, on: paths)
-            }
-            tab.content.tagsChanged(paths)
-            showTagFailures(failures, in: tab.window)
+            await writeTags(.color(color, name: name), paths: paths, visit: TagsVisit())
         }
     }
 
-    /// A choice of the Tags popover: written, the items' tags read again for it, and what couldn't be written said.
-    /// Nil when the tags couldn't be read again.
-    func changeTags(_ change: TagChange, paths: [String]) async -> FinderTagsOnItems? {
-        // The tab can have closed before this choice's turn came, or close while the write runs (a choice is written
-        // though Tags… closes): it is looked for again after.
-        let (failures, read) = await BlockingWork.run(qos: .userInitiated) {
-            let failures =
-                switch change {
-                case .toggle(let tag): FinderTags.toggle(tag, on: paths)
-                case .removeAll: FinderTags.removeAll(from: paths)
-                }
-            return (failures, FinderTags.onItems(paths))
-        }
-        liveTab?.content.tagsChanged(paths)
-        showTagFailures(failures, in: liveTab?.window)
-        return read
+    /// A choice of the Tags popover: written as one Undo with the popover's other choices (`visit`), the items' tags
+    /// read again for it, and what couldn't be written said. Nil when the tags couldn't be read again.
+    func changeTags(_ change: TagChange, paths: [String], visit: TagsVisit) async -> FinderTagsOnItems? {
+        let tagsChange: TagsChange =
+            switch change {
+            case .toggle(let tag): .tag(tag)
+            case .removeAll: .removeAll
+            }
+        await writeTags(tagsChange, paths: paths, visit: visit)
+        return await BlockingWork.run(qos: .userInitiated) { FinderTags.onItems(paths) }
     }
+
+    /// A change of tags, written through the app's file operations (refused while another one runs, and said), kept
+    /// for Undo with `visit`'s other changes; the panes read the items again, and what couldn't be changed is said.
+    private func writeTags(_ change: TagsChange, paths: [String], visit: TagsVisit) async {
+        guard let coordinator = AppWriteOperations.current?.coordinator else { return }
+        // The tab can have closed before this change's turn came, or close while the write runs (a choice is written
+        // though Tags… closes): it is looked for again after (`liveTab`).
+        weak let window = liveTab?.window
+        do {
+            let run = try await coordinator.changeTags(change, paths: paths, visit: visit)
+            liveTab?.content.tagsChanged(paths)
+            showTagFailures(run.failures, in: window)
+        } catch {
+            let message = errorMessage(error)
+            notices.show(
+                title: Self.tagsFailureTitle,
+                message: message.contains(WriteServiceMessages.writeOperationBusy) ? WriteDialogs.busyMessage : message,
+                in: window)
+        }
+    }
+
+    static let tagsFailureTitle = "Couldn\u{2019}t Change the Tag"
 
     /// A change of the permissions popover: written through the app's file operations, as one Undo with the popover's
     /// other changes; the panes and the Info panel read the items again, and what couldn't be changed is said. The
@@ -382,7 +395,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
     private func showTagFailures(_ failures: [FinderTagFailure], in window: NSWindow?) {
         guard let first = failures.first else { return }
         notices.show(
-            title: "Couldn’t Change the Tag",
+            title: Self.tagsFailureTitle,
             message: "\(ClipboardSummary.leafName(first.path)): \(first.message)"
                 + (failures.count > 1
                     ? " \(FormatLocale.count(failures.count - 1)) more couldn’t be changed." : ""),
@@ -477,6 +490,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         case .extract, .extractTo: return .operation(.extract)
         case .trash: return .operation(.trash)
         case .deleteImmediately: return .operation(.deleteImmediately)
+        case .tags: return .operation(.changeTags)
         default: return .emptyTrash
         }
     }

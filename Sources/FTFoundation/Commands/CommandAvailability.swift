@@ -177,7 +177,7 @@ public enum CommandAvailability {
         .deleteImmediately, .emptyTrash,
         .copyToOtherPane,
         .moveToOtherPane,
-        .compressSelection, .extractSelection, .extractSelectionTo, .convertImages,
+        .compressSelection, .extractSelection, .extractSelectionTo, .convertImages, .editTags,
     ]
 
     // MARK: Helpers

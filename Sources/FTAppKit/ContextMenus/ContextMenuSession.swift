@@ -117,7 +117,9 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
         // when nothing of that group is offered and its line has gone with it.
         let tagColorsSeparator =
             items.contains(.separator(key: "separator-organize")) ? "separator-organize" : "separator-rename"
-        let offersTagColors = subject.surface == .content || subject.surface == .search
+        // A color chosen is a file operation: while another runs, the row is left out with Tags….
+        let offersTagColors =
+            (subject.surface == .content || subject.surface == .search) && !request.world.writeLocked
         // With Tags…, the colors come right before it, as in Finder; without it, in a group of their own.
         let offersTagsItem = items.contains {
             if case .action(id: .tags, _, _, _, _) = $0 { return true }
@@ -155,8 +157,7 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
                 }
             }
         }
-        // While a file operation runs, Rename's group and Compress's are both left out, and their lines with them:
-        // the colors, which start no operation, close the menu then.
+        // Neither Rename's group nor Compress's in the menu, and their lines with them: the colors close it.
         if offersTagColors, tagColors == nil, !subject.entries.isEmpty {
             if menu.items.last?.isSeparatorItem == false { menu.addItem(.separator()) }
             addTagColors()

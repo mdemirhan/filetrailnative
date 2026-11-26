@@ -117,6 +117,73 @@ public struct PermissionsUndoItem: Equatable, Codable, Sendable {
     }
 }
 
+/// One of an item's tags, as Finder stores it: its name and its color's number (0 for none).
+public struct UndoTag: Equatable, Codable, Sendable {
+    public var name: String
+    public var color: Int
+
+    public init(name: String, color: Int) {
+        self.name = name
+        self.color = color
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case name, color
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        name = try container.decode(String.self, forKey: .name)
+        color = try container.decode(Int.self, forKey: .color)
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
+        try container.encode(color, forKey: .color)
+    }
+}
+
+/// One item whose tags were changed: its tags before and after, in their order.
+public struct TagsUndoItem: Equatable, Codable, Sendable {
+    public var path: String
+    public var id: ItemId?
+    public var before: [UndoTag]
+    public var after: [UndoTag]
+
+    public init(path: String, id: ItemId?, before: [UndoTag], after: [UndoTag]) {
+        self.path = path
+        self.id = id
+        self.before = before
+        self.after = after
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case path, id, before, after
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        path = try container.decode(String.self, forKey: .path)
+        id = try container.decodeIfPresent(ItemId.self, forKey: .id)
+        before = try container.decode([UndoTag].self, forKey: .before)
+        after = try container.decode([UndoTag].self, forKey: .after)
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(path, forKey: .path)
+        try container.encode(id, forKey: .id)
+        try container.encode(before, forKey: .before)
+        try container.encode(after, forKey: .after)
+    }
+
+    /// The same change the other way: what an Undo did, for Redo to do again.
+    public var reversed: TagsUndoItem {
+        TagsUndoItem(path: path, id: id, before: after, after: before)
+    }
+}
+
 /// What a folder made again is given back: its mode (the nine bits and the three above them), Finder's flags (Hidden),
 /// its date, its extended attributes (its tags, Finder's information) and its access rules. Each is nil when it
 /// couldn't be read.
@@ -251,6 +318,9 @@ public enum UndoStep: Equatable, Sendable {
     /// The permissions of items changed, all of one visit to the permissions popover: undone as one. Undo puts back
     /// each item's `before` where it still has its `after`.
     case permissions(items: [PermissionsUndoItem])
+    /// The tags of items changed: a color chosen, or all of one visit to the Tags popover, undone as one. Undo puts
+    /// back each item's `before` where it still has its `after`.
+    case tags(items: [TagsUndoItem])
     /// A folder merged into one of its name already there: its items, each put into `to` on its own, as units of
     /// their own (an item that can't be undone leaves the others to be). `removed` is `from` once a move took every
     /// item out of it: it is made again before they go back. `made` is a folder an Undo made again that way: Redo
@@ -340,6 +410,8 @@ extension UndoStep: Codable {
             self = .batchRenamed(items: try container.decode([BatchRenamedItem].self, forKey: .items))
         case "permissions":
             self = .permissions(items: try container.decode([PermissionsUndoItem].self, forKey: .items))
+        case "tags":
+            self = .tags(items: try container.decode([TagsUndoItem].self, forKey: .items))
         case "merged":
             self = .merged(
                 Merged(
@@ -389,6 +461,9 @@ extension UndoStep: Codable {
             try container.encode(items, forKey: .items)
         case .permissions(let items):
             try container.encode("permissions", forKey: .kind)
+            try container.encode(items, forKey: .items)
+        case .tags(let items):
+            try container.encode("tags", forKey: .kind)
             try container.encode(items, forKey: .items)
         case .merged(let merged):
             try container.encode("merged", forKey: .kind)

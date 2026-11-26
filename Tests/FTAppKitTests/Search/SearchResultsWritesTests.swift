@@ -391,5 +391,31 @@ extension ExplorerWindowlessTests {
             #expect(header.banner.isHidden)
             #expect(header.height == bare)
         }
+
+        // A color chosen on a result, then undone and redone: the result shows its tags as they are each time. Search
+        // results aren't watched, and the Undo changes no path.
+        @Test func aResultsTagsShowAsTheyAreAfterUndoAndRedo() async throws {
+            let window = try await WritingWindow.open()
+            let tab = window.tab
+            let pane = tab.activePane
+            try await searching(window, finding: ["note.txt", "Alpha/"])
+            let note = path(window, "note.txt")
+            defer { try? FinderTags.write([], to: note) }
+            func colors() -> [FinderTagColor]? { pane.content.listedEntry(at: note).map(pane.content.tagColors(for:)) }
+
+            tab.contextMenus.contextMenu(toggleTag: .red, paths: [note])
+            #expect(await waitUntil { colors() == [.red] })
+            await idle(window)
+            tab.content.focusList()
+            tab.perform(.undo)
+            #expect(await waitUntil { FinderTags.colors(note) == [] })
+            #expect(await waitUntil { colors() == [] })
+            await idle(window)
+            tab.perform(.redo)
+            #expect(await waitUntil { FinderTags.colors(note) == [.red] })
+            #expect(await waitUntil { colors() == [.red] })
+            pane.search.session.hideResults()
+            await window.close()
+        }
     }
 }

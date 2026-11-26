@@ -285,7 +285,7 @@ public final class WriteCoordinator {
                     switch step {
                     case .created(let path, _, _): !hasTrash(NodePath.dirname(path))
                     case .merged(let merged): copiesOntoDiskWithoutTrash(merged.units)
-                    case .moved, .trashed, .batchRenamed, .permissions: false
+                    case .moved, .trashed, .batchRenamed, .permissions, .tags: false
                     }
                 }
             }

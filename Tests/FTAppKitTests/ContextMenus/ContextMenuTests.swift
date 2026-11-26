@@ -154,6 +154,7 @@ extension ExplorerWindowlessTests {
         @Test func theRowOfColorsIsOfferedForItemsAndChoosingOneTagsThemAndDrawsTheDots() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
+            try harness.keepWriteOperations()
             let target = try entry(tab, "Alpha")
             defer { try? FinderTags.write([], to: target.path) }
             #expect(tab.contextMenus.contentMenu(for: nil)?.items.contains { $0.view is TagColorsMenuRow } == false)

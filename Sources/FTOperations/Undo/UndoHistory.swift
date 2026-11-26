@@ -347,6 +347,13 @@ public final class UndoHistory {
             }
             let name = NodePath.basename(path)
             return "Permissions of \(inMenu ? MenuName.quoted(name) : "\u{201C}\(name)\u{201D}")"
+        case .changeTags:
+            let count = itemStepCount(units)
+            guard count == 1, let path = units.first.flatMap({ mainPathOf($0.steps) }) else {
+                return "Tags of \(FormatLocale.count(count)) Items"
+            }
+            let name = NodePath.basename(path)
+            return "Tags of \(inMenu ? MenuName.quoted(name) : "\u{201C}\(name)\u{201D}")"
         case .trash:
             return "Move to Trash of \(itemsName(units, inMenu: inMenu))"
         case .duplicate:
@@ -370,6 +377,7 @@ public final class UndoHistory {
                 switch step {
                 case .batchRenamed(let items): count += items.count
                 case .permissions(let items): count += items.count
+                case .tags(let items): count += items.count
                 case .merged(let merged):
                     count +=
                         itemStepCount(merged.units) + (merged.removed != nil ? 1 : 0) + (merged.made != nil ? 1 : 0)
@@ -386,7 +394,7 @@ public final class UndoHistory {
                 switch step {
                 case .moved(let moved): moved.fromTrash != true
                 case .merged(let merged): merged.removed != nil || merged.made != nil || movesAnything(merged.units)
-                case .created, .trashed, .batchRenamed, .permissions: false
+                case .created, .trashed, .batchRenamed, .permissions, .tags: false
                 }
             }
         }
@@ -410,6 +418,7 @@ public final class UndoHistory {
             case .trashed(let from, _, _, _, _): return from
             case .batchRenamed: continue
             case .permissions(let items): if let item = items.first { return item.path }
+            case .tags(let items): if let item = items.first { return item.path }
             case .merged(let merged): return merged.to
             }
         }

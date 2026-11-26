@@ -182,10 +182,23 @@ final class AppWriteOperations {
         }
         if event.status.isTerminal, let result = event.result {
             let intoTrash = event.action == .trash || event.action == .undo || event.action == .redo
+            // An Undo or Redo that changed anything in place (tags, permissions): every pane, and the Info panel with
+            // it, reads again the tags of what it shows (`readTagsAgain`).
+            let changedInPlace =
+                (event.action == .undo || event.action == .redo)
+                && result.items.contains { item in
+                    guard item.status == .completed, let source = item.sourcePath,
+                        let destination = item.destinationPath
+                    else { return false }
+                    return DiskPath(source) == DiskPath(destination)
+                }
             for tab in windows.allTabs {
                 // Before a size order puts what left at the end: its place is kept for the arrow keys.
                 tab.content.keepOrderBeforeRemoval()
                 tab.folderSizes.forgetChangedSizes(result.changedPaths, intoTrash: intoTrash)
+                if changedInPlace {
+                    for pane in tab.panes where pane.loaded { pane.content.readTagsAgain() }
+                }
             }
         }
     }

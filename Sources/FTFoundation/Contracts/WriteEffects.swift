@@ -120,7 +120,7 @@ public enum WriteEffects {
         case .paste, .copyTo, .duplicate, .trash, .deleteImmediately, .newFolder, .pasteAsFile, .newFile, .compress,
             .extract:
             cut
-        case .convertImages, .makeAlias, .changePermissions: false
+        case .convertImages, .makeAlias, .changePermissions, .changeTags: false
         }
     }
 
@@ -157,7 +157,7 @@ public enum WriteEffects {
             return items.compactMap { $0.status == .completed && $0.destinationPath == nil ? source($0) : nil }
                 + replacedPaths
         case .paste, .copyTo, .moveTo, .duplicate, .rename, .newFolder, .newFolderWithSelection, .pasteAsFile, .newFile,
-            .batchRename, .compress, .extract, .convertImages, .makeAlias, .changePermissions:
+            .batchRename, .compress, .extract, .convertImages, .makeAlias, .changePermissions, .changeTags:
             return replacedPaths
         }
     }

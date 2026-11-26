@@ -293,6 +293,12 @@ struct CommandAvailabilityTests {
         #expect(Self.run(.copyPath, context))
     }
 
+    // A change of tags is a file operation: Tags… is off while another runs, on otherwise.
+    @Test func tagsAreOffWhileAWriteOperationIsInFlight() {
+        #expect(Self.run(.editTags, Self.select(Self.note)))
+        #expect(!Self.run(.editTags, Self.select(Self.note) { $0.writeOperationLocked = true }))
+    }
+
     @Test func stillRequiresContentFocusForContentOnlyActions() {
         #expect(!Self.run(.copySelection, Self.context { $0.shortcutContext = Self.shortcutContext(focusedPane: nil) }))
     }

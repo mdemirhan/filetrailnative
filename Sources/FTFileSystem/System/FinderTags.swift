@@ -40,6 +40,30 @@ public enum FinderTagColorState: Sendable, Equatable {
     case all, some
 }
 
+/// An item whose tags a change wrote: what they were, and what they are now.
+public struct FinderTagsChanged: Sendable, Equatable {
+    public var path: String
+    public var before: [FinderTag]
+    public var after: [FinderTag]
+
+    public init(path: String, before: [FinderTag], after: [FinderTag]) {
+        self.path = path
+        self.before = before
+        self.after = after
+    }
+}
+
+/// What a change of tags did: the items it wrote, and those it couldn't.
+public struct FinderTagsWritten: Sendable, Equatable {
+    public var changed: [FinderTagsChanged] = []
+    public var failures: [FinderTagFailure] = []
+
+    public init(changed: [FinderTagsChanged] = [], failures: [FinderTagFailure] = []) {
+        self.changed = changed
+        self.failures = failures
+    }
+}
+
 public struct FinderTagFailure: Sendable, Equatable {
     public var path: String
     public var message: String
@@ -150,10 +174,12 @@ public enum FinderTags {
             let result = data.withUnsafeBytes { setxattr(path, attribute, $0.baseAddress, data.count, 0, 0) }
             guard result == 0 else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
         }
+        // Best effort: the tags are what Finder and this app read, and are written already; a label refused (a disk
+        // that keeps no Finder information) doesn't make them unwritten.
         var values = URLResourceValues()
         values.labelNumber = tags.last { $0.color != nil }?.color?.rawValue ?? 0
         var url = DiskPath(path).fileURL()
-        try url.setResourceValues(values)
+        try? url.setResourceValues(values)
     }
 
     /// Which colors are on the items, for the menu's row.
@@ -169,7 +195,7 @@ public enum FinderTags {
     /// `name`. A color is one choice whatever its tags are called, so a tag named in another language or a custom one
     /// of that color counts as it, and comes off with it. Other tags stay as they are.
     @discardableResult
-    public static func toggle(_ color: FinderTagColor, name: String, on paths: [String]) -> [FinderTagFailure] {
+    public static func toggle(_ color: FinderTagColor, name: String, on paths: [String]) -> FinderTagsWritten {
         toggle(on: paths, has: { $0.color == color }, adding: FinderTag(name: name, color: color))
     }
 
@@ -177,14 +203,14 @@ public enum FinderTags {
     /// without it, with its color. A tag is its name, case aside (`key`), whatever its color on each item: "Work" in
     /// blue on one and in none on another is one tag. Other tags stay as they are.
     @discardableResult
-    public static func toggle(_ tag: FinderTag, on paths: [String]) -> [FinderTagFailure] {
+    public static func toggle(_ tag: FinderTag, on paths: [String]) -> FinderTagsWritten {
         let key = tag.key
         return toggle(on: paths, has: { $0.key == key }, adding: tag)
     }
 
     /// Takes every tag off the items. One whose attribute can't be understood keeps it, and is reported.
     @discardableResult
-    public static func removeAll(from paths: [String]) -> [FinderTagFailure] {
+    public static func removeAll(from paths: [String]) -> FinderTagsWritten {
         change(paths) { current in current.map { item in item.tags.isEmpty ? nil : [] } }
     }
 
@@ -212,7 +238,7 @@ public enum FinderTags {
     /// The rule of the color row and the popover: when every item readable `has` the tag, it comes off them all;
     /// otherwise `adding` goes on those without it.
     private static func toggle(on paths: [String], has: @escaping (FinderTag) -> Bool, adding: FinderTag)
-        -> [FinderTagFailure]
+        -> FinderTagsWritten
     {
         change(paths) { current in
             let removing = current.allSatisfy { $0.tags.contains(where: has) }
@@ -225,24 +251,28 @@ public enum FinderTags {
     }
 
     /// Reads each item's tags, asks `newTags` what each should now be (nil to leave it), and writes those. An
-    /// attribute that can't be understood isn't written over.
+    /// attribute that can't be understood isn't written over, and an item whose tags would stay as they are isn't
+    /// written.
     private static func change(
         _ paths: [String], newTags: ([(path: String, tags: [FinderTag])]) -> [[FinderTag]?]
-    ) -> [FinderTagFailure] {
-        var failures: [FinderTagFailure] = []
+    ) -> FinderTagsWritten {
+        var written = FinderTagsWritten()
         var current: [(path: String, tags: [FinderTag])] = []
         for path in paths {
             do { current.append((path, try read(path))) } catch {
-                failures.append(FinderTagFailure(path: path, message: error.localizedDescription))
+                written.failures.append(FinderTagFailure(path: path, message: error.localizedDescription))
             }
         }
         for (item, tags) in zip(current, newTags(current)) {
-            guard let tags else { continue }
-            do { try write(tags, to: item.path) } catch {
-                failures.append(FinderTagFailure(path: item.path, message: error.localizedDescription))
+            guard let tags, tags != item.tags else { continue }
+            do {
+                try write(tags, to: item.path)
+                written.changed.append(FinderTagsChanged(path: item.path, before: item.tags, after: tags))
+            } catch {
+                written.failures.append(FinderTagFailure(path: item.path, message: error.localizedDescription))
             }
         }
-        return failures
+        return written
     }
 }
 

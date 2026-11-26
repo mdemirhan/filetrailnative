@@ -26,6 +26,7 @@ enum WriteStartAction: Equatable, Sendable {
             case .convertImages: "Couldn\u{2019}t Convert the Images"
             case .makeAlias: "Couldn\u{2019}t Make an Alias"
             case .changePermissions: "Couldn\u{2019}t Change the Permissions"
+            case .changeTags: "Couldn\u{2019}t Change the Tag"
             case .undo: "Couldn\u{2019}t Undo"
             case .redo: "Couldn\u{2019}t Redo"
             case .paste: "Couldn\u{2019}t Paste"

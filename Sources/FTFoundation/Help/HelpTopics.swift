@@ -343,7 +343,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Tags",
                             description:
-                                "Tagged items show colored dots by their name, before it in Icons view and after it in the lists, and a tagged folder takes the tag’s color; the pointer on the dots names the tags. Right-click items for Finder’s tag colors: a color goes on the items that don’t have it, or comes off when they all do. Tags…, under the colors and in the File menu, lists every tag in use on this Mac: click one, or type to narrow the list and press Return, to put it on the selected items, or take it off when they all have it. A check marks a tag on all of them, a dash one on some, with how many. The List’s Tags column, View > Sort By > Tags and the Info panel’s Tags row show them by name. The tags are Finder’s own, so Finder shows them too. Undo doesn’t change tags back."
+                                "Tagged items show colored dots by their name, before it in Icons view and after it in the lists, and a tagged folder takes the tag’s color; the pointer on the dots names the tags. Right-click items for Finder’s tag colors: a color goes on the items that don’t have it, or comes off when they all do. Tags…, under the colors and in the File menu, lists every tag in use on this Mac: click one, or type to narrow the list and press Return, to put it on the selected items, or take it off when they all have it. A check marks a tag on all of them, a dash one on some, with how many. The List’s Tags column, View > Sort By > Tags and the Info panel’s Tags row show them by name. The tags are Finder’s own, so Finder shows them too. Undo takes back a color chosen, or everything you chose while Tags… was open; while a copy or another file operation runs, tags can’t be changed until it ends."
                         ),
                     ]),
                 HelpSection(
@@ -391,7 +391,7 @@ extension HelpContent {
                         HelpRow(
                             label: "What you can undo",
                             description:
-                                "Renaming (one item or several at once), moving items to another folder on the same disk, Move to Trash, New Folder, Copy, Duplicate, Paste as File, Convert Images, Compress, Extract, replacing an item or merging a folder into one of its name when you paste (a folder a move emptied is made again, its items put back in it), and the permissions changed from the Info panel."
+                                "Renaming (one item or several at once), moving items to another folder on the same disk, Move to Trash, New Folder, Copy, Duplicate, Paste as File, Convert Images, Compress, Extract, replacing an item or merging a folder into one of its name when you paste (a folder a move emptied is made again, its items put back in it), tags and colors, and the permissions changed from the Info panel."
                         ),
                         HelpRow(
                             label: "Nothing is deleted",

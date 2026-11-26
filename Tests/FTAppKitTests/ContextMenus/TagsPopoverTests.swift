@@ -1,6 +1,7 @@
 import AppKit
 import FTFileSystem
 import FTFoundation
+import FTOperations
 import Foundation
 import Testing
 
@@ -16,6 +17,8 @@ extension ExplorerWindowlessTests {
             }
             let tab = try await harness.open()
             #expect(await waitUntil { tab.content.entries.filter { !$0.kind.isDirectoryKind }.count >= 4 })
+            // Tags are written through the app's file operations.
+            try harness.keepWriteOperations()
             return tab
         }
 
@@ -118,11 +121,27 @@ extension ExplorerWindowlessTests {
             tab.content.select(paths: paths)
             harness.layout(tab)
             #expect(await waitUntil { infoTags(tab) == "Work (1)" })
-            let popover = try await popover(tab, paths)
-            popover.choose(try row(popover, "Work"))
-            await popover.waitForWrites()
+            let both = try await popover(tab, paths)
+            both.choose(try row(both, "Work"))
+            await both.waitForWrites()
             #expect(await waitUntil { infoTags(tab) == "Work" })
-            popover.close()
+            both.close()
+            // One item, its tag taken off, then the Undo of it: the item stays selected, so only the Undo's end tells the
+            // panel that its tags are back.
+            #expect(await waitUntil { !tab.isWriteLocked })
+            tab.content.select(paths: [paths[0]])
+            #expect(await waitUntil { infoTags(tab) == "Work" })
+            let single = try await popover(tab, [paths[0]])
+            single.choose(try row(single, "Work"))
+            await single.waitForWrites()
+            single.close()
+            #expect(await waitUntil { infoTags(tab) == "Add Tags\u{2026}" })
+            #expect(await waitUntil { !tab.isWriteLocked })
+            tab.content.focusList()
+            tab.perform(.undo)
+            #expect(await waitUntil { (try? FinderTags.read(paths[0])) == [FinderTag(name: "Work", color: nil)] })
+            #expect(tab.content.selection.paths == [paths[0]])
+            #expect(await waitUntil { infoTags(tab) == "Work" })
             await harness.close()
         }
 
@@ -188,7 +207,8 @@ extension ExplorerWindowlessTests {
             }
             await harness.close()
             #expect(await waitUntil(timeout: .seconds(10)) { gone == nil })
-            let read = await coordinator?.changeTags(.toggle(FinderTag(name: "Work", color: nil)), paths: [path])
+            let read = await coordinator?.changeTags(
+                .toggle(FinderTag(name: "Work", color: nil)), paths: [path], visit: TagsVisit())
             #expect(read != nil)
             #expect(notices.shown.map(\.title) == ["Couldn\u{2019}t Change the Tag"])
         }

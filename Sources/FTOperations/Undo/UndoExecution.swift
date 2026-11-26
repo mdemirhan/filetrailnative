@@ -127,7 +127,7 @@ public enum UndoExecution {
                         switch PlannedStep(reversing: step) {
                         case .move(let move): places[UndoPlan.placeKey(move.to), default: 0] += 1
                         case .merge(let merge): countPlaces(merge.units)
-                        case .trash, .batch, .permissions: break
+                        case .trash, .batch, .permissions, .tags: break
                         }
                     }
                 }
@@ -296,6 +296,7 @@ public enum UndoExecution {
         case .trash(let trash): trash.path
         case .batch(let items): items.first?.from ?? ""
         case .permissions(let items): items.first?.path ?? ""
+        case .tags(let items): items.first?.path ?? ""
         case .merge(let merge): merge.to
         }
     }
@@ -308,6 +309,7 @@ public enum UndoExecution {
         case .trash(let trash): moveToTrash(trash, original, context)
         case .batch(let items): renameBack(items, context)
         case .permissions(let items): setPermissionsBack(items, context)
+        case .tags(let items): setTagsBack(items, context)
         case .merge(let merge): undoMerge(merge, original, context)
         }
     }
@@ -880,7 +882,7 @@ public enum UndoExecution {
                     "\u{201C}\(NodePath.basename(merge.to))\u{201D} was left as it is, because the step before it couldn\u{2019}t be \(verb)."
                 )
             ]
-        case .batch, .permissions:
+        case .batch, .permissions, .tags:
             return []
         }
     }
@@ -1089,6 +1091,55 @@ public enum UndoExecution {
             guard (try? fileSystem.rmdir(folder.path)) != nil else { return (nil, nil) }
         }
         return (gone, doneItem(folder.path, nil, nil))
+    }
+
+    // MARK: Tags
+
+    /// `setTagsBack`: each item given the tags it had (`after`, as the reversed step holds it) where it still has the
+    /// ones it was left with (`before`); one whose tags were changed since is left as it is. What is done is what the
+    /// other direction does again; an item whose write failed for a reason that may pass (no permission) is left to
+    /// try again.
+    private static func setTagsBack(_ planned: [TagsUndoItem], _ context: RunContext) -> StepOutcome {
+        let fileSystem = context.fileSystem
+        var items: [WriteOperationItem] = []
+        var done: [TagsUndoItem] = []
+        var leftover: [TagsUndoItem] = []
+        var allMissing = true
+        for item in planned {
+            if let refusal = UndoPlan.checkTags(fileSystem, item, exactItems: context.options.exactItems) {
+                if refusal.retry {
+                    leftover.append(item.reversed)
+                    items.append(failedItem(item.path, item.path, refusal.reason))
+                } else {
+                    items.append(skippedItem(item.path, item.path, refusal.reason))
+                }
+                allMissing = allMissing && refusal.missing
+                continue
+            }
+            allMissing = false
+            do {
+                try FinderTags.write(TagsWrite.finderTags(item.after), to: item.path)
+                done.append(item)
+                items.append(WriteOperationItem(sourcePath: item.path, destinationPath: item.path, status: .completed))
+            } catch {
+                let reason =
+                    "\u{201C}\(NodePath.basename(item.path))\u{201D} couldn\u{2019}t be changed: \(describeCopyPasteError(error))"
+                if classifyUndoWriteError(errorCode(error)) == .retry {
+                    leftover.append(item.reversed)
+                    items.append(failedItem(item.path, item.path, reason))
+                } else {
+                    items.append(skippedItem(item.path, item.path, reason))
+                }
+            }
+        }
+        let produced: UndoStep? = done.isEmpty ? nil : .tags(items: done)
+        if !leftover.isEmpty {
+            return .failed(produced: produced, items: items, leftover: .tags(items: leftover))
+        }
+        if let produced {
+            return .done(produced: produced, items: items, removed: [])
+        }
+        return .skipped(items: items, missing: allMissing)
     }
 
     // MARK: Permissions
