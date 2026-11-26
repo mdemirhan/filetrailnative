@@ -26,49 +26,138 @@ struct InfoPanelModelTests {
             folderSize: folderSize, opensWith: opens, dates: dates)
     }
 
-    @Test func aFilesRowsAreInTheDocumentedOrder() {
-        let content = Self.content(Self.file(), opens: .available)
-        #expect(
-            content.rows.map(\.label) == ["Kind", "Opens with", "Size", "Created", "Modified", "Permissions", "Where"])
-        #expect(content.subtitle == "Markdown document · 2.0 KB")
-        #expect(content.rows[2].value == .text("2.0 KB"))
-        #expect(content.rows[3].value == .text("Mar 1, 2026, 9:00 AM"))
-        #expect(
-            content.rows[5].value == .permissions(words: "Owner: Read & Write", octal: "644", symbolic: "rw-r--r--"))
-        #expect(content.rows[6].value == .whereLink(label: "demo", path: "/Users/demo"))
+    static func labels(_ content: InfoPanelModel.ItemContent, _ id: InfoSection.ID) -> [String] {
+        content.section(id)?.rows.map(\.label) ?? []
     }
 
-    // The Tags row comes after Modified for an item, and after Size for several: a dash until read, muted with none,
-    // and no row at all past the items read for it.
-    @Test func theTagsRowFollowsModifiedOrSize() {
+    static func row(_ content: InfoPanelModel.ItemContent, _ id: InfoSection.ID, _ label: String) -> InfoRow? {
+        content.section(id)?.rows.first { $0.label == label }
+    }
+
+    static let demoWhere = "Macintosh HD › Users › demo"
+
+    @Test func aFilesSectionsAreInTheDocumentedOrder() {
+        let content = Self.content(Self.file(), opens: .available)
+        #expect(content.sections.map(\.id) == [.general, .dates, .permissions, .text, .more])
+        #expect(Self.labels(content, .general) == ["Kind", "Opens with", "Size", "Where"])
+        #expect(Self.labels(content, .dates) == ["Created", "Modified", "Last opened", "Added"])
+        #expect(Self.labels(content, .permissions) == ["Owner", "Group", "Everyone", "Mode", "You can"])
+        #expect(content.subtitle == "Markdown document · 2.0 KB")
+        #expect(
+            Self.row(content, .general, "Size")
+                == InfoRow(label: "Size", value: .text("2.0 KB (2,000 bytes)"), muted: false, detail: "—"))
+        #expect(Self.row(content, .dates, "Created")?.value == .text("Mar 1, 2026, 9:00 AM"))
+        #expect(Self.row(content, .permissions, "Owner")?.value == .text("Read & Write"))
+        #expect(Self.row(content, .permissions, "Group")?.value == .text("Read only"))
+        #expect(Self.row(content, .permissions, "Mode")?.value == .text("644 · rw-r--r--"))
+        #expect(
+            Self.row(content, .general, "Where")
+                == InfoRow(
+                    label: "Where", value: .place(Self.demoWhere), muted: false,
+                    copyText: "/Users/demo/notes.md"))
+        // Opens with keeps its place with a dash when there is no app to choose: the rows under it don't move.
+        #expect(
+            Self.labels(Self.content(Self.file(), opens: .hidden), .general) == ["Kind", "Opens with", "Size", "Where"])
+    }
+
+    // Once read, the details fill the places the dashes held, and the rows stay where they were.
+    @Test func theDetailsFillTheirPlaces() {
+        var details = InfoDetails()
+        details.sizeOnDisk = 4096
+        details.owner = .init(user: "demo", group: "staff", isYou: true, youCan: "Read & Write")
+        details.flags = .init(locked: true)
+        details.text = .init(lines: 12, encoding: "UTF-8", lineEnding: "LF")
+        let pending = Self.content(Self.file())
+        let read = InfoPanelModel.itemContent(
+            item: Self.file(), pending: false, volume: nil, isVolumeRoot: false, hasFolderSize: false,
+            folderSize: nil, opensWith: .hidden, dates: Self.dates, details: .read(details))
+        for id in [InfoSection.ID.general, .dates] { #expect(Self.labels(pending, id) == Self.labels(read, id)) }
+        #expect(Self.row(read, .general, "Size")?.detail == "4.1 KB on disk")
+        #expect(Self.row(read, .permissions, "Owner")?.detail == "demo (you)")
+        #expect(Self.row(read, .permissions, "Group")?.detail == "staff")
+        #expect(Self.row(read, .permissions, "Locked")?.value == .text("Yes"))
+        #expect(Self.labels(read, .text) == Self.labels(pending, .text))
+        #expect(Self.row(read, .text, "Lines")?.value == .text("12"))
+        #expect(Self.row(pending, .text, "Lines") == InfoRow(label: "Lines", value: .text("—"), muted: true))
+    }
+
+    // The section of what a file is comes from its name, so it is there, with dashes, before anything is read.
+    @Test func eachKindHasItsSection() {
+        func ids(_ name: String, _ ext: String, kind: EntryKind = .file) -> [InfoSection.ID] {
+            var item = Self.file()
+            item.name = name
+            item.fileExtension = ext
+            item.kind = kind
+            return Self.content(item).sections.map(\.id)
+        }
+        #expect(ids("a.heic", "heic").contains(.image))
+        #expect(ids("a.mov", "mov").contains(.movie))
+        #expect(ids("a.m4a", "m4a").contains(.sound))
+        #expect(ids("a.pdf", "pdf").contains(.document))
+        #expect(ids("a.swift", "swift").contains(.text))
+        #expect(ids("Calc.app", "app", kind: .bundle).contains(.application))
+        #expect(ids("a.zip", "zip") == [.general, .dates, .permissions, .more])
+    }
+
+    @Test func anAppSaysWhoSignedIt() {
+        var app = Self.file()
+        app.name = "Calc.app"
+        app.fileExtension = "app"
+        app.kind = .bundle
+        func rows(_ signing: InfoSigningState) -> InfoPanelModel.ItemContent {
+            InfoPanelModel.itemContent(
+                item: app, pending: false, volume: nil, isVolumeRoot: false, hasFolderSize: false, folderSize: nil,
+                opensWith: .hidden, dates: Self.dates, signing: signing)
+        }
+        #expect(Self.row(rows(.pending), .application, "Signed by")?.value == .text("—"))
+        let signed = rows(.read(.init(signedBy: "Developer ID · Lumen Labs", notarized: true)))
+        #expect(Self.row(signed, .application, "Signed by")?.value == .text("Developer ID · Lumen Labs"))
+        #expect(Self.row(signed, .application, "Notarized")?.value == .text("Yes"))
+        let apple = rows(.read(.init(signedBy: "Apple", notarized: nil)))
+        #expect(Self.row(apple, .application, "Notarized")?.value == .text("Not needed"))
+    }
+
+    @Test func aDownloadSaysWhereItCameFrom() {
+        var details = InfoDetails()
+        details.download = .init(
+            from: "https://example.net/files/a.pdf", page: "https://example.net/list", agent: "Safari",
+            date: ISODateForTests.date("2026-03-01T09:00:00.000Z"))
+        let content = InfoPanelModel.itemContent(
+            item: Self.file(), pending: false, volume: nil, isVolumeRoot: false, hasFolderSize: false,
+            folderSize: nil, opensWith: .hidden, dates: Self.dates, details: .read(details))
+        #expect(content.sections.map(\.id).suffix(2) == [.downloaded, .more])
+        let from = Self.row(content, .downloaded, "From")
+        #expect(from?.value == .text("example.net") && from?.detail == "https://example.net/files/a.pdf")
+        #expect(from?.textToCopy == "https://example.net/files/a.pdf")
+        #expect(Self.labels(content, .downloaded) == ["From", "Page", "By"])
+    }
+
+    // The Tags row comes after Size, for an item and for several: a dash until read, muted with none, and no row at
+    // all past the items read for it.
+    @Test func theTagsRowFollowsSize() {
         let tags = InfoTags(
             tags: [InfoTag(name: "Work", colorNumber: nil, count: 2), InfoTag(name: "Red", colorNumber: 6, count: 1)],
             itemCount: 2, editable: true)
-        let rows = InfoPanelModel.itemContent(
-            item: Self.file(), pending: false, volume: nil, isVolumeRoot: false, hasFolderSize: false,
-            folderSize: nil, opensWith: .hidden, dates: Self.dates, tags: .read(tags)
-        ).rows
-        #expect(rows.map(\.label) == ["Kind", "Size", "Created", "Modified", "Tags", "Permissions", "Where"])
-        #expect(rows[4] == InfoRow(label: "Tags", value: .tags(tags), muted: false))
+        func general(_ state: InfoTagsState) -> [InfoRow] {
+            InfoPanelModel.itemContent(
+                item: Self.file(), pending: false, volume: nil, isVolumeRoot: false, hasFolderSize: false,
+                folderSize: nil, opensWith: .hidden, dates: Self.dates, tags: state
+            ).section(.general)?.rows ?? []
+        }
+        #expect(general(.read(tags)).map(\.label) == ["Kind", "Opens with", "Size", "Tags", "Where"])
+        #expect(general(.read(tags))[3] == InfoRow(label: "Tags", value: .tags(tags), muted: false))
         #expect(tags.summary == "Work, Red (1)")
-        let pending = InfoPanelModel.itemContent(
-            item: Self.file(), pending: false, volume: nil, isVolumeRoot: false, hasFolderSize: false,
-            folderSize: nil, opensWith: .hidden, dates: Self.dates, tags: .pending
-        ).rows
-        #expect(pending[4] == InfoRow(label: "Tags", value: .text("—"), muted: true))
+        #expect(general(.pending)[3] == InfoRow(label: "Tags", value: .text("—"), muted: true))
         let none = InfoTags(tags: [], itemCount: 1, editable: true)
-        let empty = InfoPanelModel.itemContent(
-            item: Self.file(), pending: false, volume: nil, isVolumeRoot: false, hasFolderSize: false,
-            folderSize: nil, opensWith: .hidden, dates: Self.dates, tags: .read(none)
-        ).rows
-        #expect(empty[4] == InfoRow(label: "Tags", value: .tags(none), muted: true))
+        #expect(general(.read(none))[3] == InfoRow(label: "Tags", value: .tags(none), muted: true))
         let selection = InfoSelection(count: 2, folderCount: 0, fileCount: 2, totalBytes: 10, parentPath: "/a")
-        #expect(
-            InfoPanelModel.selectionRows(selection, hasFolderSize: false, folderSize: nil, tags: .read(tags)).map(
-                \.label) == ["Size", "Tags", "Where"])
-        #expect(
-            InfoPanelModel.selectionRows(selection, hasFolderSize: false, folderSize: nil, tags: .hidden).map(\.label)
-                == ["Size", "Where"])
+        func selectionGeneral(_ state: InfoTagsState) -> [String] {
+            InfoPanelModel.selectionContent(
+                selection, facts: InfoSelectionFacts(), hasFolderSize: false, folderSize: nil, tags: state
+            )[0].rows.map(\.label)
+        }
+        #expect(selectionGeneral(.read(tags)) == ["Size", "Tags", "Where"])
+        #expect(selectionGeneral(.hidden) == ["Size", "Where"])
     }
 
     @Test func pendingValuesKeepTheirRowsWithADash() {
@@ -77,49 +166,52 @@ struct InfoPanelModelTests {
         item.modifiedAt = nil
         item.permissionMode = nil
         let pending = Self.content(item, pending: true)
-        #expect(pending.rows[1].value == .text("—") && pending.rows[1].muted)  // Size
-        #expect(pending.rows[2].value == .text("—"))  // Created
-        #expect(pending.rows[4].value == .text("—"))  // Permissions
+        let size = Self.row(pending, .general, "Size")
+        #expect(size?.value == .text("—") && size?.muted == true)
+        #expect(Self.row(pending, .dates, "Created")?.value == .text("—"))
+        #expect(Self.labels(pending, .permissions) == ["Owner", "Group", "Everyone", "Mode", "You can"])
+        #expect(Self.row(pending, .permissions, "Mode")?.value == .text("—"))
         #expect(pending.subtitle == "Markdown document")
         let final = Self.content(item)
-        #expect(final.rows[2].value == .text("Not available") && final.rows[2].muted)
-        #expect(final.rows[4].value == .text("Unavailable") && final.rows[4].muted)
+        #expect(Self.row(final, .dates, "Created") == InfoRow(label: "Created", value: .text("—"), muted: true))
     }
 
-    @Test func aVolumeRootShowsCapacityAvailableAndUsed() {
+    @Test func aVolumeRootShowsCapacityUsedAndAvailable() {
         var item = Self.file()
         item.kind = .directory
         item.path = "/"
         item.name = "Macintosh HD"
         item.kindLabel = "Folder"
         let waiting = Self.content(item, root: true)
-        #expect(waiting.rows.map(\.label).contains("Capacity"))
-        #expect(!waiting.rows.map(\.label).contains("Size"))
-        #expect(waiting.rows.first { $0.label == "Used" }?.value == .text("—"))
+        #expect(Self.labels(waiting, .general) == ["Kind", "Capacity", "Used", "Available"])
+        #expect(waiting.sections.map(\.id) == [.general, .dates, .permissions, .volume, .more])
+        #expect(Self.row(waiting, .general, "Used")?.value == .text("—"))
         let known = Self.content(
             item, volume: InfoVolume(totalBytes: 500_000_000_000, availableBytes: 200_000_000_000), root: true)
-        #expect(known.rows.first { $0.label == "Used" }?.value == .text("300 GB"))
+        #expect(Self.row(known, .general, "Used")?.value == .usage(fraction: 0.6, text: "300 GB"))
         #expect(known.subtitle == "Folder · 200 GB available")
         let over = Self.content(item, volume: InfoVolume(totalBytes: 10, availableBytes: 50), root: true)
-        #expect(over.rows.first { $0.label == "Used" }?.value == .text("0 B"))
+        #expect(Self.row(over, .general, "Used")?.value == .usage(fraction: 0, text: "0 B"))
     }
 
     @Test func aFolderGetsTheFolderSizeCellAndAPackageToo() {
         var folder = Self.file()
         folder.kind = .directory
         let idle = Self.content(folder, folderSize: .idle)
-        #expect(idle.rows.first { $0.label == "Size" } == InfoRow(label: "Size", value: .folderSize, muted: true))
+        #expect(
+            Self.row(idle, .general, "Size") == InfoRow(label: "Size", value: .folderSize, muted: true, detail: "—"))
         let error = Self.content(folder, folderSize: .error(message: "x"))
-        #expect(error.rows.first { $0.label == "Size" }?.muted == true)
+        #expect(Self.row(error, .general, "Size")?.muted == true)
         let without = Self.content(folder)
-        #expect(without.rows.first { $0.label == "Size" }?.value == .text("--"))
+        #expect(Self.row(without, .general, "Size")?.value == .text("--"))
         let ready = Self.content(
             folder, folderSize: .ready(sizeBytes: 1_200_000_000, diskBytes: 1_300_000_000, fileCount: 4, folderCount: 1)
         )
         #expect(ready.subtitle == "Markdown document · 1.2 GB")
+        #expect(Self.row(ready, .general, "Size")?.detail == "1,200,000,000 bytes")
         var link = Self.file()
         link.kind = .symlinkDirectory
-        #expect(Self.content(link).rows.first { $0.label == "Size" }?.value == .text("2.0 KB"))
+        #expect(Self.row(Self.content(link), .general, "Size")?.value == .text("2.0 KB (2,000 bytes)"))
     }
 
     @Test func theFolderSizeLines() {
@@ -144,12 +236,46 @@ struct InfoPanelModelTests {
         #expect(InfoPanelModel.selectionContains(files) == "files")
         let one = InfoSelection(count: 3, folderCount: 1, fileCount: 2, totalBytes: nil, parentPath: nil)
         #expect(InfoPanelModel.selectionSubtitle(one) == "1 folder and 2 files")
-        let rows = InfoPanelModel.selectionRows(files, hasFolderSize: false, folderSize: nil)
+        let rows = InfoPanelModel.selectionContent(files, facts: .init(), hasFolderSize: false, folderSize: nil)[0].rows
         #expect(rows[0] == InfoRow(label: "Size", value: .text("--"), muted: true))
-        #expect(rows[1] == InfoRow(label: "Where", value: .whereLink(label: "demo", path: "/Users/demo"), muted: false))
-        let several = InfoPanelModel.selectionRows(selection, hasFolderSize: true, folderSize: .idle)
+        #expect(
+            rows[1]
+                == InfoRow(
+                    label: "Where", value: .place(Self.demoWhere), muted: false,
+                    copyText: "/Users/demo"))
+        let several = InfoPanelModel.selectionContent(
+            selection, facts: .init(), hasFolderSize: true, folderSize: .idle)[0]
+            .rows
         #expect(several[1].value == .folderSize)
         #expect(several[2] == InfoRow(label: "Where", value: .text("Several folders"), muted: true))
+    }
+
+    // Several items: what grows with how many there are stays on one line, or says how many there are.
+    @Test func severalItemsKeepEachValueToOneLine() {
+        let selection = InfoSelection(count: 4, folderCount: 0, fileCount: 4, totalBytes: 10, parentPath: "/a")
+        let facts = InfoSelectionFacts(
+            kindLabels: ["PDF document", "HEIF Image", "HEIF Image", "Folder"],
+            created: [
+                ISODateForTests.date("2026-03-01T09:00:00.000Z"), ISODateForTests.date("2026-03-09T09:00:00.000Z"),
+            ],
+            modified: [ISODateForTests.date("2026-03-02T09:00:00.000Z")], modes: [0o644, 0o644, 0o755, 0o600])
+        let sections = InfoPanelModel.selectionContent(
+            selection, facts: facts, hasFolderSize: false, folderSize: nil, dates: Self.dates)
+        #expect(sections.map(\.id) == [.general, .dates, .permissions])
+        #expect(
+            sections[0].rows[0].value
+                == .fitting(full: "HEIF Image (2), PDF document, Folder", short: "3 kinds"))
+        #expect(sections[1].rows.map(\.value) == [.text("Mar 1 – Mar 9, 2026"), .text("Mar 2, 2026")])
+        #expect(sections[2].rows[0].value == .fitting(full: "644 on 2 · 755 on 1 · 600 on 1", short: "3 modes"))
+        // A mode not known yet for one of them: a dash, not a partial count.
+        let unknown = InfoPanelModel.selectionContent(
+            selection, facts: InfoSelectionFacts(modes: [0o644, nil]), hasFolderSize: false, folderSize: nil)
+        #expect(unknown[2].rows[0] == InfoRow(label: "Mode", value: .text("—"), muted: true))
+        let same = InfoPanelModel.selectionContent(
+            selection, facts: InfoSelectionFacts(kindLabels: ["Folder", "Folder"], modes: [0o755, 0o755]),
+            hasFolderSize: false, folderSize: nil)
+        #expect(same[0].rows[0].value == .fitting(full: "Folder (2)", short: "Folder (2)"))
+        #expect(same[2].rows[0].value == .text("755"))
     }
 
     // A folder or app has Contains where a file has Opens with, a dash until it has been measured.
@@ -158,127 +284,171 @@ struct InfoPanelModelTests {
         folder.kind = .directory
         let unmeasured: [FolderSizeEntry?] = [nil, .idle, .calculating(jobID: "j"), .error(message: "x")]
         for entry in unmeasured {
-            let rows = Self.content(folder, folderSize: entry).rows
-            #expect(rows.map(\.label) == ["Kind", "Contains", "Size", "Created", "Modified", "Permissions", "Where"])
-            #expect(rows[1] == InfoRow(label: "Contains", value: .text("—"), muted: true))
+            let content = Self.content(folder, folderSize: entry)
+            #expect(Self.labels(content, .general) == ["Kind", "Contains", "Size", "Where"])
+            #expect(
+                Self.row(content, .general, "Contains") == InfoRow(label: "Contains", value: .text("—"), muted: true))
         }
         let ready = FolderSizeEntry.ready(sizeBytes: 1000, diskBytes: 1000, fileCount: 2, folderCount: 1)
         #expect(
-            Self.content(folder, folderSize: ready).rows[1]
+            Self.row(Self.content(folder, folderSize: ready), .general, "Contains")
                 == InfoRow(label: "Contains", value: .text("2 files, 1 folder"), muted: false))
         folder.kind = .bundle
-        #expect(Self.content(folder, folderSize: ready).rows[1].label == "Contains")
+        #expect(Self.labels(Self.content(folder, folderSize: ready), .general).contains("Contains"))
     }
 
     // Disks, files and symlinks to folders have no Contains row.
     @Test func onlyFoldersAndAppsHaveAContainsRow() {
         var item = Self.file()
-        #expect(!Self.content(item, opens: .available).rows.map(\.label).contains("Contains"))
+        #expect(!Self.labels(Self.content(item, opens: .available), .general).contains("Contains"))
         item.kind = .symlinkDirectory
-        #expect(!Self.content(item).rows.map(\.label).contains("Contains"))
+        #expect(!Self.labels(Self.content(item), .general).contains("Contains"))
         item.kind = .directory
-        let disk = Self.content(item, root: true, folderSize: .idle).rows.map(\.label)
+        let disk = Self.labels(Self.content(item, root: true, folderSize: .idle), .general)
         #expect(!disk.contains("Contains") && disk.contains("Capacity"))
     }
 
     // Several items have Contains above Size only with folders among them.
     @Test func severalItemsContainWhatTheirFoldersDo() {
         let mixed = InfoSelection(count: 3, folderCount: 1, fileCount: 2, totalBytes: nil, parentPath: nil)
-        let waiting = InfoPanelModel.selectionRows(mixed, hasFolderSize: true, folderSize: .idle)
+        func rows(_ selection: InfoSelection, _ has: Bool, _ entry: FolderSizeEntry?) -> [InfoRow] {
+            InfoPanelModel.selectionContent(selection, facts: .init(), hasFolderSize: has, folderSize: entry)[0].rows
+        }
+        let waiting = rows(mixed, true, .idle)
         #expect(waiting.map(\.label) == ["Contains", "Size", "Where"])
         #expect(waiting[0] == InfoRow(label: "Contains", value: .text("—"), muted: true))
-        let ready = InfoPanelModel.selectionRows(
-            mixed, hasFolderSize: true,
-            folderSize: .ready(sizeBytes: 1000, diskBytes: 1000, fileCount: 1, folderCount: 0))
+        let ready = rows(mixed, true, .ready(sizeBytes: 1000, diskBytes: 1000, fileCount: 1, folderCount: 0))
         #expect(ready[0] == InfoRow(label: "Contains", value: .text("1 file"), muted: false))
         let files = InfoSelection(count: 2, folderCount: 0, fileCount: 2, totalBytes: 10, parentPath: nil)
-        #expect(
-            InfoPanelModel.selectionRows(files, hasFolderSize: false, folderSize: nil).map(\.label) == [
-                "Size", "Where",
-            ])
+        #expect(rows(files, false, nil).map(\.label) == ["Size", "Where"])
     }
 
-    // What is in the Trash is not shared or converted from the panel, as the menus have it.
-    @Test func anItemInTheTrashHasNoShare() {
-        func ids(inTrash: Bool) -> [InfoPanelModel.QuickAction.ID] {
-            InfoPanelModel.quickActions(
-                item: Self.file(), textEditorName: "Zed", isFavorite: false, canFavorite: true, copied: nil,
-                inTrash: inTrash, shortcut: { _ in nil }
-            ).map(\.id)
-        }
-        #expect(ids(inTrash: false).contains(.share))
-        #expect(!ids(inTrash: true).contains(.share))
+    @Test func aRowCopiesWhatItShows() {
+        #expect(InfoRow(label: "Kind", value: .text("PDF document"), muted: false).textToCopy == "PDF document")
+        #expect(
+            InfoRow(label: "Size", value: .text("3.1 MB"), muted: false, detail: "3.2 MB on disk").textToCopy
+                == "3.1 MB\n3.2 MB on disk")
+        #expect(
+            InfoRow(label: "Where", value: .place("a › b"), muted: false, copyText: "/a/b/c")
+                .textToCopy == "/a/b/c")
+        #expect(
+            InfoRow(label: "Kinds", value: .fitting(full: "A, B", short: "2 kinds"), muted: false).textToCopy == "A, B")
     }
 
-    @Test func quickActionsDependOnTheItem() {
-        func labels(
-            _ item: InfoItem, favorite: Bool = false, canFavorite: Bool = true,
-            copied: InfoPanelModel.QuickAction.ID? = nil
-        ) -> [String] {
-            InfoPanelModel.quickActions(
-                item: item, textEditorName: "Zed", isFavorite: favorite, canFavorite: canFavorite, copied: copied,
-                shortcut: { _ in nil }
-            ).map(\.label)
-        }
-        #expect(
-            labels(Self.file()) == [
-                "Quick Look", "Edit in Zed", "Copy Path", "Copy Name", "Copy Text", "Share…", "Open in Terminal",
-                "Show in Finder",
-            ])
-        // A file's image or text, by its name; nothing for a kind that is neither.
-        var photo = Self.file()
-        photo.name = "beach.heic"
-        #expect(labels(photo).contains("Copy Image"))
-        #expect(labels(photo, copied: .copyContents).contains("Copied"))
-        var archive = Self.file()
-        archive.name = "backup.zip"
-        #expect(!labels(archive).contains { $0.hasPrefix("Copy ") && $0 != "Copy Path" && $0 != "Copy Name" })
-        var folder = Self.file()
-        folder.kind = .directory
-        #expect(
-            labels(folder)
-                == [
-                    "Quick Look", "Copy Path", "Copy Name", "Share…", "Open in Terminal", "Show in Finder",
-                    "Add to Favorites", "Use as Tree Root",
-                ])
-        #expect(labels(folder, favorite: true).contains("Remove from Favorites"))
-        #expect(!labels(folder, canFavorite: false).contains("Add to Favorites"))
-        #expect(labels(Self.file(), copied: .copyPath).contains("Copied"))
-        #expect(labels(Self.file(), copied: .copyPath).contains("Copy Name"))
-        var package = Self.file()
-        package.kind = .bundle
-        #expect(!labels(package).contains("Use as Tree Root"))
-    }
-
-    @Test func theInfoRowLeavesOutWhatIsNotKnown() {
+    @Test func theInfoRowSaysWhatTheStatusBarDoesNot() {
         let entry = InfoEntry(path: "/Users/demo/notes.md", name: "notes.md", fileExtension: "md", kind: .file)
         let now = ISODateForTests.date("2026-03-02T11:00:00Z")
-        let bare = InfoPanelModel.rowFacts(
-            entry: entry, metadata: nil, item: nil, folderSizeKnown: false, now: now,
-            dates: Self.dates)
-        #expect(bare.kind == "MD File" && bare.size == nil && bare.modified == nil)
+        func facts(
+            _ entry: InfoEntry, metadata: InfoMetadata? = nil, item: InfoItem? = nil,
+            folderSize: FolderSizeEntry? = nil,
+            details: InfoDetails? = nil, shown: Bool = false, available: Int64? = nil
+        ) -> InfoPanelModel.RowFacts {
+            InfoPanelModel.rowFacts(
+                entry: entry, metadata: metadata, item: item, folderSize: folderSize, details: details,
+                isShownFolder: shown, availableBytes: available, now: now, dates: Self.dates, homePath: "/Users/demo")
+        }
+        let bare = facts(entry)
+        #expect(bare.kind == "MD File" && bare.fact == nil && bare.modified == nil)
         let listed = InfoMetadata(
             kindLabel: "Markdown document", modifiedAt: ISODateForTests.date("2026-03-02T10:30:00.000Z"),
             sizeBytes: 2000, sizeStatus: .ready)
-        let facts = InfoPanelModel.rowFacts(
-            entry: entry, metadata: listed, item: nil, folderSizeKnown: false, now: now,
-            dates: Self.dates)
-        #expect(facts.kind == "Markdown document" && facts.size == "2.0 KB")
-        #expect(facts.modified == "Modified 30 min ago")
-        #expect(facts.modifiedTooltip?.contains("2026") == true)
-        // A folder's size is the cell, never plain text.
+        // No size: the status bar has it.
+        let known = facts(entry, metadata: listed)
+        #expect(known.kind == "Markdown document" && known.fact == nil)
+        #expect(known.modified == "Modified 30 min ago")
+        #expect(known.modifiedTooltip?.contains("2026") == true)
+        var text = InfoDetails()
+        text.text = .init(lines: 320, encoding: "UTF-8", lineEnding: "LF")
+        #expect(facts(entry, metadata: listed, details: text).fact == "320 lines")
+        // A folder: the size control until measured, then what it holds.
         let folder = InfoEntry(path: "/Users/demo/Projects", name: "Projects", kind: .directory)
-        let folderFacts = InfoPanelModel.rowFacts(
-            entry: folder, metadata: listed, item: nil, folderSizeKnown: true, now: now,
-            dates: Self.dates)
-        #expect(folderFacts.showsFolderSize && folderFacts.size == nil)
+        let waiting = facts(folder, metadata: listed, folderSize: .idle)
+        #expect(waiting.showsFolderSize && waiting.fact == nil)
+        let measured = facts(folder, folderSize: .ready(sizeBytes: 9, diskBytes: 9, fileCount: 45, folderCount: 20))
+        #expect(!measured.showsFolderSize && measured.fact == "45 files, 20 folders")
+        // The folder on screen: no "Folder", and the room left on its disk.
+        let shown = facts(folder, metadata: listed, shown: true, available: 212_000_000_000)
+        #expect(shown.kind == nil && shown.available == "212 GB available")
+        // An alias or a link: where it leads.
+        var alias = Self.file()
+        alias.path = "/Users/demo/Projects"
+        alias.original = .found("/Users/demo/src/projects")
+        #expect(
+            facts(InfoEntry(path: alias.path, name: "Projects", kind: .alias), item: alias).fact == "→ ~/src/projects")
         // Properties of another item are never used.
-        let other = Self.file()
-        let foreign = InfoPanelModel.rowFacts(
-            entry: InfoEntry(path: "/Users/demo/other.md", name: "other.md", fileExtension: "md", kind: .file),
-            metadata: nil,
-            item: other, folderSizeKnown: false, now: now, dates: Self.dates)
+        let foreign = facts(
+            InfoEntry(path: "/Users/demo/other.md", name: "other.md", fileExtension: "md", kind: .file),
+            item: Self.file())
         #expect(foreign.kind == "MD File")
+    }
+
+    @Test func theFactOfEachKind() {
+        func fact(_ fill: (inout InfoDetails) -> Void) -> String? {
+            var details = InfoDetails()
+            fill(&details)
+            return InfoPanelModel.kindFact(details, item: nil, homePath: "")
+        }
+        #expect(
+            fact {
+                $0.image = {
+                    var i = InfoDetails.Image()
+                    i.width = 4032
+                    i.height = 3024
+                    return i
+                }()
+            } == "4032 × 3024")
+        #expect(
+            fact {
+                var media = InfoDetails.Media()
+                media.seconds = 151
+                media.width = 3840
+                media.height = 2160
+                $0.media = media
+            } == "2:31 · 3840 × 2160")
+        #expect(
+            fact {
+                var media = InfoDetails.Media()
+                media.seconds = 252
+                media.artist = "The Long Hours"
+                $0.media = media
+            } == "4:12 · The Long Hours")
+        #expect(
+            fact {
+                $0.document = {
+                    var d = InfoDetails.Document()
+                    d.pages = 1
+                    return d
+                }()
+            } == "1 page")
+        #expect(
+            fact {
+                $0.app = {
+                    var a = InfoDetails.App()
+                    a.version = "3.7.1"
+                    return a
+                }()
+            } == "Version 3.7.1")
+        #expect(fact { _ in } == nil)
+    }
+
+    @Test func theWordsOfTheValues() {
+        #expect(InfoText.duration(151) == "2:31")
+        #expect(InfoText.duration(3723) == "1:02:03")
+        #expect(InfoText.exposure(1.0 / 120) == "1/120 s")
+        #expect(InfoText.exposure(2.5) == "2.5 s")
+        #expect(InfoText.location(latitude: 38.72231, longitude: -9.13934) == "38.7223° N, 9.1393° W")
+        #expect(InfoText.bitRate(8_400_000) == "8.4 Mbit/s")
+        #expect(InfoText.audio(sampleRate: 48000, channels: 2) == "48 kHz, stereo")
+        #expect(InfoText.pageSize(width: 595, height: 842, locale: Locale(identifier: "en_GB")) == "A4 · 210 × 297 mm")
+        #expect(
+            InfoText.pageSize(width: 612, height: 792, locale: Locale(identifier: "en_US")) == "Letter · 8.5 × 11 in")
+        #expect(InfoText.privilege(0o640, shift: 3) == "Read only")
+        #expect(InfoText.privilege(0o640, shift: 0) == "No Access")
+        #expect(InfoText.sizeWithBytes(686) == "686 B")
+        #expect(
+            Self.dates.dayRange(
+                ISODateForTests.date("2026-03-01T09:00:00.000Z"), ISODateForTests.date("2025-12-30T09:00:00.000Z"))
+                == "Dec 30, 2025 – Mar 1, 2026")
     }
 
     @Test func onlyTheHomeFolderOrAFolderInsideItIsMeasuredAutomatically() {

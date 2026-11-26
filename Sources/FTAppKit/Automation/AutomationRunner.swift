@@ -324,6 +324,10 @@
                     let suffix = popovers.count == 1 ? "" : "-\(index + 1)"
                     outcome = snapshot(popover, to: options.out.appendingPathComponent("\(name)-popover\(suffix).png"))
                 }
+                // The Info panel in a window of its own is drawn beside too.
+                if outcome.status == .ok, let popOut = InfoPopOut.shared.window, popOut.isVisible {
+                    outcome = snapshot(popOut, to: options.out.appendingPathComponent("\(name)-info.png"))
+                }
                 if !focused {
                     outcome.unfocused = true
                     outcome.message = outcome.message ?? AutomationFocus.whyUnfocused(window)

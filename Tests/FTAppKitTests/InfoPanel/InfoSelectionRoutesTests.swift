@@ -60,8 +60,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // The Info Row and the panel sum the entries shown; the status text the whole
-        // selection. Files only: the row has their count and their total, and nothing to calculate.
+        // The Info Row and the panel sum the entries shown; the status text the whole selection. Files only: the row
+        // has their kinds, with how many, and no size, which the status text has.
         @Test func theRowSumsWhatIsShownAndTheStatusTheSelection() async throws {
             let harness = try ExplorerHarness.windowless()
             try files(["aaa.txt": 100, "aab.txt": 200, "zzz.txt": 400], in: harness)
@@ -73,21 +73,21 @@ extension ExplorerWindowlessTests {
             tab.content.applySelection(
                 ContentSelection(paths: selected, anchorPath: selected[0], leadPath: selected[2]))
             let all = SizeText.size(700)
-            #expect(await waitUntil { texts("infoRow.fact", in: tab).contains(all) })
-            #expect(texts("infoRow.name", in: tab) == ["3 items"])
+            #expect(await waitUntil { texts("infoRow.name", in: tab).first?.hasSuffix("(3)") == true })
+            #expect(!texts("infoRow.fact", in: tab).contains(all))
             #expect(views("infoRow.folderSize.calculate", in: tab).isEmpty)
             #expect(await waitUntil { status(tab).hasSuffix(" selected · \(all)") })
             tab.content.setFilter("aa")
             #expect(tab.content.selection.paths.count == 3)
             let shown = SizeText.size(300)
-            #expect(await waitUntil { texts("infoRow.fact", in: tab).contains(shown) })
+            #expect(await waitUntil { texts("infoRow.name", in: tab).first?.hasSuffix("(2)") == true })
             #expect(await waitUntil { texts("infoPanel.subtitle", in: tab) == ["2 files · \(shown)"] })
             #expect(status(tab).hasSuffix("3 of \(tab.content.listed.count) selected · \(all)"))
             await harness.close()
         }
 
-        // A total that can't be told isn't shown: the row has its count and no fact.
-        @Test func theRowHasNoFactWithoutATotal() async throws {
+        // Several items: the row has their kinds and when they changed, never a size, which the status text has.
+        @Test func theRowOfSeveralItemsHasNoSize() async throws {
             let harness = try ExplorerHarness.windowless()
             try files(["aaa.txt": 100, "aab.txt": 200], in: harness)
             let tab = try await harness.open()
@@ -97,17 +97,23 @@ extension ExplorerWindowlessTests {
             // Gone since the folder was read: its size never comes.
             try FileManager.default.removeItem(atPath: paths[1])
             tab.content.select(paths: paths)
-            #expect(await waitUntil { texts("infoRow.name", in: tab) == ["2 items"] })
+            // Their kinds, whatever the one gone is called by its extension alone, and no size.
+            func named() -> Bool {
+                let name = texts("infoRow.name", in: tab).first ?? ""
+                return !name.isEmpty && !name.hasSuffix("items") && !name.contains(" B")
+            }
+            #expect(await waitUntil { named() })
             // Past the fetch's 80 ms and the read of what is there.
             try await Task.sleep(for: .milliseconds(150))
             harness.layout(tab)
-            #expect(texts("infoRow.name", in: tab) == ["2 items"])
-            #expect(views("infoRow.fact", in: tab).isEmpty)
+            #expect(named())
+            #expect(texts("infoRow.fact", in: tab).allSatisfy { $0.hasPrefix("Modified ") })
             #expect(views("infoRow.folderSize.calculate", in: tab).isEmpty)
             await harness.close()
         }
 
-        // Folders among them: the row's link measures both, and it reads their total and counts.
+        // Folders among them: the row's link measures both; once measured the link goes, and the status text has their
+        // total.
         @Test func theRowsLinkMeasuresTheSelectedFolders() async throws {
             let harness = try ExplorerHarness.windowless()
             try files(["Alpha/one.txt": 100, "Beta/two.txt": 200, "aaa.txt": 400], in: harness)
@@ -117,7 +123,7 @@ extension ExplorerWindowlessTests {
             let alpha = try path("Alpha", in: tab)
             let beta = try path("Beta", in: tab)
             tab.content.select(paths: [alpha, beta, try path("aaa.txt", in: tab)])
-            #expect(await waitUntil { texts("infoRow.name", in: tab) == ["3 items"] })
+            #expect(await waitUntil { !views("infoRow.folderSize.calculate", in: tab).isEmpty })
             harness.layout(tab)
             #expect(tab.folderSizes.cachedEntry(alpha) == nil)
             let link = try #require(views("infoRow.folderSize.calculate", in: tab).first as? TextLinkView)
@@ -128,9 +134,8 @@ extension ExplorerWindowlessTests {
             #expect(
                 await waitUntil {
                     harness.layout(tab)
-                    return texts("infoRow.folderSize.size", in: tab).contains {
-                        $0.hasPrefix(total) && $0.contains(" · ") && $0.contains("file")
-                    }
+                    return views("infoRow.folderSize.calculate", in: tab).isEmpty
+                        && texts("infoRow.folderSize.size", in: tab).isEmpty && status(tab).hasSuffix(" · \(total)")
                 })
             await harness.close()
         }

@@ -18,31 +18,45 @@ final class InfoController {
     /// "Get Info" on an item: the panel describes this path whatever the selection.
     private(set) var targetOverride: String?
     private var seenSelection = ContentSelection.empty
-    // Properties: what is asked for and shown (`InfoPropertiesLoad`), and the wait before asking.
+    // Every read below goes through a `LatestRead`: after the same short wait, replacing what waits, the latest
+    // answer only.
+    // Properties: what is asked for and shown (`InfoPropertiesLoad`), and its read.
     private(set) var propertiesLoad = InfoPropertiesLoad(recentLimit: InfoMetrics.propertiesCacheLimit)
-    private var fetchTimer: DispatchWorkItem?
+    private let propertiesRead = LatestRead<String, ItemProperties>()
     private var properties: InfoItem? { propertiesLoad.shown }
     private var loading: Bool { propertiesLoad.isLoading }
     // The volume.
     private var volume: (path: String, value: InfoVolume)?
     private var volumeRequested: String?
+    private let volumeRead = LatestRead<String, VolumeInfo.Sizes>()
+    // The room left on the disk of the folder on screen, for the Info Row: a read of its own, so the panel on a disk
+    // and the row on a folder don't take each other's place.
+    private var rowVolume: (path: String, available: Int64?)?
+    private var rowVolumeRequested: String?
+    private let rowVolumeRead = LatestRead<String, VolumeInfo.Sizes>()
     // Open With: what macOS is asked and answered (`OpenWithLookupLoad`), and the waits before asking and for it.
     private var lookup = OpenWithLookupLoad<OpenWithLookup>()
-    private var lookupTimer: DispatchWorkItem?
+    private let lookupRead = LatestRead<String, OpenWithLookup?>()
     private var lookupPatience: DispatchWorkItem?
     // The copy buttons.
-    private var copied: InfoPanelModel.QuickAction.ID?
-    private var copiedTimer: DispatchWorkItem?
     private var observation: ExplorerWindowObservation?
     private var relativeRelease: RelativeClock.Release?
     private var refreshQueued = false
     // The tags: of the items last read, and those asked for (waiting or being read); stale once they changed, shown
     // until read again. Only the answer to the latest request is kept.
     private var tagsRead: (key: [DiskPath], value: FinderTagsOnItems)?
-    private var tagsAsked: [DiskPath]?
-    private var tagsRequest = 0
-    private var tagsTimer: DispatchWorkItem?
+    private let tagsLoad = LatestRead<[DiskPath], FinderTagsOnItems>()
     private var tagsStale = false
+    // The details of the one item described (`InfoDetailsReader`), and an app's signing: those read, shown until read
+    // again; stale once its folder changed.
+    private var details: (path: String, value: InfoDetails)?
+    private let detailsRead = LatestRead<String, InfoDetails?>()
+    private var detailsStale = false
+    private var signing: (path: String, value: InfoDetails.Signing?)?
+    private let signingRead = LatestRead<String, InfoDetails.Signing?>()
+    /// Reads an item's details and an app's signing (tests put their own).
+    var detailsReader: @Sendable (String, ReadCancel) -> InfoDetails? = { InfoDetailsReader.read($0, cancel: $1) }
+    var signingReader: @Sendable (String) -> InfoDetails.Signing? = { InfoDetailsReader.signing($0) }
     /// Reads the tags of the items (tests put their own).
     var tagsReader: @Sendable ([String]) -> FinderTagsOnItems = { FinderTags.onItems($0, sparingAsked: true) }
     /// The items the Tags row describes, for its popover.
@@ -86,6 +100,7 @@ final class InfoController {
             guard let host, host.window?.isBehindAnotherTab != true else { return }
             // Free space changes with copies anywhere on the disk, which no folder change here tells of.
             self?.volumeRequested = nil
+            self?.rowVolumeRequested = nil
             self?.update()
         }
         update()
@@ -93,8 +108,6 @@ final class InfoController {
 
     isolated deinit {
         relativeRelease?()
-        fetchTimer?.cancel()
-        tagsTimer?.cancel()
     }
 
     /// A pane's list read more of its items' details: the panel and the row update when it is the active one.
@@ -120,19 +133,23 @@ final class InfoController {
     }
 
     private func wire() {
-        panel.iconStore = host.services.iconStore
         wireRow()
+        wirePanel(panel)
+    }
+
+    /// The panel this controller shows into: its window's, or the one in a window of its own while this tab drives it.
+    private func wirePanel(_ panel: InfoPanelView) {
+        panel.iconStore = host.services.iconStore
         panel.onClose = { [weak self] in self?.host.updatePanels { $0.propertiesOpen = false } }
-        panel.onNavigate = { [weak self] path in
-            guard let self else { return }
-            self.host.go(to: path, history: path == self.folderPath ? .replace : .push)
+        panel.onPopOut = { [weak self, weak panel] in
+            guard let panel else { return }
+            self?.host.setInfoPanelPoppedOut(!panel.isPoppedOut)
         }
         panel.onShowOriginal = { [weak self] original in self?.host.revealOriginal(original) }
         panel.onOpen = { [weak self] in
             guard let self, let path = self.resolved?.item.path else { return }
             self.actions.openExternally(path)
         }
-        panel.onAction = { [weak self] id in self?.quickAction(id) }
         panel.onOpenWithMenu = { [weak self] anchor in self?.presentOpenWith(from: anchor, changeDefault: false) }
         panel.onOpensWithMenu = { [weak self] anchor in self?.presentOpenWith(from: anchor, changeDefault: true) }
         panel.onEditTags = { [weak self] anchor in
@@ -142,6 +159,7 @@ final class InfoController {
         panel.onCalculate = { [weak self] in self?.calculate(forced: false) }
         panel.onRecalculate = { [weak self] in self?.calculate(forced: true) }
         panel.onCancel = { [weak self] in self?.cancelCalculating() }
+        panel.onCopyText = { [weak self] text, what in _ = self?.actions.copy(text, what: what) }
     }
 
     private func wireRow() {
@@ -154,7 +172,15 @@ final class InfoController {
     /// The item the panel describes.
     var resolvedItemPath: String? { resolved?.item.path }
     private var content: ContentPaneController { host.content }
-    private var panelOpen: Bool { host.panels.propertiesOpen }
+    /// Whether a panel shows what this controller describes: its window's, or the one in a window of its own while
+    /// this tab is the one in front.
+    private var panelOpen: Bool { host.panels.propertiesOpen || drivesPopOut }
+    private var drivesPopOut: Bool {
+        let preferences = host.preferences
+        return preferences.infoPanelPoppedOut && preferences.infoPanelPopOutShown && InfoPopOut.shared.owner === host
+    }
+    /// The panel shown into.
+    private var shownPanel: InfoPanelView { drivesPopOut ? InfoPopOut.shared.panel : panel }
     private var rowOpen: Bool { host.panels.detailRowOpen }
     private var homePath: String { DiskPath.home.string }
     private var folderPath: String { host.shownFolderPath }
@@ -171,7 +197,11 @@ final class InfoController {
     /// "Get Info": the panel opens and describes `path`.
     func showInfo(for path: String) {
         targetOverride = path
-        if !panelOpen { host.updatePanels { $0.propertiesOpen = true } }
+        if host.preferences.infoPanelPoppedOut {
+            host.showInfoPopOut(focus: false)
+        } else if !panelOpen {
+            host.updatePanels { $0.propertiesOpen = true }
+        }
         scheduleFetch(path, immediately: true)
         update()
     }
@@ -190,6 +220,19 @@ final class InfoController {
             isSymlink: entry.isSymlink)
     }
 
+    /// What the folder's read gave of an item, before its own details are read.
+    private func listedMetadata(_ entry: DirectoryEntry) -> InfoMetadata {
+        let isFile = entry.kind == .file || entry.kind == .symlinkFile
+        return InfoMetadata(
+            kindLabel: InfoPreview.fallbackKindLabel(
+                kind: FTFoundation.EntryKind(rawValue: entry.kind.rawValue) ?? .other,
+                fileExtension: entry.fileExtension),
+            createdAt: entry.listedCreatedAt, modifiedAt: entry.listedModifiedAt,
+            sizeBytes: isFile ? entry.sizeBytes : nil,
+            sizeStatus: isFile && entry.sizeBytes != nil ? .ready : .deferred,
+            permissionMode: entry.permissionMode)
+    }
+
     private func infoMetadata(_ metadata: EntryMetadata?) -> InfoMetadata? {
         metadata.map {
             InfoMetadata(
@@ -202,8 +245,12 @@ final class InfoController {
     /// The item the views show for the target.
     var resolved: InfoPreview.Resolved? {
         guard let path = targetPath else { return nil }
-        let found = content.listedEntry(at: path).map { [infoEntry($0)] } ?? []
-        let metadata = infoMetadata(content.metadata(for: path)).map { [path: $0] } ?? [:]
+        let listed = content.listedEntry(at: path)
+        let found = listed.map { [infoEntry($0)] } ?? []
+        // What the list knows of it already (its size, dates and mode, from the folder's read) shows at once, so the
+        // panel comes up whole and its values fill in where they are as the rest is read.
+        let known = infoMetadata(content.metadata(for: path)) ?? listed.map(listedMetadata)
+        let metadata = known.map { [path: $0] } ?? [:]
         return InfoPreview.resolve(
             path: path, currentPath: folderPath, entries: found, metadataByPath: metadata, properties: properties,
             homePath: homePath, startupDiskName: startupDiskName)
@@ -212,7 +259,7 @@ final class InfoController {
     private var startupDiskName: String { host.services.startupDisk.name }
 
     /// Whether the item is being asked for, or about to be: a test seam.
-    var isAskingForItem: Bool { fetchTimer != nil || loading }
+    var isAskingForItem: Bool { propertiesRead.isWaiting || loading }
 
     /// The startup disk was renamed: the item is asked for again, so `/` comes back with its new name.
     func namesChanged() {
@@ -225,47 +272,78 @@ final class InfoController {
     private func folderChanged() {
         // The folder reloaded or another one opened: what is shown stays, and is asked for again.
         volumeRequested = nil
+        rowVolumeRequested = nil
         tagsStale = true
+        detailsStale = true
         if let path = targetPath { scheduleFetch(path, immediately: false) }
         update()
     }
 
     private func scheduleFetch(_ path: String, immediately: Bool) {
-        fetchTimer?.cancel()
-        fetchTimer = nil
         guard panelOpen || rowOpen, !folderPath.isEmpty else {
+            propertiesRead.stop()
             propertiesLoad.stop()
             return
         }
-        let request = propertiesLoad.ask(path)
-        let work = DispatchWorkItem { [weak self] in
-            MainActor.assumeIsolated { self?.fetch(path, request: request) }
-        }
-        fetchTimer = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + (immediately ? 0 : InfoMetrics.fetchDelay), execute: work)
-    }
-
-    private func fetch(_ path: String, request: Int) {
         guard liveHost != nil else { return }
-        fetchTimer = nil
+        let request = propertiesLoad.ask(path)
         let service = host.services.directoryService
         let disk = startupDiskName
-        Task { @MainActor [weak self] in
-            let item = await service.itemProperties(path: path, startupDiskName: disk)
-            guard let self else { return }
-            let mapped = InfoItem(
-                path: item.path, name: item.name, fileExtension: item.fileExtension,
-                kind: FTFoundation.EntryKind(rawValue: item.kind.rawValue) ?? .other, kindLabel: item.kindLabel,
-                isHidden: item.isHidden, isSymlink: item.isSymlink, createdAt: item.createdAt,
-                modifiedAt: item.modifiedAt, sizeBytes: item.sizeBytes,
-                sizeStatus: FTFoundation.SizeStatus(rawValue: item.sizeStatus.rawValue) ?? .deferred,
-                permissionMode: item.permissionMode,
-                original: item.isLink ? item.originalPath.map(InfoOriginal.found) ?? .missing : nil)
-            // A response for another item than the one now asked for is kept, not shown; one older than what is kept for
-            // its item is dropped.
-            guard self.propertiesLoad.answered(path, mapped, request: request) else { return }
-            self.update()
+        propertiesRead.askAsync(
+            path, after: immediately ? 0 : InfoMetrics.fetchDelay,
+            read: { _ in await service.itemProperties(path: path, startupDiskName: disk) },
+            answered: { [weak self] item in
+                guard let self else { return }
+                let mapped = InfoItem(
+                    path: item.path, name: item.name, fileExtension: item.fileExtension,
+                    kind: FTFoundation.EntryKind(rawValue: item.kind.rawValue) ?? .other, kindLabel: item.kindLabel,
+                    isHidden: item.isHidden, isSymlink: item.isSymlink, createdAt: item.createdAt,
+                    modifiedAt: item.modifiedAt, sizeBytes: item.sizeBytes,
+                    sizeStatus: FTFoundation.SizeStatus(rawValue: item.sizeStatus.rawValue) ?? .deferred,
+                    permissionMode: item.permissionMode, addedAt: item.addedAt, lastOpenedAt: item.lastOpenedAt,
+                    original: item.isLink ? item.originalPath.map(InfoOriginal.found) ?? .missing : nil)
+                guard self.propertiesLoad.answered(path, mapped, request: request) else { return }
+                self.update()
+            })
+    }
+
+    // MARK: Details
+
+    /// The details of the one item described, read again once its folder changed; those read show until then.
+    private func detailsState(_ path: String) -> InfoDetailsState {
+        if details?.path != path || detailsStale, detailsRead.asked != path { requestDetails(path) }
+        guard let read = details, read.path == path else { return .pending }
+        return .read(read.value)
+    }
+
+    private func requestDetails(_ path: String) {
+        detailsStale = false
+        let reader = detailsReader
+        detailsRead.ask(
+            path, read: { reader(path, $0) },
+            answered: { [weak self] value in
+                guard let self else { return }
+                if let value { self.details = (path, value) }
+                self.update()
+            })
+    }
+
+    /// An app's signing: read after the same wait, cancelled when the panel moves on.
+    private func signingState(_ item: InfoItem) -> InfoSigningState {
+        guard item.kind == .bundle, item.fileExtension.lowercased() == "app" else { return .none }
+        let path = item.path
+        if signing?.path != path, signingRead.asked != path {
+            let reader = signingReader
+            signingRead.ask(
+                path, qos: .utility, read: { _ in reader(path) },
+                answered: { [weak self] value in
+                    guard let self else { return }
+                    self.signing = (path, value)
+                    self.update()
+                })
         }
+        guard let read = signing, read.path == path else { return .pending }
+        return .read(read.value)
     }
 
     // MARK: Tags
@@ -287,39 +365,25 @@ final class InfoController {
         return .read(InfoTags(tags: tags, itemCount: paths.count, editable: editable))
     }
 
-    /// Asks after the wait the item's properties have (`InfoMetrics.fetchDelay`), in place of what was waiting: a
-    /// selection that grows item by item reads only where it stops, not every selection on the way.
+    /// Asks after the wait the item's properties have, in place of what was waiting: a selection that grows item by
+    /// item reads only where it stops, not every selection on the way.
     private func requestTags(_ paths: [String], key: [DiskPath]) {
-        guard tagsAsked != key else { return }
-        tagsAsked = key
+        guard tagsLoad.asked != key else { return }
         tagsStale = false
-        tagsRequest += 1
-        let request = tagsRequest
-        tagsTimer?.cancel()
-        let work = DispatchWorkItem { [weak self] in
-            MainActor.assumeIsolated { self?.readTags(paths, key: key, request: request) }
-        }
-        tagsTimer = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + InfoMetrics.fetchDelay, execute: work)
-    }
-
-    private func readTags(_ paths: [String], key: [DiskPath], request: Int) {
-        tagsTimer = nil
         let reader = tagsReader
-        Task { @MainActor [weak self] in
-            let read = await BlockingWork.run(qos: .userInitiated) { reader(paths) }
-            // An answer older than the latest request is dropped: the items changed, or were read again, since.
-            guard let self, self.tagsRequest == request else { return }
-            self.tagsAsked = nil
-            self.tagsRead = (key, read)
-            self.update()
-        }
+        tagsLoad.ask(
+            key, read: { _ in reader(paths) },
+            answered: { [weak self] read in
+                guard let self else { return }
+                self.tagsRead = (key, read)
+                self.update()
+            })
     }
 
     /// This window changed tags: those shown are read again.
     private func tagsChanged() {
         tagsStale = true
-        tagsAsked = nil
+        tagsLoad.stop()
         queueUpdate()
     }
 
@@ -332,19 +396,32 @@ final class InfoController {
         guard volumeRequested != path else { return }
         volumeRequested = path
         let read = Self.volumeSizes
-        Task { @MainActor [weak self] in
-            let sizes = await BlockingWork.run { read(path) }
-            guard let self, self.volumeRequested == path else { return }
-            self.volume = (path, InfoVolume(totalBytes: sizes.totalBytes, availableBytes: sizes.availableBytes))
-            self.update()
-        }
+        volumeRead.ask(
+            path, after: 0, read: { _ in read(path) },
+            answered: { [weak self] sizes in
+                guard let self, self.volumeRequested == path else { return }
+                self.volume = (path, InfoVolume(totalBytes: sizes.totalBytes, availableBytes: sizes.availableBytes))
+                self.update()
+            })
+    }
+
+    private func requestRowVolume(_ path: String) {
+        guard rowVolumeRequested != path else { return }
+        rowVolumeRequested = path
+        let read = Self.volumeSizes
+        rowVolumeRead.ask(
+            path, after: InfoMetrics.fetchDelay, qos: .utility, read: { _ in read(path) },
+            answered: { [weak self] sizes in
+                guard let self, self.rowVolumeRequested == path else { return }
+                self.rowVolume = (path, sizes.availableBytes)
+                self.update()
+            })
     }
 
     // MARK: Open With
 
     private func requestLookup(_ path: String) {
         guard let generation = lookup.request(path) else { return }
-        lookupTimer?.cancel()
         lookupPatience?.cancel()
         let pinned = host.preferences.openWithApplications
         let patience = DispatchWorkItem { [weak self] in
@@ -356,20 +433,15 @@ final class InfoController {
         lookupPatience = patience
         DispatchQueue.main.asyncAfter(
             deadline: .now() + InfoMetrics.openWithDelay + InfoMetrics.openWithPatience, execute: patience)
-        let start = DispatchWorkItem { [weak self] in
-            MainActor.assumeIsolated {
-                guard self != nil else { return }
-                // Not holding this controller while macOS answers: its tab can go meanwhile, and `update` reads it.
-                Task { @MainActor [weak self] in
-                    let answer = await SystemActions.openWithApplications(
-                        paths: [path], pinnedAppPaths: pinned.map(\.appPath))
-                    guard let self, self.lookup.answered(generation, answer) else { return }
-                    self.update()
-                }
-            }
-        }
-        lookupTimer = start
-        DispatchQueue.main.asyncAfter(deadline: .now() + InfoMetrics.openWithDelay, execute: start)
+        lookupRead.askAsync(
+            path, after: InfoMetrics.openWithDelay,
+            read: { _ in
+                await SystemActions.openWithApplications(paths: [path], pinnedAppPaths: pinned.map(\.appPath))
+            },
+            answered: { [weak self] answer in
+                guard let self, self.lookup.answered(generation, answer) else { return }
+                self.update()
+            })
     }
 
     /// Always Open With changed what a kind opens in: every answer is forgotten and asked again.
@@ -396,28 +468,47 @@ final class InfoController {
     /// Describes the target again (cheap: nothing is read from disk here).
     func update() {
         guard liveHost != nil else { return }
+        let popOut = InfoPopOut.shared
+        popOut.sync(host.preferences, host: host)
+        // The panel is in a window of its own: a window's own column shows none; asked open (a window view, the
+        // toolbar's state of before), it is the other window that is shown.
+        if host.preferences.infoPanelPoppedOut, host.panels.propertiesOpen {
+            DispatchQueue.main.async { [weak host] in
+                guard let host else { return }
+                host.updatePanels { $0.propertiesOpen = false }
+                if !host.preferences.infoPanelPopOutShown { host.showInfoPopOut(focus: false) }
+            }
+        }
+        if drivesPopOut, popOut.wiredBy !== self {
+            popOut.wiredBy = self
+            wirePanel(popOut.panel)
+        }
         guard panelOpen || rowOpen else {
             // Neither shows: nothing is described or asked for. Opening one updates them (`.panels`).
-            fetchTimer?.cancel()
-            fetchTimer = nil
-            tagsTimer?.cancel()
-            tagsTimer = nil
-            tagsAsked = nil
+            propertiesRead.stop()
+            tagsLoad.stop()
+            detailsRead.stop()
+            signingRead.stop()
+            volumeRead.stop()
+            rowVolumeRead.stop()
             propertiesLoad.stop()
             volumeRequested = nil
+            rowVolumeRequested = nil
             auto.setPath(nil)
             return
         }
         let preferences = host.preferences
         let shortcuts = shortcutDisplay(preferences)
-        panel.closeTooltip = Tooltips.format("Hide Info Panel", shortcutLabel: shortcuts.label(.toggleInfoPanel))
+        shownPanel.closeTooltip = Tooltips.format("Hide Info Panel", shortcutLabel: shortcuts.label(.toggleInfoPanel))
         let selection = selectionDetails()
         updateAutoSize(preferences)
         if !panelOpen { volumeRequested = nil }
         if let path = targetPath, propertiesLoad.needsAsking(path) {
             scheduleFetch(path, immediately: false)
         }
-        if panelOpen { panel.show(panelDisplay(preferences, shortcuts, selection)) }
+        // The row's fact of a kind comes from the details too, with the panel closed.
+        if !panelOpen, selection == nil, let path = targetPath, path != folderPath { _ = detailsState(path) }
+        if panelOpen { shownPanel.show(panelDisplay(preferences, shortcuts, selection)) }
         row.show(rowDisplay(selection))
     }
 
@@ -476,9 +567,10 @@ final class InfoController {
                 body: .selection(
                     .init(
                         summary: summary,
-                        rows: InfoPanelModel.selectionRows(
-                            summary, hasFolderSize: hasFolders, folderSize: selection.size.folderSizeEntry,
-                            homePath: homePath, startupDiskName: startupDiskName,
+                        sections: InfoPanelModel.selectionContent(
+                            summary, facts: selectionFacts(selection.entries), hasFolderSize: hasFolders,
+                            folderSize: selection.size.folderSizeEntry, homePath: homePath,
+                            startupDiskName: startupDiskName,
                             tags: tagsState(
                                 selection.entries.map(\.path),
                                 editable: !selection.entries.contains {
@@ -492,7 +584,7 @@ final class InfoController {
         }
         let item = resolved.item
         let isVolume = VolumePaths.isVolumeRootPath(item.path)
-        if isVolume { requestVolume(item.path) } else { volumeRequested = nil }
+        if isVolume { requestVolume(item.path) }
         requestLookup(item.path)
         let isFile = item.kind == .file || item.kind == .symlinkFile
         let opens = lookup.opensWith(for: item.path, isFile: isFile, canAlways: OpenWithMenu.canAlwaysOpenWith)
@@ -506,78 +598,93 @@ final class InfoController {
         let content = InfoPanelModel.itemContent(
             item: item, pending: resolved.pending, volume: volume?.path == item.path ? volume?.value : nil,
             isVolumeRoot: isVolume, hasFolderSize: folderSize != nil, folderSize: folderSize, opensWith: opens,
-            dates: .shared, homePath: homePath, startupDiskName: startupDiskName, tags: tags)
+            dates: .shared, homePath: homePath, startupDiskName: startupDiskName, tags: tags,
+            details: detailsState(item.path), signing: signingState(item))
         let app =
             isFile ? lookup.answer(for: item.path)?.defaultApp.map { InfoOpenApp(path: $0.path, name: $0.name) } : nil
-        let trash = FavoriteLabel.trashPath(homePath: homePath)
-        let canFavorite = item.path != trash
-        let actionList = InfoPanelModel.quickActions(
-            item: item, textEditorName: preferences.defaultTextEditor.appName,
-            isFavorite: host.sidebarController.isFavorite(item.path), canFavorite: canFavorite, copied: copied,
-            inTrash: Paths.isInsideTrash(item.path, homePath: homePath), shortcut: { shortcuts.label($0) })
         return InfoPanelDisplay(
-            body: .item(
-                .init(
-                    item: item, content: content, folderSize: folderSize, openApp: app,
-                    actions: actionList, copied: copied)),
+            body: .item(.init(item: item, content: content, folderSize: folderSize, openApp: app)),
             wantsSpinner: resolved.pending || (loading && properties == nil))
+    }
+
+    /// What the panel and the row sum up of several items, from the listing: their kinds, dates and modes.
+    private func selectionFacts(_ entries: [DirectoryEntry]) -> InfoSelectionFacts {
+        var facts = InfoSelectionFacts()
+        for entry in entries {
+            let metadata = content.metadata(for: entry.path)
+            facts.kindLabels.append(
+                metadata?.kindLabel
+                    ?? InfoPreview.fallbackKindLabel(
+                        kind: FTFoundation.EntryKind(rawValue: entry.kind.rawValue) ?? .other,
+                        fileExtension: entry.fileExtension))
+            if let date = metadata?.createdAt ?? entry.listedCreatedAt { facts.created.append(date) }
+            if let date = metadata?.modifiedAt ?? entry.listedModifiedAt { facts.modified.append(date) }
+            facts.modes.append(metadata?.permissionMode ?? entry.permissionMode)
+        }
+        return facts
+    }
+
+    /// The folder size control, while a folder's size isn't known: the status bar has the size once it is, and
+    /// nothing to click before.
+    private func sizeControl(_ entry: FolderSizeEntry) -> InfoRowDisplay.Fact? {
+        if case .ready = entry { return nil }
+        return .init(content: .folderSize(entry), tooltip: nil)
     }
 
     private func rowDisplay(_ selection: SelectionDetails?) -> InfoRowDisplay? {
         if let selection {
+            // Several: what kinds they are and when they changed; their count and size are the status bar's.
             let leadPath = content.selection.leadPath.map(DiskPath.init)
             let lead = selection.entries.first { DiskPath($0.path) == leadPath } ?? selection.entries[0]
+            let summary = InfoPanelModel.selectionRowFacts(selectionFacts(selection.entries))
             var facts: [InfoRowDisplay.Fact] = []
-            if let entry = selection.size.folderSizeEntry {
-                var tooltip: String?
-                if case .ready(let size, let disk, let files, let folders) = entry {
-                    let lines = InfoPanelModel.folderSizeLines(
-                        sizeBytes: size, diskBytes: disk, fileCount: files, folderCount: folders)
-                    tooltip = "\(lines.top) · \(lines.items)"
-                }
-                facts.append(.init(content: .folderSize(entry), tooltip: tooltip))
-            } else if let total = selection.size.totalBytes {
-                facts.append(.init(content: .text(SizeText.size(total)), tooltip: nil))
-            }
+            if let entry = selection.size.folderSizeEntry, let control = sizeControl(entry) { facts.append(control) }
+            if let modified = summary.modified { facts.append(.init(content: .text(modified), tooltip: nil)) }
             return InfoRowDisplay(
-                name: InfoPanelModel.selectionName(
-                    InfoSelection(
-                        count: selection.entries.count, folderCount: 0, fileCount: 0, totalBytes: nil, parentPath: nil)),
-                nameTooltip: nil, icon: lead.iconEntry, facts: facts)
+                name: summary.kinds.full, nameShort: summary.kinds.short, nameTooltip: summary.kinds.full,
+                icon: lead.iconEntry, facts: facts)
         }
         let single = content.selectedEntries.first
         let active: InfoEntry?
         var iconEntry: IconEntry?
+        var isShownFolder = false
         if let single, content.selection.paths.count == 1 {
             active = infoEntry(single)
             iconEntry = single.iconEntry
         } else if !folderPath.isEmpty {
             active = InfoPreview.folderEntry(folderPath, homePath: homePath, startupDiskName: startupDiskName)
             iconEntry = IconEntry(path: folderPath, name: active?.name ?? "", kind: .directory)
+            isShownFolder = true
+            // The room left on its disk, which the status bar doesn't say.
+            if rowOpen { requestRowVolume(folderPath) }
         } else {
             return nil
         }
         guard let active else { return nil }
         let folderSize = active.kind.isFolderSizeEligible ? host.folderSizes.entry(active.path) : nil
         let facts = InfoPanelModel.rowFacts(
-            entry: active, metadata: infoMetadata(content.metadata(for: active.path)),
-            item: properties, folderSizeKnown: folderSize != nil, now: RelativeClock.shared.relativeNow,
-            dates: .shared)
-        var list: [InfoRowDisplay.Fact] = [.init(content: .text(facts.kind), tooltip: facts.kind)]
+            entry: active, metadata: infoMetadata(content.metadata(for: active.path)), item: properties,
+            folderSize: folderSize, details: details?.path == active.path ? details?.value : nil,
+            isShownFolder: isShownFolder,
+            availableBytes: rowVolume?.path == folderPath ? rowVolume?.available : nil,
+            now: RelativeClock.shared.relativeNow, dates: .shared, homePath: homePath)
+        var list: [InfoRowDisplay.Fact] = []
+        if let kind = facts.kind { list.append(.init(content: .text(kind), tooltip: kind)) }
         if facts.showsFolderSize, let folderSize {
+            list.append(.init(content: .folderSize(folderSize), tooltip: nil))
+        } else if let fact = facts.fact {
             var tooltip: String?
-            if case .ready(let size, let disk, let files, let folders) = folderSize {
+            if case .ready(let size, let disk, let files, let folders)? = folderSize {
                 let lines = InfoPanelModel.folderSizeLines(
                     sizeBytes: size, diskBytes: disk, fileCount: files, folderCount: folders)
                 tooltip = "\(lines.top) · \(lines.items)"
             }
-            list.append(.init(content: .folderSize(folderSize), tooltip: tooltip))
-        } else if let size = facts.size {
-            list.append(.init(content: .text(size), tooltip: nil))
+            list.append(.init(content: .text(fact), tooltip: tooltip ?? fact))
         }
         if let modified = facts.modified {
             list.append(.init(content: .text(modified), tooltip: facts.modifiedTooltip))
         }
+        if let available = facts.available { list.append(.init(content: .text(available), tooltip: nil)) }
         let name = InfoPreview.displayName(active.path, name: active.name, homePath: homePath)
         return InfoRowDisplay(name: name, nameTooltip: name, icon: iconEntry, facts: list)
     }
@@ -670,45 +777,7 @@ final class InfoController {
                 showInfoPath: targetOverride, infoItem: shown.map { ($0.path, $0.kind) }, homePath: homePath))
     }
 
-    // MARK: Quick actions and Open With
-
-    private func quickAction(_ id: InfoPanelModel.QuickAction.ID) {
-        guard let item = resolved?.item else { return }
-        switch id {
-        case .quickLook: host.quickLook(path: item.path)
-        case .edit: actions.edit(item.path)
-        case .copyPath:
-            if actions.copy(formatPathForShell(item.path), what: "Path") { flashCopied(.copyPath) }
-        case .copyName:
-            if actions.copy(item.name, what: "Name") { flashCopied(.copyName) }
-        case .copyContents:
-            Task { [weak self, host] in
-                guard await host.contentsCopier.copy(item.path, announce: false) else { return }
-                self?.flashCopied(.copyContents)
-                self?.update()
-            }
-        case .share: host.share([item.path], from: panel.actionButton(.share))
-        case .convertImages: host.openConvertImagesSheet([item.path])
-        case .terminal: actions.openInTerminal(item.path)
-        case .finder: actions.showInFinder(item.path)
-        case .favorite: host.sidebarController.toggleFavorite(item.path)
-        case .rootTree: host.sidebarController.rootTree(at: item.path)
-        }
-        update()
-    }
-
-    private func flashCopied(_ id: InfoPanelModel.QuickAction.ID) {
-        copied = id
-        copiedTimer?.cancel()
-        let work = DispatchWorkItem { [weak self] in
-            MainActor.assumeIsolated {
-                self?.copied = nil
-                self?.update()
-            }
-        }
-        copiedTimer = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + InfoMetrics.copiedDelay, execute: work)
-    }
+    // MARK: Open With
 
     /// The menu: under its button, 4 pt below, its right edge on the button's.
     private func showMenu(_ menu: AppMenu, anchor: NSView, window: NSWindow, onClose: @escaping () -> Void) {
@@ -765,7 +834,11 @@ final class InfoController {
             return items
         }
         let setOpen: (Bool) -> Void = { [weak self] open in
-            if changeDefault { self?.panel.setOpensWithMenuOpen(open) } else { self?.panel.setOpenMenuOpen(open) }
+            if changeDefault {
+                self?.shownPanel.setOpensWithMenuOpen(open)
+            } else {
+                self?.shownPanel.setOpenMenuOpen(open)
+            }
         }
         let held = optionHeld()
         let menu = AppMenu(

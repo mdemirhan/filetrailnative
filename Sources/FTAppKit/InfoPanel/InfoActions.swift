@@ -4,7 +4,7 @@ import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// The system actions behind the Info panel's buttons, with the notices shown when one fails.
+/// The system actions behind the Info panel's Open and Open With, and its copies, with the notices shown when one fails.
 @MainActor
 final class InfoActions {
     unowned let host: MainWindowController
@@ -64,39 +64,6 @@ final class InfoActions {
         let opener = opener
         Task { @MainActor in
             ActionNoticeText.logOpenFailure(await SystemActions.openPath(path, opener: opener))
-        }
-    }
-
-    func openInTerminal(_ path: String) {
-        host.onFolderUsed?()
-        let terminal = host.preferences.terminalApp
-        let opener = opener
-        Task { @MainActor [weak self] in
-            let result = await SystemActions.openInTerminal(path: path, terminalApp: terminal, opener: opener)
-            if !result.ok {
-                self?.notice(ActionNoticeText.terminalFailureTitle, ActionNoticeText.terminalFailureMessage)
-            }
-        }
-    }
-
-    func showInFinder(_ path: String) {
-        let opener = opener
-        Task { @MainActor [weak self] in
-            let result = await SystemActions.openPaths(
-                [path], withApplication: ApplicationPaths.finderAppPath, opener: opener)
-            if !result.ok {
-                self?.notice(
-                    ActionNoticeText.finderFailureTitle,
-                    ActionNoticeText.finderFailureMessage(count: 1, detail: result.error))
-            }
-        }
-    }
-
-    /// The panel can show an item that is not in the file list, so nothing is looked up.
-    func edit(_ path: String) {
-        let editor = host.preferences.defaultTextEditor
-        Task { @MainActor [weak self] in
-            await self?.openPaths([path], app: (editor.appPath, editor.appName))
         }
     }
 

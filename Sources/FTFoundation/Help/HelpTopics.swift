@@ -782,11 +782,13 @@ extension HelpContent {
                         HelpRow(
                             label: "Info panel",
                             description:
-                                "Details of the selected item at the right: kind, size, dates, permissions and quick actions."
+                                "Everything the selected item has, at the right, in sections: General, Dates, Sharing & Permissions, then what it is (a picture’s size and camera, a movie’s length, a document’s pages, an app’s version and who signed it), where a download came from, and More. Click a section’s title to fold it; it stays folded for every item. Right-click a row’s title to copy its value. The button beside its close button puts the panel in a window of its own, which follows the window in front; {toggleInfoPanel} then shows it there."
                         ),
                         HelpRow(
                             label: "Info row",
-                            description: "The same essentials in a strip under the list."),
+                            description:
+                                "What the selected item is, in a strip under the list: its kind, the one fact that matters for it (a picture’s size, a song’s length, a document’s pages, what a folder holds) and when it changed. Its size is in the path bar’s right end."
+                        ),
                         HelpRow(
                             label: "Folder sizes",
                             description:

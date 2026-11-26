@@ -342,6 +342,8 @@ public enum PreferencesSanitizer {
             folderTreeOpen: bool(record, "folderTreeOpen", defaults.folderTreeOpen),
             propertiesOpen: bool(record, "propertiesOpen", defaults.propertiesOpen),
             detailRowOpen: bool(record, "detailRowOpen", defaults.detailRowOpen),
+            infoPanelPoppedOut: bool(record, "infoPanelPoppedOut", defaults.infoPanelPoppedOut),
+            infoPanelPopOutShown: bool(record, "infoPanelPopOutShown", defaults.infoPanelPopOutShown),
             topToolbarItems: record["topToolbarItems"]?.array != nil
                 ? ToolbarItems.sanitizeTopItems(record["topToolbarItems"]) : defaults.topToolbarItems,
             terminalApp: application(record["terminalApp"]),

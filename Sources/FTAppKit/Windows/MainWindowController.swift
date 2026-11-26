@@ -1739,7 +1739,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             groupReversed: activePane.activeGroupReversed,
             foldersFirst: activePane.shownFoldersFirst,
             hiddenFilesShown: includeHidden,
-            folderTreeOpen: panels?.folderTreeOpen ?? true, infoPanelOpen: panels?.propertiesOpen ?? false,
+            folderTreeOpen: panels?.folderTreeOpen ?? true, infoPanelOpen: infoPanelShown,
             infoRowOpen: panels?.detailRowOpen ?? false, twoPanesShown: showsTwoPanes,
             filterPinned: content.pinnedFilter != nil,
             favoriteIsSet: favoriteTargetPath.map { sidebar.isFavorite($0) } ?? false,
@@ -2225,7 +2225,7 @@ extension MainWindowController: ExplorerWindowHandle {
             if let other = otherPane, !other.shownFolderPath.isEmpty { go(to: other.shownFolderPath) }
         case .equalizePanes: equalizePanes()
         case .toggleFolderTree: updatePanels { $0.folderTreeOpen.toggle() }
-        case .toggleInfoPanel: updatePanels { $0.propertiesOpen.toggle() }
+        case .toggleInfoPanel: toggleInfoPanel()
         case .toggleInfoRow: updatePanels { $0.detailRowOpen.toggle() }
         case .focusContentPane: content.focusList()
         case .renameSelection: renameSelected()
@@ -2455,6 +2455,57 @@ extension MainWindowController: ExplorerWindowContext {
 
     var panels: TabGroupSession.Panels {
         group?.session.panels ?? TabGroupSession.Panels(preferences.windowSession)
+    }
+
+    /// Whether the Info panel shows for this window: its own column, or the panel in a window of its own.
+    var infoPanelShown: Bool {
+        let preferences = preferences
+        return preferences.infoPanelPoppedOut ? preferences.infoPanelPopOutShown : panels.propertiesOpen
+    }
+
+    /// ⌘I: the panel the way it was last shown. In a window of its own it comes to the front with the keyboard, and
+    /// goes when it has the keyboard already.
+    func toggleInfoPanel() {
+        guard preferences.infoPanelPoppedOut else {
+            updatePanels { $0.propertiesOpen.toggle() }
+            return
+        }
+        let popOut = InfoPopOut.shared
+        if preferences.infoPanelPopOutShown, popOut.isShown, popOut.isKey, popOut.window?.isMiniaturized != true {
+            updatePreferences { $0.infoPanelPopOutShown = false }
+        } else {
+            showInfoPopOut(focus: true)
+        }
+    }
+
+    /// The panel in a window of its own, describing this tab's selection.
+    func showInfoPopOut(focus: Bool) {
+        let popOut = InfoPopOut.shared
+        popOut.follow(self)
+        if !preferences.infoPanelPopOutShown { updatePreferences { $0.infoPanelPopOutShown = true } }
+        popOut.show(beside: window, focus: focus)
+        infoController?.update()
+    }
+
+    /// The button beside the panel's close button: the panel into a window of its own, or back into this window. The
+    /// other windows close their own column as the preference reaches them.
+    func setInfoPanelPoppedOut(_ out: Bool) {
+        if out {
+            updatePreferences {
+                $0.infoPanelPoppedOut = true
+                $0.infoPanelPopOutShown = true
+            }
+            updatePanels { $0.propertiesOpen = false }
+            showInfoPopOut(focus: false)
+        } else {
+            updatePreferences {
+                $0.infoPanelPoppedOut = false
+                $0.infoPanelPopOutShown = false
+            }
+            InfoPopOut.shared.hide()
+            updatePanels { $0.propertiesOpen = true }
+            window?.makeKeyAndOrderFront(nil)
+        }
     }
 
     func updatePanels(_ change: (inout TabGroupSession.Panels) -> Void) {

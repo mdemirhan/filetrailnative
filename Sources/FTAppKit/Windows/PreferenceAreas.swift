@@ -60,7 +60,8 @@ extension PreferenceKey {
         case .markClipboardItems:
             [.clipboardMarks, .commands]
         case .theme, .accent, .viewMode, .searchViewMode, .sortBy, .sortDirection, .foldersFirst,
-            .autoCalculateFolderSizes, .folderTreeOpen, .propertiesOpen, .detailRowOpen, .topToolbarItems,
+            .autoCalculateFolderSizes, .folderTreeOpen, .propertiesOpen, .detailRowOpen, .infoPanelPoppedOut,
+            .infoPanelPopOutShown, .topToolbarItems,
             .terminalApp, .defaultTextEditor, .openWithApplications, .diskImageOpensIn, .returnKeyAction,
             .openItemLimit, .includeHidden, .searchPatternMode, .searchMatchScope, .searchRecursive,
             .searchSkipGitFolders, .searchResultsSortBy, .searchResultsSortDirection,

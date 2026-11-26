@@ -428,6 +428,8 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     /// The tab got the keyboard: a change its folder's watch could not see is looked for.
     func tabFocused(_ tab: MainWindowController) {
         onTabFocused(tab)
+        // The Info panel in a window of its own describes the tab in front.
+        InfoPopOut.shared.follow(tab)
         for pane in tab.panes { folderWatches?.checkForMissedChanges(windowID: pane.watchID) }
         tabNavigated(tab)
     }

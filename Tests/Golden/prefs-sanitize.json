@@ -71,6 +71,8 @@
           "folderTreeOpen": true,
           "propertiesOpen": false,
           "detailRowOpen": false,
+          "infoPanelPoppedOut": false,
+          "infoPanelPopOutShown": false,
           "topToolbarItems": [
             "folderTree",
             "topSeparator",
@@ -298,6 +300,8 @@
           "folderTreeOpen": true,
           "propertiesOpen": false,
           "detailRowOpen": false,
+          "infoPanelPoppedOut": false,
+          "infoPanelPopOutShown": false,
           "topToolbarItems": [
             "folderTree",
             "topSeparator",

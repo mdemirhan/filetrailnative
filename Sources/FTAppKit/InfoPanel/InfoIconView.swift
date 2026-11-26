@@ -152,6 +152,8 @@ final class InfoIconView: NSView {
 
     /// The stacked icon of several items.
     func showStack(back: GenericIconKind, front: GenericIconKind, store: FileIconStore?) {
+        // The same stack again keeps what it draws.
+        guard shown != "stack:\(back):\(front)" || stack == nil else { return }
         askedStore = store
         asked = nil
         clearPreview()

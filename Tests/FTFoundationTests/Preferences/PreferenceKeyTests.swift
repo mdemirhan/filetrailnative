@@ -24,6 +24,7 @@ struct PreferenceKeyTests {
                  "searchIconSizes": {"standard": 80, "finder": 48}, "searchPreviewCounts": {"standard": 2, "finder": 4},
                  "notificationsEnabled": false, "markClipboardItems": false, "autoCalculateFolderSizes": false,
                  "folderTreeOpen": false, "propertiesOpen": true, "detailRowOpen": true,
+                 "infoPanelPoppedOut": true, "infoPanelPopOutShown": true,
                  "topToolbarItems": ["search", "back", "title"],
                  "terminalApp": {"appPath": "/Applications/iTerm.app", "appName": "iTerm"},
                  "defaultTextEditor": {"appPath": "/Applications/Zed.app", "appName": "Zed"},
@@ -53,7 +54,7 @@ struct PreferenceKeyTests {
     @Test func namesEveryFieldOfThePreferencesOnce() throws {
         let encoded = try #require(try JSONNode.of(AppPreferences.defaults()).object)
         #expect(Set(encoded.keys) == Set(PreferenceKey.allCases.map(\.rawValue)))
-        #expect(PreferenceKey.allCases.count == 65)
+        #expect(PreferenceKey.allCases.count == 67)
         #expect(PreferenceKey(\AppPreferences.theme) == .theme)
         #expect(PreferenceKey(\AppPreferences.terminalApp) == .terminalApp)
         #expect(PreferenceKey(\AppPreferences.detailColumnWidths.name) == nil)

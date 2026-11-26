@@ -164,6 +164,8 @@ protocol ExplorerWindowContext: AnyObject {
     /// The panels and widths every tab of the window shares.
     var panels: TabGroupSession.Panels { get }
     func updatePanels(_ change: (inout TabGroupSession.Panels) -> Void)
+    /// Whether the Info panel shows for the window: its column, or the panel in a window of its own.
+    var infoPanelShown: Bool { get }
     /// The preferences as this window sees them.
     var preferences: AppPreferences { get }
     /// Changes preferences through the app's channel (`$0.theme = .dark`); the keys the whole app shares reach every

@@ -205,7 +205,7 @@ extension ExplorerToolbar {
             // View ▸ Folder View, as the list's right-click menu has it.
             AppMenuItem(title: "Folder View", submenu: folderViewRows()),
             .separator,
-            toggle("Info Panel", .toggleInfoPanel, panels.propertiesOpen, .toggleInfoPanel),
+            toggle("Info Panel", .toggleInfoPanel, context.infoPanelShown, .toggleInfoPanel),
             toggle("Info Row", .toggleInfoRow, panels.detailRowOpen, .toggleInfoRow),
             .separator,
             AppMenuItem(
@@ -343,7 +343,7 @@ extension ExplorerToolbar {
                         "Folders First", checked: view.foldersFirst, enabled: can(.toggleFoldersFirst),
                         run: run(.toggleFoldersFirst)),
                     overflowItem("Hidden Files", checked: view.includeHidden, run: run(.toggleHiddenFiles)),
-                    overflowItem("Info Panel", checked: panels.propertiesOpen, run: run(.toggleInfoPanel)),
+                    overflowItem("Info Panel", checked: context.infoPanelShown, run: run(.toggleInfoPanel)),
                     overflowItem("Info Row", checked: panels.detailRowOpen, run: run(.toggleInfoRow)),
                     overflowItem("Customize Toolbar…", run: run(.customizeToolbar)),
                 ])
@@ -357,7 +357,7 @@ extension ExplorerToolbar {
         case .folderTree:
             return overflowItem("Folder Tree", checked: panels.folderTreeOpen, run: run(.toggleFolderTree))
         case .infoPanel:
-            return overflowItem("Info Panel", checked: panels.propertiesOpen, run: run(.toggleInfoPanel))
+            return overflowItem("Info Panel", checked: context.infoPanelShown, run: run(.toggleInfoPanel))
         case .twoPanes:
             let shown = (context as? MainWindowController)?.showsTwoPanes == true
             return overflowItem("Two Panes", checked: shown, run: run(.toggleTwoPanes))

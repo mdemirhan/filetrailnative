@@ -65,6 +65,10 @@ public struct InfoItem: Equatable, Sendable {
     public var sizeBytes: Int64?
     public var sizeStatus: SizeStatus
     public var permissionMode: Int?
+    /// When it was put in its folder; nil on a disk that doesn't keep it.
+    public var addedAt: Date?
+    /// When it was last opened; nil for one never opened, or in a folder not read for it.
+    public var lastOpenedAt: Date?
     /// For a symbolic link or an alias, where it leads; nil for anything else.
     public var original: InfoOriginal?
 
@@ -72,9 +76,11 @@ public struct InfoItem: Equatable, Sendable {
         path: String, name: String, fileExtension: String = "", kind: EntryKind, kindLabel: String,
         isHidden: Bool = false, isSymlink: Bool = false, createdAt: Date? = nil, modifiedAt: Date? = nil,
         sizeBytes: Int64? = nil, sizeStatus: SizeStatus = .deferred, permissionMode: Int? = nil,
-        original: InfoOriginal? = nil
+        addedAt: Date? = nil, lastOpenedAt: Date? = nil, original: InfoOriginal? = nil
     ) {
         self.original = original
+        self.addedAt = addedAt
+        self.lastOpenedAt = lastOpenedAt
         self.path = path
         self.name = name
         self.fileExtension = fileExtension

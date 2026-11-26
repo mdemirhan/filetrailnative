@@ -278,7 +278,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         }
         return ToolbarTooltipState(
             foldersFirst: view.foldersFirst, hiddenFilesShown: view.includeHidden,
-            folderTreeOpen: panels.folderTreeOpen, infoPanelOpen: panels.propertiesOpen,
+            folderTreeOpen: panels.folderTreeOpen, infoPanelOpen: context.infoPanelShown,
             infoRowOpen: panels.detailRowOpen, textEditorName: context.preferences.defaultTextEditor.appName,
             undoLabel: labels?.undo, redoLabel: labels?.redo)
     }
@@ -367,7 +367,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
                 button.isEnabled = canPerform(.toggleFoldersFirst)
             case .hidden: button.isOn = view.includeHidden
             case .folderTree: button.isOn = panels.folderTreeOpen
-            case .infoPanel: button.isOn = panels.propertiesOpen
+            case .infoPanel: button.isOn = context.infoPanelShown
             case .twoPanes: button.isOn = (context as? MainWindowController)?.showsTwoPanes == true
             case .infoRow: button.isOn = panels.detailRowOpen
             case .viewMenu:

@@ -14,9 +14,19 @@ struct InfoRowDisplay: Equatable {
     }
 
     var name: String
+    /// What stands for the name where it doesn't fit beside the facts ("3 kinds" for several items' kinds).
+    var nameShort: String?
     var nameTooltip: String?
     var icon: IconEntry?
     var facts: [Fact]
+
+    init(name: String, nameShort: String? = nil, nameTooltip: String?, icon: IconEntry?, facts: [Fact]) {
+        self.name = name
+        self.nameShort = nameShort
+        self.nameTooltip = nameTooltip
+        self.icon = icon
+        self.facts = facts
+    }
 }
 
 /// One fact of the line: its text or the folder size cell, with the dot before it that comes with every fact but the
@@ -264,12 +274,17 @@ final class InfoRowView: NSView {
         icon.frame = NSRect(x: left, y: centerY - side / 2, width: side, height: side)
         guard display != nil else { return }
         let nameHeight = lineBox(name.font)
-        let nameNatural = textExtent(name.stringValue, name.font)
         let widths = factViews.map(\.naturalWidth)
         let factsTotal = widths.reduce(0, +)
         let start = left + side + InfoMetrics.infoRowGap
         let available = max(0, right - start)
         let gap = factViews.isEmpty ? 0 : InfoMetrics.infoRowGap
+        // A name with a shorter stand-in takes it where it doesn't fit whole beside the facts.
+        if let display, let short = display.nameShort {
+            let fits = textExtent(display.name, name.font) + gap + factsTotal <= available
+            name.stringValue = fits ? display.name : short
+        }
+        let nameNatural = textExtent(name.stringValue, name.font)
         var nameWidth = nameNatural
         var factsWidth = factsTotal
         let overflow = nameWidth + gap + factsWidth - available

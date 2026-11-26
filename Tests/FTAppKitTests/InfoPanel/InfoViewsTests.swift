@@ -161,14 +161,10 @@ struct InfoPanelViewTests {
         let content = InfoPanelModel.itemContent(
             item: item, pending: pending, volume: nil, isVolumeRoot: false, hasFolderSize: false, folderSize: nil,
             opensWith: .available, dates: DateText(locale: Locale(identifier: "en_US"), timeZone: .gmt))
-        let actions = InfoPanelModel.quickActions(
-            item: item, textEditorName: "Zed", isFavorite: false, canFavorite: true, copied: nil,
-            shortcut: { ShortcutDisplay.defaults.label($0) })
         return InfoPanelDisplay(
             body: .item(
                 .init(
-                    item: item, content: content, folderSize: nil, openApp: app, actions: actions,
-                    copied: nil)),
+                    item: item, content: content, folderSize: nil, openApp: app)),
             wantsSpinner: pending)
     }
 
@@ -184,7 +180,8 @@ struct InfoPanelViewTests {
         let header = try #require(findViews("infoPanel.header", in: view).first)
         #expect(header.frame.height == 32)
         #expect(fieldText(try #require(findViews("infoPanel.title", in: view).first)) == "Info")
-        #expect(findViews("infoPanel.close", in: view).first?.frame.size == NSSize(width: 18, height: 18))
+        #expect(findViews("infoPanel.close", in: view).first?.frame.size == NSSize(width: 24, height: 24))
+        #expect(findViews("infoPanel.popOut", in: view).first?.frame.size == NSSize(width: 24, height: 24))
         #expect(fieldText(try #require(findViews("infoPanel.name", in: view).first)) == "notes.md")
         #expect(
             fieldText(try #require(findViews("infoPanel.subtitle", in: view).first)) == "Markdown document · 2.0 KB")
@@ -195,15 +192,15 @@ struct InfoPanelViewTests {
         #expect(open.frame.height == 24)
         #expect(findViews("infoPanel.openWith", in: view).first?.frame.width == 26)
         let labels = findViews("infoPanel.row.label", in: view).map(fieldText)
-        #expect(labels == ["Kind", "Opens with", "Size", "Created", "Modified", "Permissions", "Where"])
+        // More starts folded.
+        #expect(
+            labels == [
+                "Kind", "Opens with", "Size", "Where", "Created", "Modified", "Last opened", "Added", "Owner", "Group",
+                "Everyone", "Mode", "You can", "Lines", "Encoding", "Line endings",
+            ])
         let titles = findViews("infoPanel.section.title", in: view).map(fieldText)
-        #expect(titles == ["Information", "Quick Actions"])
-        let actions = findViews("infoPanel.action", in: view)
-        #expect(actions.count == 8)
-        #expect(actions.allSatisfy { $0.frame.size == NSSize(width: 32, height: 28) })
-        #expect((actions.first as? InfoIconButton)?.tooltip == "Quick Look (⌘Y)")
-        #expect((actions[1] as? InfoIconButton)?.tooltip == "Edit in Zed (⌘E)")
-        #expect(fieldText(try #require(findViews("infoPanel.row.code", in: view).first)) == "644")
+        #expect(titles == ["General", "Dates", "Sharing & Permissions", "Text", "More"])
+        #expect(findViews("infoPanel.row.value", in: view).map(fieldText).contains("644 · rw-r--r--"))
     }
 
     // A folder only says Open.
@@ -225,13 +222,13 @@ struct InfoPanelViewTests {
         return InfoPanelDisplay(
             body: .item(
                 .init(
-                    item: folder, content: content, folderSize: entry, openApp: nil, actions: [],
-                    copied: nil)),
+                    item: folder, content: content, folderSize: entry, openApp: nil, )),
             wantsSpinner: false)
     }
 
+    /// The tops of the rows every item has: General, Dates and Sharing & Permissions.
     func rowTops(_ view: NSView) -> [Double] {
-        findViews("infoPanel.row.label", in: view).map { Double($0.frame.minY) }
+        Array(findViews("infoPanel.row.label", in: view).map { Double($0.frame.minY) }.prefix(13))
     }
 
     // Every row is in the same place for an unmeasured folder, a measured one and a file.
@@ -308,30 +305,25 @@ struct InfoPanelViewTests {
             body: .selection(
                 .init(
                     summary: summary,
-                    rows: InfoPanelModel.selectionRows(summary, hasFolderSize: true, folderSize: .idle),
+                    sections: InfoPanelModel.selectionContent(
+                        summary, facts: .init(), hasFolderSize: true, folderSize: .idle),
                     folderSize: .idle)),
             wantsSpinner: false)
-        #expect(findViews("infoPanel.row.label", in: panel(selection)).map(fieldText) == ["Contains", "Size", "Where"])
+        #expect(
+            findViews("infoPanel.row.label", in: panel(selection)).map(fieldText) == [
+                "Contains", "Size", "Where", "Created", "Modified", "Mode",
+            ])
     }
 
-    // The Copy buttons say Copied with a check after a copy.
-    @Test func theCopiedButtonSaysSo() throws {
-        let item = Self.file
-        let actions = InfoPanelModel.quickActions(
-            item: item, textEditorName: "Zed", isFavorite: false, canFavorite: true, copied: .copyPath,
-            shortcut: { _ in nil })
-        #expect(actions.first { $0.id == .copyPath }?.label == "Copied")
-        #expect(actions.first { $0.id == .copyName }?.label == "Copy Name")
-    }
-
-    // Several items are summed up, with no Open button and no quick actions.
+    // Several items are summed up, with no Open button.
     @Test func severalItemsAreSummedUp() throws {
         let summary = InfoSelection(count: 4, folderCount: 1, fileCount: 3, totalBytes: 4000, parentPath: "/Users/demo")
         let selection = InfoPanelDisplay(
             body: .selection(
                 .init(
                     summary: summary,
-                    rows: InfoPanelModel.selectionRows(summary, hasFolderSize: false, folderSize: nil), folderSize: nil)
+                    sections: InfoPanelModel.selectionContent(
+                        summary, facts: .init(), hasFolderSize: false, folderSize: nil), folderSize: nil)
             ),
             wantsSpinner: false)
         let view = panel(selection)
@@ -339,8 +331,10 @@ struct InfoPanelViewTests {
         #expect(
             fieldText(try #require(findViews("infoPanel.subtitle", in: view).first)) == "1 folder and 3 files · 4.0 KB")
         #expect(findViews("infoPanel.open", in: view).isEmpty)
-        #expect(findViews("infoPanel.action", in: view).isEmpty)
-        #expect(findViews("infoPanel.row.label", in: view).map(fieldText) == ["Size", "Where"])
+        #expect(
+            findViews("infoPanel.row.label", in: view).map(fieldText) == [
+                "Size", "Where", "Created", "Modified", "Mode",
+            ])
     }
 
     // With nothing to show the panel says so.
@@ -386,8 +380,7 @@ struct InfoPanelViewTests {
         let state = InfoPanelDisplay(
             body: .item(
                 .init(
-                    item: root, content: content, folderSize: nil, openApp: nil, actions: [],
-                    copied: nil)),
+                    item: root, content: content, folderSize: nil, openApp: nil, )),
             wantsSpinner: false)
         let view = panel(state)
         let labels = findViews("infoPanel.row.label", in: view).map(fieldText)
@@ -422,18 +415,18 @@ struct InfoPanelViewTests {
         #expect(isBlue(button.appIcon))
     }
 
-    // A quick action's tooltip covers the button once it is placed: the tooltip is one of the view's tracking areas,
+    // A header button's tooltip covers the button once it is placed: the tooltip is one of the view's tracking areas,
     // sized when it is set (before the button is), and the button's own hover area replaces only its own.
-    @Test func aQuickActionKeepsItsTooltipOncePlaced() throws {
+    @Test func aHeaderButtonKeepsItsTooltipOncePlaced() throws {
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 320, height: 900), styleMask: [.borderless], backing: .buffered,
             defer: true)
         window.isReleasedWhenClosed = false
         let view = panel(display())
         window.contentView?.addSubview(view)
-        let button = try #require(findViews("infoPanel.action", in: view).first as? InfoIconButton)
+        let button = try #require(findViews("infoPanel.popOut", in: view).first as? InfoIconButton)
         button.updateTrackingAreas()
-        #expect(button.toolTip == "Quick Look (⌘Y)")
+        #expect(button.toolTip == InfoPanelHeader.popOutLabel)
         #expect(button.trackingAreas.contains { $0.owner !== button && $0.rect == button.bounds })
         #expect(button.trackingAreas.contains { $0.owner === button })
         let close = try #require(findViews("infoPanel.close", in: view).first)

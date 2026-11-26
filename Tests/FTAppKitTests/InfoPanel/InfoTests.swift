@@ -101,40 +101,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // The panel's Open only logs a failed open; the other actions show their notices, word for word.
-        @Test func thePanelsFailedActionsShowNotices() async throws {
-            struct Refused: Error, LocalizedError {
-                var errorDescription: String? { "It refused." }
-            }
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            let actions = try #require(tab.infoController?.actions)
-            let spy = OpenSpy()
-            actions.opener = SystemOpener(
-                openPath: { path in
-                    spy.record("open \(path)")
-                    return "No application"
-                },
-                openWithApplication: { _, _ in throw Refused() }, reveal: { _ in throw Refused() }, openURL: { _ in })
-            var notices: [String: String] = [:]
-            actions.notice = { notices[$0] = $1 }
-            let editor = tab.preferences.defaultTextEditor.appName
-
-            actions.openExternally("/x/a.txt")
-            #expect(await waitUntil { !spy.all.isEmpty })
-            actions.openInTerminal("/x/a.txt")
-            actions.showInFinder("/x/a.txt")
-            actions.edit("/x/a.txt")
-            #expect(await waitUntil { notices.count == 3 })
-            #expect(
-                notices == [
-                    "Couldn’t Open Terminal": "File Trail couldn’t open the terminal app in this folder.",
-                    "Couldn’t Show in Finder": "Finder couldn’t show it. It refused.",
-                    "Couldn’t Open in \(editor)": "File Trail couldn’t open it in \(editor). It refused.",
-                ])
-            await harness.close()
-        }
-
         // The panel and the row follow the selection.
         @Test func thePanelAndTheRowDescribeTheSelection() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -149,7 +115,7 @@ extension ExplorerWindowlessTests {
             select(["note.txt"], in: tab, harness: harness)
             #expect(await waitUntil { texts("infoPanel.name", in: tab) == ["note.txt"] })
             #expect(texts("infoRow.name", in: tab) == ["note.txt"])
-            #expect(await waitUntil { texts("infoPanel.row.label", in: tab).contains("Permissions") })
+            #expect(await waitUntil { texts("infoPanel.row.label", in: tab).contains("Mode") })
             #expect(await waitUntil { tab.content.contentShell.infoRow.height == 30 })
             await harness.close()
         }
@@ -373,10 +339,8 @@ extension ExplorerWindowlessTests {
             tab.content.select(paths: [])
             tab.perform(.calculateSize)
             #expect(await waitUntil { tab.folderSizes.readySize(tab.folderPath) != nil })
-            #expect(
-                await waitUntil {
-                    texts("infoRow.folderSize.size", in: tab).contains { $0.contains(" · ") && $0.contains("folder") }
-                })
+            // Measured, the row says what the folder holds; its size is the status text's.
+            #expect(await waitUntil { texts("infoRow.fact", in: tab).contains { $0.contains("folder") } })
             await harness.close()
         }
 

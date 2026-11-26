@@ -40,6 +40,10 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     public var folderTreeOpen: Bool
     public var propertiesOpen: Bool
     public var detailRowOpen: Bool
+    /// The Info panel is a window of its own beside the app's windows rather than a column of each: ⌘I shows it there.
+    public var infoPanelPoppedOut: Bool
+    /// Whether that window is shown.
+    public var infoPanelPopOutShown: Bool
     public var topToolbarItems: [ToolbarItemID]
     @NullEncoded public var terminalApp: ApplicationSelection?
     public var defaultTextEditor: ApplicationSelection
@@ -106,6 +110,7 @@ public struct AppPreferences: Codable, Equatable, Sendable {
             notificationsEnabled: true,
             markClipboardItems: true,
             autoCalculateFolderSizes: true, folderTreeOpen: true, propertiesOpen: false, detailRowOpen: false,
+            infoPanelPoppedOut: false, infoPanelPopOutShown: false,
             topToolbarItems: ToolbarItems.defaultTopItems, terminalApp: nil,
             defaultTextEditor: AppPreferenceLimits.defaultTextEditor, openWithApplications: [],
             diskImageOpensIn: .window, returnKeyAction: .rename, shortcutOverrides: [:],

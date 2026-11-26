@@ -21,7 +21,8 @@ import Testing
         ).rows
     }
 
-    // A file keeps the row, muted with a dash, with the rows below where the answer will leave them.
+    // A file keeps the row, muted with a dash, with the rows below where the answer will leave them; with no app to
+    // choose it keeps its dash, so the rows under it don't move from one file to the next.
     @Test func aFileKeepsTheRowUntilMacOSAnswers() throws {
         let pending = rows(.file, .pending)
         let available = rows(.file, .available)
@@ -29,7 +30,7 @@ import Testing
         let row = try #require(pending.first { $0.label == "Opens with" })
         #expect(row.value == .text("—"))
         #expect(row.muted)
-        #expect(!rows(.file, .hidden).contains { $0.label == "Opens with" })
+        #expect(rows(.file, .hidden).first { $0.label == "Opens with" } == row)
     }
 
     // A folder has no such row, waiting or not.

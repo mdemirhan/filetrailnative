@@ -39,8 +39,11 @@ public enum InfoMetrics {
     // The Info panel
     public static let panelInset = 16.0
     public static let panelHeaderHeight = 32.0
-    public static let closeButton = 18.0
-    public static let closeIcon = 10.0
+    /// The title of the panel in a window of its own, past the window's three buttons.
+    public static let popOutTitleX = 78.0
+    /// The header's buttons, close and the window of its own: as large as a toolbar's small symbols read.
+    public static let closeButton = 24.0
+    public static let closeIcon = 13.0
     public static let heroIconBox = 104.0
     public static let heroIcon = 88.0
     public static let heroStackBox = 96.0
@@ -52,11 +55,9 @@ public enum InfoMetrics {
     public static let rowGap = 12.0
     public static let sectionGap = 16.0
     public static let sectionTitleGap = 4.0
-    public static let actionWidth = 32.0
-    public static let actionHeight = 28.0
-    public static let actionIcon = 16.0
-    public static let actionGap = 2.0
-    public static let copiedDelay = 1.5
+    /// Where's copy button, and its glyph.
+    public static let copyButton = 16.0
+    public static let copyIcon = 11.0
     public static let spinnerDelay = 0.3
     public static let fetchDelay = 0.08
     public static let propertiesCacheLimit = 200

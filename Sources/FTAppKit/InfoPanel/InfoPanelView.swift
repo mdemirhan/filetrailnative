@@ -23,13 +23,11 @@ struct InfoPanelDisplay: Equatable {
         var content: InfoPanelModel.ItemContent
         var folderSize: FolderSizeEntry?
         var openApp: InfoOpenApp?
-        var actions: [InfoPanelModel.QuickAction]
-        var copied: InfoPanelModel.QuickAction.ID?
     }
 
     struct Selection: Equatable {
         var summary: InfoSelection
-        var rows: [InfoRow]
+        var sections: [InfoSection]
         var folderSize: FolderSizeEntry?
     }
 
@@ -65,11 +63,9 @@ final class InfoPanelView: NSView {
         didSet { header.close.tooltip = closeTooltip }
     }
     var onClose: () -> Void = {}
-    var onNavigate: (String) -> Void = { _ in }
     /// The Original row of a symbolic link or an alias was clicked: Show Original.
     var onShowOriginal: (String) -> Void = { _ in }
     var onOpen: () -> Void = {}
-    var onAction: (InfoPanelModel.QuickAction.ID) -> Void = { _ in }
     var onOpenWithMenu: (NSView) -> Void = { _ in }
     var onOpensWithMenu: (NSView) -> Void = { _ in }
     /// The Tags row was clicked: the Tags popover hangs from it.
@@ -77,6 +73,15 @@ final class InfoPanelView: NSView {
     var onCalculate: () -> Void = {}
     var onRecalculate: () -> Void = {}
     var onCancel: () -> Void = {}
+    /// The button beside the close button: into a window of its own, or back.
+    var onPopOut: () -> Void = {}
+    /// In a window of its own.
+    var isPoppedOut: Bool {
+        get { header.isPoppedOut }
+        set { header.isPoppedOut = newValue }
+    }
+    /// A row's Copy, or Where's copy button: the text, and what it is ("Path").
+    var onCopyText: (String, String) -> Void = { _, _ in }
 
     override init(frame: NSRect) {
         super.init(frame: frame)
@@ -92,6 +97,7 @@ final class InfoPanelView: NSView {
         addSubview(scroll)
         addSubview(header)
         header.close.onClick = { [weak self] in self?.onClose() }
+        header.popOut.onClick = { [weak self] in self?.onPopOut() }
         header.close.tooltip = closeTooltip
         content.owner = self
         spinnerDelay.onChange = { [weak self] in
@@ -116,8 +122,6 @@ final class InfoPanelView: NSView {
 
     func setOpenMenuOpen(_ value: Bool) { content.setOpenMenuOpen(value) }
     func setOpensWithMenuOpen(_ value: Bool) { content.setOpensWithMenuOpen(value) }
-    /// The button of a quick action, for what hangs from it (Share's popover).
-    func actionButton(_ id: InfoPanelModel.QuickAction.ID) -> NSView? { content.actionButton(id) }
 
     override func layout() {
         super.layout()
@@ -145,6 +149,23 @@ final class InfoPanelHeader: NSView {
     let close = InfoIconButton(
         glyph: .close, iconSize: InfoMetrics.closeIcon, cornerRadius: DesignTokens.radii.xs,
         identifier: "infoPanel.close", label: "Hide Info Panel")
+    /// Beside the close button: the panel into a window of its own, or, there, back into the window.
+    let popOut = InfoIconButton(
+        glyph: .popOut, iconSize: InfoMetrics.closeIcon, cornerRadius: DesignTokens.radii.xs,
+        identifier: "infoPanel.popOut", label: InfoPanelHeader.popOutLabel)
+    static let popOutLabel = "Show Info Panel in Its Own Window"
+    static let popInLabel = "Show Info Panel in the Window"
+    /// In a window of its own: the window's buttons are at the left and its own close button closes it.
+    var isPoppedOut = false {
+        didSet {
+            popOut.glyph = isPoppedOut ? .popIn : .popOut
+            let label = isPoppedOut ? Self.popInLabel : Self.popOutLabel
+            popOut.setAccessibilityLabel(label)
+            popOut.tooltip = label
+            close.isHidden = isPoppedOut
+            needsLayout = true
+        }
+    }
     var showsSpinner = false {
         didSet {
             spinner.isHidden = !showsSpinner
@@ -162,7 +183,10 @@ final class InfoPanelHeader: NSView {
         spinner.isHidden = true
         close.normalColor = { $0.palette.getInfoCloseIcon }
         close.hoverColor = { $0.palette.getInfoCloseIconHover }
-        for view in [title, spinner, close] as [NSView] { addSubview(view) }
+        popOut.normalColor = { $0.palette.getInfoCloseIcon }
+        popOut.hoverColor = { $0.palette.getInfoCloseIconHover }
+        popOut.tooltip = Self.popOutLabel
+        for view in [title, spinner, close, popOut] as [NSView] { addSubview(view) }
         applyColors()
     }
 
@@ -180,12 +204,16 @@ final class InfoPanelHeader: NSView {
         let inset = InfoMetrics.panelInset
         let side = InfoMetrics.closeButton
         close.frame = NSRect(x: bounds.width - inset - side, y: (bounds.height - side) / 2, width: side, height: side)
+        // Left of the close button, 4 apart; in a window of its own, where the close button was.
+        let popOutX = isPoppedOut ? close.frame.minX : close.frame.minX - 4 - side
+        popOut.frame = NSRect(x: popOutX, y: close.frame.minY, width: side, height: side)
         let titleHeight = lineBox(title.font)
+        // In a window of its own the title starts past the window's buttons.
         title.frame = NSRect(
-            x: inset, y: (bounds.height - titleHeight) / 2, width: textExtent(title.stringValue, title.font),
-            height: titleHeight)
+            x: isPoppedOut ? InfoMetrics.popOutTitleX : inset, y: (bounds.height - titleHeight) / 2,
+            width: textExtent(title.stringValue, title.font), height: titleHeight)
         if showsSpinner {
-            spinner.frame = NSRect(x: close.frame.minX - 12 - 10, y: (bounds.height - 10) / 2, width: 10, height: 10)
+            spinner.frame = NSRect(x: popOut.frame.minX - 12 - 10, y: (bounds.height - 10) / 2, width: 10, height: 10)
         }
     }
 }
@@ -229,6 +257,8 @@ final class SplitOpenButton: NSView, TextStyleSource {
     var styleTextField: NSTextField? { label }
     var title = "Open" { didSet { needsLayout = true } }
     var appIcon: NSImage? { didSet { needsLayout = true } }
+    /// The app is known and its icon is on its way: its room is kept, so the title doesn't move when it comes.
+    var reservesIcon = false { didSet { needsLayout = true } }
     var onMain: () -> Void = {}
     var onChevron: () -> Void = {}
     private var hoverMain = false { didSet { needsDisplay = true } }
@@ -279,7 +309,7 @@ final class SplitOpenButton: NSView, TextStyleSource {
         label.stringValue = title
         let textWidth = textExtent(title, label.font)
         let padding = 12.0
-        let icon = appIcon != nil ? iconSize + 6 : 0
+        let icon = appIcon != nil || reservesIcon ? iconSize + 6 : 0
         let available = max(0, mainWidth - 2 * padding)
         let shown = min(textWidth, max(0, available - icon))
         let start = (mainWidth - (icon + shown)) / 2
@@ -481,513 +511,5 @@ final class OpensWithPopupView: NSView {
     override func accessibilityPerformPress() -> Bool {
         onClick()
         return true
-    }
-}
-
-/// The panel's scrolled content, laid out from the display.
-final class InfoPanelContentView: NSView {
-    weak var owner: InfoPanelView?
-    var iconStore: FileIconStore? {
-        didSet { opensWith.iconStore = iconStore }
-    }
-    /// Where the hero's preview comes from: the Icons view's, so a picture it already has is drawn at once.
-    var thumbnailStore: ThumbnailStore? = IconThumbnails.store
-    private var body = InfoPanelDisplay.Body.blank
-    private let heroIcon = InfoIconView()
-    private let name = TextBoxField(wrappingLabelWithString: "")
-    private let subtitle = TextBoxField(labelWithString: "")
-    private let open = SplitOpenButton()
-    private let opensWith = OpensWithPopupView()
-    private let cell = InfoPanelSizeView(identifier: "infoPanel.folderSize")
-    private let emptyLabel = TextBoxField(wrappingLabelWithString: "Select a file or folder to show its info.")
-    private var sectionTitles: [TextBoxField] = []
-    private var rowViews: [RowViews] = []
-    private var actionButtons: [(InfoPanelModel.QuickAction.ID, InfoIconButton)] = []
-
-    /// The button of a quick action, for what hangs from it (Share's popover).
-    func actionButton(_ id: InfoPanelModel.QuickAction.ID) -> NSView? {
-        actionButtons.first { $0.0 == id }?.1
-    }
-    private var dividers: [Double] = []
-    /// The load of the Open button's app icon: the next item's takes it back, so an older answer can't land after a
-    /// newer one.
-    private var openIconHandle: LoadHandle?
-
-    private struct RowViews {
-        var row: InfoRow
-        var label: TextBoxField
-        var value: NSView
-        var extra: TextBoxField?
-        /// The box of a value that is not plain text, which automation names.
-        var box: RowValueBox?
-    }
-
-    override var isFlipped: Bool { true }
-
-    override init(frame: NSRect) {
-        super.init(frame: frame)
-        heroIcon.setAccessibilityIdentifier("infoPanel.heroIcon")
-        heroIcon.pixelSide = NativeIconPixels.heroSide
-        name.setAccessibilityIdentifier("infoPanel.name")
-        subtitle.setAccessibilityIdentifier("infoPanel.subtitle")
-        emptyLabel.setAccessibilityIdentifier("infoPanel.empty")
-        name.alignment = .center
-        name.maximumNumberOfLines = 2
-        name.lineBreakMode = .byTruncatingTail
-        name.font = ChromeColors.font(size: DesignTokens.typeScale.title3, weight: 600)
-        subtitle.alignment = .center
-        subtitle.font = tabularFont(DesignTokens.typeScale.callout)
-        subtitle.lineBreakMode = .byTruncatingTail
-        emptyLabel.font = ChromeColors.font(size: DesignTokens.typeScale.callout, weight: 600)
-        for view in [heroIcon, name, subtitle, open, emptyLabel, opensWith, cell] as [NSView] { addSubview(view) }
-        open.onMain = { [weak self] in self?.owner?.onOpen() }
-        open.onChevron = { [weak self] in
-            guard let self else { return }
-            self.owner?.onOpenWithMenu(self.open)
-        }
-        opensWith.onClick = { [weak self] in
-            guard let self else { return }
-            self.owner?.onOpensWithMenu(self.opensWith)
-        }
-        cell.onCalculate = { [weak self] in self?.owner?.onCalculate() }
-        cell.onRecalculate = { [weak self] in self?.owner?.onRecalculate() }
-        cell.onCancel = { [weak self] in self?.owner?.onCancel() }
-        cell.onSizeChange = { [weak self] in
-            self?.relayout()
-        }
-        cell.isHidden = true
-        opensWith.isHidden = true
-    }
-
-    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
-
-    func setOpenMenuOpen(_ value: Bool) { open.setMenuOpen(value) }
-    func setOpensWithMenuOpen(_ value: Bool) { opensWith.setMenuOpen(value) }
-
-    // MARK: Building
-
-    func apply(_ next: InfoPanelDisplay.Body) {
-        body = next
-        for title in sectionTitles { title.removeFromSuperview() }
-        sectionTitles = []
-        for views in rowViews {
-            views.label.removeFromSuperview()
-            if views.value !== cell, views.value !== opensWith { views.value.removeFromSuperview() }
-            views.extra?.removeFromSuperview()
-            views.box?.removeFromSuperview()
-        }
-        rowViews = []
-        for (_, button) in actionButtons { button.removeFromSuperview() }
-        actionButtons = []
-        cell.isHidden = true
-        opensWith.isHidden = true
-        switch next {
-        case .blank, .empty:
-            break
-        case .item(let item):
-            buildHeroIcon(item.item)
-            name.stringValue = item.item.name
-            name.toolTip = item.item.name
-            subtitle.stringValue = item.content.subtitle
-            open.title = item.openApp.map { "Open in \($0.name)" } ?? "Open"
-            open.toolTip = open.title
-            loadOpenIcon(item.openApp)
-            sectionTitles = [sectionTitle("Information"), sectionTitle("Quick Actions")]
-            buildRows(
-                item.content.rows, folderSize: item.folderSize, opensWith: item.openApp, kind: item.item.kindLabel)
-            for action in item.actions {
-                let button = InfoIconButton(
-                    glyph: Self.glyph(action.id, copied: item.copied == action.id), iconSize: InfoMetrics.actionIcon,
-                    cornerRadius: DesignTokens.radii.control, identifier: "infoPanel.action",
-                    label: action.label)
-                button.tooltip = Tooltips.format(action.label, shortcutLabel: action.shortcut)
-                button.isEnabled = !action.disabled
-                button.onClick = { [weak self] in self?.owner?.onAction(action.id) }
-                addSubview(button)
-                actionButtons.append((action.id, button))
-            }
-        case .selection(let selection):
-            let contains = InfoPanelModel.selectionContains(selection.summary)
-            heroIcon.showStack(
-                back: contains == "files" ? .file : .folder, front: contains == "folders" ? .folder : .file,
-                store: iconStore)
-            name.stringValue = InfoPanelModel.selectionName(selection.summary)
-            name.toolTip = nil
-            subtitle.stringValue = InfoPanelModel.selectionSubtitle(selection.summary)
-            sectionTitles = [sectionTitle("Information")]
-            buildRows(selection.rows, folderSize: selection.folderSize, opensWith: nil, kind: "")
-        }
-        if case .item(let item) = next, let entry = item.folderSize { cell.update(entry) }
-        if case .selection(let selection) = next, let entry = selection.folderSize { cell.update(entry) }
-        applyColors()
-        needsLayout = true
-    }
-
-    private func buildHeroIcon(_ item: InfoItem) {
-        let kind: IconEntryKind
-        switch item.kind {
-        case .directory: kind = .directory
-        case .file: kind = .file
-        case .symlinkDirectory: kind = .symlinkDirectory
-        case .symlinkFile: kind = .symlinkFile
-        case .alias: kind = .alias
-        case .aliasDirectory: kind = .aliasDirectory
-        case .bundle: kind = .bundle
-        case .other: kind = .other
-        }
-        heroIcon.show(
-            IconEntry(path: item.path, name: item.name, extension: item.fileExtension, kind: kind), store: iconStore,
-            deferLoad: true)
-        // The file's own picture where Quick Look has one, as the Icons view shows it: read for the one item shown.
-        let version = "\(item.modifiedAt?.timeIntervalSince1970 ?? 0)/\(item.sizeBytes ?? -1)"
-        heroIcon.showPreview(path: item.path, kind: kind, version: version, store: thumbnailStore)
-    }
-
-    private func loadOpenIcon(_ app: InfoOpenApp?) {
-        openIconHandle?.cancel()
-        openIconHandle = nil
-        guard let app, let iconStore else {
-            open.appIcon = nil
-            return
-        }
-        openIconHandle = iconStore.load(.app(path: app.path)) { [weak self] image in
-            self?.open.appIcon = image.map(NativeIconPixels.image)
-        }
-    }
-
-    private func sectionTitle(_ text: String) -> TextBoxField {
-        let field = TextBoxField(labelWithString: text)
-        field.font = ChromeColors.font(size: DesignTokens.typeScale.small, weight: 600)
-        field.setAccessibilityIdentifier("infoPanel.section.title")
-        addSubview(field)
-        return field
-    }
-
-    private func buildRows(_ rows: [InfoRow], folderSize: FolderSizeEntry?, opensWith app: InfoOpenApp?, kind: String) {
-        for row in rows {
-            let label = TextBoxField(labelWithString: row.label)
-            label.font = tabularFont(DesignTokens.typeScale.callout)
-            label.setAccessibilityIdentifier("infoPanel.row.label")
-            addSubview(label)
-            var extra: TextBoxField?
-            var box: RowValueBox?
-            let value: NSView
-            switch row.value {
-            case .text(let text):
-                let field = TextBoxField(labelWithString: text)
-                field.lineBreakMode = .byTruncatingTail
-                field.alignment = .right
-                field.setAccessibilityIdentifier("infoPanel.row.value")
-                addSubview(field)
-                value = field
-            case .folderSize:
-                cell.isHidden = false
-                value = cell
-                box = RowValueBox()
-                box?.sample.stringValue = "Calculate"
-            case .permissions(let words, let octal, let symbolic):
-                let field = TextBoxField(labelWithString: words)
-                field.alignment = .right
-                field.setAccessibilityIdentifier("infoPanel.row.words")
-                box = RowValueBox()
-                box?.sample.stringValue = words
-                let code = TextBoxField(labelWithString: octal)
-                // The mono font is Menlo (three digits are 19.87 wide).
-                code.font =
-                    NSFont(name: "Menlo-Regular", size: DesignTokens.typeScale.small)
-                    ?? ThemeFonts.mono(DesignTokens.typeScale.small)
-                code.toolTip = symbolic
-                code.setAccessibilityIdentifier("infoPanel.row.code")
-                addSubview(field)
-                addSubview(code)
-                extra = code
-                value = field
-            case .whereLink(let text, let path):
-                let link = TextLinkView(identifier: "infoPanel.where")
-                box = RowValueBox()
-                box?.sample.stringValue = text
-                link.text = text
-                link.toolTip = path
-                link.font = ThemeFonts.sans(DesignTokens.typeScale.callout)
-                link.onClick = { [weak self] in self?.owner?.onNavigate(path) }
-                addSubview(link)
-                value = link
-            case .originalLink(let text, let path):
-                let link = TextLinkView(identifier: "infoPanel.original")
-                box = RowValueBox()
-                box?.sample.stringValue = text
-                link.text = text
-                link.toolTip = path
-                link.font = ThemeFonts.sans(DesignTokens.typeScale.callout)
-                link.onClick = { [weak self] in self?.owner?.onShowOriginal(path) }
-                addSubview(link)
-                value = link
-            case .opensWith:
-                opensWith.isHidden = false
-                opensWith.kindLabel = kind
-                opensWith.app = app
-                value = opensWith
-                box = RowValueBox()
-                box?.sample.stringValue = app?.name ?? "None"
-            case .tags(let tags):
-                let view = InfoTagsView()
-                view.tags = tags
-                view.onClick = { [weak self, weak view] in
-                    guard let view else { return }
-                    self?.owner?.onEditTags(view)
-                }
-                box = RowValueBox()
-                box?.sample.stringValue = tags.summary
-                addSubview(view)
-                value = view
-            }
-            if let box { addSubview(box) }
-            rowViews.append(RowViews(row: row, label: label, value: value, extra: extra, box: box))
-        }
-    }
-
-    static func glyph(_ id: InfoPanelModel.QuickAction.ID, copied: Bool) -> InfoGlyph {
-        switch id {
-        case .quickLook: .quickLook
-        case .edit: .edit
-        case .copyPath: copied ? .check : .copy
-        case .copyName: copied ? .check : .name
-        case .copyContents: copied ? .check : .contents
-        case .share: .share
-        case .convertImages: .convertImages
-        case .terminal: .terminal
-        case .finder: .finder
-        case .favorite: .favorite
-        case .rootTree: .rootTree
-        }
-    }
-
-    // MARK: Colors
-
-    func applyColors() {
-        let theme = infoTheme
-        let palette = theme.palette
-        name.textColor = NSColor(palette.textPrimary)
-        subtitle.textColor = NSColor(palette.textSecondary)
-        emptyLabel.textColor = NSColor(palette.getInfoMetaValue)
-        for title in sectionTitles { title.textColor = NSColor(palette.textSecondary) }
-        for views in rowViews {
-            views.label.textColor = NSColor(palette.textSecondary)
-            views.extra?.textColor = NSColor(palette.textSecondary)
-            if let box = views.box {
-                let muted = views.row.muted
-                box.sample.textColor = NSColor(
-                    muted
-                        ? mixColor(palette.getInfoMetaValueMuted, 45, with: palette.getInfoMetaValue)
-                        : palette.textPrimary)
-                box.sample.font = ChromeColors.font(size: DesignTokens.typeScale.callout, weight: muted ? 600 : 400)
-            }
-            if let field = views.value as? NSTextField {
-                let muted = views.row.muted
-                field.textColor = NSColor(
-                    muted
-                        ? mixColor(palette.getInfoMetaValueMuted, 45, with: palette.getInfoMetaValue)
-                        : palette.textPrimary)
-                field.font = ChromeColors.font(size: DesignTokens.typeScale.callout, weight: muted ? 600 : 400)
-            } else if let link = views.value as? TextLinkView {
-                link.applyStyle()
-            } else if let tags = views.value as? InfoTagsView {
-                tags.font = ChromeColors.font(size: DesignTokens.typeScale.callout, weight: 400)
-                tags.textColor = NSColor(palette.textPrimary)
-                tags.mutedColor = NSColor(mixColor(palette.getInfoMetaValueMuted, 45, with: palette.getInfoMetaValue))
-            }
-        }
-        needsDisplay = true
-    }
-
-    // MARK: Layout
-
-    private func lineHeight(_ font: NSFont?) -> Double {
-        lineBox(font)
-    }
-
-    private func textWidth(_ field: NSTextField) -> Double {
-        textExtent(field.stringValue, field.font)
-    }
-
-    func relayout() {
-        needsLayout = true
-        layoutSubtreeIfNeeded()
-    }
-
-    override func layout() {
-        super.layout()
-        applyColors()
-        let inset = InfoMetrics.panelInset
-        let width = max(0, bounds.width - 2 * inset)
-        var y = 0.0
-        dividers = []
-        let isEmpty: Bool
-        var hasHero = false
-        switch body {
-        case .blank: isEmpty = false
-        case .empty: isEmpty = true
-        default:
-            isEmpty = false
-            hasHero = true
-        }
-        emptyLabel.isHidden = !isEmpty
-        for view in [heroIcon, name, subtitle] as [NSView] { view.isHidden = !hasHero }
-        open.isHidden = true
-        if isEmpty {
-            // The empty message, 18 from the top.
-            let height = ceil(
-                emptyLabel.cell?.cellSize(forBounds: NSRect(x: 0, y: 0, width: width, height: 1000)).height ?? 0)
-            emptyLabel.frame = NSRect(x: inset, y: 18, width: width, height: height)
-            frame.size.height = max(superview?.bounds.height ?? 0, 18 + height + 18)
-            return
-        }
-        guard hasHero else { return }
-        // The hero: padding 8 8 14, a 6 gap.
-        let heroPad = 8.0
-        y += heroPad
-        let boxSide = InfoMetrics.heroIconBox
-        var iconSide = 96.0
-        if case .selection = body { iconSide = InfoMetrics.heroStackBox }
-        heroIcon.inset = (boxSide - iconSide) / 2
-        heroIcon.frame = NSRect(x: inset + (width - boxSide) / 2, y: y, width: boxSide, height: boxSide)
-        y += boxSide + InfoMetrics.heroGap
-        let nameWidth = max(0, width - 2 * heroPad)
-        let nameLine = (name.font?.pointSize ?? 15) * 1.3
-        let nameParagraph = NSMutableParagraphStyle()
-        nameParagraph.alignment = .center
-        nameParagraph.minimumLineHeight = nameLine
-        nameParagraph.maximumLineHeight = nameLine
-        nameParagraph.lineBreakMode = .byTruncatingTail
-        let nameFont = name.font ?? ChromeColors.font(size: 15, weight: 600)
-        name.attributedStringValue = NSAttributedString(
-            string: name.stringValue,
-            attributes: [
-                .font: nameFont, .foregroundColor: NSColor(infoTheme.palette.textPrimary),
-                .paragraphStyle: nameParagraph,
-            ])
-        // Measured wrapped by word, as it is drawn: a truncating line break never wraps, so it would measure one line.
-        let wrapped = (nameParagraph.mutableCopy() as? NSMutableParagraphStyle) ?? NSMutableParagraphStyle()
-        wrapped.lineBreakMode = .byWordWrapping
-        let measured = (name.stringValue as NSString).boundingRect(
-            with: NSSize(width: nameWidth, height: 10000), options: [.usesLineFragmentOrigin],
-            attributes: [.font: nameFont, .paragraphStyle: wrapped])
-        let lines = min(2, max(1, Int((measured.height / nameLine).rounded(.up))))
-        let nameHeight = Double(lines) * nameLine
-        let nameShown = min(nameWidth, max(ceil(measured.width), textExtent(name.stringValue, nameFont)))
-        name.frame = NSRect(x: inset + (width - nameShown) / 2, y: y, width: nameShown, height: nameHeight)
-        y += nameHeight + InfoMetrics.heroGap
-        let subtitleHeight = lineHeight(subtitle.font)
-        let subtitleShown = min(nameWidth, textExtent(subtitle.stringValue, subtitle.font))
-        subtitle.frame = NSRect(
-            x: inset + (width - subtitleShown) / 2, y: y, width: subtitleShown, height: subtitleHeight)
-        y += subtitleHeight + 14
-
-        if case .item = body {
-            open.isHidden = false
-            open.frame = NSRect(x: inset, y: y, width: width, height: InfoMetrics.openButtonHeight)
-            y += InfoMetrics.openButtonHeight + 18
-        }
-        // Information.
-        var titleIndex = 0
-        func place(title: TextBoxField) {
-            let height = lineHeight(title.font)
-            title.frame = NSRect(x: inset, y: y, width: width, height: height)
-            y += height + InfoMetrics.sectionTitleGap
-        }
-        if titleIndex < sectionTitles.count {
-            place(title: sectionTitles[titleIndex])
-            titleIndex += 1
-        }
-        let bodyLine = lineHeight(ChromeColors.font(size: DesignTokens.typeScale.callout))
-        for (index, views) in rowViews.enumerated() {
-            let top = y + InfoMetrics.rowPaddingBlock
-            let label = views.label
-            let labelWidth = textWidth(label)
-            var valueWidth: Double
-            switch views.value {
-            case let field as NSTextField:
-                valueWidth = textWidth(field)
-                if let extra = views.extra {
-                    valueWidth += 6 + textWidth(extra)
-                }
-            case let link as TextLinkView:
-                // Not its whole-point `naturalWidth`: the value ends at the panel's edge.
-                valueWidth = textExtent(link.text, link.font)
-            case let popup as OpensWithPopupView:
-                valueWidth = popup.naturalWidth
-            case let sizeCell as InfoPanelSizeView:
-                // One line in every state, so the rows under it stay put while the folder is measured.
-                valueWidth = sizeCell.naturalWidth
-            case let tags as InfoTagsView:
-                // As wide as its chips, up to what the row has: the rest go on the lines under it.
-                valueWidth = tags.naturalWidth
-            default: valueWidth = 0
-            }
-            let maxValue = max(0, width - labelWidth - InfoMetrics.rowGap)
-            valueWidth = min(valueWidth, maxValue)
-            let valueX = inset + width - valueWidth
-            label.frame = NSRect(x: inset, y: top, width: labelWidth, height: bodyLine)
-            switch views.value {
-            case let field as NSTextField:
-                if let extra = views.extra {
-                    let codeWidth = textWidth(extra)
-                    let codeHeight = lineHeight(extra.font)
-                    field.frame = NSRect(x: valueX, y: top, width: max(0, valueWidth - 6 - codeWidth), height: bodyLine)
-                    // Baselines line up: the code is smaller.
-                    let baselineShift = (field.font?.ascender ?? 0) - (extra.font?.ascender ?? 0)
-                    extra.frame = NSRect(
-                        x: inset + width - codeWidth, y: top + baselineShift, width: codeWidth, height: codeHeight)
-                } else {
-                    field.frame = NSRect(x: valueX, y: top, width: valueWidth, height: bodyLine)
-                }
-            case let popup as OpensWithPopupView:
-                // The pop-up is 4 taller than its line of text: 2 above and 2 below.
-                popup.frame = NSRect(x: valueX, y: top - 2, width: valueWidth, height: bodyLine + 4)
-            default:
-                views.value.frame = NSRect(x: valueX, y: top, width: valueWidth, height: bodyLine)
-            }
-            // The tags take as many lines as they need: every one shows.
-            var rowHeight = bodyLine
-            if let tags = views.value as? InfoTagsView {
-                rowHeight = max(bodyLine, Double(tags.height(width: CGFloat(valueWidth))))
-                tags.frame = NSRect(x: valueX, y: top, width: valueWidth, height: rowHeight)
-            }
-            views.box?.frame = NSRect(x: valueX, y: top, width: valueWidth, height: bodyLine)
-            if let words = views.value as? NSTextField, views.extra != nil, let box = views.box {
-                box.frame = NSRect(x: valueX, y: top, width: valueWidth, height: bodyLine)
-                _ = words
-            }
-            y = top + rowHeight + InfoMetrics.rowPaddingBlock
-            if index < rowViews.count - 1 {
-                dividers.append(y)
-                y += 1
-            }
-        }
-        y += InfoMetrics.sectionGap
-        if case .item = body {
-            if titleIndex < sectionTitles.count { place(title: sectionTitles[titleIndex]) }
-            // The action buttons: 2 above, reaching 8 past each side, 2 apart, wrapping.
-            var x = inset - 8
-            for (_, button) in actionButtons {
-                if x + InfoMetrics.actionWidth > inset + width + 8 {
-                    x = inset - 8
-                    y += InfoMetrics.actionHeight + InfoMetrics.actionGap
-                }
-                button.frame = NSRect(x: x, y: y, width: InfoMetrics.actionWidth, height: InfoMetrics.actionHeight)
-                x += InfoMetrics.actionWidth + InfoMetrics.actionGap
-            }
-            y += InfoMetrics.actionHeight + InfoMetrics.sectionGap
-        }
-        frame.size.height = y + 18 - InfoMetrics.sectionGap + (actionButtons.isEmpty ? 0 : 0)
-        needsDisplay = true
-    }
-
-    override func draw(_ dirtyRect: NSRect) {
-        let palette = infoTheme.palette
-        ChromeColors.color(palette.borderLight).setFill()
-        for y in dividers {
-            NSRect(x: InfoMetrics.panelInset, y: y, width: bounds.width - 2 * InfoMetrics.panelInset, height: 1).fill()
-        }
     }
 }

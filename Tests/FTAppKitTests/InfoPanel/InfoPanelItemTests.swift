@@ -1,5 +1,4 @@
-// The Quick Look button previews the item the panel describes, and the Where link and Reveal in Tree add no second step
-// for the folder on screen, on a window that is never shown
+// Reveal in Tree adds no second step for the folder on screen, on a window that is never shown
 import AppKit
 import FTFoundation
 import Foundation
@@ -10,11 +9,6 @@ import Testing
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct InfoPanelItemTests {
-        private func quickActionButton(in tab: MainWindowController) throws -> InfoIconButton {
-            let content = try #require(tab.window?.contentView)
-            return try #require(findViews("infoPanel.action", in: content).first as? InfoIconButton)
-        }
-
         /// Asks for a navigation, and waits for it to have shown its folder.
         private func navigating(_ tab: MainWindowController, _ ask: () -> Void) async {
             var shown = false
@@ -22,61 +16,6 @@ extension ExplorerWindowlessTests {
             ask()
             #expect(await waitUntil { shown && !tab.isNavigating })
             withExtendedLifetime(watching) {}
-        }
-
-        // With nothing selected the panel describes the folder on screen, and its button previews that.
-        @Test func quickLookPreviewsTheFolderWithNothingSelected() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            tab.perform(.toggleInfoPanel)
-            harness.layout(tab)
-            var shown: [String] = []
-            tab.showQuickLook = { shown.append($0) }
-            let info = try #require(tab.infoController)
-            #expect(await waitUntil { info.resolvedItemPath == tab.folderPath })
-            info.panel.onAction(.quickLook)
-            #expect(shown == [tab.folderPath])
-            await harness.close()
-        }
-
-        // Get Info's target is previewed, not the selection under it.
-        @Test func quickLookPreviewsShowInfosTarget() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            tab.perform(.toggleInfoPanel)
-            harness.layout(tab)
-            var shown: [String] = []
-            tab.showQuickLook = { shown.append($0) }
-            let note = try #require(tab.content.entries.first { $0.name == "note.txt" })
-            let alpha = try #require(tab.content.entries.first { $0.name == "Alpha" })
-            tab.content.select(paths: [note.path])
-            let info = try #require(tab.infoController)
-            #expect(await waitUntil { info.resolvedItemPath == note.path })
-            info.showInfo(for: alpha.path)
-            #expect(await waitUntil { info.resolvedItemPath == alpha.path })
-            info.panel.onAction(.quickLook)
-            #expect(shown == [alpha.path])
-            await harness.close()
-        }
-
-        // Where pointing at the folder on screen overwrites its step; any other folder is a new step.
-        @Test func whereAddsNoStepForTheFolderOnScreen() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            tab.perform(.viewAsDetails)
-            tab.perform(.toggleInfoPanel)
-            harness.layout(tab)
-            let start = tab.folderPath
-            let alpha = try #require(tab.content.entries.first { $0.name == "Alpha" }?.path)
-            tab.go(to: alpha)
-            #expect(await waitUntil { tab.folderPath == alpha && tab.historyPaths == [start, alpha] })
-            let panel = try #require(tab.infoController?.panel)
-            await navigating(tab) { panel.onNavigate(alpha) }
-            #expect(tab.historyPaths == [start, alpha])
-            #expect(tab.historyIndex == 1)
-            panel.onNavigate(start)
-            #expect(await waitUntil { tab.folderPath == start && tab.historyPaths == [start, alpha, start] })
-            await harness.close()
         }
 
         // Reveal in Tree of the folder on screen overwrites its step, and its tree row is selected; of another folder

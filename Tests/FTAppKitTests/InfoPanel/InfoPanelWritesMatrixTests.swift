@@ -38,9 +38,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // Get Info on a row of the tree is about that folder, not the list's selection; the panel
-        // adds it to the Favorites and takes it away, and roots the tree there.
-        @Test func showInfoOfARowIsAboutThatFolderAndActsOnIt() async throws {
+        // Get Info on a row of the tree is about that folder, not the list's selection.
+        @Test func showInfoOfARowIsAboutThatFolder() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             tab.perform(.viewAsDetails)
@@ -55,15 +54,6 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { info.resolvedItemPath == alpha })
             #expect(tab.panels.propertiesOpen)
             #expect(tab.content.selection.leadPath == note.path)
-
-            let sidebar = tab.sidebarController
-            let wasFavorite = sidebar.isFavorite(alpha)
-            info.panel.onAction(.favorite)
-            #expect(sidebar.isFavorite(alpha) != wasFavorite)
-            info.panel.onAction(.favorite)
-            #expect(sidebar.isFavorite(alpha) == wasFavorite)
-            info.panel.onAction(.rootTree)
-            #expect(await waitUntil { sidebar.model.rootPath == alpha })
             await harness.close()
         }
     }

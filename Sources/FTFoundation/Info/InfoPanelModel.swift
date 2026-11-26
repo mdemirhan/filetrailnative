@@ -35,14 +35,19 @@ public enum InfoValue: Equatable, Sendable {
     case folderSize
     /// "Owner: Read & Write" and the octal code, whose tooltip is the nine letters.
     case permissions(words: String, octal: String, symbolic: String)
-    /// A folder as a link; nil path is not shown as one.
-    case whereLink(label: String, path: String)
+    /// The folder an item is in, its folders from the top of its disk, as text on one line cut at its start, so the
+    /// folder it is in stays; it can be selected. Its copy button copies the row's `copyText`, the item's own path.
+    case place(String)
     /// A link's or an alias's original: clicked, Show Original.
     case originalLink(label: String, path: String)
     /// The app the file opens in, as a pop-up.
     case opensWith
     /// The items' tags: clicked, the Tags popover.
     case tags(InfoTags)
+    /// A text that is replaced by a shorter one where it doesn't fit on one line ("3 kinds").
+    case fitting(full: String, short: String)
+    /// How full a disk is: a bar, and the text under it.
+    case usage(fraction: Double, text: String)
 }
 
 /// A tag of the items the Info panel describes.
@@ -101,6 +106,37 @@ public struct InfoRow: Equatable, Sendable {
     public var label: String
     public var value: InfoValue
     public var muted: Bool
+    /// A second line under the value, in the secondary color.
+    public var detail: String?
+    /// What the row's right-click Copy copies, where it isn't the value's text (the whole path of Where).
+    public var copyText: String?
+    /// Its text takes as many lines as it needs. Every other value is one line, its whole text in its tooltip and
+    /// there to select, so no row grows as its value comes in.
+    public var wraps = false
+
+    public init(label: String, value: InfoValue, muted: Bool, detail: String? = nil, copyText: String? = nil) {
+        self.label = label
+        self.value = value
+        self.muted = muted
+        self.detail = detail
+        self.copyText = copyText
+    }
+
+    /// The text the row's Copy copies.
+    public var textToCopy: String {
+        if let copyText { return copyText }
+        let main: String
+        switch value {
+        case .text(let text): main = text
+        case .permissions(let words, let octal, _): main = "\(words) \(octal)"
+        case .place(let label), .originalLink(let label, _): main = label
+        case .tags(let tags): main = tags.summary
+        case .fitting(let full, _): main = full
+        case .usage(_, let text): main = text
+        case .folderSize, .opensWith: main = ""
+        }
+        return [main, detail].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: "\n")
+    }
 }
 
 public enum InfoPanelModel {
@@ -139,44 +175,9 @@ public enum InfoPanelModel {
     }
 
     /// What a folder holds, a dash until it has been measured.
-    private static func containsRow(_ entry: FolderSizeEntry?) -> InfoRow {
+    static func containsRow(_ entry: FolderSizeEntry?) -> InfoRow {
         let contents = measuredContents(entry)
         return InfoRow(label: "Contains", value: .text(contents ?? pending), muted: contents == nil)
-    }
-
-    /// The summary's rows: Contains when folders are among the items, Size, Tags and Where.
-    public static func selectionRows(
-        _ selection: InfoSelection, hasFolderSize: Bool, folderSize: FolderSizeEntry?, homePath: String = "",
-        startupDiskName: String = VolumePaths.defaultStartupDiskName, tags: InfoTagsState = .hidden
-    ) -> [InfoRow] {
-        let size = selection.totalBytes.map { SizeText.size($0) }
-        let sizeRow: InfoRow
-        if hasFolderSize, let folderSize {
-            var idle = false
-            if case .idle = folderSize { idle = true }
-            sizeRow = InfoRow(label: "Size", value: .folderSize, muted: idle)
-        } else {
-            sizeRow = InfoRow(label: "Size", value: .text(size ?? "--"), muted: size == nil)
-        }
-        let whereRow: InfoRow
-        if let parent = selection.parentPath {
-            whereRow = InfoRow(
-                label: "Where",
-                value: .whereLink(
-                    label: PathBarModel.label(parent, homePath: homePath, startupDiskName: startupDiskName),
-                    path: parent),
-                muted: false)
-        } else {
-            whereRow = InfoRow(label: "Where", value: .text("Several folders"), muted: true)
-        }
-        let containsRows = hasFolderSize && folderSize != nil ? [containsRow(folderSize)] : []
-        return containsRows + [sizeRow] + [tags.row].compactMap { $0 } + [whereRow]
-    }
-
-    /// Everything the panel shows of one item.
-    public struct ItemContent: Equatable, Sendable {
-        public var rows: [InfoRow]
-        public var subtitle: String
     }
 
     public static func parentPath(_ path: String) -> String? {
@@ -187,176 +188,8 @@ public enum InfoPanelModel {
         return index == 0 ? "/" : String(trimmed.prefix(index))
     }
 
-    /// The rows and the subtitle of one item. The rows, top to bottom: Kind; Opens with (a file); Capacity, Available
-    /// and Used for a disk, or else Contains (a folder) and Size; then Created, Modified, Tags, Permissions and Where.
-    /// The subtitle is the kind, and the size when it is known.
-    public static func itemContent(
-        item: InfoItem, pending isPending: Bool, volume: InfoVolume?, isVolumeRoot: Bool, hasFolderSize: Bool,
-        folderSize: FolderSizeEntry?, opensWith: OpensWithState, dates: DateText = .shared, homePath: String = "",
-        startupDiskName: String = VolumePaths.defaultStartupDiskName, tags: InfoTagsState = .hidden
-    ) -> ItemContent {
-        let isFile = item.kind == .file || item.kind == .symlinkFile
-        let folderEligible = item.kind.isFolderSizeEligible
-        func bytes(_ value: Int64?) -> String { value.map { SizeText.size($0) } ?? pending }
-
-        var sizeText = ""
-        var sizeMuted = false
-        var sizeIsCell = false
-        if folderEligible, hasFolderSize, folderSize != nil {
-            sizeIsCell = true
-            switch folderSize {
-            case .idle?, .error?: sizeMuted = true
-            default: break
-            }
-        } else if folderEligible {
-            sizeText = "--"
-            sizeMuted = true
-        } else if isPending, item.sizeBytes == nil {
-            sizeText = pending
-            sizeMuted = true
-        } else {
-            sizeText = SizeText.size(item.sizeBytes, status: item.sizeStatus)
-        }
-
-        var rows: [InfoRow] = [InfoRow(label: "Kind", value: .text(item.kindLabel), muted: false)]
-        switch opensWith {
-        case .hidden: break
-        case .pending: if isFile { rows.append(InfoRow(label: "Opens with", value: .text(pending), muted: true)) }
-        case .available: if isFile { rows.append(InfoRow(label: "Opens with", value: .opensWith, muted: false)) }
-        }
-        if isVolumeRoot {
-            let used: Int64? =
-                volume?.totalBytes != nil && volume?.availableBytes != nil
-                ? max(0, (volume?.totalBytes ?? 0) - (volume?.availableBytes ?? 0)) : nil
-            rows.append(
-                InfoRow(label: "Capacity", value: .text(bytes(volume?.totalBytes)), muted: volume?.totalBytes == nil))
-            rows.append(
-                InfoRow(
-                    label: "Available", value: .text(bytes(volume?.availableBytes)),
-                    muted: volume?.availableBytes == nil))
-            rows.append(InfoRow(label: "Used", value: .text(bytes(used)), muted: used == nil))
-        } else {
-            // In the place a file's "Opens with" takes, so the rows under it stay where they are from item to item,
-            // and when the folder has been measured.
-            if folderEligible { rows.append(containsRow(folderSize)) }
-            rows.append(InfoRow(label: "Size", value: sizeIsCell ? .folderSize : .text(sizeText), muted: sizeMuted))
-        }
-        func date(_ value: Date?) -> String { value == nil && isPending ? pending : dates.dateTime(value) }
-        rows.append(InfoRow(label: "Created", value: .text(date(item.createdAt)), muted: item.createdAt == nil))
-        rows.append(InfoRow(label: "Modified", value: .text(date(item.modifiedAt)), muted: item.modifiedAt == nil))
-        if let row = tags.row { rows.append(row) }
-        if let parts = PermissionText.split(item.permissionMode) {
-            rows.append(
-                InfoRow(
-                    label: "Permissions",
-                    value: .permissions(
-                        words: PermissionText.ownerAccess(symbolic: parts.symbolic), octal: parts.octal,
-                        symbolic: parts.symbolic), muted: false))
-        } else {
-            rows.append(InfoRow(label: "Permissions", value: .text(isPending ? pending : "Unavailable"), muted: true))
-        }
-        if let parent = parentPath(item.path) {
-            rows.append(
-                InfoRow(
-                    label: "Where",
-                    value: .whereLink(
-                        label: PathBarModel.label(parent, homePath: homePath, startupDiskName: startupDiskName),
-                        path: parent),
-                    muted: false))
-        } else {
-            rows.append(InfoRow(label: "Where", value: .text("—"), muted: true))
-        }
-        // A symbolic link or an alias says where it leads, as Finder's Get Info does.
-        switch item.original {
-        case .found(let path):
-            rows.append(
-                InfoRow(
-                    label: "Original",
-                    value: .originalLink(
-                        label: PathBarModel.label(path, homePath: homePath, startupDiskName: startupDiskName),
-                        path: path),
-                    muted: false))
-        case .missing:
-            rows.append(InfoRow(label: "Original", value: .text("Can\u{2019}t be found"), muted: true))
-        case nil:
-            break
-        }
-
-        let summary: String?
-        if isVolumeRoot {
-            summary = volume?.availableBytes.map { "\(SizeText.size($0)) available" }
-        } else if folderEligible {
-            if case .ready(let size, _, _, _)? = folderSize { summary = SizeText.size(size) } else { summary = nil }
-        } else if isPending, item.sizeBytes == nil {
-            summary = nil
-        } else {
-            summary = SizeText.size(item.sizeBytes, status: item.sizeStatus)
-        }
-        return ItemContent(rows: rows, subtitle: summary.map { "\(item.kindLabel) · \($0)" } ?? item.kindLabel)
-    }
-
     public enum OpensWithState: Equatable, Sendable {
         case hidden, pending, available
-    }
-
-    /// One of the quick actions.
-    public struct QuickAction: Equatable, Sendable {
-        public enum ID: String, Sendable {
-            case quickLook, edit, copyPath, copyName, copyContents, share, convertImages, terminal, finder, favorite
-            case rootTree
-        }
-        public var id: ID
-        public var label: String
-        public var shortcut: String?
-        public var disabled = false
-    }
-
-    /// Which quick actions an item gets, in the order the panel shows them.
-    public static func quickActions(
-        item: InfoItem, textEditorName: String, isFavorite: Bool, canFavorite: Bool, copied: QuickAction.ID?,
-        inTrash: Bool = false, shortcut: (ShortcutCommandID) -> String?
-    ) -> [QuickAction] {
-        var actions = [QuickAction(id: .quickLook, label: "Quick Look", shortcut: shortcut(.quickLookSelection))]
-        if item.kind.isEditableFile {
-            actions.append(
-                QuickAction(id: .edit, label: "Edit in \(textEditorName)", shortcut: shortcut(.editSelection)))
-        }
-        actions.append(
-            QuickAction(
-                id: .copyPath, label: copied == .copyPath ? "Copied" : "Copy Path", shortcut: shortcut(.copyPath)))
-        actions.append(QuickAction(id: .copyName, label: copied == .copyName ? "Copied" : "Copy Name", shortcut: nil))
-        // A file's image or text, as the menus offer it.
-        let guess = CopyContents.guess(forName: item.name)
-        if item.kind.isEditableFile, guess.isOffered {
-            actions.append(
-                QuickAction(
-                    id: .copyContents, label: copied == .copyContents ? "Copied" : CopyContents.menuTitle(guess),
-                    shortcut: shortcut(.copyContents)))
-        }
-        // The system's share popover, as the menus offer it: not for what is in the Trash.
-        if !inTrash {
-            actions.append(QuickAction(id: .share, label: "Share…", shortcut: shortcut(.shareSelection)))
-        }
-        // An image, as the menus offer Convert for it; nothing is made in the Trash.
-        if item.kind.isEditableFile, !inTrash, ImageConversion.isConvertible(name: item.name) {
-            actions.append(
-                QuickAction(
-                    id: .convertImages, label: ConvertImagesText.menuTitle(count: 1),
-                    shortcut: shortcut(.convertImages)))
-        }
-        actions.append(QuickAction(id: .terminal, label: "Open in Terminal", shortcut: shortcut(.openInTerminal)))
-        actions.append(QuickAction(id: .finder, label: "Show in Finder", shortcut: shortcut(.showInFinder)))
-        if canFavorite && item.kind.isDirectoryLike {
-            actions.append(
-                QuickAction(
-                    id: .favorite, label: isFavorite ? "Remove from Favorites" : "Add to Favorites",
-                    shortcut: shortcut(.toggleFavorite)))
-        }
-        if item.kind.isDirectoryLike {
-            actions.append(
-                QuickAction(id: .rootTree, label: "Use as Tree Root", shortcut: shortcut(.rootTreeAtSelection)))
-        }
-        return actions
     }
 
     /// "<size> (<disk> on disk)" and "N files, M folders".
@@ -366,40 +199,5 @@ public enum InfoPanelModel {
         let detail = SizeText.folderDetail(
             sizeBytes: sizeBytes, diskBytes: diskBytes, fileCount: fileCount, folderCount: folderCount, locale: locale)
         return (detail.size + (detail.disk.map { " (\($0))" } ?? ""), detail.items)
-    }
-
-    /// The Info Row's facts for one item: kind, size and Modified, each left out until known.
-    public struct RowFacts: Equatable, Sendable {
-        public var name: String
-        public var kind: String
-        /// A plain size text; nil when the folder size cell stands there or nothing is known.
-        public var size: String?
-        public var showsFolderSize: Bool
-        public var modified: String?
-        public var modifiedTooltip: String?
-    }
-
-    public static func rowFacts(
-        entry: InfoEntry, metadata: InfoMetadata?, item: InfoItem?, folderSizeKnown: Bool, now: Date,
-        dates: DateText = .shared
-    ) -> RowFacts {
-        let known: (kind: String, size: Int64?, status: SizeStatus, modified: Date?)? =
-            metadata.map { ($0.kindLabel, $0.sizeBytes, $0.sizeStatus, $0.modifiedAt) }
-            ?? (item?.path == entry.path ? item : nil).map {
-                ($0.kindLabel, $0.sizeBytes, $0.sizeStatus, $0.modifiedAt)
-            }
-        let eligible = entry.kind.isFolderSizeEligible
-        var size: String?
-        if !eligible, let known, known.status == .ready { size = SizeText.size(known.size, status: known.status) }
-        var modified: String?
-        var tooltip: String?
-        if let date = known?.modified {
-            modified = "Modified \(dates.relative(date, now: now))"
-            tooltip = dates.exactDateTime(date)
-        }
-        return RowFacts(
-            name: entry.name,
-            kind: known?.kind ?? InfoPreview.fallbackKindLabel(kind: entry.kind, fileExtension: entry.fileExtension),
-            size: size, showsFolderSize: eligible && folderSizeKnown, modified: modified, modifiedTooltip: tooltip)
     }
 }

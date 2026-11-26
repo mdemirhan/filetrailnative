@@ -25,25 +25,17 @@ func textExtent(_ text: String, _ font: NSFont?) -> Double {
 
 /// The icons of the Info panel, system symbols in the text color; a quick action shows its command's symbol.
 enum InfoGlyph {
-    case close, quickLook, edit, name, contents, share, convertImages, favorite, rootTree, finder, terminal, copy
-    case check, refresh
+    case close, copy, refresh
+    /// Into a window of its own, and back: the symbol of Advanced Search's button, which opens a larger place too.
+    case popOut, popIn
     case openChevron, popupChevron
 
     var symbolName: String {
         switch self {
         case .close: "xmark"
-        case .quickLook: CommandIcon.quickLook.symbolName
-        case .edit: CommandIcon.edit.symbolName
-        case .name: "textformat"
-        case .contents: CommandIcon.copyContents.symbolName
-        case .share: CommandIcon.share.symbolName
-        case .convertImages: CommandIcon.convertImages.symbolName
-        case .favorite: CommandIcon.favorite.symbolName
-        case .rootTree: CommandIcon.rootTreeHere.symbolName
-        case .finder: CommandIcon.showInFinder.symbolName
-        case .terminal: CommandIcon.terminal.symbolName
         case .copy: CommandIcon.copyPath.symbolName
-        case .check: "checkmark"
+        case .popOut: "arrow.up.left.and.arrow.down.right"
+        case .popIn: "arrow.down.right.and.arrow.up.left"
         case .refresh: CommandIcon.refresh.symbolName
         case .openChevron: "chevron.down"
         case .popupChevron: "chevron.up.chevron.down"

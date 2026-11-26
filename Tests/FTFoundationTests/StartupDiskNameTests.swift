@@ -49,12 +49,12 @@ struct StartupDiskNameTests {
         let content = InfoPanelModel.itemContent(
             item: item, pending: false, volume: nil, isVolumeRoot: false, hasFolderSize: false, folderSize: nil,
             opensWith: .hidden, startupDiskName: Self.name)
-        #expect(content.rows.first { $0.label == "Where" }?.value == .whereLink(label: "Data", path: "/"))
+        #expect(content.rows.first { $0.label == "Where" }?.value == .place("Data"))
 
         let selection = InfoSelection(count: 2, folderCount: 0, fileCount: 2, totalBytes: 2, parentPath: "/")
-        let rows = InfoPanelModel.selectionRows(
-            selection, hasFolderSize: false, folderSize: nil, startupDiskName: Self.name)
-        #expect(rows.first { $0.label == "Where" }?.value == .whereLink(label: "Data", path: "/"))
+        let rows = InfoPanelModel.selectionContent(
+            selection, facts: .init(), hasFolderSize: false, folderSize: nil, startupDiskName: Self.name)[0].rows
+        #expect(rows.first { $0.label == "Where" }?.value == .place("Data"))
     }
 
     @Test func sidebarLocationsAndTree() {

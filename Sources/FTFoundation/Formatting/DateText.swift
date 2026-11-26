@@ -127,4 +127,13 @@ public final class DateText: @unchecked Sendable {
     public func exactDateTime(_ date: Date) -> String {
         exact.string(from: date)
     }
+
+    /// "Nov 18 – Nov 24, 2026" for the dates of several items; one day alone, "Nov 24, 2026".
+    public func dayRange(_ first: Date, _ last: Date) -> String {
+        let (from, to) = first <= last ? (first, last) : (last, first)
+        let toText = dayYear.string(from: to)
+        if dayYear.string(from: from) == toText { return toText }
+        let sameYear = calendar.component(.year, from: from) == calendar.component(.year, from: to)
+        return "\(sameYear ? day.string(from: from) : dayYear.string(from: from)) – \(toText)"
+    }
 }

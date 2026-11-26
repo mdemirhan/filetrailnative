@@ -472,8 +472,6 @@ extension ExplorerWindowlessTests {
                     "the menu's Open With",
                     { tab.contextMenus.contextMenu(open: [inner.paths[0]], with: Self.zed, kind: nil) }
                 ),
-                ("the Info panel's Terminal", { info.actions.openInTerminal(folder) }),
-                ("the Info panel's Edit", { info.actions.edit(note) }),
                 ("the Info panel's Open With", { info.actions.runOpenWith(Self.zed, paths: [note], kind: nil) }),
                 ("the Info panel's Open", { info.actions.openExternally(note) }),
             ]
@@ -481,7 +479,6 @@ extension ExplorerWindowlessTests {
                 action()
                 #expect(await waitUntil { uses == index + 1 }, "\(name)")
             }
-            info.actions.showInFinder(folder)
             await settle()
             #expect(uses == actions.count)
             await harness.close()

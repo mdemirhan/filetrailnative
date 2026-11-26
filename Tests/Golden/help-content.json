@@ -951,6 +951,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
               ]
@@ -1192,6 +1193,7 @@
                 ["The list", "Previews"],
                 ["The list", "Folder views"],
                 ["The list", "Hidden files"],
+                ["Information", "Info panel"],
                 ["Appearance", "Full screen"]
               ]
             }
@@ -1294,7 +1296,7 @@
                 ["Path bar", "Double-click the bar"]
               ]
             },
-            {"shortcuts": [], "topic": "views", "rows": [["Information", "Folder sizes"]]}
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info row"], ["Information", "Folder sizes"]]}
           ],
           [{"shortcuts": [], "topic": "search", "rows": [["Glob patterns", "*.pdf"]]}],
           [
@@ -2320,6 +2322,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
               ]
@@ -2556,6 +2559,7 @@
                 ["The list", "Icon size and column width"],
                 ["The list", "Previews"],
                 ["The list", "Folder views"],
+                ["Information", "Info panel"],
                 ["Appearance", "Full screen"]
               ]
             }
@@ -2648,7 +2652,7 @@
                 ["Path bar", "Double-click the bar"]
               ]
             },
-            {"shortcuts": [], "topic": "views", "rows": [["Information", "Folder sizes"]]}
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info row"], ["Information", "Folder sizes"]]}
           ],
           [{"shortcuts": [], "topic": "search", "rows": [["Glob patterns", "*.pdf"]]}],
           [
@@ -3349,6 +3353,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
               ]
@@ -3584,6 +3589,7 @@
                 ["The list", "Previews"],
                 ["The list", "Folder views"],
                 ["The list", "Hidden files"],
+                ["Information", "Info panel"],
                 ["Appearance", "Full screen"]
               ]
             }
@@ -3686,7 +3692,7 @@
                 ["Path bar", "Double-click the bar"]
               ]
             },
-            {"shortcuts": [], "topic": "views", "rows": [["Information", "Folder sizes"]]}
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info row"], ["Information", "Folder sizes"]]}
           ],
           [{"shortcuts": [], "topic": "search", "rows": [["Glob patterns", "*.pdf"]]}],
           [
@@ -4419,6 +4425,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
               ]
@@ -4659,6 +4666,7 @@
                 ["The list", "Previews"],
                 ["The list", "Folder views"],
                 ["The list", "Hidden files"],
+                ["Information", "Info panel"],
                 ["Appearance", "Full screen"]
               ]
             }
@@ -4761,7 +4769,7 @@
                 ["Path bar", "Double-click the bar"]
               ]
             },
-            {"shortcuts": [], "topic": "views", "rows": [["Information", "Folder sizes"]]}
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info row"], ["Information", "Folder sizes"]]}
           ],
           [{"shortcuts": [], "topic": "search", "rows": [["Glob patterns", "*.pdf"]]}],
           [
@@ -5465,6 +5473,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
               ]
@@ -5699,6 +5708,7 @@
                 ["The list", "Previews"],
                 ["The list", "Folder views"],
                 ["The list", "Hidden files"],
+                ["Information", "Info panel"],
                 ["Appearance", "Full screen"]
               ]
             }
@@ -5795,7 +5805,7 @@
                 ["Path bar", "Double-click the bar"]
               ]
             },
-            {"shortcuts": [], "topic": "views", "rows": [["Information", "Folder sizes"]]}
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info row"], ["Information", "Folder sizes"]]}
           ],
           [{"shortcuts": [], "topic": "search", "rows": [["Glob patterns", "*.pdf"]]}],
           [
@@ -6574,6 +6584,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
               ]
@@ -6847,7 +6858,7 @@
                 ["Path bar", "Double-click the bar"]
               ]
             },
-            {"shortcuts": [], "topic": "views", "rows": [["Information", "Folder sizes"]]}
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info row"], ["Information", "Folder sizes"]]}
           ],
           [{"shortcuts": [], "topic": "search", "rows": [["Glob patterns", "*.pdf"]]}],
           [
@@ -7553,6 +7564,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
               ]
@@ -7790,6 +7802,7 @@
                 ["The list", "Icon size and column width"],
                 ["The list", "Previews"],
                 ["The list", "Folder views"],
+                ["Information", "Info panel"],
                 ["Appearance", "Full screen"]
               ]
             }
@@ -7882,7 +7895,7 @@
                 ["Path bar", "Double-click the bar"]
               ]
             },
-            {"shortcuts": [], "topic": "views", "rows": [["Information", "Folder sizes"]]}
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info row"], ["Information", "Folder sizes"]]}
           ],
           [{"shortcuts": [], "topic": "search", "rows": [["Glob patterns", "*.pdf"]]}],
           [
@@ -8611,6 +8624,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
               ]
@@ -8846,6 +8860,7 @@
                 ["The list", "Previews"],
                 ["The list", "Folder views"],
                 ["The list", "Hidden files"],
+                ["Information", "Info panel"],
                 ["Appearance", "Full screen"]
               ]
             }
@@ -8948,7 +8963,7 @@
                 ["Path bar", "Double-click the bar"]
               ]
             },
-            {"shortcuts": [], "topic": "views", "rows": [["Information", "Folder sizes"]]}
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info row"], ["Information", "Folder sizes"]]}
           ],
           [{"shortcuts": [], "topic": "search", "rows": [["Glob patterns", "*.pdf"]]}],
           [
@@ -9718,6 +9733,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
               ]
@@ -9942,6 +9958,7 @@
                 ["The list", "Icon size and column width"],
                 ["The list", "Previews"],
                 ["The list", "Folder views"],
+                ["Information", "Info panel"],
                 ["Appearance", "Full screen"]
               ]
             }
@@ -10028,7 +10045,7 @@
                 ["Path bar", "Double-click the bar"]
               ]
             },
-            {"shortcuts": [], "topic": "views", "rows": [["Information", "Folder sizes"]]}
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info row"], ["Information", "Folder sizes"]]}
           ],
           [{"shortcuts": [], "topic": "search", "rows": [["Glob patterns", "*.pdf"]]}],
           [
@@ -10745,6 +10762,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
               ]
@@ -10980,6 +10998,7 @@
                 ["The list", "Previews"],
                 ["The list", "Folder views"],
                 ["The list", "Hidden files"],
+                ["Information", "Info panel"],
                 ["Appearance", "Full screen"]
               ]
             }
@@ -11082,7 +11101,7 @@
                 ["Path bar", "Double-click the bar"]
               ]
             },
-            {"shortcuts": [], "topic": "views", "rows": [["Information", "Folder sizes"]]}
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info row"], ["Information", "Folder sizes"]]}
           ],
           [{"shortcuts": [], "topic": "search", "rows": [["Glob patterns", "*.pdf"]]}],
           [
@@ -11837,6 +11856,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
               ]
@@ -12061,6 +12081,7 @@
                 ["The list", "Icon size and column width"],
                 ["The list", "Previews"],
                 ["The list", "Folder views"],
+                ["Information", "Info panel"],
                 ["Appearance", "Full screen"]
               ]
             }
@@ -12159,7 +12180,7 @@
                 ["Path bar", "Double-click the bar"]
               ]
             },
-            {"shortcuts": [], "topic": "views", "rows": [["Information", "Folder sizes"]]}
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info row"], ["Information", "Folder sizes"]]}
           ],
           [{"shortcuts": [], "topic": "search", "rows": [["Glob patterns", "*.pdf"]]}],
           [
@@ -12920,6 +12941,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
               ]
@@ -13161,6 +13183,7 @@
                 ["The list", "Previews"],
                 ["The list", "Folder views"],
                 ["The list", "Hidden files"],
+                ["Information", "Info panel"],
                 ["Appearance", "Full screen"]
               ]
             }
@@ -13263,7 +13286,7 @@
                 ["Path bar", "Double-click the bar"]
               ]
             },
-            {"shortcuts": [], "topic": "views", "rows": [["Information", "Folder sizes"]]}
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info row"], ["Information", "Folder sizes"]]}
           ],
           [{"shortcuts": [], "topic": "search", "rows": [["Glob patterns", "*.pdf"]]}],
           [
@@ -13995,6 +14018,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
               ]
@@ -14230,6 +14254,7 @@
                 ["The list", "Previews"],
                 ["The list", "Folder views"],
                 ["The list", "Hidden files"],
+                ["Information", "Info panel"],
                 ["Appearance", "Full screen"]
               ]
             }
@@ -14332,7 +14357,7 @@
                 ["Path bar", "Double-click the bar"]
               ]
             },
-            {"shortcuts": [], "topic": "views", "rows": [["Information", "Folder sizes"]]}
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info row"], ["Information", "Folder sizes"]]}
           ],
           [{"shortcuts": [], "topic": "search", "rows": [["Glob patterns", "*.pdf"]]}],
           [
@@ -15065,6 +15090,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
               ]
@@ -15294,6 +15320,7 @@
                 ["The list", "Previews"],
                 ["The list", "Folder views"],
                 ["The list", "Hidden files"],
+                ["Information", "Info panel"],
                 ["Appearance", "Full screen"]
               ]
             }
@@ -15402,7 +15429,7 @@
                 ["Path bar", "Double-click the bar"]
               ]
             },
-            {"shortcuts": [], "topic": "views", "rows": [["Information", "Folder sizes"]]}
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info row"], ["Information", "Folder sizes"]]}
           ],
           [{"shortcuts": [], "topic": "search", "rows": [["Glob patterns", "*.pdf"]]}],
           [
@@ -15605,6 +15632,7 @@
                   ["The list", "Previews"],
                   ["The list", "Folder views"],
                   ["The list", "Hidden files"],
+                  ["Information", "Info panel"],
                   ["Appearance", "Full screen"]
                 ]
               }
@@ -15708,6 +15736,7 @@
                     ["The list", "Previews"],
                     ["The list", "Folder views"],
                     ["The list", "Hidden files"],
+                    ["Information", "Info panel"],
                     ["Appearance", "Full screen"]
                   ]
                 }
@@ -16456,6 +16485,7 @@
                 ["The list", "Sort"],
                 ["The list", "Groups"],
                 ["The list", "Pin Filter"],
+                ["Information", "Info row"],
                 ["Information", "Folder sizes"],
                 ["Information", "What takes the space"]
               ]
@@ -16695,6 +16725,7 @@
                 ["The list", "Previews"],
                 ["The list", "Folder views"],
                 ["The list", "Hidden files"],
+                ["Information", "Info panel"],
                 ["Appearance", "Full screen"]
               ]
             }
@@ -16797,7 +16828,7 @@
                 ["Path bar", "Double-click the bar"]
               ]
             },
-            {"shortcuts": [], "topic": "views", "rows": [["Information", "Folder sizes"]]}
+            {"shortcuts": [], "topic": "views", "rows": [["Information", "Info row"], ["Information", "Folder sizes"]]}
           ],
           [{"shortcuts": [], "topic": "search", "rows": [["Glob patterns", "*.pdf"]]}],
           [

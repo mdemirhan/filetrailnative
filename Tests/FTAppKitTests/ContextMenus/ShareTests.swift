@@ -101,20 +101,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // The Info panel's Share shares the item it describes.
-        @Test func theInfoPanelSharesItsItem() async throws {
-            let (harness, tab, shared) = try await open()
-            tab.perform(.toggleInfoPanel)
-            harness.layout(tab)
-            let note = try path("note.txt", tab)
-            tab.content.select(paths: [note])
-            let info = try #require(tab.infoController)
-            #expect(await waitUntil { info.resolvedItemPath == note })
-            info.panel.onAction(.share)
-            #expect(shared() == [[note]])
-            await harness.close()
-        }
-
         // From the menu the popover hangs under the lead item of the selection, inside the part of the list in
         // sight; from a button, under the button.
         @Test func thePopoverHangsUnderTheLeadItemOrTheButtonPressed() async throws {
