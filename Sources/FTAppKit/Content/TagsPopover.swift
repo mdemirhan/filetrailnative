@@ -151,10 +151,14 @@ final class TagsPopover: NSObject, NSPopoverDelegate {
 
     private func write(_ choice: TagChange, keeping key: String?) {
         let previous = writing
+        // The write keeps what it needs itself: a choice still waiting its turn when the popover closes is written all
+        // the same, as the list showed it.
+        let change = change
+        let paths = paths
         writing = Task { @MainActor [weak self] in
             await previous?.value
-            guard let self else { return }
-            guard let read = await self.change(choice, self.paths) else { return }
+            let read = await change(choice, paths)
+            guard let self, let read else { return }
             self.items = read
             self.rebuild(keeping: self.view.selectedKey ?? key)
         }

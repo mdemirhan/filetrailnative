@@ -36,10 +36,15 @@ final class InfoController {
     private var observation: ExplorerWindowObservation?
     private var relativeRelease: RelativeClock.Release?
     private var refreshQueued = false
-    // The tags: of the items last read, and those being read; stale once they changed, shown until read again.
+    // The tags: of the items last read, and those asked for (waiting or being read); stale once they changed, shown
+    // until read again. Only the answer to the latest request is kept.
     private var tagsRead: (key: [DiskPath], value: FinderTagsOnItems)?
     private var tagsAsked: [DiskPath]?
+    private var tagsRequest = 0
+    private var tagsTimer: DispatchWorkItem?
     private var tagsStale = false
+    /// Reads the tags of the items (tests put their own).
+    var tagsReader: @Sendable ([String]) -> FinderTagsOnItems = { FinderTags.onItems($0, sparingAsked: true) }
     /// The items the Tags row describes, for its popover.
     private var tagPaths: [String] = []
     let actions: InfoActions
@@ -89,6 +94,7 @@ final class InfoController {
     isolated deinit {
         relativeRelease?()
         fetchTimer?.cancel()
+        tagsTimer?.cancel()
     }
 
     /// A pane's list read more of its items' details: the panel and the row update when it is the active one.
@@ -281,13 +287,29 @@ final class InfoController {
         return .read(InfoTags(tags: tags, itemCount: paths.count, editable: editable))
     }
 
+    /// Asks after the wait the item's properties have (`InfoMetrics.fetchDelay`), in place of what was waiting: a
+    /// selection that grows item by item reads only where it stops, not every selection on the way.
     private func requestTags(_ paths: [String], key: [DiskPath]) {
         guard tagsAsked != key else { return }
         tagsAsked = key
         tagsStale = false
+        tagsRequest += 1
+        let request = tagsRequest
+        tagsTimer?.cancel()
+        let work = DispatchWorkItem { [weak self] in
+            MainActor.assumeIsolated { self?.readTags(paths, key: key, request: request) }
+        }
+        tagsTimer = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + InfoMetrics.fetchDelay, execute: work)
+    }
+
+    private func readTags(_ paths: [String], key: [DiskPath], request: Int) {
+        tagsTimer = nil
+        let reader = tagsReader
         Task { @MainActor [weak self] in
-            let read = await BlockingWork.run(qos: .userInitiated) { FinderTags.onItems(paths, sparingAsked: true) }
-            guard let self, self.tagsAsked == key else { return }
+            let read = await BlockingWork.run(qos: .userInitiated) { reader(paths) }
+            // An answer older than the latest request is dropped: the items changed, or were read again, since.
+            guard let self, self.tagsRequest == request else { return }
             self.tagsAsked = nil
             self.tagsRead = (key, read)
             self.update()
@@ -378,6 +400,9 @@ final class InfoController {
             // Neither shows: nothing is described or asked for. Opening one updates them (`.panels`).
             fetchTimer?.cancel()
             fetchTimer = nil
+            tagsTimer?.cancel()
+            tagsTimer = nil
+            tagsAsked = nil
             propertiesLoad.stop()
             volumeRequested = nil
             auto.setPath(nil)

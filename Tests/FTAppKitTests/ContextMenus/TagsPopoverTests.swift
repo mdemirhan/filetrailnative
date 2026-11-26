@@ -126,6 +126,93 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // A choice waiting behind a slow write is written though the popover closes before its turn: the list had
+        // shown it as made.
+        @Test func aChoiceStillWaitingIsWrittenAfterThePopoverCloses() async throws {
+            let writes = TagReads()
+            var popover: TagsPopover? = TagsPopover(
+                paths: ["/tmp/none"], items: FinderTagsOnItems(itemCount: 1, tags: [], counts: [:], failures: []),
+                title: "Tags"
+            ) { _, _ in
+                writes.add()
+                try? await Task.sleep(for: .milliseconds(200))
+                return nil
+            }
+            let rows = try #require(popover?.allRows)
+            popover?.choose(rows[0])
+            popover?.choose(rows[1])
+            #expect(await waitUntil { writes.count == 1 })
+            weak let gone = popover
+            popover = nil
+            #expect(await waitUntil { writes.count == 2 })
+            #expect(await waitUntil { gone == nil })
+        }
+
+        func tags(_ name: String) -> FinderTagsOnItems {
+            FinderTagsOnItems(
+                itemCount: 1, tags: [FinderTag(name: name, color: nil)], counts: [name.lowercased(): 1], failures: [])
+        }
+
+        // A selection that changes again before the wait is over reads the tags once, for where it stopped.
+        @Test func theInfoPanelReadsTagsOnlyWhereTheSelectionStops() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await opened(harness)
+            let paths = files(tab)
+            let info = try #require(tab.infoController)
+            let reads = TagReads()
+            let last = tags("Last")
+            info.tagsReader = { asked in
+                reads.add()
+                return asked.count == 3 ? last : FinderTagsOnItems(itemCount: 1, tags: [], counts: [:], failures: [])
+            }
+            tab.perform(.toggleInfoPanel)
+            harness.layout(tab)
+            #expect(await waitUntil { reads.count == 1 })
+            for count in 1...3 {
+                tab.content.select(paths: Array(paths.prefix(count)))
+                info.update()
+            }
+            harness.layout(tab)
+            #expect(await waitUntil { infoTags(tab) == "Last (1)" })
+            #expect(reads.count == 2)
+            await harness.close()
+        }
+
+        // The tags changed while they were being read: the read asked for after the change is the one shown, though
+        // the one before it answers first.
+        @Test func theInfoPanelKeepsTheTagsReadAfterAChange() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await opened(harness)
+            let path = files(tab)[0]
+            let info = try #require(tab.infoController)
+            let reads = TagReads()
+            let (first, second) = (DispatchSemaphore(value: 0), DispatchSemaphore(value: 0))
+            let (old, new) = (tags("Old"), tags("New"))
+            info.tagsReader = { asked in
+                guard asked == [path] else {
+                    return FinderTagsOnItems(itemCount: asked.count, tags: [], counts: [:], failures: [])
+                }
+                if reads.add() == 1 {
+                    first.wait()
+                    return old
+                }
+                second.wait()
+                return new
+            }
+            tab.perform(.toggleInfoPanel)
+            harness.layout(tab)
+            tab.content.select(paths: [path])
+            #expect(await waitUntil { reads.count == 1 })
+            tab.content.tagsChanged([path])
+            #expect(await waitUntil { reads.count == 2 })
+            first.signal()
+            try await Task.sleep(for: .milliseconds(100))
+            second.signal()
+            harness.layout(tab)
+            #expect(await waitUntil { infoTags(tab) == "New" })
+            await harness.close()
+        }
+
         // The filter narrows the list as a name filter does, and highlights the first that matches, which Return
         // then takes.
         @Test func theFilterNarrowsTheListAndHighlightsTheFirst() async throws {
@@ -182,6 +269,19 @@ extension ExplorerWindowlessTests {
                             .map { Set($0) == [paths[1], paths[2]] } == true
                 })
             await harness.close()
+        }
+    }
+}
+
+/// Counts reads or writes made off the main thread.
+final class TagReads: @unchecked Sendable {
+    private let lock = NSLock()
+    private var made = 0
+    var count: Int { lock.withLock { made } }
+    @discardableResult func add() -> Int {
+        lock.withLock {
+            made += 1
+            return made
         }
     }
 }
