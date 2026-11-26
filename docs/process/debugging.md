@@ -24,6 +24,9 @@ Six causes found so far, worth a look first:
   A held Option opened the Info panel's Open With as Always Open With (2026-11-21);
   a held mouse button made the Previews pane take a scroll for a drag's and its listings select nothing, which failed three Previews tests now and then, one of them in a release's run (2026-11-21): the stall samples showed an idle app and the test polling, nothing stuck.
   Such a read goes through a seam a test can replace (`InfoController.optionHeld`, `PreviewsViewController.mouseButtonHeld`, which `WindowlessScope` sets to up), and a failure that comes only while someone uses the Mac points here.
+  An event a test makes reads it too: a `CGEvent` made without a source carries the keys held as it is made.
+  With Shift held, a line-based wheel notch comes sideways (`scrollingDeltaY` 0), which failed `aWheelNotchMovesTheCompactListFortySideways` once in a run (2026-11-26): 20,000 notches made in the test's own harness all came as one line, and the same notch made with Shift came as 0 with the list unmoved, the failure's numbers.
+  Tests make their events from a source of their own (`systemKeyEvent`, `systemWheelEvent`).
 - **Swift's shared threads held by work that blocks.**
   Tests that held a stand-in disk on those threads stalled a whole bundle for 60 s.
   Work that can block goes through `BlockingWork.run`.

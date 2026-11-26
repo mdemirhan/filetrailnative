@@ -16,6 +16,19 @@ func systemKeyEvent(_ code: UInt16, _ flags: CGEventFlags = []) throws -> NSEven
     return try #require(NSEvent(cgEvent: event))
 }
 
+/// A wheel event as the system makes it, from a source of its own: one made without a source carries the keys someone
+/// at the Mac holds as it is made, and with Shift a line-based notch comes sideways (`scrollingDeltaY` 0,
+/// `scrollingDeltaX` the notch), with Control the Compact List leaves the wheel to AppKit.
+@MainActor
+func systemWheelEvent(_ units: CGScrollEventUnit, wheelCount: UInt32 = 1, _ wheel1: Int32) throws -> NSEvent {
+    let source = CGEventSource(stateID: .privateState)
+    let event = try #require(
+        CGEvent(
+            scrollWheelEvent2Source: source, units: units, wheelCount: wheelCount, wheel1: wheel1, wheel2: 0,
+            wheel3: 0))
+    return try #require(NSEvent(cgEvent: event))
+}
+
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct KeysAndPressesTests {

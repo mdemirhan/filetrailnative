@@ -83,10 +83,7 @@ extension ExplorerWindowlessTests {
             let (_, probe) = try await harness.openGrid(.viewAsList, files: 400)
             let compact = try #require(probe.compact)
             #expect(compact.scroll.wheelScrollsSideways)
-            let event = try #require(
-                CGEvent(
-                    scrollWheelEvent2Source: nil, units: .pixel, wheelCount: 2, wheel1: -60, wheel2: 0, wheel3: 0
-                ).flatMap { NSEvent(cgEvent: $0) })
+            let event = try systemWheelEvent(.pixel, wheelCount: 2, -60)
             compact.scroll.scrollWheel(with: event)
             #expect(compact.scroll.contentView.bounds.origin.x == 60)
             #expect(compact.scroll.contentView.bounds.origin.y == 0)

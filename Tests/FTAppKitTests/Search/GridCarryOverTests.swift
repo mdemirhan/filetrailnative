@@ -51,16 +51,12 @@ extension ExplorerWindowlessTests {
             let (_, probe) = try await harness.openGrid(.viewAsList, files: 400)
             let scroll = try #require(probe.pane?.scroll as? ItemGridScrollView)
             let start = scroll.contentView.bounds.origin.x
-            let cgEvent = try #require(
-                CGEvent(scrollWheelEvent2Source: nil, units: .line, wheelCount: 1, wheel1: -1, wheel2: 0, wheel3: 0))
-            let event = try #require(NSEvent(cgEvent: cgEvent))
+            let event = try systemWheelEvent(.line, -1)
             #expect(!event.hasPreciseScrollingDeltas)
+            // One line down, as made: AppKit speeds up only precise deltas, never a line-based notch.
+            #expect(event.scrollingDeltaY == -1)
             scroll.scrollWheel(with: event)
-            // The notch's lines as the event reports them: macOS may accelerate wheel events made close together, as
-            // suites running side by side make them.
-            let lines = -event.scrollingDeltaY
-            #expect(lines >= 1)
-            #expect(scroll.contentView.bounds.origin.x - start == lines * CGFloat(ItemGridScrollView.wheelLineStep))
+            #expect(scroll.contentView.bounds.origin.x - start == CGFloat(ItemGridScrollView.wheelLineStep))
             await harness.close()
         }
 

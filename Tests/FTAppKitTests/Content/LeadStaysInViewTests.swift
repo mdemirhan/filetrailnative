@@ -329,12 +329,11 @@ extension ExplorerWindowlessTests {
             let surface: NSView = grid.collection
             let first = grid.collection.frameForItem(at: 0)
             let start = surface.convert(NSPoint(x: first.midX, y: max(0, first.minY - 1)), to: nil)
-            let wheel = try #require(
-                CGEvent(scrollWheelEvent2Source: nil, units: .pixel, wheelCount: 1, wheel1: -300, wheel2: 0, wheel3: 0))
+            let wheel = try systemWheelEvent(.pixel, -300)
             let end = NSPoint(x: start.x, y: start.y - 20)
             var queue = [
                 try #require(MouseEvents.event(.leftMouseDragged, at: end, in: window)),
-                try #require(NSEvent(cgEvent: wheel)),
+                wheel,
                 try #require(MouseEvents.event(.leftMouseUp, at: end, in: window)),
             ]
             let original = PointerTracker.source
