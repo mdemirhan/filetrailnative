@@ -1,72 +1,303 @@
 # Decisions: Names, search and filters
 
-How names are ordered and matched, what search and the filters find, batch rename's patterns, and the Go To, Move To and Extract To box. Part of the owner's decisions: [the index](../decisions.md) lists the other parts, and [principles.md](../principles.md) says how a decision is weighed and when to ask about one.
+How names are ordered and matched, what search and the filters find, batch rename's patterns, and the Go To, Move To and Extract To box.
+Part of the owner's decisions: [the index](../decisions.md) lists the other parts, and [principles.md](../principles.md) says how a decision is weighed and when to ask about one.
 
 ## Order and matching
 
-- **Names sort one way everywhere, in the user's language, with numbers in order.** One order (ICU's collator for the user's locale, numeric, ignoring case and accents, read once at launch) serves the folder listing, the tree, path suggestions, search results, Open With and volumes, so `file2` comes before `file10` in search results as in a folder, and a Swedish or Turkish user gets their alphabet's order, as in Finder. Kind labels and extensions compare as words, digit by digit.
-- **Names the language holds equal come in a fixed order.** `a.ts` and `A.ts`, `Résumé.pdf` and `résumé.pdf`, `file1` and `file01` compare equal in the user's language; they are then ordered by their text, byte by byte, in folders, the tree and search results, whatever order the disk gave them. A descending sort reverses it with the rest.
-- **Accents match one way, however a name is stored.** Wherever a name is matched against what is typed (the filters, Plain Text search, the sidebar's type-to-select, Go To), a plain letter finds the letter with or without an accent, and a letter typed with its accent finds only that letter, whether the disk keeps it composed or decomposed. One matcher (`NameMatcher`) holds the rule; a stored name is never changed. Everywhere else paths compare byte for byte (see must-stay.md).
-  - Only Latin, Greek and Cyrillic letters lose their accents; a letter that isn't an accent on another (ø, ł, ı) stays its own. In scripts whose marks don't compose with their letter, the letter alone finds it under any marks, and typed with marks finds those marks only.
-  - Case folds as Unicode folds it where that gives one letter ("ſ" is "s"); "ß" stays "ß". A ligature is found by its letters, and a full-width letter or digit by the plain one.
+- **Names sort one way everywhere, in the user's language, with numbers in order.**
+  One order (ICU's collator for the user's locale, numeric, ignoring case and accents, read once at launch) serves the folder listing, the tree, path suggestions, search results, Open With and volumes, so `file2` comes before `file10` in search results as in a folder, and a Swedish or Turkish user gets their alphabet's order, as in Finder.
+  Kind labels and extensions compare as words, digit by digit.
+- **Names the language holds equal come in a fixed order.**
+  `a.ts` and `A.ts`, `Résumé.pdf` and `résumé.pdf`, `file1` and `file01` compare equal in the user's language;
+  they are then ordered by their text, byte by byte, in folders, the tree and search results, whatever order the disk gave them.
+  A descending sort reverses it with the rest.
+- **Accents match one way, however a name is stored.**
+  Wherever a name is matched against what is typed (the filters, Plain Text search, the sidebar's type-to-select, Go To), a plain letter finds the letter with or without an accent, and a letter typed with its accent finds only that letter, whether the disk keeps it composed or decomposed.
+  One matcher (`NameMatcher`) holds the rule;
+  a stored name is never changed.
+  Everywhere else paths compare byte for byte (see must-stay.md).
+  - Only Latin, Greek and Cyrillic letters lose their accents;
+    a letter that isn't an accent on another (ø, ł, ı) stays its own.
+    In scripts whose marks don't compose with their letter, the letter alone finds it under any marks, and typed with marks finds those marks only.
+  - Case folds as Unicode folds it where that gives one letter ("ſ" is "s");
+    "ß" stays "ß".
+    A ligature is found by its letters, and a full-width letter or digit by the plain one.
 
 ## The filter
 
-- **Typing finds names by their letters in order.** In a folder, Fuzzy keeps a name that has the letters typed in that order, with no rule about where words start; Contains keeps the letters side by side. Fuzzy is the default.
-  - The mode belongs to the view, a pane's folder list or a search's results (2026-11-15). A view opens in the mode chosen last anywhere, and after that only its own bar changes it; no other view changes with it, nor any filter already typed. A pane is saved with its folder's mode; the mode of a search's results is not saved, as the results aren't. There is no setting for it. Replaced one mode for the app, which switched every other pane, and a Settings item that did only what the bar does.
+- **Typing finds names by their letters in order.**
+  In a folder, Fuzzy keeps a name that has the letters typed in that order, with no rule about where words start;
+  Contains keeps the letters side by side.
+  Fuzzy is the default.
+  - The mode belongs to the view, a pane's folder list or a search's results (2026-11-15).
+    A view opens in the mode chosen last anywhere, and after that only its own bar changes it;
+    no other view changes with it, nor any filter already typed.
+    A pane is saved with its folder's mode;
+    the mode of a search's results is not saved, as the results aren't.
+    There is no setting for it.
+    Replaced one mode for the app, which switched every other pane, and a Settings item that did only what the bar does.
   - Over search results the folder a result is in is always matched as Contains, as letters scattered over a path would match nearly every result.
-  - The selection goes to the first name starting with the text, then the first containing it, then the best fit. An item selected by hand that the filter comes to hide leaves the selection, so no key acts on an item out of sight.
+  - The selection goes to the first name starting with the text, then the first containing it, then the best fit.
+    An item selected by hand that the filter comes to hide leaves the selection, so no key acts on an item out of sight.
   - A filter that only grew looks only through what it kept, unless a key changed a letter typed before (a mark after "ạ" makes "ậ"): then it looks through everything.
-- **The filter is a bar across the foot of the list** (2026-11-15). While a filter is typed or pinned, an opaque bar 30 pt tall lies under the list: the text, the count, Fuzzy and Contains as a segmented control, the pin and the ✕, and while Space has a command, a hint that ⇧Space types a space (below). The list ends above it, so no item is under it. Text that matches nothing turns it red. Its controls take only clicks, so typing stays in the list, and a press anywhere on it makes its pane the active one. Replaced a glass pill floating over the foot of the list, which covered items. Dropped: a find bar with a field and Done, the path bar turning into the filter, the filter as a token in the path bar.
-- **Space keeps its command while a filter is typed, and ⇧Space types a space** (the owner, 2026-11-25). Space never starts a filter. Once one is typed, in a folder or over search results, Space runs the command Settings → Shortcuts gives it, as without a filter (Open in Viewer, or Quick Look), and the filter stays; ⇧Space types the space, unless a command was given ⇧Space. While Space has a command and ⇧Space has none, the filter bar says "⇧Space types a space" in the secondary color before Fuzzy and Contains, its tooltip naming Space's command, where it fits beside the symbol, the count and some of the text; it gives way first when the pane is narrow. Over search results the filter is in the results bar's field, not the bar, and Help says it. With Space given to no command, Space types the space and the bar says nothing of it. A pinned filter leaves Space to its command and shows no hint, as its typing only selects by first letters. The arrows always move the selection; the filter has no caret. ⌥⌫ takes the filter's last word back. Replaced Space typing a space whenever a filter was typed (2026-11-21), which left Space unable to open the file found until Esc ended the filter; a space is rarely needed, as Fuzzy finds the letters in order with anything between them. That had replaced a Space that typed a space for a second after each key and was Quick Look after that, which was hard to foresee: "my", a pause, then Space opened Quick Look where a space was meant.
-- **A filter can be pinned to its pane.** View ▸ Pin Filter, or the pin in the filter bar, pins the filter typed; it belongs to its pane, not the tab or a folder, and applies to every folder the pane goes to and to its search results until it is unpinned or removed. Pin Filter has no default key.
+- **The filter is a bar across the foot of the list** (2026-11-15).
+  While a filter is typed or pinned, an opaque bar 30 pt tall lies under the list: the text, the count, Fuzzy and Contains as a segmented control, the pin and the ✕, and while Space has a command, a hint that ⇧Space types a space (below).
+  The list ends above it, so no item is under it.
+  Text that matches nothing turns it red.
+  Its controls take only clicks, so typing stays in the list, and a press anywhere on it makes its pane the active one.
+  Replaced a glass pill floating over the foot of the list, which covered items.
+  Dropped: a find bar with a field and Done, the path bar turning into the filter, the filter as a token in the path bar.
+- **Space keeps its command while a filter is typed, and ⇧Space types a space** (the owner, 2026-11-25).
+  Space never starts a filter.
+  Once one is typed, in a folder or over search results, Space runs the command Settings → Shortcuts gives it, as without a filter (Open in Viewer, or Quick Look), and the filter stays;
+  ⇧Space types the space, unless a command was given ⇧Space.
+  While Space has a command and ⇧Space has none, the filter bar says "⇧Space types a space" in the secondary color before Fuzzy and Contains, its tooltip naming Space's command, where it fits beside the symbol, the count and some of the text;
+  it gives way first when the pane is narrow.
+  Over search results the filter is in the results bar's field, not the bar, and Help says it.
+  With Space given to no command, Space types the space and the bar says nothing of it.
+  A pinned filter leaves Space to its command and shows no hint, as its typing only selects by first letters.
+  The arrows always move the selection;
+  the filter has no caret. ⌥⌫ takes the filter's last word back.
+  Replaced Space typing a space whenever a filter was typed (2026-11-21), which left Space unable to open the file found until Esc ended the filter;
+  a space is rarely needed, as Fuzzy finds the letters in order with anything between them.
+  That had replaced a Space that typed a space for a second after each key and was Quick Look after that, which was hard to foresee: "my", a pause, then Space opened Quick Look where a space was meant.
+- **A filter can be pinned to its pane.**
+  View ▸ Pin Filter, or the pin in the filter bar, pins the filter typed;
+  it belongs to its pane, not the tab or a folder, and applies to every folder the pane goes to and to its search results until it is unpinned or removed.
+  Pin Filter has no default key.
   - While pinned it applies to files only, so folders always show and the pane can still be walked.
-  - It is locked: typing selects by first letters, as the sidebar's type-to-select, Backspace does nothing, and the mode can't be changed. Unpinned, the text is an ordinary typed filter again.
+  - It is locked: typing selects by first letters, as the sidebar's type-to-select, Backspace does nothing, and the mode can't be changed.
+    Unpinned, the text is an ordinary typed filter again.
   - Showing or renaming an item it hides (Reveal, Go To a file, a paste) unpins it, and a toast says so.
   - It is carried where a typed filter is (Swap Panes, Duplicate Tab) and left behind where one is (a tab moved or merged, Reopen Closed Tab, New Tab, New Window). ⌘F doesn't carry it into the search field, and nothing of it is saved at quit.
   - Dropped: a pin per folder, a second filter typed on top of the pinned one, saving a pinned filter to the Favorites.
 
 ## Search
 
-- **Search walks the disk itself** (the owner, 2026-11-24). A search runs in the app on 4 threads (`Sources/CFileTrail/search.c`, `WalkSearchRuntime`): each lists its folder with `readdir`, which reads the folder's own entries and not the items, and hands each name to the search's matcher (`SearchNameMatch`). Nothing is bundled or started for it.
-  - `readdir` and not `getattrlistbulk`: `getattrlistbulk` reads each item's attributes, which a search needs of none but those it finds, and made the walk 10–25% slower, and slower still on more threads. The hidden flag is read only of an item that matched and of a folder when it is opened.
+- **Search walks the disk itself** (the owner, 2026-11-24).
+  A search runs in the app on 4 threads (`Sources/CFileTrail/search.c`, `WalkSearchRuntime`): each lists its folder with `readdir`, which reads the folder's own entries and not the items, and hands each name to the search's matcher (`SearchNameMatch`).
+  Nothing is bundled or started for it.
+  - `readdir` and not `getattrlistbulk`: `getattrlistbulk` reads each item's attributes, which a search needs of none but those it finds, and made the walk 10–25% slower, and slower still on more threads.
+    The hidden flag is read only of an item that matched and of a folder when it is opened.
   - 4 threads, as the folder-size walk: 8 gained nothing overall and were slower on `/Applications` and `/usr`.
-  - Regex is `NSRegularExpression`, one for each thread (one shared made them wait on each other), as the highlight and batch rename use it: its syntax is ICU's. Rust's regex engine was weighed and left out: it would take a tenth off Regex searches of `/System/Library` at the cost of a Rust library to build or check in.
-  - Skip Files Ignored by Git was dropped (following `.gitignore` as Git does is a large piece of its own). A search says why it would find nothing, rather than run: a Name search with a "/" (no name has one), and a Glob or Regex that only finds names starting with a dot while hidden items are left out.
-- **A search's conditions are typed in its text** (the owner, 2026-11-24). Kind, Extension, Size, Date Modified, Created, Added and Last Opened, Tags, an attribute, permissions, and folders to leave out are words of the search field's text: `kind:pdf`, `ext:heic`, `size:>10mb`, `modified:7d`, `tag:red`, `is:locked`, `not:hidden`, `perm:755`, `skip:node_modules` (`SearchQuery`). The rest of the text is the name to find; a condition alone is a search. A word and a colon lists, under the field, what it can be; a plain word that is also a kind, an extension or a tag offers that condition, its name staying the first choice; a word whose value can't be read is searched for once it can, and is marked once the caret has left it. The magnifier's menu lists each condition after the options, flat, with its word, and picking one types it; Edit ▸ Advanced Search… (⌥⌘F, and the button at the field's end) opens the search in a box that wraps its text, says how it reads and lists every word to click (with the results closed and nothing typed it brings the pane's last search back first, text and results, in the folder it was made from, as ⌘F does: the owner, 2026-11-25; it opened empty before, with a search there to edit), and Clear Search Conditions takes the words out of the text, with no key by default and undone by ⌘Z in the field (corrected 2026-11-25: this entry named an Add Search Condition… command, which was built as Edit Search…; the magnifier's menu and the box's buttons are what add a word; named Advanced Search… before it was released, the owner, 2026-11-25: with nothing searched yet there is no search to edit, and Advanced Search is the name looked for by someone who wants to search by size, date or kind, which the box lists to click. It does no more than the field does). There is no + in the results bar, no chip row and no editor of a condition's own: the text is the one place a condition is added and changed. They are called conditions, not filters, as the results bar already has a filter. The walk checks them in the order of what each costs, the cheapest first, so that what costs most is asked of the fewest items and the search as a whole costs least (the order as built, written down 2026-11-25): a folder left out by its name, before anything else is asked of it; the name, matched from the bytes its folder lists; a kind, an extension and whether it is a link, a file or a folder, from the same entry; then the one `fstatat` the walk makes of an item it keeps, which gives size, permissions, owner, locked, only in the cloud and the dates modified and created; then Finder's flags, which say whether it is an alias, and for nearly every item whether it is broken (a link is followed and an alias resolved only for one); then Date Added; then one list of the item's attribute names, which says whether it has the marks of a download (`is:downloaded`, `from:`), tags (`tag:`, `color:`, `is:tagged`) or a date last opened at all, what it tells alone first and then the reads of the tags, the date last opened and where from, each only of an item that has it; then `access` to run and then to write, and last an empty folder, opened: each only for a search that has it, and a choice's attributes (`is:link,alias`) in the same order, stopping at the first an item has (the order corrected 2026-11-25 by measuring each, warm, on an M-series Mac: the alias check, once through its URL at 7 µs, is one call of about 2, and the date added at about 3 µs costs less than the list at 3.5 and the reads it leads to). Nothing opens a file to read what is in it; the status bar counts the items read. Picture Size (`picture:`) and Date Taken (`taken:`) were taken out before they were released (the owner, 2026-11-25): they alone opened each file, which downloads one kept in iCloud, and `taken:` before a day found every item with no such date. The condition words are tinted in the accent as the Rename sheet's marks have it, darkened on a light ground, as a yellow or green accent as it is can't be read as text. Never opened counts as long ago. Replaced, before it was released, a + in the results bar adding chips under it, each with a popover editor: two places for one search, and nothing to type. The mocks and prototypes are on the design canvas "File Trail search conditions" and the page "Search Field Prototypes".
-- **How a search's words combine, and what they say** (the owner, 2026-11-24). A space is AND, every word must match, a condition's as much as a name's; a comma in a condition's value is OR (`tag:red,blue`), for kinds, extensions, tags, attributes, permissions and folders skipped. `is:link,alias` is either, `is:hidden is:locked` both, and `not:hidden,locked` neither, as one `!` is for all of a word's values; after a comma the list offers the attributes not yet typed (the owner, 2026-11-25: with a space already AND, “link or alias” couldn't be asked at all; replaced an attribute one to a word, which could only ever say both). The walk asks a choice's attributes the cheapest first and stops at the first an item has, so `is:link,alias` asks no alias of a link. `is:file`, `is:folder` and `is:tagged` are attributes too (the owner, 2026-11-25): a folder is what `kind:folder` finds, a package not being one; a file is anything else but a link, apps, other packages and aliases included (`is:file not:alias` leaves aliases out); tagged is having any tag, told from the list of the item's attribute names that `tag:` reads. `not:` is in the magnifier's menu and the Advanced Search box after `is:`, as Attribute Is Not (the owner, 2026-11-25; it was typed only, `is:` standing for both). A word turns once: `!not:executable` and `not:!executable` are `is:executable`; `!not:!executable`, `!!` and `not:not:` can't be read, say so, and offer nothing (the owner, 2026-11-25: three turns are more likely a slip than meant). A tag's or a folder's name with a space or a comma in it is typed in double quotes after its word (`tag:"To Do"`, `skip:build,"My Builds"`), and the list types it so; a quote left open runs to the end of the text, the word being one still typed (the owner, 2026-11-25; before, such a name couldn't be searched, and its row typed another search). `skip:` names a folder as Plain Text names one: whole, whatever its capitals, a plain letter being the letter with or without its accent, however the disk stores it (the owner, 2026-11-25; replaced byte for byte, which `skip:Node_Modules` slipped past). `!` asks for what follows it not, before a value or the whole word alike (`kind:!pdf` is `!kind:pdf`; `ext:!tmp`, `perm:!777`, `size:!1mb`, `modified:!today`; `is:!hidden` is `not:hidden`), and before a word of the name (`!draft`); a folder skipped is already left out. Of a condition, `!!` can't be read, nor one `!` before the word and another before its value, nor one before a tag that isn't the first (`tag:!red,blue` is neither; `tag:red,!blue` says nothing); before a word of the name a second `!` is part of the word (`!!draft` leaves out names with “!draft”; of a condition only, 2026-11-25). A size not asked for is still a file's: folders, which have none, aren't found by it. A size alone is that size to its last digit typed, as the Size column starts (`1mb` is 1 MB up to 2 MB, `2.11kb` 2.11 up to 2.12 KB, `2.10kb` 2.10 up to 2.11, `1000b` 1,000 bytes); `k`, `m` and `g` are `kb`, `mb` and `gb`. A size alone with a digit finer than a byte (`1.5b`, `1.2345kb`) is no size and can't be read, nor is a size past a million terabytes or a count of more than four digits. `>=` and `<=` take the size or the day itself in (`size:>=1mb` is 1,000,000 bytes or more, `modified:>=2026-03` from March 1 on, `<=2026-03` to March 31); `=>` and `=<`, as easily typed, are read the same but shown nowhere, and `=` alone isn't read, a value alone being that value already. A count is of whole days, today the first: `7d` is today and the six days before it, `1w` the same seven, `1m` and `1y` end today as they do, and `>7d` is whatever `7d` leaves out, so an item is in one or the other; before a count `>=` is `>` (the owner, 2026-11-25; replaced `>` counted from this moment, which left yesterday afternoon out of both `1d` and `>1d`, and a week of eight days). A range of days typed the later one first is the same days. `perm:` is an item's permissions exactly, as three or four octal digits or the letters `ls` shows; `?` is any digit or any letter, each form read by what its own characters say (`?5?` is a group digit of 5 and anything else, set-group too; `???r-x???` a group of r-x, which a set-group 2755, `r-s`, isn't). The list under the field highlights nothing once what is typed reads as it is, so Return and Tab keep it; a range is offered only once `..` is typed. While no row is highlighted the list is only an offer: ↓ goes into the results when there are any, as it does with no list, ↑ goes into the list, and Tab takes its first row; in the Advanced Search box ↓ and ↑ move the caret between the text's lines where it has them (the owner, 2026-11-25; replaced ↓ going into the list of any word that could also be a condition, “doc” or “red”, where Return then rewrote the search). A row says what it types, “Not” and all, wherever the `!` was typed. The Advanced Search box offers only a condition's values, as its buttons list the words; a Syntax Help link at the foot of every list opens Help at Search (a row of its own would read as a word to type). Replaced a size alone meaning larger than it, and a first row that Return took though it said something else (`1mb..10mb` for `1mb`).
-- **Cloud, downloaded, broken, owner, tag color, where from, no extension** (the owner, 2026-11-25). Each was measured first, warm, on an M-series Mac, against the walk's own cost of about 3 to 5 µs an item (its listing and its `fstatat`). `is:cloud` is a file whose data is only in iCloud or another cloud (`SF_DATALESS`), told free from the walk's `fstatat` and never downloaded by being found. `owner:` takes `me`, a user's name or a number, a name no user on this Mac has being one that can't be read; free from the same read. The list under the field offers me, root and the people of this Mac, the accounts it keeps itself and never a directory's on the network, read once for as long as the app runs; a name typed is asked of the system once (2026-11-25, after a review: both were asked at every key typed, which a Mac joined to a company's directory can take seconds to answer). `ext:none` is a name without an extension, `ext:.none` the extension itself; from the name. `is:downloaded` is the quarantine mark a browser or Mail gives what it downloads (not `curl`'s, and gone once `xattr -d` takes it off), and `from:` any part of an address the item was downloaded from, case aside, as Get Info's Where from: both from the list of attribute names the tags already read (about 3.5 µs, shared), and `from:` reads the addresses only of an item that has them. `color:` is a tag of that color, whatever its name, as `tag:` is a name whatever its color: the same read as the tags. `is:broken` is a symbolic link or an alias whose original is gone: a link followed once, an alias resolved without mounting anything (about 90 µs, only for an alias); one whose original is on a disk under /Volumes that isn't connected isn't counted, as it may still be there, nor is a link whose original can't be reached (a folder on the way that can't be entered: gone is only what the system says is gone), nor an alias kept only in a cloud, which resolving would download (2026-11-25, after a review). Telling `is:downloaded` from the list costs about a third of asking for the quarantine mark itself (12 to 13 µs), even for an item that has none. Dropped: duplicates and anything read inside a file, as `picture:` and `taken:` were, and `depth:`, which Search Subfolders and `skip:` cover.
-- **Plain Text search finds what the filters find, word by word** (words, the owner, 2026-11-24). Each word of the text must be in the name, in any order, and words in double quotes are one, spaces and all (`NameTerms`): `annual report` finds "Report, annual.pdf", `"annual report"` only that run, and `"kind:pdf"` is a name, not a condition; a quote with no other after it is an ordinary character. Every word of the field must match, a condition's too, and a comma in a condition's value gives a choice (`tag:red,blue`). Replaced the text as one run, spaces and all, which found nothing for two spaces typed by mistake and differed from the conditions' rule. The filters keep the text as one run. The app's matcher (`NameMatcher`, Contains) decides each word, on the name or the whole path: case aside, a plain letter finding its accented forms, an accented one only itself, however a name stores its accents, so a search and a filter typed over the same names agree. An ASCII name is matched from its bytes, without a string.
-  - Plain Text always ignores case; Glob and Regex match case only when the pattern has a capital of its own (`SmartCase`: not one of an escape such as `\S`).
-  - A Glob is translated to a regular expression that matches the whole name or path; the longest run of plain text it requires is looked for first, so most names are told without the regular expression.
-  - A regular expression that takes more than 50 ms of its thread on one name ends the search with "The pattern takes too long to match some names." (`SearchNameMatch.timePerName`); its time is read only once a match has reported its progress 256 times, as reading the clock costs as much as matching a name.
+  - Regex is `NSRegularExpression`, one for each thread (one shared made them wait on each other), as the highlight and batch rename use it: its syntax is ICU's.
+    Rust's regex engine was weighed and left out: it would take a tenth off Regex searches of `/System/Library` at the cost of a Rust library to build or check in.
+  - Skip Files Ignored by Git was dropped (following `.gitignore` as Git does is a large piece of its own).
+    A search says why it would find nothing, rather than run: a Name search with a "/" (no name has one), and a Glob or Regex that only finds names starting with a dot while hidden items are left out.
+- **A search's conditions are typed in its text** (the owner, 2026-11-24).
+  Kind, Extension, Size, Date Modified, Created, Added and Last Opened, Tags, an attribute, permissions, and folders to leave out are words of the search field's text: `kind:pdf`, `ext:heic`, `size:>10mb`, `modified:7d`, `tag:red`, `is:locked`, `not:hidden`, `perm:755`, `skip:node_modules` (`SearchQuery`).
+  The rest of the text is the name to find;
+  a condition alone is a search.
+  A word and a colon lists, under the field, what it can be;
+  a plain word that is also a kind, an extension or a tag offers that condition, its name staying the first choice;
+  a word whose value can't be read is searched for once it can, and is marked once the caret has left it.
+  The magnifier's menu lists each condition after the options, flat, with its word, and picking one types it;
+  Edit ▸ Advanced Search… (⌥⌘F, and the button at the field's end) opens the search in a box that wraps its text, says how it reads and lists every word to click (with the results closed and nothing typed it brings the pane's last search back first, text and results, in the folder it was made from, as ⌘F does: the owner, 2026-11-25; it opened empty before, with a search there to edit), and Clear Search Conditions takes the words out of the text, with no key by default and undone by ⌘Z in the field (corrected 2026-11-25: this entry named an Add Search Condition… command, which was built as Edit Search…; the magnifier's menu and the box's buttons are what add a word; named Advanced Search… before it was released, the owner, 2026-11-25: with nothing searched yet there is no search to edit, and Advanced Search is the name looked for by someone who wants to search by size, date or kind, which the box lists to click.
+  It does no more than the field does).
+  There is no + in the results bar, no chip row and no editor of a condition's own: the text is the one place a condition is added and changed.
+  They are called conditions, not filters, as the results bar already has a filter.
+  The walk checks them in the order of what each costs, the cheapest first, so that what costs most is asked of the fewest items and the search as a whole costs least (the order as built, written down 2026-11-25): a folder left out by its name, before anything else is asked of it;
+  the name, matched from the bytes its folder lists;
+  a kind, an extension and whether it is a link, a file or a folder, from the same entry;
+  then the one `fstatat` the walk makes of an item it keeps, which gives size, permissions, owner, locked, only in the cloud and the dates modified and created;
+  then Finder's flags, which say whether it is an alias, and for nearly every item whether it is broken (a link is followed and an alias resolved only for one);
+  then Date Added;
+  then one list of the item's attribute names, which says whether it has the marks of a download (`is:downloaded`, `from:`), tags (`tag:`, `color:`, `is:tagged`) or a date last opened at all, what it tells alone first and then the reads of the tags, the date last opened and where from, each only of an item that has it;
+  then `access` to run and then to write, and last an empty folder, opened: each only for a search that has it, and a choice's attributes (`is:link,alias`) in the same order, stopping at the first an item has (the order corrected 2026-11-25 by measuring each, warm, on an M-series Mac: the alias check, once through its URL at 7 µs, is one call of about 2, and the date added at about 3 µs costs less than the list at 3.5 and the reads it leads to).
+  Nothing opens a file to read what is in it;
+  the status bar counts the items read.
+  Picture Size (`picture:`) and Date Taken (`taken:`) were taken out before they were released (the owner, 2026-11-25): they alone opened each file, which downloads one kept in iCloud, and `taken:` before a day found every item with no such date.
+  The condition words are tinted in the accent as the Rename sheet's marks have it, darkened on a light ground, as a yellow or green accent as it is can't be read as text.
+  Never opened counts as long ago.
+  Replaced, before it was released, a + in the results bar adding chips under it, each with a popover editor: two places for one search, and nothing to type.
+  The mocks and prototypes are on the design canvas "File Trail search conditions" and the page "Search Field Prototypes".
+- **How a search's words combine, and what they say** (the owner, 2026-11-24).
+  A space is AND, every word must match, a condition's as much as a name's;
+  a comma in a condition's value is OR (`tag:red,blue`), for kinds, extensions, tags, attributes, permissions and folders skipped.
+  `is:link,alias` is either, `is:hidden is:locked` both, and `not:hidden,locked` neither, as one `!` is for all of a word's values;
+  after a comma the list offers the attributes not yet typed (the owner, 2026-11-25: with a space already AND, “link or alias” couldn't be asked at all; replaced an attribute one to a word, which could only ever say both).
+  The walk asks a choice's attributes the cheapest first and stops at the first an item has, so `is:link,alias` asks no alias of a link.
+  `is:file`, `is:folder` and `is:tagged` are attributes too (the owner, 2026-11-25): a folder is what `kind:folder` finds, a package not being one;
+  a file is anything else but a link, apps, other packages and aliases included (`is:file not:alias` leaves aliases out);
+  tagged is having any tag, told from the list of the item's attribute names that `tag:` reads.
+  `not:` is in the magnifier's menu and the Advanced Search box after `is:`, as Attribute Is Not (the owner, 2026-11-25; it was typed only, `is:` standing for both).
+  A word turns once: `!not:executable` and `not:!executable` are `is:executable`;
+  `!not:!executable`, `!!` and `not:not:` can't be read, say so, and offer nothing (the owner, 2026-11-25: three turns are more likely a slip than meant).
+  A tag's or a folder's name with a space or a comma in it is typed in double quotes after its word (`tag:"To Do"`, `skip:build,"My Builds"`), and the list types it so;
+  a quote left open runs to the end of the text, the word being one still typed (the owner, 2026-11-25; before, such a name couldn't be searched, and its row typed another search).
+  `skip:` names a folder as Plain Text names one: whole, whatever its capitals, a plain letter being the letter with or without its accent, however the disk stores it (the owner, 2026-11-25; replaced byte for byte, which `skip:Node_Modules` slipped past).
+  `!` asks for what follows it not, before a value or the whole word alike (`kind:!pdf` is `!kind:pdf`; `ext:!tmp`, `perm:!777`, `size:!1mb`, `modified:!today`; `is:!hidden` is `not:hidden`), and before a word of the name (`!draft`);
+  a folder skipped is already left out.
+  Of a condition, `!!` can't be read, nor one `!` before the word and another before its value, nor one before a tag that isn't the first (`tag:!red,blue` is neither; `tag:red,!blue` says nothing);
+  before a word of the name a second `!` is part of the word (`!!draft` leaves out names with “!draft”; of a condition only, 2026-11-25).
+  A size not asked for is still a file's: folders, which have none, aren't found by it.
+  A size alone is that size to its last digit typed, as the Size column starts (`1mb` is 1 MB up to 2 MB, `2.11kb` 2.11 up to 2.12 KB, `2.10kb` 2.10 up to 2.11, `1000b` 1,000 bytes);
+  `k`, `m` and `g` are `kb`, `mb` and `gb`.
+  A size alone with a digit finer than a byte (`1.5b`, `1.2345kb`) is no size and can't be read, nor is a size past a million terabytes or a count of more than four digits.
+  `>=` and `<=` take the size or the day itself in (`size:>=1mb` is 1,000,000 bytes or more, `modified:>=2026-03` from March 1 on, `<=2026-03` to March 31);
+  `=>` and `=<`, as easily typed, are read the same but shown nowhere, and `=` alone isn't read, a value alone being that value already.
+  A count is of whole days, today the first: `7d` is today and the six days before it, `1w` the same seven, `1m` and `1y` end today as they do, and `>7d` is whatever `7d` leaves out, so an item is in one or the other;
+  before a count `>=` is `>` (the owner, 2026-11-25; replaced `>` counted from this moment, which left yesterday afternoon out of both `1d` and `>1d`, and a week of eight days).
+  A range of days typed the later one first is the same days.
+  `perm:` is an item's permissions exactly, as three or four octal digits or the letters `ls` shows;
+  `?` is any digit or any letter, each form read by what its own characters say (`?5?` is a group digit of 5 and anything else, set-group too; `???r-x???` a group of r-x, which a set-group 2755, `r-s`, isn't).
+  The list under the field highlights nothing once what is typed reads as it is, so Return and Tab keep it;
+  a range is offered only once `..` is typed.
+  While no row is highlighted the list is only an offer: ↓ goes into the results when there are any, as it does with no list, ↑ goes into the list, and Tab takes its first row;
+  in the Advanced Search box ↓ and ↑ move the caret between the text's lines where it has them (the owner, 2026-11-25; replaced ↓ going into the list of any word that could also be a condition, “doc” or “red”, where Return then rewrote the search).
+  A row says what it types, “Not” and all, wherever the `!` was typed.
+  The Advanced Search box offers only a condition's values, as its buttons list the words;
+  a Syntax Help link at the foot of every list opens Help at Search (a row of its own would read as a word to type).
+  Replaced a size alone meaning larger than it, and a first row that Return took though it said something else (`1mb..10mb` for `1mb`).
+- **Cloud, downloaded, broken, owner, tag color, where from, no extension** (the owner, 2026-11-25).
+  Each was measured first, warm, on an M-series Mac, against the walk's own cost of about 3 to 5 µs an item (its listing and its `fstatat`).
+  `is:cloud` is a file whose data is only in iCloud or another cloud (`SF_DATALESS`), told free from the walk's `fstatat` and never downloaded by being found.
+  `owner:` takes `me`, a user's name or a number, a name no user on this Mac has being one that can't be read;
+  free from the same read.
+  The list under the field offers me, root and the people of this Mac, the accounts it keeps itself and never a directory's on the network, read once for as long as the app runs;
+  a name typed is asked of the system once (2026-11-25, after a review: both were asked at every key typed, which a Mac joined to a company's directory can take seconds to answer).
+  `ext:none` is a name without an extension, `ext:.none` the extension itself;
+  from the name.
+  `is:downloaded` is the quarantine mark a browser or Mail gives what it downloads (not `curl`'s, and gone once `xattr -d` takes it off), and `from:` any part of an address the item was downloaded from, case aside, as Get Info's Where from: both from the list of attribute names the tags already read (about 3.5 µs, shared), and `from:` reads the addresses only of an item that has them.
+  `color:` is a tag of that color, whatever its name, as `tag:` is a name whatever its color: the same read as the tags.
+  `is:broken` is a symbolic link or an alias whose original is gone: a link followed once, an alias resolved without mounting anything (about 90 µs, only for an alias);
+  one whose original is on a disk under /Volumes that isn't connected isn't counted, as it may still be there, nor is a link whose original can't be reached (a folder on the way that can't be entered: gone is only what the system says is gone), nor an alias kept only in a cloud, which resolving would download (2026-11-25, after a review).
+  Telling `is:downloaded` from the list costs about a third of asking for the quarantine mark itself (12 to 13 µs), even for an item that has none.
+  Dropped: duplicates and anything read inside a file, as `picture:` and `taken:` were, and `depth:`, which Search Subfolders and `skip:` cover.
+- **Plain Text search finds what the filters find, word by word** (words, the owner, 2026-11-24).
+  Each word of the text must be in the name, in any order, and words in double quotes are one, spaces and all (`NameTerms`): `annual report` finds "Report, annual.pdf", `"annual report"` only that run, and `"kind:pdf"` is a name, not a condition;
+  a quote with no other after it is an ordinary character.
+  Every word of the field must match, a condition's too, and a comma in a condition's value gives a choice (`tag:red,blue`).
+  Replaced the text as one run, spaces and all, which found nothing for two spaces typed by mistake and differed from the conditions' rule.
+  The filters keep the text as one run.
+  The app's matcher (`NameMatcher`, Contains) decides each word, on the name or the whole path: case aside, a plain letter finding its accented forms, an accented one only itself, however a name stores its accents, so a search and a filter typed over the same names agree.
+  An ASCII name is matched from its bytes, without a string.
+  - Plain Text always ignores case;
+    Glob and Regex match case only when the pattern has a capital of its own (`SmartCase`: not one of an escape such as `\S`).
+  - A Glob is translated to a regular expression that matches the whole name or path;
+    the longest run of plain text it requires is looked for first, so most names are told without the regular expression.
+  - A regular expression that takes more than 50 ms of its thread on one name ends the search with "The pattern takes too long to match some names."
+    (`SearchNameMatch.timePerName`);
+    its time is read only once a match has reported its progress 256 times, as reading the clock costs as much as matching a name.
   - There is no fuzzy search across a disk: letters in order over a disk find tens of thousands of names and would need a best-match order and a limit of their own.
-- **Typing narrows the results after a short rest, and costs nothing at each key** (the owner, 2026-11-25). Text that only narrows the results on screen narrows them once the keyboard has been still for 0.15 s (`SearchTiming.refineDelay`), so a word typed at speed filters and draws them once, at its end; Return doesn't wait, and a new search still starts after 0.4 s. A condition's word being typed after the name changes nothing on screen until it reads. The folders of the results, which only `skip:` offers, are tallied only for it. Measured in the debug build with 50,000 results: a key was 67 to 228 ms and is under 1 ms; the narrowing itself, once, is as before. Replaced narrowing at every key, a tally of the results' folders twice at every key, and the results drawn again at each key of a condition's word.
-- **What the second review of search settled** (the owner, 2026-11-25: fix what it found). A day is read in the calendar it is written in (`2026-03-15` is that day on a Mac that counts years otherwise), in the Mac's time zone; a day to its own month (`2026-03-15..2026-03`) runs to the month's end. `>` and `<` with a part of a byte compare by whole bytes, and a size is said with every digit typed. One `!` is for all of a word's values, for kinds, extensions and permissions as for tags (`kind:pdf,!doc` can't be read); permissions pasted from `ls -l` are read with its closing `@` or `+`. A tag or a folder name that reads as typed has no row highlighted, since it may be a name of one's own ("B" beside Blue): Return searches for it and Tab completes it. The pointer passing over the list doesn't choose for Return: it moves the highlight only where a row already has it, and a click takes any row. Coming back to the field, or Cancel in Advanced Search, keeps what was typed since the last search (a condition not finished yet). The keyboard leaving the field narrows the results at once, without the rest, so that ↓ selects one of them. Clear Search Conditions goes through the field wherever it is chosen from: the field takes the keyboard, and ⌘Z there brings the words back. A condition from the results bar's Options goes into that pane's search, which becomes the active pane. A Glob or Regex search is refused as finding nothing only where the pattern leaves no doubt: a slash in a set or beside a choice, or a leading dot that may be absent, is searched for, since it can find names (1.7.0's `fd` refused them all). Left as they are: a search of the home folder without subfolders, by tag, date opened, alias or emptiness, reads Desktop, Documents and Downloads themselves and macOS may ask (not reading them would leave a tagged Documents folder unfound); a search thread waiting on a server that stopped answering waits until it answers.
-- **What the third review of search settled** (the owner, 2026-11-25: fix what it found). A size is compared to the byte at any size, a range's ends included: what a decimal leaves over when multiplied is not a part of a byte. A day ends where the next starts, also where the clock skips midnight. The date list's month row is named in the calendar it types, and four digits offer the year first, as its months (`2026-01..2026-12`), since a year alone is no date. A name in quotes typed before other words is the name up to the caret, and the words after it stay. A glob that starts with `**/` is matched against the name without it, and Plain Text is refused for a slash only in a word the name must hold. ↓ pressed while a new search waits for the keyboard to rest starts it, and its first result is selected, as after Return. Clear Search Conditions keeps the place searched whatever is left of the text. Left as it is: a click on a result within 0.15 s of a key lands on the row under the pointer once the results have narrowed, which is what leaving the field does.
-- **A search says nothing of folders it couldn't read** (the owner, 2026-11-25), as Finder says nothing of them: what is in them is left out of the results. The walk still notes that some were met (`SearchUpdate.unreadableFolders`), and nothing shows it. Replaced "Some folders couldn't be read" in the status bar, which a search of Home or the disk said every time, even with Full Disk Access: macOS keeps some folders in `~/Library` closed to every app (`Biome`, `Trial`, most of Apple's own apps' data), and a folder owned by another user is closed whatever the app is allowed. Weighed and left out: listing those folders when the note was clicked, which would list the same folders every time.
-- **Search doesn't look inside archives**, as Finder doesn't. The filter still narrows what is on screen.
-- **Search stops at 50,000 results.** Fixed, with no setting. A keystroke of the filter over 50,000 results takes about 18 ms on an M4 Max.
-- **The search-result highlight uses `NSRegularExpression` for Regex searches**, as the search and batch rename do. Plain Text is marked by the app's own matcher. A regular expression gets 5 ms of the main thread per name while results are marked; one that takes longer stops marking for that search, so a slow pattern can't hold up the window (inferred). The search itself goes on.
-- **A pane's search options are its own** (2026-11-15; per pane, the owner, 2026-11-22). Match, Match As, Search Subfolders and Skip .git Folders are chosen in the search field's menu for the pane it drives, and are saved with the pane: every search the pane opens after uses them, and no other pane's search changes with them. A pane opened from another takes that pane's; one with nothing to copy starts with those chosen last in any pane, which each choice also saves. A tab view doesn't keep them: they change what a search finds, which nothing on screen shows but the search field's mark, so a tab view applied would change it unseen. There is no Settings page for them. How results are shown, their order included, is the pane's too ("A pane's search results have a view of their own" in [views.md](views.md)). Replaced a search starting with the options chosen last anywhere, which a new tab took from another window rather than from the pane it came from; before that, a new tab copied the search on screen and a new window took Settings'.
-- **Results are sorted and grouped from the same places a folder is** (the owner, 2026-11-22). While a pane shows results, View ▸ Sort By, the toolbar's Sort menu and the palette sort them, checked as they are sorted, with Folder after Name: an item there and in the palette, dimmed over a folder as Group By ▸ Folder is. View ▸ Columns shows or hides the results' own columns while they show, with Folder first: an item there and in the palette, dimmed over a folder (the owner, 2026-11-22). The List's header menu groups by the column clicked, and the empty space under the results has a short menu of View As, Group By and Sort By (none of a folder's own items: there is no one folder behind the results). Replaced the menus' Sort By dimmed over results, where only a click on a column's title sorted them; they were dimmed when results sorted by name, folder and kind only, and stayed so after they sorted by every field.
-- **The options can be found from the results as well as from the magnifier, and show when one has been changed** (2026-11-17). The results bar has an Options button that opens the same menu. It gives up its title, to its symbol alone, before the filter gives up any of its 200 pt and before the scopes become a pop-up (2026-11-20: three places to search in were judged worth more than the word). While any option differs from a new install's, a dot in the accent sits on Options, and on the field's magnifier while the field has the keyboard, and their tooltips name what differs. Dropped: the options as segments, a chip in the field, the placeholder naming them, a tip shown once, a dot on the field at rest.
-- **The results' bar keeps its filter at least 200 pt wide; with less room the scopes are one pop-up** (2026-11-15). The scopes (the folder searched, Home, the disk) are segments, at most 160 pt each and with no "Search:" or quotes, as the toolbar's title already says what is searched, while they fit beside a filter of 200 pt, the filter giving up its width from 280 first; with less room they are one pop-up button naming the place searched, cut short down to 72 pt so the filter keeps its 200. Only a bar with room for neither takes the filter lower. The pop-up is a plain button of the pane, as the segments are: a click leaves the keyboard with the results, and no arrow changes the scope while it is closed. The filter has no icon: its mode chip and placeholder say what it is. Replaced segments that kept their width and cut themselves off in two panes. Dropped: an icon that goes first, the filter on a second row, the scope in the status bar, the filter folded into a button.
-- **A folder found takes a drop; the rest of the search results don't** (2026-11-15). A drag onto a folder among the results goes into it, whatever it came from, by the same rules as anywhere. The results' background and files take nothing: the results come from many folders, and a drop into the folder searched would put items where they may not show again. Resting on a folder doesn't open it, as that would leave the search.
-- **Search results change only where a write acted on them, and are never searched again by it** (2026-11-15). A write started in the tab on screen (or a move dragged out to another app) acts on the results when one of its items is a result or it put items into a folder found. Replaced every write running the tab's searches again in full.
-  - What it trashed, deleted or moved to another folder leaves the results, with every result inside it. What it renamed keeps its row and selection under the new name, though the search would no longer find it; a filter still hides a row whose new name doesn't match.
-  - What it put inside the folder searched is not added: a banner says "Items added since this search may not be listed." with Search Again. A search still running when a write changes its results shows the banner too. Results put away change as shown ones do. Dropped: searching only what arrived, matching it in the app, keeping rows at new paths.
-  - Writes that touch no result, writes in other tabs and windows, and Empty Trash leave the results alone. Nothing watches the folders searched: a search of Home or the disk would see every change on the Mac.
+- **Typing narrows the results after a short rest, and costs nothing at each key** (the owner, 2026-11-25).
+  Text that only narrows the results on screen narrows them once the keyboard has been still for 0.15 s (`SearchTiming.refineDelay`), so a word typed at speed filters and draws them once, at its end;
+  Return doesn't wait, and a new search still starts after 0.4 s.
+  A condition's word being typed after the name changes nothing on screen until it reads.
+  The folders of the results, which only `skip:` offers, are tallied only for it.
+  Measured in the debug build with 50,000 results: a key was 67 to 228 ms and is under 1 ms;
+  the narrowing itself, once, is as before.
+  Replaced narrowing at every key, a tally of the results' folders twice at every key, and the results drawn again at each key of a condition's word.
+- **What the second review of search settled** (the owner, 2026-11-25: fix what it found).
+  A day is read in the calendar it is written in (`2026-03-15` is that day on a Mac that counts years otherwise), in the Mac's time zone;
+  a day to its own month (`2026-03-15..2026-03`) runs to the month's end.
+  `>` and `<` with a part of a byte compare by whole bytes, and a size is said with every digit typed.
+  One `!` is for all of a word's values, for kinds, extensions and permissions as for tags (`kind:pdf,!doc` can't be read);
+  permissions pasted from `ls -l` are read with its closing `@` or `+`.
+  A tag or a folder name that reads as typed has no row highlighted, since it may be a name of one's own ("B" beside Blue): Return searches for it and Tab completes it.
+  The pointer passing over the list doesn't choose for Return: it moves the highlight only where a row already has it, and a click takes any row.
+  Coming back to the field, or Cancel in Advanced Search, keeps what was typed since the last search (a condition not finished yet).
+  The keyboard leaving the field narrows the results at once, without the rest, so that ↓ selects one of them.
+  Clear Search Conditions goes through the field wherever it is chosen from: the field takes the keyboard, and ⌘Z there brings the words back.
+  A condition from the results bar's Options goes into that pane's search, which becomes the active pane.
+  A Glob or Regex search is refused as finding nothing only where the pattern leaves no doubt: a slash in a set or beside a choice, or a leading dot that may be absent, is searched for, since it can find names (1.7.0's `fd` refused them all).
+  Left as they are: a search of the home folder without subfolders, by tag, date opened, alias or emptiness, reads Desktop, Documents and Downloads themselves and macOS may ask (not reading them would leave a tagged Documents folder unfound);
+  a search thread waiting on a server that stopped answering waits until it answers.
+- **What the third review of search settled** (the owner, 2026-11-25: fix what it found).
+  A size is compared to the byte at any size, a range's ends included: what a decimal leaves over when multiplied is not a part of a byte.
+  A day ends where the next starts, also where the clock skips midnight.
+  The date list's month row is named in the calendar it types, and four digits offer the year first, as its months (`2026-01..2026-12`), since a year alone is no date.
+  A name in quotes typed before other words is the name up to the caret, and the words after it stay.
+  A glob that starts with `**/` is matched against the name without it, and Plain Text is refused for a slash only in a word the name must hold. ↓ pressed while a new search waits for the keyboard to rest starts it, and its first result is selected, as after Return.
+  Clear Search Conditions keeps the place searched whatever is left of the text.
+  Left as it is: a click on a result within 0.15 s of a key lands on the row under the pointer once the results have narrowed, which is what leaving the field does.
+- **A search says nothing of folders it couldn't read** (the owner, 2026-11-25), as Finder says nothing of them: what is in them is left out of the results.
+  The walk still notes that some were met (`SearchUpdate.unreadableFolders`), and nothing shows it.
+  Replaced "Some folders couldn't be read" in the status bar, which a search of Home or the disk said every time, even with Full Disk Access: macOS keeps some folders in `~/Library` closed to every app (`Biome`, `Trial`, most of Apple's own apps' data), and a folder owned by another user is closed whatever the app is allowed.
+  Weighed and left out: listing those folders when the note was clicked, which would list the same folders every time.
+- **Search doesn't look inside archives**, as Finder doesn't.
+  The filter still narrows what is on screen.
+- **Search stops at 50,000 results.**
+  Fixed, with no setting.
+  A keystroke of the filter over 50,000 results takes about 18 ms on an M4 Max.
+- **The search-result highlight uses `NSRegularExpression` for Regex searches**, as the search and batch rename do.
+  Plain Text is marked by the app's own matcher.
+  A regular expression gets 5 ms of the main thread per name while results are marked;
+  one that takes longer stops marking for that search, so a slow pattern can't hold up the window (inferred).
+  The search itself goes on.
+- **A pane's search options are its own** (2026-11-15; per pane, the owner, 2026-11-22).
+  Match, Match As, Search Subfolders and Skip .git Folders are chosen in the search field's menu for the pane it drives, and are saved with the pane: every search the pane opens after uses them, and no other pane's search changes with them.
+  A pane opened from another takes that pane's;
+  one with nothing to copy starts with those chosen last in any pane, which each choice also saves.
+  A tab view doesn't keep them: they change what a search finds, which nothing on screen shows but the search field's mark, so a tab view applied would change it unseen.
+  There is no Settings page for them.
+  How results are shown, their order included, is the pane's too ("A pane's search results have a view of their own" in [views.md](views.md)).
+  Replaced a search starting with the options chosen last anywhere, which a new tab took from another window rather than from the pane it came from;
+  before that, a new tab copied the search on screen and a new window took Settings'.
+- **Results are sorted and grouped from the same places a folder is** (the owner, 2026-11-22).
+  While a pane shows results, View ▸ Sort By, the toolbar's Sort menu and the palette sort them, checked as they are sorted, with Folder after Name: an item there and in the palette, dimmed over a folder as Group By ▸ Folder is.
+  View ▸ Columns shows or hides the results' own columns while they show, with Folder first: an item there and in the palette, dimmed over a folder (the owner, 2026-11-22).
+  The List's header menu groups by the column clicked, and the empty space under the results has a short menu of View As, Group By and Sort By (none of a folder's own items: there is no one folder behind the results).
+  Replaced the menus' Sort By dimmed over results, where only a click on a column's title sorted them;
+  they were dimmed when results sorted by name, folder and kind only, and stayed so after they sorted by every field.
+- **The options can be found from the results as well as from the magnifier, and show when one has been changed** (2026-11-17).
+  The results bar has an Options button that opens the same menu.
+  It gives up its title, to its symbol alone, before the filter gives up any of its 200 pt and before the scopes become a pop-up (2026-11-20: three places to search in were judged worth more than the word).
+  While any option differs from a new install's, a dot in the accent sits on Options, and on the field's magnifier while the field has the keyboard, and their tooltips name what differs.
+  Dropped: the options as segments, a chip in the field, the placeholder naming them, a tip shown once, a dot on the field at rest.
+- **The results' bar keeps its filter at least 200 pt wide;
+  with less room the scopes are one pop-up** (2026-11-15).
+  The scopes (the folder searched, Home, the disk) are segments, at most 160 pt each and with no "Search:" or quotes, as the toolbar's title already says what is searched, while they fit beside a filter of 200 pt, the filter giving up its width from 280 first;
+  with less room they are one pop-up button naming the place searched, cut short down to 72 pt so the filter keeps its 200.
+  Only a bar with room for neither takes the filter lower.
+  The pop-up is a plain button of the pane, as the segments are: a click leaves the keyboard with the results, and no arrow changes the scope while it is closed.
+  The filter has no icon: its mode chip and placeholder say what it is.
+  Replaced segments that kept their width and cut themselves off in two panes.
+  Dropped: an icon that goes first, the filter on a second row, the scope in the status bar, the filter folded into a button.
+- **A folder found takes a drop;
+  the rest of the search results don't** (2026-11-15).
+  A drag onto a folder among the results goes into it, whatever it came from, by the same rules as anywhere.
+  The results' background and files take nothing: the results come from many folders, and a drop into the folder searched would put items where they may not show again.
+  Resting on a folder doesn't open it, as that would leave the search.
+- **Search results change only where a write acted on them, and are never searched again by it** (2026-11-15).
+  A write started in the tab on screen (or a move dragged out to another app) acts on the results when one of its items is a result or it put items into a folder found.
+  Replaced every write running the tab's searches again in full.
+  - What it trashed, deleted or moved to another folder leaves the results, with every result inside it.
+    What it renamed keeps its row and selection under the new name, though the search would no longer find it;
+    a filter still hides a row whose new name doesn't match.
+  - What it put inside the folder searched is not added: a banner says "Items added since this search may not be listed." with Search Again.
+    A search still running when a write changes its results shows the banner too.
+    Results put away change as shown ones do.
+    Dropped: searching only what arrived, matching it in the app, keeping rows at new paths.
+  - Writes that touch no result, writes in other tabs and windows, and Empty Trash leave the results alone.
+    Nothing watches the folders searched: a search of Home or the disk would see every change on the Mac.
 
 ## Batch rename
 
-- **Batch rename's regular expressions are `NSRegularExpression`'s** (2026-11-20). The pattern is handed to it as typed (`RenamePattern.swift`): `\d`, `\w`, `\s` and `\b` are Unicode's, case folds as ICU does, and a pattern it can't read says only "The pattern isn't valid.", as the system says no more. `$1`, `$&`, `$<name>` and `$$` (`expandReplacement`), named groups and Match case stay; plain-text Replace Text matches letter by letter. JavaScript-only syntax (`\u{…}`, `[]`, `[^]`, `\0`) is refused, and a saved preset that holds it says so. Replaced a 664-line translator that kept JavaScript's rules, not worth its size for a Rename sheet.
-  - A pattern gets 50 ms a name, and for all the names together a quarter of a second plus 10 µs for each character of them (`RenamePattern.timeForAllNames`, `timePerCharacter`), in CPU time; past either the sheet says the pattern takes too long and renames nothing. The sheet matches every name again at each change, so 200 names at 36 ms each held it 7 s at every key; ordinary patterns measured at most 1.8 µs a character over 50,000 names.
+- **Batch rename's regular expressions are `NSRegularExpression`'s** (2026-11-20).
+  The pattern is handed to it as typed (`RenamePattern.swift`): `\d`, `\w`, `\s` and `\b` are Unicode's, case folds as ICU does, and a pattern it can't read says only "The pattern isn't valid.", as the system says no more.
+  `$1`, `$&`, `$<name>` and `$$` (`expandReplacement`), named groups and Match case stay;
+  plain-text Replace Text matches letter by letter.
+  JavaScript-only syntax (`\u{…}`, `[]`, `[^]`, `\0`) is refused, and a saved preset that holds it says so.
+  Replaced a 664-line translator that kept JavaScript's rules, not worth its size for a Rename sheet.
+  - A pattern gets 50 ms a name, and for all the names together a quarter of a second plus 10 µs for each character of them (`RenamePattern.timeForAllNames`, `timePerCharacter`), in CPU time;
+    past either the sheet says the pattern takes too long and renames nothing.
+    The sheet matches every name again at each change, so 200 names at 36 ms each held it 7 s at every key;
+    ordinary patterns measured at most 1.8 µs a character over 50,000 names.
 
 ## Go To, Move To and Extract To
 
-- **Go To, Move To and Extract To are one box with two purposes.** They share the field, the completions, the ranking and the keys, so a fix to the field is made once.
+- **Go To, Move To and Extract To are one box with two purposes.**
+  They share the field, the completions, the ranking and the keys, so a fix to the field is made once.
   - Go To (⌘K, ⇧⌘G) opens empty with the best place selected, and Return or a click on a row goes there at once: going somewhere is quick and Back undoes it.
-  - Move To and Extract To choose where items go, so they open on the folder shown with nothing in the list selected; a click only puts a folder in the field, the pointer over a row selects nothing, and Return or a double click sends the items where the field says. Their list adds the folders chosen there before and puts the other pane's folder first.
-  - A folder typed that doesn't exist yet, in one that does, is made after a second Return, the button saying Create and Move (or Extract). It is a New Folder of its own, undone apart from the move, and none is made inside an item being moved or in the Trash.
-  - ↑ and ↓ put the selected folder's path in the field; Esc gives back what was typed, and a second Esc closes the box. Tab completes, and moves the focus only when there is nothing to complete; ⇧Tab always moves it. "./" and "../" are paths from the folder on screen.
+  - Move To and Extract To choose where items go, so they open on the folder shown with nothing in the list selected;
+    a click only puts a folder in the field, the pointer over a row selects nothing, and Return or a double click sends the items where the field says.
+    Their list adds the folders chosen there before and puts the other pane's folder first.
+  - A folder typed that doesn't exist yet, in one that does, is made after a second Return, the button saying Create and Move (or Extract).
+    It is a New Folder of its own, undone apart from the move, and none is made inside an item being moved or in the Trash.
+  - ↑ and ↓ put the selected folder's path in the field;
+    Esc gives back what was typed, and a second Esc closes the box.
+    Tab completes, and moves the focus only when there is nothing to complete;
+    ⇧Tab always moves it.
+    "./" and "../" are paths from the folder on screen.

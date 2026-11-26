@@ -1,102 +1,335 @@
 # Decisions: File operations and the clipboard
 
-Copy, move and Replace, what protects files while they run, Undo, folder sizes, the clipboard, Paste as File, Copy Contents, Share, Convert Images, and aliases and symbolic links. Part of the owner's decisions: [the index](../decisions.md) lists the other parts, and [principles.md](../principles.md) says how a decision is weighed and when to ask about one. What in the write engine must not be taken out is in [must-stay.md](must-stay.md).
+Copy, move and Replace, what protects files while they run, Undo, folder sizes, the clipboard, Paste as File, Copy Contents, Share, Convert Images, and aliases and symbolic links.
+Part of the owner's decisions: [the index](../decisions.md) lists the other parts, and [principles.md](../principles.md) says how a decision is weighed and when to ask about one.
+What in the write engine must not be taken out is in [must-stay.md](must-stay.md).
 
 ## Copies, moves and Replace
 
-- **A full disk ends a paste.** The first "no space" error stops the run, the rest is "Not started", and a partly copied folder is not put in place. There is no free-space check before a paste starts yet: [plans/free-space-check.md](../plans/free-space-check.md).
-- **A file moved to another disk goes even if the disk refused an extended attribute.** A refused attribute is skipped on purpose (most files carry `com.apple.provenance`, and FAT and exFAT refuse many); only a resource fork that can't be written fails the copy. An attribute that fails for lack of room or a disk error (`ENOSPC`, `EDQUOT`, `EIO`) fails the copy too (2026-11-20): on a full FAT or exFAT disk the "._name" file that holds the attributes can't be made, and skipping it lost a file's tags and comments with its original. A copy that fails over an attribute or the fork removes the file it had made (2026-11-21), so no empty file is left under the item's name.
-- **A copy is checked for its source's whole resource fork** (`ft_check_resource_fork`). A copy that reports success with less of the fork than its source fails, with ENOSPC when the destination hasn't the room, EIO otherwise, and is removed as any failed copy. copyfile was once seen to report success with no fork at all on a full disk; one way to that was found and closed (2026-11-15), but whether it was the one seen wasn't shown, so the check stays.
-- **A move to another disk is written out to that disk before the original is deleted** (2026-11-20). Copied, an item may be only in memory or in the drive's cache; deleted then, a power cut leaves it nowhere. Files moved one by one, and those of a folder merged into one that is there, are copied first and written out once at the end of the paste, however it ends, one flush for each disk they went to (`sync_volume_np`, some 30 ms); their originals go only then, each after the same checks, so a crash part way leaves files in both places and loses none. A folder is written out once, whole, when it is in place; a file put in place of another is flushed on its own (`F_FULLFSYNC`). A disk that can't be told to flush (some network disks) is left to itself, and a copy that fails to be written out keeps its original and says so. While this runs the progress card says "Finishing…" and the Activity list "Finishing", as Stop no longer stops it and a slow stick can take long; the paste says so once, before the first flush, and only when it has such originals to remove. Replaced a flush of each file as it was copied, 4 ms against the 0.07 ms a small one takes to copy.
-- **A folder that goes whole or not at all stops at its first failed item** (2026-11-20). A folder moved to another disk, and a Replace's new folder, copy nothing more once an item failed; the hidden copy is cleared away and the result names that item. Whole or not at all stays, as a folder left half on each disk is harder to follow and to undo. A plain copy goes on and is put in place with its failures named. Replaced copying the rest and throwing it away, a 200 GB folder for one file too large for the disk.
-- **The journal entry that guards a moved item's only copy is flushed to disk**, once per Replace; other journal entries aren't, for speed. A folder moved to another disk keeps its journal entry until the originals are gone, so after a crash in between recovery says what was left of the original and where. The gaps that remain are in known-issues.md.
-- **A rename of several items is of one disk** (the owner, 2026-11-20). The journal entry that guards a rename records one disk, which after a crash tells an item whose disk is away from one that is done with; a disk for each item would change the journal's format, and such a rename only comes from search results that span disks. So the Rename sheet says "These items are on more than one disk. Rename them one disk at a time." as soon as it has checked the items, with Rename off and Return doing nothing, the new names still shown; the rename itself refuses with the same words whatever asked for it, before anything is moved aside, written down for recovery or kept for Undo. An item is on the disk of the folder it is in, a link to that folder followed; a folder that can't be read counts for no disk, and its items fail for their own reason. The sheet judges every item it was opened on, also those the settings would leave unchanged, as it says so before any setting is typed; the rename judges the items it is asked to rename. Several folders of one disk are renamed together as before. Recovery takes an entry written before this as it did: its items are kept only while another disk is where the first item's folder was. The journal's format is unchanged.
-- **A disk mounted in a folder is never replaced** (2026-11-20). A folder on another disk than the folder holding it is where a disk is mounted (a share at `~/mnt/server`, a disk image at a mount point of its own). Replacing it would put the whole disk in the Trash, or, where there is no Trash and "delete for good" was agreed to, delete every file on it. The paste review doesn't offer Replace for it ("Can’t replace: It is a disk mounted here."), and the paste refuses it again when it gets there, before anything is moved aside, as the disk may have been mounted since; the pasted item stays where it was. It costs one look at the holding folder for each folder replaced, and nothing for a file. The review counts the folder a disk is mounted on as one item of the folder that holds it, and neither its counts nor the paste's look inside go into that disk; only a pasted folder of the same name is still compared with it, as merging into it needs. Merging into such a folder is as it was; a folder that holds one further in is still offered, as the Trash takes it with the disk inside. With no Trash, a folder with a disk mounted further in is refused with nothing deleted and a message naming the disk, found by the locked-item look every delete for good makes after its question.
-- **What a later try of leftover work finds is told as at start.** A move found in place, a rename put back, a folder put in place: shown under "Work was cut short when File Trail last stopped", in a dialog of their own. Each message is told once, so an entry whose record can't be removed doesn't repeat itself every minute.
+- **A full disk ends a paste.**
+  The first "no space" error stops the run, the rest is "Not started", and a partly copied folder is not put in place.
+  There is no free-space check before a paste starts yet: [plans/free-space-check.md](../plans/free-space-check.md).
+- **A file moved to another disk goes even if the disk refused an extended attribute.**
+  A refused attribute is skipped on purpose (most files carry `com.apple.provenance`, and FAT and exFAT refuse many);
+  only a resource fork that can't be written fails the copy.
+  An attribute that fails for lack of room or a disk error (`ENOSPC`, `EDQUOT`, `EIO`) fails the copy too (2026-11-20): on a full FAT or exFAT disk the "._name" file that holds the attributes can't be made, and skipping it lost a file's tags and comments with its original.
+  A copy that fails over an attribute or the fork removes the file it had made (2026-11-21), so no empty file is left under the item's name.
+- **A copy is checked for its source's whole resource fork** (`ft_check_resource_fork`).
+  A copy that reports success with less of the fork than its source fails, with ENOSPC when the destination hasn't the room, EIO otherwise, and is removed as any failed copy. copyfile was once seen to report success with no fork at all on a full disk;
+  one way to that was found and closed (2026-11-15), but whether it was the one seen wasn't shown, so the check stays.
+- **A move to another disk is written out to that disk before the original is deleted** (2026-11-20).
+  Copied, an item may be only in memory or in the drive's cache;
+  deleted then, a power cut leaves it nowhere.
+  Files moved one by one, and those of a folder merged into one that is there, are copied first and written out once at the end of the paste, however it ends, one flush for each disk they went to (`sync_volume_np`, some 30 ms);
+  their originals go only then, each after the same checks, so a crash part way leaves files in both places and loses none.
+  A folder is written out once, whole, when it is in place;
+  a file put in place of another is flushed on its own (`F_FULLFSYNC`).
+  A disk that can't be told to flush (some network disks) is left to itself, and a copy that fails to be written out keeps its original and says so.
+  While this runs the progress card says "Finishing…" and the Activity list "Finishing", as Stop no longer stops it and a slow stick can take long;
+  the paste says so once, before the first flush, and only when it has such originals to remove.
+  Replaced a flush of each file as it was copied, 4 ms against the 0.07 ms a small one takes to copy.
+- **A folder that goes whole or not at all stops at its first failed item** (2026-11-20).
+  A folder moved to another disk, and a Replace's new folder, copy nothing more once an item failed;
+  the hidden copy is cleared away and the result names that item.
+  Whole or not at all stays, as a folder left half on each disk is harder to follow and to undo.
+  A plain copy goes on and is put in place with its failures named.
+  Replaced copying the rest and throwing it away, a 200 GB folder for one file too large for the disk.
+- **The journal entry that guards a moved item's only copy is flushed to disk**, once per Replace;
+  other journal entries aren't, for speed.
+  A folder moved to another disk keeps its journal entry until the originals are gone, so after a crash in between recovery says what was left of the original and where.
+  The gaps that remain are in known-issues.md.
+- **A rename of several items is of one disk** (the owner, 2026-11-20).
+  The journal entry that guards a rename records one disk, which after a crash tells an item whose disk is away from one that is done with;
+  a disk for each item would change the journal's format, and such a rename only comes from search results that span disks.
+  So the Rename sheet says "These items are on more than one disk.
+  Rename them one disk at a time." as soon as it has checked the items, with Rename off and Return doing nothing, the new names still shown;
+  the rename itself refuses with the same words whatever asked for it, before anything is moved aside, written down for recovery or kept for Undo.
+  An item is on the disk of the folder it is in, a link to that folder followed;
+  a folder that can't be read counts for no disk, and its items fail for their own reason.
+  The sheet judges every item it was opened on, also those the settings would leave unchanged, as it says so before any setting is typed;
+  the rename judges the items it is asked to rename.
+  Several folders of one disk are renamed together as before.
+  Recovery takes an entry written before this as it did: its items are kept only while another disk is where the first item's folder was.
+  The journal's format is unchanged.
+- **A disk mounted in a folder is never replaced** (2026-11-20).
+  A folder on another disk than the folder holding it is where a disk is mounted (a share at `~/mnt/server`, a disk image at a mount point of its own).
+  Replacing it would put the whole disk in the Trash, or, where there is no Trash and "delete for good" was agreed to, delete every file on it.
+  The paste review doesn't offer Replace for it ("Can’t replace: It is a disk mounted here."), and the paste refuses it again when it gets there, before anything is moved aside, as the disk may have been mounted since;
+  the pasted item stays where it was.
+  It costs one look at the holding folder for each folder replaced, and nothing for a file.
+  The review counts the folder a disk is mounted on as one item of the folder that holds it, and neither its counts nor the paste's look inside go into that disk;
+  only a pasted folder of the same name is still compared with it, as merging into it needs.
+  Merging into such a folder is as it was;
+  a folder that holds one further in is still offered, as the Trash takes it with the disk inside.
+  With no Trash, a folder with a disk mounted further in is refused with nothing deleted and a message naming the disk, found by the locked-item look every delete for good makes after its question.
+- **What a later try of leftover work finds is told as at start.**
+  A move found in place, a rename put back, a folder put in place: shown under "Work was cut short when File Trail last stopped", in a dialog of their own.
+  Each message is told once, so an entry whose record can't be removed doesn't repeat itself every minute.
 
 ## Replace Older
 
-- **Replace Older brings a copy up to date, and is offered only where dates can be trusted** (2026-11-19). A "For all conflicts" answer for copies and moves: folders merge, and a file replaces the one there only when its modification date is later by more than the disks can blur; every other file is left as it is. Copies keep their dates, so running it again replaces nothing.
+- **Replace Older brings a copy up to date, and is offered only where dates can be trusted** (2026-11-19).
+  A "For all conflicts" answer for copies and moves: folders merge, and a file replaces the one there only when its modification date is later by more than the disks can blur;
+  every other file is left as it is.
+  Copies keep their dates, so running it again replaces nothing.
   - **The tolerance is the coarsest of the disks involved**: APFS 1 ms, exFAT 10 ms (measured), HFS+ 1 s, SMB shares 2 s.
-  - **It isn't offered at all on FAT**, which keeps local time with no time zone, so a daylight-saving change or a trip shifts every date by an hour, **nor on any other disk** (NFS, AFP, WebDAV, NTFS, unknown). The button is absent, and Help says why.
-  - **Packages aren't compared** (2026-11-20). A package's date is its outer folder's, which stays as it was when something deeper inside changes, so a virtual machine or a Photos library changed in place looked "Not newer". Such a package is left as it is, with "Package · not compared", and a move leaves the source package where it was; Replace can still be chosen on its row.
+  - **It isn't offered at all on FAT**, which keeps local time with no time zone, so a daylight-saving change or a trip shifts every date by an hour, **nor on any other disk** (NFS, AFP, WebDAV, NTFS, unknown).
+    The button is absent, and Help says why.
+  - **Packages aren't compared** (2026-11-20).
+    A package's date is its outer folder's, which stays as it was when something deeper inside changes, so a virtual machine or a Photos library changed in place looked "Not newer".
+    Such a package is left as it is, with "Package · not compared", and a move leaves the source package where it was;
+    Replace can still be chosen on its row.
   - **A clash of kinds is left as well**, and the result says Replace Older left it, as what Add Missing leaves says Add Missing left it, not "you chose Skip".
-  - It decides per file, inside merged folders too, and goes through Replace's own checks; a choice made for one row wins. What it replaces inside merged folders is undone as any Replace is (2026-11-26).
+  - It decides per file, inside merged folders too, and goes through Replace's own checks;
+    a choice made for one row wins.
+    What it replaces inside merged folders is undone as any Replace is (2026-11-26).
 
 ## Undo
 
-- **An operation that can't be undone stays in the Undo history, and what was done before it can still be undone** (2026-11-20). A move to another disk, a copy to a disk without a Trash, Empty Trash: each is kept where it happened, with what it was and why it can't be undone, and the Undo History list shows it there, dimmed, with a lock. Undo that meets one undoes nothing and says so in a toast, once; the next Undo takes the operation before it, as stepping past it silently would undo something not meant. Until then Edit ▸ Undo reads "Can't Undo" and stays on. Once passed, the entry is listed under its own heading, "Can't Be Undone", above the Undo heading, so the Undo heading sits over what Undo takes next. An operation undone past such an entry must find the very item it acted on, not another of the same name and kind, and is refused otherwise, as the operation in between may have put another item there. Operations after every such entry, and Redo, still take an item of the same kind under the same name, for a document another app saved by replacing its file; an item with no id (FAT, exFAT) goes by kind, as there is nothing else to go by. Replaced emptying the history, which made an ordinary move to a USB stick cost every earlier Undo.
-- **A merge is undone item by item** (the owner, 2026-11-26). A folder pasted into one of its name already there is one Undo, named for the folder picked ("Move of “Photos”"), and each item it put in is undone on its own, as an item picked would be: a copy goes to the Trash, a moved item goes back, a Replace inside puts back what it replaced, and a folder merged inside is a merge of its own. One changed or gone since is left, and said, and the others are still undone. A folder a move took every item out of, and so removed, is made again where it was before its items go back, with its tags and Finder's information, its access rules, mode, flags and date; refused, with its items left where the merge put them, when another item has its name there now or the folder it was in is gone or another. It has a new file id, which every other Undo and Redo then knows it by. Redo merges again, and removes that folder once nothing is left in it but Finder's view settings. Left out: the folder's creation date and Finder's view settings for it, which a merge deletes with the folder; a merge onto another disk, which can't be undone as any move there can't. Replaced a merge that couldn't be undone at all, said in the review sheet and the paste's questions ("Merging can't be undone").
+- **An operation that can't be undone stays in the Undo history, and what was done before it can still be undone** (2026-11-20).
+  A move to another disk, a copy to a disk without a Trash, Empty Trash: each is kept where it happened, with what it was and why it can't be undone, and the Undo History list shows it there, dimmed, with a lock.
+  Undo that meets one undoes nothing and says so in a toast, once;
+  the next Undo takes the operation before it, as stepping past it silently would undo something not meant.
+  Until then Edit ▸ Undo reads "Can't Undo" and stays on.
+  Once passed, the entry is listed under its own heading, "Can't Be Undone", above the Undo heading, so the Undo heading sits over what Undo takes next.
+  An operation undone past such an entry must find the very item it acted on, not another of the same name and kind, and is refused otherwise, as the operation in between may have put another item there.
+  Operations after every such entry, and Redo, still take an item of the same kind under the same name, for a document another app saved by replacing its file;
+  an item with no id (FAT, exFAT) goes by kind, as there is nothing else to go by.
+  Replaced emptying the history, which made an ordinary move to a USB stick cost every earlier Undo.
+- **A merge is undone item by item** (the owner, 2026-11-26).
+  A folder pasted into one of its name already there is one Undo, named for the folder picked ("Move of “Photos”"), and each item it put in is undone on its own, as an item picked would be: a copy goes to the Trash, a moved item goes back, a Replace inside puts back what it replaced, and a folder merged inside is a merge of its own.
+  One changed or gone since is left, and said, and the others are still undone.
+  A folder a move took every item out of, and so removed, is made again where it was before its items go back, with its tags and Finder's information, its access rules, mode, flags and date;
+  refused, with its items left where the merge put them, when another item has its name there now or the folder it was in is gone or another.
+  It has a new file id, which every other Undo and Redo then knows it by.
+  Redo merges again, and removes that folder once nothing is left in it but Finder's view settings.
+  Left out: the folder's creation date and Finder's view settings for it, which a merge deletes with the folder;
+  a merge onto another disk, which can't be undone as any move there can't.
+  Replaced a merge that couldn't be undone at all, said in the review sheet and the paste's questions ("Merging can't be undone").
 
 ## Folder sizes
 
 The plan, built, is [records/folder-sizes.md](../records/folder-sizes.md).
 
-- **A folder's size always says its size on disk** (the owner, 2026-11-26), "2.7 MB (2.7 MB on disk)" too, in the Info panel and wherever a folder's size shows, as a file's Size in the Info panel always does. Before, it was left out when the two read the same, so it showed for some folders and not for others: one of many small files takes more room than it holds, one of a few large files about the same.
-- **Calculating a folder's size is best effort** (2026-11-17). What can't be measured inside the folder (a sub-folder gone, replaced, renamed or unreadable, one reached through a folder swapped for a link, a listing broken part way) is left out, and the size of the rest is shown; a measurement fails only when the folder itself can't be measured. Folders without permission to read count as empty, as in Finder; hard links are counted each time they are met, and iCloud files not on the Mac as they are. The code keeps whether each size is complete and why, with nothing shown for now. Replaced failing, which gave no size at all in `~` and `~/Library`, where apps change files all the time.
-- **A folder size asked for is never stopped by another request** (2026-11-16). Calculate Size on a second folder waits for the first: both were asked for, and Finder measures both. Only Stop, closing the window or quitting end it early. A write by the app under it lets it finish; the folders that hold the change are given their size but not kept, and are measured again when next asked for (2026-11-20: it used to run again from the start). Asking again for a folder being measured or waiting, Recalculate included, joins that measurement, whose answer is as fresh as a new one's. At most 10 asked requests wait for the whole app, a run of several folders counting as one; past that the oldest waiting one is dropped, never the one running, so a burst of requests doesn't keep the Mac walking long after they stopped mattering.
-- **Calculate Size measures again, one folder or several** (2026-11-17), the cost of walking a large selection again accepted. A folder being measured or waiting is left to finish. The Info panel's Calculate, shown only while a size is missing, measures only what is missing; its refresh button measures all again.
-- **Folder sizes the app measures by itself give way** (2026-11-16). An automatic walk (the Info panel's or the Info Row's) of a window not in front stops for any size asked for and for the front window's automatic one, and waits again while its window still describes that folder; a tab behind another or a minimized window drops its walk, and a request whose view moved on or closed leaves the queue: a window not looked at shouldn't make the one that is wait.
-- **With several folders selected, the app measures each by itself** (the owner, 2026-11-25). With Calculate folder sizes automatically on and the Info panel or the Info Row open, the selected folders in the home folder and the bundles anywhere are measured one after another, from the top of the list down, once the selection has stayed 0.5 s: the panel sums the selection, and a selection's size waiting on Calculate went against the setting. One automatic walk at a time, so the window still has one automatic request and the rules above hold for each folder. A folder being measured stays measured while it stays selected. Stop on any of the selected folders, one the app measures by itself or one asked for with Calculate Size or the refresh button, ends the rest until the selection changes, and what was stopped isn't started again: Stop means stop (the owner, 2026-11-25, after a review; it was Stop on the app's own measurement only, so a size asked for and stopped was measured again by itself a moment later, with one folder selected too). A selected folder whose size is forgotten after a change under it is measured again by itself, whoever measured it before (the owner, 2026-11-25; it was measured again only when the app hadn't measured it for this selection). Replaced: one item selected, or none, only.
-- **Folder sizes changed outside the app stay as they were measured** (2026-11-16) until measured again; the app's own writes still adjust or forget them. Dropped: forgetting or marking the sizes of folders the watchers see change.
-- **A folder size waiting for another says "Waiting…"** (2026-11-16), apart from one being measured, so a long wait doesn't look like a slow walk. In the Activity list a Calculate Size on several folders is one row, counting those done, with one Stop. Dropped: a row "3 more folders" beside the folder being measured, which ended as "No longer waiting" between rows that said "Done".
-- **While the Activity list is open no row changes place** (2026-11-17). A row whose item ended stays where it was, dimmed, saying how it ended, with no Stop; what is new goes to the end; only a measurement the app started by itself is taken out, as the Info panel or the Info Row shows its state already. Opened again, the list shows only what runs. Rows moving up put the next row's Stop under a press aimed at the one that went. Dropped: ignoring Stop for a moment after a move (the list still jumped, and presses were dropped without a word). The list shows six rows and scrolls past that. The ring's count has no background at rest (the owner's choice).
+- **A folder's size always says its size on disk** (the owner, 2026-11-26), "2.7 MB (2.7 MB on disk)" too, in the Info panel and wherever a folder's size shows, as a file's Size in the Info panel always does.
+  Before, it was left out when the two read the same, so it showed for some folders and not for others: one of many small files takes more room than it holds, one of a few large files about the same.
+- **Calculating a folder's size is best effort** (2026-11-17).
+  What can't be measured inside the folder (a sub-folder gone, replaced, renamed or unreadable, one reached through a folder swapped for a link, a listing broken part way) is left out, and the size of the rest is shown;
+  a measurement fails only when the folder itself can't be measured.
+  Folders without permission to read count as empty, as in Finder;
+  hard links are counted each time they are met, and iCloud files not on the Mac as they are.
+  The code keeps whether each size is complete and why, with nothing shown for now.
+  Replaced failing, which gave no size at all in `~` and `~/Library`, where apps change files all the time.
+- **A folder size asked for is never stopped by another request** (2026-11-16).
+  Calculate Size on a second folder waits for the first: both were asked for, and Finder measures both.
+  Only Stop, closing the window or quitting end it early.
+  A write by the app under it lets it finish;
+  the folders that hold the change are given their size but not kept, and are measured again when next asked for (2026-11-20: it used to run again from the start).
+  Asking again for a folder being measured or waiting, Recalculate included, joins that measurement, whose answer is as fresh as a new one's.
+  At most 10 asked requests wait for the whole app, a run of several folders counting as one;
+  past that the oldest waiting one is dropped, never the one running, so a burst of requests doesn't keep the Mac walking long after they stopped mattering.
+- **Calculate Size measures again, one folder or several** (2026-11-17), the cost of walking a large selection again accepted.
+  A folder being measured or waiting is left to finish.
+  The Info panel's Calculate, shown only while a size is missing, measures only what is missing;
+  its refresh button measures all again.
+- **Folder sizes the app measures by itself give way** (2026-11-16).
+  An automatic walk (the Info panel's or the Info Row's) of a window not in front stops for any size asked for and for the front window's automatic one, and waits again while its window still describes that folder;
+  a tab behind another or a minimized window drops its walk, and a request whose view moved on or closed leaves the queue: a window not looked at shouldn't make the one that is wait.
+- **With several folders selected, the app measures each by itself** (the owner, 2026-11-25).
+  With Calculate folder sizes automatically on and the Info panel or the Info Row open, the selected folders in the home folder and the bundles anywhere are measured one after another, from the top of the list down, once the selection has stayed 0.5 s: the panel sums the selection, and a selection's size waiting on Calculate went against the setting.
+  One automatic walk at a time, so the window still has one automatic request and the rules above hold for each folder.
+  A folder being measured stays measured while it stays selected.
+  Stop on any of the selected folders, one the app measures by itself or one asked for with Calculate Size or the refresh button, ends the rest until the selection changes, and what was stopped isn't started again: Stop means stop (the owner, 2026-11-25, after a review; it was Stop on the app's own measurement only, so a size asked for and stopped was measured again by itself a moment later, with one folder selected too).
+  A selected folder whose size is forgotten after a change under it is measured again by itself, whoever measured it before (the owner, 2026-11-25; it was measured again only when the app hadn't measured it for this selection).
+  Replaced: one item selected, or none, only.
+- **Folder sizes changed outside the app stay as they were measured** (2026-11-16) until measured again;
+  the app's own writes still adjust or forget them.
+  Dropped: forgetting or marking the sizes of folders the watchers see change.
+- **A folder size waiting for another says "Waiting…"** (2026-11-16), apart from one being measured, so a long wait doesn't look like a slow walk.
+  In the Activity list a Calculate Size on several folders is one row, counting those done, with one Stop.
+  Dropped: a row "3 more folders" beside the folder being measured, which ended as "No longer waiting" between rows that said "Done".
+- **While the Activity list is open no row changes place** (2026-11-17).
+  A row whose item ended stays where it was, dimmed, saying how it ended, with no Stop;
+  what is new goes to the end;
+  only a measurement the app started by itself is taken out, as the Info panel or the Info Row shows its state already.
+  Opened again, the list shows only what runs.
+  Rows moving up put the next row's Stop under a press aimed at the one that went.
+  Dropped: ignoring Stop for a moment after a move (the list still jumped, and presses were dropped without a word).
+  The list shows six rows and scrolls past that.
+  The ring's count has no background at rest (the owner's choice).
 
 ## New items
 
-- **New Folder with Selection (⌃⌘N, Finder's key) puts the selected items in a new folder beside them, and one Undo takes it all back** (2026-11-19), as Finder's does: the folder takes the next free "untitled folder" name and opens for naming; one Undo moves the items back out and puts the folder in the Trash, asking first only when something else was put in it since. For items of the folder on screen only. Each item is a rename into the folder, with no paste review; an item that can't be moved is told of, and when none could the empty folder is removed again.
-- **New File makes a file from a template, with its own date** (2026-11-19). File ▸ New File offers an empty Text File and each plain, visible file of the Templates folder (`~/Library/Application Support/com.filetrail.native/Templates`); Save as Template copies the selected files there, and is offered only for files whose name doesn't start with a dot, as New File lists none of those. Only a template's contents are copied, so the new file is dated now and takes none of its tags, permissions or quarantine mark (2026-11-20: a copy that can't run can't get past Gatekeeper). The new file takes the template's name, numbered when taken, and opens for naming; Undo moves it to the Trash. New Text File has no key until one is set.
+- **New Folder with Selection (⌃⌘N, Finder's key) puts the selected items in a new folder beside them, and one Undo takes it all back** (2026-11-19), as Finder's does: the folder takes the next free "untitled folder" name and opens for naming;
+  one Undo moves the items back out and puts the folder in the Trash, asking first only when something else was put in it since.
+  For items of the folder on screen only.
+  Each item is a rename into the folder, with no paste review;
+  an item that can't be moved is told of, and when none could the empty folder is removed again.
+- **New File makes a file from a template, with its own date** (2026-11-19).
+  File ▸ New File offers an empty Text File and each plain, visible file of the Templates folder (`~/Library/Application Support/com.filetrail.native/Templates`);
+  Save as Template copies the selected files there, and is offered only for files whose name doesn't start with a dot, as New File lists none of those.
+  Only a template's contents are copied, so the new file is dated now and takes none of its tags, permissions or quarantine mark (2026-11-20: a copy that can't run can't get past Gatekeeper).
+  The new file takes the template's name, numbered when taken, and opens for naming;
+  Undo moves it to the Trash.
+  New Text File has no key until one is set.
 
 ## The clipboard
 
-- **Each item on the clipboard keeps what it was put there for, and the clipboard can be added to** (2026-11-20; [records/clipboard-shelf.md](../records/clipboard-shelf.md)). ⌘C and ⌘X replace what is there; Add to Copied Items (⌃⌘C) and Add to Cut Items (⌃⌘X) add the selection with that intent, so files are gathered from several folders and pasted together. ⌘V copies the copied ones and moves the cut ones in one paste, with one review, one progress card and one Undo. Dropped: one intent for the whole list (an Add of the other kind changed items added earlier); Finder's way alone, with Cut dimmed for files (it took ⌘X from the people who use it); asking at each paste of a mixed list.
-  - **Move Items Here (⌥⌘V) moves them all whatever their mark**, Finder's key and meaning, so ⌘C then ⌥⌘V moves. On a clipboard of cut items it does what ⌘V does, and stays on so the habit never beeps. There is no key that copies everything.
-  - **Nothing has to be remembered.** Paste's second line says what it will do ("Moves 4, copies 3"), the clipboard list is split by intent, Cut above Copied, and the toolbar button shows both counts. One file has one intent: put on again with the other, it switches.
-  - **Each cut item follows its own rule.** One renamed or moved in File Trail is followed; one put in the Trash, deleted or moved outside the app leaves the clipboard. A toast names it where nothing else says it went (its disk ejected, dragged to another app, erased by Empty Trash); Move to Trash and Delete have their own toast, and a copied item leaves without one. Replaced any change to one cut item cancelling the whole cut.
-  - **A paste that moves anything uses the list up** (2026-11-20): what it pasted, copied items too, comes off, and only what it didn't get to stays. The items gathered are one job. A list of copied items only stays, to be pasted again, as after Finder's Copy.
+- **Each item on the clipboard keeps what it was put there for, and the clipboard can be added to** (2026-11-20; [records/clipboard-shelf.md](../records/clipboard-shelf.md)). ⌘C and ⌘X replace what is there;
+  Add to Copied Items (⌃⌘C) and Add to Cut Items (⌃⌘X) add the selection with that intent, so files are gathered from several folders and pasted together. ⌘V copies the copied ones and moves the cut ones in one paste, with one review, one progress card and one Undo.
+  Dropped: one intent for the whole list (an Add of the other kind changed items added earlier);
+  Finder's way alone, with Cut dimmed for files (it took ⌘X from the people who use it);
+  asking at each paste of a mixed list.
+  - **Move Items Here (⌥⌘V) moves them all whatever their mark**, Finder's key and meaning, so ⌘C then ⌥⌘V moves.
+    On a clipboard of cut items it does what ⌘V does, and stays on so the habit never beeps.
+    There is no key that copies everything.
+  - **Nothing has to be remembered.**
+    Paste's second line says what it will do ("Moves 4, copies 3"), the clipboard list is split by intent, Cut above Copied, and the toolbar button shows both counts.
+    One file has one intent: put on again with the other, it switches.
+  - **Each cut item follows its own rule.**
+    One renamed or moved in File Trail is followed;
+    one put in the Trash, deleted or moved outside the app leaves the clipboard.
+    A toast names it where nothing else says it went (its disk ejected, dragged to another app, erased by Empty Trash);
+    Move to Trash and Delete have their own toast, and a copied item leaves without one.
+    Replaced any change to one cut item cancelling the whole cut.
+  - **A paste that moves anything uses the list up** (2026-11-20): what it pasted, copied items too, comes off, and only what it didn't get to stays.
+    The items gathered are one job.
+    A list of copied items only stays, to be pasted again, as after Finder's Copy.
   - **A folder and an item inside it are never both on the list**: adding the folder takes the item off, and adding an item inside a listed folder is refused, naming the folder.
-  - **A list built with Add and replaced by ⌘C or ⌘X can be put back once**, from the toast and then the clipboard list's footer, until the next Copy or Cut or a quit. It is in neither the menus nor the palette, as no one looks for it once the moment has passed; a list never added to is replaced without it.
-  - **Two items of one name are settled when the second is put on, never at the paste**: Keep Both, Use This One or Don't Add, asked once for all an Add brings. Names compare as most Macs' disks compare them, whatever their case and however an accented letter is stored. Conflicts with what is already in the folder pasted into stay in the paste's review.
+  - **A list built with Add and replaced by ⌘C or ⌘X can be put back once**, from the toast and then the clipboard list's footer, until the next Copy or Cut or a quit.
+    It is in neither the menus nor the palette, as no one looks for it once the moment has passed;
+    a list never added to is replaced without it.
+  - **Two items of one name are settled when the second is put on, never at the paste**: Keep Both, Use This One or Don't Add, asked once for all an Add brings.
+    Names compare as most Macs' disks compare them, whatever their case and however an accented letter is stored.
+    Conflicts with what is already in the folder pasted into stay in the paste's review.
   - **An item switched in the open list stays on its row**, with its new mark, and the list is in its parts again the next time it opens, so a second click doesn't switch another item.
   - Show Clipboard is ⌃⌘V.
-- **Paste as File saves the image or text on the system's clipboard as a new file** (⇧⌘V) in the folder on screen, named "Pasted Image.png" or "Pasted Text.txt" and opened for naming; Undo moves it to the Trash. It is the only command that reads the system's clipboard.
+- **Paste as File saves the image or text on the system's clipboard as a new file** (⇧⌘V) in the folder on screen, named "Pasted Image.png" or "Pasted Text.txt" and opened for naming;
+  Undo moves it to the Trash.
+  It is the only command that reads the system's clipboard.
   - **Not ⌥⌘V**, Finder's Move Item Here: pressed after ⌘C out of habit, it would write whatever the system's clipboard held.
   - **Plain text wins over an image**, as a copy from a document carries a picture of it too, unless the text is only an address (a browser's Copy Image) or only white space.
-  - **An image keeps the bytes it was copied as** (PNG, JPEG, HEIC, GIF), the first in the clipboard's order; one copied only as TIFF is written as PNG. Text is written as plain UTF-8. No settings: forcing PNG makes photos several times larger, and forcing JPEG blurs screenshots' text and drops transparency.
-  - **Nothing is asked first**, as the file is new and can be undone, except before writing what a password manager marked as private (`org.nspasteboard.ConcealedType`): Cancel is the default there. Files copied in another app are refused with a toast, never written as their icon or name.
-- **Copy Contents puts the image or text of one file on the system's clipboard** (⇧⌘C), to paste in another app, leaving the app's own clipboard alone. It only reads, so it runs in search results, in the Trash and while a file operation runs. One file only; no settings.
-  - **The menus name what it would copy by the file's kind** ("Copy Image", "Copy Text"); a name that doesn't say (no extension, an unknown kind, or `.key`, `.crt` and `.cer`, which name either) shows "Copy Contents" and the file is read for an image, then for text. A kind that is neither is left out of the right-click menu.
-  - **An image goes on as its own bytes**, with a PNG copy for any format but PNG and JPEG, as many apps read only PNG; the file's address never goes on. **Text is read as UTF-8, or UTF-16 with its byte-order mark**, anything else refused rather than guessed; SVG is copied as its markup, RTF with its styles, a link as what it points to. Up to 10 MB of text and 100 MB of image.
-  - **Before copying a name that usually holds a password or a key** (`.env`, `.netrc`, `.npmrc`, `*.pem`, `*.key`, private SSH keys, but not their `.pub`) it asks, Cancel the default, and marks the text as private so clipboard history apps leave it out. A link is asked about for its own name or for the name of what it points to; a name whose extension says image never is.
+  - **An image keeps the bytes it was copied as** (PNG, JPEG, HEIC, GIF), the first in the clipboard's order;
+    one copied only as TIFF is written as PNG.
+    Text is written as plain UTF-8.
+    No settings: forcing PNG makes photos several times larger, and forcing JPEG blurs screenshots' text and drops transparency.
+  - **Nothing is asked first**, as the file is new and can be undone, except before writing what a password manager marked as private (`org.nspasteboard.ConcealedType`): Cancel is the default there.
+    Files copied in another app are refused with a toast, never written as their icon or name.
+- **Copy Contents puts the image or text of one file on the system's clipboard** (⇧⌘C), to paste in another app, leaving the app's own clipboard alone.
+  It only reads, so it runs in search results, in the Trash and while a file operation runs.
+  One file only;
+  no settings.
+  - **The menus name what it would copy by the file's kind** ("Copy Image", "Copy Text");
+    a name that doesn't say (no extension, an unknown kind, or `.key`, `.crt` and `.cer`, which name either) shows "Copy Contents" and the file is read for an image, then for text.
+    A kind that is neither is left out of the right-click menu.
+  - **An image goes on as its own bytes**, with a PNG copy for any format but PNG and JPEG, as many apps read only PNG;
+    the file's address never goes on.
+    **Text is read as UTF-8, or UTF-16 with its byte-order mark**, anything else refused rather than guessed;
+    SVG is copied as its markup, RTF with its styles, a link as what it points to.
+    Up to 10 MB of text and 100 MB of image.
+  - **Before copying a name that usually holds a password or a key** (`.env`, `.netrc`, `.npmrc`, `*.pem`, `*.key`, private SSH keys, but not their `.pub`) it asks, Cancel the default, and marks the text as private so clipboard history apps leave it out.
+    A link is asked about for its own name or for the name of what it points to;
+    a name whose extension says image never is.
 
 ## Share and Convert Images
 
-- **Share… shows the system's share popover for the selected items, as Finder's does** (`NSSharingServicePicker`), with everything in it as macOS chooses. A submenu of services, as Finder showed before macOS 13, would need a deprecated call. It runs in search results and while a file operation runs; not for items in the Trash, nor from the right-click menus of the tree, the favorites or the list's background, as in Finder. No key until one is set.
-- **Convert Images makes new image files from the selected ones, in another format or at another size.** A sheet chooses the format (JPEG, HEIC, PNG, TIFF, AVIF), the quality, the size, and whether to keep the metadata, with removing the location apart; it runs as a file operation. No key until one is set; the sheet remembers the last choices.
-  - **A selection is never converted in part.** It is offered only when every selected item is an image the system can read (not SVG or PDF), judged by the name so the menus stay instant; a file that can't be read once converting starts is listed with the failures.
-  - **Nothing is replaced.** Each new file goes beside its original under the same name with the new extension, numbered when taken; the originals are never touched or offered to the Trash, and one Undo moves the new files to the Trash. A choice of where the files go (the other pane, any folder) was turned down for now.
-  - **No image is ever made larger**, as enlarging can't add detail: a size above an image's own is grayed or becomes the image's, with a note; of several images, those already inside a Fit Within or a proportional box keep their size and are converted only; and an exact size any image is smaller than grays Convert, as converting only the others would be a partial conversion. A picture comes out exactly the size worked out for it. Proportional, a custom size is a box each image fits inside in its own shape; not proportional, every image becomes exactly that size, and the sheet warns when their shapes differ.
-  - **Without the metadata, none of it is written in any format** (the camera's, the location, the caption data, a PNG's text, the XMP), only what the picture needs to show as it did (its orientation and color profile). With it, a resized image keeps all that one at its size keeps. **Removing the location takes it out everywhere**: the GPS position and the place names, from the caption data and the XMP alike, with the places only the XMP names and a position a camera wrote under a name of its own (any XMP field outside EXIF's whose name starts with "gps" or holds "latitude" or "longitude").
+- **Share… shows the system's share popover for the selected items, as Finder's does** (`NSSharingServicePicker`), with everything in it as macOS chooses.
+  A submenu of services, as Finder showed before macOS 13, would need a deprecated call.
+  It runs in search results and while a file operation runs;
+  not for items in the Trash, nor from the right-click menus of the tree, the favorites or the list's background, as in Finder.
+  No key until one is set.
+- **Convert Images makes new image files from the selected ones, in another format or at another size.**
+  A sheet chooses the format (JPEG, HEIC, PNG, TIFF, AVIF), the quality, the size, and whether to keep the metadata, with removing the location apart;
+  it runs as a file operation.
+  No key until one is set;
+  the sheet remembers the last choices.
+  - **A selection is never converted in part.**
+    It is offered only when every selected item is an image the system can read (not SVG or PDF), judged by the name so the menus stay instant;
+    a file that can't be read once converting starts is listed with the failures.
+  - **Nothing is replaced.**
+    Each new file goes beside its original under the same name with the new extension, numbered when taken;
+    the originals are never touched or offered to the Trash, and one Undo moves the new files to the Trash.
+    A choice of where the files go (the other pane, any folder) was turned down for now.
+  - **No image is ever made larger**, as enlarging can't add detail: a size above an image's own is grayed or becomes the image's, with a note;
+    of several images, those already inside a Fit Within or a proportional box keep their size and are converted only;
+    and an exact size any image is smaller than grays Convert, as converting only the others would be a partial conversion.
+    A picture comes out exactly the size worked out for it.
+    Proportional, a custom size is a box each image fits inside in its own shape;
+    not proportional, every image becomes exactly that size, and the sheet warns when their shapes differ.
+  - **Without the metadata, none of it is written in any format** (the camera's, the location, the caption data, a PNG's text, the XMP), only what the picture needs to show as it did (its orientation and color profile).
+    With it, a resized image keeps all that one at its size keeps.
+    **Removing the location takes it out everywhere**: the GPS position and the place names, from the caption data and the XMP alike, with the places only the XMP names and a position a camera wrote under a name of its own (any XMP field outside EXIF's whose name starts with "gps" or holds "latitude" or "longitude").
   - **Converting to the same format at Actual Size is allowed**, for another quality or without the metadata.
-  - **What the picture is stays**: the color profile, CMYK or gray, 16-bit depth for PNG and TIFF, an HDR gain map for HEIC, JPEG and AVIF. JPEG gets a white background where the image was transparent, and an animation or several pages give the first frame; the sheet says each.
-  - **Only the system's ImageIO, with no library added**: it reads WebP and JPEG XL but writes neither; WebP through libwebp was put off. Stop while a picture is encoded writes nothing of it.
+  - **What the picture is stays**: the color profile, CMYK or gray, 16-bit depth for PNG and TIFF, an HDR gain map for HEIC, JPEG and AVIF.
+    JPEG gets a white background where the image was transparent, and an animation or several pages give the first frame;
+    the sheet says each.
+  - **Only the system's ImageIO, with no library added**: it reads WebP and JPEG XL but writes neither;
+    WebP through libwebp was put off.
+    Stop while a picture is encoded writes nothing of it.
 
 ## Tags
 
-- **Tags… puts any tag in use on the items, or takes it off** (the owner, 2026-11-26, from the mocks on the canvas "File Trail tags"). A popover at the first selected item, or at the Info panel's Tags row when it is clicked there: a filter, the tags as a checklist (✓ on every item, – on some with how many), and Remove All Tags. A click, or Return on the tag the filter or the arrows highlight, writes at once, by the color row's rule: a tag on every item comes off them all, otherwise it goes on those without it, in its color. There is no Done: Esc or a click outside closes it. One's own tags are listed first by name, then the seven colors under the names macOS gives them, in the color row's order. A tag is its name, case aside, whatever its color on each item. Replaced: Finder's token field, where a tag on only some of the items can't be seen or taken off, and a Tags submenu, one tag a visit.
-  - **The tags listed are those in use**: on the selected items, and those Spotlight knows on this Mac (`_kMDItemUserTags`, with their colors; about 180 ms for ten thousand tagged items the first time, under 10 after, on an M-series Mac), asked again each time the popover opens. Finder keeps its own list of tags where no other app can read it dependably, so a tag on no item, or only on a disk Spotlight doesn't index, isn't listed until an item selected has it.
-  - **Tags aren't made, renamed or recolored here** (the owner: applying and showing them only). A name typed that no tag has finds nothing.
-  - Offered for the items of a folder or of search results, not the Trash's: File ▸ Tags…, under the colors in the right-click menu, and the palette; no key until one is set, as Finder has none.
-- **A change of tags is undone as any change of files is** (the owner, 2026-11-26). A color chosen from the row is one Undo, and so is everything chosen while Tags… is open, however it was opened (the File menu, the right-click menu, the palette or the Info panel's Tags row), as for the permissions popover; it is named "Tags of “a.txt”" or "Tags of 3 Items", and the Undo History says what went on and came off ("a.txt: +Red, −Work"). Undo puts back each item's tags as they were, in their order and with their colors, where the item still has the ones it was left with; one whose tags were changed since, in Finder say, is left as it is, and said. A change of tags is a file operation, so it waits its turn as every other does: while another runs, the colors and Tags… are left out of the menus, File ▸ Tags… is off, and Tags… asked for from the Info panel says an operation is running, as Permissions does. Replaced tags written at once whatever else ran, with no Undo: a write outside the write slot would have put the Undo history out of the order things happened.
-- **The File menu has the row of tag colors**, before Tags…, as Finder's has (2026-11-26). Its checks are read as the menu opens, for up to 1,000 items as the right-click menu's are.
-- **The Info panel has a Tags row** (the owner, 2026-11-26): in General, after Size, for one item and for several (it was after Modified for one item until General gathered the rows every item has, the same day). Each tag is a chip with its dot; one on only some of the items is dashed and says how many have it. Every tag shows, on as many lines as they take (the owner, 2026-11-26: the panel shows all there is, nothing cut short). With none it reads "Add Tags…", or "None" for a disk or what is in the Trash. A click opens Tags… from the row. The tags are read while the panel shows the items, for up to 1,000 of them, and read again when this window changes them or the folder changes; the home folder's Desktop, Documents and Downloads aren't read (macOS would ask, as for their dots).
+- **Tags… puts any tag in use on the items, or takes it off** (the owner, 2026-11-26, from the mocks on the canvas "File Trail tags").
+  A popover at the first selected item, or at the Info panel's Tags row when it is clicked there: a filter, the tags as a checklist (✓ on every item, – on some with how many), and Remove All Tags.
+  A click, or Return on the tag the filter or the arrows highlight, writes at once, by the color row's rule: a tag on every item comes off them all, otherwise it goes on those without it, in its color.
+  There is no Done: Esc or a click outside closes it.
+  One's own tags are listed first by name, then the seven colors under the names macOS gives them, in the color row's order.
+  A tag is its name, case aside, whatever its color on each item.
+  Replaced: Finder's token field, where a tag on only some of the items can't be seen or taken off, and a Tags submenu, one tag a visit.
+  - **The tags listed are those in use**: on the selected items, and those Spotlight knows on this Mac (`_kMDItemUserTags`, with their colors; about 180 ms for ten thousand tagged items the first time, under 10 after, on an M-series Mac), asked again each time the popover opens.
+    Finder keeps its own list of tags where no other app can read it dependably, so a tag on no item, or only on a disk Spotlight doesn't index, isn't listed until an item selected has it.
+  - **Tags aren't made, renamed or recolored here** (the owner: applying and showing them only).
+    A name typed that no tag has finds nothing.
+  - Offered for the items of a folder or of search results, not the Trash's: File ▸ Tags…, under the colors in the right-click menu, and the palette;
+    no key until one is set, as Finder has none.
+- **A change of tags is undone as any change of files is** (the owner, 2026-11-26).
+  A color chosen from the row is one Undo, and so is everything chosen while Tags… is open, however it was opened (the File menu, the right-click menu, the palette or the Info panel's Tags row), as for the permissions popover;
+  it is named "Tags of “a.txt”" or "Tags of 3 Items", and the Undo History says what went on and came off ("a.txt: +Red, −Work").
+  Undo puts back each item's tags as they were, in their order and with their colors, where the item still has the ones it was left with;
+  one whose tags were changed since, in Finder say, is left as it is, and said.
+  A change of tags is a file operation, so it waits its turn as every other does: while another runs, the colors and Tags… are left out of the menus, File ▸ Tags… is off, and Tags… asked for from the Info panel says an operation is running, as Permissions does.
+  Replaced tags written at once whatever else ran, with no Undo: a write outside the write slot would have put the Undo history out of the order things happened.
+- **The File menu has the row of tag colors**, before Tags…, as Finder's has (2026-11-26).
+  Its checks are read as the menu opens, for up to 1,000 items as the right-click menu's are.
+- **The Info panel has a Tags row** (the owner, 2026-11-26): in General, after Size, for one item and for several (it was after Modified for one item until General gathered the rows every item has, the same day).
+  Each tag is a chip with its dot;
+  one on only some of the items is dashed and says how many have it.
+  Every tag shows, on as many lines as they take (the owner, 2026-11-26: the panel shows all there is, nothing cut short).
+  With none it reads "Add Tags…", or "None" for a disk or what is in the Trash.
+  A click opens Tags… from the row.
+  The tags are read while the panel shows the items, for up to 1,000 of them, and read again when this window changes them or the folder changes;
+  the home folder's Desktop, Documents and Downloads aren't read (macOS would ask, as for their dots).
 
 ## Aliases and symbolic links
 
-- **An alias is Finder's; a symbolic link is called one** (the owner, 2026-11-21). Make Alias (⌃⌘A, Finder's key) makes Finder's alias, which finds its original again after it is moved or renamed and which other apps understand. Symbolic links are still shown and followed, and are called what they are: "Symbolic Link" in the Kind column and Get Info, "Symlink" on the tree's badge, "symbolic link" in the paste review.
-  - **Opening an alias, or looking at what is in it, reaches the original; everything else acts on the alias itself**, as in Finder. Open, Open With, Edit in, the viewer, Quick Look, Copy Contents and Open in New Tab, New Window or Other Pane go to the original, and the viewer saves into the original. Rename, Duplicate, Copy, Cut, Move, Compress, Move to Trash, Get Info and dragging act on the alias. An alias of a folder opens in File Trail.
-  - **An alias is shown as Finder shows it**: its own size, tags and dates; the icon of its original's kind with the arrow macOS puts on a symbolic link (`IconSamples.aliasLink`), which is Finder's alias arrow at every size, so an alias of a file shows its type's icon and never a thumbnail, and an alias of a folder a plain folder with none of its original's tag color; an app's, a disk's or a special folder's alias shows that item's picture. An alias of a folder is listed with the folders and opens as one, but nothing is pasted, made or rooted in it, and it isn't offered as a favorite: it is a file. The Previews view shows the original, as Finder's gallery does; the Icons view and the lists keep its icon.
-  - Where an alias leads is looked up away from the main thread, without mounting a disk or asking for a password, for the aliases of a listing and again for what is selected, so the menus offer what fits; opening one looks it up again. An original that can't be found says so in an alert. An original is named as its disk spells it (`Links.original` ends with `realpath`), and the URL the system resolves an alias to is read only through `DiskPath(urlSpelling:)` (see "Byte-exact path comparison" in must-stay.md).
-  - **Show Original selects the original in its folder and scrolls to it** (File ▸ Show Original, and the right-click menu of one alias or link). In the folder on screen nothing moves and nothing is added to Back; elsewhere the original's folder opens as a step of Back. A filter that hides it is cleared; a hidden original with hidden files off opens its folder and says it is hidden; an alias of a disk opens the disk. Get Info's Original row does the same when clicked. Show Original has no default key, as Finder's ⌘R is Refresh here.
-  - **Make Alias goes where Duplicate goes**: beside each item, never in the Trash, and for search results only from one folder at a time. It is named as Finder names one ("Report.pdf alias", then "Report.pdf alias 2"). One Undo moves what one Make Alias made to the Trash.
+- **An alias is Finder's;
+  a symbolic link is called one** (the owner, 2026-11-21).
+  Make Alias (⌃⌘A, Finder's key) makes Finder's alias, which finds its original again after it is moved or renamed and which other apps understand.
+  Symbolic links are still shown and followed, and are called what they are: "Symbolic Link" in the Kind column and Get Info, "Symlink" on the tree's badge, "symbolic link" in the paste review.
+  - **Opening an alias, or looking at what is in it, reaches the original;
+    everything else acts on the alias itself**, as in Finder.
+    Open, Open With, Edit in, the viewer, Quick Look, Copy Contents and Open in New Tab, New Window or Other Pane go to the original, and the viewer saves into the original.
+    Rename, Duplicate, Copy, Cut, Move, Compress, Move to Trash, Get Info and dragging act on the alias.
+    An alias of a folder opens in File Trail.
+  - **An alias is shown as Finder shows it**: its own size, tags and dates;
+    the icon of its original's kind with the arrow macOS puts on a symbolic link (`IconSamples.aliasLink`), which is Finder's alias arrow at every size, so an alias of a file shows its type's icon and never a thumbnail, and an alias of a folder a plain folder with none of its original's tag color;
+    an app's, a disk's or a special folder's alias shows that item's picture.
+    An alias of a folder is listed with the folders and opens as one, but nothing is pasted, made or rooted in it, and it isn't offered as a favorite: it is a file.
+    The Previews view shows the original, as Finder's gallery does;
+    the Icons view and the lists keep its icon.
+  - Where an alias leads is looked up away from the main thread, without mounting a disk or asking for a password, for the aliases of a listing and again for what is selected, so the menus offer what fits;
+    opening one looks it up again.
+    An original that can't be found says so in an alert.
+    An original is named as its disk spells it (`Links.original` ends with `realpath`), and the URL the system resolves an alias to is read only through `DiskPath(urlSpelling:)` (see "Byte-exact path comparison" in must-stay.md).
+  - **Show Original selects the original in its folder and scrolls to it** (File ▸ Show Original, and the right-click menu of one alias or link).
+    In the folder on screen nothing moves and nothing is added to Back;
+    elsewhere the original's folder opens as a step of Back.
+    A filter that hides it is cleared;
+    a hidden original with hidden files off opens its folder and says it is hidden;
+    an alias of a disk opens the disk.
+    Get Info's Original row does the same when clicked.
+    Show Original has no default key, as Finder's ⌘R is Refresh here.
+  - **Make Alias goes where Duplicate goes**: beside each item, never in the Trash, and for search results only from one folder at a time.
+    It is named as Finder names one ("Report.pdf alias", then "Report.pdf alias 2").
+    One Undo moves what one Make Alias made to the Trash.
   - Left out for now: Fix Alias…, dropping items onto an alias of a folder, and making an alias by dragging with ⌥⌘.

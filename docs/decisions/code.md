@@ -1,50 +1,130 @@
 # Decisions: how the code is kept
 
-How work lands, how it is tested and released. Part of the owner's decisions: [the index](../decisions.md) lists the other parts. `CLAUDE.md` gives these as rules to follow; this file keeps why.
+How work lands, how it is tested and released.
+Part of the owner's decisions: [the index](../decisions.md) lists the other parts.
+`CLAUDE.md` gives these as rules to follow;
+this file keeps why.
 
 ## Landing
 
-- **Nothing is committed to `main` until the owner says so.** Work is done and committed in a worktree of its own (`.claude/worktrees/<name>`, on the branch `claude/<name>`), never in the main checkout, and stays on its branch until the owner says to land it. It then lands by fast-forward or rebase, never by a merge commit, and there are no pull requests. Replaced on 2026-11-15 landing on local `main` as soon as work was done: the owner wants to look at it first.
-- **Nothing is pushed unless the owner asks.** Landing on `main` is local; pushing to GitHub is a step of its own.
-- **A commit message is a short subject, then the rest in the body.** The subject says what is now true of the app in about 72 characters at most; after a blank line the body gives the detail in plain sentences. No `Co-Authored-By` trailer. Replaced on 2026-11-20 one plain sentence, which grew to a median of 124 characters, so `git log --oneline` could not be read.
-- **The commits are as many as the changes.** A fix or a feature is one commit, so each can be taken back or found by bisecting. Rewording of comments or docs goes in one commit for a module or an area, and bookkeeping (an item of a plan ticked off) goes into the commit that did the work. A plan once landed in 401 commits, some 115 of them comments alone: too many to read.
+- **Nothing is committed to `main` until the owner says so.**
+  Work is done and committed in a worktree of its own (`.claude/worktrees/<name>`, on the branch `claude/<name>`), never in the main checkout, and stays on its branch until the owner says to land it.
+  It then lands by fast-forward or rebase, never by a merge commit, and there are no pull requests.
+  Replaced on 2026-11-15 landing on local `main` as soon as work was done: the owner wants to look at it first.
+- **Nothing is pushed unless the owner asks.**
+  Landing on `main` is local;
+  pushing to GitHub is a step of its own.
+- **A commit message is a short subject, then the rest in the body.**
+  The subject says what is now true of the app in about 72 characters at most;
+  after a blank line the body gives the detail in plain sentences.
+  No `Co-Authored-By` trailer.
+  Replaced on 2026-11-20 one plain sentence, which grew to a median of 124 characters, so `git log --oneline` could not be read.
+- **The commits are as many as the changes.**
+  A fix or a feature is one commit, so each can be taken back or found by bisecting.
+  Rewording of comments or docs goes in one commit for a module or an area, and bookkeeping (an item of a plan ticked off) goes into the commit that did the work.
+  A plan once landed in 401 commits, some 115 of them comments alone: too many to read.
 
 ## Testing
 
-- **Hand checks are made by whoever does the work**, as principles.md says, in the built app driven by a scratch scenario ([tools/capture/README.md](../../tools/capture/README.md)). The owner checks by hand only when asked, and doesn't ask for before and after pictures of a control change.
-- **Goldens are expected results kept by hand.** A golden's expected outputs are edited by hand, never regenerated from the code's own output, as a regenerated golden tests nothing. Whoever makes a change updates the goldens it moves, without asking the owner (2026-11-20): each new value is checked against what the change should do, and one that doesn't follow from it is a bug to look into. A golden is deleted only with the owner's yes. Six of them (shortcuts, command availability, preferences, the toolbar, right-click menus, Help) are written as bases and each case's changes to its base (`Tests/FTTestSupport/GoldenChanges.swift`), so what every case shares changes in one place; they are edited by hand in the bases and in the cases that differ. One exception: a new input field whose value follows from a case's other inputs may be added to every case by script, as `listShowsItems` was. A golden file holds its bases and cases only, with no metadata fields, and keeps a value on one line where it fits in 120 columns, the width the code keeps to, else one entry a line. At most ten of a golden's cases are generated ones, named "random …" (the owner, 2026-11-23): their outputs can't be worked out by hand, so where a sweep of generated inputs is worth keeping it is a seeded test of the rules the outputs must follow (`SeededGenerator` in `Tests/FTTestSupport`), as for a folder's listing, shortcuts, saved preferences and nested paths. Replaced up to 600 generated cases a golden, half of the goldens' 29 MB, which a change that moved them had in practice to take from the code's own output.
-- **`scripts/ci.sh --affected` compares with the previous commit, not with `main`**: the last commit's files, uncommitted changes and new files. On a long branch every module differs from `main`, so it ran everything every time. With no commit before HEAD, or nothing changed, everything runs. The format lint follows the same files.
-- **A test run that matched no test fails**: `scripts/ci.sh --scope` and the release's tests of real windows (`scripts/lib/test-runs.sh`). A release refuses to run with `FILETRAIL_NO_DISK_IMAGES` set.
-- **The accent tests run in full only in a release** (2026-11-22). Each run of the accent parity scenario goes through the app for five to seven seconds, and all of them, with the measure of what the system calls an accented name, took the test step of `scripts/ci.sh` from 64 to 100 seconds. Any other run compares the plain folder with "café" stored each way and "한글" stored decomposed at the top and "café" decomposed inside a folder of its name, all on APFS (`AccentKind.checked`); the disk images, the other kinds and the system's spellings wait for `FILETRAIL_RELEASE_TESTS=1`. What the system says changes with macOS, not with the app.
-- **One test run at a time on a Mac, by a lock every checkout shares** (2026-11-22). `scripts/ci.sh`, the release's tests of real windows and `scripts/with-test-lock.sh` take one lock, a file in the repository's git folder, which every worktree shares, and a run that waits says whose run it waits for. Before, each session put its runs behind a lock in its own scratch folder, which kept out only its own: two sessions' full runs overlapped, every test process stalled at once, and the run failed on waits that ran out.
-- **The stop and crash recordings run through the write engine**, not only against themselves. A recording that ever can't is deleted with the tests that only describe it. The shape tests of the recordings stay, each saying what it guards.
-- **The frame times of scrolling are measured on demand** (the owner, 2026-11-25), not by a release or CI. `scripts/frame-times.sh` runs `FrameTimeGUITests` (the List, the Icons view and the Compact List, each at its default size and at its largest, on the fixture folder `large/files-3000`, each number the median of three scrolls) and shows the numbers against an earlier run's file or the last release measured on the same Mac model in `docs/frame-timings.json`, which keeps the releases from 0.20.1 to 1.7.0. Nothing passes or fails on them. Anything else wanting speed is guarded by tests that bound CPU time (`CPUTime.measureThread`): no other benchmark tests, budgets or `--bench` modes. The fixture tree `large` holds the two folders the folder-size golden measures and the folder the frame times scroll. Replaced the frame times gating every release against the last one on the same Mac model: 1.8.0 was stopped for scrolling 40 to 70% slower, and 1.7.0 measured just as slow on the same Mac that day, and a few hours later the same commit was 18 to 42% faster, so the gate measured how busy the Mac was, not the code.
+- **Hand checks are made by whoever does the work**, as principles.md says, in the built app driven by a scratch scenario ([tools/capture/README.md](../../tools/capture/README.md)).
+  The owner checks by hand only when asked, and doesn't ask for before and after pictures of a control change.
+- **Goldens are expected results kept by hand.**
+  A golden's expected outputs are edited by hand, never regenerated from the code's own output, as a regenerated golden tests nothing.
+  Whoever makes a change updates the goldens it moves, without asking the owner (2026-11-20): each new value is checked against what the change should do, and one that doesn't follow from it is a bug to look into.
+  A golden is deleted only with the owner's yes.
+  Six of them (shortcuts, command availability, preferences, the toolbar, right-click menus, Help) are written as bases and each case's changes to its base (`Tests/FTTestSupport/GoldenChanges.swift`), so what every case shares changes in one place;
+  they are edited by hand in the bases and in the cases that differ.
+  One exception: a new input field whose value follows from a case's other inputs may be added to every case by script, as `listShowsItems` was.
+  A golden file holds its bases and cases only, with no metadata fields, and keeps a value on one line where it fits in 120 columns, the width the code keeps to, else one entry a line.
+  At most ten of a golden's cases are generated ones, named "random …" (the owner, 2026-11-23): their outputs can't be worked out by hand, so where a sweep of generated inputs is worth keeping it is a seeded test of the rules the outputs must follow (`SeededGenerator` in `Tests/FTTestSupport`), as for a folder's listing, shortcuts, saved preferences and nested paths.
+  Replaced up to 600 generated cases a golden, half of the goldens' 29 MB, which a change that moved them had in practice to take from the code's own output.
+- **`scripts/ci.sh --affected` compares with the previous commit, not with `main`**: the last commit's files, uncommitted changes and new files.
+  On a long branch every module differs from `main`, so it ran everything every time.
+  With no commit before HEAD, or nothing changed, everything runs.
+  The format lint follows the same files.
+- **A test run that matched no test fails**: `scripts/ci.sh --scope` and the release's tests of real windows (`scripts/lib/test-runs.sh`).
+  A release refuses to run with `FILETRAIL_NO_DISK_IMAGES` set.
+- **The accent tests run in full only in a release** (2026-11-22).
+  Each run of the accent parity scenario goes through the app for five to seven seconds, and all of them, with the measure of what the system calls an accented name, took the test step of `scripts/ci.sh` from 64 to 100 seconds.
+  Any other run compares the plain folder with "café" stored each way and "한글" stored decomposed at the top and "café" decomposed inside a folder of its name, all on APFS (`AccentKind.checked`);
+  the disk images, the other kinds and the system's spellings wait for `FILETRAIL_RELEASE_TESTS=1`.
+  What the system says changes with macOS, not with the app.
+- **One test run at a time on a Mac, by a lock every checkout shares** (2026-11-22).
+  `scripts/ci.sh`, the release's tests of real windows and `scripts/with-test-lock.sh` take one lock, a file in the repository's git folder, which every worktree shares, and a run that waits says whose run it waits for.
+  Before, each session put its runs behind a lock in its own scratch folder, which kept out only its own: two sessions' full runs overlapped, every test process stalled at once, and the run failed on waits that ran out.
+- **The stop and crash recordings run through the write engine**, not only against themselves.
+  A recording that ever can't is deleted with the tests that only describe it.
+  The shape tests of the recordings stay, each saying what it guards.
+- **The frame times of scrolling are measured on demand** (the owner, 2026-11-25), not by a release or CI.
+  `scripts/frame-times.sh` runs `FrameTimeGUITests` (the List, the Icons view and the Compact List, each at its default size and at its largest, on the fixture folder `large/files-3000`, each number the median of three scrolls) and shows the numbers against an earlier run's file or the last release measured on the same Mac model in `docs/frame-timings.json`, which keeps the releases from 0.20.1 to 1.7.0.
+  Nothing passes or fails on them.
+  Anything else wanting speed is guarded by tests that bound CPU time (`CPUTime.measureThread`): no other benchmark tests, budgets or `--bench` modes.
+  The fixture tree `large` holds the two folders the folder-size golden measures and the folder the frame times scroll.
+  Replaced the frame times gating every release against the last one on the same Mac model: 1.8.0 was stopped for scrolling 40 to 70% slower, and 1.7.0 measured just as slow on the same Mac that day, and a few hours later the same commit was 18 to 42% faster, so the gate measured how busy the Mac was, not the code.
 
 ## Reading in the background
 
-- **Every read of the Info panel and the Info Row goes through one `LatestRead`** (the owner, 2026-11-26: one way, not one per read). The item's properties, its tags, its details, an app's signing, its disk's space and the apps it opens with are each asked through one: asking again replaces what waits and tells a read already running that its answer is no longer wanted (`ReadCancel`, checked between its steps); only the answer to the latest ask is shown, so at most one read of each kind waits or runs for the item on screen. When it starts is the ask's: the quick reads of another item at once, as the panel waits for them ("It changes once, whole, and in place" in views.md); a folder read again, the tags of several items and an app's signing after `InfoMetrics.fetchDelay`, so a change or a selection grown item by item reads only where it stops. Replaced three timers of their own and a tags read that started at every selection on the way.
+- **Every read of the Info panel and the Info Row goes through one `LatestRead`** (the owner, 2026-11-26: one way, not one per read).
+  The item's properties, its tags, its details, an app's signing, its disk's space and the apps it opens with are each asked through one: asking again replaces what waits and tells a read already running that its answer is no longer wanted (`ReadCancel`, checked between its steps);
+  only the answer to the latest ask is shown, so at most one read of each kind waits or runs for the item on screen.
+  When it starts is the ask's: the quick reads of another item at once, as the panel waits for them ("It changes once, whole, and in place" in views.md);
+  a folder read again, the tags of several items and an app's signing after `InfoMetrics.fetchDelay`, so a change or a selection grown item by item reads only where it stops.
+  Replaced three timers of their own and a tags read that started at every selection on the way.
 
 ## Releases
 
-- **`scripts/release.sh` runs the tests that drive real windows.** A release is run at the keyboard, and these are the only tests of real windows.
+- **`scripts/release.sh` runs the tests that drive real windows.**
+  A release is run at the keyboard, and these are the only tests of real windows.
 - **A release goes one minor version up** unless the owner asks for a patch or a major one in words, even when all it holds is fixes.
-- **Release notes are written for the people who use the app** (2026-11-17). One point for each thing someone would notice, named as they would see it, with what it does for them in a sentence or two: "See what's running", "Folder sizes you can count on". Small changes of one kind go into one point, and the rest are left out. How it works stays out: not the order things run in, counts or limits, nor a name the app uses in its code. Headings by area only where there are enough points to need them. Never a list of the commits or of known issues. Replaced notes area by area, which ran to twenty points of how sizes wait and rows stay put: unreadable.
-  - **Plain sentences, as you would tell someone who uses the app**: what they can now do, or what used to go wrong and no longer does. No strings of keys joined by slashes and semicolons.
-  - **A command is named where people find it** (Edit ▸ Add to Copied Items). A key goes beside it only where people will press it often, one a point at most.
+- **Release notes are written for the people who use the app** (2026-11-17).
+  One point for each thing someone would notice, named as they would see it, with what it does for them in a sentence or two: "See what's running", "Folder sizes you can count on".
+  Small changes of one kind go into one point, and the rest are left out.
+  How it works stays out: not the order things run in, counts or limits, nor a name the app uses in its code.
+  Headings by area only where there are enough points to need them.
+  Never a list of the commits or of known issues.
+  Replaced notes area by area, which ran to twenty points of how sizes wait and rows stay put: unreadable.
+  - **Plain sentences, as you would tell someone who uses the app**: what they can now do, or what used to go wrong and no longer does.
+    No strings of keys joined by slashes and semicolons.
+  - **A command is named where people find it** (Edit ▸ Add to Copied Items).
+    A key goes beside it only where people will press it often, one a point at most.
   - **The use, not the mechanics**: an example of what it is for ("your photos always as large icons"), not its buttons and steps.
-  - **Something new is something people can do, not the new way of things**: "any folder can now remember a view of its own; your usual view stays the default", not "views are kept per folder".
-  - **Fixes get the care the new features get**, under a heading of their own when there are many: what went wrong for people, where they would have met it (a USB stick, a zip from Windows), and that it no longer happens. Only faults of what an earlier release had.
+  - **Something new is something people can do, not the new way of things**: "any folder can now remember a view of its own;
+    your usual view stays the default", not "views are kept per folder".
+  - **Fixes get the care the new features get**, under a heading of their own when there are many: what went wrong for people, where they would have met it (a USB stick, a zip from Windows), and that it no longer happens.
+    Only faults of what an earlier release had.
   - **A change people will trip over** (a key given to another command) is said in the point it belongs to, with where the old thing is now.
-- **Each release keeps its notes in its tag.** The notes are written before the release starts, when the owner reads them, as the tag keeps them, and are given with `--notes <file>`; the script stops without them. The tag's message is "File Trail X.Y.Z", a blank line and the notes word for word (`--cleanup=verbatim`), and the draft release's text is the same file. A tag pushed to GitHub is never rewritten. The releases before 1.0.0 had their notes put in their tags afterwards, and their GitHub releases were deleted; the tags stay.
-- **A release tags the commit it checked**, the one already on GitHub as `main`, and pushes the tag alone. A release that stops before the push takes the tag back. A release stays a draft until the owner says to publish it; one run by an agent is published only with the owner's explicit yes. Replaced on 2026-11-25 each release adding its frame times to `docs/frame-timings.json` in a commit of its own, which was the one tagged and pushed with `main`.
+- **Each release keeps its notes in its tag.**
+  The notes are written before the release starts, when the owner reads them, as the tag keeps them, and are given with `--notes <file>`;
+  the script stops without them.
+  The tag's message is "File Trail X.Y.Z", a blank line and the notes word for word (`--cleanup=verbatim`), and the draft release's text is the same file.
+  A tag pushed to GitHub is never rewritten.
+  The releases before 1.0.0 had their notes put in their tags afterwards, and their GitHub releases were deleted;
+  the tags stay.
+- **A release tags the commit it checked**, the one already on GitHub as `main`, and pushes the tag alone.
+  A release that stops before the push takes the tag back.
+  A release stays a draft until the owner says to publish it;
+  one run by an agent is published only with the owner's explicit yes.
+  Replaced on 2026-11-25 each release adding its frame times to `docs/frame-timings.json` in a commit of its own, which was the one tagged and pushed with `main`.
 
 ## The state file and the log
 
-- **A newer version's settings survive a save by an older one** (the owner, 2026-11-22). A preference or a top-level part of `app-state.json` this version doesn't know is written back as it was read, after the ones it writes, never in place of one (`AppState.unknown`, `unknownPreferences`). An older build opened after a newer one had dropped the newer one's tab views. A preference the app retired (`PreferenceKey.retired`: `workspaces`, `fileActivationAction`, `previewSizes`) still goes at the next write. Inside a setting this version knows, a field it doesn't know is not kept: that setting is read and written whole. Builds from before this keep nothing they don't know.
-- **The log's start line names the build** (2026-11-22): its full version (`FTVersion`, "1.5.2+dev.12": macOS's own number shows only the release before), the commit it was built from and where the app ran from, beside the data folder. A setting lost or changed can then be traced to the build that wrote the file.
+- **A newer version's settings survive a save by an older one** (the owner, 2026-11-22).
+  A preference or a top-level part of `app-state.json` this version doesn't know is written back as it was read, after the ones it writes, never in place of one (`AppState.unknown`, `unknownPreferences`).
+  An older build opened after a newer one had dropped the newer one's tab views.
+  A preference the app retired (`PreferenceKey.retired`: `workspaces`, `fileActivationAction`, `previewSizes`) still goes at the next write.
+  Inside a setting this version knows, a field it doesn't know is not kept: that setting is read and written whole.
+  Builds from before this keep nothing they don't know.
+- **The log's start line names the build** (2026-11-22): its full version (`FTVersion`, "1.5.2+dev.12": macOS's own number shows only the release before), the commit it was built from and where the app ran from, beside the data folder.
+  A setting lost or changed can then be traced to the build that wrote the file.
 
 ## Names and tools
 
-- **Names with the earlier app's vocabulary were renamed only where plainly left over** (`RendererCommand` is `AppCommand`, `CSSTextMetrics.swift` is `TextLineMetrics.swift`). `JSString`, `JSText` and `NodePath` keep their names: they name rules the app keeps, and renaming them is large. Other such names (`sortedJS`, `jsTrimmed`, `nodeText`, `libuvWords`, `PageWindow` and the like) are left. Comments describe the app on its own terms, as `CLAUDE.md` says.
+- **Names with the earlier app's vocabulary were renamed only where plainly left over** (`RendererCommand` is `AppCommand`, `CSSTextMetrics.swift` is `TextLineMetrics.swift`).
+  `JSString`, `JSText` and `NodePath` keep their names: they name rules the app keeps, and renaming them is large.
+  Other such names (`sortedJS`, `jsTrimmed`, `nodeText`, `libuvWords`, `PageWindow` and the like) are left.
+  Comments describe the app on its own terms, as `CLAUDE.md` says.
 - **The Finder Trash workaround stays as a diff** ([records/finder-trash-workaround.diff](../records/finder-trash-workaround.diff)), with the commit it applies to named in known-issues.md: the record at no cost.
-- **Tools nobody runs are deleted.** `scripts/hands-on-setup.sh`, the `FILETRAIL_TIMING` switch and `tools/acknowledgements` went. The app ships no one else's code, so it has no Acknowledgements window (2026-11-24). `--snapshot` stays: it draws a window into a PNG without screen-recording permission.
+- **Tools nobody runs are deleted.**
+  `scripts/hands-on-setup.sh`, the `FILETRAIL_TIMING` switch and `tools/acknowledgements` went.
+  The app ships no one else's code, so it has no Acknowledgements window (2026-11-24).
+  `--snapshot` stays: it draws a window into a PNG without screen-recording permission.

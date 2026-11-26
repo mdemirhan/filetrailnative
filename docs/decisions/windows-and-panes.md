@@ -1,80 +1,264 @@
 # Decisions: Windows, tabs, panes and menus
 
-Two panes, tabs, saved views, the toolbar, the menus and their keys, Back and Forward, the sidebar and Settings. Part of the owner's decisions: [the index](../decisions.md) lists the other parts, and [principles.md](../principles.md) says how a decision is weighed and when to ask about one.
+Two panes, tabs, saved views, the toolbar, the menus and their keys, Back and Forward, the sidebar and Settings.
+Part of the owner's decisions: [the index](../decisions.md) lists the other parts, and [principles.md](../principles.md) says how a decision is weighed and when to ask about one.
 
 ## Two panes
 
-- **A tab can show two panes side by side.** Each pane has its own folder, history, view, order, Folders First, filter, search and selection; the toolbar, the tree, the Info panel, the Info Row and the commands follow the active pane. Panes are side by side only.
+- **A tab can show two panes side by side.**
+  Each pane has its own folder, history, view, order, Folders First, filter, search and selection;
+  the toolbar, the tree, the Info panel, the Info Row and the commands follow the active pane.
+  Panes are side by side only.
   - **The tab keeps one tree for both panes**: it follows the active pane, marks the folders both panes show, and a pane switch never moves its root. ⌥-click or ⌥Return in it opens a folder in the other pane, which stays inactive.
-  - **Hidden Files is the tab's, not a pane's.** The tree is the tab's and would otherwise change at each pane switch, and hidden items are wanted for what is being done in the tab (a `.git`, a `.env`), as Finder's ⇧⌘. is one setting too. Turning it on or off keeps each pane's selection and scroll, but for a hidden item that goes, as after a Refresh. A tab saved while each pane had its own takes its active pane's.
-  - **Two Panes (⌘\\) opens the second pane where it was last closed in the tab, or else as a copy of the active pane**, and closes the pane that isn't active. Coming back where it was is wanted for going back and forth between two places. A copy has the active pane's folder, view, order, Folders First, sizes, filter mode and Back and Forward, as Duplicate Tab copies a tab; what is typed and what is selected stay behind. Go ▸ Show This Folder in Other Pane opens the same copy while the tab has one pane.
-  - **Duplicate Pane (⌥⌘\\) always opens the copy** (2026-11-18), and with two panes puts it in place of the other one, on its side and at its width. From one pane the copy opens with the room shared evenly, not where the divider was for the pane closed last; a list is copied, never a viewer: with the viewer beside the list active, the list is copied in the viewer's place, its edits asked about first (the owner, 2026-11-22). The key stays ⌥⌘\\: ⇧⌘\\ is Show All Tabs in Finder and Safari. It is an item of its own, as an item that only ⌥ shows is hard to find. Its toolbar button is in Customize Toolbar only.
-  - **Copy and Move to Other Pane are F5 and F6 only**, which the window handles; the menus show them beside the items and never take them (the owner, 2026-11-21). On most Mac keyboards F5 and F6 need fn. They sit in the Edit menu in a group of their own after Cut, Copy and Paste, as AppKit lets an item with ⇧ take the press of the same key without it, should anyone give them ⇧⌘ keys. Dropped: ⇧⌘C and ⇧⌘X, as ⇧⌘X a key away from ⌘X would move files at once. They do nothing with both panes on one folder (the menu dims them, and the keys do nothing alike) and are dimmed while the other pane shows the Trash; Go to Other Pane's Folder is not, as going there writes nothing, nor while the other pane shows search results.
-  - **Open in Other Pane is ⌥⌘↓ and Swap Panes ⌘U.** A swap keeps the active pane active, on the other side, and the keyboard where it was. Tab walks the tree, the left pane and the right pane in that order (⇧Tab back; a hidden tree is left out).
-  - **The right-click menus have one Other Pane submenu while the tab shows two panes**, an item that can't run now dimmed, not hidden, so the submenu keeps its shape. A folder in the tree or the favorites has Open in Other Pane itself. With one pane, the right-click menus have Open in Other Pane, which opens the second: for a folder of the tree or the favorites, and for one folder or one file of a list, the file shown there in the viewer (the owner, 2026-11-20).
-  - **When a copy, a move or a drag ends, both panes are read at once**, rather than the one not active waiting for the folder watch, and what arrived is selected in the pane that shows it. A drag from one pane onto the other's list goes into the folder it shows, search results included, and the pane that takes it becomes active.
-  - **New Window and New Tab open with one pane**; Duplicate Tab, Reopen Closed Tab, Move Tab to New Window and Merge All Windows keep both. A saved tab keeps its second pane, the active pane and the divider in optional fields, so a file from before panes reads as one pane.
-  - **When a disk is ejected, a pane showing it goes Home**, and the tab closes only when every pane of it was on that disk; a tab whose tree alone was rooted there stays, with the tree at Home.
-  - Closing the other pane changes nothing of the active one. Return acts in the list that has the keyboard, the other pane's too after a right-click there.
-- **A line along the top of the active pane says where the keyboard is** (2026-11-15), with one pane as with two: the accent with a narrow glow while the pane has the keyboard, the accent at 45% with no glow while the keyboard is elsewhere in the window, grey while the window is in the background. It follows the same signal as the selection, so the two always agree, and it shows where the keyboard is with nothing selected. It stays on the active pane while the sidebar has the keyboard, as the tree drives that pane. What is drawn under it starts 10 pt below the pane's top (`DesignTokens.paneContentTop`). Dropped: a line over every pane, a fainter line over the pane not active, a line that moves into the sidebar, a border or focus ring round the pane (the drop target's ring is one already), a tint over the sidebar, a glass rim, a capsule, a glow down from the toolbar.
+  - **Hidden Files is the tab's, not a pane's.**
+    The tree is the tab's and would otherwise change at each pane switch, and hidden items are wanted for what is being done in the tab (a `.git`, a `.env`), as Finder's ⇧⌘. is one setting too.
+    Turning it on or off keeps each pane's selection and scroll, but for a hidden item that goes, as after a Refresh.
+    A tab saved while each pane had its own takes its active pane's.
+  - **Two Panes (⌘\\) opens the second pane where it was last closed in the tab, or else as a copy of the active pane**, and closes the pane that isn't active.
+    Coming back where it was is wanted for going back and forth between two places.
+    A copy has the active pane's folder, view, order, Folders First, sizes, filter mode and Back and Forward, as Duplicate Tab copies a tab;
+    what is typed and what is selected stay behind.
+    Go ▸ Show This Folder in Other Pane opens the same copy while the tab has one pane.
+  - **Duplicate Pane (⌥⌘\\) always opens the copy** (2026-11-18), and with two panes puts it in place of the other one, on its side and at its width.
+    From one pane the copy opens with the room shared evenly, not where the divider was for the pane closed last;
+    a list is copied, never a viewer: with the viewer beside the list active, the list is copied in the viewer's place, its edits asked about first (the owner, 2026-11-22).
+    The key stays ⌥⌘\\: ⇧⌘\\ is Show All Tabs in Finder and Safari.
+    It is an item of its own, as an item that only ⌥ shows is hard to find.
+    Its toolbar button is in Customize Toolbar only.
+  - **Copy and Move to Other Pane are F5 and F6 only**, which the window handles;
+    the menus show them beside the items and never take them (the owner, 2026-11-21).
+    On most Mac keyboards F5 and F6 need fn.
+    They sit in the Edit menu in a group of their own after Cut, Copy and Paste, as AppKit lets an item with ⇧ take the press of the same key without it, should anyone give them ⇧⌘ keys.
+    Dropped: ⇧⌘C and ⇧⌘X, as ⇧⌘X a key away from ⌘X would move files at once.
+    They do nothing with both panes on one folder (the menu dims them, and the keys do nothing alike) and are dimmed while the other pane shows the Trash;
+    Go to Other Pane's Folder is not, as going there writes nothing, nor while the other pane shows search results.
+  - **Open in Other Pane is ⌥⌘↓ and Swap Panes ⌘U.**
+    A swap keeps the active pane active, on the other side, and the keyboard where it was.
+    Tab walks the tree, the left pane and the right pane in that order (⇧Tab back; a hidden tree is left out).
+  - **The right-click menus have one Other Pane submenu while the tab shows two panes**, an item that can't run now dimmed, not hidden, so the submenu keeps its shape.
+    A folder in the tree or the favorites has Open in Other Pane itself.
+    With one pane, the right-click menus have Open in Other Pane, which opens the second: for a folder of the tree or the favorites, and for one folder or one file of a list, the file shown there in the viewer (the owner, 2026-11-20).
+  - **When a copy, a move or a drag ends, both panes are read at once**, rather than the one not active waiting for the folder watch, and what arrived is selected in the pane that shows it.
+    A drag from one pane onto the other's list goes into the folder it shows, search results included, and the pane that takes it becomes active.
+  - **New Window and New Tab open with one pane**;
+    Duplicate Tab, Reopen Closed Tab, Move Tab to New Window and Merge All Windows keep both.
+    A saved tab keeps its second pane, the active pane and the divider in optional fields, so a file from before panes reads as one pane.
+  - **When a disk is ejected, a pane showing it goes Home**, and the tab closes only when every pane of it was on that disk;
+    a tab whose tree alone was rooted there stays, with the tree at Home.
+  - Closing the other pane changes nothing of the active one.
+    Return acts in the list that has the keyboard, the other pane's too after a right-click there.
+- **A line along the top of the active pane says where the keyboard is** (2026-11-15), with one pane as with two: the accent with a narrow glow while the pane has the keyboard, the accent at 45% with no glow while the keyboard is elsewhere in the window, grey while the window is in the background.
+  It follows the same signal as the selection, so the two always agree, and it shows where the keyboard is with nothing selected.
+  It stays on the active pane while the sidebar has the keyboard, as the tree drives that pane.
+  What is drawn under it starts 10 pt below the pane's top (`DesignTokens.paneContentTop`).
+  Dropped: a line over every pane, a fainter line over the pane not active, a line that moves into the sidebar, a border or focus ring round the pane (the drop target's ring is one already), a tint over the sidebar, a glass rim, a capsule, a glow down from the toolbar.
 
 ## Tabs and closing
 
-- **⌘W closes the pane it is in first** (2026-11-15). In a tab with two panes, File ▸ Close Pane (⌘W) closes the active pane and the other takes the whole width; with one pane the same item is Close Tab, and on the last tab it closes the window. Close Tab (⌥⌘W), the tab's close button and the window's close the tab with both its panes. Closing the innermost thing first is what ⌘W does one level up and in apps with independent splits; the cost is a second press to close a tab with two panes. Replaced ⌘W closing the whole tab, the pane not looked at included.
-  - A key chosen for Close Tab before stays Close Tab's, ⌘W too; otherwise Close Pane has ⌘W, whatever other keys Close Tab has, or none (the owner, 2026-11-23). Replaced Close Pane having no key for whoever had given Close Tab other keys, or none: it couldn't tell Close Tab's key removed by hand from one another command took in Settings, so giving ⌥⌘W to another command took ⌘W off Close Pane. Settings → Shortcuts says under each what it closes.
+- **⌘W closes the pane it is in first** (2026-11-15).
+  In a tab with two panes, File ▸ Close Pane (⌘W) closes the active pane and the other takes the whole width;
+  with one pane the same item is Close Tab, and on the last tab it closes the window.
+  Close Tab (⌥⌘W), the tab's close button and the window's close the tab with both its panes.
+  Closing the innermost thing first is what ⌘W does one level up and in apps with independent splits;
+  the cost is a second press to close a tab with two panes.
+  Replaced ⌘W closing the whole tab, the pane not looked at included.
+  - A key chosen for Close Tab before stays Close Tab's, ⌘W too;
+    otherwise Close Pane has ⌘W, whatever other keys Close Tab has, or none (the owner, 2026-11-23).
+    Replaced Close Pane having no key for whoever had given Close Tab other keys, or none: it couldn't tell Close Tab's key removed by hand from one another command took in Settings, so giving ⌥⌘W to another command took ⌘W off Close Pane.
+    Settings → Shortcuts says under each what it closes.
   - A rename being typed or a dialog open holds ⌘W. With Settings or Help in front the item reads Close Tab, as ⌘W closes that window.
-- **A closed tab or pane comes back as it was** (2026-11-18). Reopen Closed Tab (⇧⌘T) brings back each pane's folder, view, order, sizes, filters, selection and scroll, its Back and Forward with the place in each folder of the history, the tree, the two panes and the divider, and where the tab was in the row. A pane closed with ⌘W or ⌘\\ comes back with ⌘\\ the same way. Replaced a tab coming back with its folder only.
+- **A closed tab or pane comes back as it was** (2026-11-18).
+  Reopen Closed Tab (⇧⌘T) brings back each pane's folder, view, order, sizes, filters, selection and scroll, its Back and Forward with the place in each folder of the history, the tree, the two panes and the divider, and where the tab was in the row.
+  A pane closed with ⌘W or ⌘\\ comes back with ⌘\\ the same way.
+  Replaced a tab coming back with its folder only.
   - A search showing as it closed doesn't come back, as it would run again, nor a read error that was on screen.
   - A pane closed inside a tab is not part of the tab: the tab reopened has none to bring back, so ⌘\\ in it opens a copy of the active pane, as in a new tab.
   - Duplicate Tab carries the second pane's selection, filters and scroll too, as it does the first pane's.
   - Neither closed tabs nor closed panes are kept between launches: a launch brings back what was open at quit, and what was closed was put away (inferred).
-- **A tab dropped into a window that already has 25 goes back out** into a window of its own, with the tab-limit notice. The session save still cuts at 25; a folder opened with the app at launch is added as a tab to a restored window even when it has 25, and that stays as it is.
+- **A tab dropped into a window that already has 25 goes back out** into a window of its own, with the tab-limit notice.
+  The session save still cuts at 25;
+  a folder opened with the app at launch is added as a tab to a restored window even when it has 25, and that stays as it is.
 
 ## Saved views: tab views and window views
 
-- **A tab's settings and a window's tabs are saved by name as tab views and window views, beside folder views** (2026-11-21). Replaced workspaces, which saved a whole window as it was: removed with no migration, as the owner chose. One menu of its own, Layout, after View, holds the three (Folder View's items, then Tab Views, then Window Views, each under a heading; past the first five of each, the ones that can have keys, the rest are in More Tab Views and More Window Views, the owner, 2026-11-22); one window, Views, lists them. The menu's name is the owner's (2026-11-21): Layout, one word as View and Window beside it; Saved Views, its first name, was dropped. The plan, with the tests behind it, is [plans/tab-and-window-views.md](../plans/tab-and-window-views.md).
-  - **A tab view keeps only what is checked, and applies once to the tab you are in** (Layout ▸ Save Tab View…, the Tab View Options sheet). One or two panes, the divider (even, a share between 20% and 80% as now or typed, or the left pane's width now), hidden files, and for each pane its folder, the view it starts in, its grouping, order and Folders First (one each for the pane, in every view, as a pane carries them), each view's own options apart (the List's columns, their order and widths; the icon size; the Compact List's column width; the Previews at a time; the owner, 2026-11-23: before, one Size kept the three sizes together, and the sheet showed only the size of the view chosen), its viewer's Read or Edit and Follow, and its search results' view, all of it under one Search View checkbox (the owner, 2026-11-22: no setting of it apart; named Search View, as Search Results read as the results themselves). What isn't checked comes from the tab, its folders included. Panes not kept: it is for the active pane. With one pane kept, Forget the Second Pane (the owner, 2026-11-22) has the tab forget everything it keeps of the second pane closed (its folder, history, view, selection and filters, the file its viewer showed, and where the divider was), so Two Panes opens a new one, the room shared evenly, instead of bringing back the one a two-pane tab had. One pane keeps the active pane, as Two Panes does, but never a viewer on its own: with the viewer active, the viewer closes and its list stays. A pane closed with a file's edits not saved asks first. Any pane can open the viewer (Opens the Viewer, the pane's own: one pane, either of two, or both; the owner, 2026-11-23), over its own list, which the rest of what the tab view keeps for the pane is for, so a pane can start in Icons and open the viewer, and its folder, order and options show once the viewer closes. With Follow on and a list in the other pane, the viewer shows what that list selects, beside it, as Open in Other Pane does; otherwise (one pane, Follow off, or both panes opening one) it shows the file selected in its own list as the tab view is applied, in place of the folder, as Open in Viewer does, a step of Back; with no file selected it opens with nothing in it, and Esc shows the list (the owner, 2026-11-23). Replaced Viewer as a fifth choice of View that kept nothing else for the pane, and the viewer in only one of two panes, beside the other's list (the owner, 2026-11-21). Read or Edit and Follow are the pane's own ("A viewer's Read or Edit and Follow are the pane's" in [views.md](views.md)): a tab view sets them for the viewer it opens and for any opened in the pane after. The folder tree and the Info panel are the window's, so a tab view doesn't keep them.
-  - **Applied, it does what the commands would**: Two Panes opens or closes the second pane as ⌘\ does; a folder kept is a step of Back; a setting kept is the pane's, as one chosen in the View menu (columns, widths and sizes the pane's, and the app's from then on; a search results view kept shows at once on results the pane shows). A folder that is gone opens the nearest one above, with a notice. Nothing stays linked: no item is checked, and a tab doesn't take later changes of the tab view.
-  - **A tab view leaves folder views alone** (the owner, 2026-11-23). A folder with a view of its own shows it over what a tab view gave the pane, as in any pane. Replaced a Folder Views choice in each pane (Folder's View First, Tab View First, Not Used) that held only in the folder the pane was on as the tab view was applied, until the pane left it or a Folder View command ran there: it read as lasting, showed only in a tooltip, and cost a state of its own in every pane for a case that changing the folder's own view covers. A tab view saved with it reads without it.
-  - **A window view is a number of tabs, the tab view each opens with (or none), the tab in front, and, if checked, the window's size (as now, typed between the smallest an explorer window can be and the screen's room, Maximized, or Full Screen; the owner, 2026-11-21), folder tree and Info panel.** A size kept on a larger screen is held to the room of the screen it opens on. It refers to its tab views by name, so a tab view changed shows in every window view that uses it; one removed leaves its tabs plain new tabs, and asks first, naming them. Each tab starts as a new tab from the pane you are in, then takes its tab view as it is first shown. It opens in a new window; with ⌥, in place of this one, as a workspace did.
-  - **A tab view can be the one new tabs open with** (the Views window's Tab Views pane, None by default): New Tab and New Window take it once their tab is ready, New Window wherever it is chosen (in a window, from the Dock's menu, while Settings has the keyboard, with no window open). With no window open New Window's tab is the one that was in front in the window closed last, with one pane, at that window's place and size, and it takes the new-tab view as any new tab; a click on the Dock icon with no window open, and a second launch then, open the same (the owner, 2026-11-22; before, only New Window chosen in a window took it). A place of the Go menu chosen with no window open brings that tab back as it was and goes to the place: a tab opened for a folder. Duplicate Tab, Reopen Closed Tab, Move Tab to New Window, a window view's tabs, windows at launch and a tab opened for a folder don't.
-  - **Keys: ⌥⌘1 to ⌥⌘5 apply tab views 1 to 5; ⌃⌘1 to ⌃⌘5 open window views 1 to 5.** The keys go by the list's order. "In This Window" has none to begin with (the owner, 2026-11-21): its item then shows beside each of the first five window views rather than in its place with ⌥, as AppKit pairs only keys that differ by ⌥ alone. ⇧⌘1 to ⇧⌘5 were considered and dropped: ⇧⌘3, ⇧⌘4 and ⇧⌘5 are macOS's screenshot keys.
-  - **The Views window** has Settings' layout: a toolbar of Folder Views, Tab Views and Window Views, its title the pane's. Folder Views is the Folder Views window as it was. Tab Views and Window Views list each by name with its key and what it keeps: drag to reorder (the first five can be given keys in Settings → Shortcuts), double-click to rename, Apply or Open, Edit…, Duplicate, Remove (which doesn't ask, but for a tab view in use) and Remove All… (which asks). Several rows can be selected (the owner, 2026-11-23): Duplicate copies each after its own, a drag moves them together in their order, and Remove (and ⌫) takes them all; Apply or Open, Edit… and a rename act on one alone, and are dimmed for several. Settings → Browsing no longer lists anything of them.
-  - **The sheets' Name is AppKit's combo box** (the owner, 2026-11-21): typed, or a saved view chosen from its list to save over it, which asks whether to load that one's settings into the sheet or keep the sheet's and save them in its place. A name counts as chosen only once the list closes on it.
-  - **Tab View Options and Window View Options have a sidebar, and keep one height** (the owner, 2026-11-23). The Name is in the header; the sidebar lists the parts (for a tab view: Tab, then each pane's Folder, View, Viewer and Search Results, under Left Pane and Right Pane, The Pane or The Active Pane; for a window view: Tabs and Window), and one part's rows show beside it, as Xcode's scheme editor does. A pane's View has Starts In; In Every View (Group By, Sort By, Folders First); and Each View's Options (Icon Size, Columns, Column Width, Previews at a Time, all of them whatever the view it starts in). Its Viewer has Opens the Viewer, Read or Edit and Follow, a part of its own so the View isn't the one long page (the owner, 2026-11-23). Every value starts at what the pane has now, or at what the tab view being edited keeps; Columns names the columns, "as this pane has them now" or "as saved". Replaced one column of cards that grew with each row, with a Left Pane / Right Pane switch, and a fifth row that showed only the size of the view chosen.
-  - **The sheets are made once**: every control exists from the start, and a change shows itself in the controls it touches; a row that doesn't apply is hidden or dimmed, never made again, so a field keeps what is typed and the keyboard stays where it is. The sidebar's list alone is made again when the panes kept change, as its rows hold nothing typed. Tab goes from the Name to the sidebar, whose arrow keys choose the part, then along each row of the part shown, then down. A sheet taller than the window scrolls under its buttons.
-  - **Names are unique ignoring case and how an accented letter is stored**, up to 80 characters; at most 20 of each are kept (the owner, 2026-11-22; 50, as workspaces had, was more than a menu can hold). Saving under a name another has saves over that one, which keeps its place and its id. A new one past the limit isn't saved, and a notice, Too Many Tab Views (or Window Views), says how many are kept and how to go on (the owner, 2026-11-23): remove one, or save over one by choosing its name; the sheet stays up under it, and its Manage Tab Views… (or Manage Window Views…) closes the sheet and opens the Views window. Duplicate past the limit adds nothing, and its notice says how many more copies fit. Replaced "No more tab views can be saved", which named a menu item that isn't there, and a Duplicate that said only that.
-  - Kept with the preferences in `app-state.json` (`tabViews`, `windowViews`, `newTabViewID`); a file's `workspaces` is no longer read and is dropped at the next write.
+- **A tab's settings and a window's tabs are saved by name as tab views and window views, beside folder views** (2026-11-21).
+  Replaced workspaces, which saved a whole window as it was: removed with no migration, as the owner chose.
+  One menu of its own, Layout, after View, holds the three (Folder View's items, then Tab Views, then Window Views, each under a heading; past the first five of each, the ones that can have keys, the rest are in More Tab Views and More Window Views, the owner, 2026-11-22);
+  one window, Views, lists them.
+  The menu's name is the owner's (2026-11-21): Layout, one word as View and Window beside it;
+  Saved Views, its first name, was dropped.
+  The plan, with the tests behind it, is [plans/tab-and-window-views.md](../plans/tab-and-window-views.md).
+  - **A tab view keeps only what is checked, and applies once to the tab you are in** (Layout ▸ Save Tab View…, the Tab View Options sheet).
+    One or two panes, the divider (even, a share between 20% and 80% as now or typed, or the left pane's width now), hidden files, and for each pane its folder, the view it starts in, its grouping, order and Folders First (one each for the pane, in every view, as a pane carries them), each view's own options apart (the List's columns, their order and widths; the icon size; the Compact List's column width; the Previews at a time; the owner, 2026-11-23: before, one Size kept the three sizes together, and the sheet showed only the size of the view chosen), its viewer's Read or Edit and Follow, and its search results' view, all of it under one Search View checkbox (the owner, 2026-11-22: no setting of it apart; named Search View, as Search Results read as the results themselves).
+    What isn't checked comes from the tab, its folders included.
+    Panes not kept: it is for the active pane.
+    With one pane kept, Forget the Second Pane (the owner, 2026-11-22) has the tab forget everything it keeps of the second pane closed (its folder, history, view, selection and filters, the file its viewer showed, and where the divider was), so Two Panes opens a new one, the room shared evenly, instead of bringing back the one a two-pane tab had.
+    One pane keeps the active pane, as Two Panes does, but never a viewer on its own: with the viewer active, the viewer closes and its list stays.
+    A pane closed with a file's edits not saved asks first.
+    Any pane can open the viewer (Opens the Viewer, the pane's own: one pane, either of two, or both; the owner, 2026-11-23), over its own list, which the rest of what the tab view keeps for the pane is for, so a pane can start in Icons and open the viewer, and its folder, order and options show once the viewer closes.
+    With Follow on and a list in the other pane, the viewer shows what that list selects, beside it, as Open in Other Pane does;
+    otherwise (one pane, Follow off, or both panes opening one) it shows the file selected in its own list as the tab view is applied, in place of the folder, as Open in Viewer does, a step of Back;
+    with no file selected it opens with nothing in it, and Esc shows the list (the owner, 2026-11-23).
+    Replaced Viewer as a fifth choice of View that kept nothing else for the pane, and the viewer in only one of two panes, beside the other's list (the owner, 2026-11-21).
+    Read or Edit and Follow are the pane's own ("A viewer's Read or Edit and Follow are the pane's" in [views.md](views.md)): a tab view sets them for the viewer it opens and for any opened in the pane after.
+    The folder tree and the Info panel are the window's, so a tab view doesn't keep them.
+  - **Applied, it does what the commands would**: Two Panes opens or closes the second pane as ⌘\ does;
+    a folder kept is a step of Back;
+    a setting kept is the pane's, as one chosen in the View menu (columns, widths and sizes the pane's, and the app's from then on; a search results view kept shows at once on results the pane shows).
+    A folder that is gone opens the nearest one above, with a notice.
+    Nothing stays linked: no item is checked, and a tab doesn't take later changes of the tab view.
+  - **A tab view leaves folder views alone** (the owner, 2026-11-23).
+    A folder with a view of its own shows it over what a tab view gave the pane, as in any pane.
+    Replaced a Folder Views choice in each pane (Folder's View First, Tab View First, Not Used) that held only in the folder the pane was on as the tab view was applied, until the pane left it or a Folder View command ran there: it read as lasting, showed only in a tooltip, and cost a state of its own in every pane for a case that changing the folder's own view covers.
+    A tab view saved with it reads without it.
+  - **A window view is a number of tabs, the tab view each opens with (or none), the tab in front, and, if checked, the window's size (as now, typed between the smallest an explorer window can be and the screen's room, Maximized, or Full Screen; the owner, 2026-11-21), folder tree and Info panel.**
+    A size kept on a larger screen is held to the room of the screen it opens on.
+    It refers to its tab views by name, so a tab view changed shows in every window view that uses it;
+    one removed leaves its tabs plain new tabs, and asks first, naming them.
+    Each tab starts as a new tab from the pane you are in, then takes its tab view as it is first shown.
+    It opens in a new window;
+    with ⌥, in place of this one, as a workspace did.
+  - **A tab view can be the one new tabs open with** (the Views window's Tab Views pane, None by default): New Tab and New Window take it once their tab is ready, New Window wherever it is chosen (in a window, from the Dock's menu, while Settings has the keyboard, with no window open).
+    With no window open New Window's tab is the one that was in front in the window closed last, with one pane, at that window's place and size, and it takes the new-tab view as any new tab;
+    a click on the Dock icon with no window open, and a second launch then, open the same (the owner, 2026-11-22; before, only New Window chosen in a window took it).
+    A place of the Go menu chosen with no window open brings that tab back as it was and goes to the place: a tab opened for a folder.
+    Duplicate Tab, Reopen Closed Tab, Move Tab to New Window, a window view's tabs, windows at launch and a tab opened for a folder don't.
+  - **Keys: ⌥⌘1 to ⌥⌘5 apply tab views 1 to 5;
+    ⌃⌘1 to ⌃⌘5 open window views 1 to 5.**
+    The keys go by the list's order.
+    "In This Window" has none to begin with (the owner, 2026-11-21): its item then shows beside each of the first five window views rather than in its place with ⌥, as AppKit pairs only keys that differ by ⌥ alone. ⇧⌘1 to ⇧⌘5 were considered and dropped: ⇧⌘3, ⇧⌘4 and ⇧⌘5 are macOS's screenshot keys.
+  - **The Views window** has Settings' layout: a toolbar of Folder Views, Tab Views and Window Views, its title the pane's.
+    Folder Views is the Folder Views window as it was.
+    Tab Views and Window Views list each by name with its key and what it keeps: drag to reorder (the first five can be given keys in Settings → Shortcuts), double-click to rename, Apply or Open, Edit…, Duplicate, Remove (which doesn't ask, but for a tab view in use) and Remove All… (which asks).
+    Several rows can be selected (the owner, 2026-11-23): Duplicate copies each after its own, a drag moves them together in their order, and Remove (and ⌫) takes them all;
+    Apply or Open, Edit… and a rename act on one alone, and are dimmed for several.
+    Settings → Browsing no longer lists anything of them.
+  - **The sheets' Name is AppKit's combo box** (the owner, 2026-11-21): typed, or a saved view chosen from its list to save over it, which asks whether to load that one's settings into the sheet or keep the sheet's and save them in its place.
+    A name counts as chosen only once the list closes on it.
+  - **Tab View Options and Window View Options have a sidebar, and keep one height** (the owner, 2026-11-23).
+    The Name is in the header;
+    the sidebar lists the parts (for a tab view: Tab, then each pane's Folder, View, Viewer and Search Results, under Left Pane and Right Pane, The Pane or The Active Pane; for a window view: Tabs and Window), and one part's rows show beside it, as Xcode's scheme editor does.
+    A pane's View has Starts In;
+    In Every View (Group By, Sort By, Folders First);
+    and Each View's Options (Icon Size, Columns, Column Width, Previews at a Time, all of them whatever the view it starts in).
+    Its Viewer has Opens the Viewer, Read or Edit and Follow, a part of its own so the View isn't the one long page (the owner, 2026-11-23).
+    Every value starts at what the pane has now, or at what the tab view being edited keeps;
+    Columns names the columns, "as this pane has them now" or "as saved".
+    Replaced one column of cards that grew with each row, with a Left Pane / Right Pane switch, and a fifth row that showed only the size of the view chosen.
+  - **The sheets are made once**: every control exists from the start, and a change shows itself in the controls it touches;
+    a row that doesn't apply is hidden or dimmed, never made again, so a field keeps what is typed and the keyboard stays where it is.
+    The sidebar's list alone is made again when the panes kept change, as its rows hold nothing typed.
+    Tab goes from the Name to the sidebar, whose arrow keys choose the part, then along each row of the part shown, then down.
+    A sheet taller than the window scrolls under its buttons.
+  - **Names are unique ignoring case and how an accented letter is stored**, up to 80 characters;
+    at most 20 of each are kept (the owner, 2026-11-22; 50, as workspaces had, was more than a menu can hold).
+    Saving under a name another has saves over that one, which keeps its place and its id.
+    A new one past the limit isn't saved, and a notice, Too Many Tab Views (or Window Views), says how many are kept and how to go on (the owner, 2026-11-23): remove one, or save over one by choosing its name;
+    the sheet stays up under it, and its Manage Tab Views… (or Manage Window Views…) closes the sheet and opens the Views window.
+    Duplicate past the limit adds nothing, and its notice says how many more copies fit.
+    Replaced "No more tab views can be saved", which named a menu item that isn't there, and a Duplicate that said only that.
+  - Kept with the preferences in `app-state.json` (`tabViews`, `windowViews`, `newTabViewID`);
+    a file's `workspaces` is no longer read and is dropped at the next write.
 
 ## Back, Forward and the sidebar
 
-- **Back and Forward move the history before the folder is read**, so two quick Backs go two folders back; the hold menus do the same. While such a move hasn't arrived, the pane remembers where the folder on screen is in the history and puts the index back there when a folder is opened, a read in place starts, or the move fails with the old folder still on screen. Back doesn't follow a folder renamed since it was visited, and Quick Look does nothing of its own when the window's folder changes.
-- **A click on a sidebar row opens its folder at once.** Nothing waits to see whether a second click follows; the second click of a double-click only opens or closes the folder's branch in the tree. With single-click expand on, the first click already does both, and the second does nothing more. A click on a path bar segment still waits 250 ms, as a double-click there edits the path.
-- **Double-click always opens.** Edit is File ▸ Edit in… (⌘E) and the file's context menu. Replaced a "Double-click a file to: Edit" setting, which sent zips, pictures and PDFs to the text editor too; a saved value of it is ignored.
+- **Back and Forward move the history before the folder is read**, so two quick Backs go two folders back;
+  the hold menus do the same.
+  While such a move hasn't arrived, the pane remembers where the folder on screen is in the history and puts the index back there when a folder is opened, a read in place starts, or the move fails with the old folder still on screen.
+  Back doesn't follow a folder renamed since it was visited, and Quick Look does nothing of its own when the window's folder changes.
+- **A click on a sidebar row opens its folder at once.**
+  Nothing waits to see whether a second click follows;
+  the second click of a double-click only opens or closes the folder's branch in the tree.
+  With single-click expand on, the first click already does both, and the second does nothing more.
+  A click on a path bar segment still waits 250 ms, as a double-click there edits the path.
+- **Double-click always opens.**
+  Edit is File ▸ Edit in… (⌘E) and the file's context menu.
+  Replaced a "Double-click a file to: Edit" setting, which sent zips, pictures and PDFs to the text editor too;
+  a saved value of it is ignored.
 - **An item opened from another app waits for the items given before it for 3 seconds at most**, so a disk that doesn't answer holds up only its own item.
 
 ## The Info panel in a window of its own
 
-- **The Info panel can be a window of its own, one for the app** (the owner, 2026-11-26). The button left of the panel's close button (the symbol of Advanced Search's button) puts it in a window beside the app's windows; the same button there puts it back in the window. It is an ordinary window, which goes behind the app's windows as Finder's Inspector does, and is never the main window. When the app comes to the front from another (⌘Tab, the Dock, a click on one of its windows), it comes up too, over the window it describes, when that window has the keyboard; not while it is minimized, nor over Settings, a sheet or an alert in front (the owner, 2026-11-26: it stayed behind that window and other apps' windows). It describes what the window in front selects, and follows another window as it comes to the front. ⌘I shows the panel the way it was last shown, in the window or in its own: there, it comes to the front with the keyboard, and goes when it has the keyboard already (the owner, 2026-11-26: no key of its own; ⌘I and the toolbar's button are the one way). Where it is and whether it is shown are kept between launches (`infoPanelPoppedOut`, `infoPanelPopOutShown`), and its size and place as they change, so it opens again as it was. It is resized but never zoomed or full screen, and it can be minimized: ⌘I brings it back from the Dock. Tab gives the keyboard back to the window it describes (the owner, 2026-11-26). Its buttons and the panel's close button are 24 pt, their symbols 13 and heavy, in the text's own color (the owner, 2026-11-26: at 18 and 10 they were too small to see, and in grey, a lighter one at semibold and then the title's at bold, they looked dimmed). While it is out, no window shows the panel in its column: one asked to (a window view) shows the other window instead. While it has the keyboard, the menus act on the window it describes, ⌘I among them, and Copy and Paste on its text when text in it is selected. It comes to the Space in front and beside a window in full screen, hides while the app is hidden, and hides when the window it describes closes until another window comes to the front (the owner, 2026-11-26, from a review).
+- **The Info panel can be a window of its own, one for the app** (the owner, 2026-11-26).
+  The button left of the panel's close button (the symbol of Advanced Search's button) puts it in a window beside the app's windows;
+  the same button there puts it back in the window.
+  It is an ordinary window, which goes behind the app's windows as Finder's Inspector does, and is never the main window.
+  When the app comes to the front from another (⌘Tab, the Dock, a click on one of its windows), it comes up too, over the window it describes, when that window has the keyboard;
+  not while it is minimized, nor over Settings, a sheet or an alert in front (the owner, 2026-11-26: it stayed behind that window and other apps' windows).
+  It describes what the window in front selects, and follows another window as it comes to the front. ⌘I shows the panel the way it was last shown, in the window or in its own: there, it comes to the front with the keyboard, and goes when it has the keyboard already (the owner, 2026-11-26: no key of its own; ⌘I and the toolbar's button are the one way).
+  Where it is and whether it is shown are kept between launches (`infoPanelPoppedOut`, `infoPanelPopOutShown`), and its size and place as they change, so it opens again as it was.
+  It is resized but never zoomed or full screen, and it can be minimized: ⌘I brings it back from the Dock.
+  Tab gives the keyboard back to the window it describes (the owner, 2026-11-26).
+  Its buttons and the panel's close button are 24 pt, their symbols 13 and heavy, in the text's own color (the owner, 2026-11-26: at 18 and 10 they were too small to see, and in grey, a lighter one at semibold and then the title's at bold, they looked dimmed).
+  While it is out, no window shows the panel in its column: one asked to (a window view) shows the other window instead.
+  While it has the keyboard, the menus act on the window it describes, ⌘I among them, and Copy and Paste on its text when text in it is selected.
+  It comes to the Space in front and beside a window in full screen, hides while the app is hidden, and hides when the window it describes closes until another window comes to the front (the owner, 2026-11-26, from a review).
 
 ## The toolbar
 
-- **The default toolbar is groups in pills of their own, and only the title and a search field are always there** (2026-11-17). A toolbar not customized holds the folder tree; Back, Forward, the title and the clipboard; the View Mode Menu and Sort; Search; View Options, Two Panes and the Info panel, each group a glass pill of its own. A toolbar saved before keeps its items. The title says where the window is, and ⌘F needs a search item on the toolbar. View ▸ Customize Toolbar… and a right-click on the toolbar customize it.
+- **The default toolbar is groups in pills of their own, and only the title and a search field are always there** (2026-11-17).
+  A toolbar not customized holds the folder tree;
+  Back, Forward, the title and the clipboard;
+  the View Mode Menu and Sort;
+  Search;
+  View Options, Two Panes and the Info panel, each group a glass pill of its own.
+  A toolbar saved before keeps its items.
+  The title says where the window is, and ⌘F needs a search item on the toolbar.
+  View ▸ Customize Toolbar… and a right-click on the toolbar customize it.
 - **Customize Toolbar offers the items in groups, as the menus group them** (2026-11-17): going about, the title, how the folder is shown, the search field, the panes and panels, opening the selection, changing files, the clipboard, undoing, where items are, the app, and the space last, where the system puts its own.
-- **The toolbar's title is in the label's color** (2026-11-20), dimmed only while the window isn't key. Replaced Finder's grey, which read as disabled beside the toolbar's black symbols.
-- **The View Mode Menu is the view switch in one button** (2026-11-17), for a toolbar short of room: 36 pt where the four-segment switch is about 136. It shows the symbol of the view on screen, and its menu has the four views and the Previews counts. It is in the default toolbar; the switch stays in Customize Toolbar, and both can be in a toolbar at once. Dropped: a switch that folds itself into the button, as Finder's does (the owner asked for two items to choose from).
-- **The search field folds to its magnifier when the toolbar is short of room, and Compact Search is the field folded until it is used** (2026-11-17). Once the title is down to its least width the field folds, before any other item goes to the » menu, and opens again when there is room for it and 12 pt more, so a window at the edge doesn't open and fold it in turn. The room is reckoned with the field at its own width: let go, it narrows before the toolbar decides, or a full toolbar would fold it for want of room it only lacked while the field was wide, and open it again in the room it left. In use (the keyboard, text, or results in its pane) it is open whatever the room. Compact Search, in Customize Toolbar, is the same field folded until used; a toolbar holds one of the two. The saved order names the item, never its form. Dropped: Finder's one item that decides for itself (the owner asked for two to choose from); the system's round magnifier around a stand-in field (items came back from the » menu about 60 pt late); holding the system's field folded with width constraints (Esc had to be pressed twice); hiding an item for a moment to lay the toolbar out again (it flickered).
+- **The toolbar's title is in the label's color** (2026-11-20), dimmed only while the window isn't key.
+  Replaced Finder's grey, which read as disabled beside the toolbar's black symbols.
+- **The View Mode Menu is the view switch in one button** (2026-11-17), for a toolbar short of room: 36 pt where the four-segment switch is about 136.
+  It shows the symbol of the view on screen, and its menu has the four views and the Previews counts.
+  It is in the default toolbar;
+  the switch stays in Customize Toolbar, and both can be in a toolbar at once.
+  Dropped: a switch that folds itself into the button, as Finder's does (the owner asked for two items to choose from).
+- **The search field folds to its magnifier when the toolbar is short of room, and Compact Search is the field folded until it is used** (2026-11-17).
+  Once the title is down to its least width the field folds, before any other item goes to the » menu, and opens again when there is room for it and 12 pt more, so a window at the edge doesn't open and fold it in turn.
+  The room is reckoned with the field at its own width: let go, it narrows before the toolbar decides, or a full toolbar would fold it for want of room it only lacked while the field was wide, and open it again in the room it left.
+  In use (the keyboard, text, or results in its pane) it is open whatever the room.
+  Compact Search, in Customize Toolbar, is the same field folded until used;
+  a toolbar holds one of the two.
+  The saved order names the item, never its form.
+  Dropped: Finder's one item that decides for itself (the owner asked for two to choose from);
+  the system's round magnifier around a stand-in field (items came back from the » menu about 60 pt late);
+  holding the system's field folded with width constraints (Esc had to be pressed twice);
+  hiding an item for a moment to lay the toolbar out again (it flickered).
 - **The hidden-files button is one symbol, shown on while hidden files show** (2026-11-21), so it never looks like Quick Look's eye.
 
 ## Menus and keys
 
-- **The menus keep Finder's order and groups, and what Finder doesn't have sits beside the item of Finder's it is most like, in the menu it would be looked for.** So Calculate Size sits where Finder has Get Info; Compress, Extract and Extract To stay together; Deselect All (⌥⌘A, Finder's key) and Invert Selection follow Select All, Deselect All as an item of its own where Finder shows it with ⌥; and what goes to and from the system's clipboard (Copy Path, Copy Contents, Paste as File) follows Cut, Copy and Paste. Layout is the app's own menu, after View, as Finder has nothing like it (2026-11-21). The commands for the two panes stay in the five menus they are in (File, Edit, View, Go, Window), each with the commands of its kind, not in a menu or submenu of their own. Window keeps Finder's four tab items together, with Switch to Other Pane after them.
-- **An item's right-click menu starts with Open and Open With**, as Finder's does, and has Compress, Extract, Extract To and Convert Images in a group after Rename, Duplicate, Move to… and New Folder; the tag colors and Tags… come after both (Tags… under the colors, as in Finder: 2026-11-26). Share…, Save as Template, Add to Favorites, Open in Terminal and Show in Finder are one group after them, what hands the items to something else and leaves them as they are (the owner, 2026-11-21).
-- **The File menu is in the right-click menu's groups** (the owner, 2026-11-21): opening and looking (Open, Open With ▸, Open in Viewer, the Open in … items, Edit in, Quick Look, Calculate Size, Reveal in Folder, Show Original); what changes the items (Rename, Duplicate, Make Alias, Move to…); what makes files of them (Compress, Extract, Extract To…, Convert Images…); the tag colors and Tags… (2026-11-26: Finder has them at the end of its File menu, where this one has closing); what hands them on (Share…, Add to Favorites, Open in Terminal, Show in Finder); then Move to Trash, with Delete Immediately… as the item ⌥ shows in its place, and Eject. Calculate Size is with opening and looking as it changes nothing. Open With ▸ is in File as in Finder's. Edit keeps its clipboard items at the top level.
-- **A menu shows a key the window handles, and never takes it.** The menu bar takes only keys with ⌘ or ⌃ (`ApplicationMainMenu`), so an item may show F2, F5, F6 or ↩ while a text field or a dialog keeps them. Rename shows ↩ while Return renames, as Help and the right-click menu do, and F2 while it opens. The right-click View As and Sort By submenus show the keys View has.
-- **⌘⇧= is ⌘+** when a key is recorded or compared in Settings → Shortcuts, as most keyboards type + with Shift; not with ⌥, which types another character.
-- **A long name in a menu loses its middle, so the menu keeps its width.** Past 24 letters (a Chinese, Japanese or Korean letter or an emoji counts as two) a name keeps its start, its last five letters and its extension around "…", as Finder's menus do, in every menu that names a file, a tab, a saved view or a preset. Only menus are shortened: the undo history, notices, tooltips and titles keep the whole name.
-- **The keys that differ from Finder's**, each for the reason beside it; every other key Finder has means here what it means there:
+- **The menus keep Finder's order and groups, and what Finder doesn't have sits beside the item of Finder's it is most like, in the menu it would be looked for.**
+  So Calculate Size sits where Finder has Get Info;
+  Compress, Extract and Extract To stay together;
+  Deselect All (⌥⌘A, Finder's key) and Invert Selection follow Select All, Deselect All as an item of its own where Finder shows it with ⌥;
+  and what goes to and from the system's clipboard (Copy Path, Copy Contents, Paste as File) follows Cut, Copy and Paste.
+  Layout is the app's own menu, after View, as Finder has nothing like it (2026-11-21).
+  The commands for the two panes stay in the five menus they are in (File, Edit, View, Go, Window), each with the commands of its kind, not in a menu or submenu of their own.
+  Window keeps Finder's four tab items together, with Switch to Other Pane after them.
+- **An item's right-click menu starts with Open and Open With**, as Finder's does, and has Compress, Extract, Extract To and Convert Images in a group after Rename, Duplicate, Move to… and New Folder;
+  the tag colors and Tags… come after both (Tags… under the colors, as in Finder: 2026-11-26).
+  Share…, Save as Template, Add to Favorites, Open in Terminal and Show in Finder are one group after them, what hands the items to something else and leaves them as they are (the owner, 2026-11-21).
+- **The File menu is in the right-click menu's groups** (the owner, 2026-11-21): opening and looking (Open, Open With ▸, Open in Viewer, the Open in … items, Edit in, Quick Look, Calculate Size, Reveal in Folder, Show Original);
+  what changes the items (Rename, Duplicate, Make Alias, Move to…);
+  what makes files of them (Compress, Extract, Extract To…, Convert Images…);
+  the tag colors and Tags… (2026-11-26: Finder has them at the end of its File menu, where this one has closing);
+  what hands them on (Share…, Add to Favorites, Open in Terminal, Show in Finder);
+  then Move to Trash, with Delete Immediately… as the item ⌥ shows in its place, and Eject.
+  Calculate Size is with opening and looking as it changes nothing.
+  Open With ▸ is in File as in Finder's.
+  Edit keeps its clipboard items at the top level.
+- **A menu shows a key the window handles, and never takes it.**
+  The menu bar takes only keys with ⌘ or ⌃ (`ApplicationMainMenu`), so an item may show F2, F5, F6 or ↩ while a text field or a dialog keeps them.
+  Rename shows ↩ while Return renames, as Help and the right-click menu do, and F2 while it opens.
+  The right-click View As and Sort By submenus show the keys View has.
+- **⌘⇧= is ⌘+** when a key is recorded or compared in Settings → Shortcuts, as most keyboards type + with Shift;
+  not with ⌥, which types another character.
+- **A long name in a menu loses its middle, so the menu keeps its width.**
+  Past 24 letters (a Chinese, Japanese or Korean letter or an emoji counts as two) a name keeps its start, its last five letters and its extension around "…", as Finder's menus do, in every menu that names a file, a tab, a saved view or a preset.
+  Only menus are shortened: the undo history, notices, tooltips and titles keep the whole name.
+- **The keys that differ from Finder's**, each for the reason beside it;
+  every other key Finder has means here what it means there:
 
   | Key | In Finder | In File Trail | Why |
   |---|---|---|---|
@@ -95,17 +279,35 @@ Two panes, tabs, saved views, the toolbar, the menus and their keys, Back and Fo
   | ⌥⌘⌫ | Delete Immediately, anywhere | Delete Immediately, in the Trash only, always asking Finder's question first | Outside the Trash the key does nothing, whichever way it arrives, so a slip can't delete for good. |
   | ⌃⌘1–⌃⌘5 | Group By, Sort By | Open a window view | The window views' keys; Sort By and Group By have none. |
 
-  Keys Finder has for the same command here too include ⌃⌘T (Add to Sidebar, here Add to Favorites), ⌃⌘A (Make Alias), ⌃⌘N (New Folder with Selection), ⌥⌘V (Move Items Here) and ⌘J (View Options). Keys of the app's own that Finder doesn't use: ⌥⌘1 to ⌥⌘5 Tab View 1 to 5, ⇧⌘E Open in Viewer, ⇧⌘V Paste as File, ⌘U Swap Panes, ⌘\\ Two Panes, ⌃⌘C, ⌃⌘X and ⌃⌘V for the clipboard you add to, F2, F5 and F6, ⌘9 Zoom to Fit and ⌥⌘G Go to Page, Preview's keys.
+  Keys Finder has for the same command here too include ⌃⌘T (Add to Sidebar, here Add to Favorites), ⌃⌘A (Make Alias), ⌃⌘N (New Folder with Selection), ⌥⌘V (Move Items Here) and ⌘J (View Options).
+  Keys of the app's own that Finder doesn't use: ⌥⌘1 to ⌥⌘5 Tab View 1 to 5, ⇧⌘E Open in Viewer, ⇧⌘V Paste as File, ⌘U Swap Panes, ⌘\\ Two Panes, ⌃⌘C, ⌃⌘X and ⌃⌘V for the clipboard you add to, F2, F5 and F6, ⌘9 Zoom to Fit and ⌥⌘G Go to Page, Preview's keys.
 
-- **The command palette lists every command.** ⇧⌘P, or View ▸ Command Palette…, lists every row of the shortcut table and the menu items that aren't in it, so a command with keys but no menu item can be found too. Each row has the command's name, where it is in the menus, its keys and a check for what is on, and the selected command's line from Help says what it does. What a new command needs to be in it is in `docs/process/commands.md`.
-  - **A command that can't run now is dimmed**, as the menu dims it, and listed after the ones that can; Return on it beeps. Hiding it would make the command seem missing.
-  - **Typing matches the name as the list filter does in Fuzzy**, and the menu place after any name, so "go doc" finds Go ▸ Documents. Among commands that fit alike, the one named just what was typed comes first, so "copy" and Return run Copy and not Copy to Other Pane; then the one run from the palette most recently; then a command whose whole name begins another's. With nothing typed it lists up to five run lately, then every command by group.
+- **The command palette lists every command.** ⇧⌘P, or View ▸ Command Palette…, lists every row of the shortcut table and the menu items that aren't in it, so a command with keys but no menu item can be found too.
+  Each row has the command's name, where it is in the menus, its keys and a check for what is on, and the selected command's line from Help says what it does.
+  What a new command needs to be in it is in `docs/process/commands.md`.
+  - **A command that can't run now is dimmed**, as the menu dims it, and listed after the ones that can;
+    Return on it beeps.
+    Hiding it would make the command seem missing.
+  - **Typing matches the name as the list filter does in Fuzzy**, and the menu place after any name, so "go doc" finds Go ▸ Documents.
+    Among commands that fit alike, the one named just what was typed comes first, so "copy" and Return run Copy and not Copy to Other Pane;
+    then the one run from the palette most recently;
+    then a command whose whole name begins another's.
+    With nothing typed it lists up to five run lately, then every command by group.
   - **Help's lines say more than the command's name**, so a command whose name isn't enough (Two Panes, Pin Filter, Copy Contents) is explained where it is found.
   - **The pointer selects the row it is over only once it has clearly moved** since the keyboard last chose a row, so a hand brushing the trackpad on its way to Return doesn't change the command Return runs.
-  - **The command goes as its menu item does**: the box closes first and gives the keyboard back to what had it. From Settings or Help, ⇧⌘P brings the browsing window in front and opens the box there.
-  - **Nothing is typed into a command** (Go To takes paths), **and files and folders are not listed** (Go To finds them). In a tab with one pane, Close Tab isn't listed beside Close Pane, which reads Close Tab there. Any key given to the palette in Settings opens and closes it.
+  - **The command goes as its menu item does**: the box closes first and gives the keyboard back to what had it.
+    From Settings or Help, ⇧⌘P brings the browsing window in front and opens the box there.
+  - **Nothing is typed into a command** (Go To takes paths), **and files and folders are not listed** (Go To finds them).
+    In a tab with one pane, Close Tab isn't listed beside Close Pane, which reads Close Tab there.
+    Any key given to the palette in Settings opens and closes it.
 
 ## Settings and the app's files
 
-- **Settings keeps its own row and card layout.** Its controls are the system's, but the page layout is not a control, and a dozen layout tests pin its frames, so `SettingsMetrics` keeps its layout constants; moving it onto `NSGridView` and `NSStackView` is not worth that.
-- **The app's own files are written at most twice a minute** (2026-11-19). `app-state.json`, `folder-views.json` and the files beside them share one limit: a deliberate change (a size, a column, a setting, a folder's view saved) is written about 1 s later, and after that no sooner than 30 s after the last write. Where the user goes (the folder, the view, the tabs, the window) waits up to 5 minutes. What is unwritten is written at quit, a file whose text hasn't changed is not written again, and a crash loses at most 30 s of changes. Replaced a write 150 ms after each pause, so ⌘+ pressed six times wrote the state file six times.
+- **Settings keeps its own row and card layout.**
+  Its controls are the system's, but the page layout is not a control, and a dozen layout tests pin its frames, so `SettingsMetrics` keeps its layout constants;
+  moving it onto `NSGridView` and `NSStackView` is not worth that.
+- **The app's own files are written at most twice a minute** (2026-11-19).
+  `app-state.json`, `folder-views.json` and the files beside them share one limit: a deliberate change (a size, a column, a setting, a folder's view saved) is written about 1 s later, and after that no sooner than 30 s after the last write.
+  Where the user goes (the folder, the view, the tabs, the window) waits up to 5 minutes.
+  What is unwritten is written at quit, a file whose text hasn't changed is not written again, and a crash loses at most 30 s of changes.
+  Replaced a write 150 ms after each pause, so ⌘+ pressed six times wrote the state file six times.

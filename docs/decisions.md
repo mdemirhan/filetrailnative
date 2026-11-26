@@ -1,8 +1,15 @@
 # Decisions
 
-The owner's decisions about how File Trail behaves and how its code is kept, each with its reason. A change that goes against one of them needs the owner's yes first; [principles.md](principles.md) says how a decision is weighed, and when to ask about making an exception or relaxing one. Open issues are in [state/known-issues.md](state/known-issues.md), engineering work left for later in [state/tech-debt.md](state/tech-debt.md), background work in [state/battery.md](state/battery.md).
+The owner's decisions about how File Trail behaves and how its code is kept, each with its reason.
+A change that goes against one of them needs the owner's yes first;
+[principles.md](principles.md) says how a decision is weighed, and when to ask about making an exception or relaxing one.
+Open issues are in [state/known-issues.md](state/known-issues.md), engineering work left for later in [state/tech-debt.md](state/tech-debt.md), background work in [state/battery.md](state/battery.md).
 
-The decisions are kept by area. An entry names another by its title in quotes, which may be in another of these files. An entry that was changed says in a clause what it replaced and why; "Dropped:" lists what was tried or weighed and not taken, so it isn't proposed again. The longer story is in git.
+The decisions are kept by area.
+An entry names another by its title in quotes, which may be in another of these files.
+An entry that was changed says in a clause what it replaced and why;
+"Dropped:" lists what was tried or weighed and not taken, so it isn't proposed again.
+The longer story is in git.
 
 | File | What it holds |
 |---|---|
@@ -18,19 +25,76 @@ The decisions are kept by area. An entry names another by its title in quotes, w
 
 ## The standing decisions
 
-- **The minimum macOS is 26.** There are no fallbacks for macOS 14 or 15, and the Liquid Glass look is the only one built.
-- **The system's look, not the earlier app's.** Matching the earlier app pixel for pixel is not a goal. Tabs and toolbars use Liquid Glass. Commands use SF Symbols, Finder's where Finder has the command. Sheets, the Info panel and Settings use the system's checkboxes, pop-up buttons, switches, number fields and tables.
-- **Controls in the content are rounded rectangles; capsules are the toolbar's** (2026-11-15). On macOS 26 the system draws a control's shape by its size: small and regular are rounded rectangles, large and extra large capsules. Segmented controls, buttons, pop-ups and fields in the panes' bars and in sheets are the regular size, 24 pt, so a row of them shares one shape and one height: the search scopes, the Rename sheet's modes and the paste review's "For all conflicts" are regular segmented controls, the results filter's Fuzzy/Contains chip has the small radius inside the field's corners, and the search bar's Done and Stop and the Trash bar's Empty are 24 pt. The selected segment keeps the accent. The toolbar's groups and search field stay capsules, as Finder's are. Replaced large segmented controls, capsules beside rounded fields.
-- **Nothing is read before it is needed** (the owner, 2026-11-20). An item's details beyond what its listing or search result gives (dates, sizes, tags, Date Last Opened) are read only when something on screen needs them: a column shown reads them for the rows on screen; an order or groups by them read them for every item, only while that order or those groups are chosen, and only the one field they need. Nothing is read ahead in case it is asked for, and speed is not given up for a feature unless the feature needs it. The rule is about further calls to the disk, not about what a read already returned: what the folder read gives with each item (a file's size, its dates and permissions) is kept, in every view, whatever the order (the owner, 2026-11-21). Search results order and group by name, folder and kind from what the search gives, and by any other field only through such a read.
-- **Font sizes and row heights are the app's own, not Finder's**: sidebar 14 pt, icon labels 13, list 14, path bar 12. From Finder the app takes the Favorites and Locations icons as system symbols, the Locations icon color, the unfocused selected fill and the toolbar's sizes. Favorites icons use the accent. The search field keeps its own 200 pt width rather than Finder's, and widens to 380 pt while it has the keyboard, so a long search shows as it is typed (the owner, 2026-11-24; replaced 200 pt always). It widens and narrows in one step, not eased, so the items the system moves to and from the » menu go and come back at once (the owner, 2026-11-24). In a full toolbar it grows as the system lays it out, taking the items after it first. Dropped: growing to the left first, which needs a layout of the app's own: lowering the visibility priority of the items before the field didn't change the system's order.
-- **The accent is the system's unless one is chosen** (2026-11-21). By default the app uses the accent chosen in System Settings, and follows it when it changes; with Multicolor chosen there, that is blue. Settings → General's swatches and a custom color set an accent of the app's own instead; the first swatch, System, filled with the system's accent and marked with a gear, goes back to it. Replaced a blue of the app's own, which ignored the accent the person had chosen. A color saved before stays as it was, as a saved Blue can't be told from one picked. Tests and scripted runs (`--automation`, `--snapshot`) paint System as the app's blue, so they look the same on every Mac.
-  - **Folder icons follow the system's accent too, whatever accent the app uses** (2026-11-21), as macOS draws them in it. Half a second after System Settings' colors change, the icons drawn in it (plain folders, the home folder's special folders, anything drawn from its own path) are drawn again, the plain folders first so most rows go straight to the new color; a folder with a tag, a document's and an app's icon are kept. Before, a plain folder drawn before the change kept the old color until the next launch, beside folders drawn after it in the new one.
-- **Dates, times, sizes and counts follow the Mac's region** (2026-11-21), as Finder's do: a UK or German Mac gets its own date order, 24-hour time, decimal mark and digit grouping, read once at launch (`FormatLocale.current`, which is `Locale.current`). The app's words stay English, month names too. What a machine reads (file names the app writes, JSON, logs, `AppClock`) stays fixed, and test processes and the README screenshots format as en_US so their text is the same on any Mac. Replaced formats tied to the app's language, which gave an English-speaking UK user US dates.
-- **Dark mode uses Finder's colors.** The content's background is the system's content material, so it takes the desktop's tint as Finder's does. The path bar is 3.3% white lighter and the sidebar's gray selection is 13.5% white, both measured from Finder. Light mode is unchanged.
-- **Glass goes on brief surfaces only.** Toasts, the progress card and plain alerts (a title, a message and buttons) are glass, and keep their edge and shadow so they read over a white pane. Go To and Move To, the paste review, the Rename sheet, the path bar's suggestion list, and alerts with a list or a field stay opaque, as the system's own sheet is: glass behind lists and fields lets colorful content smear behind the text.
-- **The Info panel is a plain split item**, not the system's inspector item. The toolbar lays its material over plain items only; as an inspector the panel's own color showed through the toolbar in dark mode.
-- **File Copy, Cut and Paste use the app's own clipboard**, the one the toolbar's clipboard button lists, not the system's. Its list follows its items as they are moved and renamed, keeps each item's mark of copy or cut, and can be added to from several folders ("Each item on the clipboard keeps what it was put there for"); the system's clipboard holds a fixed list of addresses and has no cut (inferred: the decision came first with no reason written). Kept on 2026-11-21, with no bridge to the system's clipboard. What it means for people is in known-issues.md. Copy Path puts text on the system's clipboard, and Copy Contents a file's image or text.
-- **What moves is followed by what is known, never by a guess** (the owner, 2026-11-22). What File Trail itself renames or moves is followed everywhere, on every disk, by what the write says of where each item went: tabs and panes, their Back and Forward, the folders' views, the clipboard's list, the selection, search results, and the file a viewer shows. What another app renames or moves is followed only where the disk itself tells which file is which: APFS and Mac OS Extended keep an id for each file, and the system finds the file by it. A disk that keeps none (exFAT, FAT32) is not followed, and it is never worth building: nothing is paired up from names, sizes or dates, and the file numbers macOS makes up for such disks are not relied on. There, what went is said to be no longer there, not deleted, as which it is isn't known. Anything new that keeps to a file or a folder across a rename follows this.
-- **VoiceOver is not a supported target.** Don't add accessibility work; the VoiceOver-only code is gone. Kept on 2026-11-21. Accessibility identifiers stay, as the tests press things through them (see must-stay.md).
-- **There is no import or upgrade path from the earlier app.** The earliest release of this app is v0.8.0, and its bundle id is `com.filetrail.native`. Nothing reads files only the earlier app wrote.
-- **A window holds at most 25 tabs.** What happens at the limit is in "A tab dropped into a window that already has 25 goes back out".
+- **The minimum macOS is 26.**
+  There are no fallbacks for macOS 14 or 15, and the Liquid Glass look is the only one built.
+- **The system's look, not the earlier app's.**
+  Matching the earlier app pixel for pixel is not a goal.
+  Tabs and toolbars use Liquid Glass.
+  Commands use SF Symbols, Finder's where Finder has the command.
+  Sheets, the Info panel and Settings use the system's checkboxes, pop-up buttons, switches, number fields and tables.
+- **Controls in the content are rounded rectangles;
+  capsules are the toolbar's** (2026-11-15).
+  On macOS 26 the system draws a control's shape by its size: small and regular are rounded rectangles, large and extra large capsules.
+  Segmented controls, buttons, pop-ups and fields in the panes' bars and in sheets are the regular size, 24 pt, so a row of them shares one shape and one height: the search scopes, the Rename sheet's modes and the paste review's "For all conflicts" are regular segmented controls, the results filter's Fuzzy/Contains chip has the small radius inside the field's corners, and the search bar's Done and Stop and the Trash bar's Empty are 24 pt. The selected segment keeps the accent.
+  The toolbar's groups and search field stay capsules, as Finder's are.
+  Replaced large segmented controls, capsules beside rounded fields.
+- **Nothing is read before it is needed** (the owner, 2026-11-20).
+  An item's details beyond what its listing or search result gives (dates, sizes, tags, Date Last Opened) are read only when something on screen needs them: a column shown reads them for the rows on screen;
+  an order or groups by them read them for every item, only while that order or those groups are chosen, and only the one field they need.
+  Nothing is read ahead in case it is asked for, and speed is not given up for a feature unless the feature needs it.
+  The rule is about further calls to the disk, not about what a read already returned: what the folder read gives with each item (a file's size, its dates and permissions) is kept, in every view, whatever the order (the owner, 2026-11-21).
+  Search results order and group by name, folder and kind from what the search gives, and by any other field only through such a read.
+- **Font sizes and row heights are the app's own, not Finder's**: sidebar 14 pt, icon labels 13, list 14, path bar 12.
+  From Finder the app takes the Favorites and Locations icons as system symbols, the Locations icon color, the unfocused selected fill and the toolbar's sizes.
+  Favorites icons use the accent.
+  The search field keeps its own 200 pt width rather than Finder's, and widens to 380 pt while it has the keyboard, so a long search shows as it is typed (the owner, 2026-11-24; replaced 200 pt always).
+  It widens and narrows in one step, not eased, so the items the system moves to and from the » menu go and come back at once (the owner, 2026-11-24).
+  In a full toolbar it grows as the system lays it out, taking the items after it first.
+  Dropped: growing to the left first, which needs a layout of the app's own: lowering the visibility priority of the items before the field didn't change the system's order.
+- **The accent is the system's unless one is chosen** (2026-11-21).
+  By default the app uses the accent chosen in System Settings, and follows it when it changes;
+  with Multicolor chosen there, that is blue.
+  Settings → General's swatches and a custom color set an accent of the app's own instead;
+  the first swatch, System, filled with the system's accent and marked with a gear, goes back to it.
+  Replaced a blue of the app's own, which ignored the accent the person had chosen.
+  A color saved before stays as it was, as a saved Blue can't be told from one picked.
+  Tests and scripted runs (`--automation`, `--snapshot`) paint System as the app's blue, so they look the same on every Mac.
+  - **Folder icons follow the system's accent too, whatever accent the app uses** (2026-11-21), as macOS draws them in it.
+    Half a second after System Settings' colors change, the icons drawn in it (plain folders, the home folder's special folders, anything drawn from its own path) are drawn again, the plain folders first so most rows go straight to the new color;
+    a folder with a tag, a document's and an app's icon are kept. Before, a plain folder drawn before the change kept the old color until the next launch, beside folders drawn after it in the new one.
+- **Dates, times, sizes and counts follow the Mac's region** (2026-11-21), as Finder's do: a UK or German Mac gets its own date order, 24-hour time, decimal mark and digit grouping, read once at launch (`FormatLocale.current`, which is `Locale.current`).
+  The app's words stay English, month names too.
+  What a machine reads (file names the app writes, JSON, logs, `AppClock`) stays fixed, and test processes and the README screenshots format as en_US so their text is the same on any Mac.
+  Replaced formats tied to the app's language, which gave an English-speaking UK user US dates.
+- **Dark mode uses Finder's colors.**
+  The content's background is the system's content material, so it takes the desktop's tint as Finder's does.
+  The path bar is 3.3% white lighter and the sidebar's gray selection is 13.5% white, both measured from Finder.
+  Light mode is unchanged.
+- **Glass goes on brief surfaces only.**
+  Toasts, the progress card and plain alerts (a title, a message and buttons) are glass, and keep their edge and shadow so they read over a white pane.
+  Go To and Move To, the paste review, the Rename sheet, the path bar's suggestion list, and alerts with a list or a field stay opaque, as the system's own sheet is: glass behind lists and fields lets colorful content smear behind the text.
+- **The Info panel is a plain split item**, not the system's inspector item.
+  The toolbar lays its material over plain items only;
+  as an inspector the panel's own color showed through the toolbar in dark mode.
+- **File Copy, Cut and Paste use the app's own clipboard**, the one the toolbar's clipboard button lists, not the system's.
+  Its list follows its items as they are moved and renamed, keeps each item's mark of copy or cut, and can be added to from several folders ("Each item on the clipboard keeps what it was put there for");
+  the system's clipboard holds a fixed list of addresses and has no cut (inferred: the decision came first with no reason written).
+  Kept on 2026-11-21, with no bridge to the system's clipboard.
+  What it means for people is in known-issues.md.
+  Copy Path puts text on the system's clipboard, and Copy Contents a file's image or text.
+- **What moves is followed by what is known, never by a guess** (the owner, 2026-11-22).
+  What File Trail itself renames or moves is followed everywhere, on every disk, by what the write says of where each item went: tabs and panes, their Back and Forward, the folders' views, the clipboard's list, the selection, search results, and the file a viewer shows.
+  What another app renames or moves is followed only where the disk itself tells which file is which: APFS and Mac OS Extended keep an id for each file, and the system finds the file by it.
+  A disk that keeps none (exFAT, FAT32) is not followed, and it is never worth building: nothing is paired up from names, sizes or dates, and the file numbers macOS makes up for such disks are not relied on.
+  There, what went is said to be no longer there, not deleted, as which it is isn't known.
+  Anything new that keeps to a file or a folder across a rename follows this.
+- **VoiceOver is not a supported target.**
+  Don't add accessibility work;
+  the VoiceOver-only code is gone.
+  Kept on 2026-11-21.
+  Accessibility identifiers stay, as the tests press things through them (see must-stay.md).
+- **There is no import or upgrade path from the earlier app.**
+  The earliest release of this app is v0.8.0, and its bundle id is `com.filetrail.native`.
+  Nothing reads files only the earlier app wrote.
+- **A window holds at most 25 tabs.**
+  What happens at the limit is in "A tab dropped into a window that already has 25 goes back out".

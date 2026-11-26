@@ -1,108 +1,492 @@
 # Decisions: Views and what they show
 
-The List, Icons, Compact List and Previews views, their sizes, groups, a folder's own view, the viewer, Quick Look, and how items are named and drawn. Part of the owner's decisions: [the index](../decisions.md) lists the other parts, and [principles.md](../principles.md) says how a decision is weighed and when to ask about one.
+The List, Icons, Compact List and Previews views, their sizes, groups, a folder's own view, the viewer, Quick Look, and how items are named and drawn.
+Part of the owner's decisions: [the index](../decisions.md) lists the other parts, and [principles.md](../principles.md) says how a decision is weighed and when to ask about one.
 
 ## Groups
 
-- **A folder's items, and search results, can be put in groups** (2026-11-20). View ▸ Group By, in every view: a folder by name, one of the four dates (Finder's relative groups, counted from midnight), size, kind or the first of an item's tags A to Z (the owner, 2026-11-26: as Sort by Tags reads them; before, the tag put on first); search results by any of these or by Folder. A group's title is the name alone, in the system's secondary label color and Finder's layout with the app's own fonts; the Previews label keeps the label's own color, as it sits on glass over the pictures. The plan is [records/group-by.md](../records/group-by.md).
-  - The groups keep a fixed order whatever the sort (newest dates and smallest sizes first, the rest A to Z), and the sort orders the items inside each, as in Finder. Reverse Group Order turns the groups around, those without a value still last. Dropped: the sort's direction ordering the groups too.
+- **A folder's items, and search results, can be put in groups** (2026-11-20).
+  View ▸ Group By, in every view: a folder by name, one of the four dates (Finder's relative groups, counted from midnight), size, kind or the first of an item's tags A to Z (the owner, 2026-11-26: as Sort by Tags reads them; before, the tag put on first);
+  search results by any of these or by Folder.
+  A group's title is the name alone, in the system's secondary label color and Finder's layout with the app's own fonts;
+  the Previews label keeps the label's own color, as it sits on glass over the pictures.
+  The plan is [records/group-by.md](../records/group-by.md).
+  - The groups keep a fixed order whatever the sort (newest dates and smallest sizes first, the rest A to Z), and the sort orders the items inside each, as in Finder.
+    Reverse Group Order turns the groups around, those without a value still last.
+    Dropped: the sort's direction ordering the groups too.
   - Groups don't collapse: chevrons, Collapse All and Expand All were built and taken out, as no need was seen.
-  - In the List every group, the first too, has its title in a row of its own, and every title but the first has half a row above it; the Name column's title stays Name with its sort arrow. The stripes start again under each title. Replaced the first group's name standing in the column's title, which read as a column called "Today".
-  - The Compact List's groups follow one another down a column, each under its title over a hairline, and go on in the next column only when there is no room left; a column that goes on with a group starts with its title again, fainter. ← and → go to the item at the same height in the column beside. Replaced each group starting a column of its own, which read as disjointed.
-  - The grouping is the pane's, as its order is; a saved tab keeps it, and a folder's view and a tab view can keep it.
-  - For search results, dates, sizes and tags are read in the background, only the field needed and only while the results are ordered or grouped by it ("Nothing is read before it is needed"). The list is ordered and grouped again when the read ends and at most once a second while it goes on. Values read stay while the same folder is searched; the same search run again reads them again.
+  - In the List every group, the first too, has its title in a row of its own, and every title but the first has half a row above it;
+    the Name column's title stays Name with its sort arrow.
+    The stripes start again under each title.
+    Replaced the first group's name standing in the column's title, which read as a column called "Today".
+  - The Compact List's groups follow one another down a column, each under its title over a hairline, and go on in the next column only when there is no room left;
+    a column that goes on with a group starts with its title again, fainter. ← and → go to the item at the same height in the column beside.
+    Replaced each group starting a column of its own, which read as disjointed.
+  - The grouping is the pane's, as its order is;
+    a saved tab keeps it, and a folder's view and a tab view can keep it.
+  - For search results, dates, sizes and tags are read in the background, only the field needed and only while the results are ordered or grouped by it ("Nothing is read before it is needed").
+    The list is ordered and grouped again when the read ends and at most once a second while it goes on.
+    Values read stay while the same folder is searched;
+    the same search run again reads them again.
 
 ## Columns and sizes
 
-- **The List has Date Added and Date Last Opened columns, and sorts by them** (2026-11-19), as Finder's. Both are hidden until shown and sort newest first; items without the date sort last. Date Added (what Downloads is most often sorted by) comes with the folder's read, at no cost; disks that don't keep it (FAT, exFAT, most shares) leave it empty. The Info panel shows it under Dates (the owner, 2026-11-26: it is the date Downloads is most often sorted by, and costs nothing to read; replaced leaving it out, as Finder's Get Info does). Date Last Opened is read for the rows on screen, and for every item only while the folder is sorted by it; the home folder's Desktop, Documents and Downloads show none of their own, as reading it there asks for permission.
-- **The List has a Tags column, and sorts by tags** (the owner, 2026-11-26), in a folder's List and in search results'. Hidden until shown; each tag's dot (a ring for a tag without a color) and its name, with commas, as Finder's column has them. It shows the tags read for the rows on screen, which the dots read already, so it reads nothing of its own. Sort by Tags (View ▸ Sort By ▸ Tags, or the column's title) orders by each item's names A to Z, name by name, so items with the same tags sit together whatever order the tags were put on in (the owner, 2026-11-26; first built on the order they were put on in, which set "Work, Apple" apart from "Apple, Work"); the column still shows them in that stored order. Items without tags come last either way. The names are read for every item only while the list is sorted by them ("Nothing is read before it is needed"), and for search results as a date is. The column's header groups by Tags. The dots beside a name say the tags' names as their tooltip, as a tag without a color has no dot.
-- **Fields and columns are listed in one order** (2026-11-19): Name, Date Modified, Date Created, Date Last Opened, Date Added, Size, Kind, Tags, Permissions (search results put Folder after Name; Tags after Kind as Finder has it, 2026-11-26), in every menu, the palette, Settings and Help: the order of Finder's column header menu, used everywhere. A column shown takes its standard place among those shown; one moved by hand stays there until it is hidden. Date Created sorts too, newest first.
-- **The List's columns are chosen on its header** (2026-11-19). A right-click on a column title checks the columns shown, moves the one clicked left or right, sizes all to fit and resets them; a title dragged sideways moves its column; Name is always on and first. View ▸ Columns has the same items. A change goes to every folder the pane shows without columns of its own, or to the folder's view, unsaved until Save. The menu doesn't say which (the owner, 2026-11-26: a grey line at its top, "Changes are for every folder in this pane…", read as out of place; the folder view's symbol in the status bar says whether the folder has a view). A folder's columns become its own in Folder View Options (the Column Visibility, Order and Sizes box), as every other setting does. Search results have the same menu with Group by for the column clicked, Folder too, and a title dragged there moves the results' own column. Settings → Browsing has no column checklists. Dropped: an Edit Columns popover and a button at the header's end (the header's own menu is where a Mac list keeps its columns); Keep Columns for "…" at the top of the header's menu (the owner, 2026-11-22: a second way to do what the box in Folder View Options does, and different from it only under a view from above).
-- **List view's columns keep the widths they were given.** A pane narrower than the columns scrolls sideways; no column shrinks or hides to fit, and Name is never squeezed. Widths change only when someone drags, steps or double-clicks a divider.
-  - A column narrowed with the list scrolled to its right end leaves empty room past the last column until the list is scrolled back, so nothing moves under the pointer (2026-11-15). Dropped: closing the list up when the drag ended, as the columns then moved at the release.
+- **The List has Date Added and Date Last Opened columns, and sorts by them** (2026-11-19), as Finder's.
+  Both are hidden until shown and sort newest first;
+  items without the date sort last.
+  Date Added (what Downloads is most often sorted by) comes with the folder's read, at no cost;
+  disks that don't keep it (FAT, exFAT, most shares) leave it empty.
+  The Info panel shows it under Dates (the owner, 2026-11-26: it is the date Downloads is most often sorted by, and costs nothing to read; replaced leaving it out, as Finder's Get Info does).
+  Date Last Opened is read for the rows on screen, and for every item only while the folder is sorted by it;
+  the home folder's Desktop, Documents and Downloads show none of their own, as reading it there asks for permission.
+- **The List has a Tags column, and sorts by tags** (the owner, 2026-11-26), in a folder's List and in search results'.
+  Hidden until shown;
+  each tag's dot (a ring for a tag without a color) and its name, with commas, as Finder's column has them.
+  It shows the tags read for the rows on screen, which the dots read already, so it reads nothing of its own.
+  Sort by Tags (View ▸ Sort By ▸ Tags, or the column's title) orders by each item's names A to Z, name by name, so items with the same tags sit together whatever order the tags were put on in (the owner, 2026-11-26; first built on the order they were put on in, which set "Work, Apple" apart from "Apple, Work");
+  the column still shows them in that stored order.
+  Items without tags come last either way.
+  The names are read for every item only while the list is sorted by them ("Nothing is read before it is needed"), and for search results as a date is.
+  The column's header groups by Tags.
+  The dots beside a name say the tags' names as their tooltip, as a tag without a color has no dot.
+- **Fields and columns are listed in one order** (2026-11-19): Name, Date Modified, Date Created, Date Last Opened, Date Added, Size, Kind, Tags, Permissions (search results put Folder after Name; Tags after Kind as Finder has it, 2026-11-26), in every menu, the palette, Settings and Help: the order of Finder's column header menu, used everywhere.
+  A column shown takes its standard place among those shown;
+  one moved by hand stays there until it is hidden.
+  Date Created sorts too, newest first.
+- **The List's columns are chosen on its header** (2026-11-19).
+  A right-click on a column title checks the columns shown, moves the one clicked left or right, sizes all to fit and resets them;
+  a title dragged sideways moves its column;
+  Name is always on and first.
+  View ▸ Columns has the same items.
+  A change goes to every folder the pane shows without columns of its own, or to the folder's view, unsaved until Save.
+  The menu doesn't say which (the owner, 2026-11-26: a grey line at its top, "Changes are for every folder in this pane…", read as out of place; the folder view's symbol in the status bar says whether the folder has a view).
+  A folder's columns become its own in Folder View Options (the Column Visibility, Order and Sizes box), as every other setting does.
+  Search results have the same menu with Group by for the column clicked, Folder too, and a title dragged there moves the results' own column.
+  Settings → Browsing has no column checklists.
+  Dropped: an Edit Columns popover and a button at the header's end (the header's own menu is where a Mac list keeps its columns);
+  Keep Columns for "…" at the top of the header's menu (the owner, 2026-11-22: a second way to do what the box in Folder View Options does, and different from it only under a view from above).
+- **List view's columns keep the widths they were given.**
+  A pane narrower than the columns scrolls sideways;
+  no column shrinks or hides to fit, and Name is never squeezed.
+  Widths change only when someone drags, steps or double-clicks a divider.
+  - A column narrowed with the list scrolled to its right end leaves empty room past the last column until the list is scrolled back, so nothing moves under the pointer (2026-11-15).
+    Dropped: closing the list up when the drag ended, as the columns then moved at the release.
   - The List's own scrolls go through the scroll view, not its clip view alone: macOS keeps its own record of where a trackpad left a list, and jumped back there the next time the width changed.
-- **The Icons view's icon size and the Compact List's column width are set with one slider in the status bar**, and with View ▸ Make Bigger, Make Smaller and Default Size (⌘+, ⌘- and ⌘0; ⌘= and ⌘⇧= are ⌘+ too, as most keyboards type + with Shift). Icons go from 32 to 128 pt in steps of 8, columns from 160 to 600 pt in steps of 40, the slider as the commands (the owner, 2026-11-23: the slider had set a column width of any point, 279 say, which no command gives); only Default Size gives the Compact List's default between steps; the List has none. An Icons item's column is its icon plus 40 pt, never below 80, so a name keeps a 78 pt label for its two lines. Dropped: dragging the gaps between columns, as nothing on screen shows they can be dragged.
-- **Each pane has its own columns** (the owner, 2026-11-22). The columns a folder's List shows and their order belong to the pane, as their widths do: a change in one pane reaches no other, and two panes can show different columns. The ones set last in any pane are the app's, which a pane with none to copy starts from; a pane opened from another takes that pane's (as sizes, below). A folder's view that keeps columns shows them in every pane, as before. Replaced columns shown for the whole app, which a change in one pane changed in every window.
-- **Each pane has its own sizes** (2026-11-15). The icon size, the Compact List's column width, the Previews count and the List's column widths (a folder's and search results' apart, the owner, 2026-11-22) belong to the pane, at each density, as its view and order do, and are saved with it in a saved tab, and kept by a tab view that keeps the size. The size set last in any pane is the app's: a pane with none of its own starts from it, and a pane opened from another takes that pane's. Replaced one size for the app and column widths for the window, so a workspace could not bring its sizes back and a size set for one folder's photos changed every other pane. Panes saved before start from the app's sizes and their window's widths.
-- **A pane's search results have a view of their own** (the owner, 2026-11-22): the view, the order, the grouping, the List's columns shown, their order and widths, the icon size, the Compact List's column width and the Previews count, kept apart from the pane's folders'. A change made over results is the pane's and is saved with it, every search the pane opens after shows it, and a folder's view never touches it. As with sizes, the one set last in any pane is the app's, which a pane with none to copy starts from; a pane opened from another (New Tab, Duplicate Pane, Duplicate Tab, Reopen Closed Tab, Swap Panes, Move Tab to New Window) takes that pane's, and a launch brings each pane's back. The view and the grouping are written to the app's as they are set, as the rest is, not taken from whichever pane is in front when the window is saved (the owner, 2026-11-22). A pane saved before it had these of its own takes what it doesn't say from its window, which showed the same columns, order and search options in every pane, and starts its results at its folders' sizes, as results showed at those; the app's results sizes start at the app's folder sizes the same way (the owner, 2026-11-22). Replaced reading what such a pane doesn't say as a new install's, which put the columns, the order and the search options back to their defaults in every tab at the upgrade. Replaced results kept in order by the search and shown with the app's columns and the folder's sizes. Folders First isn't there for results (they have no folders-first order) and is dimmed while they show.
-- **A folder opened afresh in the List starts at its top and its left**; Back and Forward put back where it was scrolled. A rename with Name scrolled out of view scrolls back to the left first.
-- **A size step keeps the place being looked at** (inferred). A new icon size or column width keeps the item at the top left (Icons) or the column at the left (Compact List) in place. The selection's lead stays in view if it was in view just before the step; one out of view is left there.
+- **The Icons view's icon size and the Compact List's column width are set with one slider in the status bar**, and with View ▸ Make Bigger, Make Smaller and Default Size (⌘+, ⌘- and ⌘0; ⌘= and ⌘⇧= are ⌘+ too, as most keyboards type + with Shift).
+  Icons go from 32 to 128 pt in steps of 8, columns from 160 to 600 pt in steps of 40, the slider as the commands (the owner, 2026-11-23: the slider had set a column width of any point, 279 say, which no command gives);
+  only Default Size gives the Compact List's default between steps;
+  the List has none.
+  An Icons item's column is its icon plus 40 pt, never below 80, so a name keeps a 78 pt label for its two lines.
+  Dropped: dragging the gaps between columns, as nothing on screen shows they can be dragged.
+- **Each pane has its own columns** (the owner, 2026-11-22).
+  The columns a folder's List shows and their order belong to the pane, as their widths do: a change in one pane reaches no other, and two panes can show different columns.
+  The ones set last in any pane are the app's, which a pane with none to copy starts from;
+  a pane opened from another takes that pane's (as sizes, below).
+  A folder's view that keeps columns shows them in every pane, as before.
+  Replaced columns shown for the whole app, which a change in one pane changed in every window.
+- **Each pane has its own sizes** (2026-11-15).
+  The icon size, the Compact List's column width, the Previews count and the List's column widths (a folder's and search results' apart, the owner, 2026-11-22) belong to the pane, at each density, as its view and order do, and are saved with it in a saved tab, and kept by a tab view that keeps the size.
+  The size set last in any pane is the app's: a pane with none of its own starts from it, and a pane opened from another takes that pane's.
+  Replaced one size for the app and column widths for the window, so a workspace could not bring its sizes back and a size set for one folder's photos changed every other pane.
+  Panes saved before start from the app's sizes and their window's widths.
+- **A pane's search results have a view of their own** (the owner, 2026-11-22): the view, the order, the grouping, the List's columns shown, their order and widths, the icon size, the Compact List's column width and the Previews count, kept apart from the pane's folders'.
+  A change made over results is the pane's and is saved with it, every search the pane opens after shows it, and a folder's view never touches it.
+  As with sizes, the one set last in any pane is the app's, which a pane with none to copy starts from;
+  a pane opened from another (New Tab, Duplicate Pane, Duplicate Tab, Reopen Closed Tab, Swap Panes, Move Tab to New Window) takes that pane's, and a launch brings each pane's back.
+  The view and the grouping are written to the app's as they are set, as the rest is, not taken from whichever pane is in front when the window is saved (the owner, 2026-11-22).
+  A pane saved before it had these of its own takes what it doesn't say from its window, which showed the same columns, order and search options in every pane, and starts its results at its folders' sizes, as results showed at those;
+  the app's results sizes start at the app's folder sizes the same way (the owner, 2026-11-22).
+  Replaced reading what such a pane doesn't say as a new install's, which put the columns, the order and the search options back to their defaults in every tab at the upgrade.
+  Replaced results kept in order by the search and shown with the app's columns and the folder's sizes.
+  Folders First isn't there for results (they have no folders-first order) and is dimmed while they show.
+- **A folder opened afresh in the List starts at its top and its left**;
+  Back and Forward put back where it was scrolled.
+  A rename with Name scrolled out of view scrolls back to the left first.
+- **A size step keeps the place being looked at** (inferred).
+  A new icon size or column width keeps the item at the top left (Icons) or the column at the left (Compact List) in place.
+  The selection's lead stays in view if it was in view just before the step;
+  one out of view is left there.
 
 ## A folder's own view
 
-- **A folder can keep its own view** (2026-11-19). Layout ▸ Remember View for This Folder keeps six settings: the view, the order, Folders First, the List's columns, the size and the grouping. A pane still carries its own settings from folder to folder; a folder's view is laid over them while the pane shows that folder, and leaving puts back what the pane carried, so a photo folder kept in Previews doesn't bring Previews into Downloads. A setting the folder's view doesn't keep follows the pane. Hidden files stay the tab's, and search results keep their own view. Dropped: a default view for every other folder, as Finder's Use as Defaults (the pane would stop carrying its settings); remembering every folder visited, as Finder does (a quick look in Icons would change a folder for good); hidden files per folder.
-- **A folder's view is saved only when asked** (2026-11-19). In a folder with a view, a change of view, sort, Folders First, column or size changes only what is on screen; Update Folder View (Save in Folder View Options) saves it, Revert to Saved View drops it, and leaving the folder drops it without a question. Only Remember, Save and Layout ▸ Reset Folder View save. A setting changed back by hand is no change. Replaced saving each change as it was made, which made every quick look a lasting change. A question on leaving was not considered: it would add a step to the commonest thing done.
+- **A folder can keep its own view** (2026-11-19).
+  Layout ▸ Remember View for This Folder keeps six settings: the view, the order, Folders First, the List's columns, the size and the grouping.
+  A pane still carries its own settings from folder to folder;
+  a folder's view is laid over them while the pane shows that folder, and leaving puts back what the pane carried, so a photo folder kept in Previews doesn't bring Previews into Downloads.
+  A setting the folder's view doesn't keep follows the pane.
+  Hidden files stay the tab's, and search results keep their own view.
+  Dropped: a default view for every other folder, as Finder's Use as Defaults (the pane would stop carrying its settings);
+  remembering every folder visited, as Finder does (a quick look in Icons would change a folder for good);
+  hidden files per folder.
+- **A folder's view is saved only when asked** (2026-11-19).
+  In a folder with a view, a change of view, sort, Folders First, column or size changes only what is on screen;
+  Update Folder View (Save in Folder View Options) saves it, Revert to Saved View drops it, and leaving the folder drops it without a question.
+  Only Remember, Save and Layout ▸ Reset Folder View save.
+  A setting changed back by hand is no change.
+  Replaced saving each change as it was made, which made every quick look a lasting change.
+  A question on leaving was not considered: it would add a step to the commonest thing done.
   - A pane or tab opened from another (Duplicate Pane, Duplicate Tab, Reopen Closed Tab) shows the folder's view as saved, not unsaved changes of the pane it came from (2026-11-20).
-- **Folder View Options chooses what a folder's view keeps, and saves what is changed** (2026-11-19). One popover (⌘J, Finder's key for View Options; also from the menus and the status bar's symbol) with a Keep checkbox titled with each setting's name and a control for each, Apply to Subfolders, Reset, All Folder Views…, Revert and Save. What is changed in it shows at once; Save keeps it, Revert or leaving the folder drops it, and Reset waits for Save too. With every box unchecked and Apply to Subfolders off, Save removes the folder's view. Replaced two popovers with two rules for saving the same settings.
-  - In a folder that uses a view from above, the popover says whose the settings are, with a Go to button to that folder; Save gives this folder a view of its own, and Apply to Subfolders starts off. Dropped: saving to the folder above from below, and a Customize This Folder button (two ways to save from a subfolder, where Go to already leads there).
-  - There are always four setting rows and the buttons are dimmed rather than removed, so the popover keeps its height. A changed row has an orange dot whose tooltip says what is saved. No control has the keyboard as it opens. Folders First is a pop-up. Dropped: an earlier layout with a subtitle saying whose view it was, a slider, arrows, a switch, grey cards and controls stretched to one width (unclear words, a cheap look).
-- **A setting a folder starts to keep is given back to the pane** (2026-11-19). What is changed in a folder before it is customized is the pane's, and would be carried to every folder after it; so once the folder keeps a setting, the pane goes back to the value it carried in. Of the app's columns and sizes, the pane puts back only what it changed itself in that folder, and only where it is still as the pane left it (2026-11-20). Replaced the first Remember leaving the pane with the folder's view everywhere after.
-- **A folder's view can cover the folders inside it, and the nearest view wins whole** (2026-11-19). With Apply to Subfolders, every folder below without a view of its own uses it. A folder uses one view only, its own or the nearest covering one above, never settings from several, so what is on screen can always be explained. A view that keeps nothing and covers the folders inside is how a branch stops using a view from above; anywhere else that switch is dimmed. Save in a folder that uses a view from above gives that folder its own view; the folder above is changed in it, by Go to. Dropped: settings looked up one at a time across levels (a folder could take its view from one folder and its order from another); Update asking which folder to save to, and the folder above's options listing the folders inside (Folder Views lists those instead).
-- **A folder's view shows as a symbol at the right end of the status bar** (2026-11-19), in every folder, left of the size slider: accent when the folder has its own view, the label's color when it comes from a folder above, grey when it has none, with an orange dot while something is unsaved; 13.5 pt in an 18 pt place. A click opens Folder View Options. It is there in every folder, as it is a way to the options, and keeps its place whether or not the view has a slider, so an open popover doesn't move. Search results, and a pane that let go of its folder, have none, and Folder View Options closes with it. Dropped: a pill with words (it took 130 to 190 pt from the path).
-- **The Folder View commands are a submenu of the list's right-click menu and of the toolbar's View Options menu, and the first group of Layout** (2026-11-19; moved from View to Layout on 2026-11-21, with tab views and window views). An item's right-click menu has none, as "this folder" would be ambiguous there. The names are whole ("Update Folder View") as the palette, Help and Settings show them alone. The toolbar button is in Customize Toolbar only. Dropped: a headed section in the View Options menu, as no other part of that menu has a heading.
-  - Manage Folder Views… opens the Views window on its Folder Views pane (2026-11-21; before, a window of its own), listing every customized folder as a tree, one row a folder: the path with tags of what it keeps. Remove forgets the selected folders' customizations, Remove with Subfolders those inside them too; neither asks, as each says what it does. Remove All… asks.
-- **Folders' views are kept in `folder-views.json`, and a folder's view is found by its full path only** (2026-11-20). In Application Support, with nothing written into the folders, so views work on disks and shares that can't be written; finding one is a look in memory, with no call to the disk. Replaced finding a view by disk, canonical path and file ID, which made opening a folder read the disk on the main thread. Old files load, and their `volume` and `fileID` are dropped at the next write.
-  - Accepted with it: a folder renamed or moved outside File Trail loses its view and stays in Folder Views as Not Found; a folder at the same path on another disk of the same name uses the same view. Views are never removed on their own.
-  - A rename or move made in File Trail, and its Undo, take the folder's view and every view below it along, the new place resolved to its real path once. One operation's views are all taken before any is put back, so a batch rename that swaps names leaves each folder its own.
-  - A folder reached through a link shows the view saved for its real path, which its listing gives; it is read once more only where that view's order differs.
-  - A view's parts are read one by one, a missing one taking its default, so a column added to the app costs no folder its columns. A file that can't be read is renamed to `folder-views.json.unreadable` just before it would be written over, so nothing in it is lost.
+- **Folder View Options chooses what a folder's view keeps, and saves what is changed** (2026-11-19).
+  One popover (⌘J, Finder's key for View Options; also from the menus and the status bar's symbol) with a Keep checkbox titled with each setting's name and a control for each, Apply to Subfolders, Reset, All Folder Views…, Revert and Save.
+  What is changed in it shows at once;
+  Save keeps it, Revert or leaving the folder drops it, and Reset waits for Save too.
+  With every box unchecked and Apply to Subfolders off, Save removes the folder's view.
+  Replaced two popovers with two rules for saving the same settings.
+  - In a folder that uses a view from above, the popover says whose the settings are, with a Go to button to that folder;
+    Save gives this folder a view of its own, and Apply to Subfolders starts off.
+    Dropped: saving to the folder above from below, and a Customize This Folder button (two ways to save from a subfolder, where Go to already leads there).
+  - There are always four setting rows and the buttons are dimmed rather than removed, so the popover keeps its height.
+    A changed row has an orange dot whose tooltip says what is saved.
+    No control has the keyboard as it opens.
+    Folders First is a pop-up.
+    Dropped: an earlier layout with a subtitle saying whose view it was, a slider, arrows, a switch, grey cards and controls stretched to one width (unclear words, a cheap look).
+- **A setting a folder starts to keep is given back to the pane** (2026-11-19).
+  What is changed in a folder before it is customized is the pane's, and would be carried to every folder after it;
+  so once the folder keeps a setting, the pane goes back to the value it carried in.
+  Of the app's columns and sizes, the pane puts back only what it changed itself in that folder, and only where it is still as the pane left it (2026-11-20).
+  Replaced the first Remember leaving the pane with the folder's view everywhere after.
+- **A folder's view can cover the folders inside it, and the nearest view wins whole** (2026-11-19).
+  With Apply to Subfolders, every folder below without a view of its own uses it.
+  A folder uses one view only, its own or the nearest covering one above, never settings from several, so what is on screen can always be explained.
+  A view that keeps nothing and covers the folders inside is how a branch stops using a view from above;
+  anywhere else that switch is dimmed.
+  Save in a folder that uses a view from above gives that folder its own view;
+  the folder above is changed in it, by Go to.
+  Dropped: settings looked up one at a time across levels (a folder could take its view from one folder and its order from another);
+  Update asking which folder to save to, and the folder above's options listing the folders inside (Folder Views lists those instead).
+- **A folder's view shows as a symbol at the right end of the status bar** (2026-11-19), in every folder, left of the size slider: accent when the folder has its own view, the label's color when it comes from a folder above, grey when it has none, with an orange dot while something is unsaved;
+  13.5 pt in an 18 pt place.
+  A click opens Folder View Options.
+  It is there in every folder, as it is a way to the options, and keeps its place whether or not the view has a slider, so an open popover doesn't move.
+  Search results, and a pane that let go of its folder, have none, and Folder View Options closes with it.
+  Dropped: a pill with words (it took 130 to 190 pt from the path).
+- **The Folder View commands are a submenu of the list's right-click menu and of the toolbar's View Options menu, and the first group of Layout** (2026-11-19; moved from View to Layout on 2026-11-21, with tab views and window views).
+  An item's right-click menu has none, as "this folder" would be ambiguous there.
+  The names are whole ("Update Folder View") as the palette, Help and Settings show them alone.
+  The toolbar button is in Customize Toolbar only.
+  Dropped: a headed section in the View Options menu, as no other part of that menu has a heading.
+  - Manage Folder Views… opens the Views window on its Folder Views pane (2026-11-21; before, a window of its own), listing every customized folder as a tree, one row a folder: the path with tags of what it keeps.
+    Remove forgets the selected folders' customizations, Remove with Subfolders those inside them too;
+    neither asks, as each says what it does.
+    Remove All… asks.
+- **Folders' views are kept in `folder-views.json`, and a folder's view is found by its full path only** (2026-11-20).
+  In Application Support, with nothing written into the folders, so views work on disks and shares that can't be written;
+  finding one is a look in memory, with no call to the disk.
+  Replaced finding a view by disk, canonical path and file ID, which made opening a folder read the disk on the main thread.
+  Old files load, and their `volume` and `fileID` are dropped at the next write.
+  - Accepted with it: a folder renamed or moved outside File Trail loses its view and stays in Folder Views as Not Found;
+    a folder at the same path on another disk of the same name uses the same view.
+    Views are never removed on their own.
+  - A rename or move made in File Trail, and its Undo, take the folder's view and every view below it along, the new place resolved to its real path once.
+    One operation's views are all taken before any is put back, so a batch rename that swaps names leaves each folder its own.
+  - A folder reached through a link shows the view saved for its real path, which its listing gives;
+    it is read once more only where that view's order differs.
+  - A view's parts are read one by one, a missing one taking its default, so a column added to the app costs no folder its columns.
+    A file that can't be read is renamed to `folder-views.json.unreadable` just before it would be written over, so nothing in it is lost.
   - Dropped: `app-state.json` (written with every tab and window change), SQLite (more than a few hundred entries need), an extended attribute on each folder (writes into the folders and fails on many disks).
 
 ## Previews
 
-- **Previews is the fourth view.** View ▸ as Previews (⌘4) shows a pane's files as large Quick Look previews in a grid that scrolls down, 9, 4 (the default), 2 or 1 at a time, set by the slider and Make Bigger and Make Smaller; the count is the pane's own. Everything else is the Icons view's: selection, keys, drags, rename, every command.
-  - View ▸ Show Previews has 9, 4, 2 and 1 at a Time, each switching to Previews at that count with the selected file brought on screen. Pressed again an item changes nothing, so its key and checkmark mean one thing. The toolbar's Previews segment shows the same four on a press held, as Back and Forward's do. Dropped: the system's arrow on the segment (it made the segment wider, and a click on it didn't open the menu).
-  - The places share the pane's width and height exactly, so a row shows whole; a scroll settles on a whole row. Each picture keeps its own proportions.
-  - At 1 at a time the file a scroll rests on is selected, so Space, the Info panel and Move to Trash act on the file on screen; a selection of several, one made by a drag, or one being renamed is kept. Arriving at 1 at a time by Show Previews selects the file shown unless several are selected; when the selected file is removed the one in its place is selected; and a view put back at 1 at a time with one file selected shows that file, not the place saved, which in a pane of another height is another file's row. At 2, 4 and 9 scrolling leaves the selection alone, as moving it would put Move to Trash on a file never picked.
-  - Previews are asked of Quick Look at their place's size, again once a resize has rested a quarter of a second; a picture too large for Quick Look (about 3.5 million pixels) is read by the app, two at most at once. The pages after and before load ahead. Their cache is apart from the Icons view's: at most 1 GB or a sixteenth of the Mac's memory, least recently used first, 8 bits a color, all dropped when macOS says memory is short. Quick Look's own disk cache is left alone.
+- **Previews is the fourth view.**
+  View ▸ as Previews (⌘4) shows a pane's files as large Quick Look previews in a grid that scrolls down, 9, 4 (the default), 2 or 1 at a time, set by the slider and Make Bigger and Make Smaller;
+  the count is the pane's own.
+  Everything else is the Icons view's: selection, keys, drags, rename, every command.
+  - View ▸ Show Previews has 9, 4, 2 and 1 at a Time, each switching to Previews at that count with the selected file brought on screen.
+    Pressed again an item changes nothing, so its key and checkmark mean one thing.
+    The toolbar's Previews segment shows the same four on a press held, as Back and Forward's do.
+    Dropped: the system's arrow on the segment (it made the segment wider, and a click on it didn't open the menu).
+  - The places share the pane's width and height exactly, so a row shows whole;
+    a scroll settles on a whole row.
+    Each picture keeps its own proportions.
+  - At 1 at a time the file a scroll rests on is selected, so Space, the Info panel and Move to Trash act on the file on screen;
+    a selection of several, one made by a drag, or one being renamed is kept. Arriving at 1 at a time by Show Previews selects the file shown unless several are selected;
+    when the selected file is removed the one in its place is selected;
+    and a view put back at 1 at a time with one file selected shows that file, not the place saved, which in a pane of another height is another file's row.
+    At 2, 4 and 9 scrolling leaves the selection alone, as moving it would put Move to Trash on a file never picked.
+  - Previews are asked of Quick Look at their place's size, again once a resize has rested a quarter of a second;
+    a picture too large for Quick Look (about 3.5 million pixels) is read by the app, two at most at once.
+    The pages after and before load ahead.
+    Their cache is apart from the Icons view's: at most 1 GB or a sixteenth of the Mac's memory, least recently used first, 8 bits a color, all dropped when macOS says memory is short.
+    Quick Look's own disk cache is left alone.
   - Dropped: a triage mode with single-letter keys, kind chips in the filter, Trash Others on Page, retake groups, copying an image or its text, renaming from the text in a picture, live previews, a magnifier while ⌥ is held.
 
 ## The viewer
 
-- **A file can be shown in a pane: Open in Viewer in place, Open in Other Pane beside the list** (2026-11-20). The plan, with what is built and what waits for the owner's word (the size limits, the themes, tree-sitter), is [plans/text-viewer.md](../plans/text-viewer.md). What was decided:
-  - **Two ways in, and nothing else in the menu bar.** File ▸ Open in Viewer (⇧⌘E, and Space), and a file's right-click menu after Open With, for one file. Open in Other Pane (⌥⌘↓, and ⌥⌘E) takes a file as well as a folder: the file shows in the other pane's viewer, which follows the list. Dropped: View File, a Viewer Pane toggle, Follow Selection, Next and Previous File, Edit Text and Save in the menus (dimmed items, and a toggle that could disagree with Two Panes).
-  - **What the viewer does is in the viewer**: its bar shows what applies now (Read or Edit, Save while there are edits, Follow beside the list, the next and previous file in place), and its ⋯ menu the rest, with the keys it takes while it has the keyboard (⌘S, ⌘F, ⌥→ and ⌥←, Esc). Save File, Next File and Previous File can be given other keys in Settings → Shortcuts.
-  - **A ✕ at the bar's right end closes the viewer** (the owner, 2026-11-26), after the ⋯ menu, in place and beside the list, with the tooltip "Close Viewer (Esc)". It is Close Viewer: edits not saved are asked about first, in Read or Edit, and the pane shows its folder again. It stays where it is as Save comes and goes, and a narrow bar never leaves it out. At the left end, macOS's side for closing, it would sit beside Previous File, one click too far from closing while stepping through a folder. Before, only Esc and the ⋯ menu closed the viewer, and Back one in place: beside the list there was nothing to click for it.
-  - **⌥→ and ⌥← go to the next and previous file of a file in place** (the owner, 2026-11-23), with ⌥⌘] and ⌥⌘[ as their second keys. They work the same over every kind of file in Read, taken before the view with the keyboard (a movie, Quick Look's preview) can keep them; in text being edited and in the find bar they move by a word, as in any text. Plain → and ← stay the file's (a page, a slide, five seconds of a movie, a picture moved), ⌘→ and ⌘← are Back and Forward, and ⌃→ and ⌃← are macOS's for Spaces. The bar's buttons are ← and → arrows, which name their keys, and not chevrons, which the toolbar's Back and Forward are. Replaced ⌥⌘] and ⌥⌘[ alone, and ↑ and ↓ chevrons in the bar. Its appearance and theme are its own, one for the app, in that menu.
-  - **A file shown in place is a step of the pane's Back and Forward**, and while it shows, what acts on the folder or its items (views, sorting, groups, filters, file commands, the Go menu's places, the toolbar's search field) is dimmed or waits, as it would act out of sight. The pane's bottom bar tells of the file (its line, language and format) in place of the folder's path. Back, Forward and Enclosing Folder go to its folder first.
-  - **A viewer's Read or Edit and Follow are the pane's** (the owner, 2026-11-23). Each pane has its own, kept with it in a saved tab and taken by a pane opened from it, as its sizes are. Read or Edit starts at the one chosen last in any pane, which is the app's, and one chosen by hand is the pane's and the app's from then on. Follow starts on; turned on or off by hand it is the pane's from then on, and Open in Other Pane opens that pane's viewer following or not as it says. A file opened in place stays on its file, as before. A tab view can set both for a pane. Replaced Read or Edit for the whole app and a viewer beside the list always following when opened.
-  - **A viewer beside the list is the second pane**: Two Panes closes it and brings it back as it was; ⌘W closes the file first, then the pane. Following goes on while editing: a new selection asks Save, Don't Save or Cancel when there are edits.
-  - **The viewer gives way only to a command, and keeps to its file** (the owner, 2026-11-22). It closes when a command sends its pane to another folder (the tree, the path bar, Back and Forward, a favorite, a search's result, the Go menu), never because of what the pane reads on its own: its first folder, the folder again, the folder above one that went, a folder followed to its new name, Home for a disk that went. It knows its file by what it is, not by its path: renamed or moved, by this app or another, the file is shown, watched and saved where it went, its edits kept, and a file in place takes its step of Back and Forward along (its Next and Previous File go once it has left the folder). Beside the list, Follow on shows what the list selects, and the edited file stays until something else is chosen; Follow off stays on the file. What File Trail itself renames or moves it follows by the write, on any disk; what another app does, only on a disk that tells which file is which ("What moves is followed by what is known, never by a guess" in [decisions.md](../decisions.md)). Moved to the Trash, or no longer to be found (deleted, moved to another disk, or renamed by another app on an exFAT or FAT32 disk): without edits the viewer says so, "was moved to the Trash" or "is no longer there", never "was deleted", which it can't know; it shows the file again if one comes back at its path; with edits they stay, and Save asks first, then puts it back where it was. Before, the viewer compared its pane's folder with one it had kept, and closed when the two differed: a second pane opened again where it was closed lost the viewer a tab view had just given it.
-  - **Read or Edit is remembered** for the next file, and with each pane in a saved tab. Save is ⌘S, only in the pane that shows the file, written beside the file and put in its place so it keeps its permissions, tags and dates. Edited means the text differs from the file. Leaving a file with edits asks: Back, another file, closing the viewer, the pane, the tab or the window, and quitting.
-  - **The keyboard goes into the text when its pane is focused**, and a click anywhere in the viewer makes its pane active and gives it the keyboard. In Read the arrows, Space, Home and End move the text, and Tab goes on to the next pane. Esc in Edit goes to Read and Return in Read goes to Edit, for that file only; Esc in Read closes the viewer, in place and beside the list alike, and the pane shows its folder again. Replaced a different Esc beside the list, which confused.
-  - **A PDF, a Word document, a presentation or a spreadsheet takes the keyboard and the page keys** (2026-11-23, as the owner asked). A PDF is drawn by the viewer with PDFKit, as Preview draws one, so it can zoom and step its pages; one locked with a password stays Quick Look's, which asks for it. Every other file that isn't text or a picture is Quick Look's preview, as before. As the file opens the keyboard goes into it, a PDF at once and Quick Look's preview once it has loaded, so the arrows and Space move it with no click; only when the viewer had the keyboard, so a viewer following the list never takes it from the list. The app's page and half-page keys move it, → and ← go to the next and previous page or slide (a PDF's page while it is no wider than the pane, sideways past that), Tab goes on to the next pane and Esc closes the viewer, all taken before the view with the keyboard sees them. Before, the keyboard stayed on the viewer itself and the arrows did nothing until the file was clicked.
-    - **The View menu's size commands zoom the file a pane shows**: Make Bigger, Make Smaller and Default Size are Zoom In, Zoom Out and Actual Size, with ⌘+, ⌘- and ⌘0 (⌘= too, which the viewer takes before the view with the keyboard keeps it), and View ▸ Zoom to Fit (⌘9) fits it. A PDF opens at the pane's width, as Quick Look showed it; the bottom bar gives its page, of how many, and its scale. A Word document, a spreadsheet or a Pages document, Quick Look's web view, zooms from 50% to 500%: its page keeps its layout and grows, as wide as the pane allows and sideways past it (Quick Look's centering view widens with the page's own zoom); Before (the owner, 2026-11-23) the web view was magnified inside the page's width Quick Look gave it, which cropped it. A presentation's slides, drawn by Quick Look's own pages, don't zoom: the commands are dimmed. They are in the viewer's ⋯ menu too, with their keys.
-    - **A PDF or a Word document opens with its page as wide as the pane, and Zoom to Fit takes it back there** (the owner, 2026-11-23: "zoom to fit as default", and the file types made the same). It stays as wide as the pane as the pane is resized, until it is zoomed. A PDF opens at the top of its first page, at whatever zoom it opens (the owner, 2026-11-23: it opened a sixth of a page down, the top cut off, as PDFKit kept another place while it set the scale). Before, a Word document opened at Quick Look's own 100%, a column about 625 points wide in the middle of a wider pane, and Zoom to Fit showed a whole PDF page but a Word page's width. No setting for it for now (the owner); Actual Size, chosen once, goes on to the next document as any zoom does. A spreadsheet or a Pages document fills the pane already; a picture opens shrunk to fit and never enlarged, as Preview opens one, and Zoom to Fit fits it whole.
-    - **↑ and ↓ glide a PDF, a picture and text in Read, as a web page's arrows do** (the owner, 2026-11-23: a PDF scrolled "very slow and choppy" where a Word document was smooth, and then text in Read "too slowly", a line for each key repeat). In Edit they move the caret, as in any text. The speeds are about two thirds of a web view's, timed on one (the owner: 2,400 points a second at first was too fast, and a web view's own speeds felt faster than a Word document's preview, so a fifth slower twice): a press moves about 30 points, a key held reaches about 665 points a second within a sixth of a second, and letting go stops it within about 25 points; → and ← too where the page or picture is wider than the pane. Before, PDFKit moved a line for each key repeat, jumping a few times a second, and a picture a tenth of the pane; Quick Look's web view does this itself.
-    - **In text they are Bigger Text, Smaller Text and Default Text Size**, the viewer's one text size, which Settings keeps, as the ⋯ menu's Bigger Text and Smaller Text set it; Zoom to Fit is dimmed.
-    - **A picture is the viewer's, and zooms**: it opens shrunk to fit and never enlarged, as before; Actual Size shows its pixels as points, as a browser does (and as Markdown's Preview draws one); Zoom to Fit fits it in the pane, enlarging a small one; a pinch zooms it. The arrows move one larger than the pane, Space and Shift-Space a page, and the bottom bar gives its size in pixels and its scale.
-    - **The next file of a kind opens at the zoom the one before was given** (the owner, 2026-11-23): stepping through a folder of PDFs, pictures or documents, with Next File or a viewer following the list, keeps Zoom to Fit, Actual Size or a scale chosen, each kind its own. A viewer opened anew starts as a file opens.
-    - **⌘F finds in what the viewer shows, in its own bar** (2026-11-24): a PDF, Markdown's Preview (where the system's find bar would leave for the source), and a document Quick Look shows: a Word document, a spreadsheet, a web archive, OpenDocument text, RTF and RTFD. Every match is marked, without regard to case or accents, Return and Shift-Return go to the next and the one before, and Done or Esc closes it; it stays open, and looks again, from one file to the next. The source has the system's find bar, with Replace while editing. A document Quick Look shows in a web view is found in by a script of the app's own in its page and in the frames in it (a spreadsheet's sheet comes in one, from an origin of its own, so the script runs in every frame and the page asks each by messages); it marks the matches with the page's highlights and leaves the text as it is. A match doesn't run from one paragraph to the next, and a spreadsheet is found in on the sheet shown. Quick Look shows Keynote, Pages and Numbers documents as pictures, and draws a PowerPoint presentation's slides itself, so these have no find.
+- **A file can be shown in a pane: Open in Viewer in place, Open in Other Pane beside the list** (2026-11-20).
+  The plan, with what is built and what waits for the owner's word (the size limits, the themes, tree-sitter), is [plans/text-viewer.md](../plans/text-viewer.md).
+  What was decided:
+  - **Two ways in, and nothing else in the menu bar.**
+    File ▸ Open in Viewer (⇧⌘E, and Space), and a file's right-click menu after Open With, for one file.
+    Open in Other Pane (⌥⌘↓, and ⌥⌘E) takes a file as well as a folder: the file shows in the other pane's viewer, which follows the list.
+    Dropped: View File, a Viewer Pane toggle, Follow Selection, Next and Previous File, Edit Text and Save in the menus (dimmed items, and a toggle that could disagree with Two Panes).
+  - **What the viewer does is in the viewer**: its bar shows what applies now (Read or Edit, Save while there are edits, Follow beside the list, the next and previous file in place), and its ⋯ menu the rest, with the keys it takes while it has the keyboard (⌘S, ⌘F, ⌥→ and ⌥←, Esc).
+    Save File, Next File and Previous File can be given other keys in Settings → Shortcuts.
+  - **A ✕ at the bar's right end closes the viewer** (the owner, 2026-11-26), after the ⋯ menu, in place and beside the list, with the tooltip "Close Viewer (Esc)".
+    It is Close Viewer: edits not saved are asked about first, in Read or Edit, and the pane shows its folder again.
+    It stays where it is as Save comes and goes, and a narrow bar never leaves it out.
+    At the left end, macOS's side for closing, it would sit beside Previous File, one click too far from closing while stepping through a folder.
+    Before, only Esc and the ⋯ menu closed the viewer, and Back one in place: beside the list there was nothing to click for it.
+  - **⌥→ and ⌥← go to the next and previous file of a file in place** (the owner, 2026-11-23), with ⌥⌘] and ⌥⌘[ as their second keys.
+    They work the same over every kind of file in Read, taken before the view with the keyboard (a movie, Quick Look's preview) can keep them; in text being edited and in the find bar they move by a word, as in any text.
+    Plain → and ← stay the file's (a page, a slide, five seconds of a movie, a picture moved), ⌘→ and ⌘← are Back and Forward, and ⌃→ and ⌃← are macOS's for Spaces.
+    The bar's buttons are ← and → arrows, which name their keys, and not chevrons, which the toolbar's Back and Forward are.
+    Replaced ⌥⌘] and ⌥⌘[ alone, and ↑ and ↓ chevrons in the bar.
+    Its appearance and theme are its own, one for the app, in that menu.
+  - **A file shown in place is a step of the pane's Back and Forward**, and while it shows, what acts on the folder or its items (views, sorting, groups, filters, file commands, the Go menu's places, the toolbar's search field) is dimmed or waits, as it would act out of sight.
+    The pane's bottom bar tells of the file (its line, language and format) in place of the folder's path.
+    Back, Forward and Enclosing Folder go to its folder first.
+  - **A viewer's Read or Edit and Follow are the pane's** (the owner, 2026-11-23).
+    Each pane has its own, kept with it in a saved tab and taken by a pane opened from it, as its sizes are.
+    Read or Edit starts at the one chosen last in any pane, which is the app's, and one chosen by hand is the pane's and the app's from then on.
+    Follow starts on;
+    turned on or off by hand it is the pane's from then on, and Open in Other Pane opens that pane's viewer following or not as it says.
+    A file opened in place stays on its file, as before.
+    A tab view can set both for a pane.
+    Replaced Read or Edit for the whole app and a viewer beside the list always following when opened.
+  - **A viewer beside the list is the second pane**: Two Panes closes it and brings it back as it was;
+    ⌘W closes the file first, then the pane.
+    Following goes on while editing: a new selection asks Save, Don't Save or Cancel when there are edits.
+  - **The viewer gives way only to a command, and keeps to its file** (the owner, 2026-11-22).
+    It closes when a command sends its pane to another folder (the tree, the path bar, Back and Forward, a favorite, a search's result, the Go menu), never because of what the pane reads on its own: its first folder, the folder again, the folder above one that went, a folder followed to its new name, Home for a disk that went.
+    It knows its file by what it is, not by its path: renamed or moved, by this app or another, the file is shown, watched and saved where it went, its edits kept, and a file in place takes its step of Back and Forward along (its Next and Previous File go once it has left the folder).
+    Beside the list, Follow on shows what the list selects, and the edited file stays until something else is chosen;
+    Follow off stays on the file.
+    What File Trail itself renames or moves it follows by the write, on any disk;
+    what another app does, only on a disk that tells which file is which ("What moves is followed by what is known, never by a guess" in [decisions.md](../decisions.md)).
+    Moved to the Trash, or no longer to be found (deleted, moved to another disk, or renamed by another app on an exFAT or FAT32 disk): without edits the viewer says so, "was moved to the Trash" or "is no longer there", never "was deleted", which it can't know;
+    it shows the file again if one comes back at its path;
+    with edits they stay, and Save asks first, then puts it back where it was.
+    Before, the viewer compared its pane's folder with one it had kept, and closed when the two differed: a second pane opened again where it was closed lost the viewer a tab view had just given it.
+  - **Read or Edit is remembered** for the next file, and with each pane in a saved tab.
+    Save is ⌘S, only in the pane that shows the file, written beside the file and put in its place so it keeps its permissions, tags and dates.
+    Edited means the text differs from the file.
+    Leaving a file with edits asks: Back, another file, closing the viewer, the pane, the tab or the window, and quitting.
+  - **The keyboard goes into the text when its pane is focused**, and a click anywhere in the viewer makes its pane active and gives it the keyboard.
+    In Read the arrows, Space, Home and End move the text, and Tab goes on to the next pane.
+    Esc in Edit goes to Read and Return in Read goes to Edit, for that file only;
+    Esc in Read closes the viewer, in place and beside the list alike, and the pane shows its folder again.
+    Replaced a different Esc beside the list, which confused.
+  - **A PDF, a Word document, a presentation or a spreadsheet takes the keyboard and the page keys** (2026-11-23, as the owner asked).
+    A PDF is drawn by the viewer with PDFKit, as Preview draws one, so it can zoom and step its pages;
+    one locked with a password stays Quick Look's, which asks for it.
+    Every other file that isn't text or a picture is Quick Look's preview, as before.
+    As the file opens the keyboard goes into it, a PDF at once and Quick Look's preview once it has loaded, so the arrows and Space move it with no click;
+    only when the viewer had the keyboard, so a viewer following the list never takes it from the list.
+    The app's page and half-page keys move it, → and ← go to the next and previous page or slide (a PDF's page while it is no wider than the pane, sideways past that), Tab goes on to the next pane and Esc closes the viewer, all taken before the view with the keyboard sees them.
+    Before, the keyboard stayed on the viewer itself and the arrows did nothing until the file was clicked.
+    - **The View menu's size commands zoom the file a pane shows**: Make Bigger, Make Smaller and Default Size are Zoom In, Zoom Out and Actual Size, with ⌘+, ⌘- and ⌘0 (⌘= too, which the viewer takes before the view with the keyboard keeps it), and View ▸ Zoom to Fit (⌘9) fits it.
+      A PDF opens at the pane's width, as Quick Look showed it;
+      the bottom bar gives its page, of how many, and its scale.
+      A Word document, a spreadsheet or a Pages document, Quick Look's web view, zooms from 50% to 500%: its page keeps its layout and grows, as wide as the pane allows and sideways past it (Quick Look's centering view widens with the page's own zoom);
+      Before (the owner, 2026-11-23) the web view was magnified inside the page's width Quick Look gave it, which cropped it.
+      A presentation's slides, drawn by Quick Look's own pages, don't zoom: the commands are dimmed.
+      They are in the viewer's ⋯ menu too, with their keys.
+    - **A PDF or a Word document opens with its page as wide as the pane, and Zoom to Fit takes it back there** (the owner, 2026-11-23: "zoom to fit as default", and the file types made the same).
+      It stays as wide as the pane as the pane is resized, until it is zoomed.
+      A PDF opens at the top of its first page, at whatever zoom it opens (the owner, 2026-11-23: it opened a sixth of a page down, the top cut off, as PDFKit kept another place while it set the scale).
+      Before, a Word document opened at Quick Look's own 100%, a column about 625 points wide in the middle of a wider pane, and Zoom to Fit showed a whole PDF page but a Word page's width.
+      No setting for it for now (the owner);
+      Actual Size, chosen once, goes on to the next document as any zoom does.
+      A spreadsheet or a Pages document fills the pane already;
+      a picture opens shrunk to fit and never enlarged, as Preview opens one, and Zoom to Fit fits it whole.
+    - **↑ and ↓ glide a PDF, a picture and text in Read, as a web page's arrows do** (the owner, 2026-11-23: a PDF scrolled "very slow and choppy" where a Word document was smooth, and then text in Read "too slowly", a line for each key repeat).
+      In Edit they move the caret, as in any text.
+      The speeds are about two thirds of a web view's, timed on one (the owner: 2,400 points a second at first was too fast, and a web view's own speeds felt faster than a Word document's preview, so a fifth slower twice): a press moves about 30 points, a key held reaches about 665 points a second within a sixth of a second, and letting go stops it within about 25 points;
+      → and ← too where the page or picture is wider than the pane.
+      Before, PDFKit moved a line for each key repeat, jumping a few times a second, and a picture a tenth of the pane;
+      Quick Look's web view does this itself.
+    - **In text they are Bigger Text, Smaller Text and Default Text Size**, the viewer's one text size, which Settings keeps, as the ⋯ menu's Bigger Text and Smaller Text set it;
+      Zoom to Fit is dimmed.
+    - **A picture is the viewer's, and zooms**: it opens shrunk to fit and never enlarged, as before;
+      Actual Size shows its pixels as points, as a browser does (and as Markdown's Preview draws one);
+      Zoom to Fit fits it in the pane, enlarging a small one;
+      a pinch zooms it.
+      The arrows move one larger than the pane, Space and Shift-Space a page, and the bottom bar gives its size in pixels and its scale.
+    - **The next file of a kind opens at the zoom the one before was given** (the owner, 2026-11-23): stepping through a folder of PDFs, pictures or documents, with Next File or a viewer following the list, keeps Zoom to Fit, Actual Size or a scale chosen, each kind its own.
+      A viewer opened anew starts as a file opens.
+    - **⌘F finds in what the viewer shows, in its own bar** (2026-11-24): a PDF, Markdown's Preview (where the system's find bar would leave for the source), and a document Quick Look shows: a Word document, a spreadsheet, a web archive, OpenDocument text, RTF and RTFD.
+      Every match is marked, without regard to case or accents, Return and Shift-Return go to the next and the one before, and Done or Esc closes it;
+      it stays open, and looks again, from one file to the next.
+      The source has the system's find bar, with Replace while editing.
+      A document Quick Look shows in a web view is found in by a script of the app's own in its page and in the frames in it (a spreadsheet's sheet comes in one, from an origin of its own, so the script runs in every frame and the page asks each by messages);
+      it marks the matches with the page's highlights and leaves the text as it is.
+      A match doesn't run from one paragraph to the next, and a spreadsheet is found in on the sheet shown.
+      Quick Look shows Keynote, Pages and Numbers documents as pictures, and draws a PowerPoint presentation's slides itself, so these have no find.
     - **Copy and Select All act on the PDF, the picture or Quick Look's preview with the keyboard**: the text or the picture selected there, never the file, which isn't what is in front (before, Copy copied the file).
-    - **The text of a Word document, a spreadsheet or HTML can be selected, as a PDF's can** (the owner, 2026-11-23). Quick Look shows them in a web view it gives a style sheet of its own, which turns selecting off (`-webkit-user-select: none !important`, which no style of the page's undoes) and keeps the arrow pointer; the viewer takes that style sheet out as each loads (`_removeAllUserStyleSheets`, asked first as Quick Look's other calls are), so the pointer is the I-beam over text. Finder's Quick Look keeps it off. A presentation's slides are pictures Quick Look draws, with no text to select.
-    - **Go ▸ Go to Page… (⌥⌘G)** asks for a page of a PDF, or a slide of a presentation, by its number; one the file doesn't have is refused under the field. The bottom bar says "Page 3 of 12", or "Slide 3 of 40", as the page changes.
-    - **Keynote's slides and Pages' pages step as a presentation's do** (2026-11-24). Quick Look shows them as pictures one below another in a web view; the viewer reads them as pages, so → and ← step a slide or a page, Go to Page goes to one, and the bottom bar says "Slide 2 of 3" or "Page 2 of 3" as the page scrolls.
-    - **RTF is shown as the document it is, by Quick Look** (2026-11-24), not as its markup: the system calls it text, but its text is RTF's codes. Edit in Text Editor opens it in the app that edits it.
-    - **A movie or a sound plays in the pane, with AVKit's player**, paused as it opens: Space plays and pauses, and → and ← go five seconds forward and back. It stops when the viewer shows another file or leaves the window, so nothing plays out of sight. A kind the system can't play (an AVI, an MKV) is Quick Look's. Before, Quick Look's player, whose place in the file can't be read, played it.
+    - **The text of a Word document, a spreadsheet or HTML can be selected, as a PDF's can** (the owner, 2026-11-23).
+      Quick Look shows them in a web view it gives a style sheet of its own, which turns selecting off (`-webkit-user-select: none !important`, which no style of the page's undoes) and keeps the arrow pointer;
+      the viewer takes that style sheet out as each loads (`_removeAllUserStyleSheets`, asked first as Quick Look's other calls are), so the pointer is the I-beam over text.
+      Finder's Quick Look keeps it off.
+      A presentation's slides are pictures Quick Look draws, with no text to select.
+    - **Go ▸ Go to Page… (⌥⌘G)** asks for a page of a PDF, or a slide of a presentation, by its number;
+      one the file doesn't have is refused under the field.
+      The bottom bar says "Page 3 of 12", or "Slide 3 of 40", as the page changes.
+    - **Keynote's slides and Pages' pages step as a presentation's do** (2026-11-24).
+      Quick Look shows them as pictures one below another in a web view;
+      the viewer reads them as pages, so → and ← step a slide or a page, Go to Page goes to one, and the bottom bar says "Slide 2 of 3" or "Page 2 of 3" as the page scrolls.
+    - **RTF is shown as the document it is, by Quick Look** (2026-11-24), not as its markup: the system calls it text, but its text is RTF's codes.
+      Edit in Text Editor opens it in the app that edits it.
+    - **A movie or a sound plays in the pane, with AVKit's player**, paused as it opens: Space plays and pauses, and → and ← go five seconds forward and back.
+      It stops when the viewer shows another file or leaves the window, so nothing plays out of sight.
+      A kind the system can't play (an AVI, an MKV) is Quick Look's.
+      Before, Quick Look's player, whose place in the file can't be read, played it.
     - **Space is the file's while it has the keyboard**: it scrolls a PDF, a document or a picture and plays a movie, never the selection's Open in Viewer or Quick Look, which it opened before for a viewer without text.
-    - **What Quick Look's preview answers to beyond its headers is used, asked first**: the part of the preview it gives the keyboard to (`_previewFirstResponder`), its pages (`numberOfPages`, `currentPage`) and the moment it has loaded (`displayedDisplayBundle`), the calls Finder's own Quick Look uses. Each is asked whether it is there before it is called, so a macOS without one shows the preview as before, without what it gave. Quick Look's own setting to give the keyboard on as it loads was left out: it takes the keyboard from the list beside a viewer that follows it.
-  - **Space opens the selected file in the viewer, as ⇧⌘E does** (the owner, 2026-11-23), in place of the folder; ⌘Y is Quick Look. The viewer shows what Quick Look shows and more (it draws a Word document, a presentation or a movie the system can't play with Quick Look's own preview), with the keyboard, the page keys, zoom and Back; Quick Look of a folder or of several items, what the viewer doesn't open, shows little more than their icons, so on those Space beeps, as ⌘E does, and Quick Look isn't its fallback (the owner). Settings → Shortcuts can give Space back to Quick Look, and no other command can have it. Replaced Space as Quick Look, as in Finder, which this app kept until then.
-  - **Highlighting is the app's own lexer**, a line at a time with a state carried between lines; no dependency.
-  - **Code inside other text is colored as its own language** (2026-11-24): a `<script>` as JavaScript and a `<style>` as CSS, or as their `lang` or `type` names (`lang="ts"`, `type="application/ld+json"`), in HTML, Vue and Svelte; a Markdown fence, a reST code block, an AsciiDoc `[source,…]` block, an Org `#+BEGIN_SRC` block and a Typst raw block as the language they name. Only one level: code inside that code is its text. A script ends at its first `</script`, in a string or not, as in a browser (inferred).
-  - **A file's language is found by its whole name, its extension, then its `#!` line; a name with no extension goes by its `#!` line first** (2026-11-24, inferred), so a script called `build` stays a script while a `BUILD` file is Bazel's. The `#!` line is read past `env`, its options and a runner to the program it runs (`env -S uv run --script` is Python).
-  - **Markdown's Preview shows the pictures on the disk, never one on the web** (the owner, 2026-11-21). A relative path is read from the file's folder; the picture is drawn at its pixels as points, as a browser shows it, shrunk to fit the pane and never enlarged. An HTML `<img>`, as READMEs write one to size or center a picture, is drawn the same way at its `width` and `height`, centered by `align="center"`, with the tags around it left out (the owner, 2026-11-21, on this project's README). A picture that starts a list item has the bullet at its top. One on the web shows as its description: fetching it tells whoever serves it that the file was read (a tracking pixel), and the viewer reads nothing from the network. The text shows first and the pictures once they are read, off the main thread, the Preview keeping its place (2026-11-21: read with the file, a file of a hundred photos showed nothing for seconds); read again when the file changes on disk, those shown staying until then. At most 2048 pixels on a side and 256 MB of them for one file, so a file of many photos can't take gigabytes; one past that is told by its size in pixels and not decoded. A picture that is a symbolic link is read as its original. Before, every picture showed as its description.
-  - **A link in Markdown's Preview opens what it names, in the app where it can** (the owner, 2026-11-23). A relative path is read from the file's folder, as a picture's is. `#name` goes to that heading of the file, by the name GitHub gives it (its text in lowercase, spaces as hyphens, punctuation left out; a second heading of the same text `-1`), with no step of Back; one the file doesn't have beeps. A file shows in the same viewer, at the heading the link names, if any: in place of the folder it is a step of Back, so Back returns to the file the link was in, its own folder opened first when it is in another; beside the list, the viewer stops following the list. Esc after a file a link led to shows the folder as a step of its own, so Back comes back to the file. A folder opens in the pane as a step of Back, and a package (an app, a bundle) is selected in its folder, never opened or launched. One that isn't there says so in an alert. A web page, an email address or any other address opens in the app the system has for it, which is a click's choice, not the viewer reading the network. A file with edits not saved is asked about first. Before, the system was handed every link, and a path it had no app for showed its Choose Application panel.
+    - **What Quick Look's preview answers to beyond its headers is used, asked first**: the part of the preview it gives the keyboard to (`_previewFirstResponder`), its pages (`numberOfPages`, `currentPage`) and the moment it has loaded (`displayedDisplayBundle`), the calls Finder's own Quick Look uses.
+      Each is asked whether it is there before it is called, so a macOS without one shows the preview as before, without what it gave.
+      Quick Look's own setting to give the keyboard on as it loads was left out: it takes the keyboard from the list beside a viewer that follows it.
+  - **Space opens the selected file in the viewer, as ⇧⌘E does** (the owner, 2026-11-23), in place of the folder;
+    ⌘Y is Quick Look.
+    The viewer shows what Quick Look shows and more (it draws a Word document, a presentation or a movie the system can't play with Quick Look's own preview), with the keyboard, the page keys, zoom and Back;
+    Quick Look of a folder or of several items, what the viewer doesn't open, shows little more than their icons, so on those Space beeps, as ⌘E does, and Quick Look isn't its fallback (the owner).
+    Settings → Shortcuts can give Space back to Quick Look, and no other command can have it.
+    Replaced Space as Quick Look, as in Finder, which this app kept until then.
+  - **Highlighting is the app's own lexer**, a line at a time with a state carried between lines;
+    no dependency.
+  - **Code inside other text is colored as its own language** (2026-11-24): a `<script>` as JavaScript and a `<style>` as CSS, or as their `lang` or `type` names (`lang="ts"`, `type="application/ld+json"`), in HTML, Vue and Svelte;
+    a Markdown fence, a reST code block, an AsciiDoc `[source,…]` block, an Org `#+BEGIN_SRC` block and a Typst raw block as the language they name.
+    Only one level: code inside that code is its text.
+    A script ends at its first `</script`, in a string or not, as in a browser (inferred).
+  - **A file's language is found by its whole name, its extension, then its `#!` line;
+    a name with no extension goes by its `#!` line first** (2026-11-24, inferred), so a script called `build` stays a script while a `BUILD` file is Bazel's.
+    The `#!` line is read past `env`, its options and a runner to the program it runs (`env -S uv run --script` is Python).
+  - **Markdown's Preview shows the pictures on the disk, never one on the web** (the owner, 2026-11-21).
+    A relative path is read from the file's folder;
+    the picture is drawn at its pixels as points, as a browser shows it, shrunk to fit the pane and never enlarged.
+    An HTML `<img>`, as READMEs write one to size or center a picture, is drawn the same way at its `width` and `height`, centered by `align="center"`, with the tags around it left out (the owner, 2026-11-21, on this project's README).
+    A picture that starts a list item has the bullet at its top.
+    One on the web shows as its description: fetching it tells whoever serves it that the file was read (a tracking pixel), and the viewer reads nothing from the network.
+    The text shows first and the pictures once they are read, off the main thread, the Preview keeping its place (2026-11-21: read with the file, a file of a hundred photos showed nothing for seconds);
+    read again when the file changes on disk, those shown staying until then.
+    At most 2048 pixels on a side and 256 MB of them for one file, so a file of many photos can't take gigabytes;
+    one past that is told by its size in pixels and not decoded.
+    A picture that is a symbolic link is read as its original.
+    Before, every picture showed as its description.
+  - **A link in Markdown's Preview opens what it names, in the app where it can** (the owner, 2026-11-23).
+    A relative path is read from the file's folder, as a picture's is.
+    `#name` goes to that heading of the file, by the name GitHub gives it (its text in lowercase, spaces as hyphens, punctuation left out; a second heading of the same text `-1`), with no step of Back;
+    one the file doesn't have beeps.
+    A file shows in the same viewer, at the heading the link names, if any: in place of the folder it is a step of Back, so Back returns to the file the link was in, its own folder opened first when it is in another;
+    beside the list, the viewer stops following the list.
+    Esc after a file a link led to shows the folder as a step of its own, so Back comes back to the file.
+    A folder opens in the pane as a step of Back, and a package (an app, a bundle) is selected in its folder, never opened or launched.
+    One that isn't there says so in an alert.
+    A web page, an email address or any other address opens in the app the system has for it, which is a click's choice, not the viewer reading the network.
+    A file with edits not saved is asked about first.
+    Before, the system was handed every link, and a path it had no app for showed its Choose Application panel.
 
 ## Quick Look and drawing
 
-- **Quick Look is ⌘Y**, as in Finder; Space, Finder's other key for it, opens the viewer (above). The File menu, Help and the toolbar's tooltip name ⌘Y, and Open in Viewer's ⇧⌘E comes before its Space for the same reason (a menu can't show Space). Quick Look's button is Finder's eye, and no other button shows an eye.
-- **The Info panel shows the file's own picture** (2026-11-20). Where Quick Look has a preview (a photo, a PDF's first page) the panel's large icon is that preview, in its own proportions; the icon shows until it comes, and stays for a file with none, for folders and for several items. It is read for the one item shown, from the Icons view's store. The List's rows and the Info Row keep the icon.
-- **The Info panel shows all an item has, in sections that keep their places** (the owner, 2026-11-26, from the page "File Trail Info Proposals"). General (Kind; in one place, Opens with for a file, Contains for a folder, Original for a link or an alias; Size, with its size on disk where there is room and its exact bytes in its tooltip and its Copy, an alias's own; Tags; Where), Dates (Created, Modified, Last opened, Added; a disk's only Created and Modified), Sharing & Permissions (Owner and Group, each who it is and what it may do on one line; Everyone; Mode as `644 · rw-r--r--`; Locked, Hidden and a hidden extension when set), then a section for what the item is (Image, Movie, Sound, Document, Text, Application, Volume or Disk Image), Downloaded for a file that says where it came from, and More (the path, its type, iCloud, its Disk, its file ID and links, its extended attributes, Finder's comments). Original takes the second row of a link or an alias, where a file has Opens with and a folder Contains, so every item but a disk has the same five rows in General in the same places; a link or an alias has no Opens with, as Finder's Get Info has none for an alias, the Open button and Open With having the app (the owner, 2026-11-26: Original last and nothing in the second row moved Size, Tags and Where up a row from a file to an alias). An alias's Size is its own, as Finder's (the owner, 2026-11-26). More's Disk was Volume, a word the disk's own section and Kind now have (the owner, 2026-11-26). Attributes are named in words where macOS or Finder keeps them (Quarantined, Downloaded from, Download date, Tags, Finder comment, Finder info, Resource fork, Last opened date, Text encoding, App access, Protected by macOS, Code signature once for all its parts), any other by its own name, and com.apple.provenance, which macOS puts on nearly every file, is left out; their own names are the row's tooltip (the owner, 2026-11-26: the raw names were noise for most files). The sections every item has come first and keep their rows from item to item, a dash where a value isn't known or read yet, so moving from item to item moves nothing; the section of what a file is comes from its name, so it is there, with its dashes, before anything is read, and has the same rows for every file of its kind. A click on a section's title folds it; what is folded stays folded for every item and every window, and from one launch to the next, a preference (`infoFoldedSections`); More is folded until it is first opened (the owner, 2026-11-26: first only while the app ran, which brought More back folded at each launch). Every section folds, and says so with a chevron at the right end of its title. The titles are in the text's own color and weight 600 at the rows' size, with a rule between one section and the next and none between the rows (the owner, 2026-11-26, from mockups: small grey titles with a chevron at their left and a rule under every row looked amateurish). Owner and Group are one line each, `demo (you) · Read & Write`, which shortens to the room it has: `demo (you) · rw`, then the name cut short at its end, `de… (you) · rw`; its tooltip and its Copy have the whole of it (the owner, 2026-11-26: the name on a second line made the rows twice as tall as they need be). There is no You can row (the owner, 2026-11-26: it was too much). Where is the folder it is in, as text on one line cut at its start so the folder it is in stays, with a small button that copies the item's path (the owner, 2026-11-26: on one line, with a copy button; no copy button on the other rows, which would look bad). It is not a link: a click that opened the folder moved the panel to it and left the list where it was (the owner, 2026-11-26), and More has no Path of its own, which said the same. A right-click anywhere gives a Copy (the owner, 2026-11-26): a row's title or value copies its value whole, a dash too, Opens with the app's name; the name and the line under it theirs; a section's title its rows, a "Label: value" line each. Plain text is selectable; a right-click on a value selects the whole of it, whichever word it lands on, and gives the system's text menu, whose Copy copies it, every value alike (the owner, 2026-11-26: the system's own right-click selected the word under the pointer, all of a one-word value and part of a longer one). Where keeps the system's right-click, which selects in it (the owner, 2026-11-26: a right-click that showed the path from its start was first to be changed, then left as it was). Its text is drawn by the system's own text field, so selecting it doesn't move it (the owner, 2026-11-26: drawn by the app's text box it moved by up to 1.5 pt, as the selection's editor lays the letters out a little wider or narrower). Values are one line each, their whole text in their tooltip and there to select, so no row grows as its value comes in; the tags, the attributes and the comments take their lines. The name under the icon is one line too, cut short at its end, the whole of it in its tooltip, to select and in its Copy (the owner, 2026-11-26: a name on two lines moved everything under it from item to item). A list in More (Attributes, Comments) takes a line for each item however short they are, and is as wide as its longest line, so the room beside it gives the row's Copy as beside any value. What was a second line goes first where a value doesn't fit (the owner, 2026-11-26): Size `18 KB (20 KB on disk)`, then `18 KB`; Dimensions `4032 × 3024 (12.2 MP)`, then `4032 × 3024`; Color `Display P3 · 8-bit, alpha`, then `Display P3 · 8-bit`, then `Display P3`; Camera with its lens, then the camera; Available with what is purgeable, then the space; From the site, the whole address in its tooltip and its Copy. A disk's Sharing & Permissions has no Edit…: it says whether the disk respects ownership, and only where it does Owner, Group and Everyone (the owner, 2026-11-26: the startup disk is the system's, owned by root on a disk that can only be read, so Edit… led to a popover that changes nothing and looked dangerous; a disk that ignores ownership gives its owner and mode no say). Its Ownership row is there, not in Volume. A disk's Kind is Volume, in the panel and the Info Row, where its listing calls it a folder (the owner, 2026-11-26). A disk image (a .dmg, .sparseimage, .sparsebundle, .iso and the rest DiskImageMounter opens) has Disk Image: Format (`Compressed (LZFSE)`, `Read-only`, `Read/write`, `DVD/CD master`, `Sparse`, `Sparse bundle`), File system (as Disk Utility names it, each one once, in the order of the partitions, the EFI System Partition left out), Capacity (what it holds once mounted) and Encrypted. They are read from the image's own bytes, never by attaching it or asking hdiutil or diskutil (the owner, 2026-11-26: hdiutil's imageinfo took 30 to 400 ms, is deprecated, named no file system for ExFAT or UDF, failed on an ISO with UDF, and waited for a password on an encrypted image; diskutil can't read a sparse image). What is read: UDIF stored as it is or compressed with zlib, bzip2, LZFSE or LZMA, sparse images and bundles, raw images; GPT, Apple and MBR partition maps with 512-byte sectors; APFS, Mac OS Extended (journaled, case-sensitive), ExFAT, MS-DOS (FAT12, 16, 32), NTFS, ISO 9660 and UDF. Anything else is a dash, never a guess (the owner, 2026-11-26: support only what the information at hand allows): an encrypted image says only that it is, ADC compression and split images say no file system, and raw bytes in which no disk is recognized say nothing. No Mounted row, which would need hdiutil, and no Signed by. The images are often downloads, so nothing in one is trusted: every offset is checked against the file, and no plist or chunk over 16 MB is read. The panel has no quick actions (the owner, 2026-11-26): what they did is in the menus, the right-click menus and the toolbar. Replaced one Information section of seven to nine rows, the owner's access alone of the permissions, and a row of eleven quick actions (Quick Look, Edit, Copy Path, Copy Name, Copy Contents, Share, Convert, Terminal, Finder, Favorites, Tree Root).
-  - **It changes once, whole, and in place** (the owner, 2026-11-26). Another item is read at once, and the panel and the Info Row keep the item they show until its quick answers are in (its properties, its details, its apps, its tags), then show it in one change: 20 to 40 ms on a local disk. Past 100 ms (`InfoMetrics.holdGrace`, under the tenth of a second within which a change still reads as immediate) they show it with what the list knows of it and a dash for the rest, and each answer fills its value where it is; the 100 ms run from the first change not yet shown, so an arrow key held down shows an item every tenth of a second at least. While they keep the item before, what their buttons and links act on is that item: Tags… and Edit… stay with it, and Open, Open With and the size controls do nothing for that moment. Answers that come within a frame of each other are shown in one change, and the panel is built anew only when its rows are others. The apps a kind of file opens with are kept by its extension, so the next file of a kind shows them at once while macOS is asked again. A folder read again waits 80 ms before it is read, as before. Replaced, the same day, the item shown at once with dashes, which emptied Opens with and filled it again from one PDF to the next. The hero's icon and picture load only for another item, the Open button's app icon only for another app, and its title keeps the icon's room while the icon comes.
-  - **What is read for it is read in the background, after the item settles.** Most of it comes from the file system's attributes. A picture's header, a PDF's pages and a movie's or a sound's tracks are read from the file itself, which costs less than asking Spotlight (a millisecond or less against three to six) and needs no index; Spotlight is asked for a file kept only in iCloud, which reading would download, and for what only it reads (a Word or Pages document). A disk's name and format are kept for each disk while the app runs, as asking for them took 6 ms an item (the owner, 2026-11-26, from the timings); the lines of a text file are counted only for one on disk under 10 MB, once for the file as it is: a folder read again asks for its item's details again, and a file that hasn't changed (its file ID, size and time) isn't read whole a second time, while one that couldn't be read is asked again (2026-11-26, from a review: five changes in the folder read a 10 MB log five times). An app's version and the rest of its Info.plist are read from the file each time, not through `Bundle`, which answers what it read first for as long as the app runs, so an app updated meanwhile showed its version of before. Who signed an app and whether Apple notarized it is a code check without going online, read after the rest with a dash until it comes (the owner, 2026-11-26, after a few ms up to a few hundred for a large app was named as its cost).
-  - **Several items show only what fits.** Kinds (each kind with how many, the most first), Contains with folders among them, Size, Tags, Where (their folder, or "Several folders"); Created and Modified as one range each; Mode (each with how many). A value that grows with the items is on one line, or says how many there are where it doesn't fit ("3 kinds", "3 modes"): the owner, 2026-11-26. All of it comes from the window's listing; nothing more is read for several items.
-- **Permissions are changed from the Info panel** (the owner, 2026-11-26). Edit…, the system's small push button before the chevron of the Sharing & Permissions title (the owner, 2026-11-26, from mockups, in place of a link in the accent color), opens a popover for the items the panel describes, the one item or the several selected: their name and what they are, Read, Write and Run (Open for folders, Run/Open for both) for the owner, the group and everyone, the Mode (`644`, or Mixed) with its letters, Locked and the Hidden flag. A box on some of the items shows –; a click puts it on all of them, the next takes it off all of them, and only that bit changes on each item, so a Write for the group keeps a script's Run. A mode typed (`644`, `0644` or `rw-r--r--`) and Return sets the nine bits of every item. Each change is written at once, after the ones before it, as Tags… writes: there is no Done, and Esc or a click outside closes it. Only taking away your own Open of a folder of yours asks first ("Turn Off Open for You?"). Everything changed while it is open is one Undo, named "Permissions of “a.txt”" or "Permissions of 3 Items": Undo puts back each item's mode and flags as they were when it opened, and Redo the last of it; an item changed since by something else is left as it is, and said. A link is left as it is. Items that aren't yours, in the Trash or on a disk that can only be read show their permissions with nothing to change, and a line that says why. Left out: changing the owner or the group, asking for an administrator's password, and applying the change to the items inside a folder.
-- **The Info Row says what the item is, not what the status bar says** (the owner, 2026-11-26). Its name, its kind, the one fact of its kind (a picture's size in pixels, a movie's length and size, a song's length and artist, a document's pages, a text file's lines, an app's version, what a folder holds, where a link or an alias leads) and when it changed. Its size is left out: the status bar has it. A folder not measured yet keeps the size control, which the status bar doesn't have. Several items: their kinds on one line, or how many kinds, and the days they were changed, where it said "12 items · 34.2 MB" over the status bar's "12 of 214 selected · 34.2 MB". Nothing selected: what the folder on screen holds, when it changed, and the room left on its disk, which Finder's status bar shows and this one doesn't.
-- **The folders drawn by the system are the real special folders, by path:** the startup disk's `/Applications`, `/Developer`, `/Library`, `/System` and `/Users`, and the home folder's Applications, Desktop, Documents, Downloads, Library, Movies, Music, Pictures and Public. A folder of one of these names elsewhere is someone's own and an ordinary folder, tag color and all (inferred).
-- **A folder is one item when the system says it is a package** (2026-11-21). A folder with one of 37 known package extensions (`.app`, `.rtfd`, `.photoslibrary`, `.sparsebundle`, `.key` and the rest) is one without asking. A folder with any other extension is one when it has the bundle bit, which the folder read gives already, or when its extension is a package type macOS or an installed app declares (a UTM or Parallels machine, a script bundle, a `.dSYM`), asked of the type database once per extension per read, about 6 µs. It then shows with the system's kind, sorts with the files and isn't in the tree. A name without an extension is a plain folder. Search results go by the list and the type alone, as a search reads nothing of an item but its folder's entry. The folder itself is never asked (`isPackageKey`): that read cost 2.2 s for the 186 folders of `~/Library/Group Containers`, as macOS checks every look into another app's data, and could ask for permission. Replaced the list alone, which called every other package a folder.
-- **The startup disk is shown by its real name**, as other disks are, and windows and the Go menu follow a rename. Help and Settings → Shortcuts keep "Macintosh HD", as they name a command.
+- **Quick Look is ⌘Y**, as in Finder;
+  Space, Finder's other key for it, opens the viewer (above).
+  The File menu, Help and the toolbar's tooltip name ⌘Y, and Open in Viewer's ⇧⌘E comes before its Space for the same reason (a menu can't show Space).
+  Quick Look's button is Finder's eye, and no other button shows an eye.
+- **The Info panel shows the file's own picture** (2026-11-20).
+  Where Quick Look has a preview (a photo, a PDF's first page) the panel's large icon is that preview, in its own proportions;
+  the icon shows until it comes, and stays for a file with none, for folders and for several items.
+  It is read for the one item shown, from the Icons view's store.
+  The List's rows and the Info Row keep the icon.
+- **The Info panel shows all an item has, in sections that keep their places** (the owner, 2026-11-26, from the page "File Trail Info Proposals").
+  General (Kind; in one place, Opens with for a file, Contains for a folder, Original for a link or an alias; Size, with its size on disk where there is room and its exact bytes in its tooltip and its Copy, an alias's own; Tags; Where), Dates (Created, Modified, Last opened, Added; a disk's only Created and Modified), Sharing & Permissions (Owner and Group, each who it is and what it may do on one line; Everyone; Mode as `644 · rw-r--r--`; Locked, Hidden and a hidden extension when set), then a section for what the item is (Image, Movie, Sound, Document, Text, Application, Volume or Disk Image), Downloaded for a file that says where it came from, and More (the path, its type, iCloud, its Disk, its file ID and links, its extended attributes, Finder's comments).
+  Original takes the second row of a link or an alias, where a file has Opens with and a folder Contains, so every item but a disk has the same five rows in General in the same places;
+  a link or an alias has no Opens with, as Finder's Get Info has none for an alias, the Open button and Open With having the app (the owner, 2026-11-26: Original last and nothing in the second row moved Size, Tags and Where up a row from a file to an alias).
+  An alias's Size is its own, as Finder's (the owner, 2026-11-26).
+  More's Disk was Volume, a word the disk's own section and Kind now have (the owner, 2026-11-26).
+  Attributes are named in words where macOS or Finder keeps them (Quarantined, Downloaded from, Download date, Tags, Finder comment, Finder info, Resource fork, Last opened date, Text encoding, App access, Protected by macOS, Code signature once for all its parts), any other by its own name, and com.apple.provenance, which macOS puts on nearly every file, is left out;
+  their own names are the row's tooltip (the owner, 2026-11-26: the raw names were noise for most files).
+  The sections every item has come first and keep their rows from item to item, a dash where a value isn't known or read yet, so moving from item to item moves nothing;
+  the section of what a file is comes from its name, so it is there, with its dashes, before anything is read, and has the same rows for every file of its kind.
+  A click on a section's title folds it;
+  what is folded stays folded for every item and every window, and from one launch to the next, a preference (`infoFoldedSections`);
+  More is folded until it is first opened (the owner, 2026-11-26: first only while the app ran, which brought More back folded at each launch).
+  Every section folds, and says so with a chevron at the right end of its title.
+  The titles are in the text's own color and weight 600 at the rows' size, with a rule between one section and the next and none between the rows (the owner, 2026-11-26, from mockups: small grey titles with a chevron at their left and a rule under every row looked amateurish).
+  Owner and Group are one line each, `demo (you) · Read & Write`, which shortens to the room it has: `demo (you) · rw`, then the name cut short at its end, `de… (you) · rw`;
+  its tooltip and its Copy have the whole of it (the owner, 2026-11-26: the name on a second line made the rows twice as tall as they need be).
+  There is no You can row (the owner, 2026-11-26: it was too much).
+  Where is the folder it is in, as text on one line cut at its start so the folder it is in stays, with a small button that copies the item's path (the owner, 2026-11-26: on one line, with a copy button; no copy button on the other rows, which would look bad).
+  It is not a link: a click that opened the folder moved the panel to it and left the list where it was (the owner, 2026-11-26), and More has no Path of its own, which said the same.
+  A right-click anywhere gives a Copy (the owner, 2026-11-26): a row's title or value copies its value whole, a dash too, Opens with the app's name;
+  the name and the line under it theirs;
+  a section's title its rows, a "Label: value" line each.
+  Plain text is selectable;
+  a right-click on a value selects the whole of it, whichever word it lands on, and gives the system's text menu, whose Copy copies it, every value alike (the owner, 2026-11-26: the system's own right-click selected the word under the pointer, all of a one-word value and part of a longer one).
+  Where keeps the system's right-click, which selects in it (the owner, 2026-11-26: a right-click that showed the path from its start was first to be changed, then left as it was).
+  Its text is drawn by the system's own text field, so selecting it doesn't move it (the owner, 2026-11-26: drawn by the app's text box it moved by up to 1.5 pt, as the selection's editor lays the letters out a little wider or narrower).
+  Values are one line each, their whole text in their tooltip and there to select, so no row grows as its value comes in;
+  the tags, the attributes and the comments take their lines.
+  The name under the icon is one line too, cut short at its end, the whole of it in its tooltip, to select and in its Copy (the owner, 2026-11-26: a name on two lines moved everything under it from item to item).
+  A list in More (Attributes, Comments) takes a line for each item however short they are, and is as wide as its longest line, so the room beside it gives the row's Copy as beside any value.
+  What was a second line goes first where a value doesn't fit (the owner, 2026-11-26): Size `18 KB (20 KB on disk)`, then `18 KB`;
+  Dimensions `4032 × 3024 (12.2 MP)`, then `4032 × 3024`;
+  Color `Display P3 · 8-bit, alpha`, then `Display P3 · 8-bit`, then `Display P3`;
+  Camera with its lens, then the camera;
+  Available with what is purgeable, then the space;
+  From the site, the whole address in its tooltip and its Copy.
+  A disk's Sharing & Permissions has no Edit…: it says whether the disk respects ownership, and only where it does Owner, Group and Everyone (the owner, 2026-11-26: the startup disk is the system's, owned by root on a disk that can only be read, so Edit… led to a popover that changes nothing and looked dangerous; a disk that ignores ownership gives its owner and mode no say).
+  Its Ownership row is there, not in Volume.
+  A disk's Kind is Volume, in the panel and the Info Row, where its listing calls it a folder (the owner, 2026-11-26).
+  A disk image (a .dmg, .sparseimage, .sparsebundle, .iso and the rest DiskImageMounter opens) has Disk Image: Format (`Compressed (LZFSE)`, `Read-only`, `Read/write`, `DVD/CD master`, `Sparse`, `Sparse bundle`), File system (as Disk Utility names it, each one once, in the order of the partitions, the EFI System Partition left out), Capacity (what it holds once mounted) and Encrypted.
+  They are read from the image's own bytes, never by attaching it or asking hdiutil or diskutil (the owner, 2026-11-26: hdiutil's imageinfo took 30 to 400 ms, is deprecated, named no file system for ExFAT or UDF, failed on an ISO with UDF, and waited for a password on an encrypted image; diskutil can't read a sparse image).
+  What is read: UDIF stored as it is or compressed with zlib, bzip2, LZFSE or LZMA, sparse images and bundles, raw images;
+  GPT, Apple and MBR partition maps with 512-byte sectors;
+  APFS, Mac OS Extended (journaled, case-sensitive), ExFAT, MS-DOS (FAT12, 16, 32), NTFS, ISO 9660 and UDF.
+  Anything else is a dash, never a guess (the owner, 2026-11-26: support only what the information at hand allows): an encrypted image says only that it is, ADC compression and split images say no file system, and raw bytes in which no disk is recognized say nothing.
+  No Mounted row, which would need hdiutil, and no Signed by.
+  The images are often downloads, so nothing in one is trusted: every offset is checked against the file, and no plist or chunk over 16 MB is read.
+  The panel has no quick actions (the owner, 2026-11-26): what they did is in the menus, the right-click menus and the toolbar.
+  Replaced one Information section of seven to nine rows, the owner's access alone of the permissions, and a row of eleven quick actions (Quick Look, Edit, Copy Path, Copy Name, Copy Contents, Share, Convert, Terminal, Finder, Favorites, Tree Root).
+  - **It changes once, whole, and in place** (the owner, 2026-11-26).
+    Another item is read at once, and the panel and the Info Row keep the item they show until its quick answers are in (its properties, its details, its apps, its tags), then show it in one change: 20 to 40 ms on a local disk.
+    Past 100 ms (`InfoMetrics.holdGrace`, under the tenth of a second within which a change still reads as immediate) they show it with what the list knows of it and a dash for the rest, and each answer fills its value where it is;
+    the 100 ms run from the first change not yet shown, so an arrow key held down shows an item every tenth of a second at least.
+    While they keep the item before, what their buttons and links act on is that item: Tags… and Edit… stay with it, and Open, Open With and the size controls do nothing for that moment.
+    Answers that come within a frame of each other are shown in one change, and the panel is built anew only when its rows are others.
+    The apps a kind of file opens with are kept by its extension, so the next file of a kind shows them at once while macOS is asked again.
+    A folder read again waits 80 ms before it is read, as before.
+    Replaced, the same day, the item shown at once with dashes, which emptied Opens with and filled it again from one PDF to the next.
+    The hero's icon and picture load only for another item, the Open button's app icon only for another app, and its title keeps the icon's room while the icon comes.
+  - **What is read for it is read in the background, after the item settles.**
+    Most of it comes from the file system's attributes.
+    A picture's header, a PDF's pages and a movie's or a sound's tracks are read from the file itself, which costs less than asking Spotlight (a millisecond or less against three to six) and needs no index;
+    Spotlight is asked for a file kept only in iCloud, which reading would download, and for what only it reads (a Word or Pages document).
+    A disk's name and format are kept for each disk while the app runs, as asking for them took 6 ms an item (the owner, 2026-11-26, from the timings);
+    the lines of a text file are counted only for one on disk under 10 MB, once for the file as it is: a folder read again asks for its item's details again, and a file that hasn't changed (its file ID, size and time) isn't read whole a second time, while one that couldn't be read is asked again (2026-11-26, from a review: five changes in the folder read a 10 MB log five times).
+    An app's version and the rest of its Info.plist are read from the file each time, not through `Bundle`, which answers what it read first for as long as the app runs, so an app updated meanwhile showed its version of before.
+    Who signed an app and whether Apple notarized it is a code check without going online, read after the rest with a dash until it comes (the owner, 2026-11-26, after a few ms up to a few hundred for a large app was named as its cost).
+  - **Several items show only what fits.**
+    Kinds (each kind with how many, the most first), Contains with folders among them, Size, Tags, Where (their folder, or "Several folders");
+    Created and Modified as one range each;
+    Mode (each with how many).
+    A value that grows with the items is on one line, or says how many there are where it doesn't fit ("3 kinds", "3 modes"): the owner, 2026-11-26.
+    All of it comes from the window's listing;
+    nothing more is read for several items.
+- **Permissions are changed from the Info panel** (the owner, 2026-11-26).
+  Edit…, the system's small push button before the chevron of the Sharing & Permissions title (the owner, 2026-11-26, from mockups, in place of a link in the accent color), opens a popover for the items the panel describes, the one item or the several selected: their name and what they are, Read, Write and Run (Open for folders, Run/Open for both) for the owner, the group and everyone, the Mode (`644`, or Mixed) with its letters, Locked and the Hidden flag.
+  A box on some of the items shows –;
+  a click puts it on all of them, the next takes it off all of them, and only that bit changes on each item, so a Write for the group keeps a script's Run.
+  A mode typed (`644`, `0644` or `rw-r--r--`) and Return sets the nine bits of every item.
+  Each change is written at once, after the ones before it, as Tags… writes: there is no Done, and Esc or a click outside closes it.
+  Only taking away your own Open of a folder of yours asks first ("Turn Off Open for You?").
+  Everything changed while it is open is one Undo, named "Permissions of “a.txt”" or "Permissions of 3 Items": Undo puts back each item's mode and flags as they were when it opened, and Redo the last of it;
+  an item changed since by something else is left as it is, and said.
+  A link is left as it is.
+  Items that aren't yours, in the Trash or on a disk that can only be read show their permissions with nothing to change, and a line that says why.
+  Left out: changing the owner or the group, asking for an administrator's password, and applying the change to the items inside a folder.
+- **The Info Row says what the item is, not what the status bar says** (the owner, 2026-11-26).
+  Its name, its kind, the one fact of its kind (a picture's size in pixels, a movie's length and size, a song's length and artist, a document's pages, a text file's lines, an app's version, what a folder holds, where a link or an alias leads) and when it changed.
+  Its size is left out: the status bar has it.
+  A folder not measured yet keeps the size control, which the status bar doesn't have.
+  Several items: their kinds on one line, or how many kinds, and the days they were changed, where it said "12 items · 34.2 MB" over the status bar's "12 of 214 selected · 34.2 MB".
+  Nothing selected: what the folder on screen holds, when it changed, and the room left on its disk, which Finder's status bar shows and this one doesn't.
+- **The folders drawn by the system are the real special folders, by path:** the startup disk's `/Applications`, `/Developer`, `/Library`, `/System` and `/Users`, and the home folder's Applications, Desktop, Documents, Downloads, Library, Movies, Music, Pictures and Public.
+  A folder of one of these names elsewhere is someone's own and an ordinary folder, tag color and all (inferred).
+- **A folder is one item when the system says it is a package** (2026-11-21).
+  A folder with one of 37 known package extensions (`.app`, `.rtfd`, `.photoslibrary`, `.sparsebundle`, `.key` and the rest) is one without asking.
+  A folder with any other extension is one when it has the bundle bit, which the folder read gives already, or when its extension is a package type macOS or an installed app declares (a UTM or Parallels machine, a script bundle, a `.dSYM`), asked of the type database once per extension per read, about 6 µs.
+  It then shows with the system's kind, sorts with the files and isn't in the tree.
+  A name without an extension is a plain folder.
+  Search results go by the list and the type alone, as a search reads nothing of an item but its folder's entry.
+  The folder itself is never asked (`isPackageKey`): that read cost 2.2 s for the 186 folders of `~/Library/Group Containers`, as macOS checks every look into another app's data, and could ask for permission.
+  Replaced the list alone, which called every other package a folder.
+- **The startup disk is shown by its real name**, as other disks are, and windows and the Go menu follow a rename.
+  Help and Settings → Shortcuts keep "Macintosh HD", as they name a command.
