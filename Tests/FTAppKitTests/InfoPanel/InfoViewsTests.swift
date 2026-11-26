@@ -412,7 +412,7 @@ struct InfoPanelViewTests {
         #expect(values.filter { $0 == "—" }.count >= 4)
     }
 
-    // A volume root shows Capacity, Available and Used.
+    // A volume root shows Capacity, Available and Used, and no Edit… for its permissions.
     @Test func aVolumeRootShowsItsCapacity() throws {
         var root = Self.file
         root.kind = .directory
@@ -430,6 +430,9 @@ struct InfoPanelViewTests {
         let labels = findViews("infoPanel.row.label", in: view).map(fieldText)
         #expect(labels.contains("Capacity") && labels.contains("Available") && labels.contains("Used"))
         #expect(!labels.contains("Size"))
+        // Its permissions can't be edited from here; a file's can.
+        #expect(findViews("infoPanel.permissions.edit", in: view).isEmpty)
+        #expect(findViews("infoPanel.permissions.edit", in: panel(display())).count == 1)
     }
 
     // The Open button keeps the icon of the shown item's app, however late the previous item's app icon arrives.

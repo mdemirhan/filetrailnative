@@ -23,7 +23,7 @@ enum InfoSectionFolds {
 
 /// A section's title, in the text's own color: a click folds the section or opens it, the chevron at its right end
 /// saying which, on every section. Sharing & Permissions has a small Edit… button before the chevron, which opens the
-/// permissions popover.
+/// permissions popover; a disk's has none.
 final class InfoSectionTitleView: NSView {
     let id: InfoSection.ID
     let title = TextBoxField(labelWithString: "")
@@ -38,9 +38,9 @@ final class InfoSectionTitleView: NSView {
     /// Every title is as tall as the one with Edit…, so the sections keep one rhythm.
     static let height = 20.0
 
-    init(_ id: InfoSection.ID) {
+    init(_ id: InfoSection.ID, editable: Bool = false) {
         self.id = id
-        if id == .permissions {
+        if editable {
             let button = InfoEditButton(title: "Edit\u{2026}", target: nil, action: nil)
             button.bezelStyle = .push
             button.controlSize = .small
@@ -228,7 +228,6 @@ final class InfoPanelContentView: NSView {
         var label: TextBoxField
         var value: NSView
         var extra: TextBoxField?
-        var detail: SelectableTextField?
         /// Where's copy button.
         var copy: InfoIconButton?
         /// The box of a value that is not plain text, which automation names.
@@ -306,7 +305,7 @@ final class InfoPanelContentView: NSView {
     /// What the rows are, not their values: the same shape is updated in place.
     private static func shape(_ sections: [InfoSection]) -> [String] {
         sections.flatMap { section in
-            [section.id.rawValue]
+            [section.id.rawValue + (section.editable ? "+edit" : "")]
                 + section.rows.map { row in
                     let kind: String
                     switch row.value {
@@ -322,7 +321,7 @@ final class InfoPanelContentView: NSView {
                     case .usage: kind = "usage"
                     case .access: kind = "access"
                     }
-                    return "\(row.label)|\(kind)|\(row.detail != nil)|\(row.copyText != nil)|\(row.wraps)"
+                    return "\(row.label)|\(kind)|\(row.copyText != nil)|\(row.wraps)"
                 }
         }
     }
@@ -369,10 +368,8 @@ final class InfoPanelContentView: NSView {
                 field.toolTip = row.wraps ? nil : (row.copyText ?? text)
             }
         case .fitting(let full, _):
-            if let field = views.value as? NSTextField {
-                field.stringValue = full
-                field.toolTip = full
-            }
+            // Its text is chosen as the row is laid out.
+            (views.value as? NSTextField)?.toolTip = row.copyText ?? full
         case .usage(let fraction, let text):
             if let usage = views.value as? InfoUsageView {
                 usage.fraction = fraction
@@ -392,10 +389,6 @@ final class InfoPanelContentView: NSView {
             views.extra?.toolTip = symbolic
         case .folderSize, .opensWith:
             break
-        }
-        if let detail = views.detail, let text = row.detail, detail.stringValue != text {
-            detail.stringValue = text
-            detail.toolTip = text
         }
     }
 
@@ -420,7 +413,6 @@ final class InfoPanelContentView: NSView {
                 views.label.removeFromSuperview()
                 if views.value !== cell, views.value !== opensWith { views.value.removeFromSuperview() }
                 views.extra?.removeFromSuperview()
-                views.detail?.removeFromSuperview()
                 views.copy?.removeFromSuperview()
                 views.box?.removeFromSuperview()
             }
@@ -509,7 +501,7 @@ final class InfoPanelContentView: NSView {
         _ sections: [InfoSection], folderSize: FolderSizeEntry?, opensWith app: InfoOpenApp?, kind: String
     ) {
         for section in sections {
-            let title = InfoSectionTitleView(section.id)
+            let title = InfoSectionTitleView(section.id, editable: section.editable)
             title.onToggle = { InfoSectionFolds.toggle(section.id) }
             title.onEdit = { [weak self, weak title] in
                 guard let title else { return }
@@ -549,12 +541,12 @@ final class InfoPanelContentView: NSView {
         case .text(let text):
             value = valueField(text, wraps: row.wraps)
         case .fitting(let full, _):
-            // Which of the two shows is chosen as the row is laid out, by the room it has.
+            // Which of its texts shows is chosen as the row is laid out, by the room it has.
             let field = SelectableTextField.label(full)
             field.alignment = .right
             field.lineBreakMode = .byTruncatingTail
             field.isSelectable = true
-            field.toolTip = full
+            field.toolTip = row.copyText ?? full
             field.setAccessibilityIdentifier("infoPanel.row.value")
             addSubview(field)
             value = field
@@ -645,19 +637,7 @@ final class InfoPanelContentView: NSView {
             value = view
         }
         if let box { addSubview(box) }
-        var detail: SelectableTextField?
-        if let text = row.detail {
-            let field = SelectableTextField.label(text)
-            field.alignment = .right
-            field.lineBreakMode = .byTruncatingMiddle
-            field.isSelectable = true
-            field.toolTip = text
-            field.font = tabularFont(DesignTokens.typeScale.callout)
-            field.setAccessibilityIdentifier("infoPanel.row.detail")
-            addSubview(field)
-            detail = field
-        }
-        return RowViews(row: row, label: label, value: value, extra: extra, detail: detail, copy: copy, box: box)
+        return RowViews(row: row, label: label, value: value, extra: extra, copy: copy, box: box)
     }
 
     // MARK: Copy
@@ -695,14 +675,12 @@ final class InfoPanelContentView: NSView {
     /// measured, a dash where nothing is known.
     private func copyText(of views: RowViews) -> String {
         let row = views.row
-        var main: String
+        let main: String
         switch row.value {
         case .opensWith: main = opensWith.app?.name ?? "None"
-        case .folderSize: main = cell.shownText
+        case .folderSize: main = row.copyText ?? cell.shownText
         default: main = row.textToCopy
         }
-        if case .opensWith = row.value, let detail = row.detail { main += "\n" + detail }
-        if case .folderSize = row.value, let detail = row.detail { main += "\n" + detail }
         return main.isEmpty ? InfoPanelModel.pending : main
     }
 
@@ -739,7 +717,6 @@ final class InfoPanelContentView: NSView {
                 let muted = views.row.muted
                 views.label.textColor = NSColor(palette.textSecondary)
                 views.extra?.textColor = NSColor(palette.textSecondary)
-                views.detail?.textColor = NSColor(palette.textSecondary)
                 if let box = views.box {
                     box.sample.textColor = NSColor(muted ? mutedColor : palette.textPrimary)
                     box.sample.font = ChromeColors.font(size: DesignTokens.typeScale.callout, weight: muted ? 600 : 400)
@@ -877,7 +854,7 @@ final class InfoPanelContentView: NSView {
             let folded = InfoSectionFolds.isFolded(section.id)
             for views in section.rows {
                 let hidden = folded
-                for view in [views.label, views.value, views.extra, views.detail, views.copy, views.box]
+                for view in [views.label, views.value, views.extra, views.copy, views.box]
                     .compactMap({ $0 }) as [NSView]
                 {
                     // The folder size cell and the pop-up are shared: shown again by the row that has them.
@@ -922,8 +899,10 @@ final class InfoPanelContentView: NSView {
         var valueWidth: Double
         switch views.value {
         case let field as NSTextField:
-            if case .fitting(let full, let short) = views.row.value {
-                field.stringValue = textExtent(full, field.font) <= maxValue ? full : short
+            if case .fitting(let full, let shorter) = views.row.value {
+                let texts = [full] + shorter
+                let shown = texts.first { textExtent($0, field.font) <= maxValue } ?? texts[texts.count - 1]
+                if field.stringValue != shown { field.stringValue = shown }
             }
             if case .access(let name, let isYou, let words, let letters) = views.row.value {
                 let shown = InfoText.access(name, isYou: isYou, words: words, letters: letters) {
@@ -1007,13 +986,7 @@ final class InfoPanelContentView: NSView {
             views.value.frame = NSRect(x: valueX, y: top, width: valueWidth, height: bodyLine)
         }
         views.box?.frame = NSRect(x: valueX, y: top, width: valueWidth, height: bodyLine)
-        var height = valueHeight
-        if let detail = views.detail {
-            let shown = min(width, textWidth(detail))
-            detail.place(NSRect(x: inset + width - shown, y: top + height, width: shown, height: bodyLine))
-            height += bodyLine
-        }
-        return height
+        return valueHeight
     }
 
     override func draw(_ dirtyRect: NSRect) {

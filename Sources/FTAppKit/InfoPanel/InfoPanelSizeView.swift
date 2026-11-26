@@ -54,8 +54,11 @@ final class InfoPanelSizeView: NSView {
             sizeLine.stringValue =
                 InfoPanelModel.folderSizeLines(sizeBytes: size, diskBytes: disk, fileCount: files, folderCount: folders)
                 .top
+            // The exact bytes, which the line has no room for.
+            sizeLine.toolTip = InfoText.sizeWithDisk(size, disk)
             showMeasured(true)
         } else {
+            sizeLine.toolTip = nil
             showMeasured(false)
         }
         needsLayout = true

@@ -45,7 +45,9 @@ struct InfoPanelModelTests {
         #expect(content.subtitle == "Markdown document · 2.0 KB")
         #expect(
             Self.row(content, .general, "Size")
-                == InfoRow(label: "Size", value: .text("2.0 KB (2,000 bytes)"), muted: false, detail: "—"))
+                == InfoRow(
+                    label: "Size", value: .fitting(full: "2.0 KB", shorter: []), muted: false,
+                    copyText: "2.0 KB (2,000 bytes)"))
         #expect(Self.row(content, .dates, "Created")?.value == .text("Mar 1, 2026, 9:00 AM"))
         // Until the owner is read, what it may do alone.
         #expect(
@@ -78,11 +80,14 @@ struct InfoPanelModelTests {
             item: Self.file(), pending: false, volume: nil, isVolumeRoot: false, hasFolderSize: false,
             folderSize: nil, opensWith: .hidden, dates: Self.dates, details: .read(details))
         for id in [InfoSection.ID.general, .dates] { #expect(Self.labels(pending, id) == Self.labels(read, id)) }
-        #expect(Self.row(read, .general, "Size")?.detail == "4.1 KB on disk")
+        // Size on one line, its size on disk where there is room, its bytes in its tooltip and Copy.
+        let size = Self.row(read, .general, "Size")
+        #expect(size?.value == .fitting(full: "2.0 KB (4.1 KB on disk)", shorter: ["2.0 KB"]))
+        #expect(size?.textToCopy == "2.0 KB (2,000 bytes), 4.1 KB on disk")
+        #expect(Self.content(Self.file()).section(.permissions)?.editable == true)
         // Who and what it may do, on one line.
         let owner = Self.row(read, .permissions, "Owner")
         #expect(owner?.value == .access(name: "demo", isYou: true, words: "Read & Write", letters: "rw"))
-        #expect(owner?.detail == nil)
         #expect(owner?.textToCopy == "demo (you) · Read & Write")
         #expect(Self.row(read, .permissions, "Group")?.textToCopy == "staff · Read only")
         #expect(Self.labels(read, .permissions) == ["Owner", "Group", "Everyone", "Mode", "Locked"])
@@ -138,7 +143,7 @@ struct InfoPanelModelTests {
             folderSize: nil, opensWith: .hidden, dates: Self.dates, details: .read(details))
         #expect(content.sections.map(\.id).suffix(2) == [.downloaded, .more])
         let from = Self.row(content, .downloaded, "From")
-        #expect(from?.value == .text("example.net") && from?.detail == "https://example.net/files/a.pdf")
+        #expect(from?.value == .fitting(full: "example.net", shorter: []))
         #expect(from?.textToCopy == "https://example.net/files/a.pdf")
         #expect(Self.labels(content, .downloaded) == ["From", "Page", "By"])
     }
@@ -205,12 +210,90 @@ struct InfoPanelModelTests {
         #expect(Self.row(over, .general, "Used")?.value == .usage(fraction: 0, text: "0 B"))
     }
 
+    // A disk has the dates it can have, and its permissions say whether it respects ownership, without Edit….
+    @Test func aDisksDatesAndPermissions() {
+        var item = Self.file()
+        item.kind = .directory
+        item.path = "/"
+        item.name = "Macintosh HD"
+        func content(ignores: Bool?, purgeable: Int64? = nil) -> InfoPanelModel.ItemContent {
+            var details = InfoDetails()
+            details.volume = InfoDetails.Volume()
+            details.volume?.ignoresOwnership = ignores
+            details.volume?.purgeableBytes = purgeable
+            return InfoPanelModel.itemContent(
+                item: item, pending: false,
+                volume: InfoVolume(totalBytes: 500_000_000_000, availableBytes: 200_000_000_000),
+                isVolumeRoot: true, hasFolderSize: false, folderSize: nil, opensWith: .hidden, dates: Self.dates,
+                details: .read(details))
+        }
+        let startup = content(ignores: false, purgeable: 30_000_000_000)
+        #expect(Self.labels(startup, .dates) == ["Created", "Modified"])
+        #expect(Self.labels(startup, .permissions) == ["Owner", "Group", "Everyone", "Ownership"])
+        #expect(Self.row(startup, .permissions, "Ownership")?.value == .text("Respected"))
+        #expect(startup.section(.permissions)?.editable == false)
+        #expect(!Self.labels(startup, .volume).contains("Ownership"))
+        #expect(
+            Self.row(startup, .general, "Available")?.value
+                == .fitting(full: "200 GB (30 GB purgeable)", shorter: ["200 GB"]))
+        // A disk that ignores ownership: its owner and mode say nothing.
+        let external = content(ignores: true)
+        #expect(Self.labels(external, .permissions) == ["Ownership"])
+        #expect(Self.row(external, .permissions, "Ownership")?.value == .text("Ignored"))
+        // Not read yet: dashes in the places a disk that respects ownership fills.
+        #expect(Self.labels(content(ignores: nil), .permissions) == ["Owner", "Group", "Everyone", "Ownership"])
+    }
+
+    // A picture's rows are one line each, what was their second line going first where it doesn't fit.
+    @Test func aPicturesRowsAreOneLineEach() {
+        var item = Self.file()
+        item.name = "a.heic"
+        item.fileExtension = "heic"
+        var image = InfoDetails.Image()
+        image.width = 4032
+        image.height = 3024
+        image.colorProfile = "Display P3"
+        image.bitsPerChannel = 8
+        image.hasAlpha = true
+        image.camera = "iPhone 15 Pro"
+        image.lens = "Back camera"
+        var details = InfoDetails()
+        details.image = image
+        func read(_ details: InfoDetails) -> InfoPanelModel.ItemContent {
+            InfoPanelModel.itemContent(
+                item: item, pending: false, volume: nil, isVolumeRoot: false, hasFolderSize: false, folderSize: nil,
+                opensWith: .hidden, dates: Self.dates, details: .read(details))
+        }
+        let content = read(details)
+        #expect(
+            Self.row(content, .image, "Dimensions")?.value
+                == .fitting(full: "4032 × 3024 (12.2 MP)", shorter: ["4032 × 3024"]))
+        #expect(
+            Self.row(content, .image, "Color")?.value
+                == .fitting(full: "Display P3 · 8-bit, alpha", shorter: ["Display P3 · 8-bit", "Display P3"]))
+        #expect(
+            Self.row(content, .image, "Camera")?.value
+                == .fitting(full: "iPhone 15 Pro · Back camera", shorter: ["iPhone 15 Pro"]))
+        // Without alpha, a lens or a depth: what there is, on one line.
+        details.image?.hasAlpha = false
+        details.image?.lens = nil
+        let plain = read(details)
+        #expect(
+            Self.row(plain, .image, "Color")?.value == .fitting(full: "Display P3 · 8-bit", shorter: ["Display P3"]))
+        #expect(Self.row(plain, .image, "Camera")?.value == .text("iPhone 15 Pro"))
+        details.image?.bitsPerChannel = nil
+        #expect(Self.row(read(details), .image, "Color")?.value == .text("Display P3"))
+        // Unread: dashes.
+        #expect(Self.row(Self.content(item), .image, "Dimensions")?.value == .text("—"))
+        #expect(Self.row(Self.content(item), .image, "Color")?.value == .text("—"))
+    }
+
     @Test func aFolderGetsTheFolderSizeCellAndAPackageToo() {
         var folder = Self.file()
         folder.kind = .directory
         let idle = Self.content(folder, folderSize: .idle)
         #expect(
-            Self.row(idle, .general, "Size") == InfoRow(label: "Size", value: .folderSize, muted: true, detail: "—"))
+            Self.row(idle, .general, "Size") == InfoRow(label: "Size", value: .folderSize, muted: true))
         let error = Self.content(folder, folderSize: .error(message: "x"))
         #expect(Self.row(error, .general, "Size")?.muted == true)
         let without = Self.content(folder)
@@ -219,10 +302,10 @@ struct InfoPanelModelTests {
             folder, folderSize: .ready(sizeBytes: 1_200_000_000, diskBytes: 1_300_000_000, fileCount: 4, folderCount: 1)
         )
         #expect(ready.subtitle == "Markdown document · 1.2 GB")
-        #expect(Self.row(ready, .general, "Size")?.detail == "1,200,000,000 bytes")
+        #expect(Self.row(ready, .general, "Size")?.textToCopy == "1.2 GB (1,200,000,000 bytes), 1.3 GB on disk")
         var link = Self.file()
         link.kind = .symlinkDirectory
-        #expect(Self.row(Self.content(link), .general, "Size")?.value == .text("2.0 KB (2,000 bytes)"))
+        #expect(Self.row(Self.content(link), .general, "Size")?.value == .fitting(full: "2.0 KB", shorter: []))
     }
 
     @Test func theFolderSizeLines() {
@@ -275,9 +358,10 @@ struct InfoPanelModelTests {
         #expect(sections.map(\.id) == [.general, .dates, .permissions])
         #expect(
             sections[0].rows[0].value
-                == .fitting(full: "HEIF Image (2), PDF document, Folder", short: "3 kinds"))
+                == .fitting(full: "HEIF Image (2), PDF document, Folder", shorter: ["3 kinds"]))
         #expect(sections[1].rows.map(\.value) == [.text("Mar 1 – Mar 9, 2026"), .text("Mar 2, 2026")])
-        #expect(sections[2].rows[0].value == .fitting(full: "644 on 2 · 755 on 1 · 600 on 1", short: "3 modes"))
+        #expect(sections[2].rows[0].value == .fitting(full: "644 on 2 · 755 on 1 · 600 on 1", shorter: ["3 modes"]))
+        #expect(sections[2].editable)
         // A mode not known yet for one of them: a dash, not a partial count.
         let unknown = InfoPanelModel.selectionContent(
             selection, facts: InfoSelectionFacts(modes: [0o644, nil]), hasFolderSize: false, folderSize: nil)
@@ -285,7 +369,7 @@ struct InfoPanelModelTests {
         let same = InfoPanelModel.selectionContent(
             selection, facts: InfoSelectionFacts(kindLabels: ["Folder", "Folder"], modes: [0o755, 0o755]),
             hasFolderSize: false, folderSize: nil)
-        #expect(same[0].rows[0].value == .fitting(full: "Folder (2)", short: "Folder (2)"))
+        #expect(same[0].rows[0].value == .fitting(full: "Folder (2)", shorter: ["Folder (2)"]))
         #expect(same[2].rows[0].value == .text("755"))
     }
 
@@ -337,13 +421,11 @@ struct InfoPanelModelTests {
     @Test func aRowCopiesWhatItShows() {
         #expect(InfoRow(label: "Kind", value: .text("PDF document"), muted: false).textToCopy == "PDF document")
         #expect(
-            InfoRow(label: "Size", value: .text("3.1 MB"), muted: false, detail: "3.2 MB on disk").textToCopy
-                == "3.1 MB\n3.2 MB on disk")
-        #expect(
             InfoRow(label: "Where", value: .place("a › b"), muted: false, copyText: "/a/b/c")
                 .textToCopy == "/a/b/c")
         #expect(
-            InfoRow(label: "Kinds", value: .fitting(full: "A, B", short: "2 kinds"), muted: false).textToCopy == "A, B")
+            InfoRow(label: "Kinds", value: .fitting(full: "A, B", shorter: ["2 kinds"]), muted: false).textToCopy
+                == "A, B")
     }
 
     @Test func theInfoRowSaysWhatTheStatusBarDoesNot() {

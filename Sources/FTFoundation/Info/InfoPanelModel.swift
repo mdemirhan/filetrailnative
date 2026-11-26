@@ -44,8 +44,9 @@ public enum InfoValue: Equatable, Sendable {
     case opensWith
     /// The items' tags: clicked, the Tags popover.
     case tags(InfoTags)
-    /// A text that is replaced by a shorter one where it doesn't fit on one line ("3 kinds").
-    case fitting(full: String, short: String)
+    /// A text on one line, replaced by the first of the shorter ones that fits where it doesn't ("3 kinds"), the last
+    /// cut short at its end. Its tooltip is the row's `copyText`, else the whole text.
+    case fitting(full: String, shorter: [String])
     /// How full a disk is: a bar, and the text under it.
     case usage(fraction: Double, text: String)
     /// Who the owner or the group is and what it may do, on one line that shortens to fit
@@ -109,37 +110,32 @@ public struct InfoRow: Equatable, Sendable {
     public var label: String
     public var value: InfoValue
     public var muted: Bool
-    /// A second line under the value, in the secondary color.
-    public var detail: String?
     /// What the row's right-click Copy copies, where it isn't the value's text (the whole path of Where).
     public var copyText: String?
     /// Its text takes as many lines as it needs. Every other value is one line, its whole text in its tooltip and
     /// there to select, so no row grows as its value comes in.
     public var wraps = false
 
-    public init(label: String, value: InfoValue, muted: Bool, detail: String? = nil, copyText: String? = nil) {
+    public init(label: String, value: InfoValue, muted: Bool, copyText: String? = nil) {
         self.label = label
         self.value = value
         self.muted = muted
-        self.detail = detail
         self.copyText = copyText
     }
 
     /// The text the row's Copy copies.
     public var textToCopy: String {
         if let copyText { return copyText }
-        let main: String
         switch value {
-        case .text(let text): main = text
-        case .permissions(let words, let octal, _): main = "\(words) \(octal)"
-        case .place(let label), .originalLink(let label, _): main = label
-        case .tags(let tags): main = tags.summary
-        case .fitting(let full, _): main = full
-        case .usage(_, let text): main = text
-        case .access(let name, let isYou, let words, _): main = InfoText.access(name, isYou: isYou, words)
-        case .folderSize, .opensWith: main = ""
+        case .text(let text): return text
+        case .permissions(let words, let octal, _): return "\(words) \(octal)"
+        case .place(let label), .originalLink(let label, _): return label
+        case .tags(let tags): return tags.summary
+        case .fitting(let full, _): return full
+        case .usage(_, let text): return text
+        case .access(let name, let isYou, let words, _): return InfoText.access(name, isYou: isYou, words)
+        case .folderSize, .opensWith: return ""
         }
-        return [main, detail].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: "\n")
     }
 }
 

@@ -32,10 +32,13 @@ public struct InfoSection: Equatable, Sendable {
 
     public var id: ID
     public var rows: [InfoRow]
+    /// Whether its title has Edit…: Sharing & Permissions, but not a disk's.
+    public var editable: Bool
 
-    public init(id: ID, rows: [InfoRow]) {
+    public init(id: ID, rows: [InfoRow], editable: Bool = false) {
         self.id = id
         self.rows = rows
+        self.editable = editable
     }
 
     public var title: String { id.title }
@@ -98,6 +101,11 @@ public enum InfoText {
         let (hours, minutes, rest) = (total / 3600, total / 60 % 60, total % 60)
         let tail = String(format: "%02d", rest)
         return hours > 0 ? "\(hours):\(String(format: "%02d", minutes)):\(tail)" : "\(minutes):\(tail)"
+    }
+
+    /// "18 KB (18,469 bytes), 20 KB on disk": what a Size's tooltip and Copy say.
+    public static func sizeWithDisk(_ bytes: Int64, _ disk: Int64) -> String {
+        "\(sizeWithBytes(bytes)), \(SizeText.size(disk)) on disk"
     }
 
     /// "4032 × 3024".

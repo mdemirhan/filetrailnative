@@ -28,8 +28,21 @@ extension InfoPanelModel {
         public func section(_ id: InfoSection.ID) -> InfoSection? { sections.first { $0.id == id } }
     }
 
-    private static func row(_ label: String, _ text: String?, detail: String? = nil) -> InfoRow {
-        InfoRow(label: label, value: .text(text ?? pending), muted: text == nil, detail: detail)
+    private static func row(_ label: String, _ text: String?) -> InfoRow {
+        InfoRow(label: label, value: .text(text ?? pending), muted: text == nil)
+    }
+
+    /// A row on one line: `full`, else the first of `shorter` that fits; a dash while there is no `full`.
+    private static func fitting(_ label: String, _ full: String?, shorter: [String], copyText: String? = nil) -> InfoRow
+    {
+        guard let full else { return row(label, nil) }
+        return InfoRow(label: label, value: .fitting(full: full, shorter: shorter), muted: false, copyText: copyText)
+    }
+
+    /// `main`, and `more` after it where there is room: "Display P3 · 8-bit".
+    private static func fitting(_ label: String, _ main: String?, more: String?, joiner: String = " · ") -> InfoRow {
+        guard let main, let more else { return row(label, main) }
+        return fitting(label, "\(main)\(joiner)\(more)", shorter: [main])
     }
 
     // MARK: One item
@@ -39,7 +52,8 @@ extension InfoPanelModel {
     ///   in; Original for a link or an alias. A disk: Kind, Capacity, Used, Available, Tags.
     /// - Dates: Created, Modified, Last opened, Added.
     /// - Sharing & Permissions: Owner and Group (who, and what they may do), Everyone, Mode; Locked, Hidden and Extension
-    ///   hidden when set.
+    ///   hidden when set. A disk's has no Edit…: Ownership, and Owner, Group and Everyone where it is respected.
+    /// - Every value is one line, shortened to the room it has: what was a second line goes first.
     /// - Image, Movie, Sound, Document, Text, Application or Volume, by what the item is: each with the same rows for
     ///   every item that has it, a dash where it has none.
     /// - Downloaded, for a file that says where it came from; More (folded at first).
@@ -70,8 +84,10 @@ extension InfoPanelModel {
             } else {
                 general.append(row("Used", nil))
             }
-            let purgeable = details?.volume?.purgeableBytes.map { "\(SizeText.size($0)) of it purgeable" }
-            general.append(row("Available", available.map { SizeText.size($0) }, detail: purgeable))
+            let purgeable = details?.volume?.purgeableBytes.map { "\(SizeText.size($0)) purgeable" }
+            general.append(
+                fitting(
+                    "Available", available.map { SizeText.size($0) }, more: purgeable.map { "(\($0))" }, joiner: " "))
         } else {
             if isFile {
                 switch opensWith {
@@ -116,17 +132,20 @@ extension InfoPanelModel {
         }
         var sections = [InfoSection(id: .general, rows: general)]
 
-        // Dates.
+        // Dates: a disk's are when it was made and last changed; it is never opened or added.
         func date(_ value: Date?) -> String? { value.map { dates.dateTime($0) } }
-        sections.append(
-            InfoSection(
-                id: .dates,
-                rows: [
-                    row("Created", date(item.createdAt)), row("Modified", date(item.modifiedAt)),
-                    row("Last opened", date(item.lastOpenedAt)), row("Added", date(item.addedAt)),
-                ]))
+        var dateRows = [row("Created", date(item.createdAt)), row("Modified", date(item.modifiedAt))]
+        if !isVolumeRoot {
+            dateRows += [row("Last opened", date(item.lastOpenedAt)), row("Added", date(item.addedAt))]
+        }
+        sections.append(InfoSection(id: .dates, rows: dateRows))
 
-        sections.append(InfoSection(id: .permissions, rows: permissionRows(item, details: details)))
+        if isVolumeRoot {
+            sections.append(InfoSection(id: .permissions, rows: volumePermissionRows(item, details: details)))
+        } else {
+            sections.append(
+                InfoSection(id: .permissions, rows: permissionRows(item, details: details), editable: true))
+        }
 
         // What the item is.
         if isVolumeRoot {
@@ -161,40 +180,44 @@ extension InfoPanelModel {
         return ItemContent(sections: sections, subtitle: summary.map { "\(item.kindLabel) · \($0)" } ?? item.kindLabel)
     }
 
-    /// Size has a second line for every item, a dash until it is known, so the rows under it stay where they are from
-    /// a file to a folder and while a folder is measured: a file's size on disk, a folder's exact bytes.
+    /// Size is one line for every item, so the rows under it stay where they are from a file to a folder and while a
+    /// folder is measured: "18 KB (20 KB on disk)", or "18 KB" where that doesn't fit. Its exact bytes are in its
+    /// tooltip and its Copy.
     private static func sizeRow(
         _ item: InfoItem, pending isPending: Bool, folderEligible: Bool, hasFolderSize: Bool,
         folderSize: FolderSizeEntry?, details: InfoDetails?
     ) -> InfoRow {
         if folderEligible, hasFolderSize, let folderSize {
             var muted = false
-            var detail = pending
+            var copy: String?
             switch folderSize {
             case .idle, .error: muted = true
-            case .ready(let size, _, _, _): detail = InfoText.bytes(size)
+            case .ready(let size, let disk, _, _): copy = InfoText.sizeWithDisk(size, disk)
             default: break
             }
-            return InfoRow(label: "Size", value: .folderSize, muted: muted, detail: detail)
+            return InfoRow(label: "Size", value: .folderSize, muted: muted, copyText: copy)
         }
-        if folderEligible { return InfoRow(label: "Size", value: .text("--"), muted: true, detail: pending) }
-        if isPending, item.sizeBytes == nil { return row("Size", nil, detail: pending) }
+        if folderEligible { return InfoRow(label: "Size", value: .text("--"), muted: true) }
+        if isPending, item.sizeBytes == nil { return row("Size", nil) }
         guard item.sizeStatus == .ready, let bytes = item.sizeBytes else {
             return InfoRow(
-                label: "Size", value: .text(SizeText.size(item.sizeBytes, status: item.sizeStatus)), muted: false,
-                detail: pending)
+                label: "Size", value: .text(SizeText.size(item.sizeBytes, status: item.sizeStatus)), muted: false)
         }
-        let disk = details?.sizeOnDisk.map { "\(SizeText.size($0)) on disk" } ?? pending
-        return InfoRow(label: "Size", value: .text(InfoText.sizeWithBytes(bytes)), muted: false, detail: disk)
+        let size = SizeText.size(bytes)
+        guard let disk = details?.sizeOnDisk else {
+            return fitting("Size", size, shorter: [], copyText: InfoText.sizeWithBytes(bytes))
+        }
+        return fitting(
+            "Size", "\(size) (\(SizeText.size(disk)) on disk)", shorter: [size],
+            copyText: InfoText.sizeWithDisk(bytes, disk))
     }
 
     // MARK: Sharing & Permissions
 
-    private static func permissionRows(_ item: InfoItem, details: InfoDetails?) -> [InfoRow] {
+    /// Owner, Group and Everyone: who, and what each may do.
+    private static func whoRows(_ item: InfoItem, details: InfoDetails?) -> [InfoRow] {
         let owner = details?.owner
-        guard let mode = item.permissionMode, let parts = PermissionText.split(mode) else {
-            return ["Owner", "Group", "Everyone", "Mode"].map { row($0, nil) }
-        }
+        guard let mode = item.permissionMode else { return ["Owner", "Group", "Everyone"].map { row($0, nil) } }
         func access(_ label: String, _ name: String?, isYou: Bool, shift: Int) -> InfoRow {
             InfoRow(
                 label: label,
@@ -203,14 +226,31 @@ extension InfoPanelModel {
                     letters: InfoText.privilegeLetters(mode, shift: shift)),
                 muted: false)
         }
-        var rows = [
+        return [
             access("Owner", owner?.user, isYou: owner?.isYou ?? false, shift: 6),
             access("Group", owner?.group, isYou: false, shift: 3),
             row("Everyone", InfoText.privilege(mode, shift: 0)),
-            InfoRow(
-                label: "Mode", value: .text("\(parts.octal) · \(parts.symbolic)"), muted: false,
-                copyText: parts.octal),
         ]
+    }
+
+    /// A disk's: whether it respects ownership, and only where it does who may do what. Nothing is changed from here:
+    /// the startup disk is the system's, and a disk that ignores ownership gives its owner and mode no say.
+    private static func volumePermissionRows(_ item: InfoItem, details: InfoDetails?) -> [InfoRow] {
+        let ignores = details?.volume?.ignoresOwnership
+        let ownership = row("Ownership", ignores.map { $0 ? "Ignored" : "Respected" })
+        return ignores == true ? [ownership] : whoRows(item, details: details) + [ownership]
+    }
+
+    private static func permissionRows(_ item: InfoItem, details: InfoDetails?) -> [InfoRow] {
+        guard let mode = item.permissionMode, let parts = PermissionText.split(mode) else {
+            return ["Owner", "Group", "Everyone", "Mode"].map { row($0, nil) }
+        }
+        var rows =
+            whoRows(item, details: details) + [
+                InfoRow(
+                    label: "Mode", value: .text("\(parts.octal) · \(parts.symbolic)"), muted: false,
+                    copyText: parts.octal)
+            ]
         if let flags = details?.flags {
             if flags.locked { rows.append(row("Locked", "Yes")) }
             if flags.hidden || item.isHidden { rows.append(row("Hidden", "Yes")) }
@@ -224,12 +264,11 @@ extension InfoPanelModel {
     private static func imageRows(_ image: InfoDetails.Image?) -> [InfoRow] {
         let size: String? = image?.width.flatMap { width in image?.height.map { InfoText.dimensions(width, $0) } }
         let megapixels: String? = image?.width.flatMap { width in
-            image?.height.map { "\(JSString.toFixed(Double(width * $0) / 1_000_000, 1)) megapixels" }
+            image?.height.map { "(\(JSString.toFixed(Double(width * $0) / 1_000_000, 1)) MP)" }
         }
         let color = image.flatMap { $0.colorProfile ?? $0.colorModel }
-        var depth: [String] = []
-        if let bits = image?.bitsPerChannel { depth.append("\(bits) bits per channel") }
-        if let alpha = image?.hasAlpha { depth.append(alpha ? "alpha" : "no alpha") }
+        let bits = image?.bitsPerChannel.map { "\($0)-bit" }
+        let alpha = image?.hasAlpha == true
         var exposure: [String] = []
         if let seconds = image?.exposureSeconds { exposure.append(InfoText.exposure(seconds)) }
         if let f = image?.fNumber { exposure.append("f/\(JSString.toFixed(f, 1))") }
@@ -243,14 +282,24 @@ extension InfoPanelModel {
             image?.longitude.map { InfoText.location(latitude: lat, longitude: $0) }
         }
         return [
-            row("Dimensions", size, detail: megapixels ?? pending),
+            fitting("Dimensions", size, more: megapixels, joiner: " "),
             row("Resolution", image?.dpi.map { "\(Int($0.rounded())) dpi" }),
-            row("Color", color, detail: depth.isEmpty ? pending : depth.joined(separator: ", ")),
-            row("Camera", image?.camera, detail: lens ?? pending),
+            colorRow(color, bits: bits, alpha: alpha),
+            fitting("Camera", image?.camera, more: lens),
             row("Exposure", exposure.isEmpty ? nil : exposure.joined(separator: " · ")),
             row("Taken", image?.taken.map { DateText.shared.dateTime($0) }),
             row("Location", location),
         ]
+    }
+
+    /// "Display P3 · 8-bit, alpha", then "Display P3 · 8-bit", then "Display P3" where it doesn't fit.
+    private static func colorRow(_ color: String?, bits: String?, alpha: Bool) -> InfoRow {
+        guard let color else { return row("Color", nil) }
+        let depth = [bits, alpha ? "alpha" : nil].compactMap { $0 }
+        guard !depth.isEmpty else { return row("Color", color) }
+        var shorter = [color]
+        if alpha, let bits { shorter.insert("\(color) · \(bits)", at: 0) }
+        return fitting("Color", "\(color) · \(depth.joined(separator: ", "))", shorter: shorter)
     }
 
     private static func movieRows(_ media: InfoDetails.Media?) -> [InfoRow] {
@@ -320,7 +369,6 @@ extension InfoPanelModel {
         return [
             row("Format", volume?.format), row("Mounted at", volume?.mountPoint), row("Device", volume?.device),
             row("Connection", volume?.connection), row("Ejectable", yesNo(volume?.ejectable)),
-            row("Ownership", volume?.ignoresOwnership.map { $0 ? "Ignored" : "Respected" }),
         ]
     }
 
@@ -328,10 +376,8 @@ extension InfoPanelModel {
         var rows: [InfoRow] = []
         if let from = download.from {
             let host = URL(string: from)?.host()
-            rows.append(
-                InfoRow(
-                    label: "From", value: .text(host ?? from), muted: false, detail: host == nil ? nil : from,
-                    copyText: from))
+            // The site; the whole address in its tooltip and its Copy.
+            rows.append(fitting("From", host ?? from, shorter: [], copyText: from))
         }
         if let page = download.page { rows.append(InfoRow(label: "Page", value: .text(page), muted: false)) }
         let by = [download.agent, download.date.map { DateText.shared.dateTime($0) }].compactMap { $0 }
@@ -383,7 +429,7 @@ extension InfoPanelModel {
         var general: [InfoRow] = []
         if !facts.kindLabels.isEmpty {
             let kinds = InfoText.kinds(facts.kindLabels)
-            general.append(InfoRow(label: "Kinds", value: .fitting(full: kinds.full, short: kinds.short), muted: false))
+            general.append(fitting("Kinds", kinds.full, shorter: [kinds.short]))
         }
         if hasFolderSize, folderSize != nil { general.append(containsRow(folderSize)) }
         if hasFolderSize, let folderSize {
@@ -434,16 +480,14 @@ extension InfoPanelModel {
                     return ca != cb ? ca > cb : a.offset < b.offset
                 }.map(\.element)
                 let full = sorted.map { "\($0) on \(FormatLocale.count(counts[$0] ?? 0))" }.joined(separator: " · ")
-                modes = InfoRow(
-                    label: "Mode", value: .fitting(full: full, short: "\(FormatLocale.count(order.count)) modes"),
-                    muted: false)
+                modes = fitting("Mode", full, shorter: ["\(FormatLocale.count(order.count)) modes"])
             }
         }
         return [
             InfoSection(id: .general, rows: general),
             InfoSection(
                 id: .dates, rows: [row("Created", range(facts.created)), row("Modified", range(facts.modified))]),
-            InfoSection(id: .permissions, rows: [modes]),
+            InfoSection(id: .permissions, rows: [modes], editable: true),
         ]
     }
 
