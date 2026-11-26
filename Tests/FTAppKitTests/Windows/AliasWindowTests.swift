@@ -53,6 +53,13 @@ extension ExplorerWindowlessTests {
             #expect(await listed(window, "a.txt alias")?.kind == .alias)
             // What it made is selected.
             #expect(await waitUntil { tab.content.selection.paths == [made] })
+            // Written under a hidden name and then named, it still knows where the item is from itself: copied
+            // with the item, it leads to the copy.
+            try FileManager.default.createDirectory(atPath: path(window, "Copied"), withIntermediateDirectories: true)
+            for name in ["a.txt", "a.txt alias"] {
+                try FileManager.default.copyItem(atPath: path(window, name), toPath: path(window, "Copied/" + name))
+            }
+            #expect(Links.original(of: path(window, "Copied/a.txt alias")) == path(window, "Copied/a.txt"))
 
             window.select(["a.txt"])
             tab.perform(.makeAlias)

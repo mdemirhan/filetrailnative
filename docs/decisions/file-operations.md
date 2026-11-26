@@ -311,6 +311,11 @@ The plan, built, is [records/folder-sizes.md](../records/folder-sizes.md).
     Open, Open With, Edit in, the viewer, Quick Look, Copy Contents and Open in New Tab, New Window or Other Pane go to the original, and the viewer saves into the original.
     Rename, Duplicate, Copy, Cut, Move, Compress, Move to Trash, Get Info and dragging act on the alias.
     An alias of a folder opens in File Trail.
+  - **An alias also holds where its original is from the alias, as Finder's does, and File Trail never writes an alias again** (the owner, 2026-11-27).
+    The system looks there first: an alias copied or moved with its original leads to the copy beside it, and one copied or moved alone leads to its original, or to an unrelated item of the original's name that is beside it, as Finder's does.
+    Finder writes an alias again when it opens one that was found another way than it holds, so it leads to that copy for good;
+    File Trail only looks an alias up, so once the copy is gone it leads to the original again.
+    The system holds this only when the alias's file is there as it is asked, so `Links.writeAlias` makes the file empty first.
   - **An alias is shown as Finder shows it**: its own size, tags and dates;
     the icon of its original's kind with the arrow macOS puts on a symbolic link (`IconSamples.aliasLink`), which is Finder's alias arrow at every size, so an alias of a file shows its type's icon and never a thumbnail, and an alias of a folder a plain folder with none of its original's tag color;
     an app's, a disk's or a special folder's alias shows that item's picture.

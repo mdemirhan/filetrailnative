@@ -112,10 +112,25 @@ public enum Links {
     }
 
     /// Writes a Finder alias of `original` at `aliasPath`, as Finder's Make Alias does: a file holding where the
-    /// original is, marked as an alias, that finds it again after it is moved or renamed.
+    /// original is, marked as an alias, that finds it again after it is moved or renamed. Like Finder's, it also holds
+    /// where the original is from the alias, which the system looks at first: an alias copied with its original leads
+    /// to the copy beside it, and to the original again once that copy is gone, as it is never written again.
+    ///
+    /// The system writes where the original is from the alias only when the alias's file is there as it is asked, so
+    /// the file is made empty first, and taken away again if the alias can't be written. An item already at
+    /// `aliasPath` is never replaced.
     public static func writeAlias(of original: String, at aliasPath: String) throws {
-        let data = try DiskPath(original).fileURL().bookmarkData(
-            options: .suitableForBookmarkFile, includingResourceValuesForKeys: nil, relativeTo: nil)
-        try URL.writeBookmarkData(data, to: DiskPath(aliasPath).url(isDirectory: false))
+        let descriptor = open(aliasPath, O_CREAT | O_EXCL | O_WRONLY, 0o644)
+        guard descriptor >= 0 else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
+        close(descriptor)
+        do {
+            let alias = DiskPath(aliasPath).url(isDirectory: false)
+            let data = try DiskPath(original).fileURL().bookmarkData(
+                options: .suitableForBookmarkFile, includingResourceValuesForKeys: nil, relativeTo: alias)
+            try URL.writeBookmarkData(data, to: alias)
+        } catch {
+            unlink(aliasPath)
+            throw error
+        }
     }
 }

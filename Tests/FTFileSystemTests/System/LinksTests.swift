@@ -60,6 +60,66 @@ import Testing
         #expect(Links.original(of: folder.path + "/a.txt alias") == real(folder) + "/b.txt")
     }
 
+    /// An alias copied with its original leads to the copy beside it, as Finder's does, for a file and a folder; once
+    /// that copy is gone it leads to the original again, as looking it up never writes it.
+    @Test func anAliasCopiedWithItsOriginalLeadsToTheCopy() throws {
+        let folder = try TemporaryDirectory(prefix: "filetrail-links")
+        defer { folder.remove() }
+        let base = real(folder)
+        let original = try file(folder, "a.txt")
+        try FileManager.default.createDirectory(atPath: base + "/Inner", withIntermediateDirectories: true)
+        try Links.writeAlias(of: original, at: base + "/a.txt alias")
+        try Links.writeAlias(of: base + "/Inner", at: base + "/Inner alias")
+        try FileManager.default.createDirectory(atPath: base + "/Copied", withIntermediateDirectories: true)
+        for name in ["a.txt", "a.txt alias", "Inner", "Inner alias"] {
+            try FileManager.default.copyItem(atPath: base + "/" + name, toPath: base + "/Copied/" + name)
+        }
+        let copiedAlias = base + "/Copied/a.txt alias"
+        let written = try Data(contentsOf: URL(fileURLWithPath: copiedAlias))
+
+        #expect(Links.original(of: copiedAlias) == base + "/Copied/a.txt")
+        #expect(Links.originalItem(of: base + "/Copied/Inner alias")?.path == base + "/Copied/Inner")
+        try FileManager.default.removeItem(atPath: base + "/Copied/a.txt")
+        #expect(Links.original(of: copiedAlias) == original)
+        #expect(try Data(contentsOf: URL(fileURLWithPath: copiedAlias)) == written)
+    }
+
+    /// An alias copied without its original leads to the original.
+    @Test func anAliasCopiedAloneLeadsToItsOriginal() throws {
+        let folder = try TemporaryDirectory(prefix: "filetrail-links")
+        defer { folder.remove() }
+        let base = real(folder)
+        let original = try file(folder, "a.txt")
+        try Links.writeAlias(of: original, at: base + "/a.txt alias")
+        try FileManager.default.createDirectory(atPath: base + "/Copied", withIntermediateDirectories: true)
+        try FileManager.default.copyItem(atPath: base + "/a.txt alias", toPath: base + "/Copied/a.txt alias")
+
+        #expect(Links.original(of: base + "/Copied/a.txt alias") == original)
+    }
+
+    /// An alias is never written over an item already there, which is left as it was.
+    @Test func anAliasNeverReplacesAnItem() throws {
+        let folder = try TemporaryDirectory(prefix: "filetrail-links")
+        defer { folder.remove() }
+        let original = try file(folder, "a.txt")
+        let there = try file(folder, "a.txt alias")
+        try "kept".write(toFile: there, atomically: true, encoding: .utf8)
+
+        #expect(throws: (any Error).self) { try Links.writeAlias(of: original, at: there) }
+        #expect(try String(contentsOfFile: there, encoding: .utf8) == "kept")
+        #expect(!Links.isFinderAlias(there))
+    }
+
+    /// An alias whose original isn't there isn't written, and leaves nothing behind.
+    @Test func anAliasOfNothingLeavesNothing() throws {
+        let folder = try TemporaryDirectory(prefix: "filetrail-links")
+        defer { folder.remove() }
+        let aliasPath = real(folder) + "/gone alias"
+
+        #expect(throws: (any Error).self) { try Links.writeAlias(of: real(folder) + "/gone.txt", at: aliasPath) }
+        #expect(!FileManager.default.fileExists(atPath: aliasPath))
+    }
+
     /// An original in a folder whose name has a composed accent is given as the disk spells it, byte for byte, not
     /// with the accent taken apart as a URL spells it: it is how the folder's rows are named.
     @Test func anOriginalIsSpelledAsItsDiskSpellsIt() throws {
