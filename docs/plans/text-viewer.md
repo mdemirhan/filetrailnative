@@ -27,8 +27,10 @@ There are two ways in, and the rest of what the viewer does is in the viewer (th
   the **⋯ menu**;
   and, last at the right end, a **✕** that closes the viewer, as Close Viewer does.
 - The ⋯ menu holds Save (⌘S), Revert to Saved, Next File (⌥⌘]) and Previous File (⌥⌘[), Find (⌘F), the language, the appearance and themes, the text size, Wrap Lines and Line Numbers, Edit in Text Editor, and Close Viewer (Esc: the pane's folder again).
-  Its keys are the viewer's own, taken while it has the keyboard; none is in the menu bar.
-  Save File, Next File and Previous File are commands of the shortcut table under a Viewer heading, so Settings → Shortcuts changes their keys, the ⋯ menu writes the keys chosen, and the command palette runs them; Find (⌘F) and Esc stay as they are.
+  Its keys are the viewer's own, taken while it has the keyboard;
+  none is in the menu bar.
+  Save File, Next File and Previous File are commands of the shortcut table under a Viewer heading, so Settings → Shortcuts changes their keys, the ⋯ menu writes the keys chosen, and the command palette runs them;
+  Find (⌘F) and Esc stay as they are.
 - **Read or Edit is remembered**: a file opens the way the last one was left, and a workspace keeps it with each pane.
 - **Following goes on while editing.**
   A new selection with unsaved edits asks Save, Don't Save or Cancel;
