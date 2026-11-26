@@ -91,7 +91,7 @@ struct SizeTextTests {
         let same = SizeText.folderDetail(
             sizeBytes: 1_000_000, diskBytes: 1_000_000, fileCount: 100, folderCount: 0, locale: en)
         #expect(same.size == "1.0 MB")
-        #expect(same.disk == nil)
+        #expect(same.disk == "1.0 MB on disk")
     }
 
     @Test func folderSizeDetailNamesWhatTheFolderHolds() {
@@ -104,7 +104,7 @@ struct SizeTextTests {
         #expect(items(1, 1) == "1 file, 1 folder")
         let empty = SizeText.folderDetail(sizeBytes: 0, diskBytes: 0, fileCount: 0, folderCount: 0, locale: en)
         #expect(empty.size == "0 B")
-        #expect(empty.disk == nil)
+        #expect(empty.disk == "0 B on disk")
         #expect(empty.items == "Empty")
     }
 

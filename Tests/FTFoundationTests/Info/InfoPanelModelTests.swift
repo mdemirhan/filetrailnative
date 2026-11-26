@@ -221,7 +221,7 @@ struct InfoPanelModelTests {
         #expect(lines.top == "1.2 GB (1.3 GB on disk)")
         #expect(lines.items == "48,611 files, 2,765 folders")
         let same = InfoPanelModel.folderSizeLines(sizeBytes: 100, diskBytes: 100, fileCount: 1, folderCount: 0)
-        #expect(same.top == "100 B" && same.items == "1 file")
+        #expect(same.top == "100 B (100 B on disk)" && same.items == "1 file")
         #expect(
             InfoPanelModel.folderSizeLines(sizeBytes: 0, diskBytes: 0, fileCount: 0, folderCount: 0).items == "Empty")
     }

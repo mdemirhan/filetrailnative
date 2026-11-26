@@ -198,6 +198,6 @@ public enum InfoPanelModel {
     ) -> (top: String, items: String) {
         let detail = SizeText.folderDetail(
             sizeBytes: sizeBytes, diskBytes: diskBytes, fileCount: fileCount, folderCount: folderCount, locale: locale)
-        return (detail.size + (detail.disk.map { " (\($0))" } ?? ""), detail.items)
+        return ("\(detail.size) (\(detail.disk))", detail.items)
     }
 }

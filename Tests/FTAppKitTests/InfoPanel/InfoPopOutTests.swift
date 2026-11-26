@@ -51,6 +51,32 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // The app came to the front: the Info window comes up with the window it describes, and only then; not from
+        // the Dock, not while hidden with a tab that went, not over Settings, a sheet or an alert with the keyboard.
+        @Test func theInfoWindowComesUpWithTheAppOnlyOverTheWindowItDescribes() {
+            func window() -> NSWindow {
+                let window = NSWindow(
+                    contentRect: NSRect(x: 0, y: 0, width: 100, height: 100), styleMask: [.titled],
+                    backing: .buffered, defer: true)
+                window.isReleasedWhenClosed = false
+                return window
+            }
+            let info = window()
+            let described = window()
+            let settings = window()
+            func comes(visible: Bool = true, docked: Bool = false, key: NSWindow?, described: NSWindow?) -> Bool {
+                InfoPopOut.comesForwardOnActivation(
+                    isVisible: visible, isMiniaturized: docked, key: key, described: described, popOut: info)
+            }
+            #expect(comes(key: described, described: described))
+            #expect(!comes(visible: false, key: described, described: described))
+            #expect(!comes(docked: true, key: described, described: described))
+            #expect(!comes(key: settings, described: described))
+            #expect(!comes(key: info, described: described))
+            #expect(!comes(key: nil, described: described))
+            #expect(!comes(key: described, described: nil))
+        }
+
         // The window describing a tab that closed lets go of it, and hides until another tab takes it; another
         // tab's going changes nothing.
         @Test func theInfoWindowLetsGoOfATabThatClosed() async throws {

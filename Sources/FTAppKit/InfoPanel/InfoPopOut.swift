@@ -23,6 +23,35 @@ final class InfoPopOut: NSObject, NSWindowDelegate {
     override init() {
         super.init()
         panel.isPoppedOut = true
+        activationObserver = NotificationCenter.default.addObserver(
+            forName: NSApplication.didBecomeActiveNotification, object: nil, queue: .main
+        ) { _ in
+            // After the activation's own ordering: a click that activated the app brings its window up first.
+            DispatchQueue.main.async { MainActor.assumeIsolated { InfoPopOut.shared.appBecameActive() } }
+        }
+    }
+
+    private var activationObserver: NSObjectProtocol?
+
+    /// The app came to the front from another (⌘Tab, the Dock, a click on one of its windows): the window comes up
+    /// with the explorer window it describes, rather than stay behind it or behind another app's windows. Between the
+    /// app's own windows it goes behind them as before.
+    func appBecameActive() {
+        guard let window,
+            Self.comesForwardOnActivation(
+                isVisible: window.isVisible, isMiniaturized: window.isMiniaturized, key: NSApp.keyWindow,
+                described: owner?.window, popOut: window)
+        else { return }
+        window.orderFront(nil)
+    }
+
+    /// Only while it is on screen (not in the Dock, not hidden with the tab it described), and only when the window
+    /// with the keyboard is the one it describes: not over Settings, a sheet or an alert in front.
+    static func comesForwardOnActivation(
+        isVisible: Bool, isMiniaturized: Bool, key: NSWindow?, described: NSWindow?, popOut: NSWindow
+    ) -> Bool {
+        guard isVisible, !isMiniaturized, let key, let described else { return false }
+        return key === described && key !== popOut
     }
 
     /// On screen or in the Dock: a minimized window is still shown, so nothing brings it back by itself.

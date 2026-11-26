@@ -8,7 +8,7 @@ public enum SizeStatus: String, Codable, Sendable {
 
 public struct FolderSizeDetail: Equatable, Sendable {
     public var size: String
-    public var disk: String?
+    public var disk: String
     public var items: String
 }
 
@@ -44,11 +44,9 @@ public enum SizeText {
     public static func folderDetail(
         sizeBytes: Int64, diskBytes: Int64, fileCount: Int, folderCount: Int, locale: Locale = FormatLocale.current
     ) -> FolderSizeDetail {
-        let sizeText = size(sizeBytes, locale: locale)
-        let diskText = size(diskBytes, locale: locale)
-        return FolderSizeDetail(
-            size: sizeText,
-            disk: diskText != sizeText ? "\(diskText) on disk" : nil,
+        FolderSizeDetail(
+            size: size(sizeBytes, locale: locale),
+            disk: "\(size(diskBytes, locale: locale)) on disk",
             items: describeContents(fileCount: fileCount, folderCount: folderCount, locale: locale))
     }
 
