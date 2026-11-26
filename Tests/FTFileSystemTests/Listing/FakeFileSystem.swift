@@ -14,7 +14,7 @@ final class FakeFileSystem: ExplorerFileSystem, @unchecked Sendable {
     var tagColorsHandler: @Sendable (String) -> [FinderTagColor] = { _ in [] }
     var lastOpenedHandler: @Sendable (String) -> Int64? = { _ in nil }
     var addedHandler: @Sendable (String) -> Int64? = { _ in nil }
-    var firstTagHandler: @Sendable (String) -> String? = { _ in nil }
+    var tagNamesHandler: @Sendable (String) -> [String] = { _ in [] }
 
     private let lock = NSLock()
     private var statPaths: [String] = []
@@ -78,15 +78,11 @@ final class FakeFileSystem: ExplorerFileSystem, @unchecked Sendable {
 
     func realpath(_ path: String) throws -> String { try realpathHandler(path) }
 
-    func firstTagName(_ path: String) -> String? {
+    func tagNames(_ path: String) -> [String] {
         lock.lock()
         tagNamePaths.append(path)
         lock.unlock()
-        return firstTagHandler(path)
-    }
-
-    func tagNames(_ path: String) -> [String] {
-        firstTagName(path).map { [$0] } ?? []
+        return tagNamesHandler(path)
     }
 
     func tagColors(_ path: String) -> [FinderTagColor] {

@@ -69,12 +69,13 @@ struct ListingGroupReadTests {
         #expect(sized["Folder"]?.sizeBytes == nil)
     }
 
-    // Every item's first tag is read, not only those with a colored label, as a tag can have no color.
+    // Every item's tags are read, not only those with a colored label, as a tag can have no color; its group is its
+    // first tag A to Z, as an order by tags reads them, whatever order they were put on in.
     @Test func groupsOfTagsReadEveryItemsFirstTag() async throws {
         let fake = workspace()
-        fake.firstTagHandler = { $0.hasSuffix("a.txt") ? "Work" : nil }
+        fake.tagNamesHandler = { $0.hasSuffix("a.txt") ? ["Work", "Home"] : [] }
         let tagged = entries(try await service(fake).snapshot(path: "/workspace", groupRead: .tags))
-        #expect(tagged["a.txt"]?.firstTag == "Work")
+        #expect(tagged["a.txt"]?.firstTag == "Home")
         #expect(tagged["b.txt"]?.firstTag == nil)
         #expect(Set(fake.tagNamesRead) == ["/workspace/a.txt", "/workspace/b.txt", "/workspace/Folder"])
     }

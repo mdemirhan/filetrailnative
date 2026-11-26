@@ -321,16 +321,18 @@ enum ExplorerListing {
                     entry.tagColors = fileSystem.tagColors(entryPath)
                     tagsLeft -= 1
                 }
-                // Not in the folder read: one look at each item, only while sorted by them.
-                let names = sortBy == .tags ? TagNameList.joined(fileSystem.tagNames(entryPath)) : nil
+                // Not in the folder read: one look at each item, only while sorted or grouped by them; its names A to Z,
+                // so items with the same tags sit together whatever order they were put on in.
+                let names =
+                    sortBy == .tags || groupRead == .tags
+                    ? TagNameList.sorted(fileSystem.tagNames(entryPath), order: order) : nil
                 switch groupRead {
                 case .modified: entry.groupTimeMs = stats?.mtimeMs
                 case .created: entry.groupTimeMs = stats?.birthtimeMs
                 case .added: entry.groupTimeMs = record.addedMs
                 case .lastOpened: entry.groupTimeMs = lastOpened?(entryPath)
                 case .size: entry.sizeBytes = listedSize(record, kind: kind, stats: stats, path: entryPath, fileSystem)
-                case .tags:
-                    entry.firstTag = sortBy == .tags ? TagNameList.first(of: names) : fileSystem.firstTagName(entryPath)
+                case .tags: entry.firstTag = TagNameList.first(of: names)
                 case .none: break
                 }
                 switch sortBy {

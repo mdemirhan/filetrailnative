@@ -384,7 +384,7 @@ public struct KindGroupCache {
 // MARK: - Tags and folders
 
 public enum TagGroups {
-    /// The group of an item's first tag; No Tags last.
+    /// The group of an item's first tag A to Z (`TagNameList.first`), as an order by tags has it; No Tags last.
     public static func key(firstTag: String?) -> EntryGroupKey {
         guard let tag = firstTag, !tag.isEmpty else {
             return EntryGroupKey(group: EntryGroup(id: "tag-none", title: "No Tags"), rank: .text(""), isLast: true)
@@ -405,12 +405,22 @@ public enum FolderGroups {
 /// An item's tag names kept as one text, for an order by tags and for search results' values: one line a name, as the
 /// stored attribute can't hold a line break in a name.
 public enum TagNameList {
-    /// The names as one text; nil for none, which an order puts last.
+    /// The names as one text, in the order given; nil for none, which an order puts last.
     public static func joined(_ names: [String]) -> String? {
         names.isEmpty ? nil : names.joined(separator: "\n")
     }
 
-    /// The first name, for the group of the item.
+    /// The names A to Z as one text, as an order and groups by tags read them: items with the same tags sit together,
+    /// whatever order the tags were put on in. Names the order holds equal keep their text's order.
+    public static func sorted(_ names: [String], order: NameOrder) -> String? {
+        joined(
+            names.sorted { left, right in
+                let compared = order.compare(left, right)
+                return compared != 0 ? compared < 0 : NameOrder.compareText(left, right) < 0
+            })
+    }
+
+    /// The first name, for the group of the item: of `sorted`, the first A to Z.
     public static func first(of joined: String?) -> String? {
         joined?.split(separator: "\n", maxSplits: 1, omittingEmptySubsequences: false).first.map(String.init)
     }

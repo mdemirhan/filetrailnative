@@ -124,13 +124,6 @@ public enum FinderTags {
         return ((try? read(path)) ?? []).filter { !$0.name.isEmpty }
     }
 
-    /// The name of an item's first tag; nil for one without tags or that can't be read. The home folder's Desktop,
-    /// Documents and Downloads aren't read, as for `colors`.
-    public static func firstName(_ path: String) -> String? {
-        guard !asksPermission(path) else { return nil }
-        return ((try? read(path)) ?? []).first { !$0.name.isEmpty }?.name
-    }
-
     /// The folders macOS asks the person about before an app reads them: the home folder's Desktop, Documents and
     /// Downloads. Reading even a folder's own tags counts, so drawing their tag colors in the home folder asked for
     /// permission at every start of an app not yet allowed, though nothing was opened.

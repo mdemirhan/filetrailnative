@@ -158,7 +158,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // The List orders by the tags' names, name by name; the items without tags come last either way.
+        // The List orders by each item's tags A to Z, name by name, whatever order they were put on in; the items
+        // without tags come last either way. Groups by tags go by the first of them A to Z.
         @Test func sortByTagsOrdersByTheNamesAndPutsUntaggedLast() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
@@ -167,12 +168,19 @@ extension ExplorerWindowlessTests {
             defer { for path in paths { try? FinderTags.write([], to: path) } }
             try FinderTags.write([FinderTag(name: "Zebra", color: nil)], to: paths[0])
             try FinderTags.write(
-                [FinderTag(name: "Apple", color: nil), FinderTag(name: "Pear", color: nil)], to: paths[1])
+                [FinderTag(name: "Pear", color: nil), FinderTag(name: "Apple", color: nil)], to: paths[1])
             try FinderTags.write([FinderTag(name: "Apple", color: nil)], to: paths[2])
             tab.perform(.sortByTags)
             #expect(await waitUntil { Array(files(tab).prefix(3)) == [paths[2], paths[1], paths[0]] })
             tab.perform(.sortByTags)
             #expect(await waitUntil { Array(files(tab).prefix(3)) == [paths[0], paths[1], paths[2]] })
+            tab.perform(.groupByTags)
+            #expect(
+                await waitUntil {
+                    tab.content.groups.map(\.group.title).prefix(2) == ["Apple", "Zebra"]
+                        && tab.content.groups.first.map { Array(tab.content.entries[$0.range]).map(\.path) }
+                            .map { Set($0) == [paths[1], paths[2]] } == true
+                })
             await harness.close()
         }
     }

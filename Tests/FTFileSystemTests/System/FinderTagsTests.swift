@@ -37,14 +37,14 @@ import Testing
         }
     }
 
-    // Groups of tags go by an item's first tag's name, with a color or not; an item without tags has none.
-    @Test func theFirstTagNamesTheItemsGroup() throws {
+    // The views show an item's tags in the order they were put on in; an item without tags has none.
+    @Test func anItemsTagsShowInTheirOrder() throws {
         try withFile { path in
-            #expect(FinderTags.firstName(path) == nil)
+            #expect(FinderTags.shown(path).isEmpty)
             try (URL(fileURLWithPath: path) as NSURL).setResourceValue(["Project", "Red"], forKey: .tagNamesKey)
-            #expect(FinderTags.firstName(path) == "Project")
+            #expect(FinderTags.shown(path).map(\.name) == ["Project", "Red"])
         }
-        #expect(FinderTags.firstName("/no/such/file") == nil)
+        #expect(FinderTags.shown("/no/such/file").isEmpty)
     }
 
     // Reading the tags of the home folder's Desktop, Documents or Downloads makes macOS ask for permission, so

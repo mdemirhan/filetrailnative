@@ -15,7 +15,7 @@ struct ItemValuesTests {
         }
         fake.addedHandler = { $0.hasSuffix("a.txt") ? 5 : nil }
         fake.lastOpenedHandler = { $0.hasSuffix("a.txt") ? 7 : nil }
-        fake.firstTagHandler = { $0.hasSuffix("a.txt") ? "Work" : nil }
+        fake.tagNamesHandler = { $0.hasSuffix("a.txt") ? ["Work", "Home"] : [] }
         return fake
     }
 
@@ -31,7 +31,8 @@ struct ItemValuesTests {
         #expect(ExplorerListing.values(paths, field: .added, fake).map(\.number) == [5, nil, nil])
         #expect(ExplorerListing.values(paths, field: .lastOpened, fake).map(\.number) == [7, nil, nil])
         let tags = ExplorerListing.values(paths, field: .tags, fake)
-        #expect(tags.map(\.text) == ["Work", nil, nil] && tags.allSatisfy { $0.number == nil })
+        // The names A to Z, one a line, whatever order they were put on in.
+        #expect(tags.map(\.text) == ["Home\nWork", nil, nil] && tags.allSatisfy { $0.number == nil })
         #expect(fake.tagNamesRead == paths)
     }
 

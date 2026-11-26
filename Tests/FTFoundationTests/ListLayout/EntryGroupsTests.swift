@@ -228,6 +228,12 @@ struct EntryGroupsTests {
         #expect(TagNameList.compare(joined(["Apple", "Zebra"]), joined(["Banana"]), order: order) < 0)
         #expect(TagNameList.compare(joined(["work"]), joined(["Work"]), order: order) == 0)
         #expect(TagNameList.compare(joined(["File 10"]), joined(["File 9"]), order: order) > 0)
+        // An order and groups read each item's names A to Z: the same tags put on in either order are the same.
+        #expect(TagNameList.sorted(["Work", "home", "Apple"], order: order) == "Apple\nhome\nWork")
+        #expect(
+            TagNameList.sorted(["Pear", "Apple"], order: order) == TagNameList.sorted(["Apple", "Pear"], order: order))
+        #expect(TagNameList.first(of: TagNameList.sorted(["Work", "Home"], order: order)) == "Home")
+        #expect(TagNameList.sorted([], order: order) == nil)
     }
 
     // Grouping a large folder is one pass over its items: the keys are made once each and compared as numbers.
