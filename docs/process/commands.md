@@ -1,6 +1,8 @@
 # Commands
 
-What a new command needs, so that it can be found everywhere a command is looked for: the menus, the command palette (⇧⌘P), Help and Settings → Shortcuts. A command is anything someone can run: a menu item, or something done with a key that has no menu item (Move Half a Page Down, Open Selected Item). The decisions on where items go are in [decisions/windows-and-panes.md](../decisions/windows-and-panes.md) ("The menus keep Finder's order and groups", "The command palette lists every command").
+What a new command needs, so that it can be found everywhere a command is looked for: the menus, the command palette (⇧⌘P), Help and Settings → Shortcuts.
+A command is anything someone can run: a menu item, or something done with a key that has no menu item (Move Half a Page Down, Open Selected Item).
+The decisions on where items go are in [decisions/windows-and-panes.md](../decisions/windows-and-panes.md) ("The menus keep Finder's order and groups", "The command palette lists every command").
 
 ## The one table
 
@@ -8,44 +10,65 @@ Every command is a row of `ShortcutCommands.all` (`Sources/FTFoundation/Commands
 
 - **`label`**: the name as it reads on its own, in Settings, Help and the palette ("View as Icons", not the menu's "as Icons").
 - **`group`**: the heading Settings, Help and the palette list it under.
-- **`defaults`**: its keys before Settings changes them, often none. Finder's key where Finder has the command. A key no command has today, checked against the table and `ShortcutCommands.refusal(for:)`.
-- **`menuPath`**: where the menu has it ("View > Sort By > Name"), or nil for a command only keys run. The palette shows it beside the name.
-- **`fixed`**: only for keys shared with text fields or macOS's own (⌘C, ⌘Q). A fixed command is listed in Settings but can't be changed there.
+- **`defaults`**: its keys before Settings changes them, often none.
+  Finder's key where Finder has the command.
+  A key no command has today, checked against the table and `ShortcutCommands.refusal(for:)`.
+- **`menuPath`**: where the menu has it ("View > Sort By > Name"), or nil for a command only keys run.
+  The palette shows it beside the name.
+- **`fixed`**: only for keys shared with text fields or macOS's own (⌘C, ⌘Q).
+  A fixed command is listed in Settings but can't be changed there.
 
-That row is what puts the command in **Settings → Shortcuts** (every row is listed, with a hint in `ShortcutSettingsText.hint` where the label needs one) and in **the command palette** (built from the table, see below). Its keys reach the menu and the window's key handler from here too.
+That row is what puts the command in **Settings → Shortcuts** (every row is listed, with a hint in `ShortcutSettingsText.hint` where the label needs one) and in **the command palette** (built from the table, see below).
+Its keys reach the menu and the window's key handler from here too.
 
 ## Running it
 
-- A command the menu, the toolbar or a key sends to a window is an `AppCommand` with the same raw value as its table row. The window carries it out in `MainWindowController.perform`; what it can run now is decided in `CommandAvailability` and `ShortcutPolicy`, and what its menu item shows (dimmed, checked, a title that names what it acts on) in `ApplicationMenu.itemStates`.
+- A command the menu, the toolbar or a key sends to a window is an `AppCommand` with the same raw value as its table row.
+  The window carries it out in `MainWindowController.perform`;
+  what it can run now is decided in `CommandAvailability` and `ShortcutPolicy`, and what its menu item shows (dimmed, checked, a title that names what it acts on) in `ApplicationMenu.itemStates`.
 - The menu item goes in `ApplicationMenuBuilder`, where Finder would have it, or beside the item of Finder's it is most like.
-- A command with no menu item runs from the window's key handler (`runKeyCommand`), and from the palette through `MainWindowController.runPaletteKeyCommand`. For the palette to list it, it is also named in the `.windowKey` case of `CommandPalette.run(of:)`: without that the palette has no way to run it, leaves it out, and its table test fails.
+- A command with no menu item runs from the window's key handler (`runKeyCommand`), and from the palette through `MainWindowController.runPaletteKeyCommand`.
+  For the palette to list it, it is also named in the `.windowKey` case of `CommandPalette.run(of:)`: without that the palette has no way to run it, leaves it out, and its table test fails.
 - Whether it runs while the folder tree has the keyboard is chosen in `TreeFocusBuckets` (the compiler asks for it).
-- A right-click menu item is added in `ContextMenuModel` and `ContextMenuRules`, with its key in `ShortcutPolicy.contextMenuShortcutCommands`; a toolbar button in `ToolbarItemTable`.
+- A right-click menu item is added in `ContextMenuModel` and `ContextMenuRules`, with its key in `ShortcutPolicy.contextMenuShortcutCommands`;
+  a toolbar button in `ToolbarItemTable`.
 
 ## The command palette
 
-The palette lists every row of the table and the menu items that aren't in it, so a new command is in it with nothing more to do. These cases need a line in `CommandPalette` (`Sources/FTFoundation/Commands/CommandPalette.swift`):
+The palette lists every row of the table and the menu items that aren't in it, so a new command is in it with nothing more to do.
+These cases need a line in `CommandPalette` (`Sources/FTFoundation/Commands/CommandPalette.swift`):
 
 - **The menu's title names what the command acts on** (Compress “Photos”, Edit in BBEdit, Show Folder Tree): add it to `menuTitledCommands`, and the palette shows the menu's title in place of the label.
 - **A menu item with no table row** (About, Manage Tab Views…): add it to `menuItems`, with its label, place and group.
 - **A `fixed` row with no `menuPath`** (Undo, Quit): add its menu to `standardPlaces`, so the palette says where it is.
-- **A symbol beside its name**: add it to `CommandPalette.icon`, where the toolbar or the right-click menus have one for it. Nothing fails without it; the row has no symbol.
-- **A command the palette shouldn't list**: add it to `excludedCommands` or `excludedMenuItems`, with the reason beside it. Today that is the palette itself, Services, and the fifteen saved-view keys (Tab View 1 to 5, Window View 1 to 5 and their "in This Window"), which the palette lists by the views' names instead.
+- **A symbol beside its name**: add it to `CommandPalette.icon`, where the toolbar or the right-click menus have one for it.
+  Nothing fails without it;
+  the row has no symbol.
+- **A command the palette shouldn't list**: add it to `excludedCommands` or `excludedMenuItems`, with the reason beside it.
+  Today that is the palette itself, Services, and the fifteen saved-view keys (Tab View 1 to 5, Window View 1 to 5 and their "in This Window"), which the palette lists by the views' names instead.
 
-`CommandPaletteTests` walks the table and fails on any command that is neither in the palette nor excluded; `CommandPaletteMenuTests` does the same for the items of the built menu.
+`CommandPaletteTests` walks the table and fails on any command that is neither in the palette nor excluded;
+`CommandPaletteMenuTests` does the same for the items of the built menu.
 
 ## Help
 
-- Every table row has a line in `HelpContent.shortcutItems` (`Sources/FTFoundation/Help/HelpTopics.swift`), which the Keyboard Shortcuts page lists. `HelpContentTests` fails without it.
-- The command palette shows that line under its list while the command is selected, alone, without the key beside it. So it says what the command does and to what, more than its name: "Copy the selected items, to paste into another folder", not "Copy". It is a phrase with no period, 80 characters at most. `CommandPaletteTests` checks all three. A menu item with no table row has its line in `CommandPalette.menuItems`.
+- Every table row has a line in `HelpContent.shortcutItems` (`Sources/FTFoundation/Help/HelpTopics.swift`), which the Keyboard Shortcuts page lists.
+  `HelpContentTests` fails without it.
+- The command palette shows that line under its list while the command is selected, alone, without the key beside it.
+  So it says what the command does and to what, more than its name: "Copy the selected items, to paste into another folder", not "Copy".
+  It is a phrase with no period, 80 characters at most.
+  `CommandPaletteTests` checks all three.
+  A menu item with no table row has its line in `CommandPalette.menuItems`.
 - A command that needs more than its line gets a row in the topic it belongs to, saying what it does and where it is.
 - `Tests/Golden/help-content.json` records the shortcut list and what Help's search finds: a new or changed line goes in each base's list, and in the searches whose words it now holds or no longer does.
 
 ## Goldens
 
-- These goldens are written as bases and each case's changes to its base (`Tests/FTTestSupport/GoldenChanges.swift` says how): a new command goes in the bases, and in a case only where that case gives it something other than its base does. A test that fails names the place that differs in each case.
+- These goldens are written as bases and each case's changes to its base (`Tests/FTTestSupport/GoldenChanges.swift` says how): a new command goes in the bases, and in a case only where that case gives it something other than its base does.
+  A test that fails names the place that differs in each case.
 - `Tests/Golden/shortcut-resolution.json`: a new row in the base's `bindings`, and a new default key in its `commandByShortcut`, in the table's order.
-- `Tests/Golden/command-availability.json` lists the `AppCommand`s that can't run, by name: a new `AppCommand` goes in each base's list where it can't run there, and in the `$remove` or `$insert` of a case where it differs from its base. A base's list is kept in alphabetical order, as the test compares it with the sorted list: a new command goes in its alphabetical place, and an `$insert` names the neighbour before it.
+- `Tests/Golden/command-availability.json` lists the `AppCommand`s that can't run, by name: a new `AppCommand` goes in each base's list where it can't run there, and in the `$remove` or `$insert` of a case where it differs from its base.
+  A base's list is kept in alphabetical order, as the test compares it with the sorted list: a new command goes in its alphabetical place, and an `$insert` names the neighbour before it.
 - `Tests/Golden/context-menu.json` and `Tests/Golden/toolbar-sanitize.json` take a new right-click item and a new toolbar button in their bases.
 - The lists kept by hand in `ShortcutsTests` and `ApplicationMenuLayoutTests` name every command and every menu item in order: a new one is added there.
 
@@ -53,5 +76,6 @@ They are edited by hand, never written from the code's output (`docs/decisions/c
 
 ## Before it lands
 
-- The tests above pass: `scripts/ci.sh --scope 'CommandPalette|Shortcut|CommandAvailability|ApplicationMenu|CommandRoutes|ContextMenu|Toolbar|HelpContent|HelpView'`. The scope is matched against the suites' and the tests' names, not their folders: `--scope Commands` runs only the few tests with that word in their name.
+- The tests above pass: `scripts/ci.sh --scope 'CommandPalette|Shortcut|CommandAvailability|ApplicationMenu|CommandRoutes|ContextMenu|Toolbar|HelpContent|HelpView'`.
+  The scope is matched against the suites' and the tests' names, not their folders: `--scope Commands` runs only the few tests with that word in their name.
 - The command is tried in the built app: from its menu item, from its key, and from the palette (⇧⌘P, its name typed, Return).

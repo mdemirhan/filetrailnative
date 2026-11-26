@@ -1,10 +1,18 @@
 # UI text audit (2026-11-23)
 
-Every message, title, label, menu item, tooltip, placeholder, alert, toast, empty state, accessibility label and Help line, read against the code that shows it. Wordings a decision in `docs/decisions/` fixes are left alone unless they confuse; where a row touches one, it says so. Nothing here is changed yet.
+Every message, title, label, menu item, tooltip, placeholder, alert, toast, empty state, accessibility label and Help line, read against the code that shows it.
+Wordings a decision in `docs/decisions/` fixes are left alone unless they confuse;
+where a row touches one, it says so.
+Nothing here is changed yet.
 
 Marked ✔ were checked again by hand against the code.
 
-**Done (2026-11-23):** the five wrong texts (the case-only paste clash, the Folder View commands' menu paths, the column header menu's notes, the Permissions row, "copied" for a paste that moves); the four hard to read (Tab View Options' active pane, Batch Rename's Don't Rename and footer, the viewer's conflict bar, the archive's download-mark refusal); every Settings → Shortcuts note; one name each for ⌘I (Get Info), Edit in Text Editor, disk, results, Trash and the folder tree; and the patterns (curly apostrophes and quotes, "operation", Stop rather than cancelled, "can't"). **Left:** raw system error text (rows 1–5 of the first table) and the rest of the rows below.
+**Done (2026-11-23):** the five wrong texts (the case-only paste clash, the Folder View commands' menu paths, the column header menu's notes, the Permissions row, "copied" for a paste that moves);
+the four hard to read (Tab View Options' active pane, Batch Rename's Don't Rename and footer, the viewer's conflict bar, the archive's download-mark refusal);
+every Settings → Shortcuts note;
+one name each for ⌘I (Get Info), Edit in Text Editor, disk, results, Trash and the folder tree;
+and the patterns (curly apostrophes and quotes, "operation", Stop rather than cancelled, "can't").
+**Left:** raw system error text (rows 1–5 of the first table) and the rest of the rows below.
 
 ## The worst, across the app
 
@@ -193,10 +201,14 @@ Marked ✔ were checked again by hand against the code.
 
 ## Patterns
 
-- **Straight apostrophes and quotes** in about 100 user strings (file operations ~85, plus Settings, viewer, folder views); the rest use ’ and “ ”.
+- **Straight apostrophes and quotes** in about 100 user strings (file operations ~85, plus Settings, viewer, folder views);
+  the rest use ’ and “ ”.
 - **"Operation"** as a user word: 27 strings in file operations alone.
-- **Stop vs cancel vs abort**: the button is Stop and Activity says Stopped; toasts say "… cancelled", notices "Operation cancelled.", one place "aborted".
-- **"can not"** twice (Settings → Shortcuts); "can't" everywhere else. **"any more"** vs **"anymore"**.
+- **Stop vs cancel vs abort**: the button is Stop and Activity says Stopped;
+  toasts say "… cancelled", notices "Operation cancelled.", one place "aborted".
+- **"can not"** twice (Settings → Shortcuts);
+  "can't" everywhere else.
+  **"any more"** vs **"anymore"**.
 - **Periods at the end of notes** mixed within one sheet (Convert Images, Batch Rename).
 - **Menu-path separators**: ">", "›", "▸", "→".
 
@@ -204,7 +216,8 @@ Marked ✔ were checked again by hand against the code.
 
 - **⌘I**: "Show Info" (right-click menus, Help) vs "Info Panel" (View menu, toolbar, Settings).
 - **Edit in Text Editor**: "Edit in {app}" (menus), "Edit in Text Editor" (Settings, palette), "Edit" (toolbar), "Open in Text Editor" (viewer), "Edit in the File menu" (Help).
-- **Disk vs volume**: "disk" nearly everywhere; "volume" in copy errors and the no-Trash Replace.
+- **Disk vs volume**: "disk" nearly everywhere;
+  "volume" in copy errors and the no-Trash Replace.
 - **Deleting with no Trash**: "deleted immediately", "Delete Permanently", "deleted for good", "permanently erase".
 - **Make vs create**: "Couldn't Make a New Folder" vs "Creating Folder…" and "Create Folder".
 - **Failure titles**: "Couldn't Paste" vs "Paste failed" vs "The file couldn't be saved".
@@ -224,7 +237,9 @@ Marked ✔ were checked again by hand against the code.
 - **Shortcut groups**: Help's four groups vs Settings' seven, with commands in different ones.
 - **px vs pixels** in Convert Images.
 - **Move to… vs Move To vs Extract To…** (names-and-search.md writes "Move To", "Extract To").
-- **Put Back**: Help says "File Trail has no Put Back" (Trash); the clipboard has a Put Back button.
-- **Status messages**: Settings calls them "notifications"; Settings → Files calls an alert "a notice".
+- **Put Back**: Help says "File Trail has no Put Back" (Trash);
+  the clipboard has a Put Back button.
+- **Status messages**: Settings calls them "notifications";
+  Settings → Files calls an alert "a notice".
 
 Left alone on purpose (decided and clear): "Can't Be Undone", "Finishing…", "was moved to the Trash" / "is no longer there", the several-disks rename refusal, "Can't replace: It is a disk mounted here." on its row, Match / Match As / Skip .git Folders, "Search View", "Forget the Second Pane", Don't Save / Cancel / Save.

@@ -1,6 +1,8 @@
 # docs
 
-What is kept here, by what it is for. A new file goes into the folder that fits what it is for; a plan moves to `records/` once it is done.
+What is kept here, by what it is for.
+A new file goes into the folder that fits what it is for;
+a plan moves to `records/` once it is done.
 
 | Where | What it holds |
 |---|---|

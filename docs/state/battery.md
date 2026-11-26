@@ -1,12 +1,19 @@
 # Battery and background work
 
-**Smooth first, then battery** (the owner, 2026-11-22). What can't be seen may keep its data current where that is cheap, so it is right the moment it is shown. Nothing that happens out of sight changes what the user is doing: a viewer, a selection, the keyboard, a question. A cost is cut only where it is measured, and never by making a view slower or less smooth to show. The rows below are weighed by this.
+**Smooth first, then battery** (the owner, 2026-11-22).
+What can't be seen may keep its data current where that is cheap, so it is right the moment it is shown.
+Nothing that happens out of sight changes what the user is doing: a viewer, a selection, the keyboard, a question.
+A cost is cut only where it is measured, and never by making a view slower or less smooth to show.
+The rows below are weighed by this.
 
-Background work costs little, so nothing further is planned here. Measure before adding anything more elaborate.
+Background work costs little, so nothing further is planned here.
+Measure before adding anything more elaborate.
 
 ## Measured (2026-10-31)
 
-A release build with its own `--user-data-dir`, one window on a folder, 60 s per sample, CPU time from `ps` and power from `top`. The Mac was busy with other work, so small differences mean nothing. A hidden window does the same work as these visible ones, as the watcher doesn't look at visibility.
+A release build with its own `--user-data-dir`, one window on a folder, 60 s per sample, CPU time from `ps` and power from `top`.
+The Mac was busy with other work, so small differences mean nothing.
+A hidden window does the same work as these visible ones, as the watcher doesn't look at visibility.
 
 | Folder watcher latency | Subfolder activity | App CPU per minute | `top` power |
 |---|---|---|---|
@@ -34,9 +41,15 @@ The Info panel on a volume reads its free space again at each tick of that timer
 Other repeating timers run only while something is going on, and stop when it ends:
 
 - **A search** asks for new results every 0.12 s while it runs, and once a second while its tab is in the background.
-- **A folder size** being calculated is asked about every 0.2 s. While a walk stores sizes, every window looks up again, at most every 0.5 s, the sizes of the folders it shows (no walk: lookups in what is stored).
+- **A folder size** being calculated is asked about every 0.2 s.
+  While a walk stores sizes, every window looks up again, at most every 0.5 s, the sizes of the folders it shows (no walk: lookups in what is stored).
 - **A marquee** (dragging to select in the List, Icons or Compact List) looks at the pointer 60 times a second while the button is held, to scroll when it is past the edge.
 - **Leftover writes**: when a start finds crash-journal entries it can't finish yet (a disk not connected or not answering), they are tried again once a minute, while nothing is being written, until none is left.
-- **The Undo History list**, while it is open and lists an operation under an hour old, waits for the next minute one of them turns, to tell its times again; closed, nothing waits.
-- **The Previews view** waits a moment after a mouse wheel or a drag-to-select scrolled it, to settle on a row, ten seconds after its last pane went, to let go of its previews, a fifth of a second for a preview not known yet before it shows the file's icon, a quarter of a second after the pane's size last changed before it asks for its previews at that size, and two seconds after a preview being made was told to stop, to see whether it did; each fires once. It asks Quick Look for the page past the one on screen and the page before it, ahead of need: those kept already cost nothing, and the others are asked for once.
-- **A copy** updates its progress while it runs; **an open menu** that changes with Option checks the key 20 times a second; **animations** (a tree row's arrow turning, the Info Row sliding) run at 60 frames a second while they last.
+- **The Undo History list**, while it is open and lists an operation under an hour old, waits for the next minute one of them turns, to tell its times again;
+  closed, nothing waits.
+- **The Previews view** waits a moment after a mouse wheel or a drag-to-select scrolled it, to settle on a row, ten seconds after its last pane went, to let go of its previews, a fifth of a second for a preview not known yet before it shows the file's icon, a quarter of a second after the pane's size last changed before it asks for its previews at that size, and two seconds after a preview being made was told to stop, to see whether it did;
+  each fires once.
+  It asks Quick Look for the page past the one on screen and the page before it, ahead of need: those kept already cost nothing, and the others are asked for once.
+- **A copy** updates its progress while it runs;
+  **an open menu** that changes with Option checks the key 20 times a second;
+  **animations** (a tree row's arrow turning, the Info Row sliding) run at 60 frames a second while they last.

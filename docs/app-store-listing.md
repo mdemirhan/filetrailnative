@@ -1,8 +1,12 @@
 # App Store listing
 
-The text and pictures for File Trail's page on the Mac App Store, ready to paste into App Store Connect. Each field is within Apple's limit (counted below it). The App Store shows the description as plain text, so it uses capitals for headings and `•` for lists, not Markdown.
+The text and pictures for File Trail's page on the Mac App Store, ready to paste into App Store Connect.
+Each field is within Apple's limit (counted below it).
+The App Store shows the description as plain text, so it uses capitals for headings and `•` for lists, not Markdown.
 
-What still has to be done before the app can be submitted is in the plan, [plans/app-store.md](plans/app-store.md). Lines marked **Check** describe something the App Store build may do differently from today's app; settle them there first, and change the text to match.
+What still has to be done before the app can be submitted is in the plan, [plans/app-store.md](plans/app-store.md).
+Lines marked **Check** describe something the App Store build may do differently from today's app;
+settle them there first, and change the text to match.
 
 ## App information
 
@@ -20,7 +24,8 @@ What still has to be done before the app can be submitted is in the plan, [plans
 | Copyright | `2026 Mustafa Demirhan` |
 | Price | The owner's choice (see plans/app-store.md) |
 
-A name of `File Trail – File Manager` (25) would also be searched by "file manager"; the subtitle and keywords below already cover it.
+A name of `File Trail – File Manager` (25) would also be searched by "file manager";
+the subtitle and keywords below already cover it.
 
 ## URLs
 
@@ -40,7 +45,9 @@ Find any file as you type, work in two folders side by side, and gather files fr
 
 ## Keywords (100)
 
-Comma separated, no spaces. Words already in the name and subtitle (file, trail, search, two, panes, cut, paste) count without repeating them. Apple's rules leave out other apps' names, so "Finder" is not among them.
+Comma separated, no spaces.
+Words already in the name and subtitle (file, trail, search, two, panes, cut, paste) count without repeating them.
+Apple's rules leave out other apps' names, so "Finder" is not among them.
 
 ```text
 manager,browser,dual,pane,folder,tree,rename,batch,archive,unzip,rar,7z,size,disk,space,fuzzy,regex
@@ -103,11 +110,14 @@ File Trail needs a Mac with Apple silicon and macOS 26 Tahoe or later.
 
 ## What's New
 
-Not shown for a first version. For each later one, the release notes, which are already written for the people who use the app (`docs/decisions/code.md`), shortened to what matters most.
+Not shown for a first version.
+For each later one, the release notes, which are already written for the people who use the app (`docs/decisions/code.md`), shortened to what matters most.
 
 ## Screenshots
 
-The Mac App Store takes 1 to 10 screenshots at 16:10: 1280 × 800, 1440 × 900, 2560 × 1600 or 2880 × 1800. Today's README screenshots are 2224 × 1474 with a window shadow, so they are taken again at 2880 × 1800 from the same scenes in `tools/capture/readme/` (plans/app-store.md, "Store page and pictures"). Each gets a short caption above the window, in this order:
+The Mac App Store takes 1 to 10 screenshots at 16:10: 1280 × 800, 1440 × 900, 2560 × 1600 or 2880 × 1800.
+Today's README screenshots are 2224 × 1474 with a window shadow, so they are taken again at 2880 × 1800 from the same scenes in `tools/capture/readme/` (plans/app-store.md, "Store page and pictures").
+Each gets a short caption above the window, in this order:
 
 | # | Scene | Caption |
 |---|---|---|
@@ -126,7 +136,8 @@ An App Preview video (up to 30 seconds, 1920 × 1080) is optional and can come l
 
 ## App Privacy
 
-In App Store Connect, App Privacy: **Data Not Collected**. File Trail has no analytics, no crash reporting of its own and makes no network connections ([privacy.md](privacy.md)).
+In App Store Connect, App Privacy: **Data Not Collected**.
+File Trail has no analytics, no crash reporting of its own and makes no network connections ([privacy.md](privacy.md)).
 
 ## Notes for App Review
 
@@ -144,8 +155,10 @@ Things to try:
 
 ```
 
-**Check:** the second paragraph describes the access flow the App Store build is to have (plans/app-store.md, "Folder access"). Keep it in step with what is built, and add a line for Empty Trash if the App Store build keeps it.
+**Check:** the second paragraph describes the access flow the App Store build is to have (plans/app-store.md, "Folder access").
+Keep it in step with what is built, and add a line for Empty Trash if the App Store build keeps it.
 
 ## Export compliance
 
-File Trail uses no encryption of its own. `ITSAppUsesNonExemptEncryption` is `NO` in the App Store build's Info.plist, so App Store Connect doesn't ask with each build.
+File Trail uses no encryption of its own.
+`ITSAppUsesNonExemptEncryption` is `NO` in the App Store build's Info.plist, so App Store Connect doesn't ask with each build.
