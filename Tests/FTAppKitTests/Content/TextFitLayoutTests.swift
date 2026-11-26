@@ -82,9 +82,9 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // The Info panel wraps a long name onto up to 2 lines, breaking inside a word if it must, before its ellipsis;
-        // the frame is two lines tall and the name drawn whole.
-        @Test func aLongInfoPanelNameWrapsOntoTwoLines() async throws {
+        // The Info panel's name is one line, a long one cut short at its end, so nothing under it moves; the field
+        // keeps the whole name, to select and copy.
+        @Test func aLongInfoPanelNameIsOneLineCutShort() async throws {
             let harness = try ExplorerHarness.windowless()
             let long = "Quarterly planning notes for the design team review.pdf"
             try "x".write(to: harness.folder.appending(long), atomically: true, encoding: .utf8)
@@ -100,8 +100,9 @@ extension ExplorerWindowlessTests {
             let field = try #require(
                 root.flatMap { findViews("infoPanel.name", in: $0).first } as? SelectableTextField)
             let line = (field.font?.pointSize ?? 15) * 1.3
-            #expect(abs(field.frame.height - 2 * line) < 0.5, "\(field.frame)")
-            #expect(Self.cutShort(field) == false, "\(field.frame)")
+            #expect(abs(field.frame.height - line) < 0.5, "\(field.frame)")
+            #expect(Self.cutShort(field) == true, "\(field.frame)")
+            #expect(field.stringValue == long && field.toolTip == long)
             await harness.close()
         }
 

@@ -271,9 +271,10 @@ final class InfoPanelContentView: NSView {
         subtitle.setAccessibilityIdentifier("infoPanel.subtitle")
         emptyLabel.setAccessibilityIdentifier("infoPanel.empty")
         name.alignment = .center
-        name.maximumNumberOfLines = 2
-        name.lineBreakMode = .byWordWrapping
-        name.cell?.truncatesLastVisibleLine = true
+        // One line, cut short at its end, so a long name moves nothing under it; the whole of it is in the field, to
+        // select and copy, and in its tooltip.
+        name.maximumNumberOfLines = 1
+        name.lineBreakMode = .byTruncatingTail
         name.font = ChromeColors.font(size: DesignTokens.typeScale.title3, weight: 600)
         subtitle.alignment = .center
         subtitle.font = tabularFont(DesignTokens.typeScale.callout)
@@ -825,9 +826,7 @@ final class InfoPanelContentView: NSView {
         nameParagraph.alignment = .center
         nameParagraph.minimumLineHeight = nameLine
         nameParagraph.maximumLineHeight = nameLine
-        // Wrapped by word onto its two lines, the last cut short (`truncatesLastVisibleLine`): the system's field takes
-        // a truncating break as one line.
-        nameParagraph.lineBreakMode = .byWordWrapping
+        nameParagraph.lineBreakMode = .byTruncatingTail
         let nameFont = name.font ?? ChromeColors.font(size: 15, weight: 600)
         name.attributedStringValue = NSAttributedString(
             string: name.stringValue,
@@ -835,16 +834,9 @@ final class InfoPanelContentView: NSView {
                 .font: nameFont, .foregroundColor: NSColor(infoTheme.palette.textPrimary),
                 .paragraphStyle: nameParagraph,
             ])
-        // Measured wrapped by word, as it is drawn: a truncating line break never wraps, so it would measure one line.
-        let wrapped = (nameParagraph.mutableCopy() as? NSMutableParagraphStyle) ?? NSMutableParagraphStyle()
-        wrapped.lineBreakMode = .byWordWrapping
-        let measured = (name.stringValue as NSString).boundingRect(
-            with: NSSize(width: nameWidth, height: 10000), options: [.usesLineFragmentOrigin],
-            attributes: [.font: nameFont, .paragraphStyle: wrapped])
-        let lines = min(2, max(1, Int((measured.height / nameLine).rounded(.up))))
-        let nameHeight = Double(lines) * nameLine
-        // Centered in the whole width it may take: the field lays its lines out a little wider than they were
-        // measured, and centered text is drawn where it would be in a frame just its width.
+        let nameHeight = nameLine
+        // Centered in the whole width it may take: the field lays its text out a little wider than it was measured,
+        // and centered text is drawn where it would be in a frame just its width.
         name.place(NSRect(x: inset + (width - nameWidth) / 2, y: y, width: nameWidth, height: nameHeight))
         nameBand = y...(y + nameHeight)
         y += nameHeight + InfoMetrics.heroGap
