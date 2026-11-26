@@ -171,15 +171,18 @@ extension ExplorerWindowlessTests {
         }
 
         // A choice written after its tab has gone (a slow disk, the window closed meanwhile) ends without reaching
-        // for the tab.
+        // for the tab, and what couldn't be written is still said. Its folder went with the harness, so the write
+        // fails: the notice is caught here, where the app's own, with no window left, waits for a click on OK.
         @Test func aChoiceWrittenAfterTheTabHasGoneEndsQuietly() async throws {
             let harness = try ExplorerHarness.windowless()
             var coordinator: ContextMenuCoordinator?
+            let notices = NoticeSpy()
             var path = ""
             weak var gone: MainWindowController?
             do {
                 let tab = try await opened(harness)
                 coordinator = tab.contextMenus
+                coordinator?.notices = notices
                 path = try #require(files(tab).first)
                 gone = tab
             }
@@ -187,6 +190,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil(timeout: .seconds(10)) { gone == nil })
             let read = await coordinator?.changeTags(.toggle(FinderTag(name: "Work", color: nil)), paths: [path])
             #expect(read != nil)
+            #expect(notices.shown.map(\.title) == ["Couldn\u{2019}t Change the Tag"])
         }
 
         func tags(_ name: String) -> FinderTagsOnItems {
