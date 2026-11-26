@@ -203,6 +203,22 @@ struct InfoPanelViewTests {
         #expect(findViews("infoPanel.row.value", in: view).map(fieldText).contains("644 · rw-r--r--"))
     }
 
+    // A long Where is cut at its start within its row: it never reaches over its label or past the panel's edge,
+    // and the field is no wider than its row gives it.
+    @Test func aLongWhereStaysInItsRow() throws {
+        var deep = Self.file
+        deep.path =
+            "/Users/demo/" + Array(repeating: "a folder with a long name", count: 6).joined(separator: "/") + "/x.md"
+        let view = panel(display(deep))
+        let field = try #require(findViews("infoPanel.where", in: view).first)
+        let labels = findViews("infoPanel.row.label", in: view)
+        let label = try #require(labels.first { fieldText($0) == "Where" })
+        let fieldFrame = field.convert(field.bounds, to: view)
+        let labelFrame = label.convert(label.bounds, to: view)
+        #expect(fieldFrame.minX >= labelFrame.maxX, "\(fieldFrame) over \(labelFrame)")
+        #expect(fieldFrame.maxX <= view.bounds.width, "\(fieldFrame)")
+    }
+
     // A folder only says Open.
     @Test func aFolderOnlySaysOpen() throws {
         var folder = Self.file

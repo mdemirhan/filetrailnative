@@ -233,7 +233,8 @@ final class InfoPanelContentView: NSView {
         emptyLabel.setAccessibilityIdentifier("infoPanel.empty")
         name.alignment = .center
         name.maximumNumberOfLines = 2
-        name.lineBreakMode = .byTruncatingTail
+        name.lineBreakMode = .byWordWrapping
+        name.cell?.truncatesLastVisibleLine = true
         name.font = ChromeColors.font(size: DesignTokens.typeScale.title3, weight: 600)
         subtitle.alignment = .center
         subtitle.font = tabularFont(DesignTokens.typeScale.callout)
@@ -760,7 +761,9 @@ final class InfoPanelContentView: NSView {
         nameParagraph.alignment = .center
         nameParagraph.minimumLineHeight = nameLine
         nameParagraph.maximumLineHeight = nameLine
-        nameParagraph.lineBreakMode = .byTruncatingTail
+        // Wrapped by word onto its two lines, the last cut short (`truncatesLastVisibleLine`): the system's field takes
+        // a truncating break as one line.
+        nameParagraph.lineBreakMode = .byWordWrapping
         let nameFont = name.font ?? ChromeColors.font(size: 15, weight: 600)
         name.attributedStringValue = NSAttributedString(
             string: name.stringValue,
@@ -776,8 +779,9 @@ final class InfoPanelContentView: NSView {
             attributes: [.font: nameFont, .paragraphStyle: wrapped])
         let lines = min(2, max(1, Int((measured.height / nameLine).rounded(.up))))
         let nameHeight = Double(lines) * nameLine
-        let nameShown = min(nameWidth, max(ceil(measured.width), textExtent(name.stringValue, nameFont)))
-        name.place(NSRect(x: inset + (width - nameShown) / 2, y: y, width: nameShown, height: nameHeight))
+        // Centered in the whole width it may take: the field lays its lines out a little wider than they were
+        // measured, and centered text is drawn where it would be in a frame just its width.
+        name.place(NSRect(x: inset + (width - nameWidth) / 2, y: y, width: nameWidth, height: nameHeight))
         nameBand = y...(y + nameHeight)
         y += nameHeight + InfoMetrics.heroGap
         let subtitleHeight = lineHeight(subtitle.font)
@@ -964,13 +968,15 @@ final class SelectableTextField: NSTextField {
         return field
     }
 
-    /// Places it so its text is where `textRect` says: as wide as the field itself measures its text (a little more
-    /// than the app's own measure, which would cut it short), grown from the side its text keeps to, on whole points,
-    /// where the selection's editor lays the text out as the field drew it.
+    /// Places it so its text is where `textRect` says, on whole points, where the selection's editor lays the text
+    /// out as the field drew it. Text that `textRect` holds whole is given what the field itself measures it at (a
+    /// little more than the app's own measure, which would cut it short), grown from the side it keeps to; text cut
+    /// short keeps to `textRect`, so a long path never reaches past its row.
     func place(_ textRect: NSRect) {
         let pad = Self.padding
         var width = textRect.width + 2 * pad + Self.slack
-        if !isMultiline, let natural = cell?.cellSize.width, natural.isFinite {
+        let whole = textRect.width >= textExtent(stringValue, font) - 0.5
+        if whole, !isMultiline, let natural = cell?.cellSize.width, natural.isFinite {
             width = max(width, Double(natural) + Self.slack)
         }
         let x: Double

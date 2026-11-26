@@ -230,6 +230,7 @@
     "info panel title": {"swift": "infoPanel.title"},
     "info panel close": {"swift": "infoPanel.close"},
     "info panel pop out": {"swift": "infoPanel.popOut"},
+    "info panel where": {"swift": "infoPanel.where"},
     "info panel where copy": {"swift": "infoPanel.where.copy"},
     "info panel hero icon": {"swift": "infoPanel.heroIcon"},
     "info panel name": {"swift": "infoPanel.name"},
