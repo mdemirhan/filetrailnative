@@ -127,7 +127,7 @@ final class InfoSectionTitleView: NSView {
 
 /// How full a disk is: a thin bar with the used part in the accent, over the row's text.
 final class InfoUsageView: NSView, TextStyleSource {
-    let text = TextBoxField(labelWithString: "")
+    let text = SelectableTextField.label("")
     var fraction = 0.0 { didSet { needsDisplay = true } }
     var styleTextField: NSTextField? { text }
     static let barHeight = 6.0
@@ -151,7 +151,9 @@ final class InfoUsageView: NSView, TextStyleSource {
     override func layout() {
         super.layout()
         let line = lineBox(text.font)
-        text.frame = NSRect(x: 0, y: Self.barHeight + Self.barGap, width: bounds.width, height: line)
+        // Right-aligned, ending at the view's right edge.
+        let shown = min(bounds.width, textExtent(text.stringValue, text.font))
+        text.place(NSRect(x: bounds.width - shown, y: Self.barHeight + Self.barGap, width: shown, height: line))
         setAccessibilityValue(text.stringValue)
     }
 
@@ -184,8 +186,8 @@ final class InfoPanelContentView: NSView {
     var thumbnailStore: ThumbnailStore? = IconThumbnails.store
     private var body = InfoPanelDisplay.Body.blank
     private let heroIcon = InfoIconView()
-    private let name = TextBoxField(wrappingLabelWithString: "")
-    private let subtitle = TextBoxField(labelWithString: "")
+    private let name = SelectableTextField.label("", wraps: true)
+    private let subtitle = SelectableTextField.label("")
     private let open = SplitOpenButton()
     private let opensWith = OpensWithPopupView()
     private let cell = InfoPanelSizeView(identifier: "infoPanel.folderSize")
@@ -207,7 +209,7 @@ final class InfoPanelContentView: NSView {
         var label: TextBoxField
         var value: NSView
         var extra: TextBoxField?
-        var detail: TextBoxField?
+        var detail: SelectableTextField?
         /// Where's copy button.
         var copy: InfoIconButton?
         /// The box of a value that is not plain text, which automation names.
@@ -493,8 +495,8 @@ final class InfoPanelContentView: NSView {
         }
     }
 
-    private func valueField(_ text: String, wraps: Bool) -> TextBoxField {
-        let field = wraps ? TextBoxField(wrappingLabelWithString: text) : TextBoxField(labelWithString: text)
+    private func valueField(_ text: String, wraps: Bool) -> SelectableTextField {
+        let field = SelectableTextField.label(text, wraps: wraps)
         field.alignment = .right
         field.lineBreakMode = wraps ? .byWordWrapping : .byTruncatingTail
         field.maximumNumberOfLines = wraps ? 0 : 1
@@ -522,7 +524,7 @@ final class InfoPanelContentView: NSView {
             value = valueField(text, wraps: row.wraps)
         case .fitting(let full, _):
             // Which of the two shows is chosen as the row is laid out, by the room it has.
-            let field = TextBoxField(labelWithString: full)
+            let field = SelectableTextField.label(full)
             field.alignment = .right
             field.lineBreakMode = .byTruncatingTail
             field.isSelectable = true
@@ -559,7 +561,7 @@ final class InfoPanelContentView: NSView {
             value = field
         case .place(let text):
             // One line: what is cut short is the top of the disk, so the folder it is in stays.
-            let field = TextBoxField(labelWithString: text)
+            let field = SelectableTextField.label(text)
             field.alignment = .right
             field.lineBreakMode = .byTruncatingHead
             field.isSelectable = true
@@ -606,9 +608,9 @@ final class InfoPanelContentView: NSView {
             value = view
         }
         if let box { addSubview(box) }
-        var detail: TextBoxField?
+        var detail: SelectableTextField?
         if let text = row.detail {
-            let field = TextBoxField(labelWithString: text)
+            let field = SelectableTextField.label(text)
             field.alignment = .right
             field.lineBreakMode = .byTruncatingMiddle
             field.isSelectable = true
@@ -773,13 +775,14 @@ final class InfoPanelContentView: NSView {
         let lines = min(2, max(1, Int((measured.height / nameLine).rounded(.up))))
         let nameHeight = Double(lines) * nameLine
         let nameShown = min(nameWidth, max(ceil(measured.width), textExtent(name.stringValue, nameFont)))
-        name.frame = NSRect(x: inset + (width - nameShown) / 2, y: y, width: nameShown, height: nameHeight)
+        name.place(NSRect(x: inset + (width - nameShown) / 2, y: y, width: nameShown, height: nameHeight))
         nameBand = y...(y + nameHeight)
         y += nameHeight + InfoMetrics.heroGap
         let subtitleHeight = lineHeight(subtitle.font)
         let subtitleShown = min(nameWidth, textExtent(subtitle.stringValue, subtitle.font))
-        subtitle.frame = NSRect(
-            x: inset + (width - subtitleShown) / 2, y: y, width: subtitleShown, height: subtitleHeight)
+        subtitle.place(
+            NSRect(
+                x: inset + (width - subtitleShown) / 2, y: y, width: subtitleShown, height: subtitleHeight))
         y += subtitleHeight + 14
 
         if case .item = body {
@@ -819,6 +822,15 @@ final class InfoPanelContentView: NSView {
         y += InfoMetrics.sectionGap
         frame.size.height = y + 18 - InfoMetrics.sectionGap
         needsDisplay = true
+    }
+
+    /// Places a value's text where `rect` says: a field of the system's by the room it keeps around its text.
+    private func put(_ field: NSTextField, _ rect: NSRect) {
+        if let selectable = field as? SelectableTextField {
+            selectable.place(rect)
+        } else {
+            field.frame = rect
+        }
     }
 
     /// Lays out one row from `top`; its height.
@@ -866,11 +878,11 @@ final class InfoPanelContentView: NSView {
                 extra.frame = NSRect(
                     x: inset + width - codeWidth, y: top + baselineShift, width: codeWidth, height: codeHeight)
             } else if case .fitting = views.row.value {
-                field.frame = NSRect(x: valueX, y: top, width: valueWidth, height: bodyLine)
+                put(field, NSRect(x: valueX, y: top, width: valueWidth, height: bodyLine))
             } else if case .place = views.row.value {
                 // One line, its copy button at the row's end.
                 let copyWidth = views.copy != nil ? InfoMetrics.copyButton + 4 : 0
-                field.frame = NSRect(x: valueX, y: top, width: max(0, valueWidth - copyWidth), height: bodyLine)
+                put(field, NSRect(x: valueX, y: top, width: max(0, valueWidth - copyWidth), height: bodyLine))
                 if let copy = views.copy {
                     let side = InfoMetrics.copyButton
                     copy.frame = NSRect(
@@ -878,13 +890,16 @@ final class InfoPanelContentView: NSView {
                 }
             } else {
                 // A value longer than the row wraps onto the lines under it: nothing is cut short.
+                // Measured as wide as its frame is, the field's own room on each side included.
+                let room =
+                    field is SelectableTextField ? 2 * SelectableTextField.padding + SelectableTextField.slack : 0
                 let measured = ceil(
-                    (field.cell?.cellSize(forBounds: NSRect(x: 0, y: 0, width: maxValue, height: 10000)).height)
+                    (field.cell?.cellSize(forBounds: NSRect(x: 0, y: 0, width: maxValue + room, height: 10000)).height)
                         .map { Double($0) } ?? bodyLine)
                 let wraps = textWidth(field) > maxValue + 0.5
                 valueHeight = wraps ? max(bodyLine, measured) : bodyLine
                 let shownWidth = wraps ? maxValue : valueWidth
-                field.frame = NSRect(x: inset + width - shownWidth, y: top, width: shownWidth, height: valueHeight)
+                put(field, NSRect(x: inset + width - shownWidth, y: top, width: shownWidth, height: valueHeight))
             }
         case let link as TextLinkView:
             let copyWidth = views.copy != nil ? InfoMetrics.copyButton + 4 : 0
@@ -910,7 +925,7 @@ final class InfoPanelContentView: NSView {
         var height = valueHeight
         if let detail = views.detail {
             let shown = min(width, textWidth(detail))
-            detail.frame = NSRect(x: inset + width - shown, y: top + height, width: shown, height: bodyLine)
+            detail.place(NSRect(x: inset + width - shown, y: top + height, width: shown, height: bodyLine))
             height += bodyLine
         }
         return height
@@ -922,5 +937,59 @@ final class InfoPanelContentView: NSView {
         for y in dividers {
             NSRect(x: InfoMetrics.panelInset, y: y, width: bounds.width - 2 * InfoMetrics.panelInset, height: 1).fill()
         }
+    }
+}
+
+/// Text of the Info panel that can be selected: the system's own text field, so its text is laid out alike whether
+/// it is selected or not. A text box drawing its text itself moved it by up to 1.5 pt as the selection's editor took
+/// over, which lays the letters out a little wider or narrower. It is placed by where its text goes (`place`): its
+/// frame reaches past it by the 2 pt the field keeps on each side, and a point more on the side its text grows
+/// toward, as a frame as wide as the text alone cuts it short.
+final class SelectableTextField: NSTextField {
+    override class var cellClass: AnyClass? {
+        get { SelectableTextCell.self }
+        set {}
+    }
+
+    static let padding = 2.0
+    static let slack = 1.0
+
+    /// A label whose text can be selected, with the system's right-click menu on it.
+    static func label(_ text: String, wraps: Bool = false) -> SelectableTextField {
+        let field =
+            wraps ? SelectableTextField(wrappingLabelWithString: text) : SelectableTextField(labelWithString: text)
+        field.isSelectable = true
+        return field
+    }
+
+    /// Places it so its text is where `textRect` says: as wide as the field itself measures its text (a little more
+    /// than the app's own measure, which would cut it short), grown from the side its text keeps to, on whole points,
+    /// where the selection's editor lays the text out as the field drew it.
+    func place(_ textRect: NSRect) {
+        let pad = Self.padding
+        var width = textRect.width + 2 * pad + Self.slack
+        if !isMultiline, let natural = cell?.cellSize.width, natural.isFinite {
+            width = max(width, Double(natural) + Self.slack)
+        }
+        let x: Double
+        switch alignment {
+        case .right: x = textRect.maxX + pad - width
+        case .center: x = textRect.midX - width / 2
+        default: x = textRect.minX - pad
+        }
+        frame = NSRect(x: x.rounded(), y: textRect.minY.rounded(), width: width.rounded(.up), height: textRect.height)
+    }
+
+    /// Whether its text takes more lines than one.
+    private var isMultiline: Bool { !usesSingleLineMode && (cell?.wraps ?? false) }
+}
+
+/// The system's own cell, selected in the editor the app's text boxes use, which copies the text plain.
+final class SelectableTextCell: NSTextFieldCell {
+    override func fieldEditor(for controlView: NSView) -> NSTextView? {
+        guard let field = controlView as? NSTextField, !field.isEditable, let window = field.window else {
+            return super.fieldEditor(for: controlView)
+        }
+        return PlainCopyFieldEditor.editor(for: window)
     }
 }
