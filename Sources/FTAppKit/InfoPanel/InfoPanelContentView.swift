@@ -968,21 +968,22 @@ final class InfoPanelContentView: NSView {
                         x: inset + width - side, y: top + (bodyLine - side) / 2, width: side, height: side)
                 }
             } else {
-                // A value longer than the row wraps onto the lines under it: nothing is cut short.
-                // Measured as wide as its frame is, the field's own room on each side included.
+                // A value longer than the row wraps onto the lines under it: nothing is cut short. A list, one item a
+                // line, takes its lines however short they are.
                 let room =
                     field is SelectableTextField ? 2 * SelectableTextField.padding + SelectableTextField.slack : 0
-                let measured = ceil(
-                    (field.cell?.cellSize(forBounds: NSRect(x: 0, y: 0, width: maxValue + room, height: 10000)).height)
-                        .map { Double($0) } ?? bodyLine)
-                // A list, one item a line, takes its lines however short they are.
                 let wraps = textWidth(field) > maxValue + 0.5 || field.stringValue.contains("\n")
+                // A list whose lines each fit is as wide as its longest, as the field itself measures it, so the room
+                // beside it is the row's, as it is beside any value: a right-click there gives the row's Copy.
+                let widest =
+                    (field.cell?.cellSize(forBounds: NSRect(x: 0, y: 0, width: 100_000, height: 10000)).width)
+                    .map { Double($0) - room } ?? maxValue
+                let shownWidth = wraps ? min(maxValue, ceil(widest)) : valueWidth
+                // Measured as wide as its frame is, the field's own room on each side included.
+                let measured = ceil(
+                    (field.cell?.cellSize(forBounds: NSRect(x: 0, y: 0, width: shownWidth + room, height: 10000))
+                        .height).map { Double($0) } ?? bodyLine)
                 valueHeight = wraps ? max(bodyLine, measured) : bodyLine
-                // A list whose lines each fit is as wide as its longest, so the room beside it is the row's, as it is
-                // beside any value: a right-click there gives the row's Copy.
-                let longest =
-                    field.stringValue.split(separator: "\n").map { textExtent(String($0), field.font) }.max() ?? 0
-                let shownWidth = wraps ? (longest <= maxValue ? longest : maxValue) : valueWidth
                 put(field, NSRect(x: inset + width - shownWidth, y: top, width: shownWidth, height: valueHeight))
             }
         case let link as TextLinkView:

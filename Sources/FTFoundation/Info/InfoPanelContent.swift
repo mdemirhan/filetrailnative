@@ -51,8 +51,8 @@ extension InfoPanelModel {
     public static let volumeKind = "Volume"
 
     /// The sections of one item, in an order that keeps what every item has in its place:
-    /// - General: Kind; Opens with (a file) or Contains (a folder) in one place; Size; Tags; Where, the folder it is
-    ///   in; Original for a link or an alias. A disk: Kind, Capacity, Used, Available, Tags.
+    /// - General: Kind; Opens with (a file), Contains (a folder) or Original (a link or an alias) in one place; Size;
+    ///   Tags; Where, the folder it is in. A disk: Kind, Capacity, Used, Available, Tags.
     /// - Dates: Created, Modified, Last opened, Added.
     /// - Sharing & Permissions: Owner and Group (who, and what they may do), Everyone, Mode; Locked, Hidden and Extension
     ///   hidden when set. A disk's has no Edit…: Ownership, and Owner, Group and Everyone where it is respected.
