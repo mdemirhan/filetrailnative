@@ -85,6 +85,24 @@ import Testing
         // What they copy: the app's name, a dash as it reads, a section's rows.
         let contents = panel.subviews.compactMap { ($0 as? NSScrollView)?.documentView as? InfoPanelContentView }
         let view = try #require(contents.first)
+        // The Copy of a value's own menu copies the value whole, as its title's does, though what shows is shorter:
+        // Size shows no bytes.
+        var copied: [[String]] = []
+        panel.onCopyText = { text, what in copied.append([text, what]) }
+        let sizeLabel = try #require(labels.first { $0.stringValue == "Size" })
+        let sizePoint = NSPoint(x: root.bounds.width - 30, y: center(sizeLabel).y)
+        let sizeField = try #require(root.hitTest(sizePoint) as? SelectableTextField)
+        let click = try #require(
+            NSEvent.mouseEvent(
+                with: .rightMouseDown, location: root.convert(sizePoint, to: nil), modifierFlags: [], timestamp: 0,
+                windowNumber: window.windowNumber, context: nil, eventNumber: 0, clickCount: 1, pressure: 1))
+        let copy = try #require(sizeField.menuSelectingAll(for: click)?.items.first { $0.title == "Copy" })
+        #expect(copy.target === sizeField)
+        sizeField.perform(try #require(copy.action), with: copy)
+        window.makeFirstResponder(nil)
+        let whole = try #require(view.copyText(forRow: "Size"))
+        #expect(copied == [[whole, "Size"]])
+        #expect(whole != sizeField.stringValue && whole.contains("bytes"))
         #expect(view.copyText(forRow: "Opens with") == "Preview")
         #expect(view.copyText(forRow: "Camera")?.hasPrefix("—") == true)
     }

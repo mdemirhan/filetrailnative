@@ -174,6 +174,24 @@ struct InfoPanelViewTests {
         return laidOut(view, width: 320, height: 700)
     }
 
+    // Mode's tooltip is its whole text, number and letters, as built and after its value changes where it is.
+    @Test func modeKeepsItsWholeTooltipWhenItChanges() throws {
+        let view = InfoPanelView()
+        view.show(display())
+        _ = laidOut(view, width: 320, height: 700)
+        func mode(_ start: String) -> NSTextField? {
+            findViews("infoPanel.row.value", in: view).compactMap { $0 as? NSTextField }
+                .first { $0.stringValue.hasPrefix(start) }
+        }
+        #expect(mode("644")?.toolTip == "644 · rw-r--r--")
+        var changed = Self.file
+        changed.permissionMode = 0o600
+        view.show(display(changed))
+        _ = laidOut(view, width: 320, height: 700)
+        #expect(mode("600")?.stringValue == "600 · rw-------")
+        #expect(mode("600")?.toolTip == "600 · rw-------")
+    }
+
     // The header, the hero, Open, the rows and the actions.
     @Test func aFileIsDescribedFromTheHeaderToTheQuickActions() throws {
         let view = panel(display())

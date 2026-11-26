@@ -384,10 +384,16 @@ final class InfoPanelContentView: NSView {
 
     private func updateValue(_ views: RowViews, _ row: InfoRow) {
         switch row.value {
-        case .text(let text), .place(let text):
+        case .text(let text):
             if let field = views.value as? NSTextField {
                 if field.stringValue != text { field.stringValue = text }
-                field.toolTip = row.tooltip ?? (row.wraps ? nil : (row.copyText ?? text))
+                // As it was built: its own tooltip, else its text, whatever its Copy copies (Mode's is its number).
+                field.toolTip = row.tooltip ?? (row.wraps ? nil : text)
+            }
+        case .place(let text):
+            if let field = views.value as? NSTextField {
+                if field.stringValue != text { field.stringValue = text }
+                field.toolTip = row.copyText ?? text
             }
         case .fitting(let full, _):
             // Its text is chosen as the row is laid out.
@@ -544,8 +550,23 @@ final class InfoPanelContentView: NSView {
         // Text can be selected, with the system's right-click menu on it, as every plain text of the panel can.
         field.isSelectable = true
         field.setAccessibilityIdentifier("infoPanel.row.value")
+        copiesWhole(field)
         addSubview(field)
         return field
+    }
+
+    /// The Copy of the field's right-click menu copies its row's value whole, as a right-click on the row's title
+    /// does: what shows may be shortened to fit its line (a size without its bytes, an owner's access in letters).
+    private func copiesWhole(_ field: SelectableTextField) {
+        field.copyWhole = { [weak self, weak field] in
+            guard let self, let field else { return }
+            for section in self.sectionViews {
+                for views in section.rows where views.value === field {
+                    self.owner?.onCopyText(self.copyText(of: views), views.row.label)
+                    return
+                }
+            }
+        }
     }
 
     private func buildRow(_ row: InfoRow, folderSize: FolderSizeEntry?, opensWith app: InfoOpenApp?, kind: String)
@@ -572,6 +593,7 @@ final class InfoPanelContentView: NSView {
             field.isSelectable = true
             field.toolTip = row.copyText ?? full
             field.setAccessibilityIdentifier("infoPanel.row.value")
+            copiesWhole(field)
             addSubview(field)
             value = field
         case .access(let name, let isYou, let words, _):
@@ -583,6 +605,7 @@ final class InfoPanelContentView: NSView {
             field.isSelectable = true
             field.toolTip = full
             field.setAccessibilityIdentifier("infoPanel.row.value")
+            copiesWhole(field)
             addSubview(field)
             value = field
         case .usage(let fraction, let text):
@@ -1035,6 +1058,8 @@ final class SelectableTextField: NSTextField {
     /// A right-click on a value selects the whole of it, whichever word it lands on, and shows the system's text
     /// menu, whose Copy copies it: every value alike. Where keeps the system's way, which selects the word under the
     /// pointer (the owner, 2026-11-26).
+    /// `copyWhole`, when set, is what that menu's Copy does instead: the row's value whole, where the text showing was
+    /// shortened to fit (the owner, 2026-11-26).
     override func rightMouseDown(with event: NSEvent) {
         guard lineBreakMode != .byTruncatingHead, let menu = menuSelectingAll(for: event), let editor = currentEditor()
         else { return super.rightMouseDown(with: event) }
@@ -1044,7 +1069,18 @@ final class SelectableTextField: NSTextField {
     /// Selects all of its text and answers the system's text menu for it.
     func menuSelectingAll(for event: NSEvent) -> NSMenu? {
         selectText(nil)
-        return (currentEditor() as? NSTextView)?.menu(for: event)
+        guard let menu = (currentEditor() as? NSTextView)?.menu(for: event) else { return nil }
+        if copyWhole != nil, let copy = menu.items.first(where: { $0.action == #selector(NSText.copy(_:)) }) {
+            copy.target = self
+            copy.action = #selector(copyWholeFromMenu(_:))
+        }
+        return menu
+    }
+
+    var copyWhole: (() -> Void)?
+
+    @objc private func copyWholeFromMenu(_ sender: Any?) {
+        copyWhole?()
     }
     static let slack = 1.0
 

@@ -410,6 +410,7 @@ Part of the owner's decisions: [the index](../decisions.md) lists the other part
   a section's title its rows, a "Label: value" line each.
   Plain text is selectable;
   a right-click on a value selects the whole of it, whichever word it lands on, and gives the system's text menu, whose Copy copies it, every value alike (the owner, 2026-11-26: the system's own right-click selected the word under the pointer, all of a one-word value and part of a longer one).
+  That menu's Copy copies the row's value whole, as a right-click on its title does, where what shows was shortened to fit: Size with its bytes, an owner's access in words (the owner, 2026-11-26: it copied the shortened text).
   Where keeps the system's right-click, which selects in it (the owner, 2026-11-26: a right-click that showed the path from its start was first to be changed, then left as it was).
   Its text is drawn by the system's own text field, so selecting it doesn't move it (the owner, 2026-11-26: drawn by the app's text box it moved by up to 1.5 pt, as the selection's editor lays the letters out a little wider or narrower).
   Values are one line each, their whole text in their tooltip and there to select, so no row grows as its value comes in;
@@ -431,6 +432,9 @@ Part of the owner's decisions: [the index](../decisions.md) lists the other part
   GPT, Apple and MBR partition maps with 512-byte sectors;
   APFS, Mac OS Extended (journaled, case-sensitive), ExFAT, MS-DOS (FAT12, 16, 32), NTFS, ISO 9660 and UDF.
   Anything else is a dash, never a guess (the owner, 2026-11-26: support only what the information at hand allows): an encrypted image says only that it is, ADC compression and split images say no file system, and raw bytes in which no disk is recognized say nothing.
+  A link to an image says what the image it leads to holds, as a link to a picture says the picture's size;
+  a folder named as an image file ("Backups.img") is a folder, with no Disk Image, as only a sparse bundle is an image kept in one (the owner, 2026-11-26: both showed four dashes).
+  Nothing in an image is trusted, as most are downloads: a place in one that is past any disk isn't followed, and only plain files are read, so a pipe where a sparse bundle keeps a file isn't waited for (2026-11-26: an image made for it crashed the app when selected).
   No Mounted row, which would need hdiutil, and no Signed by.
   The images are often downloads, so nothing in one is trusted: every offset is checked against the file, and no plist or chunk over 16 MB is read.
   The panel has no quick actions (the owner, 2026-11-26): what they did is in the menus, the right-click menus and the toolbar.
