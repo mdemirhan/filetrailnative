@@ -93,8 +93,8 @@ struct PathEditorSuggestionTests {
         let editing = await editing()
         let bar = editing.bar
         let root = try #require(editing.window.contentView)
-        let row = try #require(allViews(in: root).compactMap { $0 as? PathSuggestionRowView }.last)
-        row.onClick()
+        let row = try #require(allViews(in: root).compactMap { $0 as? GoToRowView }.last)
+        row.owner?.rowClicked(row.index)
         #expect(bar.isEditing)
         #expect(bar.editor.state.draft == "/typed/two/")
         #expect(bar.editor.field.stringValue == bar.editor.state.draft)

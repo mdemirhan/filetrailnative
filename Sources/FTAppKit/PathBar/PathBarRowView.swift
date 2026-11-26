@@ -376,7 +376,9 @@ final class PathBarRowView: NSView {
         }
         let width = max(0, right - left)
         if isEditing {
-            editor.frame = NSRect(x: left, y: contentTop, width: width, height: contentHeight)
+            // Where the segments were, short of the right end by its focus ring, which stays in the bar.
+            editor.frame = NSRect(
+                x: left, y: contentTop, width: max(0, width - DesignTokens.focusRingWidth), height: contentHeight)
         } else {
             let size = NSSize(width: 0, height: lineBox(status.font))
             let text: Double? = status.stringValue.isEmpty ? nil : textExtent(status.stringValue, status.font)

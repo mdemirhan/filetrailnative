@@ -2,126 +2,18 @@ import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// One row of the suggestions: the folder's name over (beside) its full path.
-final class PathSuggestionRowView: NSView, TextStyleSource {
-    var styleTextField: NSTextField? { name }
-    let name = TextBoxField(labelWithString: "")
-    let path = TextBoxField(labelWithString: "")
-    var isActive = false { didSet { applyColors() } }
-    private var isHovered = false { didSet { applyColors() } }
-    var onHover: () -> Void = {}
-    var onClick: () -> Void = {}
-
-    static let padding = (vertical: 6.0, horizontal: 10.0)
-    static let gap = 14.0
-    static let pathMinWidth = 160.0
-
-    override init(frame: NSRect) {
-        super.init(frame: frame)
-        name.font = ChromeColors.font(size: DesignTokens.typeScale.callout, weight: 500)
-        path.font = ThemeFonts.mono(DesignTokens.typeScale.mono)
-        path.lineBreakMode = .byTruncatingTail
-        name.lineBreakMode = .byTruncatingTail
-        name.setAccessibilityIdentifier("pathEditor.suggestion.name")
-        path.setAccessibilityIdentifier("pathEditor.suggestion.path")
-        addSubview(name)
-        addSubview(path)
-        setAccessibilityElement(true)
-        setAccessibilityRole(.button)
-        setAccessibilityIdentifier("pathEditor.suggestion")
-    }
-
-    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
-
-    override var isFlipped: Bool { true }
-
-    static func height() -> Double {
-        let font = ThemeFonts.mono(DesignTokens.typeScale.mono)
-        let nameFont = ChromeColors.font(size: DesignTokens.typeScale.callout, weight: 500)
-        let line = max(lineBox(font), lineBox(nameFont))
-        return 2 * padding.vertical + line
-    }
-
-    func configure(_ row: PathSuggestionRow) {
-        name.stringValue = row.name
-        path.stringValue = row.path
-        toolTip = row.path
-        setAccessibilityLabel(row.name)
-        applyColors()
-    }
-
-    func applyColors() {
-        let theme = infoTheme
-        let on = isActive
-        name.textColor = NSColor(on ? theme.accent.onSolid : theme.palette.textPrimary)
-        path.textColor = NSColor(on ? theme.accent.onSolid : theme.palette.textSecondary)
-        needsDisplay = true
-    }
-
-    override func layout() {
-        super.layout()
-        // grid-template-columns: minmax(0, 1fr) minmax(160px, 1.3fr); gap 14.
-        let inner = max(0, bounds.width - 2 * Self.padding.horizontal - Self.gap)
-        let pathWidth = max(Self.pathMinWidth, inner * 1.3 / 2.3)
-        let nameWidth = max(0, inner - pathWidth)
-        let nameHeight = lineBox(name.font)
-        let pathHeight = lineBox(path.font)
-        name.frame = NSRect(
-            x: Self.padding.horizontal, y: (bounds.height - nameHeight) / 2, width: nameWidth, height: nameHeight)
-        path.frame = NSRect(
-            x: Self.padding.horizontal + nameWidth + Self.gap, y: (bounds.height - pathHeight) / 2, width: pathWidth,
-            height: pathHeight)
-    }
-
-    override func draw(_ dirtyRect: NSRect) {
-        let theme = infoTheme
-        if isActive {
-            NSColor(theme.accent.solidButton).setFill()
-        } else if isHovered {
-            NSColor(theme.palette.bgHover).setFill()
-        } else {
-            return
-        }
-        NSBezierPath(roundedRect: bounds, xRadius: DesignTokens.radii.control, yRadius: DesignTokens.radii.control)
-            .fill()
-    }
-
-    override func updateTrackingAreas() {
-        super.updateTrackingAreas()
-        for area in trackingAreas where area.owner === self { removeTrackingArea(area) }
-        addTrackingArea(
-            NSTrackingArea(
-                rect: bounds, options: [.mouseMoved, .mouseEnteredAndExited, .activeAlways, .inVisibleRect], owner: self
-            ))
-    }
-
-    // A row under a pointer that has not moved is not hovered: only a move of the pointer marks a row.
-    override func mouseMoved(with event: NSEvent) {
-        guard !isHovered else { return }
-        isHovered = true
-        onHover()
-    }
-
-    override func mouseExited(with event: NSEvent) { isHovered = false }
-    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
-    override func mouseDown(with event: NSEvent) {}
-
-    override func mouseUp(with event: NSEvent) {
-        if bounds.contains(convert(event.locationInWindow, from: nil)) { onClick() }
-    }
-
-    override func accessibilityPerformPress() -> Bool {
-        onClick()
-        return true
-    }
-}
-
-/// The dropdown over the editor: up to 12 rows in a bordered panel.
-final class PathSuggestionsView: NSView {
+/// The suggestions over the editor: Go To's folder rows on a menu's material, as wide as the rows need.
+final class PathSuggestionsView: NSView, GoToRowOwner {
+    private let material = NSVisualEffectView()
     private let scroll = NSScrollView()
     private let document = InfoFlippedView()
-    private(set) var rows: [PathSuggestionRowView] = []
-    static let padding = 4.0
+    private(set) var rows: [GoToRowView] = []
+    /// Around the rows, as a menu has.
+    static let padding = 5.0
+    static let minWidth = 280.0
+    static let maxWidth = 520.0
+    static var rowHeight: Double { DesignTokens.controlHeights.regular }
+    static var radius: Double { DesignTokens.radii.menu }
     var onHover: (Int) -> Void = { _ in }
     var onChoose: (Int) -> Void = { _ in }
 
@@ -130,26 +22,55 @@ final class PathSuggestionsView: NSView {
         wantsLayer = true
         setAccessibilityIdentifier("pathEditor.suggestions")
         setAccessibilityLabel("Path suggestions")
+        material.material = .menu
+        material.blendingMode = .withinWindow
+        material.state = .active
+        material.maskImage = Self.mask(radius: Self.radius)
         scroll.drawsBackground = false
         scroll.hasVerticalScroller = true
         scroll.autohidesScrollers = true
         scroll.scrollerStyle = .overlay
         scroll.borderType = .noBorder
         scroll.documentView = document
-        addSubview(scroll)
+        addSubview(material)
+        material.addSubview(scroll)
+        applyLook()
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
     override var isFlipped: Bool { true }
 
-    func show(_ suggestions: [PathSuggestionRow], highlighted: Int) {
+    /// The material's rounded shape, stretched to any size.
+    private static func mask(radius: Double) -> NSImage {
+        let edge = 2 * radius + 1
+        let image = NSImage(size: NSSize(width: edge, height: edge), flipped: false) { rect in
+            NSColor.black.setFill()
+            NSBezierPath(roundedRect: rect, xRadius: radius, yRadius: radius).fill()
+            return true
+        }
+        image.capInsets = NSEdgeInsets(top: radius, left: radius, bottom: radius, right: radius)
+        image.resizingMode = .stretch
+        return image
+    }
+
+    /// A folder's row: its name, and the folder it is in with the home folder as "~".
+    static func row(_ suggestion: PathSuggestionRow, homePath: String) -> GoToRow {
+        let shown = Places.abbreviate(suggestion.path, homePath: homePath)
+        return GoToRow(
+            path: suggestion.path, name: suggestion.name,
+            detail: Places.describeLocation(name: suggestion.name, displayPath: shown), nameRanges: [],
+            isFavorite: false, canForget: false)
+    }
+
+    func show(_ suggestions: [PathSuggestionRow], highlighted: Int, homePath: String) {
         for row in rows { row.removeFromSuperview() }
+        let theme = infoTheme
         rows = suggestions.enumerated().map { index, suggestion in
-            let row = PathSuggestionRowView()
-            row.configure(suggestion)
-            row.onHover = { [weak self] in self?.onHover(index) }
-            row.onClick = { [weak self] in self?.onChoose(index) }
+            let row = GoToRowView(
+                index: index, row: Self.row(suggestion, homePath: homePath), theme: theme,
+                identifier: "pathEditor.suggestion")
+            row.owner = self
             document.addSubview(row)
             return row
         }
@@ -158,56 +79,57 @@ final class PathSuggestionsView: NSView {
     }
 
     func setHighlighted(_ index: Int) {
-        for (offset, row) in rows.enumerated() { row.isActive = offset == index }
+        for row in rows { row.isSelected = row.index == index }
         if rows.indices.contains(index) { document.scrollToVisible(rows[index].frame) }
     }
 
     func height(maxHeight: Double) -> Double {
-        min(maxHeight, 2 * Self.padding + 2 + Double(rows.count) * PathSuggestionRowView.height())
+        min(maxHeight, 2 * Self.padding + Double(rows.count) * Self.rowHeight)
+    }
+
+    /// As wide as the widest row, from 280 to 520.
+    func fittingWidth() -> Double {
+        let widest = rows.map { Double($0.fittingWidth) }.max() ?? 0
+        return min(Self.maxWidth, max(Self.minWidth, widest + 2 * Self.padding))
     }
 
     override func layout() {
         super.layout()
-        scroll.frame = bounds.insetBy(dx: 1, dy: 1)
-        let rowHeight = PathSuggestionRowView.height()
+        material.frame = bounds
+        scroll.frame = bounds
         var y = Self.padding
         for row in rows {
             row.frame = NSRect(
-                x: Self.padding, y: y, width: max(0, scroll.bounds.width - 2 * Self.padding), height: rowHeight)
-            y += rowHeight
+                x: Self.padding, y: y, width: max(0, scroll.bounds.width - 2 * Self.padding), height: Self.rowHeight)
+            y += Self.rowHeight
         }
         document.frame = NSRect(x: 0, y: 0, width: scroll.bounds.width, height: y + Self.padding)
+        layer?.shadowPath = CGPath(
+            roundedRect: bounds, cornerWidth: Self.radius, cornerHeight: Self.radius, transform: nil)
     }
 
-    override func viewDidMoveToWindow() {
-        super.viewDidMoveToWindow()
-        applyLook()
-    }
-
+    /// A menu's edge and shadow, the edge drawn over the material.
     func applyLook() {
-        let palette = infoTheme.palette
-        layer?.backgroundColor = ChromeColors.color(palette.dropdownBg).cgColor
-        layer?.borderColor = ChromeColors.color(palette.border).cgColor
-        layer?.borderWidth = 1
-        layer?.cornerRadius = DesignTokens.radii.menu
-        layer?.masksToBounds = false
-        // The theme's large shadow (`shadowLg`). This view is flipped: a shadow's positive y is down.
-        if let shadow = palette.shadowLg.first {
-            layer?.shadowColor = NSColor(shadow.color.withAlpha(1)).cgColor
-            layer?.shadowOpacity = Float(shadow.color.alpha)
-            layer?.shadowRadius = CGFloat(shadow.blur / 2)
-            layer?.shadowOffset = CGSize(width: shadow.x, height: shadow.y)
-        }
+        let theme = infoTheme
+        MenuSurface.apply(to: layer, theme: theme, borderWidth: 0.5)
+        layer?.cornerRadius = Self.radius
+        for row in rows { row.applyTheme(theme) }
     }
 
     override func viewDidChangeEffectiveAppearance() {
         super.viewDidChangeEffectiveAppearance()
         applyLook()
-        for row in rows { row.applyColors() }
     }
+
+    // MARK: The rows
+
+    func pointerMoved(over index: Int, at point: CGPoint) { onHover(index) }
+    func rowClicked(_ index: Int) { onChoose(index) }
+    /// The first click chose the folder and closed the list.
+    func rowDoubleClicked(_ index: Int) {}
 }
 
-/// The text field of the editor: padding 0 10, the field fill and edge, 13 pt text.
+/// The text field of the editor: the path bar's 11 pt text, on the field fill and edge the editor draws.
 final class PathEditorField: NSTextField {
     override var acceptsFirstResponder: Bool { true }
 }
@@ -242,7 +164,7 @@ final class PathEditorView: NSView, NSTextFieldDelegate, TextStyleSource {
         field.isBordered = false
         field.drawsBackground = false
         field.focusRingType = .none
-        field.font = ChromeColors.font(size: DesignTokens.typeScale.body)
+        field.font = PathSegmentView.font
         field.delegate = self
         field.cell?.isScrollable = true
         field.cell?.usesSingleLineMode = true
@@ -321,15 +243,17 @@ final class PathEditorView: NSView, NSTextFieldDelegate, TextStyleSource {
             hideSuggestions()
             return
         }
-        suggestionsView.show(state.suggestions, highlighted: state.highlighted)
-        // Above the editor: its bottom 4 pt over the field, the field's width; at most 360 tall.
-        let rect = convert(bounds, to: host)
+        suggestionsView.show(state.suggestions, highlighted: state.highlighted, homePath: homePath)
+        // Above the field: its bottom 4 pt over the field, its left edge the field's, as wide as the rows need but
+        // never wider than the field; at most 360 tall.
+        let rect = convert(shellRect, to: host)
         let top = host.isFlipped ? rect.minY : host.bounds.height - rect.maxY
         let maxHeight = min(InfoMetrics.suggestionsMaxHeight, host.bounds.height - 180)
         let height = suggestionsView.height(maxHeight: maxHeight)
+        let width = min(suggestionsView.fittingWidth(), rect.width)
         let y = top - InfoMetrics.suggestionsGap - height
         suggestionsView.frame = NSRect(
-            x: rect.minX, y: host.isFlipped ? y : host.bounds.height - y - height, width: rect.width, height: height)
+            x: rect.minX, y: host.isFlipped ? y : host.bounds.height - y - height, width: width, height: height)
         if suggestionsView.superview !== host { host.addSubview(suggestionsView) }
         suggestionsView.needsLayout = true
     }
@@ -476,42 +400,54 @@ final class PathEditorView: NSView, NSTextFieldDelegate, TextStyleSource {
         needsDisplay = true
     }
 
+    /// The field's height: a small control's, 2 short of a segment, so its focus ring clears the bar's edges.
+    static let fieldHeight = 18.0
+
+    /// The field's shape: across the editor, in the middle of the bar. The editor is the bar's height, so the focus
+    /// ring around it stays inside the bar.
+    var shellRect: NSRect {
+        let height = Self.fieldHeight
+        return NSRect(x: 0, y: ((bounds.height - height) / 2).rounded(), width: bounds.width, height: height)
+    }
+
     override func layout() {
         super.layout()
-        let font = field.font ?? .systemFont(ofSize: 13)
+        let font = field.font ?? PathSegmentView.font
         let height = lineBox(font)
-        // A field keeps 2 pt before its text: the text starts at the padding, 10.
-        let inset = 10.0 - 2
+        let shell = shellRect
+        // The text starts where a segment's did; a field's cell draws its text 2 in from its frame.
+        let inset = InfoMetrics.segmentPaddingInline - 2
         field.frame = NSRect(
-            x: inset, y: (bounds.height - height) / 2, width: max(0, bounds.width - 2 * inset), height: height)
+            x: shell.minX + inset, y: shell.minY + (shell.height - height) / 2,
+            width: max(0, shell.width - 2 * inset), height: height)
     }
 
     override func draw(_ dirtyRect: NSRect) {
         let theme = infoTheme
         let radius = DesignTokens.radii.control
-        let shape = NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius)
+        let shell = shellRect
         NSColor(theme.palette.fieldBg).setFill()
-        shape.fill()
+        NSBezierPath(roundedRect: shell, xRadius: radius, yRadius: radius).fill()
         // The field's edge (the theme's `fieldEdge`), focused or not: an inset hairline.
-        for layer in theme.palette.fieldEdge where layer.blur == 0 {
+        for layer in theme.palette.fieldEdge where layer.blur == 0 && layer.spread > 0 {
             NSColor(layer.color).setStroke()
             let inset = layer.spread / 2
             let edge = NSBezierPath(
-                roundedRect: bounds.insetBy(dx: inset, dy: inset), xRadius: radius - inset, yRadius: radius - inset)
+                roundedRect: shell.insetBy(dx: inset, dy: inset), xRadius: radius - inset, yRadius: radius - inset)
             edge.lineWidth = layer.spread
             edge.stroke()
         }
         updateFocusRing(theme)
     }
 
-    /// The focus ring: 3 pt outside the field, in a layer since it reaches past the view.
+    /// The focus ring: 3 pt outside the field, in a layer since it reaches past the field's shape.
     private func updateFocusRing(_ theme: Theme) {
         let focused = field.currentEditor() != nil && window?.firstResponder === field.currentEditor()
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         let width = CGFloat(DesignTokens.focusRingWidth)
         focusRing.isHidden = !focused
-        focusRing.frame = bounds.insetBy(dx: -width, dy: -width)
+        focusRing.frame = shellRect.insetBy(dx: -width, dy: -width)
         focusRing.borderWidth = width
         focusRing.cornerRadius = DesignTokens.radii.control + width
         focusRing.borderColor = NSColor(theme.accent.solid.withAlpha(0.5)).cgColor

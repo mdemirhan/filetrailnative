@@ -465,8 +465,9 @@ extension ExplorerWindowlessTests {
                 #expect(editor.field.currentEditor() != nil)
                 let host = try? #require(tab.window?.contentView)
                 let bar = host.map { editor.convert(editor.bounds, to: $0) }
-                #expect(editor.suggestionsFrame?.minX == bar?.minX)
-                #expect(editor.suggestionsFrame?.width == bar?.width)
+                let shown = editor.suggestionsFrame
+                #expect(shown?.minX == bar?.minX)
+                #expect(shown.map { $0.maxX <= (bar?.maxX ?? 0) } == true)
             }
         }
 

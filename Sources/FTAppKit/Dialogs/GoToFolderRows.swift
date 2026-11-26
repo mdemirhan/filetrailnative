@@ -1,8 +1,16 @@
 import AppKit
 import FTFoundation
 
-/// One folder of the Go To list: a star or a folder, the name with the typed letters bold, and where it is, cut at its
-/// start. The selected one is filled with the accent, as a menu row.
+/// What a folder row tells the list it is in: the pointer moving over it, a click, a double click.
+@MainActor
+protocol GoToRowOwner: AnyObject {
+    func pointerMoved(over index: Int, at point: CGPoint)
+    func rowClicked(_ index: Int)
+    func rowDoubleClicked(_ index: Int)
+}
+
+/// One folder of the Go To list (and of the path bar's suggestions): a star or a folder, the name with the typed
+/// letters bold, and where it is, cut at its start. The selected one is filled with the accent, as a menu row.
 @MainActor
 final class GoToRowView: NSView, TextStyleSource, ThemeApplying {
     let index: Int
@@ -10,7 +18,7 @@ final class GoToRowView: NSView, TextStyleSource, ThemeApplying {
     let glyph = GoToGlyphView()
     let nameLabel = NSTextField(labelWithString: "")
     let pathLabel = PlainLabel(labelWithString: "")
-    weak var box: GoToFolderBox?
+    weak var owner: (any GoToRowOwner)?
     var isSelected = false { didSet { if isSelected != oldValue { applyColors() } } }
     private var theme = AppearanceModel.shared.theme
     private var trackingArea: NSTrackingArea?
@@ -18,7 +26,8 @@ final class GoToRowView: NSView, TextStyleSource, ThemeApplying {
     private static let matchFont = ThemeFonts.sans(DesignTokens.typeScale.body, .bold)
     private static let pathFont = ThemeFonts.sans(DesignTokens.typeScale.callout)
 
-    init(index: Int, row: GoToRow, theme: Theme) {
+    /// `identifier` names the row, its name and its location for the tests: "goToFolder.suggestion".
+    init(index: Int, row: GoToRow, theme: Theme, identifier: String = "goToFolder.suggestion") {
         self.index = index
         self.row = row
         self.theme = theme
@@ -26,7 +35,7 @@ final class GoToRowView: NSView, TextStyleSource, ThemeApplying {
         setAccessibilityElement(true)
         setAccessibilityRole(.button)
         setAccessibilityLabel(row.name)
-        setAccessibilityIdentifier("goToFolder.suggestion")
+        setAccessibilityIdentifier(identifier)
         toolTip = row.path
         glyph.isFavorite = row.isFavorite
         glyph.setAccessibilityIdentifier("goToFolder.suggestion.glyph")
@@ -39,12 +48,12 @@ final class GoToRowView: NSView, TextStyleSource, ThemeApplying {
         }
         nameLabel.lineBreakMode = .byTruncatingTail
         nameLabel.font = Self.nameFont
-        nameLabel.setAccessibilityIdentifier("goToFolder.suggestion.name")
+        nameLabel.setAccessibilityIdentifier("\(identifier).name")
         // Shortened at its start: the end of a long path says most.
         pathLabel.lineBreakMode = .byTruncatingHead
         pathLabel.font = Self.pathFont
         pathLabel.stringValue = row.detail
-        pathLabel.setAccessibilityIdentifier("goToFolder.suggestion.location")
+        pathLabel.setAccessibilityIdentifier("\(identifier).location")
         addSubview(glyph)
         addSubview(nameLabel)
         addSubview(pathLabel)
@@ -128,6 +137,14 @@ final class GoToRowView: NSView, TextStyleSource, ThemeApplying {
         pathLabel.alignment = pathLabel.attributedStringValue.size().width > pathWidth ? .right : .left
     }
 
+    /// The width that shows the glyph, the name and the location whole.
+    var fittingWidth: CGFloat {
+        let layout = DialogLayout.GoTo.self
+        let text = nameLabel.attributedStringValue.size().width + pathLabel.attributedStringValue.size().width
+        return ceil(
+            2 * CGFloat(layout.rowPaddingHorizontal) + CGFloat(layout.rowGlyphSize) + 2 * CGFloat(layout.rowGap) + text)
+    }
+
     /// How far in from its frame a label's (or a field's) cell draws its text.
     static let cellInset: CGFloat = 2
 
@@ -163,7 +180,7 @@ final class GoToRowView: NSView, TextStyleSource, ThemeApplying {
     }
 
     override func mouseMoved(with event: NSEvent) {
-        box?.pointerMoved(over: index, at: event.locationInWindow)
+        owner?.pointerMoved(over: index, at: event.locationInWindow)
     }
 
     // The field keeps the keyboard while the list is used with the mouse.
@@ -172,9 +189,9 @@ final class GoToRowView: NSView, TextStyleSource, ThemeApplying {
     override func mouseUp(with event: NSEvent) {
         guard bounds.contains(convert(event.locationInWindow, from: nil)) else { return }
         if event.clickCount >= 2 {
-            box?.rowDoubleClicked(index)
+            owner?.rowDoubleClicked(index)
         } else {
-            box?.rowClicked(index)
+            owner?.rowClicked(index)
         }
     }
 }

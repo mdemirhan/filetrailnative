@@ -70,10 +70,10 @@ struct FadesAndShadowsTests {
         #expect(layer.shadowOffset.height > 0)
     }
 
-    @Test func theSuggestionsShadowIsTheLargeShadowFallingDown() {
+    @Test func thePathSuggestionsHaveAMenusShadowFallingDown() {
         let view = PathSuggestionsView()
         view.applyLook()
-        let shadow = ThemePalette.light.shadowLg[0]
+        let shadow = ThemePalette.light.contextMenuShadow[0]
         #expect(view.layer?.shadowOffset.height == CGFloat(shadow.y))
         #expect(view.layer?.shadowRadius == CGFloat(shadow.blur / 2))
     }

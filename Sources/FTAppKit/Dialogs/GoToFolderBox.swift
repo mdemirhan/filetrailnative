@@ -62,7 +62,7 @@ struct GoToBoxOptions {
 /// The Go To box (⌘K, ⇧⌘G), and the Move To and Extract To boxes: a panel dropped below the toolbar with a field, the
 /// folders that match and the footer's buttons.
 @MainActor
-final class GoToFolderBox: DialogPanelView, NSTextFieldDelegate {
+final class GoToFolderBox: DialogPanelView, NSTextFieldDelegate, GoToRowOwner {
     static let placeholder = "Folder name, or a path starting with / or ~"
     /// Where the pointer last was over a box's list, by window: kept across opens, and let go of with the window.
     private static let lastPointers = NSMapTable<NSWindow, NSValue>.weakToStrongObjects()
@@ -433,7 +433,7 @@ final class GoToFolderBox: DialogPanelView, NSTextFieldDelegate {
             for view in rowViews { view.removeFromSuperview() }
             rowViews = rows.enumerated().map { index, row in
                 let view = GoToRowView(index: index, row: row, theme: theme)
-                view.box = self
+                view.owner = self
                 listContent.addSubview(view)
                 return view
             }
