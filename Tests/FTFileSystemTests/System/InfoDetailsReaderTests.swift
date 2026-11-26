@@ -62,7 +62,7 @@ struct InfoDetailsReaderTests {
                 #expect(lstat(path, &info) == 0)
                 return TextFacts.of(path, info) {
                     counted += 1
-                    return InfoDetailsReader.text(path)
+                    return InfoDetailsReader.textRead(path)
                 }
             }
             #expect(facts()?.lines == 2)
@@ -83,7 +83,43 @@ struct InfoDetailsReaderTests {
             cancel.cancel()
             #expect(InfoDetailsReader.text(path, cancel: cancel) == nil)
             #expect(InfoDetailsReader.read(path, cancel: cancel) == nil)
+            var info = stat()
+            #expect(lstat(path, &info) == 0)
+            let unwanted = TextFacts.of(path, info, cancel: cancel) { InfoDetailsReader.textRead(path, cancel: cancel) }
+            #expect(unwanted == nil)
             #expect(InfoDetailsReader.read(path)?.text?.lines == 2)
+        }
+    }
+
+    // A text file that can't be read has no answer to keep: given Read (which changes neither its size nor its
+    // time), it is counted.
+    @Test func aTextFileMadeReadableIsCounted() throws {
+        try withTemporaryDirectory { folder in
+            let path = folder.appending("locked.txt").path
+            write("one\ntwo\n", to: path)
+            #expect(chmod(path, 0) == 0)
+            #expect(InfoDetailsReader.read(path)?.text == nil)
+            #expect(chmod(path, 0o644) == 0)
+            #expect(InfoDetailsReader.read(path)?.text?.lines == 2)
+        }
+    }
+
+    // A framework keeps its Info.plist in Resources, and a bundle that doesn't name its program has it under its
+    // own name.
+    @Test func aFrameworkSaysItsVersionAndWhatItRunsOn() throws {
+        let app = InfoDetailsReader.app("/System/Library/Frameworks/AppKit.framework")
+        #expect(app.identifier == "com.apple.AppKit")
+        #expect(app.version != nil)
+        try withTemporaryDirectory { folder in
+            let tool = folder.appending("Tool.app")
+            try FileManager.default.createDirectory(
+                at: tool.appendingPathComponent("Contents/MacOS"), withIntermediateDirectories: true)
+            try PropertyListSerialization.data(
+                fromPropertyList: ["CFBundleShortVersionString": "1.0"], format: .xml, options: 0
+            ).write(to: tool.appendingPathComponent("Contents/Info.plist"))
+            try FileManager.default.copyItem(
+                atPath: "/bin/ls", toPath: tool.appendingPathComponent("Contents/MacOS/Tool").path)
+            #expect(InfoDetailsReader.app(tool.path).runsOn != nil)
         }
     }
 

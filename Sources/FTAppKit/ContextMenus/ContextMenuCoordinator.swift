@@ -328,7 +328,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             return (failures, FinderTags.onItems(paths))
         }
         liveTab?.content.tagsChanged(paths)
-        if let liveTab { showTagFailures(failures, in: liveTab.window) }
+        showTagFailures(failures, in: liveTab?.window)
         return read
     }
 

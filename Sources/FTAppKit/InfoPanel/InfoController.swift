@@ -67,6 +67,8 @@ final class InfoController {
     private var details: (path: String, value: InfoDetails)?
     private let detailsRead = LatestRead<String, InfoDetails?>()
     private var detailsStale = false
+    /// Whether the read again waits `fetchDelay`: the folder changed, where a change this window made reads at once.
+    private var detailsWait = false
     private var signing: (path: String, value: InfoDetails.Signing?)?
     private let signingRead = LatestRead<String, InfoDetails.Signing?>()
     /// Reads an item's details and an app's signing (tests put their own).
@@ -294,6 +296,7 @@ final class InfoController {
     /// This window changed the items' permissions: what the panel shows of them is read again now.
     func itemsChanged() {
         detailsStale = true
+        detailsWait = false
         if let path = targetPath { scheduleFetch(path, immediately: true) }
         update()
     }
@@ -304,6 +307,7 @@ final class InfoController {
         rowVolumeRequested = nil
         tagsStale = true
         detailsStale = true
+        detailsWait = true
         if let path = targetPath { scheduleFetch(path, immediately: false) }
         update()
     }
@@ -348,11 +352,13 @@ final class InfoController {
     private func requestDetails(_ path: String) {
         detailsStale = false
         let reader = detailsReader
-        // Another item's at once, as the panel waits for them; the same item's again (its folder changed) after the
-        // wait a folder read again has, so a folder changing over and over reads where it stops.
-        let again = details?.path == path
+        // Another item's at once, as the panel waits for them, and the same item's after this window changed it, so
+        // its rows change together; the same item's again because its folder changed, after the wait a folder read
+        // again has.
+        let waits = detailsWait && details?.path == path
+        detailsWait = false
         detailsRead.ask(
-            path, after: again ? InfoMetrics.fetchDelay : 0, read: { reader(path, $0) },
+            path, after: waits ? InfoMetrics.fetchDelay : 0, read: { reader(path, $0) },
             answered: { [weak self] value in
                 guard let self else { return }
                 if let value { self.details = (path, value) }

@@ -73,7 +73,7 @@ public enum InfoDetailsReader {
         }
         if cancel.isCancelled { return nil }
         if isFile, !dataless, kind == .text, Int(info.st_size) <= textLimit {
-            details.text = TextFacts.of(path, info, cancel: cancel) { text(path, cancel: cancel) }
+            details.text = TextFacts.of(path, info, cancel: cancel) { textRead(path, cancel: cancel) }
         }
         if isDirectory, let type, type.conforms(to: .application) || type.conforms(to: .bundle) {
             let app = app(path)
@@ -407,7 +407,17 @@ public enum InfoDetailsReader {
     /// Its lines, encoding and line endings, decoded as the viewer decodes it. Nil for one that doesn't decode as text,
     /// or once `cancel` says the answer is no longer wanted.
     static func text(_ path: String, cancel: ReadCancel = ReadCancel()) -> InfoDetails.Text? {
-        guard let data = contents(path, cancel: cancel) else { return nil }
+        textRead(path, cancel: cancel).text
+    }
+
+    /// `text`, and whether the file was read: one that couldn't be (no permission, a read that failed, a read no
+    /// longer wanted) has no answer to keep, where one read that isn't text has.
+    static func textRead(_ path: String, cancel: ReadCancel = ReadCancel()) -> (text: InfoDetails.Text?, read: Bool) {
+        guard let data = contents(path, cancel: cancel) else { return (nil, false) }
+        return (text(of: data), true)
+    }
+
+    private static func text(of data: Data) -> InfoDetails.Text? {
         if data.isEmpty { return InfoDetails.Text(lines: 0, encoding: "UTF-8", lineEnding: "None") }
         guard let decoded = TextDecoding.decode(data) else { return nil }
         // Counted on its UTF-8 bytes: a line ends at LF, CRLF or a CR alone, and a last line with no ending counts.
@@ -452,8 +462,9 @@ public enum InfoDetailsReader {
     static func app(_ path: String) -> InfoDetails.App {
         var app = InfoDetails.App()
         let url = URL(fileURLWithPath: path)
-        // A Mac app keeps it in Contents; one made for iPhone or iPad, in the app wrapped inside it.
-        let lists = ["Contents/Info.plist", "WrappedBundle/Info.plist", "Info.plist"].map {
+        // A Mac app keeps it in Contents; one made for iPhone or iPad, in the app wrapped inside it; a framework, in
+        // its Resources.
+        let lists = ["Contents/Info.plist", "WrappedBundle/Info.plist", "Resources/Info.plist", "Info.plist"].map {
             url.appendingPathComponent($0)
         }
         guard
@@ -477,7 +488,9 @@ public enum InfoDetailsReader {
 
     /// The processors the app's program is built for, read from the program itself.
     private static func executableArchitectures(of app: URL, info: [String: Any]) -> [Int] {
-        guard let name = info["CFBundleExecutable"] as? String, !name.isEmpty else { return [] }
+        // Named in its Info.plist, else after the bundle, as macOS looks for it.
+        let named = (info["CFBundleExecutable"] as? String).flatMap { $0.isEmpty ? nil : $0 }
+        let name = named ?? app.deletingPathExtension().lastPathComponent
         let places = ["Contents/MacOS/\(name)", "WrappedBundle/\(name)", name].map { app.appendingPathComponent($0) }
         guard let program = places.first(where: { FileManager.default.fileExists(atPath: $0.path) }) else { return [] }
         return (CFBundleCopyExecutableArchitecturesForURL(program as CFURL) as? [NSNumber])?.map(\.intValue) ?? []
@@ -620,17 +633,19 @@ enum TextFacts {
     nonisolated(unsafe) private static var known: [String: (stamp: Stamp, text: InfoDetails.Text?)] = [:]
     static let limit = 64
 
-    /// What was counted of the file as `info` describes it, else what `count` answers, kept unless `count` was
-    /// cancelled (it answers nil then, as for a file that isn't text; the next ask counts again).
-    static func of(_ path: String, _ info: stat, cancel: ReadCancel = ReadCancel(), count: () -> InfoDetails.Text?)
-        -> InfoDetails.Text?
-    {
+    /// What was counted of the file as `info` describes it, else what `count` answers, kept when the file was read
+    /// and the answer is still wanted: a file that couldn't be read (no permission, which a change of its mode gives
+    /// back without changing its size or time) is asked again the next time.
+    static func of(
+        _ path: String, _ info: stat, cancel: ReadCancel = ReadCancel(),
+        count: () -> (text: InfoDetails.Text?, read: Bool)
+    ) -> InfoDetails.Text? {
         let stamp = Stamp(
             file: info.st_ino, device: info.st_dev, size: info.st_size, seconds: info.st_mtimespec.tv_sec,
             nanoseconds: info.st_mtimespec.tv_nsec)
         if let kept = lock.withLock({ known[path] }), kept.stamp == stamp { return kept.text }
-        let text = count()
-        if cancel.isCancelled { return text }
+        let (text, read) = count()
+        if !read || cancel.isCancelled { return text }
         lock.withLock {
             if known.count >= limit { known.removeAll() }
             known[path] = (stamp, text)
