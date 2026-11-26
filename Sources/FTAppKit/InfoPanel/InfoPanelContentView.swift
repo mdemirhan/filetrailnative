@@ -197,8 +197,11 @@ final class InfoPanelContentView: NSView {
 
     private var dividers: [Double] = []
     /// Each row's band, top to bottom, for its right-click menu.
-    private var rowBands: [(range: ClosedRange<Double>, row: InfoRow)] = []
+    private var rowBands: [(range: ClosedRange<Double>, views: RowViews)] = []
     private var nameBand: ClosedRange<Double>?
+    private var subtitleBand: ClosedRange<Double>?
+    /// Each section's title band, for its right-click Copy of the whole section.
+    private var titleBands: [(range: ClosedRange<Double>, section: Int)] = []
     /// The load of the Open button's app icon: the next item's takes it back, so an older answer can't land after a
     /// newer one.
     private var openIconHandle: LoadHandle?
@@ -628,20 +631,48 @@ final class InfoPanelContentView: NSView {
 
     // MARK: Copy
 
+    /// A right-click's Copy, wherever it lands: a row's title or value copies its value (a dash too, as it reads),
+    /// the name and the line under it theirs, and a section's title every row of the section.
     override func menu(for event: NSEvent) -> NSMenu? {
         let y = Double(convert(event.locationInWindow, from: nil).y)
         let menu = NSMenu()
         menu.autoenablesItems = false
         if let nameBand, nameBand.contains(y), !name.stringValue.isEmpty, !name.isHidden {
-            let text = name.stringValue
-            menu.addItem(copyItem("Copy Name", text: text, what: "Name"))
+            menu.addItem(copyItem("Copy Name", text: name.stringValue, what: "Name"))
+            return menu
+        }
+        if let subtitleBand, subtitleBand.contains(y), !subtitle.stringValue.isEmpty, !subtitle.isHidden {
+            menu.addItem(copyItem("Copy Summary", text: subtitle.stringValue, what: "Summary"))
+            return menu
+        }
+        if let band = titleBands.first(where: { $0.range.contains(y) }), sectionViews.indices.contains(band.section) {
+            let section = sectionViews[band.section]
+            let text = section.rows.map {
+                "\($0.row.label): \(copyText(of: $0).replacingOccurrences(of: "\n", with: ", "))"
+            }
+            .joined(separator: "\n")
+            menu.addItem(copyItem("Copy \(section.id.title)", text: text, what: section.id.title))
             return menu
         }
         guard let band = rowBands.first(where: { $0.range.contains(y) }) else { return nil }
-        let text = band.row.textToCopy
-        guard !text.isEmpty, text != InfoPanelModel.pending else { return nil }
-        menu.addItem(copyItem("Copy \(band.row.label)", text: text, what: band.row.label))
+        menu.addItem(
+            copyItem("Copy \(band.views.row.label)", text: copyText(of: band.views), what: band.views.row.label))
         return menu
+    }
+
+    /// What a row's Copy copies: its value as it reads, with its second line; the app it opens with, the size
+    /// measured, a dash where nothing is known.
+    private func copyText(of views: RowViews) -> String {
+        let row = views.row
+        var main: String
+        switch row.value {
+        case .opensWith: main = opensWith.app?.name ?? "None"
+        case .folderSize: main = cell.shownText
+        default: main = row.textToCopy
+        }
+        if case .opensWith = row.value, let detail = row.detail { main += "\n" + detail }
+        if case .folderSize = row.value, let detail = row.detail { main += "\n" + detail }
+        return main.isEmpty ? InfoPanelModel.pending : main
     }
 
     private func copyItem(_ title: String, text: String, what: String) -> NSMenuItem {
@@ -659,7 +690,7 @@ final class InfoPanelContentView: NSView {
 
     /// The text a row's right-click Copy copies, by its label: a test seam.
     func copyText(forRow label: String) -> String? {
-        rowBands.first { $0.row.label == label }?.row.textToCopy
+        rowBands.first { $0.views.row.label == label }.map { copyText(of: $0.views) }
     }
 
     // MARK: Colors
@@ -725,6 +756,8 @@ final class InfoPanelContentView: NSView {
         dividers = []
         rowBands = []
         nameBand = nil
+        subtitleBand = nil
+        titleBands = []
         let isEmpty: Bool
         var hasHero = false
         switch body {
@@ -789,6 +822,7 @@ final class InfoPanelContentView: NSView {
         subtitle.place(
             NSRect(
                 x: inset + (width - subtitleShown) / 2, y: y, width: subtitleShown, height: subtitleHeight))
+        subtitleBand = y...(y + subtitleHeight)
         y += subtitleHeight + 14
 
         if case .item = body {
@@ -801,6 +835,7 @@ final class InfoPanelContentView: NSView {
             if sectionIndex > 0 { y += InfoMetrics.sectionGap - InfoMetrics.rowPaddingBlock }
             let titleHeight = max(lineHeight(section.title.title.font), InfoSectionTitleView.chevronBox)
             section.title.frame = NSRect(x: inset, y: y, width: width, height: titleHeight)
+            titleBands.append((y...(y + titleHeight), sectionIndex))
             section.title.needsLayout = true
             y += titleHeight + InfoMetrics.sectionTitleGap
             let folded = InfoSectionFolds.isFolded(section.id)
@@ -816,7 +851,7 @@ final class InfoPanelContentView: NSView {
                 let top = y + InfoMetrics.rowPaddingBlock
                 let rowHeight = layoutRow(views, top: top, inset: inset, width: width, bodyLine: bodyLine)
                 rowBands.append(
-                    ((top - InfoMetrics.rowPaddingBlock)...(top + rowHeight + InfoMetrics.rowPaddingBlock), views.row))
+                    ((top - InfoMetrics.rowPaddingBlock)...(top + rowHeight + InfoMetrics.rowPaddingBlock), views))
                 y = top + rowHeight + InfoMetrics.rowPaddingBlock
                 if index < section.rows.count - 1 {
                     dividers.append(y)
@@ -958,6 +993,16 @@ final class SelectableTextField: NSTextField {
     }
 
     static let padding = 2.0
+
+    /// A right-click on a value doesn't start a selection: it shows the row's own menu, which copies the whole value.
+    /// Text already selected is the field editor's, with the system's menu. Where keeps the system's way: a
+    /// right-click selects in it (the owner, 2026-11-26).
+    override func rightMouseDown(with event: NSEvent) {
+        guard lineBreakMode != .byTruncatingHead, let menu = superview?.menu(for: event) else {
+            return super.rightMouseDown(with: event)
+        }
+        NSMenu.popUpContextMenu(menu, with: event, for: self)
+    }
     static let slack = 1.0
 
     /// A label whose text can be selected, with the system's right-click menu on it.

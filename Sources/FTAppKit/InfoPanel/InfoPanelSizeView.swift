@@ -14,6 +14,10 @@ final class InfoPanelSizeView: NSView {
         set { cell.onCalculate = newValue }
     }
     var onRecalculate: () -> Void = {}
+    /// The size as it reads, once measured; a dash before.
+    var shownText: String {
+        sizeLine.isHidden || sizeLine.stringValue.isEmpty ? InfoPanelModel.pending : sizeLine.stringValue
+    }
     var onCancel: () -> Void {
         get { cell.onCancel }
         set { cell.onCancel = newValue }
