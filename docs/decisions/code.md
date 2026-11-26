@@ -1,6 +1,6 @@
 # Decisions: how the code is kept
 
-How work lands, how it is tested and released.
+How work lands, how it is tested and released, and how the docs are written.
 Part of the owner's decisions: [the index](../decisions.md) lists the other parts.
 `CLAUDE.md` gives these as rules to follow;
 this file keeps why.
@@ -128,3 +128,13 @@ this file keeps why.
   `scripts/hands-on-setup.sh`, the `FILETRAIL_TIMING` switch and `tools/acknowledgements` went.
   The app ships no one else's code, so it has no Acknowledgements window (2026-11-24).
   `--snapshot` stays: it draws a window into a PNG without screen-recording permission.
+
+## The docs
+
+- **Each sentence of a document is a line of its own** (the owner, 2026-11-26).
+  In the Markdown in `docs/`, a paragraph or a list item puts each sentence on a line, and each clause after a semicolon outside parentheses;
+  a list item's later lines are indented to its text.
+  A line break inside a paragraph renders as a space, so the page reads the same, and a change to a sentence is a change to one line in git.
+  Headings, tables and code keep their lines, as a table's row has to be one.
+  Replaced on 2026-11-26 a line for each paragraph or list item, where changing a word showed a whole entry as changed, some of them thousands of characters long.
+  Dropped: wrapping at a fixed width, as a change to one word moves the line breaks of the rest of the paragraph.

@@ -19,7 +19,7 @@ The longer story is in git.
 | [decisions/windows-and-panes.md](decisions/windows-and-panes.md) | Two panes, tabs, saved views (tab views and window views), the toolbar, the menus and their keys (and the keys that differ from Finder's), Back and Forward, the sidebar, Settings |
 | [decisions/file-operations.md](decisions/file-operations.md) | Copy, move and Replace, what protects files, Undo, folder sizes, the clipboard, Paste as File, Copy Contents, Share, Convert Images, tags, aliases and symbolic links |
 | [decisions/archives.md](decisions/archives.md) | Compress, Extract and Extract To, and the plan to browse archives |
-| [decisions/code.md](decisions/code.md) | How work lands, how it is tested and released |
+| [decisions/code.md](decisions/code.md) | How work lands, how it is tested and released, how the docs are written |
 | [decisions/left-out.md](decisions/left-out.md) | What the app doesn't do on purpose, and why |
 | [decisions/must-stay.md](decisions/must-stay.md) | What looks removable in the code and is not |
 
