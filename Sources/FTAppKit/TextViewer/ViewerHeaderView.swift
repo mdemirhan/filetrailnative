@@ -4,9 +4,9 @@ import FTFoundation
 /// The bar over a file in a pane. It holds only what applies now: the file's name and whether it has unsaved edits;
 /// for a file in place, the steps to the previous and next file and its place among the folder's files, first, so the
 /// steps stay where they are whatever the name or the count is, and a click after click goes on; for a file beside
-/// the list, Follow; Save while there are edits; Source or Preview for Markdown; Read or Edit; and the viewer's own
-/// menu (⋯), which holds the rest with its keys. The system's controls at the regular size, as the panes' bars have
-/// them.
+/// the list, Follow; Save while there are edits; Source or Preview for Markdown; Read or Edit; the viewer's own menu
+/// (⋯), which holds the rest with its keys; and last, at the right end where it never moves, the button that closes
+/// the viewer, as Esc does. The system's controls at the regular size, as the panes' bars have them.
 final class ViewerHeaderView: NSView {
     struct State: Equatable {
         var name: String
@@ -72,13 +72,14 @@ final class ViewerHeaderView: NSView {
     private let editSwitch = NSSegmentedControl(
         labels: ["Read", "Edit"], trackingMode: .selectOne, target: nil, action: nil)
     private let menuButton = ViewerMenuButton(frame: .zero, pullsDown: true)
+    private let closeButton = NSButton()
     private var state: State?
     /// The controls the state shows; layout leaves out those that don't fit.
     private var stateShown = Set<ObjectIdentifier>()
     private var managed: [NSView] {
         [
             editedLabel, previousButton, positionLabel, nextButton, followButton, saveButton, previewSwitch, editSwitch,
-            menuButton,
+            menuButton, closeButton,
         ]
     }
 
@@ -98,6 +99,10 @@ final class ViewerHeaderView: NSView {
         configure(nextButton, symbol: "arrow.right", tip: "Next File", action: #selector(next))
         previousButton.setAccessibilityIdentifier("textViewer.previous")
         nextButton.setAccessibilityIdentifier("textViewer.next")
+        configure(closeButton, symbol: "xmark", tip: "Close Viewer", action: #selector(close))
+        // Esc in Edit goes to Read first; the button closes in either, asking about edits as Close Viewer does.
+        closeButton.toolTip = "Close Viewer (Esc)"
+        closeButton.setAccessibilityIdentifier("textViewer.close")
         followButton.target = self
         followButton.action = #selector(followChanged)
         followButton.toolTip = "Show the file selected in the other pane as the selection moves"
@@ -266,6 +271,7 @@ final class ViewerHeaderView: NSView {
     @objc private func next() { onAction(.next) }
     @objc private func followChanged() { onAction(.follow(followButton.state == .on)) }
     @objc private func save() { onAction(.save) }
+    @objc private func close() { onAction(.close) }
     @objc private func previewChanged() { onAction(.preview(previewSwitch.selectedSegment == 1)) }
     @objc private func editChanged() { onAction(.editing(editSwitch.selectedSegment == 1)) }
 
@@ -291,13 +297,13 @@ final class ViewerHeaderView: NSView {
         func fitting(_ view: NSView) -> Double { Double(ceil(view.fittingSize.width)) }
         func width(of view: NSView) -> Double {
             if view === menuButton { return 44 }
-            if view === previousButton || view === nextButton { return 28 }
+            if view === previousButton || view === nextButton || view === closeButton { return 28 }
             return fitting(view)
         }
         // The name keeps at least this much; what doesn't fit beside it is left out, Source or Preview first, then
-        // the place among the folder's files. The ⋯ menu holds all of it.
+        // the place among the folder's files. The ⋯ menu holds all of it. Close Viewer is never left out.
         let nameMinimum = 90.0
-        let rightViews: [NSView] = [menuButton, editSwitch, saveButton, previewSwitch]
+        let rightViews: [NSView] = [closeButton, menuButton, editSwitch, saveButton, previewSwitch]
         // The steps to the previous and next file come first, at a place that doesn't move: after them the count and
         // the name, whose widths change from file to file.
         let beforeName: [NSView] = [previousButton, nextButton, positionLabel]

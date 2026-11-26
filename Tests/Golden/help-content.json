@@ -722,7 +722,7 @@
             {
               "shortcuts": [{"group": "files", "shortcut": "Esc", "description": "Cancel a dialog (Cmd+. also works)"}],
               "topic": "files",
-              "rows": [["Copying and moving", "Drag"]]
+              "rows": [["Opening", "Open in Viewer"], ["Copying and moving", "Drag"]]
             },
             {
               "shortcuts": [{"group": "search", "shortcut": "Esc", "description": "Close the results"}],
@@ -882,6 +882,7 @@
               ],
               "topic": "files",
               "rows": [
+                ["Opening", "Open in Viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Copy, cut, paste"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -2090,7 +2091,7 @@
             {
               "shortcuts": [{"group": "files", "shortcut": "Esc", "description": "Cancel a dialog (Cmd+. also works)"}],
               "topic": "files",
-              "rows": [["Copying and moving", "Drag"]]
+              "rows": [["Opening", "Open in Viewer"], ["Copying and moving", "Drag"]]
             },
             {
               "shortcuts": [{"group": "search", "shortcut": "Esc", "description": "Close the results"}],
@@ -2245,6 +2246,7 @@
               ],
               "topic": "files",
               "rows": [
+                ["Opening", "Open in Viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Copy, cut, paste"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -3118,7 +3120,7 @@
             {
               "shortcuts": [{"group": "files", "shortcut": "Esc", "description": "Cancel a dialog (Cmd+. also works)"}],
               "topic": "files",
-              "rows": [["Copying and moving", "Drag"]]
+              "rows": [["Opening", "Open in Viewer"], ["Copying and moving", "Drag"]]
             },
             {
               "shortcuts": [{"group": "search", "shortcut": "Esc", "description": "Close the results"}],
@@ -3278,6 +3280,7 @@
               ],
               "topic": "files",
               "rows": [
+                ["Opening", "Open in Viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Copy, cut, paste"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -4188,7 +4191,7 @@
             {
               "shortcuts": [{"group": "files", "shortcut": "Esc", "description": "Cancel a dialog (Cmd+. also works)"}],
               "topic": "files",
-              "rows": [["Copying and moving", "Drag"]]
+              "rows": [["Opening", "Open in Viewer"], ["Copying and moving", "Drag"]]
             },
             {
               "shortcuts": [{"group": "search", "shortcut": "Esc", "description": "Close the results"}],
@@ -4347,6 +4350,7 @@
               ],
               "topic": "files",
               "rows": [
+                ["Opening", "Open in Viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Copy, cut, paste"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -5232,7 +5236,7 @@
             {
               "shortcuts": [{"group": "files", "shortcut": "Esc", "description": "Cancel a dialog (Cmd+. also works)"}],
               "topic": "files",
-              "rows": [["Copying and moving", "Drag"]]
+              "rows": [["Opening", "Open in Viewer"], ["Copying and moving", "Drag"]]
             },
             {
               "shortcuts": [{"group": "search", "shortcut": "Esc", "description": "Close the results"}],
@@ -5392,6 +5396,7 @@
               ],
               "topic": "files",
               "rows": [
+                ["Opening", "Open in Viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Copy, cut, paste"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -6419,7 +6424,7 @@
             {
               "shortcuts": [{"group": "files", "shortcut": "Esc", "description": "Cancel a dialog (Cmd+. also works)"}],
               "topic": "files",
-              "rows": [["Copying and moving", "Drag"]]
+              "rows": [["Opening", "Open in Viewer"], ["Copying and moving", "Drag"]]
             },
             {
               "shortcuts": [{"group": "search", "shortcut": "Esc", "description": "Close the results"}],
@@ -6507,6 +6512,7 @@
               ],
               "topic": "files",
               "rows": [
+                ["Opening", "Open in Viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Copy, cut, paste"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -7323,7 +7329,7 @@
             {
               "shortcuts": [{"group": "files", "shortcut": "Esc", "description": "Cancel a dialog (Cmd+. also works)"}],
               "topic": "files",
-              "rows": [["Copying and moving", "Drag"]]
+              "rows": [["Opening", "Open in Viewer"], ["Copying and moving", "Drag"]]
             },
             {
               "shortcuts": [{"group": "search", "shortcut": "Esc", "description": "Close the results"}],
@@ -7478,6 +7484,7 @@
               ],
               "topic": "files",
               "rows": [
+                ["Opening", "Open in Viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Copy, cut, paste"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -8375,7 +8382,7 @@
             {
               "shortcuts": [{"group": "files", "shortcut": "Esc", "description": "Cancel a dialog (Cmd+. also works)"}],
               "topic": "files",
-              "rows": [["Copying and moving", "Drag"]]
+              "rows": [["Opening", "Open in Viewer"], ["Copying and moving", "Drag"]]
             },
             {
               "shortcuts": [{"group": "search", "shortcut": "Esc", "description": "Close the results"}],
@@ -8535,6 +8542,7 @@
               ],
               "topic": "files",
               "rows": [
+                ["Opening", "Open in Viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Copy, cut, paste"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -9482,7 +9490,7 @@
             {
               "shortcuts": [{"group": "files", "shortcut": "Esc", "description": "Cancel a dialog (Cmd+. also works)"}],
               "topic": "files",
-              "rows": [["Copying and moving", "Drag"]]
+              "rows": [["Opening", "Open in Viewer"], ["Copying and moving", "Drag"]]
             },
             {
               "shortcuts": [{"group": "search", "shortcut": "Esc", "description": "Close the results"}],
@@ -9642,6 +9650,7 @@
               ],
               "topic": "files",
               "rows": [
+                ["Opening", "Open in Viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Copy, cut, paste"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -10507,7 +10516,7 @@
             {
               "shortcuts": [{"group": "files", "shortcut": "Esc", "description": "Cancel a dialog (Cmd+. also works)"}],
               "topic": "files",
-              "rows": [["Copying and moving", "Drag"]]
+              "rows": [["Opening", "Open in Viewer"], ["Copying and moving", "Drag"]]
             },
             {
               "shortcuts": [{"group": "search", "shortcut": "Esc", "description": "Close the results"}],
@@ -10667,6 +10676,7 @@
               ],
               "topic": "files",
               "rows": [
+                ["Opening", "Open in Viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Copy, cut, paste"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -11599,7 +11609,7 @@
             {
               "shortcuts": [{"group": "files", "shortcut": "Esc", "description": "Cancel a dialog (Cmd+. also works)"}],
               "topic": "files",
-              "rows": [["Copying and moving", "Drag"]]
+              "rows": [["Opening", "Open in Viewer"], ["Copying and moving", "Drag"]]
             },
             {
               "shortcuts": [{"group": "search", "shortcut": "Esc", "description": "Close the results"}],
@@ -11759,6 +11769,7 @@
               ],
               "topic": "files",
               "rows": [
+                ["Opening", "Open in Viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Copy, cut, paste"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -12690,7 +12701,7 @@
             {
               "shortcuts": [{"group": "files", "shortcut": "Esc", "description": "Cancel a dialog (Cmd+. also works)"}],
               "topic": "files",
-              "rows": [["Copying and moving", "Drag"]]
+              "rows": [["Opening", "Open in Viewer"], ["Copying and moving", "Drag"]]
             },
             {
               "shortcuts": [{"group": "search", "shortcut": "Esc", "description": "Close the results"}],
@@ -12840,6 +12851,7 @@
               ],
               "topic": "files",
               "rows": [
+                ["Opening", "Open in Viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Copy, cut, paste"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -13754,7 +13766,7 @@
             {
               "shortcuts": [{"group": "files", "shortcut": "Esc", "description": "Cancel a dialog (Cmd+. also works)"}],
               "topic": "files",
-              "rows": [["Copying and moving", "Drag"]]
+              "rows": [["Opening", "Open in Viewer"], ["Copying and moving", "Drag"]]
             },
             {
               "shortcuts": [{"group": "search", "shortcut": "Esc", "description": "Close the results"}],
@@ -13914,6 +13926,7 @@
               ],
               "topic": "files",
               "rows": [
+                ["Opening", "Open in Viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Copy, cut, paste"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -14833,7 +14846,7 @@
             {
               "shortcuts": [{"group": "files", "shortcut": "Esc", "description": "Cancel a dialog (Cmd+. also works)"}],
               "topic": "files",
-              "rows": [["Copying and moving", "Drag"]]
+              "rows": [["Opening", "Open in Viewer"], ["Copying and moving", "Drag"]]
             },
             {
               "shortcuts": [{"group": "search", "shortcut": "Esc", "description": "Close the results"}],
@@ -14984,6 +14997,7 @@
               ],
               "topic": "files",
               "rows": [
+                ["Opening", "Open in Viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Copy, cut, paste"],
                 ["Copying and moving", "Gathering from several folders"],
@@ -16219,7 +16233,7 @@
             {
               "shortcuts": [{"group": "files", "shortcut": "Esc", "description": "Cancel a dialog (Cmd+. also works)"}],
               "topic": "files",
-              "rows": [["Copying and moving", "Drag"]]
+              "rows": [["Opening", "Open in Viewer"], ["Copying and moving", "Drag"]]
             },
             {
               "shortcuts": [{"group": "search", "shortcut": "Esc", "description": "Close the results"}],
@@ -16373,6 +16387,7 @@
               ],
               "topic": "files",
               "rows": [
+                ["Opening", "Open in Viewer"],
                 ["Opening", "Open in Terminal"],
                 ["Copying and moving", "Copy, cut, paste"],
                 ["Copying and moving", "Gathering from several folders"],

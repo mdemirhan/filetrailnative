@@ -374,6 +374,42 @@ extension ExplorerWindowlessTests {
             #expect(responder.isDescendant(of: viewerPane.content.view))
         }
 
+        // The bar's close button closes the viewer as Esc in Read does, in Edit too: beside the list the pane shows its
+        // folder again and the two panes stay; in place the folder comes back with the file selected.
+        @Test func theCloseButtonClosesTheViewerBesideTheListAndInPlace() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await tabWithFiles(harness)
+            let a = real(harness, "a.swift")
+            func clickClose(_ viewer: TextViewerController) throws {
+                let button = try #require(identified("textViewer.close", in: viewer.view).first as? NSButton)
+                button.performClick(nil)
+            }
+
+            let pane = tab.activePane
+            select(a, in: tab)
+            tab.perform(.openSelectionInOtherPane)
+            let viewerPane = try #require(tab.otherPane)
+            let beside = try #require(viewerPane.viewer)
+            #expect(await waitUntil { beside.isText })
+            beside.setEditing(true)
+            try clickClose(beside)
+            #expect(await waitUntil { viewerPane.viewer == nil })
+            #expect(tab.showsTwoPanes)
+            #expect(!viewerPane.content.showsViewer)
+            #expect(viewerPane.shownFolderPath == real(harness, ""))
+
+            tab.focusPane(pane)
+            pane.content.select(paths: [a])
+            tab.perform(.viewFile)
+            let inPlace = try #require(pane.viewer)
+            #expect(await waitUntil { inPlace.isText })
+            try clickClose(inPlace)
+            #expect(await waitUntil { pane.viewer == nil })
+            #expect(!pane.content.showsViewer)
+            #expect(pane.content.selection.paths == [a])
+        }
+
         @Test func thePageKeysMoveTheCaretWithTheTextInEditAndOnlyTheTextInRead() async throws {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }

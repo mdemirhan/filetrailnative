@@ -225,7 +225,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Open in Viewer",
                             description:
-                                "Open in Viewer, Space or {viewFile}, shows the selected file in its pane: text with colors for code, to read or to edit and save, as you last chose in that pane; Back goes back to the list. Settings → Shortcuts can give Space to Quick Look instead. Open in Other Pane shows it in the other pane instead, which then follows the list’s selection unless Follow was turned off there, and asks to save edits before it moves on. What else it does is in its bar: Read or Edit, Save, Follow, and its ⋯ menu, which names its keys."
+                                "Open in Viewer, Space or {viewFile}, shows the selected file in its pane: text with colors for code, to read or to edit and save, as you last chose in that pane; Back goes back to the list. Settings → Shortcuts can give Space to Quick Look instead. Open in Other Pane shows it in the other pane instead, which then follows the list’s selection unless Follow was turned off there, and asks to save edits before it moves on. What else it does is in its bar: Read or Edit, Save, Follow, and its ⋯ menu, which names its keys. The ✕ at the bar’s right end closes the viewer, as Esc does, and the pane shows its folder again."
                         ),
                         HelpRow(
                             label: "PDFs, pictures and documents in the viewer",

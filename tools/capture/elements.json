@@ -442,6 +442,7 @@
     "tab views edit": {"swift": "tabViews.edit"},
     "tab views apply": {"swift": "tabViews.apply"},
     "window views row name": {"swift": "windowViews.name"},
-    "window views edit": {"swift": "windowViews.edit"}
+    "window views edit": {"swift": "windowViews.edit"},
+    "viewer close button": {"swift": "textViewer.close"}
   }
 }
