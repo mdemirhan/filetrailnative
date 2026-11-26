@@ -42,6 +42,49 @@ extension NativeFS {
         return String(cString: text)
     }
 
+    /// The item's extended attributes by name (its tags, Finder's information), a symlink's own.
+    public static func extendedAttributes(_ path: String) throws -> [String: Data] {
+        let options = XATTR_NOFOLLOW
+        let size = listxattr(path, nil, 0, options)
+        if size < 0 {
+            throw NativeError.errno(errno, syscall: "listxattr", path: path)
+        }
+        guard size > 0 else { return [:] }
+        var names = [CChar](repeating: 0, count: size)
+        let listed = listxattr(path, &names, size, options)
+        if listed < 0 {
+            throw NativeError.errno(errno, syscall: "listxattr", path: path)
+        }
+        var attributes: [String: Data] = [:]
+        var start = 0
+        while start < listed {
+            let name = names[start...].withUnsafeBufferPointer { String(cString: $0.baseAddress!) }
+            start += name.utf8.count + 1
+            let length = getxattr(path, name, nil, 0, 0, options)
+            if length < 0 {
+                // Taken off since it was listed.
+                if errno == ENOATTR { continue }
+                throw NativeError.errno(errno, syscall: "getxattr", path: path)
+            }
+            var value = Data(count: length)
+            let read = value.withUnsafeMutableBytes { getxattr(path, name, $0.baseAddress, length, 0, options) }
+            if read < 0 {
+                if errno == ENOATTR { continue }
+                throw NativeError.errno(errno, syscall: "getxattr", path: path)
+            }
+            attributes[name] = value.prefix(read)
+        }
+        return attributes
+    }
+
+    /// Sets the item's extended attribute `name` to `value`, a symlink's own.
+    public static func setExtendedAttribute(_ path: String, _ name: String, _ value: Data) throws {
+        let result = value.withUnsafeBytes { setxattr(path, name, $0.baseAddress, value.count, 0, XATTR_NOFOLLOW) }
+        if result != 0 {
+            throw NativeError.errno(errno, syscall: "setxattr", path: path)
+        }
+    }
+
     /// Gives the item the ACL `text` (text from `getAcl`), or none at all for nil.
     /// A copy of ~/Documents carries its "group:everyone deny delete" entry, which keeps the Trash from taking
     /// it: Undo takes the entry off an item it made, and puts it back once the item is in the Trash.

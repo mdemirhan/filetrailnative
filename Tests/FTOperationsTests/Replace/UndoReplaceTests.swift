@@ -81,17 +81,39 @@ struct CopyUndoReplaceTests {
         }
     }
 
-    @Test func cantBeUndoneWhenAllAMergeDidWasReplaceAnItemInTheFolder() async throws {
+    // As a Replace of an item picked: the old item's trip to the Trash, then the new item, one unit.
+    @Test func recordsAReplaceInsideAMergedFolderAsAUnitOfItsOwn() async throws {
         try await withFolders { src, dst, trash in
             try Disk.write(src + "/Folder/a.txt", "new")
             try Disk.write(dst + "/Folder/a.txt", "old")
+            let oldId = idOf(dst + "/Folder/a.txt")
 
             let run = try await runPaste(
                 mode: .copy, sources: [src + "/Folder"], into: dst, policy: mergeAndReplace,
                 fileSystem: NativePaste.withTrash(trash))
 
             #expect(Disk.read(dst + "/Folder/a.txt") == "new")
-            #expect(try undoLog(run.result) == .notUndoable(reason: .merge))
+            let units = steps(try undoLog(run.result))
+            guard units.count == 1, units[0].count == 1, case .merged(let merge) = units[0][0] else {
+                Issue.record("Not one merged step: \(units)")
+                return
+            }
+            #expect(merge.units.count == 1)
+            let unit = merge.units.first?.steps ?? []
+            #expect(unit.count == 2)
+            if case .trashed(let from, let trashPath, let id, _, _)? = unit.first {
+                #expect(from == dst + "/Folder/a.txt")
+                #expect(trashPath == trash + "/1-a.txt")
+                #expect(id == oldId)
+            } else {
+                Issue.record("Not a trashed step: \(String(describing: unit.first))")
+            }
+            if case .created(let path, let id, _)? = unit.last {
+                #expect(path == dst + "/Folder/a.txt")
+                #expect(id == idOf(dst + "/Folder/a.txt"))
+            } else {
+                Issue.record("Not a created step: \(String(describing: unit.last))")
+            }
         }
     }
 
@@ -143,17 +165,39 @@ struct MoveUndoReplaceTests {
         }
     }
 
-    @Test func cantBeUndoneWhenAllAMergeOnItsOwnDiskDidWasReplaceAnItem() async throws {
+    @Test func recordsAReplaceInsideAMergingMoveAsAUnitOfItsOwn() async throws {
         try await withFolders { src, dst, trash in
             try Disk.write(src + "/Folder/a.txt", "new")
             try Disk.write(dst + "/Folder/a.txt", "old")
+            let (movedId, folderId) = (idOf(src + "/Folder/a.txt"), idOf(src + "/Folder"))
 
             let run = try await runPaste(
                 mode: .cut, sources: [src + "/Folder"], into: dst, policy: mergeAndReplace,
                 fileSystem: NativePaste.withTrash(trash))
 
             #expect(Disk.read(dst + "/Folder/a.txt") == "new")
-            #expect(try undoLog(run.result) == .notUndoable(reason: .merge))
+            #expect(!Disk.exists(src + "/Folder"))
+            let units = steps(try undoLog(run.result))
+            guard units.count == 1, units[0].count == 1, case .merged(let merge) = units[0][0] else {
+                Issue.record("Not one merged step: \(units)")
+                return
+            }
+            #expect(merge.removed?.id == folderId)
+            let unit = merge.units.first?.steps ?? []
+            #expect(unit.count == 2)
+            if case .trashed(let from, _, _, _, _)? = unit.first {
+                #expect(from == dst + "/Folder/a.txt")
+            } else {
+                Issue.record("Not a trashed step: \(String(describing: unit.first))")
+            }
+            if case .moved(let moved)? = unit.last {
+                #expect(moved.from == src + "/Folder/a.txt")
+                #expect(moved.to == dst + "/Folder/a.txt")
+                #expect(moved.id == movedId)
+                #expect(moved.parentId == folderId)
+            } else {
+                Issue.record("Not a moved step: \(String(describing: unit.last))")
+            }
         }
     }
 

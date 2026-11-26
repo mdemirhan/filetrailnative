@@ -15,6 +15,7 @@ final class TestFileSystem: WriteServiceFileSystem, @unchecked Sendable {
     var statImpl: ((String) throws -> WriteServiceStats)?
     var renameExclusiveImpl: ((String, String) throws -> Void)?
     var mkdirImpl: ((String) throws -> Void)?
+    var rmdirImpl: ((String) throws -> Void)?
     var rmImpl: ((String, Bool, Bool) throws -> Void)?
     var copyFileImpl: ((String, String, StopSignal?, (@Sendable (Int64) -> Void)?) throws -> Void)?
     var getFlagsImpl: ((String) throws -> UInt32)?
@@ -71,7 +72,10 @@ final class TestFileSystem: WriteServiceFileSystem, @unchecked Sendable {
         if let rmImpl { return try rmImpl(path, recursive, force) }
         try base.rm(path, recursive: recursive, force: force)
     }
-    func rmdir(_ path: String) throws { try base.rmdir(path) }
+    func rmdir(_ path: String) throws {
+        if let rmdirImpl { return try rmdirImpl(path) }
+        try base.rmdir(path)
+    }
     func copyFile(
         _ source: String, _ destination: String, stop: StopSignal?, onProgress: (@Sendable (Int64) -> Void)?
     ) throws {

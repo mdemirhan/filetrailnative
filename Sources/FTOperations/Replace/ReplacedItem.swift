@@ -15,8 +15,7 @@ func removeReplacedItem(
         // Staging a large copy takes a while: the item replaced must still be the one that was there, never
         // one an app saved in its place meanwhile.
         let current = try assertReplacedItemUnchanged(context, node, destination)
-        let records =
-            context.recordsUndo && context.shared.undo.topLevelNodeIds.contains(NameKeys.Exact(node.node.id))
+        let records = recordsUndo(context, node)
         let id = itemIdOf(dev: current.dev, ino: current.ino)
         let looks = records ? stampWithoutId(StampReader(fileSystem), node.destinationPath, id) : nil
         // On a disk that ignores case, "X.TXT" replaces "x.txt": an Undo puts the item back under its own name.

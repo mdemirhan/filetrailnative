@@ -207,6 +207,12 @@ public enum UndoHistoryRows {
             return .made(path)
         case .trashed(let from, _, _, _, _):
             return undone ? .made(from) : .trashed(from)
+        case .merged(let merged):
+            // One line for the folder: moved into the one of its name, or, for a copy, the folder its copies went into.
+            if UndoHistory.movesAnything([UndoUnit(steps: [step])]) {
+                return undone ? .moved(from: merged.to, to: merged.from) : .moved(from: merged.from, to: merged.to)
+            }
+            return .made(undone ? merged.from : merged.to)
         case .batchRenamed, .permissions:
             return nil
         }
@@ -391,7 +397,6 @@ public enum UndoHistoryRows {
     /// `cantUndoReason`: why it can't be undone, "Items were deleted for good".
     public static func cantUndoReason(_ entry: CantUndoEntry) -> String {
         switch entry.reason {
-        case .merge: "A folder was merged into one already there"
         case .deletedForGood, nil: "Items were deleted for good"
         case .noTrash: "Its disk has no Trash"
         case .otherDiskMove: "Items were moved to another disk"
@@ -461,7 +466,7 @@ extension UndoStep {
     fileprivate var holdsItems: Bool {
         switch self {
         case .batchRenamed, .permissions: true
-        case .moved, .created, .trashed: false
+        case .moved, .created, .trashed, .merged: false
         }
     }
 }

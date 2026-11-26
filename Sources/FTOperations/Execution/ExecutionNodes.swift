@@ -275,8 +275,17 @@ func executeDirectoryNode(_ context: ExecutionContext, _ currentNode: ResolvedCo
         context.shared.completedItemCount += 1
         emitProgress(context, .running, currentNode, nil)
     }
-    if currentNode.action == .merge {
-        expectCantUndo(context, .merge)
+    // A folder merged into one already there: each of its items is undone on its own, as one step of the folder.
+    let recordsItems = currentNode.action == .merge && recordsUndo(context, currentNode)
+    let mergedFrom = recordsItems ? ownSourcePath(context, currentNode) : currentNode.node.sourcePath
+    var removedFolder: RemovedFolder?
+    if recordsItems {
+        beginMerge(context, currentNode)
+    }
+    defer {
+        if recordsItems {
+            endMerge(context, currentNode, from: mergedFrom, removed: removedFolder)
+        }
     }
     var hasChildFailure = false
     let leftToTheEndBefore = context.shared.originalsLeftToTheEnd.count
@@ -292,6 +301,15 @@ func executeDirectoryNode(_ context: ExecutionContext, _ currentNode: ResolvedCo
             throw CancelledWithItemsError(childItems: bubbledChildItems)
         }
         var childResult: ExecuteNodeResult
+        if recordsItems {
+            openMergedItemUnit(context)
+        }
+        defer {
+            // What was done for the item counts, even when it then failed or was stopped.
+            if recordsItems {
+                closeUndoUnit(context)
+            }
+        }
         do {
             childResult = try executeResolvedNode(context, child)
         } catch {
@@ -382,9 +400,15 @@ func executeDirectoryNode(_ context: ExecutionContext, _ currentNode: ResolvedCo
             // The originals of files moved out of it go at the end of the paste: it is removed after them, then.
             context.shared.originalsLeftToTheEnd.append(.folder(currentNode, keptNames: keptNames))
         } else {
+            // Read whenever it may be removed: an item left in it on purpose may be gone by now, and the folder with
+            // it.
+            let removing = recordsItems ? removedFolderOf(context, currentNode, path: mergedFrom) : nil
             dirDeleteError =
                 metadataKeptMessage(context, currentNode)
-                ?? tryRemoveEmptySourceDirectory(currentNode, fileSystem, keptNames) { noteChanged(context) }
+                ?? tryRemoveEmptySourceDirectory(currentNode, fileSystem, keptNames) {
+                    noteChanged(context)
+                    removedFolder = removing
+                }
         }
     } else if context.stagingFor != .cut {
         // (Built aside for a move, what was added meanwhile is named once the originals go.)

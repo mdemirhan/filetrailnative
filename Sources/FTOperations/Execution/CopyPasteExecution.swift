@@ -20,7 +20,7 @@ func executeCopyPasteFromAnalysisHere(_ run: CopyPasteRun) {
     collectDestinationPathKeys(run.resolvedNodes, caseSensitive: run.report.destinationCaseSensitive, into: &reserved)
     let shared = ExecutionShared(
         reservedPaths: reserved,
-        undo: UndoRecorder(topLevelNodeIds: Set(run.resolvedNodes.map { NameKeys.Exact($0.node.id) })))
+        undo: UndoRecorder(ownNodeIds: Set(run.resolvedNodes.map { NameKeys.Exact($0.node.id) })))
     let context = ExecutionContext(
         run, destinationDev: destinationFingerprint.dev, totalItemCount: countExecutableSteps(run.resolvedNodes),
         // What will be written: items skipped (an Add Missing merge's existing ones) don't count. Unknown when a
@@ -134,8 +134,8 @@ func executeCopyPasteFromAnalysisHere(_ run: CopyPasteRun) {
 
 // MARK: Undo
 
-/// Ends the steps of the picked item just worked on. What it made is looked at now, once all of it is in place
-/// (a folder's date is set last), for Undo to tell if it changes.
+/// Ends the steps of the item just worked on. What it made is looked at now, once all of it is in place (a folder's
+/// date is set last), for Undo to tell if it changes.
 func closeUndoUnit(_ context: ExecutionContext) {
     let shared = context.shared
     let steps = shared.undo.unit
@@ -159,6 +159,67 @@ func closeUndoUnit(_ context: ExecutionContext) {
     shared.undo.units.append(UndoUnit(steps: stamped))
 }
 
+/// A folder whose steps are kept is merged into one already there: each of its items is a unit of its own from here
+/// on (`openMergedItemUnit`), gathered into one step once the folder is done (`endMerge`).
+func beginMerge(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode) {
+    let undo = context.shared.undo
+    context.shared.undo.merges.append(
+        UndoRecorder.MergeFrame(unit: undo.unit, units: undo.units, pendingCantUndo: undo.pendingCantUndo))
+    context.shared.undo.unit = nil
+    context.shared.undo.units = []
+    for child in node.children where child.action != .skip {
+        context.shared.undo.ownNodeIds.insert(NameKeys.Exact(child.node.id))
+    }
+}
+
+/// An item of the folder being merged is about to be worked on: its steps are a unit of their own.
+func openMergedItemUnit(_ context: ExecutionContext) {
+    context.shared.undo.unit = []
+}
+
+/// The folder being merged is done: its items' units become one step of the item it belongs to. `from` is where its
+/// items were (`ownSourcePath`), `removed` the folder itself when a move took everything out of it and removed it.
+/// A merge that put nothing in and removed nothing adds no step.
+func endMerge(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode, from: String, removed: RemovedFolder?) {
+    guard let frame = context.shared.undo.merges.popLast() else { return }
+    let units = context.shared.undo.units
+    context.shared.undo.unit = frame.unit
+    context.shared.undo.units = frame.units
+    context.shared.undo.pendingCantUndo = frame.pendingCantUndo
+    if !units.isEmpty || removed != nil {
+        context.shared.undo.unit?.append(
+            .step(.merged(.init(from: from, to: node.destinationPath, units: units, removed: removed))))
+    }
+}
+
+/// The folder a move merged into another, as it is just before it is removed: what Undo makes it again with. Its date
+/// is the one it had before its items were taken out.
+func removedFolderOf(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode, path: String) -> RemovedFolder? {
+    let fileSystem = context.fileSystem
+    guard let stats = try? fileSystem.lstat(node.node.sourcePath), stats.isDirectory else { return nil }
+    let parentId = context.shared.folderIds.id({ try fileSystem.stat($0) }, dirnameOf(path))
+    return RemovedFolder(
+        path: path, id: itemIdOf(stats), parentId: parentId,
+        attributes: FolderAttributes(
+            mode: stats.mode & 0o7777, flags: try? fileSystem.getFlags(node.node.sourcePath),
+            mtimeMs: node.node.sourceFingerprint.mtimeMs,
+            extendedAttributes: ownExtendedAttributes(fileSystem, node.node.sourcePath),
+            acl: (try? fileSystem.getAcl(node.node.sourcePath)) ?? nil))
+}
+
+/// What macOS writes on an item itself and keeps to itself: where it came from (`com.apple.provenance`), which apps
+/// may open it (`com.apple.macl`), and System Integrity Protection's mark. An app can't set them, so a folder made
+/// again isn't given them.
+private let extendedAttributesTheSystemKeeps: Set<String> = [
+    "com.apple.provenance", "com.apple.macl", "com.apple.rootless",
+]
+
+/// The item's extended attributes a folder made again is given (its tags, Finder's information), without those the
+/// system keeps to itself; nil when they can't be read.
+func ownExtendedAttributes(_ fileSystem: some WriteServiceFileSystem, _ path: String) -> [String: Data]? {
+    (try? fileSystem.extendedAttributes(path))?.filter { !extendedAttributesTheSystemKeeps.contains($0.key) }
+}
+
 func markCantUndo(_ context: ExecutionContext, _ reason: CantUndoReason) {
     if context.shared.undo.cantUndo == nil {
         context.shared.undo.cantUndo = reason
@@ -180,18 +241,19 @@ func noteChanged(_ context: ExecutionContext) {
     }
 }
 
-private func recordsUndo(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode) -> Bool {
-    context.recordsUndo && context.shared.undo.topLevelNodeIds.contains(NameKeys.Exact(node.node.id))
+/// Whether the steps of `node` are kept: it is one of the picked items, or an item of a folder merged into another.
+func recordsUndo(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode) -> Bool {
+    context.recordsUndo && context.shared.undo.ownNodeIds.contains(NameKeys.Exact(node.node.id))
 }
 
-/// `ownSourcePath`: the picked item's place with its name as the disk keeps it, read before it is moved, for Undo to move
-/// it back under its own name however it was spelled when chosen. Read only for an item Undo records.
+/// `ownSourcePath`: the item's place with its name as the disk keeps it, read before it is moved, for Undo to move it
+/// back under its own name however it was spelled when chosen. Read only for an item Undo records.
 func ownSourcePath(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode) -> String {
     recordsUndo(context, node) ? pathAsOnDisk(node.node.sourcePath) : node.node.sourcePath
 }
 
-/// Adds a step to the picked item's steps. Steps inside it (a file in a copied folder) are left out: undoing the
-/// item undoes them.
+/// Adds a step to the item's steps. Steps inside it (a file in a copied folder) are left out: undoing the item undoes
+/// them.
 func recordUndoStep(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode, _ step: RecordingStep) {
     if recordsUndo(context, node), context.shared.undo.unit != nil {
         context.shared.undo.unit?.append(step)

@@ -391,7 +391,7 @@ extension HelpContent {
                         HelpRow(
                             label: "What you can undo",
                             description:
-                                "Renaming (one item or several at once), moving items to another folder on the same disk, Move to Trash, New Folder, Copy, Duplicate, Paste as File, Convert Images, Compress, Extract, replacing an item when you paste, and the permissions changed from the Info panel."
+                                "Renaming (one item or several at once), moving items to another folder on the same disk, Move to Trash, New Folder, Copy, Duplicate, Paste as File, Convert Images, Compress, Extract, replacing an item or merging a folder into one of its name when you paste (a folder a move emptied is made again, its items put back in it), and the permissions changed from the Info panel."
                         ),
                         HelpRow(
                             label: "Nothing is deleted",
@@ -406,7 +406,7 @@ extension HelpContent {
                         HelpRow(
                             label: "What can’t be undone",
                             description:
-                                "Merging folders, moving items to another disk, and deleting for good: Delete Immediately and Empty Trash. On a disk without a Trash (such as a network share), Move to Trash and Replace delete for good too, and nothing made there can be undone: a copy, a new folder, a pasted or converted file, a zip or what is extracted. File Trail tells you before you merge folders or delete anything for good. Afterwards Edit › Undo shows “Can’t Undo”: choose it, or press its key, and File Trail says what can’t be undone and why, and changes nothing. Undo again goes on to what you did before it, which can still be undone; an item that has since been merged, moved away, deleted or replaced by another of its name is left as it is, and File Trail says so."
+                                "Moving items to another disk, and deleting for good: Delete Immediately and Empty Trash. On a disk without a Trash (such as a network share), Move to Trash and Replace delete for good too, and nothing made there can be undone: a copy, a new folder, a pasted or converted file, a zip or what is extracted. File Trail tells you before it deletes anything for good. Afterwards Edit › Undo shows “Can’t Undo”: choose it, or press its key, and File Trail says what can’t be undone and why, and changes nothing. Undo again goes on to what you did before it, which can still be undone; an item that has since been merged, moved away, deleted or replaced by another of its name is left as it is, and File Trail says so."
                         ),
                     ]),
                 HelpSection(

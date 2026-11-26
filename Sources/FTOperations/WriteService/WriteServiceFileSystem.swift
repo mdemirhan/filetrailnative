@@ -38,6 +38,13 @@ public protocol WriteServiceFileSystem: AnalysisFileSystem {
     func copyMetadataToRunInPlace(_ source: String, _ destination: String) throws
     /// Gives the item the ACL `acl` (acl_to_text(3) text), or none at all for nil (a symlink not followed).
     func setAcl(_ path: String, _ acl: String?) throws
+    /// The item's ACL as text, nil for none (a symlink not followed).
+    func getAcl(_ path: String) throws -> String?
+    /// The item's extended attributes by name (its tags, Finder's information; a symlink's own): what a folder a move
+    /// emptied and removed is made again with by Undo.
+    func extendedAttributes(_ path: String) throws -> [String: Data]
+    /// Sets the item's extended attribute `name` (a symlink's own).
+    func setExtendedAttribute(_ path: String, _ name: String, _ value: Data) throws
     /// Moves an item to the Trash and returns the path it has there (nil when the Trash didn't say). When it fails
     /// because the disk has no Trash (the code `.noTrash`), the person is asked before anything is
     /// deleted for good.
@@ -58,6 +65,13 @@ public protocol WriteServiceFileSystem: AnalysisFileSystem {
 
 extension WriteServiceFileSystem {
     public func assertItemsCanLeave(_ folder: String) throws {}
+    public func getAcl(_ path: String) throws -> String? { try NativeFS.getAcl(path) }
+    public func extendedAttributes(_ path: String) throws -> [String: Data] {
+        try NativeFS.extendedAttributes(path)
+    }
+    public func setExtendedAttribute(_ path: String, _ name: String, _ value: Data) throws {
+        try NativeFS.setExtendedAttribute(path, name, value)
+    }
 }
 
 /// `removeEmptyFolder`: rmdir(2) on macOS also removes a folder that holds nothing but "._name" files, deleting

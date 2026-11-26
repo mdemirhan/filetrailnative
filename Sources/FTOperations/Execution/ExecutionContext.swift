@@ -104,17 +104,28 @@ enum RecordingStep {
     case createdFile(path: String)
 }
 
-/// Steps are kept only for the items the person picked: undoing one undoes everything inside it. A merge, a
-/// move to another disk or a permanent delete anywhere makes the whole paste one that can't be undone, but only
-/// once it has changed something: a merge whose items were all there already leaves Undo as it was.
+/// Steps are kept only for the items the person picked, and for the items put one by one into a folder merged into
+/// another: undoing one undoes everything inside it. A move to another disk or a permanent delete anywhere makes the
+/// whole paste one that can't be undone, but only once it has changed something.
 struct UndoRecorder {
-    var topLevelNodeIds: Set<NameKeys.Exact>
-    /// The steps of the picked item being worked on, or nil between items.
+    /// The items whose steps are kept (`ownNodeIds`): those the person picked, and each item of a folder merged into
+    /// one already there, as it is reached (`beginMerge`).
+    var ownNodeIds: Set<NameKeys.Exact>
+    /// The steps of the item being worked on, or nil between items.
     var unit: [RecordingStep]?
+    /// The units done: of the paste, or of the folder being merged.
     var units: [UndoUnit] = []
     var cantUndo: CantUndoReason?
-    /// Why the picked item being worked on can't be undone, should it change anything.
+    /// Why the item being worked on can't be undone, should it change anything.
     var pendingCantUndo: CantUndoReason?
+    /// The folders being merged, outermost first: what was being recorded when each began.
+    var merges: [MergeFrame] = []
+
+    struct MergeFrame {
+        var unit: [RecordingStep]?
+        var units: [UndoUnit]
+        var pendingCantUndo: CantUndoReason?
+    }
 }
 
 /// An item a move to another disk copied: where (`path`), and the original as it was copied (`source`), a change

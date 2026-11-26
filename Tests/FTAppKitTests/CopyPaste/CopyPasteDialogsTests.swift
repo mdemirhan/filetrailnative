@@ -160,8 +160,9 @@ extension ExplorerWindowlessTests {
             #expect(sheet.rowViewsShown.map { $0.row?.depth } == [0, 1, 2])
             #expect(sheet.rowViewsShown[1].glyph.shape == .folder)
             #expect(sheet.rowViewsShown[2].popUp.accessibilityLabel() == "Choice for Alpha/Inner/x.txt")
-            #expect(sheet.note.isWarning)
-            #expect(sheet.note.text.hasSuffix("Merging can\u{2019}t be undone"))
+            // Nothing is replaced, and a merge is undone as any paste is: the note doesn't warn.
+            #expect(!sheet.note.isWarning)
+            #expect(!sheet.note.text.contains("undone"))
             #expect(sheet.bar?.hint.stringValue == "Folders merge. Only files that aren\u{2019}t there yet are added.")
             // Keep Both on the file inside does what Keep All does; Skip again, what Add Missing gives it, is no choice of
             // its own.
@@ -319,12 +320,12 @@ extension ExplorerWindowlessTests {
             #expect(alert.asideButton?.isEnabled == false)
             #expect(!accessory.checkbox.isEnabled)
             #expect(alert.window != nil)
-            // A new conflict: a fresh alert. A folder offers Merge, says merging can't be undone.
+            // A new conflict: a fresh alert. A folder offers Merge, with no warning: a merge can be undone.
             alert = try #require(
                 ask("q-2", .destinationCreated, .directoryConflict, destination: fingerprint(.directory)))
             #expect(alert.buttons.allSatisfy { $0.isEnabled })
             #expect(alert.buttons.map(\.title) == ["Replace", "Keep Both", "Skip", "Merge"])
-            #expect(alert.messageLabel?.stringValue.hasSuffix("Merging can\u{2019}t be undone.") == true)
+            #expect(alert.messageLabel?.stringValue.contains("undone") == false)
             #expect(ui.runtimeConflicts.accessory?.cards.first?.facts.stringValue == "Folder")
             // Nothing there any more: go ahead (not red) or skip.
             alert = try #require(ask("q-3", .destinationDeleted, destination: fingerprint(.file, exists: false)))

@@ -1060,7 +1060,34 @@
           }
         },
         "trash": [],
-        "undoLog": {"reason": "merge", "undoable": false}
+        "undoLog": {
+          "undoable": true,
+          "units": [
+            {
+              "steps": [
+                {
+                  "from": "$ROOT/source/f",
+                  "kind": "merged",
+                  "to": "$ROOT/destination/f",
+                  "units": [
+                    {
+                      "steps": [
+                        {
+                          "from": "$ROOT/source/f/a.txt",
+                          "id": {"dev": "dev-1", "ino": "ino-1"},
+                          "itemKind": "file",
+                          "kind": "moved",
+                          "parentId": {"dev": "dev-1", "ino": "ino-2"},
+                          "to": "$ROOT/destination/f/a.txt"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     {

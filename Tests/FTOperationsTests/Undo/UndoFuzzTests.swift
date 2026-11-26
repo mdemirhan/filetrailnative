@@ -1,13 +1,14 @@
-// Random runs of renames, batch renames, new folders, Trash, copies, moves and Replaces on a real disk, then Undo all
-// the way back and Redo all the way forward:
+// Random runs of renames, batch renames, new folders, Trash, copies, moves, Replaces and folders merged into others on
+// a real disk, then Undo all the way back and Redo all the way forward:
 // - With nothing changed in between, Undo gets back every item as it was (path, kind and file id), and Redo gets back
-//   the end.
+//   the end. A folder a merge removed is made again by Undo: it has a new file id, which is taken for its old one.
 // - With random changes made outside the app between them, no item is ever lost or replaced, every item left as it
 //   was says why, and nothing stays under a hidden name; and the same for Redo after more changes.
 // - With writes that fail (no permission) and Undos stopped part way, trying again gets back to the start and Redo to
 //   the end; with failures that look like changes outside (a name taken, an item gone), nothing is lost or replaced.
-// - With operations that can't be undone among the others (merges, items deleted for good), Undo says so of each and
-//   goes on to the ones before: no item is lost or put where it never was, and every item left says why.
+// - With operations that can't be undone among the others (moves to another disk, items deleted for good), Undo says
+//   so of each and goes on to the ones before: no item is lost or put where it never was, and every item left says
+//   why.
 // The cases come from seeds, so a failure names the seed that makes it again.
 import Darwin
 import FTFileSystem
@@ -66,7 +67,7 @@ struct FuzzFailures: Sendable {
 @MainActor
 final class UndoFuzzCase {
     enum Operation: String, CaseIterable {
-        case rename, newFolder, folderWithSelection, trash, batch, copy, move, replace, copyAndMove
+        case rename, newFolder, folderWithSelection, trash, batch, copy, move, replace, copyAndMove, merge
     }
 
     struct Item {
@@ -92,6 +93,9 @@ final class UndoFuzzCase {
     /// While set, the app's writes fail and stop at random (the operations themselves run before it is set, so only
     /// Undo and Redo meet it).
     private let failures = FuzzLocked<FuzzFailures?>(nil)
+    /// The folders Undo made again for merges' items, by the file id each has now to the one of the folder it was made
+    /// in place of (the first, when one was made again more than once).
+    private let remade = FuzzLocked<[UInt64: UInt64]>([:])
 
     init(seed: Int) throws {
         random = FuzzRandom(seed: UInt32(seed))
@@ -126,6 +130,19 @@ final class UndoFuzzCase {
             writeService: StubWriteService(), fileSystem: fileSystem,
             options: WriteCoordinatorOptions(
                 homePath: root, recordUndo: { [history] in history.record($0) }, undoHistory: history))
+        let remade = remade
+        coordinator.undo.run = { units, options in
+            let run = UndoExecution.runUndo(units, options)
+            var known = remade.value
+            for (old, new) in run.remadeFolders { known[new.ino] = known[old.ino] ?? old.ino }
+            remade.value = known
+            return run
+        }
+    }
+
+    /// The file id an item is known by: the folder's a folder made again was made in place of.
+    func original(_ ino: UInt64) -> UInt64 {
+        remade.value[ino] ?? ino
     }
 
     func setFailures(_ value: FuzzFailures?) {
@@ -166,7 +183,9 @@ final class UndoFuzzCase {
 
     /// Every item but the Trash folders, as "path kind id".
     func snapshot() -> [String] {
-        items().map { "\(relative($0.path)) \($0.isFolder ? "dir" : "file") \(UndoDisk.ino($0.path) ?? 0)" }
+        items().map {
+            "\(relative($0.path)) \($0.isFolder ? "dir" : "file") \(original(UndoDisk.ino($0.path) ?? 0))"
+        }
     }
 
     func items(_ folder: String? = nil) -> [Item] {
@@ -186,7 +205,7 @@ final class UndoFuzzCase {
         var ids: Set<UInt64> = []
         for name in UndoDisk.names(folder ?? root) {
             let path = "\(folder ?? root)/\(name)"
-            if let ino = UndoDisk.ino(path) { ids.insert(ino) }
+            if let ino = UndoDisk.ino(path) { ids.insert(original(ino)) }
             if UndoDisk.isDirectory(path) { ids.formUnion(self.ids(path)) }
         }
         return ids
@@ -228,8 +247,8 @@ final class UndoFuzzCase {
     func operate() async throws -> Operation? {
         let before = history.generation
         let kind = try await operateOnce()
-        // One that can't be undone (a merge) stays as it is: the ones before it can still be undone, but not all the
-        // way to the start.
+        // One that can't be undone stays as it is: the ones before it can still be undone, but not all the way to the
+        // start.
         if history.menu().cantUndo { undoesToTheStart = false }
         return history.generation != before ? kind : nil
     }
@@ -240,37 +259,30 @@ final class UndoFuzzCase {
     /// one it went on to undo.
     private(set) var cantUndoMet = 0
     private(set) var undoneBeforeCantUndo = 0
-    /// How many merges went into the history as operations that can't be undone.
-    private(set) var merges = 0
+    /// How many moves to another disk went into the history as operations that can't be undone.
+    private(set) var otherDiskMoves = 0
     /// Folders merge, and a file replaces the one of its name.
     static let mergeAndReplace = CopyPastePolicy(file: .overwrite, directory: .merge, mismatch: .overwrite)
+    /// Folders merge, and of two items of a name both are kept.
+    static let mergeAndKeepBoth = CopyPastePolicy(file: .keepBoth, directory: .merge, mismatch: .keepBoth)
 
-    /// One operation that can't be undone, on items the operations before it may be about: a folder merged into one
-    /// of its name (moved or copied), or an item deleted from the Trash for good. Returns what it removed for good.
+    /// One operation that can't be undone, on items the operations before it may be about: a move to another disk
+    /// (copied there, then the original deleted), or an item deleted from the Trash for good. Returns what it removed
+    /// for good.
     func operateCantUndo() async throws -> Set<UInt64> {
         let items = items()
         guard !items.isEmpty else { return [] }
         let item = random.pick(items)
-        if item.isFolder, random.chance(0.7) {
+        if random.chance(0.6) {
             let into = folders().filter { folder in
                 folder != item.path && !folder.hasPrefix("\(item.path)/") && folder != NodePath.dirname(item.path)
             }
             guard !into.isEmpty else { return [] }
             let destination = random.pick(into)
-            let there = "\(destination)/\(NodePath.basename(item.path))"
-            if !UndoDisk.exists(there) {
-                // A folder of that name to merge into, as if made in another app.
-                log.append("outside: new folder \(relative(there))")
-                try UndoDisk.mkdir(there)
-                notePlaces()
-            } else if !UndoDisk.isDirectory(there) {
-                return []
-            }
-            let mode: CopyPasteMode = random.chance(0.5) ? .cut : .copy
-            log.append("merge (\(mode.rawValue)) \(relative(item.path)) -> \(relative(destination))")
+            log.append("move to another disk \(relative(item.path)) -> \(relative(destination))")
             let run = try await runPaste(
-                mode: mode, sources: [item.path], into: destination, policy: Self.mergeAndReplace,
-                fileSystem: pasteFileSystem)
+                mode: .cut, sources: [item.path], into: destination, policy: Self.mergeAndReplace,
+                fileSystem: NativePaste.asOnAnotherDisk(NodePath.dirname(item.path), pasteFileSystem))
             if let result = run.result, let undoLog = result.undoLog {
                 var changed = true
                 if case .undoable(let units) = undoLog, units.isEmpty { changed = false }
@@ -282,7 +294,7 @@ final class UndoFuzzCase {
             }
             if history.menu().cantUndo {
                 undoesToTheStart = false
-                merges += 1
+                otherDiskMoves += 1
             }
             return []
         }
@@ -304,7 +316,7 @@ final class UndoFuzzCase {
             guard let ino = UndoDisk.ino(item.path), let parent = UndoDisk.ino(NodePath.dirname(item.path)) else {
                 continue
             }
-            places[ino] = "\(parent)/\(NodePath.basename(item.path))"
+            places[original(ino)] = "\(original(parent))/\(NodePath.basename(item.path))"
         }
         return places
     }
@@ -403,6 +415,59 @@ final class UndoFuzzCase {
             _ = try await finish {
                 try await coordinator.batchRename(
                     BatchRenameRequest(items: renames, onConflict: .number, numberSeparator: " "), window: window)
+            }
+        case .merge:
+            // A folder into one of its name already there (copied there first when none is), moved or copied: its
+            // items go in one by one, each replacing the one of its name, kept beside it, or left (Add Missing).
+            func isMergeable(_ folder: String, into destination: String) -> Bool {
+                let there = "\(destination)/\(NodePath.basename(folder))"
+                return destination != folder && !destination.hasPrefix("\(folder)/")
+                    && destination != NodePath.dirname(folder) && !folder.hasPrefix("\(there)/")
+            }
+            let folders = folders()
+            let pairs = items.filter(\.isFolder).flatMap { folder in
+                folders.filter { destination in
+                    isMergeable(folder.path, into: destination)
+                        && UndoDisk.isDirectory("\(destination)/\(NodePath.basename(folder.path))")
+                }.map { (folder.path, $0) }
+            }
+            var pair = pairs.isEmpty ? nil : random.pick(pairs)
+            if pair == nil {
+                let candidates = items.filter(\.isFolder).flatMap { folder in
+                    folders.filter { destination in
+                        isMergeable(folder.path, into: destination)
+                            && !UndoDisk.exists("\(destination)/\(NodePath.basename(folder.path))")
+                    }.map { (folder.path, $0) }
+                }
+                guard !candidates.isEmpty else { return kind }
+                let (folder, destination) = random.pick(candidates)
+                log.append("copy (copy) \(relative(folder)) -> \(relative(destination)), to merge into")
+                let run = try await runPaste(
+                    mode: .copy, sources: [folder], into: destination, policy: Self.keepBoth,
+                    fileSystem: pasteFileSystem)
+                if let result = run.result, let undoLog = result.undoLog {
+                    history.record(
+                        FinishedWrite(
+                            action: .write(.copyTo), log: undoLog, items: result.items.map(WriteOperationItem.init)))
+                }
+                pair = (folder, destination)
+            }
+            guard let (folder, destination) = pair else { return kind }
+            let mode: CopyPasteMode = random.chance(0.5) ? .cut : .copy
+            let policy = random.pick([Self.mergeAndReplace, Self.mergeAndKeepBoth, NativePaste.keepExisting])
+            log.append(
+                "merge (\(mode.rawValue), files \(policy.file.rawValue)) \(relative(folder)) -> \(relative(destination))"
+            )
+            let run = try await runPaste(
+                mode: mode, sources: [folder], into: destination, policy: policy, fileSystem: pasteFileSystem)
+            if let result = run.result, let undoLog = result.undoLog {
+                var changed = true
+                if case .undoable(let units) = undoLog, units.isEmpty { changed = false }
+                if changed {
+                    history.record(
+                        FinishedWrite(
+                            action: .write(.paste), log: undoLog, items: result.items.map(WriteOperationItem.init)))
+                }
             }
         case .copy, .move, .replace:
             guard let item else { return kind }
@@ -642,8 +707,8 @@ struct UndoFuzzTests {
                 if let kind = try await testCase.operate() { recorded.insert(kind) }
             }
             let end = testCase.snapshot()
-            // Undo goes past an operation that can't be undone (a merge) to the ones before it, which may find their
-            // items where the merge put them: it gets back to the start only when every operation could be undone.
+            // Undo goes past an operation that can't be undone to the ones before it, which may find their items where it
+            // put them: it gets back to the start only when every operation could be undone.
             let fullyUndoable = testCase.undoesToTheStart
             let undone = try await testCase.undoAll(.undo)
             undoneOperations += undone.count
@@ -758,7 +823,7 @@ struct UndoFuzzTests {
         }
     }
 
-    // Operations that can't be undone (folders merged, items deleted for good) among the others, on the same items:
+    // Operations that can't be undone (moves to another disk, items deleted for good) among the others, on the same items:
     // Undo says each can't be undone, changing nothing, and goes on to the operations before it, which find their
     // items moved, replaced or gone. No item is lost, none ends up somewhere it never was, every item left says why,
     // and Redo of what was undone keeps to the same.
@@ -766,7 +831,7 @@ struct UndoFuzzTests {
         var met = 0
         var undoneBefore = 0
         var left = 0
-        var merges = 0
+        var otherDiskMoves = 0
         try await eachCase(offset: 3 * Self.seedsApart) { seed, testCase in
             testCase.notePlaces()
             for _ in 0..<testCase.random.integer(2, 7) {
@@ -814,13 +879,13 @@ struct UndoFuzzTests {
             try checkNoHiddenLeftovers(seed, testCase)
             met += testCase.cantUndoMet
             undoneBefore += testCase.undoneBeforeCantUndo
-            merges += testCase.merges
+            otherDiskMoves += testCase.otherDiskMoves
         }
         // In a run long enough, Undo met operations that can't be undone, undid operations before them, and some of
         // those found items they had to leave.
         if Self.cases >= 50 {
             #expect(met > Self.cases / 5)
-            #expect(merges > Self.cases / 10)
+            #expect(otherDiskMoves > Self.cases / 10)
             #expect(undoneBefore > Self.cases / 5)
             #expect(left > 0)
         }

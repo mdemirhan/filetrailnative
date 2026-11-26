@@ -2,16 +2,11 @@ import FTFileSystem
 import FTFoundation
 import Foundation
 
-/// What Undo asks of the disk, on top of what the local operations do: the item's access control list, to take a
-/// rule against deleting it off an operation's own copy for the Trash, and put it back after.
-public protocol UndoFileSystem: LocalWriteFileSystem {
-    /// The ACL as text, nil for none.
-    func getAcl(_ path: String) throws -> String?
-}
+/// What Undo asks of the disk: what the local operations do. The item's access control list (`getAcl`) is read to
+/// take a rule against deleting it off an operation's own copy for the Trash, and put it back after.
+public protocol UndoFileSystem: LocalWriteFileSystem {}
 
-extension NativeWriteFileSystem: UndoFileSystem {
-    public func getAcl(_ path: String) throws -> String? { try NativeFS.getAcl(path) }
-}
+extension NativeWriteFileSystem: UndoFileSystem {}
 
 /// One item of the batch an Undo renames back, as a rename of several items takes it.
 public struct UndoBatchRenameItem: Equatable, Sendable {

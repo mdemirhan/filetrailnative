@@ -384,4 +384,55 @@ struct UndoHistoryTests {
     @Test func namesAUnitWithNothingToGoByPlainly() {
         #expect(UndoHistory.labelOf(.trash, units([.batchRenamed(items: [])])) == "Move to Trash of 1 Item")
     }
+
+    // A folder an Undo made again for a merge's items has a new id: every other entry, on both lists, knows it by that
+    // one from then on, the folder its items are in and the folder itself.
+    @Test func knowsAFolderMadeAgainByItsNewIdEverywhere() throws {
+        let (old, new, other) = (ItemId(dev: 1, ino: 10), ItemId(dev: 1, ino: 20), ItemId(dev: 1, ino: 30))
+        let inFolder = UndoStep.moved(.init(from: "/F/a", to: "/F/b", id: other, itemKind: .file, parentId: old))
+        let theFolder = UndoStep.created(path: "/F", id: old, stamp: nil)
+        let history = UndoHistory()
+        history.record(Self.undoable(.newFolder, [theFolder]))
+        history.record(Self.undoable(.rename, [inFolder]))
+        history.record(Self.undoable(.paste, [Self.created("/x")]))
+        try history.finish(
+            .undo, entryId: try #require(history.top(.undo)).id, done: [], leftover: [], remade: [old: new])
+        let units = history.entries(.undo).flatMap(\.units).flatMap(\.steps)
+        #expect(
+            units == [
+                .created(path: "/F", id: new, stamp: nil),
+                .moved(.init(from: "/F/a", to: "/F/b", id: other, itemKind: .file, parentId: new)),
+            ])
+    }
+
+    @Test func remapsTheIdsInsideAMerge() {
+        let (old, new) = (ItemId(dev: 1, ino: 10), ItemId(dev: 1, ino: 20))
+        let removed = RemovedFolder(
+            path: "/s/F/Sub", id: ItemId(dev: 1, ino: 11), parentId: old,
+            attributes: FolderAttributes(mode: nil, flags: nil, mtimeMs: nil, extendedAttributes: nil, acl: nil))
+        let merge = UndoStep.merged(
+            .init(
+                from: "/s/F", to: "/d/F",
+                units: [
+                    UndoUnit(steps: [
+                        .moved(.init(from: "/s/F/a", to: "/d/F/a", id: nil, itemKind: .file, parentId: old))
+                    ]),
+                    UndoUnit(steps: [.merged(.init(from: "/s/F/Sub", to: "/d/F/Sub", units: [], removed: removed))]),
+                ], made: MadeFolder(path: "/s/F", id: old, mtimeMs: nil)))
+        let remapped = UndoPlan.remapIds([UndoUnit(steps: [merge])], [old: new])
+        guard case .merged(let merged)? = remapped.first?.steps.first else {
+            Issue.record("Not a merge: \(remapped)")
+            return
+        }
+        #expect(merged.made?.id == new)
+        guard case .moved(let moved)? = merged.units.first?.steps.first,
+            case .merged(let inner)? = merged.units.last?.steps.first
+        else {
+            Issue.record("Not a move and a merge: \(merged.units)")
+            return
+        }
+        #expect(moved.parentId == new)
+        #expect(inner.removed?.parentId == new)
+        #expect(inner.removed?.id == ItemId(dev: 1, ino: 11))
+    }
 }

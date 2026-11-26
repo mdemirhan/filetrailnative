@@ -456,8 +456,25 @@ struct UndoRecordingCoordinatorTests {
         #expect(asked.paths == ["/Volumes/Share", "/Volumes/Other"])
     }
 
+    // The copies put into a folder merged into another count too.
+    @Test func cantUndoCopiesMergedIntoAFolderOnADiskWithoutATrash() async throws {
+        let merged = UndoStep.merged(
+            .init(
+                from: "/Users/demo/F", to: "/Volumes/Share/F",
+                units: [UndoUnit(steps: [.created(path: "/Volumes/Share/F/a.txt", id: nil, stamp: nil)])]))
+        let log = UndoLog.undoable(units: [UndoUnit(steps: [merged])])
+        let asked = AskedPaths()
+        let finished = try await paste(log) { path in
+            asked.add(path)
+            return false
+        }
+        #expect(finished.map(\.log) == [.notUndoable(reason: .noTrash)])
+        #expect(asked.paths == ["/Volumes/Share/F"])
+    }
+
     @Test func passesOnAPasteThatCantBeUndone() async throws {
-        #expect(try await paste(.notUndoable(reason: .merge)).map(\.log) == [.notUndoable(reason: .merge)])
+        #expect(
+            try await paste(.notUndoable(reason: .otherDiskMove)).map(\.log) == [.notUndoable(reason: .otherDiskMove)])
     }
 
     @Test func recordsNothingForAPasteThatDidNothing() async throws {

@@ -278,13 +278,19 @@ public final class WriteCoordinator {
             answers[folder] = answer
             return answer
         }
-        let copiedOntoDiskWithoutTrash = units.contains { unit in
-            unit.steps.contains { step in
-                if case .created(let path, _, _) = step { return !hasTrash(NodePath.dirname(path)) }
-                return false
+        // The copies put into a folder merged into another too.
+        func copiesOntoDiskWithoutTrash(_ units: [UndoUnit]) -> Bool {
+            units.contains { unit in
+                unit.steps.contains { step in
+                    switch step {
+                    case .created(let path, _, _): !hasTrash(NodePath.dirname(path))
+                    case .merged(let merged): copiesOntoDiskWithoutTrash(merged.units)
+                    case .moved, .trashed, .batchRenamed, .permissions: false
+                    }
+                }
             }
         }
-        return copiedOntoDiskWithoutTrash ? .notUndoable(reason: .noTrash) : log
+        return copiesOntoDiskWithoutTrash(units) ? .notUndoable(reason: .noTrash) : log
     }
 
     /// Not knowing (the mount table couldn't be read) counts as no.

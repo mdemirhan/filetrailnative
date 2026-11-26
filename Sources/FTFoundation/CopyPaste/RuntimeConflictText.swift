@@ -117,9 +117,7 @@ public struct RuntimeConflictText: Equatable, Sendable {
         secondary = choices.filter { $0 != primaryChoice }.map(answer)
         let described = Self.describe(conflict, name: name, folder: folder, verbing: verbing)
         title = described.title
-        // Merging can't be undone: said wherever Merge is one of the answers.
-        message =
-            choices.contains(.merge) ? "\(described.message) Merging can\u{2019}t be undone." : described.message
+        message = described.message
         stopLabel = "Stop \(verbing.prefix(1).uppercased())\(verbing.dropFirst())"
         checkboxLabel =
             trashUnavailable

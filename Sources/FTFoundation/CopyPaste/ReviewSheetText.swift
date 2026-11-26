@@ -8,8 +8,6 @@ public struct ReviewSheetText: Equatable, Sendable {
     public var primaryLabel: String
     /// Something is replaced: the primary button is red, Return doesn't start, and the note warns.
     public var replacing: Bool
-    /// A folder is merged into one already there, which can't be undone.
-    public var merging: Bool
     /// The footer note.
     public var note: String
     /// Whether the note is the warning, with its glyph.
@@ -58,19 +56,12 @@ public struct ReviewSheetText: Equatable, Sendable {
                 "That\u{2019}s \(ReviewCount.pluralize(report.summary.totalNodeCount, "item")) in all, counting what is in the folders."
         }
         replacing = summary.replaced > 0
-        merging = summary.merged > 0
         primaryLabel = replacing ? "Replace \(ReviewCount.format(summary.replaced)) and \(verb)" : verb
-        noteIsWarning = replacing || merging
-        if noteIsWarning {
-            let lead =
-                replacing
-                ? "\(ReviewCount.pluralize(summary.replaced, "existing item")) will be moved to the Trash"
-                : CopyPasteReview.formatSummary(summary, verb: verb)
-            note = ([lead] + (merging ? ["Merging can\u{2019}t be undone"] : [])).filter { !$0.isEmpty }
-                .joined(separator: ". ")
-        } else {
-            note = CopyPasteReview.formatSummary(summary, verb: verb)
-        }
+        noteIsWarning = replacing
+        note =
+            replacing
+            ? "\(ReviewCount.pluralize(summary.replaced, "existing item")) will be moved to the Trash"
+            : CopyPasteReview.formatSummary(summary, verb: verb)
         // In a paste of both, each row says whether it is moved; a new item is added either way.
         addsLabel = verb == "Move" && !report.isMixed ? "Moves" : "Adds"
         showNewItemsLabel =

@@ -1613,7 +1613,53 @@
           }
         },
         "trash": [],
-        "undoLog": {"reason": "merge", "undoable": false}
+        "undoLog": {
+          "undoable": true,
+          "units": [
+            {
+              "steps": [
+                {
+                  "from": "$ROOT/source/f",
+                  "kind": "merged",
+                  "to": "$ROOT/destination/f",
+                  "units": [
+                    {
+                      "steps": [
+                        {
+                          "id": {"dev": "dev-1", "ino": "ino-1"},
+                          "kind": "created",
+                          "path": "$ROOT/destination/f/new.txt",
+                          "stamp": {"entryCount": null, "kind": "file", "mtimeMs": "set", "size": 17}
+                        }
+                      ]
+                    },
+                    {
+                      "steps": [
+                        {
+                          "from": "$ROOT/source/f/sub",
+                          "kind": "merged",
+                          "to": "$ROOT/destination/f/sub",
+                          "units": [
+                            {
+                              "steps": [
+                                {
+                                  "id": {"dev": "dev-1", "ino": "ino-2"},
+                                  "kind": "created",
+                                  "path": "$ROOT/destination/f/sub/b.txt",
+                                  "stamp": {"entryCount": null, "kind": "file", "mtimeMs": "set", "size": 6}
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     {
@@ -1971,7 +2017,67 @@
             "size": 6
           }
         ],
-        "undoLog": {"reason": "merge", "undoable": false}
+        "undoLog": {
+          "undoable": true,
+          "units": [
+            {
+              "steps": [
+                {
+                  "from": "$ROOT/source/f",
+                  "kind": "merged",
+                  "to": "$ROOT/destination/f",
+                  "units": [
+                    {
+                      "steps": [
+                        {
+                          "from": "$ROOT/destination/f/a.txt",
+                          "id": {"dev": "dev-1", "ino": "ino-1"},
+                          "kind": "trashed",
+                          "parentId": {"dev": "dev-1", "ino": "ino-2"},
+                          "trashPath": "$TRASH/1-a.txt"
+                        },
+                        {
+                          "id": {"dev": "dev-1", "ino": "ino-3"},
+                          "kind": "created",
+                          "path": "$ROOT/destination/f/a.txt",
+                          "stamp": {"entryCount": null, "kind": "file", "mtimeMs": "set", "size": 6}
+                        }
+                      ]
+                    },
+                    {
+                      "steps": [
+                        {
+                          "from": "$ROOT/source/f/sub",
+                          "kind": "merged",
+                          "to": "$ROOT/destination/f/sub",
+                          "units": [
+                            {
+                              "steps": [
+                                {
+                                  "from": "$ROOT/destination/f/sub/b.txt",
+                                  "id": {"dev": "dev-1", "ino": "ino-4"},
+                                  "kind": "trashed",
+                                  "parentId": {"dev": "dev-1", "ino": "ino-5"},
+                                  "trashPath": "$TRASH/2-b.txt"
+                                },
+                                {
+                                  "id": {"dev": "dev-1", "ino": "ino-6"},
+                                  "kind": "created",
+                                  "path": "$ROOT/destination/f/sub/b.txt",
+                                  "stamp": {"entryCount": null, "kind": "file", "mtimeMs": "set", "size": 6}
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     {
@@ -2194,7 +2300,32 @@
           }
         },
         "trash": [],
-        "undoLog": {"reason": "merge", "undoable": false}
+        "undoLog": {
+          "undoable": true,
+          "units": [
+            {
+              "steps": [
+                {
+                  "from": "$ROOT/source/f",
+                  "kind": "merged",
+                  "to": "$ROOT/destination/f",
+                  "units": [
+                    {
+                      "steps": [
+                        {
+                          "id": {"dev": "dev-1", "ino": "ino-1"},
+                          "kind": "created",
+                          "path": "$ROOT/destination/f/b copy.txt",
+                          "stamp": {"entryCount": null, "kind": "file", "mtimeMs": "set", "size": 6}
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     {
@@ -5693,7 +5824,32 @@
           }
         },
         "trash": [],
-        "undoLog": {"reason": "merge", "undoable": false}
+        "undoLog": {
+          "undoable": true,
+          "units": [
+            {
+              "steps": [
+                {
+                  "from": "$ROOT/a/f/f",
+                  "kind": "merged",
+                  "to": "$ROOT/a/f",
+                  "units": [
+                    {
+                      "steps": [
+                        {
+                          "id": {"dev": "dev-1", "ino": "ino-1"},
+                          "kind": "created",
+                          "path": "$ROOT/a/f/inner.txt",
+                          "stamp": {"entryCount": null, "kind": "file", "mtimeMs": "set", "size": 16}
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     {

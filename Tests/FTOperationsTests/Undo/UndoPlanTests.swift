@@ -342,6 +342,37 @@ struct UndoPlanTests {
         #expect(UndoPlan.findQuestions(fileSystem, units, progress: givenUp) == UndoQuestions())
     }
 
+    // A merge's items are asked about each on its own. One going back into the folder made again finds nothing in its
+    // way, but what a Replace inside it replaced goes back where the merge put the new item, and is asked about there.
+    // A folder that can't be made again asks nothing: its items stay where they are.
+    @Test func asksAboutWhatGoesBackOutsideAFolderAMergeMakesAgain() {
+        let parts: [String: PlanDisk.Item] = [
+            "/S": .dir(ino: 2), "/D": .dir(ino: 3), "/D/F": .dir(ino: 1), "/D/F/a": .file(ino: 10),
+            "/D/F/b": .file(ino: 11), "/T": .dir(ino: 4), "/T/a": .file(ino: 20), "/T/b": .file(ino: 21),
+        ]
+        let merge = UndoStep.merged(
+            .init(
+                from: "/S/F", to: "/D/F",
+                units: [
+                    // A Replace: the new item goes back into the folder made again, then the old one in its place.
+                    UndoUnit(steps: [
+                        trashed("/D/F/a", "/T/a", 20),
+                        .moved(.init(from: "/S/F/a", to: "/D/F/a", id: id(10), itemKind: .file, parentId: id(5))),
+                    ]),
+                    // One whose new item is gone: the old one goes back where another item now has its name.
+                    UndoUnit(steps: [trashed("/D/F/b", "/T/b", 21)]),
+                ],
+                removed: RemovedFolder(
+                    path: "/S/F", id: id(5), parentId: id(2),
+                    attributes: FolderAttributes(
+                        mode: nil, flags: nil, mtimeMs: nil, extendedAttributes: nil, acl: nil))))
+        let units = [UndoUnit(steps: [merge])]
+        #expect(
+            UndoPlan.findQuestions(disk(parts), units)
+                == UndoQuestions(nameTaken: [TakenName(name: "b", path: "/D/F/b")], changed: []))
+        #expect(UndoPlan.findQuestions(disk(parts, ["/S/F": .file(ino: 30)]), units) == UndoQuestions())
+    }
+
     @Test func saysWhichChangedItemsReplacedAnOldOneAndWhichWerePutBack() {
         let fileSystem = disk([
             "/D": .dir(ino: 1), "/D/T": .dir(ino: 2), "/D/T/old": .file(ino: 20), "/D/new": .file(ino: 4, size: 9),

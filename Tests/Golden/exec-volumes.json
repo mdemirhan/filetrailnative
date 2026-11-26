@@ -1443,7 +1443,74 @@
           }
         },
         "trash": [],
-        "undoLog": {"reason": "merge", "undoable": false}
+        "undoLog": {
+          "undoable": true,
+          "units": [
+            {
+              "steps": [
+                {
+                  "id": {"dev": "dev-1", "ino": "ino-1"},
+                  "kind": "created",
+                  "path": "$ROOT/destination/empty.txt",
+                  "stamp": {"entryCount": null, "kind": "file", "mtimeMs": "set", "size": 0}
+                }
+              ]
+            },
+            {
+              "steps": [
+                {
+                  "id": {"dev": "dev-1", "ino": "ino-2"},
+                  "kind": "created",
+                  "path": "$ROOT/destination/.hidden",
+                  "stamp": {"entryCount": null, "kind": "file", "mtimeMs": "set", "size": 7}
+                }
+              ]
+            },
+            {
+              "steps": [
+                {
+                  "from": "$ROOT/source/f",
+                  "kind": "merged",
+                  "to": "$ROOT/destination/f",
+                  "units": [
+                    {
+                      "steps": [
+                        {
+                          "id": {"dev": "dev-1", "ino": "ino-3"},
+                          "kind": "created",
+                          "path": "$ROOT/destination/f/none",
+                          "stamp": {
+                            "entryCount": 0,
+                            "entryNames": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+                            "kind": "directory",
+                            "mtimeMs": "set",
+                            "size": null
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "steps": [
+                        {
+                          "id": {"dev": "dev-1", "ino": "ino-4"},
+                          "kind": "created",
+                          "path": "$ROOT/destination/f/sub",
+                          "stamp": {
+                            "entryCount": 1,
+                            "entryNames": "fe4c80bb098894b4d6ca36c16082d567bfd41b8b",
+                            "kind": "directory",
+                            "mtimeMs": "set",
+                            "size": null
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     {
@@ -5008,7 +5075,74 @@
           }
         },
         "trash": [],
-        "undoLog": {"reason": "merge", "undoable": false}
+        "undoLog": {
+          "undoable": true,
+          "units": [
+            {
+              "steps": [
+                {
+                  "id": {"dev": "dev-1", "ino": "ino-1"},
+                  "kind": "created",
+                  "path": "$ROOT/destination/empty.txt",
+                  "stamp": {"entryCount": null, "kind": "file", "mtimeMs": "set", "size": 0}
+                }
+              ]
+            },
+            {
+              "steps": [
+                {
+                  "id": {"dev": "dev-1", "ino": "ino-2"},
+                  "kind": "created",
+                  "path": "$ROOT/destination/.hidden",
+                  "stamp": {"entryCount": null, "kind": "file", "mtimeMs": "set", "size": 7}
+                }
+              ]
+            },
+            {
+              "steps": [
+                {
+                  "from": "$ROOT/source/f",
+                  "kind": "merged",
+                  "to": "$ROOT/destination/f",
+                  "units": [
+                    {
+                      "steps": [
+                        {
+                          "id": {"dev": "dev-1", "ino": "ino-3"},
+                          "kind": "created",
+                          "path": "$ROOT/destination/f/none",
+                          "stamp": {
+                            "entryCount": 0,
+                            "entryNames": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+                            "kind": "directory",
+                            "mtimeMs": "set",
+                            "size": null
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "steps": [
+                        {
+                          "id": {"dev": "dev-1", "ino": "ino-4"},
+                          "kind": "created",
+                          "path": "$ROOT/destination/f/sub",
+                          "stamp": {
+                            "entryCount": 1,
+                            "entryNames": "fe4c80bb098894b4d6ca36c16082d567bfd41b8b",
+                            "kind": "directory",
+                            "mtimeMs": "set",
+                            "size": null
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     {
@@ -8573,7 +8707,74 @@
           }
         },
         "trash": [],
-        "undoLog": {"reason": "merge", "undoable": false}
+        "undoLog": {
+          "undoable": true,
+          "units": [
+            {
+              "steps": [
+                {
+                  "id": {"dev": "dev-1", "ino": "ino-1"},
+                  "kind": "created",
+                  "path": "$ROOT/destination/empty.txt",
+                  "stamp": {"entryCount": null, "kind": "file", "mtimeMs": "set", "size": 0}
+                }
+              ]
+            },
+            {
+              "steps": [
+                {
+                  "id": {"dev": "dev-1", "ino": "ino-2"},
+                  "kind": "created",
+                  "path": "$ROOT/destination/.hidden",
+                  "stamp": {"entryCount": null, "kind": "file", "mtimeMs": "set", "size": 7}
+                }
+              ]
+            },
+            {
+              "steps": [
+                {
+                  "from": "$ROOT/source/f",
+                  "kind": "merged",
+                  "to": "$ROOT/destination/f",
+                  "units": [
+                    {
+                      "steps": [
+                        {
+                          "id": {"dev": "dev-1", "ino": "ino-3"},
+                          "kind": "created",
+                          "path": "$ROOT/destination/f/none",
+                          "stamp": {
+                            "entryCount": 0,
+                            "entryNames": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+                            "kind": "directory",
+                            "mtimeMs": "set",
+                            "size": null
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "steps": [
+                        {
+                          "id": {"dev": "dev-1", "ino": "ino-4"},
+                          "kind": "created",
+                          "path": "$ROOT/destination/f/sub",
+                          "stamp": {
+                            "entryCount": 1,
+                            "entryNames": "fe4c80bb098894b4d6ca36c16082d567bfd41b8b",
+                            "kind": "directory",
+                            "mtimeMs": "set",
+                            "size": null
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     {
@@ -12525,7 +12726,74 @@
           }
         },
         "trash": [],
-        "undoLog": {"reason": "merge", "undoable": false}
+        "undoLog": {
+          "undoable": true,
+          "units": [
+            {
+              "steps": [
+                {
+                  "id": null,
+                  "kind": "created",
+                  "path": "$ROOT/destination/empty.txt",
+                  "stamp": {"entryCount": null, "kind": "file", "mtimeMs": "set", "size": 0}
+                }
+              ]
+            },
+            {
+              "steps": [
+                {
+                  "id": {"dev": "dev-1", "ino": "ino-1"},
+                  "kind": "created",
+                  "path": "$ROOT/destination/.hidden",
+                  "stamp": {"entryCount": null, "kind": "file", "mtimeMs": "set", "size": 7}
+                }
+              ]
+            },
+            {
+              "steps": [
+                {
+                  "from": "$ROOT/source/f",
+                  "kind": "merged",
+                  "to": "$ROOT/destination/f",
+                  "units": [
+                    {
+                      "steps": [
+                        {
+                          "id": {"dev": "dev-1", "ino": "ino-2"},
+                          "kind": "created",
+                          "path": "$ROOT/destination/f/none",
+                          "stamp": {
+                            "entryCount": 0,
+                            "entryNames": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+                            "kind": "directory",
+                            "mtimeMs": "set",
+                            "size": null
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "steps": [
+                        {
+                          "id": {"dev": "dev-1", "ino": "ino-3"},
+                          "kind": "created",
+                          "path": "$ROOT/destination/f/sub",
+                          "stamp": {
+                            "entryCount": 1,
+                            "entryNames": "fe4c80bb098894b4d6ca36c16082d567bfd41b8b",
+                            "kind": "directory",
+                            "mtimeMs": "set",
+                            "size": null
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     {
@@ -17134,7 +17402,74 @@
           }
         },
         "trash": [],
-        "undoLog": {"reason": "merge", "undoable": false}
+        "undoLog": {
+          "undoable": true,
+          "units": [
+            {
+              "steps": [
+                {
+                  "id": null,
+                  "kind": "created",
+                  "path": "$ROOT/destination/empty.txt",
+                  "stamp": {"entryCount": null, "kind": "file", "mtimeMs": "set", "size": 0}
+                }
+              ]
+            },
+            {
+              "steps": [
+                {
+                  "id": {"dev": "dev-1", "ino": "ino-1"},
+                  "kind": "created",
+                  "path": "$ROOT/destination/.hidden",
+                  "stamp": {"entryCount": null, "kind": "file", "mtimeMs": "set", "size": 7}
+                }
+              ]
+            },
+            {
+              "steps": [
+                {
+                  "from": "$ROOT/source/f",
+                  "kind": "merged",
+                  "to": "$ROOT/destination/f",
+                  "units": [
+                    {
+                      "steps": [
+                        {
+                          "id": {"dev": "dev-1", "ino": "ino-2"},
+                          "kind": "created",
+                          "path": "$ROOT/destination/f/none",
+                          "stamp": {
+                            "entryCount": 0,
+                            "entryNames": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+                            "kind": "directory",
+                            "mtimeMs": "set",
+                            "size": null
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "steps": [
+                        {
+                          "id": {"dev": "dev-1", "ino": "ino-3"},
+                          "kind": "created",
+                          "path": "$ROOT/destination/f/sub",
+                          "stamp": {
+                            "entryCount": 1,
+                            "entryNames": "fe4c80bb098894b4d6ca36c16082d567bfd41b8b",
+                            "kind": "directory",
+                            "mtimeMs": "set",
+                            "size": null
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     {

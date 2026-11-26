@@ -33,6 +33,25 @@ private func createdPath(_ step: UndoStep?) -> String? {
     return nil
 }
 
+/// Adds an access rule to the item, as `chmod +a` does.
+func addAccessRule(_ path: String, _ rule: String) throws {
+    let chmod = Process()
+    chmod.executableURL = URL(fileURLWithPath: "/bin/chmod")
+    chmod.arguments = ["+a", rule, path]
+    try chmod.run()
+    chmod.waitUntilExit()
+    #expect(chmod.terminationStatus == 0)
+}
+
+/// The merge a unit is, as its only step; nil (and said) when it isn't one.
+private func merged(_ unit: [UndoStep]?) -> UndoStep.Merged? {
+    guard let unit, unit.count == 1, case .merged(let merged) = unit[0] else {
+        Issue.record("Not a unit of one merged step: \(String(describing: unit))")
+        return nil
+    }
+    return merged
+}
+
 /// Counts the lstat and stat calls a paste makes, from `reset()` on.
 private final class CountingFileSystem: Sendable {
     private let counts = OSAllocatedUnfairLock(initialState: (lstat: 0, stat: 0))
@@ -194,20 +213,39 @@ struct CopyUndoRecordingTests {
         }
     }
 
-    @Test func cantBeUndoneOnceAFolderIsMergedIntoOneAlreadyThere() async throws {
+    // Each item copied into the folder already there is a unit of its own, inside one step for the folder: the item
+    // picked is still one.
+    @Test func recordsEachItemCopiedIntoAFolderMergedIntoOneAlreadyThere() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, _) = try folders(root)
             try Disk.write(src + "/Folder/new.txt", "new")
+            try Disk.write(src + "/Folder/Inside/deep.txt", "deep")
             try Disk.write(dst + "/Folder/old.txt", "old")
 
             let run = try await runPaste(mode: .copy, sources: [src + "/Folder"], into: dst)
 
-            #expect(Disk.list(dst + "/Folder") == ["new.txt", "old.txt"])
-            #expect(try undoLog(run.result) == .notUndoable(reason: .merge))
+            #expect(Disk.list(dst + "/Folder") == ["Inside", "new.txt", "old.txt"])
+            let units = try steps(try undoLog(run.result))
+            #expect(units.count == 1)
+            guard let merge = merged(units.first) else { return }
+            #expect(merge.from == src + "/Folder")
+            #expect(merge.to == dst + "/Folder")
+            #expect(merge.removed == nil && merge.made == nil)
+            // A folder that wasn't there is copied whole: one unit, as for any copied folder.
+            var made: [String: ItemId?] = [:]
+            for unit in merge.units {
+                #expect(unit.steps.count == 1)
+                if case .created(let path, let id, _)? = unit.steps.first { made[path] = id }
+            }
+            let expected: [String: ItemId?] = [
+                dst + "/Folder/Inside": idOf(dst + "/Folder/Inside"),
+                dst + "/Folder/new.txt": idOf(dst + "/Folder/new.txt"),
+            ]
+            #expect(made == expected)
         }
     }
 
-    @Test func cantBeUndoneWhenAllAMergeDidWasAddALink() async throws {
+    @Test func recordsALinkThatIsAllAMergeAdded() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, _) = try folders(root)
             try Disk.makeDirectories(src + "/Folder")
@@ -217,7 +255,70 @@ struct CopyUndoRecordingTests {
             let run = try await runPaste(mode: .copy, sources: [src + "/Folder"], into: dst)
 
             #expect(try PosixFileSystem().readlink(dst + "/Folder/link") == "/nowhere")
-            #expect(try undoLog(run.result) == .notUndoable(reason: .merge))
+            let merge = merged(try steps(try undoLog(run.result)).first)
+            #expect(merge?.units.map { $0.steps.map(createdPath) } == [[dst + "/Folder/link"]])
+        }
+    }
+
+    // A folder inside, also there already, is merged too: a merge in the merge, its items each a unit of their own.
+    @Test func recordsAFolderMergedInsideAMergedFolderAsAMergeOfItsOwn() async throws {
+        try await withTemporaryDirectory { root in
+            let (src, dst, _) = try folders(root)
+            try Disk.write(src + "/Folder/Sub/a.txt", "a")
+            try Disk.write(src + "/Folder/Sub/b.txt", "b")
+            try Disk.write(dst + "/Folder/Sub/old.txt", "old")
+
+            let run = try await runPaste(mode: .copy, sources: [src + "/Folder"], into: dst)
+
+            let outer = merged(try steps(try undoLog(run.result)).first)
+            #expect(outer?.units.count == 1)
+            let inner = merged(outer?.units.first?.steps)
+            #expect(inner?.from == src + "/Folder/Sub")
+            #expect(inner?.to == dst + "/Folder/Sub")
+            #expect(
+                inner?.units.map { $0.steps.map(createdPath) } == [
+                    [dst + "/Folder/Sub/a.txt"], [dst + "/Folder/Sub/b.txt"],
+                ])
+        }
+    }
+
+    @Test func recordsAnItemKeptBesideTheOneThereInsideAMergedFolder() async throws {
+        try await withTemporaryDirectory { root in
+            let (src, dst, _) = try folders(root)
+            try Disk.write(src + "/Folder/a.txt", "new")
+            try Disk.write(dst + "/Folder/a.txt", "old")
+
+            let run = try await runPaste(
+                mode: .copy, sources: [src + "/Folder"], into: dst,
+                policy: CopyPastePolicy(file: .keepBoth, directory: .merge, mismatch: .skip))
+
+            #expect(Disk.read(dst + "/Folder/a copy.txt") == "new")
+            let merge = merged(try steps(try undoLog(run.result)).first)
+            #expect(merge?.units.map { $0.steps.map(createdPath) } == [[dst + "/Folder/a copy.txt"]])
+        }
+    }
+
+    // What was copied into it before the stop can be undone.
+    @Test func recordsWhatAMergeCopiedBeforeItWasStopped() async throws {
+        try await withTemporaryDirectory { root in
+            let (src, dst, _) = try folders(root)
+            try Disk.write(src + "/Folder/a.txt", "a")
+            try Disk.write(src + "/Folder/b.txt", "b")
+            try Disk.write(dst + "/Folder/old.txt", "old")
+            let signal = StopSignal()
+
+            let run = try await runPaste(
+                mode: .copy, sources: [src + "/Folder"], into: dst, signal: signal,
+                onEvent: { event in
+                    if event.status == .running && event.completedItemCount == 1 {
+                        signal.stop()
+                    }
+                })
+
+            #expect(run.result?.status == .cancelled || run.result?.status == .partial)
+            #expect(Disk.list(dst + "/Folder") == ["a.txt", "old.txt"])
+            let merge = merged(try steps(try undoLog(run.result)).first)
+            #expect(merge?.units.map { $0.steps.map(createdPath) } == [[dst + "/Folder/a.txt"]])
         }
     }
 
@@ -309,29 +410,189 @@ struct MoveUndoRecordingTests {
         }
     }
 
-    @Test func cantBeUndoneOnceAFolderIsMergedOnItsOwnDiskAsAMerge() async throws {
+    // Each item is moved on its own, from the folder that is then removed: what Undo makes again for them.
+    @Test func recordsEachItemAMergingMoveTookAndTheFolderItRemoved() async throws {
+        try await withTemporaryDirectory { root in
+            let (src, dst, _) = try folders(root)
+            try Disk.write(src + "/Folder/new.txt", "new")
+            try Disk.write(dst + "/Folder/old.txt", "old")
+            let (fileId, folderId, srcId) = (idOf(src + "/Folder/new.txt"), idOf(src + "/Folder"), idOf(src))
+            let folderDate = mtimeMs(src + "/Folder")
+
+            let run = try await runPaste(mode: .cut, sources: [src + "/Folder"], into: dst)
+
+            #expect(Disk.list(dst + "/Folder") == ["new.txt", "old.txt"])
+            #expect(!Disk.exists(src + "/Folder"))
+            let units = try steps(try undoLog(run.result))
+            #expect(units.count == 1)
+            guard let merge = merged(units.first) else { return }
+            #expect(merge.from == src + "/Folder")
+            #expect(merge.to == dst + "/Folder")
+            #expect(
+                merge.units == [
+                    UndoUnit(steps: [
+                        .moved(
+                            .init(
+                                from: src + "/Folder/new.txt", to: dst + "/Folder/new.txt", id: fileId, itemKind: .file,
+                                parentId: folderId))
+                    ])
+                ])
+            #expect(merge.removed?.path == src + "/Folder")
+            #expect(merge.removed?.id == folderId)
+            #expect(merge.removed?.parentId == srcId)
+            #expect(merge.removed?.attributes.mode == 0o755)
+            #expect(merge.removed?.attributes.flags == 0)
+            // The date it had before its items were taken out.
+            #expect(merge.removed?.attributes.mtimeMs == folderDate)
+            #expect(merge.made == nil)
+        }
+    }
+
+    @Test func recordsAnEmptyFolderMergedIntoAnotherAndRemoved() async throws {
+        try await withTemporaryDirectory { root in
+            let (src, dst, _) = try folders(root)
+            try Disk.makeDirectories(src + "/Folder")
+            try Disk.makeDirectories(dst + "/Folder")
+            let folderId = idOf(src + "/Folder")
+
+            let run = try await runPaste(mode: .cut, sources: [src + "/Folder"], into: dst)
+
+            #expect(Disk.list(src) == [])
+            let merge = merged(try steps(try undoLog(run.result)).first)
+            #expect(merge?.units == [])
+            #expect(merge?.removed?.id == folderId)
+        }
+    }
+
+    // Its tags, its Hidden flag, its mode and its access rules are kept for Undo to give back.
+    @Test func keepsWhatTheRemovedFolderHad() async throws {
+        try await withTemporaryDirectory { root in
+            let (src, dst, _) = try folders(root)
+            try Disk.write(src + "/Folder/a.txt", "a")
+            try Disk.makeDirectories(dst + "/Folder")
+            let tags = Data([1, 2, 3])
+            try NativeFS.setExtendedAttribute(src + "/Folder", "com.apple.metadata:_kMDItemUserTags", tags)
+            #expect(chflags(src + "/Folder", UInt32(UF_HIDDEN)) == 0)
+            Disk.chmod(src + "/Folder", 0o750)
+            try addAccessRule(src + "/Folder", "everyone allow list")
+            let acl = try NativeFS.getAcl(src + "/Folder")
+
+            let run = try await runPaste(mode: .cut, sources: [src + "/Folder"], into: dst)
+
+            #expect(!Disk.exists(src + "/Folder"))
+            let attributes = merged(try steps(try undoLog(run.result)).first)?.removed?.attributes
+            #expect(attributes?.extendedAttributes?["com.apple.metadata:_kMDItemUserTags"] == tags)
+            #expect(attributes?.flags == UInt32(UF_HIDDEN))
+            #expect(attributes?.mode == 0o750)
+            #expect(acl != nil && attributes?.acl == acl)
+        }
+    }
+
+    // A folder an item was left in stays where it was: nothing to make again.
+    @Test func recordsNoRemovedFolderWhenAMergingMoveLeftAnItemInIt() async throws {
+        try await withTemporaryDirectory { root in
+            let (src, dst, _) = try folders(root)
+            try Disk.write(src + "/Folder/a.txt", "new")
+            try Disk.write(src + "/Folder/b.txt", "b")
+            try Disk.write(dst + "/Folder/a.txt", "old")
+            let fileId = idOf(src + "/Folder/b.txt")
+
+            let run = try await runPaste(mode: .cut, sources: [src + "/Folder"], into: dst)
+
+            #expect(Disk.list(src + "/Folder") == ["a.txt"])
+            let merge = merged(try steps(try undoLog(run.result)).first)
+            #expect(merge?.removed == nil)
+            #expect(
+                merge?.units.map(\.steps) == [
+                    [
+                        .moved(
+                            .init(
+                                from: src + "/Folder/b.txt", to: dst + "/Folder/b.txt", id: fileId, itemKind: .file,
+                                parentId: idOf(src + "/Folder")))
+                    ]
+                ])
+        }
+    }
+
+    // The item left in it went away meanwhile: the folder is removed after all, and recorded for Undo to make again.
+    @Test func recordsTheFolderRemovedWhenTheItemLeftInItWentAway() async throws {
+        try await withTemporaryDirectory { root in
+            let (src, dst, _) = try folders(root)
+            try Disk.write(src + "/Folder/a.txt", "new")
+            try Disk.write(src + "/Folder/b.txt", "b")
+            try Disk.write(dst + "/Folder/a.txt", "old")
+            let folderId = idOf(src + "/Folder")
+            let fileSystem = TestFileSystem()
+            fileSystem.rmdirImpl = { path in
+                if path == src + "/Folder" { unlink(src + "/Folder/a.txt") }
+                try NativeWriteFileSystem().rmdir(path)
+            }
+
+            let run = try await runPaste(mode: .cut, sources: [src + "/Folder"], into: dst, fileSystem: fileSystem)
+
+            #expect(!Disk.exists(src + "/Folder"))
+            let merge = merged(try steps(try undoLog(run.result)).first)
+            #expect(merge?.removed?.id == folderId)
+            #expect(merge?.units.count == 1)
+        }
+    }
+
+    @Test func recordsAFolderMergedInsideAMergingMoveWithTheFolderItRemoved() async throws {
+        try await withTemporaryDirectory { root in
+            let (src, dst, _) = try folders(root)
+            try Disk.write(src + "/Folder/Sub/a.txt", "a")
+            try Disk.write(dst + "/Folder/Sub/old.txt", "old")
+            let (subId, folderId) = (idOf(src + "/Folder/Sub"), idOf(src + "/Folder"))
+
+            let run = try await runPaste(mode: .cut, sources: [src + "/Folder"], into: dst)
+
+            #expect(!Disk.exists(src + "/Folder"))
+            let outer = merged(try steps(try undoLog(run.result)).first)
+            #expect(outer?.removed?.id == folderId)
+            let inner = merged(outer?.units.first?.steps)
+            #expect(inner?.removed?.path == src + "/Folder/Sub")
+            #expect(inner?.removed?.id == subId)
+            // Known by the folder it was in, which is made again first.
+            #expect(inner?.removed?.parentId == folderId)
+            #expect(inner?.units.count == 1)
+        }
+    }
+
+    // Moved into the merged folder whole, a folder that wasn't there is one step, as a moved folder always is.
+    @Test func recordsAFolderMovedWholeIntoAMergedFolderAsOneStep() async throws {
+        try await withTemporaryDirectory { root in
+            let (src, dst, _) = try folders(root)
+            try Disk.write(src + "/Folder/New/a.txt", "a")
+            try Disk.makeDirectories(dst + "/Folder")
+            let (newId, folderId) = (idOf(src + "/Folder/New"), idOf(src + "/Folder"))
+
+            let run = try await runPaste(mode: .cut, sources: [src + "/Folder"], into: dst)
+
+            let merge = merged(try steps(try undoLog(run.result)).first)
+            #expect(
+                merge?.units.map(\.steps) == [
+                    [
+                        .moved(
+                            .init(
+                                from: src + "/Folder/New", to: dst + "/Folder/New", id: newId, itemKind: .directory,
+                                parentId: folderId))
+                    ]
+                ])
+        }
+    }
+
+    // On another disk the items are copied and their originals deleted: that still can't be undone.
+    @Test func cantBeUndoneWhenAMergingMoveWentToAnotherDisk() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, _) = try folders(root)
             try Disk.write(src + "/Folder/new.txt", "new")
             try Disk.write(dst + "/Folder/old.txt", "old")
 
-            let run = try await runPaste(mode: .cut, sources: [src + "/Folder"], into: dst)
+            let run = try await runPaste(
+                mode: .cut, sources: [src + "/Folder"], into: dst, fileSystem: NativePaste.asOnAnotherDisk(src))
 
             #expect(Disk.list(dst + "/Folder") == ["new.txt", "old.txt"])
-            #expect(try undoLog(run.result) == .notUndoable(reason: .merge))
-        }
-    }
-
-    @Test func cantBeUndoneOnceAnEmptyFolderMergedIntoAnotherIsRemoved() async throws {
-        try await withTemporaryDirectory { root in
-            let (src, dst, _) = try folders(root)
-            try Disk.makeDirectories(src + "/Folder")
-            try Disk.makeDirectories(dst + "/Folder")
-
-            let run = try await runPaste(mode: .cut, sources: [src + "/Folder"], into: dst)
-
-            #expect(Disk.list(src) == [])
-            #expect(try undoLog(run.result) == .notUndoable(reason: .merge))
+            #expect(try undoLog(run.result) == .notUndoable(reason: .otherDiskMove))
         }
     }
 

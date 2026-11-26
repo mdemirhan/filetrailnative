@@ -25,6 +25,9 @@ public struct UndoRun: Sendable {
     /// written.
     public var leftover: [UndoUnit] = []
     public var removedItems: [RemovedItem] = []
+    /// The folders it made again for the items of merges to go back to, by the id each had to the one it has now:
+    /// what the history's other steps knew them by (`UndoHistory.finish`).
+    public var remadeFolders: [ItemId: ItemId] = [:]
     public var completedItemCount = 0
     public var cancelled = false
 
@@ -80,7 +83,7 @@ public enum UndoExecution {
 
     /// How one step went.
     enum StepOutcome {
-        case done(produced: UndoStep?, items: [WriteOperationItem], removed: RemovedItem?)
+        case done(produced: UndoStep?, items: [WriteOperationItem], removed: [RemovedItem])
         /// Refused by the disk check, or something outside the app got in the way.
         case skipped(items: [WriteOperationItem], missing: Bool)
         /// The write failed: what it did (a batch may have renamed some of its items), and what is left of the step to
@@ -118,15 +121,47 @@ public enum UndoExecution {
         init(_ options: UndoRunOptions, units: [UndoUnit] = []) {
             self.options = options
             var places: [NameKeys.Exact: Int] = [:]
-            for unit in units {
-                for step in unit.steps {
-                    if case .move(let move) = PlannedStep(reversing: step) {
-                        places[UndoPlan.placeKey(move.to), default: 0] += 1
+            func countPlaces(_ units: [UndoUnit]) {
+                for unit in units {
+                    for step in unit.steps {
+                        switch PlannedStep(reversing: step) {
+                        case .move(let move): places[UndoPlan.placeKey(move.to), default: 0] += 1
+                        case .merge(let merge): countPlaces(merge.units)
+                        case .trash, .batch, .permissions: break
+                        }
                     }
                 }
             }
+            countPlaces(units)
             awaited = OSAllocatedUnfairLock(initialState: places)
         }
+
+        /// What the run moved to the Trash, the items of merged folders included, in the order it did.
+        private let removed = OSAllocatedUnfairLock(initialState: [RemovedItem]())
+        /// How many items the run has done, those of merged folders included: what progress says.
+        private let completed = OSAllocatedUnfairLock(initialState: 0)
+        private let remade = OSAllocatedUnfairLock(initialState: [ItemId: ItemId]())
+
+        /// A folder a merge removed was made again: it is `new` now.
+        func noteRemade(_ old: ItemId?, _ new: ItemId?) {
+            guard let old, let new, old != new else { return }
+            remade.withLock { $0[old] = new }
+        }
+
+        var remadeFolders: [ItemId: ItemId] { remade.withLock { $0 } }
+
+        func noteRemoved(_ items: [RemovedItem]) {
+            guard !items.isEmpty else { return }
+            removed.withLock { $0.append(contentsOf: items) }
+        }
+
+        var removedItems: [RemovedItem] { removed.withLock { $0 } }
+
+        func noteCompleted(_ count: Int) {
+            completed.withLock { $0 += count }
+        }
+
+        var completedCount: Int { completed.withLock { $0 } }
 
         /// Whether an item of the run is still to go back to `path`.
         func isAwaited(at path: String) -> Bool {
@@ -158,8 +193,17 @@ public enum UndoExecution {
 
     /// `runUndo`: reads and writes the disk, one step at a time; call it off the main actor.
     public static func runUndo(_ units: [UndoUnit], _ options: UndoRunOptions) -> UndoRun {
-        var run = UndoRun()
         let context = RunContext(options, units: units)
+        var run = runUnits(units, context)
+        run.removedItems = context.removedItems
+        run.remadeFolders = context.remadeFolders
+        return run
+    }
+
+    /// The units, newest first: those of an operation, or the items of a folder merged into another.
+    static func runUnits(_ units: [UndoUnit], _ context: RunContext) -> UndoRun {
+        let options = context.options
+        var run = UndoRun()
         // What a stop didn't reach, and the units whose write failed, newest first.
         var notReached: [UndoUnit] = []
         var failed: [UndoUnit] = []
@@ -188,10 +232,13 @@ public enum UndoExecution {
                     pushDone(&run, doneSteps, unrecorded)
                     break eachUnit
                 }
-                options.onStepStart?(firstPathOf(planned), run.completedItemCount)
+                options.onStepStart?(firstPathOf(planned), context.completedCount)
                 let outcome = runStep(planned, step, unitIds, context)
                 run.items.append(contentsOf: outcome.items)
-                run.completedItemCount += outcome.items.filter { $0.status == .completed }.count
+                let completed = outcome.items.filter { $0.status == .completed }.count
+                run.completedItemCount += completed
+                // A merged folder's items were counted as they were done.
+                if case .merge = planned {} else { context.noteCompleted(completed) }
                 switch outcome {
                 case .done(let produced, _, _), .failed(let produced, _, _), .stopped(let produced, _, _):
                     if let produced {
@@ -215,7 +262,7 @@ public enum UndoExecution {
                     pushDone(&run, doneSteps, unrecorded)
                     continue eachUnit
                 case .done(_, _, let removed):
-                    if let removed { run.removedItems.append(removed) }
+                    context.noteRemoved(removed)
                     noLongerAwaited(planned, context)
                 case .skipped(_, let missing):
                     if !missing { blocked = true }
@@ -249,6 +296,7 @@ public enum UndoExecution {
         case .trash(let trash): trash.path
         case .batch(let items): items.first?.from ?? ""
         case .permissions(let items): items.first?.path ?? ""
+        case .merge(let merge): merge.to
         }
     }
 
@@ -260,6 +308,7 @@ public enum UndoExecution {
         case .trash(let trash): moveToTrash(trash, original, context)
         case .batch(let items): renameBack(items, context)
         case .permissions(let items): setPermissionsBack(items, context)
+        case .merge(let merge): undoMerge(merge, original, context)
         }
     }
 
@@ -425,7 +474,7 @@ public enum UndoExecution {
                 locked: lifted.any && restored ? true : nil))
         return .done(
             produced: produced, items: [doneItem(planned.from, target, restored ? nil : lostLockNote(target))],
-            removed: nil)
+            removed: [])
     }
 
     /// What keeps an item from being moved to the Trash or out of it, taken off an item the operation made (its id
@@ -505,7 +554,7 @@ public enum UndoExecution {
     }
 
     /// A done item, with a note when there is something to know about it.
-    private static func doneItem(_ sourcePath: String, _ destinationPath: String?, _ note: String?)
+    private static func doneItem(_ sourcePath: String?, _ destinationPath: String?, _ note: String?)
         -> WriteOperationItem
     {
         WriteOperationItem(
@@ -657,9 +706,11 @@ public enum UndoExecution {
                     planned.path, nil,
                     trashNote(planned.path, restored: restored, located: trashPath != nil, options.direction))
             ],
-            removed: RemovedItem(
-                path: planned.path, item: before,
-                intoHomeTrash: before.flatMap { before in options.homeDev.map { before.dev == $0 } }))
+            removed: [
+                RemovedItem(
+                    path: planned.path, item: before,
+                    intoHomeTrash: before.flatMap { before in options.homeDev.map { before.dev == $0 } })
+            ])
     }
 
     // MARK: Batch rename
@@ -797,7 +848,7 @@ public enum UndoExecution {
                 : .failed(produced: produced, items: items, leftover: left)
         }
         if let produced {
-            return .done(produced: produced, items: items, removed: nil)
+            return .done(produced: produced, items: items, removed: [])
         }
         return .skipped(items: items, missing: false)
     }
@@ -822,9 +873,222 @@ public enum UndoExecution {
                     "\u{201C}\(NodePath.basename(trash.path))\u{201D} was left as it is, because the step before it couldn\u{2019}t be \(verb)."
                 )
             ]
+        case .merge(let merge):
+            return [
+                skippedItem(
+                    merge.to, merge.from,
+                    "\u{201C}\(NodePath.basename(merge.to))\u{201D} was left as it is, because the step before it couldn\u{2019}t be \(verb)."
+                )
+            ]
         case .batch, .permissions:
             return []
         }
+    }
+
+    // MARK: Merges
+
+    /// `undoMerge`: the items a merge put into a folder go back, each on its own, to the folder they came from. That
+    /// folder is made again first when the merge removed it, and given its permissions, flags and date back once they
+    /// are in; a folder an Undo made again so is removed again by Redo once nothing is left in it. What was done is the
+    /// same merge the other way, for the other direction to do again; what wasn't is the step still to do, with the
+    /// folder made again known by its new id.
+    private static func undoMerge(_ planned: PlannedMerge, _ original: UndoStep, _ context: RunContext) -> StepOutcome {
+        var units = planned.units
+        var made: MadeFolder?
+        // The folder made again first, the one removed last, as they happen.
+        var madeItems: [WriteOperationItem] = []
+        var removedItems: [WriteOperationItem] = []
+        var attributesLost = false
+        if let folder = planned.remake {
+            switch remakeFolder(planned, folder, original, context) {
+            case .outcome(let outcome):
+                return outcome
+            case .made(let folderMade, let lost):
+                made = folderMade
+                attributesLost = lost
+                if let old = folder.id, let new = folderMade.id {
+                    units = UndoPlan.remapIds(units, [old: new])
+                }
+            }
+        }
+        let inner = runUnits(units, context)
+        // It had items, and none came back to it or is left to: the folder made for them goes again, and there is
+        // nothing to redo. An empty folder merged is made again for itself.
+        if let folder = made, !units.isEmpty, inner.done.isEmpty, inner.leftover.isEmpty, !inner.cancelled,
+            removeEmptyFolderMade(folder, context)
+        {
+            made = nil
+        }
+        if let folder = planned.remake, let made {
+            context.noteRemade(folder.id, made.id)
+            // Once its items are in: their arrival changes its date, and its permissions might keep them out.
+            let restored = restoreFolderAttributes(made, folder.attributes, context) && !attributesLost
+            madeItems.append(doneItem(nil, folder.path, restored ? nil : lostAttributesNote(folder.path)))
+            context.noteCompleted(1)
+        }
+        var removed: RemovedFolder?
+        if let folder = planned.remove, !inner.cancelled, inner.leftover.isEmpty {
+            let (gone, item) = removeMadeFolder(folder, context)
+            removed = gone
+            if let item {
+                removedItems.append(item)
+                if item.status == .completed { context.noteCompleted(1) }
+            }
+        }
+        let items = madeItems + inner.items + removedItems
+        let produced: UndoStep? =
+            inner.done.isEmpty && made == nil && removed == nil
+            ? nil
+            : .merged(
+                UndoStep.Merged(
+                    from: planned.to, to: planned.from, units: inner.done, removed: removed, made: made))
+        // What is left: the folder made again is the one its items now go back to.
+        let rest = UndoStep.merged(
+            UndoStep.Merged(
+                from: planned.from, to: planned.to, units: inner.leftover, removed: made == nil ? planned.remake : nil,
+                made: planned.remove))
+        if inner.cancelled {
+            return .stopped(produced: produced, items: items, leftover: rest)
+        }
+        if !inner.leftover.isEmpty {
+            return .failed(produced: produced, items: items, leftover: rest)
+        }
+        if let produced {
+            return .done(produced: produced, items: items, removed: [])
+        }
+        return .skipped(items: items, missing: false)
+    }
+
+    enum Remade {
+        /// Made, its extended attributes given back; `lost` when some of them couldn't be.
+        case made(MadeFolder, lost: Bool)
+        /// Not made: the merge's step comes to this.
+        case outcome(StepOutcome)
+    }
+
+    /// `remakeFolder`: the folder a merge removed, made again where it was, with its extended attributes (its tags,
+    /// Finder's information). Refused when another item has its name, or its folder is gone or another: its items
+    /// then stay where the merge put them, as they would find no folder to go back to.
+    private static func remakeFolder(
+        _ planned: PlannedMerge, _ folder: RemovedFolder, _ original: UndoStep, _ context: RunContext
+    ) -> Remade {
+        let fileSystem = context.fileSystem
+        if let refusal = UndoPlan.checkRemake(fileSystem, folder) {
+            return .outcome(
+                refusal.retry
+                    ? failedStep(original, planned.to, folder.path, refusal.reason)
+                    : .skipped(items: [skippedItem(planned.to, folder.path, refusal.reason)], missing: false))
+        }
+        do {
+            try fileSystem.mkdir(folder.path)
+        } catch {
+            let code = errorCode(error)
+            let reason: String
+            switch code {
+            case .errno(EEXIST):
+                reason = UndoPlan.remakeTakenReason(folder.path)
+            case .errno(ENOENT), .errno(ENOTDIR):
+                reason =
+                    "Its folder \u{201C}\(NodePath.basename(NodePath.dirname(folder.path)))\u{201D} no longer exists."
+            default:
+                if classifyUndoWriteError(code) == .retry {
+                    return .outcome(
+                        failedStep(
+                            original, planned.to, folder.path,
+                            describeFailure(fileSystem, error, [NodePath.dirname(folder.path)])))
+                }
+                reason = permanentReason(code, folder.path)
+            }
+            return .outcome(.skipped(items: [skippedItem(planned.to, folder.path, reason)], missing: false))
+        }
+        var lost = false
+        for (name, value) in (folder.attributes.extendedAttributes ?? [:]).sorted(by: { $0.key < $1.key }) {
+            if (try? fileSystem.setExtendedAttribute(folder.path, name, value)) == nil { lost = true }
+        }
+        let id = readItemId({ try fileSystem.lstat($0) }, folder.path)
+        return .made(MadeFolder(path: folder.path, id: id, mtimeMs: folder.attributes.mtimeMs), lost: lost)
+    }
+
+    /// Gives the folder made again its access rules, mode, flags and date, if it is still the one made; whether all
+    /// of them could be.
+    private static func restoreFolderAttributes(
+        _ made: MadeFolder, _ attributes: FolderAttributes, _ context: RunContext
+    ) -> Bool {
+        let fileSystem = context.fileSystem
+        guard let stats = try? fileSystem.lstat(made.path), stats.isDirectory,
+            made.id == nil || itemIdOf(stats) == made.id
+        else { return true }
+        var restored = true
+        if let acl = attributes.acl {
+            restored = (try? fileSystem.setAcl(made.path, acl)) != nil && restored
+        }
+        restored = (try? FolderMetadata.preserveMode(made.path, attributes.mode, fileSystem.chmod)) != nil && restored
+        restored =
+            (try? FolderMetadata.preserveTimestamps(made.path, attributes.mtimeMs, fileSystem.utimes)) != nil
+            && restored
+        if let flags = attributes.flags, flags != 0 {
+            restored = (try? fileSystem.setFlags(made.path, flags)) != nil && restored
+        }
+        return restored
+    }
+
+    /// The folder just made again for a merge's items, removed when it is still that folder and nothing is in it;
+    /// whether it was.
+    private static func removeEmptyFolderMade(_ folder: MadeFolder, _ context: RunContext) -> Bool {
+        let fileSystem = context.fileSystem
+        guard let stats = try? fileSystem.lstat(folder.path), stats.isDirectory,
+            folder.id == nil || itemIdOf(stats) == folder.id
+        else { return false }
+        return (try? fileSystem.rmdir(folder.path)) != nil
+    }
+
+    /// A folder made again that didn't get all it had.
+    private static func lostAttributesNote(_ path: String) -> String {
+        "\u{201C}\(NodePath.basename(path))\u{201D} was made again, but its tags, permissions or date couldn\u{2019}t all be put back. Set them in Finder\u{2019}s Get Info."
+    }
+
+    /// `removeMadeFolder`: the folder an Undo made again for a merge's items, removed once they are out again, as the
+    /// merge removed it: only that very folder, and only when nothing is left in it but what Finder writes on its own
+    /// (its view settings). What it was, for the other direction to make it again, and the item that says so; nothing
+    /// for a folder left in place because something is in it, or that is gone or another.
+    private static func removeMadeFolder(_ folder: MadeFolder, _ context: RunContext) -> (
+        RemovedFolder?, WriteOperationItem?
+    ) {
+        let fileSystem = context.fileSystem
+        guard let stats = try? fileSystem.lstat(folder.path), stats.isDirectory,
+            folder.id == nil || itemIdOf(stats) == folder.id
+        else { return (nil, nil) }
+        let gone = RemovedFolder(
+            path: folder.path, id: itemIdOf(stats), parentId: context.folderIdOf(NodePath.dirname(folder.path)),
+            attributes: FolderAttributes(
+                mode: stats.mode & 0o7777, flags: try? fileSystem.getFlags(folder.path),
+                mtimeMs: folder.mtimeMs ?? stats.mtimeMs,
+                extendedAttributes: ownExtendedAttributes(fileSystem, folder.path),
+                acl: (try? fileSystem.getAcl(folder.path)) ?? nil))
+        do {
+            try fileSystem.rmdir(folder.path)
+        } catch {
+            let code = errorCode(error)
+            if code == .errno(ENOENT) { return (nil, nil) }
+            guard code == .errno(ENOTEMPTY) || code == .errno(EEXIST) else {
+                return (
+                    nil,
+                    skippedItem(
+                        folder.path, nil,
+                        "\u{201C}\(NodePath.basename(folder.path))\u{201D} was left where it is, though its items were moved out of it. \(describeFailure(fileSystem, error, [folder.path, NodePath.dirname(folder.path)]))"
+                    )
+                )
+            }
+            // Something is in it: left. Only Finder's view settings go with it.
+            guard let entries = try? fileSystem.readdir(folder.path), !entries.isEmpty,
+                withoutFinderBookkeeping(entries).isEmpty
+            else { return (nil, nil) }
+            for entry in entries {
+                try? fileSystem.rm(NodePath.join(folder.path, entry), recursive: false, force: true)
+            }
+            guard (try? fileSystem.rmdir(folder.path)) != nil else { return (nil, nil) }
+        }
+        return (gone, doneItem(folder.path, nil, nil))
     }
 
     // MARK: Permissions
@@ -875,7 +1139,7 @@ public enum UndoExecution {
             return .failed(produced: produced, items: items, leftover: .permissions(items: leftover))
         }
         if let produced {
-            return .done(produced: produced, items: items, removed: nil)
+            return .done(produced: produced, items: items, removed: [])
         }
         return .skipped(items: items, missing: allMissing)
     }

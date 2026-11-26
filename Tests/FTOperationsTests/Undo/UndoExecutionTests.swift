@@ -649,7 +649,7 @@ struct UndoExecutionTests {
             try UndoDisk.remove("\(root)/a2.txt")
             try UndoDisk.write("\(root)/a2.txt", "another")
             t.history.record(
-                FinishedWrite(action: .write(.paste), log: .notUndoable(reason: .merge), items: []))
+                FinishedWrite(action: .write(.paste), log: .notUndoable(reason: .otherDiskMove), items: []))
             #expect(try await t.prepare().refusal == .cantUndo)
             let undone = try await t.undo()
             let items = undone.result?.items ?? []

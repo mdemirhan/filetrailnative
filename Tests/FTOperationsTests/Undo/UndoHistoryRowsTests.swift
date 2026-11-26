@@ -374,12 +374,44 @@ struct UndoHistoryRowsTests {
         }
         #expect(title(.emptyTrash, nil) == "Empty Trash can\u{2019}t be undone")
         #expect(title(.write(.paste), .otherDiskMove) == "Move can\u{2019}t be undone")
-        #expect(title(.write(.paste), .merge) == "Paste can\u{2019}t be undone")
+        #expect(title(.write(.paste), .noTrash) == "Paste can\u{2019}t be undone")
         let reason = { (why: CantUndoReason) in
             UndoHistoryRows.cantUndoReason(
                 CantUndoEntry(id: 1, action: .emptyTrash, reason: why, date: .distantPast))
         }
         #expect(reason(.otherDiskMove) == "Items were moved to another disk")
         #expect(reason(.noTrash) == "Its disk has no Trash")
+    }
+
+    // A merge is one line, for the folder picked: moved into the one of its name, or, for a copy, the folder its
+    // copies went into. On the Redo list, as the person did it.
+    @Test func listsAMergeAsTheFolderPicked() {
+        let merged = UndoStep.merged(
+            .init(
+                from: "/Users/demo/Downloads/F", to: "/Users/demo/Projects/F",
+                units: [UndoUnit(steps: [moved("/Users/demo/Downloads/F/a", "/Users/demo/Projects/F/a")])]))
+        let move = row(entry(.paste, [[merged]], moves: true))
+        #expect(move.title == "Move of \u{201C}F\u{201D}")
+        #expect(move.items == ["F"])
+        #expect(move.place == "Downloads \u{2192} Projects")
+        let undone = UndoStep.merged(
+            .init(
+                from: "/Users/demo/Projects/F", to: "/Users/demo/Downloads/F",
+                units: [UndoUnit(steps: [moved("/Users/demo/Projects/F/a", "/Users/demo/Downloads/F/a")])],
+                made: MadeFolder(path: "/Users/demo/Downloads/F", id: nil, mtimeMs: nil)))
+        #expect(row(entry(.paste, [[undone]], moves: true), .redo).place == "Downloads \u{2192} Projects")
+
+        let copied = UndoStep.merged(
+            .init(
+                from: "/Users/demo/Downloads/F", to: "/Users/demo/Projects/F",
+                units: [UndoUnit(steps: [created("/Users/demo/Projects/F/a")])]))
+        let copy = row(entry(.paste, [[copied]]))
+        #expect(copy.title == "Copy of \u{201C}F\u{201D}")
+        #expect(copy.place == "in Projects")
+        let uncopied = UndoStep.merged(
+            .init(
+                from: "/Users/demo/Projects/F", to: "/Users/demo/Downloads/F",
+                units: [UndoUnit(steps: [trashed("/Users/demo/Projects/F/a")])]))
+        #expect(row(entry(.paste, [[uncopied]]), .redo).place == "in Projects")
     }
 }

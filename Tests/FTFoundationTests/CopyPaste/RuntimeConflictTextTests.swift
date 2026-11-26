@@ -49,7 +49,8 @@ struct RuntimeConflictTextTests {
         #expect(folder.primary.title == "Merge")
         #expect(folder.secondary.map(\.title) == ["Replace", "Keep Both", "Skip"])
         #expect(folder.secondary.first?.destructive == true)
-        #expect(folder.message.hasSuffix("Merging can\u{2019}t be undone."))
+        // A merge is undone as any paste is: nothing to warn of.
+        #expect(!folder.message.contains("Merging") && !folder.message.contains("undone"))
 
         let file = text(.destinationChanged)
         #expect(file.primary.title == "Keep Both")

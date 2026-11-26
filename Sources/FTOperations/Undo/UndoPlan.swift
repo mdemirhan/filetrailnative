@@ -50,6 +50,25 @@ public struct PlannedTrash: Equatable, Sendable {
     }
 }
 
+/// Undoes the items a merge put into a folder (`units`, each on its own), making the folder they came from again first
+/// (`remake`) when the merge removed it, and removing the folder they go back out of last (`remove`) when an Undo
+/// made it again. `from` and `to` are as the merge recorded them: the items go back from `to` to `from`.
+public struct PlannedMerge: Equatable, Sendable {
+    public var from: String
+    public var to: String
+    public var units: [UndoUnit]
+    public var remake: RemovedFolder?
+    public var remove: MadeFolder?
+
+    public init(from: String, to: String, units: [UndoUnit], remake: RemovedFolder?, remove: MadeFolder?) {
+        self.from = from
+        self.to = to
+        self.units = units
+        self.remake = remake
+        self.remove = remove
+    }
+}
+
 /// The reverse of a step, ready to run.
 public enum PlannedStep: Equatable, Sendable {
     case move(PlannedMove)
@@ -58,6 +77,7 @@ public enum PlannedStep: Equatable, Sendable {
     case batch(items: [BatchRenamedItem])
     /// Gives each item its `after` where it still has its `before`.
     case permissions(items: [PermissionsUndoItem])
+    case merge(PlannedMerge)
 
     public init(reversing step: UndoStep) {
         switch step {
@@ -86,6 +106,11 @@ public enum PlannedStep: Equatable, Sendable {
                 items: items.map { BatchRenamedItem(from: $0.to, to: $0.from, id: $0.id, itemKind: $0.itemKind) })
         case .permissions(let items):
             self = .permissions(items: items.map(\.reversed))
+        case .merged(let merged):
+            self = .merge(
+                PlannedMerge(
+                    from: merged.from, to: merged.to, units: merged.units, remake: merged.removed,
+                    remove: merged.made))
         }
     }
 }
@@ -647,8 +672,11 @@ public enum UndoPlan {
 
     /// `progress` is told of each step looked at, and of each item of a batch: the wait on the look runs from the last
     /// one, whatever the units hold.
+    /// `remade`: the folders a merge's Undo makes again before this unit runs. An item going back into one finds
+    /// nothing in its way there, and its folder isn't there yet to be looked at.
     private static func unitQuestions(
-        _ fileSystem: some IdentityFileSystem, _ unit: UndoUnit, _ progress: AnswerProgress?, _ exactItems: Bool
+        _ fileSystem: some IdentityFileSystem, _ unit: UndoUnit, _ progress: AnswerProgress?, _ exactItems: Bool,
+        remade: [String] = []
     ) -> UndoQuestions {
         var questions = UndoQuestions()
         var changes = UnitChanges()
@@ -659,6 +687,20 @@ public enum UndoPlan {
             defer { progress?.answered() }
             switch PlannedStep(reversing: step) {
             case .move(let planned):
+                if remade.contains(where: { isInside(planned.to, $0) }) {
+                    // Into a folder that will be made new: only the item itself is looked at.
+                    switch lookUp(planned.from, { try fileSystem.lstat($0) }) {
+                    case .missing: continue steps
+                    case .unreadable: break steps
+                    case .found(let stats):
+                        let relaxed = !planned.putBack && !exactItems
+                        guard isExpectedItem(stats, planned.id, planned.itemKind, relaxed: relaxed, unitIds: unitIds)
+                        else { break steps }
+                        changes.noteMovedAway(planned.from, itemIdOf(stats))
+                        changes.filledPlaces.insert(placeKey(planned.to))
+                        continue steps
+                    }
+                }
                 switch checkMove(fileSystem, planned, changes, unitIds: unitIds, exactItems: exactItems) {
                 case .refused(let refusal):
                     if refusal.missing { continue steps }
@@ -692,6 +734,20 @@ public enum UndoPlan {
             case .permissions:
                 // Nothing to ask: an item changed since is left as it is, and said.
                 break
+            case .merge(let merge):
+                // Each item is asked about as an item of its own. Those going back into a folder made again find
+                // nothing in their way there; what goes back elsewhere (what a Replace inside replaced) is asked about.
+                // A folder that can't be made again leaves its items where they are: nothing to ask.
+                var inside = remade
+                if let folder = merge.remake {
+                    if checkRemake(fileSystem, folder) != nil { continue steps }
+                    inside.append(folder.path)
+                }
+                for unit in merge.units {
+                    let inner = unitQuestions(fileSystem, unit, progress, exactItems, remade: inside)
+                    questions.nameTaken += inner.nameTaken
+                    questions.changed += inner.changed
+                }
             case .batch(let items):
                 for check in checkBatch(fileSystem, items, progress: progress, exactItems: exactItems)
                 where check.nameTaken {
@@ -716,8 +772,99 @@ extension UndoPlan {
             case .trashed(_, _, let id, _, _): if let id { ids.insert(id) }
             case .batchRenamed(let items): ids.formUnion(items.compactMap(\.id))
             case .permissions(let items): ids.formUnion(items.compactMap(\.id))
+            // Its items are each undone as a unit of their own, with their own ids.
+            case .merged: break
             }
         }
         return ids
+    }
+
+    /// Whether `path` is inside the folder `folder`, as a disk that ignores case takes it.
+    static func isInside(_ path: String, _ folder: String) -> Bool {
+        let (place, inside) = (NameKeys.placeKey(path), NameKeys.placeKey(folder))
+        return place.utf8.count > inside.utf8.count + 1 && place.hasPrefix(inside + "/")
+    }
+
+    /// `checkRemake`: whether the folder a merge removed can be made again where it was: its folder is still the one it
+    /// was in, and nothing has its name. Nil when it can be.
+    public static func checkRemake(_ fileSystem: some IdentityFileSystem, _ folder: RemovedFolder) -> Refusal? {
+        let parentPath = NodePath.dirname(folder.path)
+        let parent: WriteServiceStats?
+        // Through a link, as when it was recorded (see readFolderId).
+        switch lookUp(parentPath, { try fileSystem.stat($0) }) {
+        case .unreadable(let refusal): return refusal
+        case .missing: parent = nil
+        case .found(let stats): parent = stats
+        }
+        guard let parent, parent.isDirectory else {
+            return Refusal(
+                reason: "Its folder \u{201C}\(NodePath.basename(parentPath))\u{201D} no longer exists.", missing: false)
+        }
+        if let parentId = folder.parentId, let parentNow = itemIdOf(parent), parentId != parentNow {
+            let name = NodePath.basename(parentPath)
+            return Refusal(
+                reason: reconnected(parentId, parentNow)
+                    ? "Its folder \u{201C}\(name)\u{201D} is on a disk that was disconnected since, so it is left as it is."
+                    : "Its folder \u{201C}\(name)\u{201D} was replaced by another folder.",
+                missing: false)
+        }
+        switch lookUp(folder.path, { try fileSystem.lstat($0) }) {
+        case .unreadable(let refusal): return refusal
+        case .missing: return nil
+        case .found:
+            return Refusal(reason: remakeTakenReason(folder.path), missing: false)
+        }
+    }
+
+    /// The folder a merge removed can't be made again: another item has its name.
+    static func remakeTakenReason(_ path: String) -> String {
+        let name = NodePath.basename(path)
+        return
+            "\u{201C}\(name)\u{201D} wasn\u{2019}t made again for its items to go back to, because another item named \u{201C}\(name)\u{201D} is in \u{201C}\(NodePath.basename(NodePath.dirname(path)))\u{201D} now."
+    }
+
+    /// `units` with every step that knew an item by an id in `ids` (an item itself, or the folder it is in) knowing it
+    /// by the id it maps to: a folder a merge removed, which an Undo made again in its place.
+    public static func remapIds(_ units: [UndoUnit], _ ids: [ItemId: ItemId]) -> [UndoUnit] {
+        guard !ids.isEmpty else { return units }
+        func map(_ id: ItemId?) -> ItemId? { id.flatMap { ids[$0] } ?? id }
+        return units.map { unit in
+            UndoUnit(
+                steps: unit.steps.map { step in
+                    switch step {
+                    case .moved(var moved):
+                        moved.id = map(moved.id)
+                        moved.parentId = map(moved.parentId)
+                        return .moved(moved)
+                    case .created(let path, let id, let stamp):
+                        return .created(path: path, id: map(id), stamp: stamp)
+                    case .trashed(let from, let trashPath, let id, let parentId, let stamp):
+                        return .trashed(
+                            from: from, trashPath: trashPath, id: map(id), parentId: map(parentId), stamp: stamp)
+                    case .batchRenamed(let items):
+                        return .batchRenamed(
+                            items: items.map {
+                                BatchRenamedItem(from: $0.from, to: $0.to, id: map($0.id), itemKind: $0.itemKind)
+                            })
+                    case .permissions(let items):
+                        return .permissions(
+                            items: items.map {
+                                PermissionsUndoItem(path: $0.path, id: map($0.id), before: $0.before, after: $0.after)
+                            })
+                    case .merged(var merged):
+                        if var removed = merged.removed {
+                            removed.id = map(removed.id)
+                            removed.parentId = map(removed.parentId)
+                            merged.removed = removed
+                        }
+                        if var made = merged.made {
+                            made.id = map(made.id)
+                            merged.made = made
+                        }
+                        merged.units = remapIds(merged.units, ids)
+                        return .merged(merged)
+                    }
+                })
+        }
     }
 }

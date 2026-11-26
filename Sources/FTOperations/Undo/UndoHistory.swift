@@ -120,6 +120,19 @@ public final class UndoHistory {
 
     /// Lets go of the oldest operations, the bottom of the Undo list first, while the two lists hold more than they
     /// may; never those in `keep`, the ones just changed.
+    /// Every entry, on both lists, knowing the items in `ids` by the ids they map to (`UndoPlan.remapIds`).
+    private func renumber(_ ids: [ItemId: ItemId]) {
+        for index in undoList.indices {
+            if case .entry(var entry) = undoList[index] {
+                entry.units = UndoPlan.remapIds(entry.units, ids)
+                undoList[index] = .entry(entry)
+            }
+        }
+        for index in redoList.indices {
+            redoList[index].units = UndoPlan.remapIds(redoList[index].units, ids)
+        }
+    }
+
     private func keepWithinSize(_ keep: Set<Int>) {
         var size = undoList.reduce(0) { $0 + $1.size } + redoList.reduce(0) { $0 + $1.size }
         while size > maxItemSteps, let first = undoList.first, !keep.contains(first.id) {
@@ -193,8 +206,8 @@ public final class UndoHistory {
     }
 
     /// `needsExactItems`: whether the operation Undo takes next was done before one that can't be undone (and was
-    /// passed). That one may have taken its items away and left others of the same kind under their names (a merge,
-    /// a move to another disk and one back): its Undo takes only the very items, by id, where an Undo otherwise
+    /// passed). That one may have taken its items away and left others of the same kind under their names (a move
+    /// to another disk and one back): its Undo takes only the very items, by id, where an Undo otherwise
     /// takes an item of the same kind under the same name for one it moves or renames back. Never for Redo.
     public func needsExactItems(_ direction: UndoDirection) -> Bool {
         guard direction == .undo, let index = nextUndoIndex, case .entry = undoList[index] else { return false }
@@ -234,7 +247,13 @@ public final class UndoHistory {
     /// `finish`: an Undo or Redo of `entryId` ended. `done` is what it did, in the order it did it, which is what the
     /// other direction reverses; `leftover` is what a stop left to do and what failed to be written, kept on top so
     /// the next Undo goes on from there. What the disk check refused (changed outside the app) is dropped.
-    public func finish(_ direction: UndoDirection, entryId: Int, done: [UndoUnit], leftover: [UndoUnit]) throws {
+    /// `remade`: the folders the Undo made again for merges' items, by the id each had to the one it has now. Every
+    /// other step that knew one by its old id knows it by the new one: the folder it knew is gone, and the one made in
+    /// its place is where its items went back.
+    public func finish(
+        _ direction: UndoDirection, entryId: Int, done: [UndoUnit], leftover: [UndoUnit],
+        remade: [ItemId: ItemId] = [:]
+    ) throws {
         // Nothing else can change the history while an Undo holds the write slot.
         guard let entry = top(direction), entry.id == entryId else {
             let verb = direction == .undo ? "undone" : "redone"
@@ -242,11 +261,14 @@ public final class UndoHistory {
                 message:
                     "The \(direction.command) list changed while something on it was being \(verb).")
         }
+        if !remade.isEmpty {
+            renumber(remade)
+        }
         var kept: Set<Int> = []
         var left: UndoEntry?
         if !leftover.isEmpty {
             var rest = entry
-            rest.units = leftover
+            rest.units = UndoPlan.remapIds(leftover, remade)
             rest.size = Self.itemStepCount(leftover)
             left = rest
             kept.insert(rest.id)
@@ -339,17 +361,19 @@ public final class UndoHistory {
     }
 
     /// `itemStepCount`: how many steps `units` hold, each item of a batch rename or of a change of permissions
-    /// counted as one: what an Undo's progress counts, and what the history's size is kept by.
+    /// counted as one, and each of a merged folder's, with the folder itself when it is made again or removed: what an
+    /// Undo's progress counts, and what the history's size is kept by.
     public nonisolated static func itemStepCount(_ units: [UndoUnit]) -> Int {
         var count = 0
         for unit in units {
             for step in unit.steps {
-                if case .batchRenamed(let items) = step {
-                    count += items.count
-                } else if case .permissions(let items) = step {
-                    count += items.count
-                } else {
-                    count += 1
+                switch step {
+                case .batchRenamed(let items): count += items.count
+                case .permissions(let items): count += items.count
+                case .merged(let merged):
+                    count +=
+                        itemStepCount(merged.units) + (merged.removed != nil ? 1 : 0) + (merged.made != nil ? 1 : 0)
+                case .moved, .created, .trashed: count += 1
                 }
             }
         }
@@ -359,8 +383,11 @@ public final class UndoHistory {
     nonisolated static func movesAnything(_ units: [UndoUnit]) -> Bool {
         units.contains { unit in
             unit.steps.contains { step in
-                if case .moved(let moved) = step { return moved.fromTrash != true }
-                return false
+                switch step {
+                case .moved(let moved): moved.fromTrash != true
+                case .merged(let merged): merged.removed != nil || merged.made != nil || movesAnything(merged.units)
+                case .created, .trashed, .batchRenamed, .permissions: false
+                }
             }
         }
     }
@@ -383,6 +410,7 @@ public final class UndoHistory {
             case .trashed(let from, _, _, _, _): return from
             case .batchRenamed: continue
             case .permissions(let items): if let item = items.first { return item.path }
+            case .merged(let merged): return merged.to
             }
         }
         return nil

@@ -117,6 +117,120 @@ public struct PermissionsUndoItem: Equatable, Codable, Sendable {
     }
 }
 
+/// What a folder made again is given back: its mode (the nine bits and the three above them), Finder's flags (Hidden),
+/// its date, its extended attributes (its tags, Finder's information) and its access rules. Each is nil when it
+/// couldn't be read.
+public struct FolderAttributes: Equatable, Codable, Sendable {
+    public var mode: UInt32?
+    public var flags: UInt32?
+    public var mtimeMs: Double?
+    public var extendedAttributes: [String: Data]?
+    public var acl: String?
+
+    public init(
+        mode: UInt32?, flags: UInt32?, mtimeMs: Double?, extendedAttributes: [String: Data]?, acl: String?
+    ) {
+        self.mode = mode
+        self.flags = flags
+        self.mtimeMs = mtimeMs
+        self.extendedAttributes = extendedAttributes
+        self.acl = acl
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case mode, flags, mtimeMs, extendedAttributes, acl
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        mode = try container.decodeIfPresent(UInt32.self, forKey: .mode)
+        flags = try container.decodeIfPresent(UInt32.self, forKey: .flags)
+        mtimeMs = try container.decodeIfPresent(Double.self, forKey: .mtimeMs)
+        extendedAttributes = try container.decodeIfPresent([String: Data].self, forKey: .extendedAttributes)
+        acl = try container.decodeIfPresent(String.self, forKey: .acl)
+    }
+
+    // Each is written as null when it couldn't be read.
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(mode, forKey: .mode)
+        try container.encode(flags, forKey: .flags)
+        try container.encode(mtimeMs, forKey: .mtimeMs)
+        try container.encode(extendedAttributes, forKey: .extendedAttributes)
+        try container.encode(acl, forKey: .acl)
+    }
+}
+
+/// A folder removed once it was empty: the folder a move took every item out of, into a folder of the same name
+/// already there. Undo makes it again before its items go back. `id` is the folder as it was, which the steps of its
+/// items know it by (`parentId`); `parentId` is the folder it was in.
+public struct RemovedFolder: Equatable, Codable, Sendable {
+    public var path: String
+    public var id: ItemId?
+    public var parentId: ItemId?
+    public var attributes: FolderAttributes
+
+    public init(path: String, id: ItemId?, parentId: ItemId?, attributes: FolderAttributes) {
+        self.path = path
+        self.id = id
+        self.parentId = parentId
+        self.attributes = attributes
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case path, id, parentId, attributes
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        path = try container.decode(String.self, forKey: .path)
+        id = try container.decodeIfPresent(ItemId.self, forKey: .id)
+        parentId = try container.decodeIfPresent(ItemId.self, forKey: .parentId)
+        attributes = try container.decode(FolderAttributes.self, forKey: .attributes)
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(path, forKey: .path)
+        try container.encode(id, forKey: .id)
+        try container.encode(parentId, forKey: .parentId)
+        try container.encode(attributes, forKey: .attributes)
+    }
+}
+
+/// A folder an Undo made again (`RemovedFolder`): Redo removes it again once its items are out, only that very folder,
+/// and only when nothing else is in it. `mtimeMs` is the date it was given back, which its items leaving changes: it
+/// is the date it is made with again after that.
+public struct MadeFolder: Equatable, Codable, Sendable {
+    public var path: String
+    public var id: ItemId?
+    public var mtimeMs: Double?
+
+    public init(path: String, id: ItemId?, mtimeMs: Double?) {
+        self.path = path
+        self.id = id
+        self.mtimeMs = mtimeMs
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case path, id, mtimeMs
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        path = try container.decode(String.self, forKey: .path)
+        id = try container.decodeIfPresent(ItemId.self, forKey: .id)
+        mtimeMs = try container.decodeIfPresent(Double.self, forKey: .mtimeMs)
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(path, forKey: .path)
+        try container.encode(id, forKey: .id)
+        try container.encode(mtimeMs, forKey: .mtimeMs)
+    }
+}
+
 public enum UndoStep: Equatable, Sendable {
     /// A rename, or a move on one disk. `parentId` is the folder `from` was in, so Undo moves the item back only
     /// into that same folder. `itemKind` lets Undo still move back a file that an app saved under a new id.
@@ -137,6 +251,30 @@ public enum UndoStep: Equatable, Sendable {
     /// The permissions of items changed, all of one visit to the permissions popover: undone as one. Undo puts back
     /// each item's `before` where it still has its `after`.
     case permissions(items: [PermissionsUndoItem])
+    /// A folder merged into one of its name already there: its items, each put into `to` on its own, as units of
+    /// their own (an item that can't be undone leaves the others to be). `removed` is `from` once a move took every
+    /// item out of it: it is made again before they go back. `made` is a folder an Undo made again that way: Redo
+    /// removes it once its items are out again.
+    case merged(Merged)
+
+    public struct Merged: Equatable, Sendable {
+        /// Where the items were, and the folder they were put in.
+        public var from: String
+        public var to: String
+        public var units: [UndoUnit]
+        public var removed: RemovedFolder?
+        public var made: MadeFolder?
+
+        public init(
+            from: String, to: String, units: [UndoUnit], removed: RemovedFolder? = nil, made: MadeFolder? = nil
+        ) {
+            self.from = from
+            self.to = to
+            self.units = units
+            self.removed = removed
+            self.made = made
+        }
+    }
 
     public struct Moved: Equatable, Sendable {
         public var from: String
@@ -167,7 +305,8 @@ public enum UndoStep: Equatable, Sendable {
 
 extension UndoStep: Codable {
     private enum CodingKeys: String, CodingKey {
-        case kind, from, to, id, itemKind, parentId, fromTrash, stamp, locked, path, trashPath, items
+        case kind, from, to, id, itemKind, parentId, fromTrash, stamp, locked, path, trashPath, items, units, removed
+        case made
     }
 
     public init(from decoder: any Decoder) throws {
@@ -201,6 +340,14 @@ extension UndoStep: Codable {
             self = .batchRenamed(items: try container.decode([BatchRenamedItem].self, forKey: .items))
         case "permissions":
             self = .permissions(items: try container.decode([PermissionsUndoItem].self, forKey: .items))
+        case "merged":
+            self = .merged(
+                Merged(
+                    from: try container.decode(String.self, forKey: .from),
+                    to: try container.decode(String.self, forKey: .to),
+                    units: try container.decode([UndoUnit].self, forKey: .units),
+                    removed: try container.decodeIfPresent(RemovedFolder.self, forKey: .removed),
+                    made: try container.decodeIfPresent(MadeFolder.self, forKey: .made)))
         default:
             throw DecodingError.dataCorruptedError(
                 forKey: .kind, in: container, debugDescription: "unknown undo step \(kind)")
@@ -243,12 +390,19 @@ extension UndoStep: Codable {
         case .permissions(let items):
             try container.encode("permissions", forKey: .kind)
             try container.encode(items, forKey: .items)
+        case .merged(let merged):
+            try container.encode("merged", forKey: .kind)
+            try container.encode(merged.from, forKey: .from)
+            try container.encode(merged.to, forKey: .to)
+            try container.encode(merged.units, forKey: .units)
+            try container.encodeIfPresent(merged.removed, forKey: .removed)
+            try container.encodeIfPresent(merged.made, forKey: .made)
         }
     }
 }
 
-/// The steps for one item the person picked, in the order they happened. They are undone together, in reverse;
-/// when one can't be, the ones before it in the unit aren't either.
+/// The steps for one item the person picked, or one put into a folder merged into another, in the order they
+/// happened. They are undone together, in reverse; when one can't be, the ones before it in the unit aren't either.
 public struct UndoUnit: Equatable, Codable, Sendable {
     public var steps: [UndoStep]
 
@@ -259,8 +413,6 @@ public struct UndoUnit: Equatable, Codable, Sendable {
 
 /// Why an operation can't be undone.
 public enum CantUndoReason: String, Codable, Sendable {
-    /// A folder was merged into one that was already there (Add Missing).
-    case merge
     /// Something was deleted for good: Delete Immediately, Empty Trash, or a Replace on a disk without a Trash.
     case deletedForGood = "deleted_for_good"
     /// Copies, or a new folder, were made on a disk without a Trash: undoing them would mean deleting them.

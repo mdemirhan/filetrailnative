@@ -179,4 +179,36 @@ struct UndoLogCodingTests {
         let refused = String(decoding: try encoder.encode(UndoLog.notUndoable(reason: .deletedForGood)), as: UTF8.self)
         #expect(refused == #"{"reason":"deleted_for_good","undoable":false}"#)
     }
+
+    // A merge, its items' units, the folder it removed with what it had, and the folder an Undo made again: written
+    // and read back as they were.
+    @Test func writesAndReadsAMergeWithEverythingInIt() throws {
+        let id = ItemId(dev: 1, ino: 2)
+        let removed = RemovedFolder(
+            path: "/src/F", id: id, parentId: ItemId(dev: 1, ino: 3),
+            attributes: FolderAttributes(
+                mode: 0o750, flags: 0x8000, mtimeMs: 1.5,
+                extendedAttributes: ["com.apple.metadata:_kMDItemUserTags": Data([1, 2])],
+                acl: "!#acl 1\n"))
+        let inner = UndoStep.merged(
+            .init(
+                from: "/src/F/Sub", to: "/dst/F/Sub",
+                units: [UndoUnit(steps: [.created(path: "/dst/F/Sub/a", id: nil, stamp: nil)])], removed: nil,
+                made: MadeFolder(path: "/src/F/Sub", id: id, mtimeMs: nil)))
+        let log = UndoLog.undoable(units: [
+            UndoUnit(steps: [
+                .merged(.init(from: "/src/F", to: "/dst/F", units: [UndoUnit(steps: [inner])], removed: removed))
+            ])
+        ])
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
+        let text = String(decoding: try encoder.encode(log), as: UTF8.self)
+        #expect(text.contains(#""kind":"merged""#))
+        #expect(
+            text.contains(
+                #""removed":{"attributes":{"acl":"!#acl 1\n","extendedAttributes":{"com.apple.metadata:_kMDItemUserTags":"AQI="},"flags":32768,"mode":488,"mtimeMs":1.5},"id":{"dev":1,"ino":2},"parentId":{"dev":1,"ino":3},"path":"/src/F"}"#
+            ))
+        #expect(text.contains(#""made":{"id":{"dev":1,"ino":2},"mtimeMs":null,"path":"/src/F/Sub"}"#))
+        #expect(try JSONDecoder().decode(UndoLog.self, from: try encoder.encode(log)) == log)
+    }
 }

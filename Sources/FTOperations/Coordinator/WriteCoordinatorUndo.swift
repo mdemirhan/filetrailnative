@@ -249,7 +249,8 @@ extension WriteCoordinator {
         // Before the write slot is freed, so the next operation is recorded after this one. A mistake in keeping the
         // history (or in the menu rebuilt from it) must not keep the end of the Undo from being sent.
         do {
-            try history.finish(direction, entryId: entry.id, done: run.done, leftover: run.leftover)
+            try history.finish(
+                direction, entryId: entry.id, done: run.done, leftover: run.leftover, remade: run.remadeFolders)
         } catch {
             options.logError("[filetrail] couldn't record an Undo in the history", error)
         }

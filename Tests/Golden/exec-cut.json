@@ -1016,7 +1016,94 @@
             "size": 4
           }
         ],
-        "undoLog": {"reason": "merge", "undoable": false}
+        "undoLog": {
+          "undoable": true,
+          "units": [
+            {
+              "steps": [
+                {
+                  "from": "$ROOT/source/f",
+                  "kind": "merged",
+                  "removed": {
+                    "attributes": {"acl": null, "extendedAttributes": {}, "flags": 0, "mode": 493, "mtimeMs": "set"},
+                    "id": {"dev": "dev-1", "ino": "ino-1"},
+                    "parentId": {"dev": "dev-1", "ino": "ino-2"},
+                    "path": "$ROOT/source/f"
+                  },
+                  "to": "$ROOT/destination/f",
+                  "units": [
+                    {
+                      "steps": [
+                        {
+                          "from": "$ROOT/source/f/new.txt",
+                          "id": {"dev": "dev-1", "ino": "ino-3"},
+                          "itemKind": "file",
+                          "kind": "moved",
+                          "parentId": {"dev": "dev-1", "ino": "ino-1"},
+                          "to": "$ROOT/destination/f/new.txt"
+                        }
+                      ]
+                    },
+                    {
+                      "steps": [
+                        {
+                          "from": "$ROOT/destination/f/same.txt",
+                          "id": {"dev": "dev-1", "ino": "ino-4"},
+                          "kind": "trashed",
+                          "parentId": {"dev": "dev-1", "ino": "ino-5"},
+                          "trashPath": "$TRASH/1-same.txt"
+                        },
+                        {
+                          "from": "$ROOT/source/f/same.txt",
+                          "id": {"dev": "dev-1", "ino": "ino-6"},
+                          "itemKind": "file",
+                          "kind": "moved",
+                          "parentId": {"dev": "dev-1", "ino": "ino-1"},
+                          "to": "$ROOT/destination/f/same.txt"
+                        }
+                      ]
+                    },
+                    {
+                      "steps": [
+                        {
+                          "from": "$ROOT/source/f/sub",
+                          "kind": "merged",
+                          "removed": {
+                            "attributes": {
+                              "acl": null,
+                              "extendedAttributes": {},
+                              "flags": 0,
+                              "mode": 493,
+                              "mtimeMs": "set"
+                            },
+                            "id": {"dev": "dev-1", "ino": "ino-7"},
+                            "parentId": {"dev": "dev-1", "ino": "ino-1"},
+                            "path": "$ROOT/source/f/sub"
+                          },
+                          "to": "$ROOT/destination/f/sub",
+                          "units": [
+                            {
+                              "steps": [
+                                {
+                                  "from": "$ROOT/source/f/sub/b.txt",
+                                  "id": {"dev": "dev-1", "ino": "ino-8"},
+                                  "itemKind": "file",
+                                  "kind": "moved",
+                                  "parentId": {"dev": "dev-1", "ino": "ino-7"},
+                                  "to": "$ROOT/destination/f/sub/b.txt"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     {
@@ -1211,7 +1298,34 @@
           }
         },
         "trash": [],
-        "undoLog": {"reason": "merge", "undoable": false}
+        "undoLog": {
+          "undoable": true,
+          "units": [
+            {
+              "steps": [
+                {
+                  "from": "$ROOT/source/f",
+                  "kind": "merged",
+                  "to": "$ROOT/destination/f",
+                  "units": [
+                    {
+                      "steps": [
+                        {
+                          "from": "$ROOT/source/f/new.txt",
+                          "id": {"dev": "dev-1", "ino": "ino-1"},
+                          "itemKind": "file",
+                          "kind": "moved",
+                          "parentId": {"dev": "dev-1", "ino": "ino-2"},
+                          "to": "$ROOT/destination/f/new.txt"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     {

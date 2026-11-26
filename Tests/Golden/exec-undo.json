@@ -2475,9 +2475,9 @@
       }
     },
     {
-      "name": "a merge that added an item can't be undone",
+      "name": "a folder merged with an item added: Undo moves the item to the Trash, Redo puts it back",
       "input": {
-        "name": "a merge that added an item can't be undone",
+        "name": "a folder merged with an item added: Undo moves the item to the Trash, Redo puts it back",
         "tree": [
           {"path": "source/f/new.txt", "kind": "file", "content": "source/f/new.txt\n"},
           {"path": "destination/f/old.txt", "kind": "file", "content": "destination/f/old.txt\n"}
@@ -2660,15 +2660,6 @@
                   "flags": [],
                   "kind": "file",
                   "mode": "0644",
-                  "path": "destination/f/new.txt",
-                  "sha256": "e74a8b2d2cff7c53717a67e5ae323b9a2ac0856283bdebd7cceb534516ca706a",
-                  "size": 17
-                },
-                {
-                  "acl": false,
-                  "flags": [],
-                  "kind": "file",
-                  "mode": "0644",
                   "path": "destination/f/old.txt",
                   "sha256": "7273d34f3ad4979af9b3d2aa6d4912bee8b8ee67f1fcbd94eab76a10e7ec3ef2",
                   "size": 22
@@ -2688,11 +2679,35 @@
               "asked": [],
               "changes": [],
               "direction": "undo",
-              "menu": {"cantUndo": true, "redo": null, "undo": null},
-              "menuAfter": {"cantUndo": false, "redo": null, "undo": null},
-              "prepared": {"action": null, "changed": [], "label": null, "nameTaken": [], "refusal": "cant_undo"},
-              "start": null,
-              "trash": []
+              "menu": {"cantUndo": false, "redo": null, "undo": "Copy of “f”"},
+              "menuAfter": {"cantUndo": false, "redo": "Copy of “f”", "undo": null},
+              "prepared": {"action": "paste", "changed": [], "label": "Copy of “f”", "nameTaken": [], "refusal": null},
+              "start": {
+                "completedItemCount": 1,
+                "error": null,
+                "items": [
+                  {
+                    "destinationPath": null,
+                    "error": null,
+                    "note": false,
+                    "sourcePath": "$ROOT/destination/f/new.txt",
+                    "status": "completed"
+                  }
+                ],
+                "status": "completed",
+                "totalItemCount": 1
+              },
+              "trash": [
+                {
+                  "acl": false,
+                  "flags": [],
+                  "kind": "file",
+                  "mode": "0644",
+                  "path": "1-new.txt",
+                  "sha256": "e74a8b2d2cff7c53717a67e5ae323b9a2ac0856283bdebd7cceb534516ca706a",
+                  "size": 17
+                }
+              ]
             },
             {
               "after": [
@@ -2731,15 +2746,54 @@
               "asked": [],
               "changes": [],
               "direction": "redo",
-              "menu": {"cantUndo": false, "redo": null, "undo": null},
-              "menuAfter": {"cantUndo": false, "redo": null, "undo": null},
-              "prepared": {"action": null, "changed": [], "label": null, "nameTaken": [], "refusal": "nothing"},
-              "start": null,
+              "menu": {"cantUndo": false, "redo": "Copy of “f”", "undo": null},
+              "menuAfter": {"cantUndo": false, "redo": null, "undo": "Copy of “f”"},
+              "prepared": {"action": "paste", "changed": [], "label": "Copy of “f”", "nameTaken": [], "refusal": null},
+              "start": {
+                "completedItemCount": 1,
+                "error": null,
+                "items": [
+                  {
+                    "destinationPath": "$ROOT/destination/f/new.txt",
+                    "error": null,
+                    "note": false,
+                    "sourcePath": "$TRASH/1-new.txt",
+                    "status": "completed"
+                  }
+                ],
+                "status": "completed",
+                "totalItemCount": 1
+              },
               "trash": []
             }
           ]
         },
-        "undoLog": {"reason": "merge", "undoable": false}
+        "undoLog": {
+          "undoable": true,
+          "units": [
+            {
+              "steps": [
+                {
+                  "from": "$ROOT/source/f",
+                  "kind": "merged",
+                  "to": "$ROOT/destination/f",
+                  "units": [
+                    {
+                      "steps": [
+                        {
+                          "id": {"dev": "dev-1", "ino": "ino-1"},
+                          "kind": "created",
+                          "path": "$ROOT/destination/f/new.txt",
+                          "stamp": {"entryCount": null, "kind": "file", "mtimeMs": "set", "size": 17}
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     {
@@ -5811,9 +5865,9 @@
       }
     },
     {
-      "name": "a cut folder merged into a folder can't be undone",
+      "name": "a cut folder merged into a folder: Undo makes it again and moves its items back, Redo merges again",
       "input": {
-        "name": "a cut folder merged into a folder can't be undone",
+        "name": "a cut folder merged into a folder: Undo makes it again and moves its items back, Redo merges again",
         "tree": [
           {"path": "source/f/new.txt", "kind": "file", "content": "source/f/new.txt\n"},
           {"path": "source/f/same.txt", "kind": "file", "content": "new\n"},
@@ -6029,7 +6083,7 @@
             "flags": [],
             "kind": "file",
             "mode": "0644",
-            "path": "1-same.txt",
+            "path": "2-same.txt",
             "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
             "size": 4
           }
@@ -6045,7 +6099,18 @@
                   "flags": [],
                   "kind": "file",
                   "mode": "0644",
-                  "path": "destination/f/new.txt",
+                  "path": "destination/f/same.txt",
+                  "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
+                  "size": 4
+                },
+                {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"},
+                {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source/f"},
+                {
+                  "acl": false,
+                  "flags": [],
+                  "kind": "file",
+                  "mode": "0644",
+                  "path": "source/f/new.txt",
                   "sha256": "e74a8b2d2cff7c53717a67e5ae323b9a2ac0856283bdebd7cceb534516ca706a",
                   "size": 17
                 },
@@ -6054,30 +6119,54 @@
                   "flags": [],
                   "kind": "file",
                   "mode": "0644",
-                  "path": "destination/f/same.txt",
+                  "path": "source/f/same.txt",
                   "sha256": "7aa7a5359173d05b63cfd682e3c38487f3cb4f7f1d60659fe59fab1505977d4c",
                   "size": 4
-                },
-                {"acl": false, "flags": [], "kind": "dir", "mode": "0755", "path": "source"}
+                }
               ],
               "asked": [],
               "changes": [],
               "direction": "undo",
-              "menu": {"cantUndo": true, "redo": null, "undo": null},
-              "menuAfter": {"cantUndo": false, "redo": null, "undo": null},
-              "prepared": {"action": null, "changed": [], "label": null, "nameTaken": [], "refusal": "cant_undo"},
-              "start": null,
-              "trash": [
-                {
-                  "acl": false,
-                  "flags": [],
-                  "kind": "file",
-                  "mode": "0644",
-                  "path": "1-same.txt",
-                  "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
-                  "size": 4
-                }
-              ]
+              "menu": {"cantUndo": false, "redo": null, "undo": "Move of “f”"},
+              "menuAfter": {"cantUndo": false, "redo": "Move of “f”", "undo": null},
+              "prepared": {"action": "paste", "changed": [], "label": "Move of “f”", "nameTaken": [], "refusal": null},
+              "start": {
+                "completedItemCount": 4,
+                "error": null,
+                "items": [
+                  {
+                    "destinationPath": "$ROOT/source/f",
+                    "error": null,
+                    "note": false,
+                    "sourcePath": null,
+                    "status": "completed"
+                  },
+                  {
+                    "destinationPath": "$ROOT/source/f/same.txt",
+                    "error": null,
+                    "note": false,
+                    "sourcePath": "$ROOT/destination/f/same.txt",
+                    "status": "completed"
+                  },
+                  {
+                    "destinationPath": "$ROOT/destination/f/same.txt",
+                    "error": null,
+                    "note": false,
+                    "sourcePath": "$TRASH/1-same.txt",
+                    "status": "completed"
+                  },
+                  {
+                    "destinationPath": "$ROOT/source/f/new.txt",
+                    "error": null,
+                    "note": false,
+                    "sourcePath": "$ROOT/destination/f/new.txt",
+                    "status": "completed"
+                  }
+                ],
+                "status": "completed",
+                "totalItemCount": 4
+              },
+              "trash": []
             },
             {
               "after": [
@@ -6106,17 +6195,52 @@
               "asked": [],
               "changes": [],
               "direction": "redo",
-              "menu": {"cantUndo": false, "redo": null, "undo": null},
-              "menuAfter": {"cantUndo": false, "redo": null, "undo": null},
-              "prepared": {"action": null, "changed": [], "label": null, "nameTaken": [], "refusal": "nothing"},
-              "start": null,
+              "menu": {"cantUndo": false, "redo": "Move of “f”", "undo": null},
+              "menuAfter": {"cantUndo": false, "redo": null, "undo": "Move of “f”"},
+              "prepared": {"action": "paste", "changed": [], "label": "Move of “f”", "nameTaken": [], "refusal": null},
+              "start": {
+                "completedItemCount": 4,
+                "error": null,
+                "items": [
+                  {
+                    "destinationPath": "$ROOT/destination/f/new.txt",
+                    "error": null,
+                    "note": false,
+                    "sourcePath": "$ROOT/source/f/new.txt",
+                    "status": "completed"
+                  },
+                  {
+                    "destinationPath": null,
+                    "error": null,
+                    "note": false,
+                    "sourcePath": "$ROOT/destination/f/same.txt",
+                    "status": "completed"
+                  },
+                  {
+                    "destinationPath": "$ROOT/destination/f/same.txt",
+                    "error": null,
+                    "note": false,
+                    "sourcePath": "$ROOT/source/f/same.txt",
+                    "status": "completed"
+                  },
+                  {
+                    "destinationPath": null,
+                    "error": null,
+                    "note": false,
+                    "sourcePath": "$ROOT/source/f",
+                    "status": "completed"
+                  }
+                ],
+                "status": "completed",
+                "totalItemCount": 4
+              },
               "trash": [
                 {
                   "acl": false,
                   "flags": [],
                   "kind": "file",
                   "mode": "0644",
-                  "path": "1-same.txt",
+                  "path": "2-same.txt",
                   "sha256": "01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee",
                   "size": 4
                 }
@@ -6124,7 +6248,59 @@
             }
           ]
         },
-        "undoLog": {"reason": "merge", "undoable": false}
+        "undoLog": {
+          "undoable": true,
+          "units": [
+            {
+              "steps": [
+                {
+                  "from": "$ROOT/source/f",
+                  "kind": "merged",
+                  "removed": {
+                    "attributes": {"acl": null, "extendedAttributes": {}, "flags": 0, "mode": 493, "mtimeMs": "set"},
+                    "id": {"dev": "dev-1", "ino": "ino-1"},
+                    "parentId": {"dev": "dev-1", "ino": "ino-2"},
+                    "path": "$ROOT/source/f"
+                  },
+                  "to": "$ROOT/destination/f",
+                  "units": [
+                    {
+                      "steps": [
+                        {
+                          "from": "$ROOT/source/f/new.txt",
+                          "id": {"dev": "dev-1", "ino": "ino-3"},
+                          "itemKind": "file",
+                          "kind": "moved",
+                          "parentId": {"dev": "dev-1", "ino": "ino-1"},
+                          "to": "$ROOT/destination/f/new.txt"
+                        }
+                      ]
+                    },
+                    {
+                      "steps": [
+                        {
+                          "from": "$ROOT/destination/f/same.txt",
+                          "id": {"dev": "dev-1", "ino": "ino-4"},
+                          "kind": "trashed",
+                          "parentId": {"dev": "dev-1", "ino": "ino-5"},
+                          "trashPath": "$TRASH/1-same.txt"
+                        },
+                        {
+                          "from": "$ROOT/source/f/same.txt",
+                          "id": {"dev": "dev-1", "ino": "ino-6"},
+                          "itemKind": "file",
+                          "kind": "moved",
+                          "parentId": {"dev": "dev-1", "ino": "ino-1"},
+                          "to": "$ROOT/destination/f/same.txt"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     {
