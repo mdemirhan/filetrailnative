@@ -101,6 +101,8 @@ extension ExplorerWindowlessTests {
             tab.content.select(paths: [image.path])
             let content = try #require(tab.window?.contentView)
             let group = try #require(findViews("infoPanel.openGroup", in: content).first as? SplitOpenButton)
+            // Pressed once the panel shows the image: until its answers are in, it shows the item before.
+            #expect(await waitUntil { findViews("infoPanel.name", in: content).map(fieldText) == [image.name] })
             #expect(await waitUntil { !group.isHidden })
             group.layoutSubtreeIfNeeded()
             let window = try #require(tab.window)

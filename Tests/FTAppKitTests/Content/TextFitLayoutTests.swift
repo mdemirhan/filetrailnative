@@ -14,6 +14,12 @@ extension ExplorerWindowlessTests {
             return [root] + root.subviews.flatMap { allViews(in: $0) }
         }
 
+        /// Whether the system's field shows its text cut short: it has a frame to expand into when it is.
+        static func cutShort(_ field: NSTextField) -> Bool? {
+            guard let cell = field.cell else { return nil }
+            return cell.expansionFrame(withFrame: field.bounds, in: field) != .zero
+        }
+
         /// The text boxes that are as wide as their text: each must draw all of it.
         func fullWidthLabels(in tab: MainWindowController) -> [(TextBoxCell, NSRect, String)] {
             allViews(in: tab.window?.contentView).compactMap { view in
@@ -42,7 +48,16 @@ extension ExplorerWindowlessTests {
                 })
             harness.layout(tab)
             tab.window?.contentView?.layoutSubtreeIfNeeded()
-            let ids = ["statusBar", "infoPanel.name", "infoPanel.subtitle", "infoPanel.open.label"]
+            // The Info panel's name and subtitle can be selected: the system's own text field, as wide as it measures
+            // its text with its room on each side, never cut short.
+            for id in ["infoPanel.name", "infoPanel.subtitle"] {
+                let field = try #require(root.flatMap { findViews(id, in: $0).first } as? SelectableTextField, "\(id)")
+                #expect(!field.stringValue.isEmpty, "\(id)")
+                #expect(Self.cutShort(field) == false, "\(id): \(field.stringValue) in \(field.frame.width)")
+                let room = 2 * SelectableTextField.padding + SelectableTextField.slack
+                #expect(field.frame.width >= textExtent(field.stringValue, field.font) + room - 0.5, "\(id)")
+            }
+            let ids = ["statusBar", "infoPanel.open.label"]
             for id in ids {
                 let views = root.map { findViews(id, in: $0) } ?? []
                 #expect(!views.isEmpty, "\(id)")
@@ -82,11 +97,11 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { root.map { findViews("infoPanel.name", in: $0).map(fieldText) } == [long] })
             harness.layout(tab)
             tab.window?.contentView?.layoutSubtreeIfNeeded()
-            let field = try #require(root.flatMap { findViews("infoPanel.name", in: $0).first } as? NSTextField)
-            let cell = try #require(field.cell as? TextBoxCell)
+            let field = try #require(
+                root.flatMap { findViews("infoPanel.name", in: $0).first } as? SelectableTextField)
             let line = (field.font?.pointSize ?? 15) * 1.3
             #expect(abs(field.frame.height - 2 * line) < 0.5, "\(field.frame)")
-            #expect(!cell.truncates(in: field.frame.size), "\(field.frame)")
+            #expect(Self.cutShort(field) == false, "\(field.frame)")
             await harness.close()
         }
 

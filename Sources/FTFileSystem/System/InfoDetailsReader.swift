@@ -36,7 +36,7 @@ public enum InfoDetailsReader {
             .totalFileAllocatedSizeKey, .contentTypeKey, .hasHiddenExtensionKey, .isUbiquitousItemKey,
         ]
         if stated {
-            let disk = VolumeNames.of(device: info.st_dev, url: url)
+            let disk = VolumeNames.of(path, device: info.st_dev, url: url)
             details.more.volumeName = disk.name
             details.more.volumeFormat = disk.format
         }
@@ -66,7 +66,7 @@ public enum InfoDetailsReader {
         // download, and for what only it reads (a Word or Pages document).
         switch kind {
         case .image: details.image = image(path: path, readFile: isFile && !dataless)
-        case .movie, .sound: details.media = media(path: path, readFile: isFile && !dataless)
+        case .movie, .sound: details.media = media(path: path, readFile: isFile && !dataless, cancel: cancel)
         case .pdf, .document:
             details.document = document(path: path, isPDF: kind == .pdf, readFile: isFile && !dataless)
         case .text, .other: break
@@ -237,9 +237,9 @@ public enum InfoDetailsReader {
 
     // MARK: Movies and sound
 
-    static func media(path: String, readFile: Bool) -> InfoDetails.Media? {
+    static func media(path: String, readFile: Bool, cancel: ReadCancel = ReadCancel()) -> InfoDetails.Media? {
         var media = InfoDetails.Media()
-        if readFile { fillFromAsset(&media, path: path) }
+        if readFile { fillFromAsset(&media, path: path, cancel: cancel) }
         if media.seconds == nil { fillFromSpotlight(&media, Spotlight(path)) }
         return media.isEmpty ? nil : media
     }
@@ -260,7 +260,7 @@ public enum InfoDetailsReader {
     /// How long a wait for AVFoundation's answer may be before the panel goes on without it.
     static let assetPatience = 2.0
 
-    private static func fillFromAsset(_ media: inout InfoDetails.Media, path: String) {
+    private static func fillFromAsset(_ media: inout InfoDetails.Media, path: String, cancel: ReadCancel) {
         let box = AssetFacts()
         let done = DispatchSemaphore(value: 0)
         // This runs on a thread of its own (`BlockingWork`), not one of Swift's, so waiting here holds no one up.
@@ -268,7 +268,12 @@ public enum InfoDetailsReader {
             await box.load(URL(fileURLWithPath: path))
             done.signal()
         }
-        guard done.wait(timeout: .now() + assetPatience) == .success, let read = box.media else { return }
+        // Waited in steps, so a read no longer wanted lets go of its thread at once.
+        let deadline = DispatchTime.now() + assetPatience
+        while done.wait(timeout: .now() + 0.05) == .timedOut {
+            if cancel.isCancelled || DispatchTime.now() >= deadline { return }
+        }
+        guard let read = box.media else { return }
         media.seconds = media.seconds ?? read.seconds
         media.width = media.width ?? read.width
         media.height = media.height ?? read.height
@@ -530,14 +535,26 @@ extension SecCSFlags {
 /// A disk's name and format, kept for each disk while the app runs: macOS takes about 6 ms to say them, more than
 /// everything else the Info panel reads of an item together, and they don't change while the disk is mounted.
 enum VolumeNames {
-    private static let lock = NSLock()
-    nonisolated(unsafe) private static var known: [dev_t: (name: String?, format: String?)] = [:]
+    private struct Key: Hashable {
+        var device: dev_t
+        /// Where it is mounted: a device number can come back for another disk after an eject and a mount, and a disk
+        /// renamed is mounted again at its new name.
+        var mountPoint: String
+    }
 
-    static func of(device: dev_t, url: URL) -> (name: String?, format: String?) {
-        if let kept = lock.withLock({ known[device] }) { return kept }
+    private static let lock = NSLock()
+    nonisolated(unsafe) private static var known: [Key: (name: String?, format: String?)] = [:]
+
+    static func of(_ path: String, device: dev_t, url: URL) -> (name: String?, format: String?) {
+        var fs = statfs()
+        let mountPoint =
+            statfs(path, &fs) == 0
+            ? withUnsafeBytes(of: fs.f_mntonname) { String(decoding: $0.prefix { $0 != 0 }, as: UTF8.self) } : ""
+        let key = Key(device: device, mountPoint: mountPoint)
+        if let kept = lock.withLock({ known[key] }) { return kept }
         let values = try? url.resourceValues(forKeys: [.volumeLocalizedNameKey, .volumeLocalizedFormatDescriptionKey])
         let read = (values?.volumeLocalizedName, values?.volumeLocalizedFormatDescription)
-        lock.withLock { known[device] = read }
+        lock.withLock { known[key] = read }
         return read
     }
 }

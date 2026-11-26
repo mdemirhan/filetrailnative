@@ -263,11 +263,17 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     var count: Int { controller.windows.count }
     var hasOneOnScreen: Bool { liveGroups.contains { $0.isVisible && !$0.isMinimized } }
 
+    /// The explorer tab a window is part of: its own, a sheet's or a popover's (Tags…, the permissions), or the one
+    /// the Info panel in a window of its own describes, so the menus act on that tab while those have the keyboard.
     func handle(for window: NSWindow) -> (any ExplorerWindowHandle)? {
         var current: NSWindow? = window
         while let candidate = current {
             if let tab = (candidate as? ExplorerTabWindow)?.explorerTab, tab.group != nil { return tab }
-            current = candidate.sheetParent
+            if candidate is InfoPopOutWindow {
+                guard let owner = InfoPopOut.shared.owner, owner.group != nil else { return nil }
+                return owner
+            }
+            current = candidate.sheetParent ?? candidate.parent
         }
         return nil
     }
@@ -421,6 +427,8 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
 
     /// A tab closed: its folder is no longer watched, and the menu forgets what it said.
     func tabGone(_ tab: MainWindowController) {
+        // The Info panel in a window of its own goes with the tab it describes, until another tab takes it.
+        InfoPopOut.shared.ownerGone(tab)
         for pane in tab.panes { folderWatches?.watch(windowID: pane.watchID, path: nil) }
         FolderSizeService.shared.forget(windowID: tab.windowID)
     }

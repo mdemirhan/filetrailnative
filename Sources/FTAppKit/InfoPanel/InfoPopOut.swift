@@ -35,7 +35,8 @@ final class InfoPopOut: NSObject, NSWindowDelegate {
     func sync(_ preferences: AppPreferences, host: MainWindowController) {
         let wanted = preferences.infoPanelPoppedOut && preferences.infoPanelPopOutShown
         if wanted, owner == nil { owner = host }
-        if wanted, !isShown {
+        // Never while the app is hidden: it comes back with the app's windows.
+        if wanted, !isShown, !NSApp.isHidden {
             show(beside: (owner ?? host).window, focus: false)
         } else if !wanted, isShown {
             hide()
@@ -43,6 +44,15 @@ final class InfoPopOut: NSObject, NSWindowDelegate {
     }
 
     /// The tab came to the front: the window describes its selection from now on.
+    /// The tab it describes went: it hides, the preference staying, until another tab takes it (`follow`, `sync`),
+    /// rather than show an item no window has.
+    func ownerGone(_ tab: MainWindowController) {
+        guard owner === tab else { return }
+        owner = nil
+        wiredBy = nil
+        window?.orderOut(nil)
+    }
+
     func follow(_ tab: MainWindowController) {
         guard owner !== tab else { return }
         let previous = owner
@@ -84,7 +94,8 @@ final class InfoPopOut: NSObject, NSWindowDelegate {
         window.isReleasedWhenClosed = false
         window.minSize = Self.minimumSize
         // Resized and moved, never zoomed or full screen: a panel beside the app's windows.
-        window.collectionBehavior = [.fullScreenNone, .fullScreenDisallowsTiling]
+        // It comes to the Space in front, and beside a window in full screen: it follows the window it describes.
+        window.collectionBehavior = [.moveToActiveSpace, .fullScreenAuxiliary, .fullScreenDisallowsTiling]
         window.standardWindowButton(.zoomButton)?.isEnabled = false
         panel.autoresizingMask = [.width, .height]
         window.contentView = panel

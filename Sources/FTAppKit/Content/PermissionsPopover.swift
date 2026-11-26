@@ -428,7 +428,9 @@ extension MainWindowController {
                 readAgain: { paths in
                     await BlockingWork.run(qos: .userInitiated) { PermissionsReader.read(paths, inTrash: inTrash) }
                 })
-            popover.confirmLockOut = { what in await coordinator.confirmLockOut(what) }
+            // Asked in the window the popover hangs from, where it is looked at.
+            weak let anchorWindow = host.window
+            popover.confirmLockOut = { what in await coordinator.confirmLockOut(what, in: anchorWindow) }
             if let history = AppWriteOperations.current?.undoHistory {
                 popover.stopListening = history.onChange { [weak popover] in popover?.itemsChanged() }
             }

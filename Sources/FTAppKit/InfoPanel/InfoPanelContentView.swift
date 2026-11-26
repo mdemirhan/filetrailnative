@@ -294,7 +294,8 @@ final class InfoPanelContentView: NSView {
                     case .folderSize: kind = "size"
                     case .permissions: kind = "permissions"
                     case .place: kind = "place"
-                    case .originalLink: kind = "original"
+                    // Where it leads is in its click: another one is built anew.
+                    case .originalLink(_, let path): kind = "original\u{0}" + path
                     case .opensWith: kind = "opens"
                     case .tags: kind = "tags"
                     case .fitting: kind = "fitting"
@@ -361,9 +362,10 @@ final class InfoPanelContentView: NSView {
         case .tags(let tags):
             (views.value as? InfoTagsView)?.tags = tags
             views.box?.sample.stringValue = tags.summary
-        case .permissions(let words, let octal, _):
+        case .permissions(let words, let octal, let symbolic):
             (views.value as? NSTextField)?.stringValue = words
             views.extra?.stringValue = octal
+            views.extra?.toolTip = symbolic
         case .folderSize, .opensWith:
             break
         }

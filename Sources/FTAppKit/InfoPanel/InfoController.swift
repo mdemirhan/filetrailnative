@@ -42,7 +42,13 @@ final class InfoController {
     private var lookupByType: [String: OpenWithLookup] = [:]
     // What the panel and the row were last painted for, and the item being waited for (`InfoMetrics.holdGrace`).
     private var paintedKey: String?
-    private var holding: (key: String, timer: DispatchWorkItem)?
+    /// The hold's deadline, set at the first change not yet shown and kept through the changes after it, so a key
+    /// held down shows an item every `holdGrace` at least; and whether it has passed.
+    private var holdDeadline: DispatchWorkItem?
+    private var holdPassed = false
+    /// Whether the panel and the row are keeping the item before while another one's answers come: their buttons do
+    /// nothing meanwhile, as what they would act on isn't the item shown.
+    private var isHolding: Bool { holdDeadline != nil }
     /// How long another item is waited for before it shows with dashes (tests set it to 0).
     var holdGrace = InfoMetrics.holdGrace
     private var frameQueued = false
@@ -159,7 +165,7 @@ final class InfoController {
         }
         panel.onShowOriginal = { [weak self] original in self?.host.revealOriginal(original) }
         panel.onOpen = { [weak self] in
-            guard let self, let path = self.resolved?.item.path else { return }
+            guard let self, !self.isHolding, let path = self.resolved?.item.path else { return }
             self.actions.openExternally(path)
         }
         panel.onOpenWithMenu = { [weak self] anchor in self?.presentOpenWith(from: anchor, changeDefault: false) }
@@ -521,6 +527,9 @@ final class InfoController {
         if drivesPopOut, popOut.wiredBy !== self {
             popOut.wiredBy = self
             wirePanel(popOut.panel)
+            // The window shows another tab's item: this tab's is another item, which waits for its answers as one
+            // does, instead of showing at once with dashes.
+            if paintedKey == nil { paintedKey = "\u{0}another tab" }
         }
         guard panelOpen || rowOpen else {
             // Neither shows: nothing is described or asked for. Opening one updates them (`.panels`).
@@ -535,8 +544,9 @@ final class InfoController {
             rowVolumeRequested = nil
             auto.setPath(nil)
             paintedKey = nil
-            holding?.timer.cancel()
-            holding = nil
+            holdDeadline?.cancel()
+            holdDeadline = nil
+            holdPassed = false
             return
         }
         let preferences = host.preferences
@@ -579,12 +589,16 @@ final class InfoController {
     /// fills in where it is afterwards.
     private func answersReady(_ selection: SelectionDetails?) -> Bool {
         if let selection {
+            // Several items' tags are read only for the panel: the row has nothing more to wait for.
+            guard panelOpen else { return true }
             let key = selection.entries.map { DiskPath($0.path) }
             return selection.entries.count > TagColorsMenuRow.stateLimit || (tagsRead?.key == key && !tagsStale)
         }
         guard let path = targetPath else { return true }
         guard let resolved, resolved.item.path == path, !resolved.pending else { return false }
-        if details?.path != path { return false }
+        // The details are read for the panel, and for the row's one item; the folder on screen's, for the row alone,
+        // aren't.
+        if panelOpen || path != folderPath, details?.path != path { return false }
         guard panelOpen else { return true }
         let item = resolved.item
         let isFile = item.kind == .file || item.kind == .symlinkFile
@@ -599,24 +613,24 @@ final class InfoController {
     /// row opened, or another item whose quick answers are in. Otherwise what is shown stays while they come, up to
     /// `holdGrace`; past it the other item shows with dashes, and its answers fill in where they are.
     private func paints(_ key: String, ready: Bool) -> Bool {
-        if key == paintedKey || paintedKey == nil || ready {
+        if key == paintedKey || paintedKey == nil || ready || holdPassed {
             paintedKey = key
-            holding?.timer.cancel()
-            holding = nil
+            holdDeadline?.cancel()
+            holdDeadline = nil
+            holdPassed = false
             return true
         }
-        guard holding?.key != key else { return false }
-        holding?.timer.cancel()
-        let timer = DispatchWorkItem { [weak self] in
+        guard holdDeadline == nil else { return false }
+        let deadline = DispatchWorkItem { [weak self] in
             MainActor.assumeIsolated {
-                guard let self, self.holding?.key == key else { return }
-                self.holding = nil
-                self.paintedKey = key
+                guard let self, self.holdDeadline != nil else { return }
+                self.holdDeadline = nil
+                self.holdPassed = true
                 self.update()
             }
         }
-        holding = (key, timer)
-        DispatchQueue.main.asyncAfter(deadline: .now() + holdGrace, execute: timer)
+        holdDeadline = deadline
+        DispatchQueue.main.asyncAfter(deadline: .now() + holdGrace, execute: deadline)
         return false
     }
 
@@ -832,6 +846,7 @@ final class InfoController {
     }
 
     private func calculate(forced: Bool, targets chosen: [String]? = nil) {
+        guard !isHolding else { return }
         let targets = chosen ?? sizeTargets
         let sizes = host.folderSizes
         if targets.count == 1, let path = targets.first {
@@ -843,6 +858,7 @@ final class InfoController {
     }
 
     private func cancelCalculating(targets chosen: [String]? = nil) {
+        guard !isHolding else { return }
         let targets = chosen ?? sizeTargets
         if targets.count == 1, let path = targets.first {
             host.folderSizes.cancel(path)
@@ -922,7 +938,7 @@ final class InfoController {
     static var alwaysOpenWithHeading: AppMenuItem { .heading("Always Open With") }
 
     private func presentOpenWith(from anchor: NSView, changeDefault: Bool) {
-        guard let item = resolved?.item, let window = anchor.window else { return }
+        guard !isHolding, let item = resolved?.item, let window = anchor.window else { return }
         let pinned = host.preferences.openWithApplications
         let lookupValue = lookup.answer(for: item.path)
         let isFile = item.kind == .file || item.kind == .symlinkFile

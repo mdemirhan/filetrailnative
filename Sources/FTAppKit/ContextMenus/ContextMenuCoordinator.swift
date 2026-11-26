@@ -332,6 +332,9 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         -> PermissionsRead?
     {
         guard let coordinator = AppWriteOperations.current?.coordinator else { return nil }
+        // The tab can close while the write runs: it is looked for again after.
+        weak let window = tab.window
+        weak let liveTab = tab
         let run: PermissionsWriteRun
         do {
             run = try await coordinator.changePermissions(change, paths: paths, visit: visit)
@@ -340,17 +343,17 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             notices.show(
                 title: Self.permissionsFailureTitle,
                 message: message.contains(WriteServiceMessages.writeOperationBusy) ? WriteDialogs.busyMessage : message,
-                in: tab.window)
+                in: window)
             return await BlockingWork.run(qos: .userInitiated) { PermissionsReader.read(paths) }
         }
-        if !run.items.isEmpty { tab.permissionsChanged(run.items.map(\.path)) }
+        if !run.items.isEmpty { liveTab?.permissionsChanged(run.items.map(\.path)) }
         if let first = run.failures.first {
             notices.show(
                 title: Self.permissionsFailureTitle,
                 message: "\(ClipboardSummary.leafName(first.path)): \(first.message)"
                     + (run.failures.count > 1
                         ? " \(FormatLocale.count(run.failures.count - 1)) more couldn’t be changed." : ""),
-                in: tab.window)
+                in: window)
         }
         return await BlockingWork.run(qos: .userInitiated) { PermissionsReader.read(paths) }
     }
@@ -359,13 +362,14 @@ final class ContextMenuCoordinator: ContextMenuResponder {
 
     /// Asks before a change takes away your own Open of a folder of yours: `what` is the folder (“Projects”), or how
     /// many.
-    func confirmLockOut(_ what: String) async -> Bool {
+    /// `window`: the one the popover hangs from (the Info panel's own, when it is in a window of its own).
+    func confirmLockOut(_ what: String, in window: NSWindow? = nil) async -> Bool {
         await notices.confirm(
             WriteQuestion(
                 title: "Turn Off Open for You?",
                 message: "You won\u{2019}t be able to open \(what) until it is turned back on.",
                 confirmLabel: "Turn Off", destructive: false, cancelIsDefault: true),
-            in: tab.window)
+            in: window ?? tab.window)
     }
 
     private func showTagFailures(_ failures: [FinderTagFailure]) {

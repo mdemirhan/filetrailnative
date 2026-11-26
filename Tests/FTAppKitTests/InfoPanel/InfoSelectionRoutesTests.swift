@@ -155,6 +155,8 @@ extension ExplorerWindowlessTests {
             // Not the keyboard's: Option held by someone typing would open the menu as Always Open With.
             info.optionHeld = { false }
             #expect(await waitUntil { info.openWithLookup != nil })
+            // Its buttons act once the panel shows the note: until its answers are in, it shows the item before.
+            #expect(await waitUntil { texts("infoPanel.name", in: tab) == ["note.txt"] })
             return (harness, tab, info, try #require(info.openWithLookup))
         }
 

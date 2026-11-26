@@ -630,10 +630,23 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     /// Whether a text field of the tab (the search field, the results' filter, a rename) has the keyboard.
     var isTextFieldEditing: Bool {
-        guard let editor = window?.firstResponder as? NSTextView else { return false }
+        guard let editor = textEditingWindow?.firstResponder as? NSTextView else { return false }
         // The viewer's text, and any text typed in (the Advanced Search box's), is edited as a field is: ⌘C, ⌘V, ⌘A and
         // ⌘Z act on its text, not on files.
         return editor.isFieldEditor || editor.isEditable || editor is ViewerTextView
+    }
+
+    /// The window whose text the edit commands act on: the key window when it is part of this tab (a popover of it,
+    /// or the Info panel in a window of its own describing it), else this tab's own.
+    var textEditingWindow: NSWindow? {
+        guard let key = NSApp.keyWindow, key !== window else { return window }
+        if key is InfoPopOutWindow { return InfoPopOut.shared.owner === self ? key : window }
+        var current: NSWindow? = key
+        while let candidate = current {
+            if candidate === window { return key }
+            current = candidate.sheetParent ?? candidate.parent
+        }
+        return window
     }
 
     /// Reveal in Folder: the folder a result is in opens, with the result selected and the list focused.

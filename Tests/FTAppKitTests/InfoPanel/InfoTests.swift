@@ -133,6 +133,8 @@ extension ExplorerWindowlessTests {
             select(["note.txt"], in: tab, harness: harness)
             let content = try #require(tab.window?.contentView)
             let group = try #require(findViews("infoPanel.openGroup", in: content).first as? SplitOpenButton)
+            // Pressed once the panel shows the note: until its answers are in, it shows the item before.
+            #expect(await waitUntil { findViews("infoPanel.name", in: content).map(fieldText) == ["note.txt"] })
             #expect(await waitUntil { !group.isHidden })
             group.layoutSubtreeIfNeeded()
             let window = try #require(tab.window)
@@ -178,6 +180,8 @@ extension ExplorerWindowlessTests {
             let alpha = path("Alpha", in: tab)
             info.showInfo(for: path("Beta", in: tab))
             #expect(info.targetOverride == path("Beta", in: tab))
+            // The buttons act once the panel shows Get Info's item.
+            #expect(await waitUntil { texts("infoPanel.name", in: tab) == ["Beta"] })
             #expect((tab.folderSizes.cachedEntry(alpha) ?? .idle) == .idle)
             info.row.onCalculate()
             #expect(await waitUntil { (tab.folderSizes.cachedEntry(alpha) ?? .idle) != .idle })

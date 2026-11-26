@@ -170,12 +170,17 @@ extension WriteCoordinator {
     private func recordPermissions(_ changed: [PermissionsUndoItem], visit: PermissionsVisit) {
         let history = options.undoHistory
         let current = visit.entryId.flatMap { id in history?.top(.undo)?.id == id ? id : nil }
-        let items = visit.merge(changed, restarting: current == nil)
-        let units = items.isEmpty ? [] : [UndoUnit(steps: [.permissions(items: items)])]
+        var items = visit.merge(changed, restarting: current == nil)
+        var units = items.isEmpty ? [] : [UndoUnit(steps: [.permissions(items: items)])]
         if let history, let current {
-            history.replaceTop(current, units: units)
-            visit.recorded(units.isEmpty ? nil : current)
-            return
+            if history.replaceTop(current, units: units) {
+                visit.recorded(units.isEmpty ? nil : current)
+                return
+            }
+            // Not last in the list after all (an operation that can't be undone came after it, and Undo has said
+            // so): this change starts an entry of its own.
+            items = visit.merge(changed, restarting: true)
+            units = items.isEmpty ? [] : [UndoUnit(steps: [.permissions(items: items)])]
         }
         guard !units.isEmpty else { return }
         recordFinishedWrite(

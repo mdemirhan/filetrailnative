@@ -175,8 +175,9 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
         }
         guard let target else { return }
         // A text field of the explorer window has the keyboard: Cut, Copy, Paste, Undo and the like are its own.
+        // In the tab's own window, or a window that is part of it (the Info panel's, a popover's) that has the keyboard.
         if isTextEditing(target), let selector = Self.nativeEditSelector(command),
-            let window = target.handle.window ?? focused
+            let window = focused ?? target.handle.window
         {
             performNativeEdit(selector, window)
             return
