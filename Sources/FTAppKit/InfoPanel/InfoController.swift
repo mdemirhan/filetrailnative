@@ -552,9 +552,16 @@ final class InfoController {
         }
         // The row's fact of a kind comes from the details too, with the panel closed.
         if !panelOpen, selection == nil, let path = targetPath, path != folderPath { _ = detailsState(path) }
+        // What Tags… and Edit… act on is what the panel shows: while it keeps the item before, they keep it too.
+        let shownTagPaths = tagPaths
+        let shownPermissionPaths = permissionPaths
         let panelNext = panelOpen ? panelDisplay(preferences, shortcuts, selection) : nil
         let rowNext = rowDisplay(selection)
-        guard paints(displayKey(selection), ready: answersReady(selection)) else { return }
+        guard paints(displayKey(selection), ready: answersReady(selection)) else {
+            tagPaths = shownTagPaths
+            permissionPaths = shownPermissionPaths
+            return
+        }
         if let panelNext { shownPanel.show(panelNext) }
         row.show(rowNext)
     }

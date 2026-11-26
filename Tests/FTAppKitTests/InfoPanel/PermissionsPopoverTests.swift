@@ -172,6 +172,11 @@ extension ExplorerWindowlessTests {
             harness.layout(tab)
             tab.content.select(paths: [file])
             let root = try #require(tab.window?.contentView?.superview)
+            // The panel shows the file once its answers are in; until then it keeps the folder, and Edit… with it.
+            #expect(
+                await waitUntil {
+                    findViews("infoPanel.name", in: root).compactMap { ($0 as? NSTextField)?.stringValue } == ["a.txt"]
+                })
             #expect(await waitUntil { !findViews("infoPanel.permissions.edit", in: root).isEmpty })
             var made: PermissionsPopover?
             tab.shownPermissionsPopover = { made = $0 }
