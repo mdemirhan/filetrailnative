@@ -1,5 +1,6 @@
 // The text of the List view's cells: laid out by hand, with no inset, drawn in the theme's fonts
 import AppKit
+import FTFileSystem
 import FTFoundation
 
 /// A line of text in a cell. The text starts at the left edge of its frame, and the pointer
@@ -176,5 +177,70 @@ enum ListFonts {
     /// A column title; the one the list is sorted by is semibold.
     static func header(_ layout: DetailsLayout, active: Bool) -> NSFont {
         ThemeFonts.sans(layout.headerFontSize, active ? .semibold : .regular)
+    }
+}
+
+/// The Tags cell: each tag's dot and its name, one after another with commas, as Finder's Tags column has them. A tag
+/// without a color has a ring in the text's color; the text ends in an ellipsis where the column is too narrow.
+final class TagsLabel: ListLabel {
+    var tags: [FinderTag] = [] {
+        didSet { if tags != oldValue { needsDisplay = true } }
+    }
+
+    static let dotDiameter: CGFloat = 8
+    /// The space after a dot, before its name.
+    static let dotGap: CGFloat = 4
+
+    override var textWidth: CGFloat {
+        guard let font else { return 0 }
+        return Self.text(tags, font: font, color: textColor ?? .labelColor).size().width
+    }
+
+    override func draw(_ dirtyRect: NSRect) {
+        guard !tags.isEmpty, let font else { return }
+        let text = Self.text(tags, font: font, color: textColor ?? .labelColor)
+        let y = (bounds.height - lineHeight) / 2
+        text.draw(
+            with: NSRect(x: 0, y: y, width: bounds.width, height: lineHeight),
+            options: [.usesLineFragmentOrigin, .truncatesLastVisibleLine])
+    }
+
+    /// The cell's text: dots drawn at the time they are drawn, so they take the appearance they are drawn in.
+    static func text(_ tags: [FinderTag], font: NSFont, color: NSColor) -> NSAttributedString {
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.lineBreakMode = .byTruncatingTail
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: font, .foregroundColor: color, .paragraphStyle: paragraph,
+        ]
+        let result = NSMutableAttributedString()
+        for (index, tag) in tags.enumerated() {
+            if index > 0 { result.append(NSAttributedString(string: ", ", attributes: attributes)) }
+            // The dot and the space after it, one picture: a kern after an attachment isn't kept.
+            let attachment = NSTextAttachment()
+            attachment.image = dot(tag.color, ring: color)
+            attachment.bounds = NSRect(
+                x: 0, y: (font.capHeight - dotDiameter) / 2, width: dotDiameter + dotGap, height: dotDiameter)
+            let dot = NSMutableAttributedString(attachment: attachment)
+            dot.addAttributes(attributes, range: NSRange(location: 0, length: dot.length))
+            result.append(dot)
+            result.append(NSAttributedString(string: tag.name, attributes: attributes))
+        }
+        return result
+    }
+
+    private static func dot(_ color: FinderTagColor?, ring: NSColor) -> NSImage {
+        NSImage(size: NSSize(width: dotDiameter + dotGap, height: dotDiameter), flipped: false) { _ in
+            let rect = NSRect(x: 0, y: 0, width: dotDiameter, height: dotDiameter)
+            if let color {
+                color.dotColor.setFill()
+                NSBezierPath(ovalIn: rect).fill()
+            } else {
+                ring.withAlphaComponent(0.7).setStroke()
+                let path = NSBezierPath(ovalIn: rect.insetBy(dx: 0.75, dy: 0.75))
+                path.lineWidth = 1.5
+                path.stroke()
+            }
+            return true
+        }
     }
 }

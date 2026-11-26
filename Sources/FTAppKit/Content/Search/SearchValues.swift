@@ -122,6 +122,7 @@ extension SearchResultsSortByPreference {
         case .lastOpened: .lastOpened
         case .added: .added
         case .size: .size
+        case .tags: .tags
         case .name, .path, .kind: nil
         }
     }

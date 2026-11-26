@@ -24,6 +24,8 @@ public enum ContextMenuActionID: String, Sendable, CaseIterable, Hashable, Codab
     case viewAs, sortBy, toggleFavorite, terminal, showInFinder, copyPath, copyContents, rootTreeHere, trash
     /// The system's share popover for the items: AirDrop, Mail, Messages and the rest macOS offers.
     case share
+    /// The Tags popover for the items, under the row of tag colors.
+    case tags
     case deleteImmediately, emptyTrash, eject
     /// The submenu of what can be done with the tab's other pane, while it shows two.
     case otherPane
@@ -228,6 +230,10 @@ public enum ContextMenuItems {
                 item(.extract, "Extract", .extract), item(.extractTo, "Extract To…", .extract),
                 item(.convertImages, options.convertImagesLabel ?? ConvertImagesText.commandLabel, .convertImages),
                 line("separator-organize"),
+                // Under the row of tag colors, which the menu puts before it; for items of a folder or of search
+                // results (hidden by the caller otherwise).
+                item(.tags, "Tags…", .tags),
+                line("separator-tags"),
                 // What hands the items to something else, leaving them as they are, as the File menu has it. Share is
                 // not for what is in the Trash; Save as Template for files only (hidden by the caller otherwise).
                 item(.share, "Share…", .share),

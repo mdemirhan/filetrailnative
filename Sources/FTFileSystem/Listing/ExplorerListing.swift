@@ -268,11 +268,13 @@ enum ExplorerListing {
         var times: [Int64?] = []
         var sizes: [Int64?] = []
         var labels: [String] = []
+        // The names of the tags, one line a name: nil for an item without.
+        var tagNames: [String?] = []
         var tagsLeft = listedTagLimit
         // Asked for once for the read: what it takes to read the date is the same for every item.
         let lastOpened = sortBy == .lastOpened || groupRead == .lastOpened ? fileSystem.lastOpenedReader() : nil
         // The groups' values are read as an order's are: the dates and sizes from the item's look, which the folder
-        // read gives, Date Last Opened and the tags with one more look at each item.
+        // read gives, Date Last Opened and the tags with one more look at each item; the tags once for both.
         let groupNeedsStats = groupRead == .modified || groupRead == .created || groupRead == .size
         var types = PackageTypes()
         for folder in folders {
@@ -319,13 +321,16 @@ enum ExplorerListing {
                     entry.tagColors = fileSystem.tagColors(entryPath)
                     tagsLeft -= 1
                 }
+                // Not in the folder read: one look at each item, only while sorted by them.
+                let names = sortBy == .tags ? TagNameList.joined(fileSystem.tagNames(entryPath)) : nil
                 switch groupRead {
                 case .modified: entry.groupTimeMs = stats?.mtimeMs
                 case .created: entry.groupTimeMs = stats?.birthtimeMs
                 case .added: entry.groupTimeMs = record.addedMs
                 case .lastOpened: entry.groupTimeMs = lastOpened?(entryPath)
                 case .size: entry.sizeBytes = listedSize(record, kind: kind, stats: stats, path: entryPath, fileSystem)
-                case .tags: entry.firstTag = fileSystem.firstTagName(entryPath)
+                case .tags:
+                    entry.firstTag = sortBy == .tags ? TagNameList.first(of: names) : fileSystem.firstTagName(entryPath)
                 case .none: break
                 }
                 switch sortBy {
@@ -344,6 +349,8 @@ enum ExplorerListing {
                     sizes.append(listedSize(record, kind: kind, stats: stats, path: entryPath, fileSystem))
                 case .kind:
                     labels.append(kinds.label(for: kind, fileExtension: fileExtension, path: entryPath))
+                case .tags:
+                    tagNames.append(names)
                 case .name:
                     break
                 }
@@ -362,7 +369,8 @@ enum ExplorerListing {
         }
 
         let positions = sortedPositions(
-            entries: entries, keys: keys, times: times, sizes: sizes, labels: labels, sortBy: sortBy,
+            entries: entries, keys: keys, times: times, sizes: sizes, labels: labels, tagNames: tagNames,
+            sortBy: sortBy,
             sortDirection: sortDirection, foldersFirst: foldersFirst, order: order)
         let parent = NodePath.dirname(directoryPath)
         var sorted: [DirectoryEntry] = []
@@ -393,7 +401,8 @@ enum ExplorerListing {
     /// The order of the entries.
     private static func sortedPositions(
         entries: [DirectoryEntry], keys: NameKeys, times: [Int64?], sizes: [Int64?], labels: [String],
-        sortBy: DirectorySortKey, sortDirection: SortDirection, foldersFirst: Bool, order: NameOrder
+        tagNames: [String?], sortBy: DirectorySortKey, sortDirection: SortDirection, foldersFirst: Bool,
+        order: NameOrder
     ) -> [Int] {
         let isFolder = entries.map { $0.kind.isDirectoryKind }
         // Kinds compare as labels (words); each distinct label is ranked once.
@@ -432,6 +441,14 @@ enum ExplorerListing {
                 case .kind:
                     compared =
                         labelRanks[left] == labelRanks[right] ? 0 : (labelRanks[left] < labelRanks[right] ? -1 : 1)
+                case .tags:
+                    // Items without tags stay at the end in both directions.
+                    switch (tagNames[left], tagNames[right]) {
+                    case (let l?, let r?): compared = TagNameList.compare(l, r, order: order)
+                    case (.some, nil): return true
+                    case (nil, .some): return false
+                    case (nil, nil): break
+                    }
                 case .name:
                     break
                 }

@@ -20,7 +20,8 @@
             "openSelectionInNewWindow", "moveTabToNewWindow", "mergeAllWindows", "toggleTwoPanes", "duplicatePane",
             "switchToOtherPane", "openSelectionInOtherPane", "viewFile",
             "quickLookSelection",
-            "calculateSize", "revealInFolder", "showOriginal", "makeAlias", "toggleFavorite", "showInFinder",
+            "calculateSize", "revealInFolder", "showOriginal", "makeAlias", "toggleFavorite", "editTags",
+            "showInFinder",
             "showLastSearchResults", "advancedSearch", "clearSearchConditions",
             "viewAsIcons", "viewAsList", "viewAsDetails", "viewAsPreviews", "showPreviews9", "showPreviews4",
             "showPreviews2", "showPreviews1", "increaseSize", "decreaseSize", "resetSize",
@@ -28,7 +29,8 @@
             "groupBySize", "groupByKind", "groupByTags", "groupByFolder", "reverseGroupOrder",
             "sortByName", "sortByFolder",
             "sortByModified", "sortByCreated", "sortByAdded", "sortByLastOpened", "sortBySize", "sortByKind",
-            "toggleFoldersFirst", "toggleHiddenFiles", "togglePinFilter", "goBack", "goForward", "goEnclosingFolder",
+            "sortByTags", "toggleFoldersFirst", "toggleHiddenFiles", "togglePinFilter", "goBack", "goForward",
+            "goEnclosingFolder",
             "focusTreePane", "focusContentPane", "openHelp", "openKeyboardShortcuts",
         ]
 

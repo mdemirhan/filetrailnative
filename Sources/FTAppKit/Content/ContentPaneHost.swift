@@ -80,6 +80,8 @@ protocol ContentPaneHost: AnyObject {
     func requestMetadata(for entries: [DirectoryEntry])
     /// The colors of an item's Finder tags, as its listing or a read of the rows on screen found them.
     func tagColors(for entry: DirectoryEntry) -> [FinderTagColor]
+    /// An item's tags, names and colors, as a read of the rows on screen found them; nil until one has.
+    func tags(for entry: DirectoryEntry) -> [FinderTag]?
     /// Asks for the tags of items that came into view.
     func requestTags(for paths: [String])
     func folderSizeEntry(_ path: String) -> FolderSizeEntry

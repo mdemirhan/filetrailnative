@@ -72,6 +72,8 @@ final class InfoPanelView: NSView {
     var onAction: (InfoPanelModel.QuickAction.ID) -> Void = { _ in }
     var onOpenWithMenu: (NSView) -> Void = { _ in }
     var onOpensWithMenu: (NSView) -> Void = { _ in }
+    /// The Tags row was clicked: the Tags popover hangs from it.
+    var onEditTags: (NSView) -> Void = { _ in }
     var onCalculate: () -> Void = {}
     var onRecalculate: () -> Void = {}
     var onCancel: () -> Void = {}
@@ -727,6 +729,17 @@ final class InfoPanelContentView: NSView {
                 value = opensWith
                 box = RowValueBox()
                 box?.sample.stringValue = app?.name ?? "None"
+            case .tags(let tags):
+                let view = InfoTagsView()
+                view.tags = tags
+                view.onClick = { [weak self, weak view] in
+                    guard let view else { return }
+                    self?.owner?.onEditTags(view)
+                }
+                box = RowValueBox()
+                box?.sample.stringValue = tags.summary
+                addSubview(view)
+                value = view
             }
             if let box { addSubview(box) }
             rowViews.append(RowViews(row: row, label: label, value: value, extra: extra, box: box))
@@ -778,6 +791,10 @@ final class InfoPanelContentView: NSView {
                 field.font = ChromeColors.font(size: DesignTokens.typeScale.callout, weight: muted ? 600 : 400)
             } else if let link = views.value as? TextLinkView {
                 link.applyStyle()
+            } else if let tags = views.value as? InfoTagsView {
+                tags.font = ChromeColors.font(size: DesignTokens.typeScale.callout, weight: 400)
+                tags.textColor = NSColor(palette.textPrimary)
+                tags.mutedColor = NSColor(mixColor(palette.getInfoMetaValueMuted, 45, with: palette.getInfoMetaValue))
             }
         }
         needsDisplay = true
@@ -902,6 +919,9 @@ final class InfoPanelContentView: NSView {
             case let sizeCell as InfoPanelSizeView:
                 // One line in every state, so the rows under it stay put while the folder is measured.
                 valueWidth = sizeCell.naturalWidth
+            case let tags as InfoTagsView:
+                // As wide as its chips, up to what the row has: the rest go on the lines under it.
+                valueWidth = tags.naturalWidth
             default: valueWidth = 0
             }
             let maxValue = max(0, width - labelWidth - InfoMetrics.rowGap)
@@ -927,12 +947,18 @@ final class InfoPanelContentView: NSView {
             default:
                 views.value.frame = NSRect(x: valueX, y: top, width: valueWidth, height: bodyLine)
             }
+            // The tags take as many lines as they need: every one shows.
+            var rowHeight = bodyLine
+            if let tags = views.value as? InfoTagsView {
+                rowHeight = max(bodyLine, Double(tags.height(width: CGFloat(valueWidth))))
+                tags.frame = NSRect(x: valueX, y: top, width: valueWidth, height: rowHeight)
+            }
             views.box?.frame = NSRect(x: valueX, y: top, width: valueWidth, height: bodyLine)
             if let words = views.value as? NSTextField, views.extra != nil, let box = views.box {
                 box.frame = NSRect(x: valueX, y: top, width: valueWidth, height: bodyLine)
                 _ = words
             }
-            y = top + bodyLine + InfoMetrics.rowPaddingBlock
+            y = top + rowHeight + InfoMetrics.rowPaddingBlock
             if index < rowViews.count - 1 {
                 dividers.append(y)
                 y += 1

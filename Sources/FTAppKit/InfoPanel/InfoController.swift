@@ -36,6 +36,12 @@ final class InfoController {
     private var observation: ExplorerWindowObservation?
     private var relativeRelease: RelativeClock.Release?
     private var refreshQueued = false
+    // The tags: of the items last read, and those being read; stale once they changed, shown until read again.
+    private var tagsRead: (key: [DiskPath], value: FinderTagsOnItems)?
+    private var tagsAsked: [DiskPath]?
+    private var tagsStale = false
+    /// The items the Tags row describes, for its popover.
+    private var tagPaths: [String] = []
     let actions: InfoActions
     /// Whether Option is held as the Open With menu opens, which opens it as Always Open With: the keyboard's own
     /// state, replaceable so a test doesn't go by the keys someone is holding.
@@ -91,6 +97,10 @@ final class InfoController {
             guard let self, let content, content === self.host.content else { return }
             self.queueUpdate()
         }
+        content.onTagsChanged = { [weak self, weak content] in
+            guard let self, let content, content === self.host.content else { return }
+            self.tagsChanged()
+        }
     }
 
     /// Another pane became active: its Info Row is the one kept up to date, and the panel describes its selection.
@@ -119,6 +129,10 @@ final class InfoController {
         panel.onAction = { [weak self] id in self?.quickAction(id) }
         panel.onOpenWithMenu = { [weak self] anchor in self?.presentOpenWith(from: anchor, changeDefault: false) }
         panel.onOpensWithMenu = { [weak self] anchor in self?.presentOpenWith(from: anchor, changeDefault: true) }
+        panel.onEditTags = { [weak self] anchor in
+            guard let self, !self.tagPaths.isEmpty else { return }
+            self.host.editTags(self.tagPaths, from: anchor)
+        }
         panel.onCalculate = { [weak self] in self?.calculate(forced: false) }
         panel.onRecalculate = { [weak self] in self?.calculate(forced: true) }
         panel.onCancel = { [weak self] in self?.cancelCalculating() }
@@ -205,6 +219,7 @@ final class InfoController {
     private func folderChanged() {
         // The folder reloaded or another one opened: what is shown stays, and is asked for again.
         volumeRequested = nil
+        tagsStale = true
         if let path = targetPath { scheduleFetch(path, immediately: false) }
         update()
     }
@@ -245,6 +260,45 @@ final class InfoController {
             guard self.propertiesLoad.answered(path, mapped, request: request) else { return }
             self.update()
         }
+    }
+
+    // MARK: Tags
+
+    /// The Tags row of `paths`: read when they are other items than those last read, or changed since; what was read
+    /// shows until then. None for more items than the right-click menu's colors read.
+    private func tagsState(_ paths: [String], editable: Bool) -> InfoTagsState {
+        guard !paths.isEmpty, paths.count <= TagColorsMenuRow.stateLimit else {
+            tagPaths = []
+            return .hidden
+        }
+        tagPaths = editable ? paths : []
+        let key = paths.map(DiskPath.init)
+        if tagsRead?.key != key || tagsStale { requestTags(paths, key: key) }
+        guard let read = tagsRead, read.key == key else { return .pending }
+        let tags = read.value.tags.map {
+            InfoTag(name: $0.name, colorNumber: $0.color?.rawValue, count: read.value.count(of: $0))
+        }
+        return .read(InfoTags(tags: tags, itemCount: paths.count, editable: editable))
+    }
+
+    private func requestTags(_ paths: [String], key: [DiskPath]) {
+        guard tagsAsked != key else { return }
+        tagsAsked = key
+        tagsStale = false
+        Task { @MainActor [weak self] in
+            let read = await BlockingWork.run(qos: .userInitiated) { FinderTags.onItems(paths, sparingAsked: true) }
+            guard let self, self.tagsAsked == key else { return }
+            self.tagsAsked = nil
+            self.tagsRead = (key, read)
+            self.update()
+        }
+    }
+
+    /// This window changed tags: those shown are read again.
+    private func tagsChanged() {
+        tagsStale = true
+        tagsAsked = nil
+        queueUpdate()
     }
 
     // MARK: Volume
@@ -399,7 +453,12 @@ final class InfoController {
                         summary: summary,
                         rows: InfoPanelModel.selectionRows(
                             summary, hasFolderSize: hasFolders, folderSize: selection.size.folderSizeEntry,
-                            homePath: homePath, startupDiskName: startupDiskName),
+                            homePath: homePath, startupDiskName: startupDiskName,
+                            tags: tagsState(
+                                selection.entries.map(\.path),
+                                editable: !selection.entries.contains {
+                                    Paths.isInsideTrash($0.path, homePath: homePath)
+                                })),
                         folderSize: selection.size.folderSizeEntry)), wantsSpinner: false)
         }
         guard let resolved else {
@@ -414,10 +473,15 @@ final class InfoController {
         let opens = lookup.opensWith(for: item.path, isFile: isFile, canAlways: OpenWithMenu.canAlwaysOpenWith)
         let folderPath = item.kind.isFolderSizeEligible ? item.path : nil
         let folderSize = folderPath.map { host.folderSizes.entry($0) }
+        // A disk's root and what is in the Trash show their tags; they aren't changed from here.
+        let tags = tagsState(
+            [item.path],
+            editable: !isVolume && !Paths.isInsideTrash(item.path, homePath: homePath)
+                && item.path != FavoriteLabel.trashPath(homePath: homePath))
         let content = InfoPanelModel.itemContent(
             item: item, pending: resolved.pending, volume: volume?.path == item.path ? volume?.value : nil,
             isVolumeRoot: isVolume, hasFolderSize: folderSize != nil, folderSize: folderSize, opensWith: opens,
-            dates: .shared, homePath: homePath, startupDiskName: startupDiskName)
+            dates: .shared, homePath: homePath, startupDiskName: startupDiskName, tags: tags)
         let app =
             isFile ? lookup.answer(for: item.path)?.defaultApp.map { InfoOpenApp(path: $0.path, name: $0.name) } : nil
         let trash = FavoriteLabel.trashPath(homePath: homePath)

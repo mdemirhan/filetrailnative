@@ -238,6 +238,12 @@ public enum ContextMenuRules {
         {
             hidden.insert(.share)
         }
+        // Tags… is for the items of a folder or of search results, as the row of colors above it, not the Trash's.
+        if subject.scope != .selection || subject.paths.isEmpty || !(surface == .content || surface == .search)
+            || subject.paths.contains(where: { Paths.isInsideTrash($0, homePath: world.homePath) })
+        {
+            hidden.insert(.tags)
+        }
         // Extract and Extract To are for archives, every item of the menu one.
         if entries.isEmpty || entries.count != subject.paths.count
             || !entries.allSatisfy(CommandAvailability.isArchive)

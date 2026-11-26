@@ -220,21 +220,8 @@ extension MainWindowController {
         }
         // Under a folder's view that keeps columns a change is on screen only, in this folder, until Update Folder
         // View saves it; in a folder using a view from above, Update gives this folder a view of its own and leaves
-        // the one above as it is. Else the change is the pane's, for each folder whose view doesn't keep columns.
-        let view = pane.shownFolderView
-        let whereTo: String
-        if let view, view.shown.keeps(.columns) {
-            whereTo =
-                view.use.own
-                ? "Changes are for this folder\u{2019}s view. Update Folder View saves them."
-                : "Changes are for this folder, not \u{201C}\(FolderViewText.name(view.use.view.path))\u{201D}. Update Folder View gives it a view of its own."
-        } else {
-            whereTo = "Changes are for every folder in this pane, except those whose view keeps its own columns."
-        }
-        let note = NSMenuItem(title: whereTo, action: nil, keyEquivalent: "")
-        note.isEnabled = false
-        menu.addItem(note)
-        menu.addItem(.separator())
+        // the one above as it is. Else the change is the pane's, for each folder whose view doesn't keep columns. The
+        // menu doesn't say which: the folder view's symbol in the status bar does.
         let shown = pane.shownPreferences(preferences)
         let nameItem = NSMenuItem(title: DetailColumnKey.name.label, action: nil, keyEquivalent: "")
         nameItem.state = .on

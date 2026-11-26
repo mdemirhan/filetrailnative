@@ -216,6 +216,20 @@ struct EntryGroupsTests {
         #expect(spans[1].positions == [0, 3])
     }
 
+    // An order by tags goes name by name, as names sort; the item whose names begin another's comes first. The first
+    // name is the item's group.
+    @Test func tagNamesCompareNameByName() {
+        let order = NameOrder(localeIdentifier: "en_US")
+        let joined = { (names: [String]) in TagNameList.joined(names) ?? "" }
+        #expect(TagNameList.joined([]) == nil)
+        #expect(TagNameList.first(of: joined(["Work", "Home"])) == "Work")
+        #expect(TagNameList.first(of: nil) == nil)
+        #expect(TagNameList.compare(joined(["Apple"]), joined(["Apple", "Pear"]), order: order) < 0)
+        #expect(TagNameList.compare(joined(["Apple", "Zebra"]), joined(["Banana"]), order: order) < 0)
+        #expect(TagNameList.compare(joined(["work"]), joined(["Work"]), order: order) == 0)
+        #expect(TagNameList.compare(joined(["File 10"]), joined(["File 9"]), order: order) > 0)
+    }
+
     // Grouping a large folder is one pass over its items: the keys are made once each and compared as numbers.
     @Test func groupsAHundredAndFiftyThousandItemsQuickly() {
         let count = 150_000

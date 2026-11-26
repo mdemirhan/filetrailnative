@@ -275,6 +275,7 @@ public enum ApplicationMenu {
             case .sortByLastOpened: state.sortBy == .lastOpened
             case .sortBySize: state.sortBy == .size
             case .sortByKind: state.sortBy == .kind
+            case .sortByTags: state.sortBy == .tags
             case .toggleFoldersFirst: state.foldersFirst
             case .toggleHiddenFiles: state.hiddenFilesShown
             case .toggleInfoPanel: state.infoPanelOpen
@@ -283,7 +284,7 @@ public enum ApplicationMenu {
             case .togglePinFilter: state.filterPinned
             case .rememberFolderView: state.folderViewRemembered
             case .showModifiedColumn, .showSizeColumn, .showKindColumn, .showCreatedColumn, .showAddedColumn,
-                .showLastOpenedColumn, .showPermissionsColumn:
+                .showLastOpenedColumn, .showPermissionsColumn, .showTagsColumn:
                 OptionalDetailColumnKey(columnCommand: type).map(state.shownColumns.contains)
             case .showFolderColumn: false
             default: nil
@@ -478,6 +479,7 @@ extension OptionalDetailColumnKey {
         case .showAddedColumn: self = .added
         case .showLastOpenedColumn: self = .lastOpened
         case .showPermissionsColumn: self = .permissions
+        case .showTagsColumn: self = .tags
         default: return nil
         }
     }
@@ -492,6 +494,7 @@ extension OptionalDetailColumnKey {
         case .added: .showAddedColumn
         case .lastOpened: .showLastOpenedColumn
         case .permissions: .showPermissionsColumn
+        case .tags: .showTagsColumn
         }
     }
 }

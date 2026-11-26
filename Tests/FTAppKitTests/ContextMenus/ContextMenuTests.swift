@@ -75,7 +75,8 @@ extension ExplorerWindowlessTests {
             menu?.items.first { $0.title == title }
         }
 
-        /// The colors come after everything that changes the items: Rename's group, then Compress's.
+        /// The colors come after everything that changes the items: Rename's group, then Compress's; Tags… is right
+        /// under them, as in Finder, and Share… after a line.
         @Test func theTagColorsComeAfterTheGroupOfCompress() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
@@ -83,8 +84,8 @@ extension ExplorerWindowlessTests {
             let ids = menu.items.map { $0.isSeparatorItem ? "-" : $0.identifier?.rawValue ?? "" }
             let colors = try #require(ids.firstIndex(of: "tagColors"))
             #expect(
-                Array(ids[(colors - 5)...colors])
-                    == ["move", "newFolderWithSelection", "-", "compress", "-", "tagColors"])
+                Array(ids[(colors - 5)...(colors + 3)])
+                    == ["move", "newFolderWithSelection", "-", "compress", "-", "tagColors", "tags", "-", "share"])
             await harness.close()
         }
 
@@ -180,9 +181,9 @@ extension ExplorerWindowlessTests {
             let tab = try await opened(harness)
             let path = try entry(tab, "Gamma").path
             defer { try? FinderTags.write([], to: path) }
-            let real = tab.content.loaders.tagColors
+            let real = tab.content.loaders.tags
             var held: CheckedContinuation<Void, Never>?
-            tab.content.loaders.tagColors = { paths in
+            tab.content.loaders.tags = { paths in
                 let colors = await real(paths)
                 if paths.contains(path), held == nil {
                     await withCheckedContinuation { held = $0 }
@@ -220,7 +221,7 @@ extension ExplorerWindowlessTests {
             defer { try? FinderTags.write([], to: target.path) }
             #expect(await waitUntil { listedTags(tab, target.path) == [] })
             // The read of the rows on screen never answers: what shows is what the listing read.
-            tab.content.loaders.tagColors = { _ in await withCheckedContinuation { _ in } }
+            tab.content.loaders.tags = { _ in await withCheckedContinuation { _ in } }
             try (URL(fileURLWithPath: target.path) as NSURL).setResourceValue(
                 ["Green", "Orange"], forKey: .tagNamesKey)
             changed(harness, tab, [target.path])
@@ -278,9 +279,9 @@ extension ExplorerWindowlessTests {
             let sortBy = try #require(item(menu, "Sort By")?.submenu)
             #expect(
                 sortBy.items.map(\.title) == [
-                    "Name", "Date Modified", "Date Created", "Date Last Opened", "Date Added", "Size", "Kind",
+                    "Name", "Date Modified", "Date Created", "Date Last Opened", "Date Added", "Size", "Kind", "Tags",
                 ])
-            #expect(sortBy.items.map(\.state) == [.on, .off, .off, .off, .off, .off, .off])
+            #expect(sortBy.items.map(\.state) == [.on, .off, .off, .off, .off, .off, .off, .off])
             let compact = try #require(viewAs.items.last)
             _ = NSApp.sendAction(try #require(compact.action), to: compact.target, from: compact)
             #expect(tab.viewMode == ExplorerViewMode.menuOrder.last)

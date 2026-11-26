@@ -30,6 +30,9 @@ public struct FinderTag: Sendable, Hashable {
     }
 
     var stored: String { "\(name)\n\(color?.rawValue ?? 0)" }
+
+    /// The name tags are told apart by: case aside, as Finder keeps one tag of a name and the search's `tag:` finds it.
+    public var key: String { name.lowercased() }
 }
 
 /// How many of the items a color is on.
@@ -40,6 +43,11 @@ public enum FinderTagColorState: Sendable, Equatable {
 public struct FinderTagFailure: Sendable, Equatable {
     public var path: String
     public var message: String
+
+    public init(path: String, message: String) {
+        self.path = path
+        self.message = message
+    }
 }
 
 /// Reads and writes tags. Links are followed, as `URLResourceValues.tagNames` and Finder's own scripting do.
@@ -100,9 +108,20 @@ public enum FinderTags {
     /// The colors of an item's tags in their order, each once; none for an item that can't be read. The home folder's
     /// Desktop, Documents and Downloads aren't read (`asksPermission`): their colors show as none.
     public static func colors(_ path: String) -> [FinderTagColor] {
-        guard !asksPermission(path) else { return [] }
+        colors(of: shown(path))
+    }
+
+    /// The colors of tags in their order, each once.
+    public static func colors(of tags: [FinderTag]) -> [FinderTagColor] {
         var seen = Set<FinderTagColor>()
-        return ((try? read(path)) ?? []).compactMap(\.color).filter { seen.insert($0).inserted }
+        return tags.compactMap(\.color).filter { seen.insert($0).inserted }
+    }
+
+    /// An item's tags as the views show them: none for an item that can't be read, nor for the home folder's Desktop,
+    /// Documents and Downloads (`asksPermission`).
+    public static func shown(_ path: String) -> [FinderTag] {
+        guard !asksPermission(path) else { return [] }
+        return ((try? read(path)) ?? []).filter { !$0.name.isEmpty }
     }
 
     /// The name of an item's first tag; nil for one without tags or that can't be read. The home folder's Desktop,
@@ -158,24 +177,99 @@ public enum FinderTags {
     /// of that color counts as it, and comes off with it. Other tags stay as they are.
     @discardableResult
     public static func toggle(_ color: FinderTagColor, name: String, on paths: [String]) -> [FinderTagFailure] {
+        toggle(on: paths, has: { $0.color == color }, adding: FinderTag(name: name, color: color))
+    }
+
+    /// Choosing a tag in the Tags popover: on every item already, it comes off them; otherwise it goes on those
+    /// without it, with its color. A tag is its name, case aside (`key`), whatever its color on each item: "Work" in
+    /// blue on one and in none on another is one tag. Other tags stay as they are.
+    @discardableResult
+    public static func toggle(_ tag: FinderTag, on paths: [String]) -> [FinderTagFailure] {
+        let key = tag.key
+        return toggle(on: paths, has: { $0.key == key }, adding: tag)
+    }
+
+    /// Takes every tag off the items. One whose attribute can't be understood keeps it, and is reported.
+    @discardableResult
+    public static func removeAll(from paths: [String]) -> [FinderTagFailure] {
+        change(paths) { current in current.map { item in item.tags.isEmpty ? nil : [] } }
+    }
+
+    /// The tags of the items: each once, in the order first met (an item's own order, then the next item's), with
+    /// how many of the items have it. An item whose tags can't be read is in `failures` and counted in none.
+    /// `sparingAsked`: the home folder's Desktop, Documents and Downloads count as having none (`asksPermission`), for
+    /// what is only shown.
+    public static func onItems(_ paths: [String], sparingAsked: Bool = false) -> FinderTagsOnItems {
+        var result = FinderTagsOnItems(itemCount: paths.count, tags: [], counts: [:], failures: [])
+        for path in paths {
+            if sparingAsked, asksPermission(path) { continue }
+            do {
+                var seen = Set<String>()
+                for tag in try read(path) where !tag.name.isEmpty && seen.insert(tag.key).inserted {
+                    if result.counts[tag.key] == nil { result.tags.append(tag) }
+                    result.counts[tag.key, default: 0] += 1
+                }
+            } catch {
+                result.failures.append(FinderTagFailure(path: path, message: error.localizedDescription))
+            }
+        }
+        return result
+    }
+
+    /// The rule of the color row and the popover: when every item readable `has` the tag, it comes off them all;
+    /// otherwise `adding` goes on those without it.
+    private static func toggle(on paths: [String], has: @escaping (FinderTag) -> Bool, adding: FinderTag)
+        -> [FinderTagFailure]
+    {
+        change(paths) { current in
+            let removing = current.allSatisfy { $0.tags.contains(where: has) }
+            return current.map { item in
+                let present = item.tags.contains(where: has)
+                if removing { return item.tags.filter { !has($0) } }
+                return present ? nil : item.tags + [adding]
+            }
+        }
+    }
+
+    /// Reads each item's tags, asks `newTags` what each should now be (nil to leave it), and writes those. An
+    /// attribute that can't be understood isn't written over.
+    private static func change(
+        _ paths: [String], newTags: ([(path: String, tags: [FinderTag])]) -> [[FinderTag]?]
+    ) -> [FinderTagFailure] {
         var failures: [FinderTagFailure] = []
         var current: [(path: String, tags: [FinderTag])] = []
         for path in paths {
-            // An attribute that can't be understood isn't written over.
             do { current.append((path, try read(path))) } catch {
                 failures.append(FinderTagFailure(path: path, message: error.localizedDescription))
             }
         }
-        let removing = current.allSatisfy { item in item.tags.contains { $0.color == color } }
-        for item in current {
-            let has = item.tags.contains { $0.color == color }
-            guard removing || !has else { continue }
-            let tags =
-                removing ? item.tags.filter { $0.color != color } : item.tags + [FinderTag(name: name, color: color)]
+        for (item, tags) in zip(current, newTags(current)) {
+            guard let tags else { continue }
             do { try write(tags, to: item.path) } catch {
                 failures.append(FinderTagFailure(path: item.path, message: error.localizedDescription))
             }
         }
         return failures
     }
+}
+
+/// The tags of some items, for the Tags popover and the Info panel.
+public struct FinderTagsOnItems: Sendable, Equatable {
+    public var itemCount: Int
+    /// Each tag once, in the order first met; its color the first item's that has it.
+    public var tags: [FinderTag]
+    /// How many of the items have each tag, by `FinderTag.key`.
+    public var counts: [String: Int]
+    /// The items whose tags couldn't be read.
+    public var failures: [FinderTagFailure]
+
+    public init(itemCount: Int, tags: [FinderTag], counts: [String: Int], failures: [FinderTagFailure]) {
+        self.itemCount = itemCount
+        self.tags = tags
+        self.counts = counts
+        self.failures = failures
+    }
+
+    /// How many of the items have the tag.
+    public func count(of tag: FinderTag) -> Int { counts[tag.key] ?? 0 }
 }

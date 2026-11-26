@@ -586,19 +586,15 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        @Test func theHeadersMenuSaysWhereAColumnChangeGoes() async throws {
+        // The header's menu starts with Name, always on, whatever view the folder has.
+        @Test func theHeadersMenuStartsWithName() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             let pane = tab.activePane
             await go(tab, harness, "Beta")
             tab.perform(.viewAsDetails)
-            // No folder view: the pane's columns, and the first item says so; Name, always on, comes next.
             var menu = tab.headerMenu(for: .size, in: pane)
-            #expect(
-                menu.items.first?.title
-                    == "Changes are for every folder in this pane, except those whose view keeps its own columns.")
-            #expect(menu.items.first?.isEnabled == false && menu.items[1].isSeparatorItem)
-            #expect(menu.items[2].title == "Name")
+            #expect(menu.items.first?.title == "Name" && menu.items.first?.state == .on)
 
             await go(tab, harness, "Alpha")
             tab.perform(.viewAsDetails)
@@ -607,16 +603,7 @@ extension ExplorerWindowlessTests {
             tab.perform(.updateFolderView)
             #expect(pane.folderViews.views.own(real(harness, "Alpha"))?.keeps.columns != nil)
             menu = tab.headerMenu(for: .size, in: pane)
-            #expect(
-                menu.items.first?.title == "Changes are for this folder\u{2019}s view. Update Folder View saves them.")
-
-            // Under a view from above that keeps columns: this folder's, and the view above is named.
-            await go(tab, harness, "Alpha/Inner")
-            #expect(pane.shownFolderView?.use.own == false && pane.folderViewKeeps(.columns))
-            menu = tab.headerMenu(for: .size, in: pane)
-            #expect(
-                menu.items.first?.title
-                    == "Changes are for this folder, not “Alpha”. Update Folder View gives it a view of its own.")
+            #expect(menu.items.first?.title == "Name")
             await harness.close()
         }
 

@@ -63,6 +63,7 @@ extension CommandIcon {
         // Paste as File has the page with a plus.
         case .newFile: "square.and.pencil"
         case .favorite: "star"
+        case .tags: "tag"
         case .trash, .emptyTrash: "trash"
         case .deleteImmediately: "trash.slash"
         case .eject: "eject"

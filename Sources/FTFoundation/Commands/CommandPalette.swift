@@ -111,8 +111,9 @@ public enum CommandPalette {
     ]
 
     /// Menu items with no row in the table that the palette leaves out: Services is the system's own submenu of other
-    /// apps' services.
-    public static let excludedMenuItems: Set<String> = ["Services"]
+    /// apps' services; Tag Colors is File's row of colors, each chosen in the menu itself, where Tags… beside it is in
+    /// the palette.
+    public static let excludedMenuItems: Set<String> = ["Services", "Tag Colors"]
 
     /// The commands whose menu title names what they act on, or changes with what is on: the palette shows the menu's
     /// title in place of the table's label.
@@ -455,6 +456,7 @@ public enum CommandPalette {
         case .copyPath: .copyPath
         case .copyContents: .copyContents
         case .shareSelection: .share
+        case .editTags: .tags
         case .openInTerminal: .terminal
         case .showInFinder: .showInFinder
         case .toggleFavorite: .favorite
@@ -465,7 +467,7 @@ public enum CommandPalette {
         case .viewAsList: .list
         case .viewAsPreviews, .showPreviews9, .showPreviews4, .showPreviews2, .showPreviews1: .previews
         case .sortByName, .sortByFolder, .sortByKind, .sortByModified, .sortByCreated, .sortByAdded, .sortByLastOpened,
-            .sortBySize:
+            .sortBySize, .sortByTags:
             .sortBy
         case .groupByNone, .groupByName, .groupByModified, .groupByCreated, .groupByLastOpened, .groupByAdded,
             .groupBySize, .groupByKind, .groupByTags, .groupByFolder, .reverseGroupOrder:

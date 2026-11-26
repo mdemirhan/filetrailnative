@@ -1,4 +1,5 @@
 import AppKit
+import FTFoundation
 import FTTestSupport
 import Foundation
 import Testing
@@ -187,5 +188,119 @@ import Testing
             try FinderTags.write([FinderTag(name: "Blue", color: .blue)], to: folder)
             #expect(try FinderTags.read(folder) == [FinderTag(name: "Blue", color: .blue)])
         }
+    }
+
+    // A tag of the Tags popover is its name, case aside: on every item it comes off them all, whatever its color on
+    // each; otherwise it goes on those without it in its own color, the other tags staying.
+    @Test func aNamedTagGoesOnTheItemsWithoutItAndComesOffWhenAllHaveIt() throws {
+        try withFile { first in
+            let second = first + ".2"
+            FileManager.default.createFile(atPath: second, contents: Data())
+            try FinderTags.write(
+                [FinderTag(name: "work", color: .blue), FinderTag(name: "Red", color: .red)], to: first)
+            let work = FinderTag(name: "Work", color: nil)
+            #expect(FinderTags.toggle(work, on: [first, second]).isEmpty)
+            #expect(
+                try FinderTags.read(first) == [
+                    FinderTag(name: "work", color: .blue), FinderTag(name: "Red", color: .red),
+                ])
+            #expect(try FinderTags.read(second) == [work])
+            let both = FinderTags.onItems([first, second])
+            #expect(both.itemCount == 2)
+            #expect(both.count(of: work) == 2)
+            #expect(both.count(of: FinderTag(name: "red", color: nil)) == 1)
+            #expect(both.tags.map(\.name) == ["work", "Red"])
+            FinderTags.toggle(work, on: [first, second])
+            #expect(try FinderTags.read(first) == [FinderTag(name: "Red", color: .red)])
+            #expect(try FinderTags.read(second).isEmpty)
+        }
+    }
+
+    // Remove All Tags leaves no tag and no label; an item without tags isn't written.
+    @Test func removeAllTakesEveryTagOff() throws {
+        try withFile { first in
+            let second = first + ".2"
+            FileManager.default.createFile(atPath: second, contents: Data())
+            try FinderTags.write(
+                [FinderTag(name: "Work", color: nil), FinderTag(name: "Blue", color: .blue)], to: first)
+            #expect(FinderTags.removeAll(from: [first, second]).isEmpty)
+            #expect(try FinderTags.read(first).isEmpty)
+            #expect(try labelNumber(first) == 0)
+            #expect(FinderTags.onItems([first, second]).tags.isEmpty)
+        }
+    }
+
+    // An item whose tags can't be read is reported, and counts as having none.
+    @Test func anItemWhoseTagsCantBeReadIsReported() throws {
+        try withFile { path in
+            let junk = Data("not a list".utf8)
+            _ = junk.withUnsafeBytes { setxattr(path, FinderTags.attribute, $0.baseAddress, junk.count, 0, 0) }
+            let read = FinderTags.onItems([path])
+            #expect(read.failures.map(\.path) == [path])
+            #expect(read.tags.isEmpty)
+            #expect(FinderTags.removeAll(from: [path]).count == 1)
+        }
+    }
+}
+
+@Suite struct FinderTagChecklistTests {
+    private let colorNames: [FinderTagColor: String] = [
+        .red: "Red", .orange: "Orange", .yellow: "Yellow", .green: "Green", .blue: "Blue", .purple: "Purple",
+        .gray: "Gray",
+    ]
+
+    // One's own tags come first by name, then the seven colors in the color row's order; a tag named as a color keeps
+    // the color's place; each row says how many items have it, and a name in use and on the items is listed once in
+    // the items' color.
+    @Test func ownTagsByNameThenTheSevenColors() {
+        let items = FinderTagsOnItems(
+            itemCount: 3,
+            tags: [FinderTag(name: "Work", color: .blue), FinderTag(name: "red", color: .purple)],
+            counts: ["work": 2, "red": 3], failures: [])
+        let inUse = [
+            FinderTag(name: "work", color: nil), FinderTag(name: "Home", color: .gray),
+            FinderTag(name: "Important", color: .red), FinderTag(name: "Blue", color: .blue),
+        ]
+        let rows = FinderTagChecklist.rows(
+            on: items, inUse: inUse, colorNames: colorNames, order: NameOrder(localeIdentifier: "en_US"))
+        #expect(
+            rows.map(\.tag.name) == [
+                "Home", "Important", "Work", "Red", "Orange", "Yellow", "Green", "Blue", "Purple", "Gray",
+            ])
+        #expect(rows.map(\.count) == [0, 0, 2, 3, 0, 0, 0, 0, 0, 0])
+        #expect(rows.map(\.isColor) == [false, false, false] + Array(repeating: true, count: 7))
+        #expect(rows[2].tag.color == .blue)
+        #expect(rows[3].tag.color == .red)
+    }
+
+    // A color renamed in Finder's settings, or in another language, is the color's row under its name.
+    @Test func aColorGoesByItsNameInThisLanguage() {
+        var names = colorNames
+        names[.red] = "Rot"
+        let rows = FinderTagChecklist.rows(
+            on: FinderTagsOnItems(
+                itemCount: 1, tags: [FinderTag(name: "Red", color: .red)], counts: ["red": 1], failures: []),
+            inUse: [], colorNames: names, order: NameOrder(localeIdentifier: "en_US"))
+        #expect(rows.first?.tag == FinderTag(name: "Red", color: .red))
+        #expect(rows.first?.isColor == false)
+        #expect(rows[1].tag == FinderTag(name: "Rot", color: .red))
+    }
+
+    @Test func filterFindsANameAsTheFileFilterDoes() {
+        let rows = ["Café", "Work", "Red"].map {
+            FinderTagChecklistRow(tag: FinderTag(name: $0, color: nil), count: 0, isColor: false)
+        }
+        #expect(FinderTagChecklist.filter(rows, by: "cafe").map(\.tag.name) == ["Café"])
+        #expect(FinderTagChecklist.filter(rows, by: "R").map(\.tag.name) == ["Work", "Red"])
+        #expect(FinderTagChecklist.filter(rows, by: "").count == 3)
+    }
+
+    // A name stored in several colors is listed once, in the color most items have it in.
+    @Test func aNameInSeveralColorsTakesTheCommonestOne() {
+        let merged = FinderTagCatalog.merged([
+            (FinderTag(name: "Work", color: nil), 3), (FinderTag(name: "work", color: .blue), 10),
+            (FinderTag(name: "Home", color: .gray), 1), (FinderTag(name: "", color: nil), 5),
+        ])
+        #expect(merged == [FinderTag(name: "work", color: .blue), FinderTag(name: "Home", color: .gray)])
     }
 }

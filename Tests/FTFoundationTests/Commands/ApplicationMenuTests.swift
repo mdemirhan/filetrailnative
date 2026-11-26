@@ -93,7 +93,7 @@ struct ApplicationMenuTests {
                 "sortByFolder": false, "sortByModified": false, "sortByCreated": false, "sortByAdded": false,
                 "sortByLastOpened": false,
                 "sortBySize": true,
-                "sortByKind": false,
+                "sortByKind": false, "sortByTags": false,
                 "toggleFoldersFirst": false,
                 "toggleHiddenFiles": true, "toggleInfoPanel": true, "toggleInfoRow": false, "toggleTwoPanes": false,
                 "togglePinFilter": false, "viewAsPreviews": false, "showPreviews9": false, "showPreviews4": false,
@@ -101,7 +101,7 @@ struct ApplicationMenuTests {
                 "showFolderColumn": false, "showModifiedColumn": false, "showSizeColumn": false,
                 "showKindColumn": false,
                 "showCreatedColumn": false, "showAddedColumn": false, "showLastOpenedColumn": false,
-                "showPermissionsColumn": false,
+                "showPermissionsColumn": false, "showTagsColumn": false,
             ])
     }
 

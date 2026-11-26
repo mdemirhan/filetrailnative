@@ -29,10 +29,11 @@ extension ShortcutPolicy {
             .groupByCreated, .groupByLastOpened, .groupByAdded, .groupBySize, .groupByKind, .groupByTags,
             .groupByFolder, .reverseGroupOrder, .sortByName, .sortByFolder,
             .sortByModified, .sortByCreated, .sortByAdded, .sortByLastOpened,
-            .sortBySize, .sortByKind, .toggleFoldersFirst,
+            .sortBySize, .sortByKind, .sortByTags, .toggleFoldersFirst,
             .toggleHiddenFiles, .showFolderColumn, .showModifiedColumn, .showSizeColumn, .showKindColumn,
             .showCreatedColumn,
-            .showAddedColumn, .showLastOpenedColumn, .showPermissionsColumn, .rememberFolderView, .updateFolderView,
+            .showAddedColumn, .showLastOpenedColumn, .showPermissionsColumn, .showTagsColumn, .rememberFolderView,
+            .updateFolderView,
             .revertFolderView, .folderViewOptions, .resetFolderView, .manageFolderViews, .togglePinFilter, .goBack,
             .goForward, .goEnclosingFolder, .focusTreePane,
             .focusContentPane, .openHelp, .openKeyboardShortcuts:
@@ -43,7 +44,7 @@ extension ShortcutPolicy {
             .copySelection,
             .cutSelection,
             .pasteSelection, .copyPath,
-            .copyContents, .shareSelection,
+            .copyContents, .shareSelection, .editTags,
             .openSelectionInNewTab, .openSelectionInNewWindow, .quickLookSelection, .revealInFolder, .copyToOtherPane,
             .moveToOtherPane, .compressSelection, .extractSelection, .extractSelectionTo, .deselectAll,
             .invertSelection, .viewFile:

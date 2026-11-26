@@ -125,6 +125,7 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case openInTerminal
     case showInFinder
     case toggleFavorite
+    case editTags
     case focusFileSearch
     case showLastSearchResults
     case advancedSearch
@@ -161,12 +162,14 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case sortByAdded
     case sortByLastOpened
     case sortBySize
+    case sortByTags
     case toggleFoldersFirst
     case toggleHiddenFiles
     case showFolderColumn
     case showModifiedColumn
     case showSizeColumn
     case showKindColumn
+    case showTagsColumn
     case showCreatedColumn
     case showAddedColumn
     case showLastOpenedColumn
@@ -481,6 +484,8 @@ extension ShortcutCommands {
             id: .toggleFavorite, label: "Add to Favorites", group: .files, defaults: ["Ctrl+Cmd+T"],
             menuPath: "File > Add to Favorites"),
         ShortcutCommandDefinition(
+            id: .editTags, label: "Tags\u{2026}", group: .files, defaults: [], menuPath: "File > Tags\u{2026}"),
+        ShortcutCommandDefinition(
             id: .focusFileSearch, label: "Find Files…", group: .search, defaults: ["Cmd+F"],
             menuPath: "Edit > Find Files…"),
         ShortcutCommandDefinition(
@@ -584,6 +589,8 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .sortByKind, label: "Sort by Kind", group: .view, defaults: [], menuPath: "View > Sort By > Kind"),
         ShortcutCommandDefinition(
+            id: .sortByTags, label: "Sort by Tags", group: .view, defaults: [], menuPath: "View > Sort By > Tags"),
+        ShortcutCommandDefinition(
             id: .toggleFoldersFirst, label: "Folders First", group: .view, defaults: [],
             menuPath: "View > Folders First"),
         ShortcutCommandDefinition(
@@ -610,6 +617,9 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .showKindColumn, label: "Kind Column", group: .view, defaults: [],
             menuPath: "View > Columns > Kind"),
+        ShortcutCommandDefinition(
+            id: .showTagsColumn, label: "Tags Column", group: .view, defaults: [],
+            menuPath: "View > Columns > Tags"),
         ShortcutCommandDefinition(
             id: .showPermissionsColumn, label: "Permissions Column", group: .view, defaults: [],
             menuPath: "View > Columns > Permissions"),

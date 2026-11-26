@@ -386,6 +386,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     var showQuickLook: ((String) -> Void)?
     /// Shares items: the system's share popover, unless a test puts its own, so nothing comes on screen.
     var showSharePicker: (([String], NSRect, NSView) -> Void)?
+    /// Told of each Tags popover made, whether or not it could come on screen (tests).
+    var shownTagsPopover: ((TagsPopover) -> Void)?
     /// Carries out a rename and answers with its outcome, in place of the write coordinator (tests). Without it the
     /// coordinator renames (`WindowWriteActions.commitRename`), or, in a window without the app's file operations, the
     /// file system itself.
@@ -2098,7 +2100,7 @@ extension MainWindowController: ExplorerWindowHandle {
             activePane.toggleGroupReversed()
         // Search results have an order of their own, the pane's, Folder among it; and no Folders First.
         case .sortByName, .sortByFolder, .sortByKind, .sortByModified, .sortByCreated, .sortByAdded,
-            .sortByLastOpened, .sortBySize, .toggleFoldersFirst:
+            .sortByLastOpened, .sortBySize, .sortByTags, .toggleFoldersFirst:
             if let search = activePane.searchStore, search.showsResults {
                 if let field = SearchResultsSortByPreference(command: command) {
                     search.sort(by: field)
@@ -2115,6 +2117,7 @@ extension MainWindowController: ExplorerWindowHandle {
             case .sortByAdded: sort(by: .added)
             case .sortByLastOpened: sort(by: .lastOpened)
             case .sortBySize: sort(by: .size)
+            case .sortByTags: sort(by: .tags)
             case .sortByFolder: break
             default:
                 activePane.toggleFoldersFirst()
@@ -2124,7 +2127,7 @@ extension MainWindowController: ExplorerWindowHandle {
         // Search results have columns of their own, the pane's, Folder among them: a folder's aren't changed from
         // there, nor theirs from a folder.
         case .showFolderColumn, .showModifiedColumn, .showSizeColumn, .showKindColumn, .showCreatedColumn,
-            .showAddedColumn, .showLastOpenedColumn, .showPermissionsColumn:
+            .showAddedColumn, .showLastOpenedColumn, .showPermissionsColumn, .showTagsColumn:
             if activePane.showsSearchResults {
                 if let key = OptionalSearchColumnKey(columnCommand: command) {
                     toggleSearchColumn(key, in: activePane)
@@ -2294,6 +2297,8 @@ extension MainWindowController: ExplorerWindowHandle {
             if canPerform(.showOriginal), let path = selectedPaths.first { showOriginal(of: path) }
         case .shareSelection:
             shareSelection()
+        case .editTags:
+            editTags()
         case .undo, .redo, .editCut, .editCopy, .editPaste, .moveSelection, .duplicateSelection, .makeAlias,
             .newFolder,
             .newFolderWithSelection, .newTextFile, .saveAsTemplate, .pasteAsFile, .trashSelection, .deleteImmediately,

@@ -10,7 +10,7 @@ The decisions are kept by area. An entry names another by its title in quotes, w
 | [decisions/names-and-search.md](decisions/names-and-search.md) | How names are ordered and matched, search, the filters, batch rename's patterns, the Go To, Move To and Extract To box |
 | [decisions/views.md](decisions/views.md) | The List, Icons, Compact List and Previews views, groups, a folder's own view, the viewer, Quick Look, how items are named and drawn |
 | [decisions/windows-and-panes.md](decisions/windows-and-panes.md) | Two panes, tabs, saved views (tab views and window views), the toolbar, the menus and their keys (and the keys that differ from Finder's), Back and Forward, the sidebar, Settings |
-| [decisions/file-operations.md](decisions/file-operations.md) | Copy, move and Replace, what protects files, Undo, folder sizes, the clipboard, Paste as File, Copy Contents, Share, Convert Images, aliases and symbolic links |
+| [decisions/file-operations.md](decisions/file-operations.md) | Copy, move and Replace, what protects files, Undo, folder sizes, the clipboard, Paste as File, Copy Contents, Share, Convert Images, tags, aliases and symbolic links |
 | [decisions/archives.md](decisions/archives.md) | Compress, Extract and Extract To, and the plan to browse archives |
 | [decisions/code.md](decisions/code.md) | How work lands, how it is tested and released |
 | [decisions/left-out.md](decisions/left-out.md) | What the app doesn't do on purpose, and why |

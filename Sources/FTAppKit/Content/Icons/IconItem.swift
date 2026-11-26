@@ -321,6 +321,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
         // `title={entry.name}`: the whole name, for one shortened in the middle.
         root.toolTip = pane.toolTip(for: entry)
         label.tagDots.colors = host.tagColors(for: entry)
+        label.tagDots.toolTip = ListCellText.tags(host.tags(for: entry)).tooltip
         fitName(entry, host: host, layout: layout)
         tile.radius = CGFloat(style.tileRadius)
         if changed || iconView.image == nil {
@@ -486,6 +487,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
             badge.removeFromSuperview()
         }
         let tagColors = host.tagColors(for: entry)
+        label.tagDots.toolTip = ListCellText.tags(host.tags(for: entry)).tooltip
         if label.tagDots.colors != tagColors {
             label.tagDots.colors = tagColors
             fitName(entry, host: host, layout: pane.layout)

@@ -134,7 +134,8 @@ public enum ShortcutPolicy {
         "makeAlias": .makeAlias, "showOriginal": .showOriginal,
         "newFolderWithSelection": .newFolderWithSelection, "saveAsTemplate": .saveAsTemplate,
         "pasteAsFile": .pasteAsFile, "terminal": .openInTerminal, "copyPath": .copyPath,
-        "copyContents": .copyContents, "share": .shareSelection, "convertImages": .convertImages,
+        "copyContents": .copyContents, "share": .shareSelection, "tags": .editTags,
+        "convertImages": .convertImages,
         "rootTreeHere": .rootTreeAtSelection, "trash": .trashSelection, "deleteImmediately": .deleteImmediately,
         "toggleFavorite": .toggleFavorite, "addToCopied": .addToCopied,
         "addToCut": .addToCut, "removeFromClipboard": .removeFromClipboard,
@@ -208,6 +209,8 @@ public enum ShortcutPolicy {
             return canHandle(.copyContents, context)
         case "share":
             return canHandle(.shareSelection, context)
+        case "tags":
+            return canHandle(.editTags, context)
         case "convertImages":
             return canHandle(.convertImages, context)
         case "rootTreeHere":

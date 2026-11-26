@@ -750,7 +750,7 @@ extension ExplorerWindowlessTests {
             #expect(
                 titles(menu) == [
                     "Name", "Folder", "Date Modified", "Date Created", "Date Last Opened", "Date Added", "Size", "Kind",
-                    "-",
+                    "Tags", "-",
                     "Ascending",
                     "Descending", "-", "Group By: None",
                 ])

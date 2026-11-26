@@ -275,6 +275,7 @@ final class DetailsBarView: NSView {
         nameLabel.alphaValue = mark == .cut ? CGFloat(ClipboardLayout.Mark.cutLabelAlpha) : 1
         nameCell.iconView.alphaValue = entry.isHidden ? CGFloat(HiddenItemLook.iconAlpha) : 1
         nameCell.tagDots.colors = host.tagColors(for: entry)
+        nameCell.tagDots.toolTip = ListCellText.tags(host.tags(for: entry)).tooltip
         cutMarker.isHidden = mark != .cut
         dropState = host.dropState(for: entry.path)
         dropMarker.isHidden = dropState == nil || dropState == .invalid
@@ -283,7 +284,7 @@ final class DetailsBarView: NSView {
         for column in columnSet.columns where column != .name {
             let content = ListCellText.content(
                 column: column, entry: entry, metadata: metadata, folderSize: host.folderSizeEntry(entry.path),
-                now: now)
+                now: now, tags: column == .tags ? host.tags(for: entry) : nil)
             switch column {
             case .size:
                 sizeCell.label.font = font
@@ -301,6 +302,13 @@ final class DetailsBarView: NSView {
                 label.stringValue = host.search?.folderLabel(key) ?? ""
                 label.textColor = NSColor(colors.cell)
                 label.toolTip = NodePath.dirname(entry.path)
+            case .tags:
+                let label = label(for: column)
+                label.font = font
+                label.textColor = NSColor(colors.cell)
+                (label as? TagsLabel)?.tags = host.tags(for: entry) ?? []
+                label.stringValue = content.text
+                label.toolTip = content.tooltip
             default:
                 let label = label(for: column)
                 label.font = column == .permissions ? ListFonts.permissions(layout) : font
@@ -317,7 +325,12 @@ final class DetailsBarView: NSView {
 
     private func label(for column: DetailColumn) -> ListLabel {
         if let existing = labels[column] { return existing }
-        let label = column == .folder ? FolderColumnLabel() : ListLabel()
+        let label: ListLabel =
+            switch column {
+            case .folder: FolderColumnLabel()
+            case .tags: TagsLabel()
+            default: ListLabel()
+            }
         label.setAccessibilityIdentifier("list.row.cell.\(column.rawValue)")
         addSubview(label)
         labels[column] = label

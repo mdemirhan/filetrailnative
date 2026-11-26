@@ -27,10 +27,10 @@ struct ContentLoaders {
     var values: @MainActor (_ paths: [String], _ field: ItemValueField) async -> [ItemValue] = { paths, _ in
         paths.map { _ in .number(nil) }
     }
-    /// The colors of items' Finder tags.
-    var tagColors: @MainActor (_ paths: [String]) async -> [DiskPath: [FinderTagColor]] = { paths in
+    /// Items' Finder tags, names and colors.
+    var tags: @MainActor (_ paths: [String]) async -> [DiskPath: [FinderTag]] = { paths in
         await BlockingWork.run(qos: .utility) {
-            Dictionary(uniqueKeysWithValues: paths.map { (DiskPath($0), FinderTags.colors($0)) })
+            Dictionary(paths.map { (DiskPath($0), FinderTags.shown($0)) }, uniquingKeysWith: { first, _ in first })
         }
     }
 }
@@ -132,6 +132,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     var onRenameLost: ((_ path: String, _ refusal: String?) -> Void)?
     /// The selection, its details or a folder size changed: the Info views describe it again.
     var onDetailsChanged: (() -> Void)?
+    /// This window changed the tags of some items (`tagsChanged`).
+    var onTagsChanged: (() -> Void)?
     /// A List header asked for the search results to be ordered by a column.
     var onSearchSort: ((SearchResultsSortByPreference) -> Void)?
     var onSearchSortSet: ((SearchResultsSortByPreference, SortDirectionPreference) -> Void)?
@@ -232,7 +234,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private var queuedAdded: [DiskPath: (addedMs: Int64?, kind: FTFileSystem.EntryKind)] = [:]
     private var metadataFlushQueued = false
     /// The Finder tags of the rows on screen. They start over with another folder.
-    private var tags = PathReadCache<[FinderTagColor]>()
+    private var tags = PathReadCache<[FinderTag]>()
     private var windowActive = true
     /// The listed entries by path, each path byte for byte: two names that differ only in how an accent is encoded
     /// are two rows. Made when a selection or a lookup needs it (not for every folder opened).
@@ -910,18 +912,31 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         positionsCache = nil
     }
 
-    /// Search results ordered by a date or the size: by the values read for them, in the order's direction, those not
-    /// read yet or without one last either way; among the same value, as the search ordered them (by name).
+    /// Search results ordered by a date, the size or the tags: by the values read for them, in the order's direction,
+    /// those not read yet or without one last either way; among the same value, as the search ordered them (by name).
     private func orderByValues(_ display: ContentSearchDisplay) {
         guard let field = display.sortBy.valueField else { return }
         let ascending = display.sortDirection == .asc
-        let values = entries.map { searchValues.value(field, of: $0.path)?.number }
+        let values = entries.map { searchValues.value(field, of: $0.path) }
+        let order = NameOrder.current
+        // Negative, zero or positive; nil when only one has a value, which then comes first.
+        func compare(_ left: ItemValue?, _ right: ItemValue?) -> Int? {
+            switch (left, right) {
+            case (.number(let l?)?, .number(let r?)?): return l == r ? 0 : (l < r ? -1 : 1)
+            case (.text(let l?)?, .text(let r?)?): return TagNameList.compare(l, r, order: order)
+            default: return 0
+            }
+        }
+        func has(_ value: ItemValue?) -> Bool { value?.number != nil || value?.text != nil }
         let positions = entries.indices.sorted { left, right in
-            switch (values[left], values[right]) {
-            case (let l?, let r?) where l != r: return ascending ? l < r : l > r
-            case (.some, nil): return true
-            case (nil, .some): return false
-            default: return left < right
+            switch (has(values[left]), has(values[right])) {
+            case (true, false): return true
+            case (false, true): return false
+            case (false, false): return left < right
+            case (true, true):
+                let compared = compare(values[left], values[right]) ?? 0
+                if compared == 0 { return left < right }
+                return ascending ? compared < 0 : compared > 0
             }
         }
         entries = positions.map { entries[$0] }
@@ -1010,7 +1025,9 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             }
         case .tags:
             if searchDisplay != nil {
-                return shown.map { TagGroups.key(firstTag: searchValues.value(.tags, of: $0.path)?.text) }
+                return shown.map {
+                    TagGroups.key(firstTag: TagNameList.first(of: searchValues.value(.tags, of: $0.path)?.text))
+                }
             }
             return shown.map { TagGroups.key(firstTag: $0.firstTag) }
         case .folder:
@@ -1787,8 +1804,13 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// What was read for the item on screen, unless it changed since and its listing read it again; then what the
     /// listing read, which an item with a colored tag has from its first frame.
     func tagColors(for entry: DirectoryEntry) -> [FinderTagColor] {
-        if let read = tags.current(entry.path) { return read }
-        return entry.tagColors ?? tags[entry.path] ?? []
+        if let read = tags.current(entry.path) { return FinderTags.colors(of: read) }
+        return entry.tagColors ?? tags[entry.path].map(FinderTags.colors(of:)) ?? []
+    }
+
+    /// The item's tags, names and all, as a read of the rows on screen found them; nil until one has.
+    func tags(for entry: DirectoryEntry) -> [FinderTag]? {
+        tags.current(entry.path) ?? tags[entry.path]
     }
 
     /// Tags are read for the items on screen in every view, which draw them: reading them for a whole folder would
@@ -1800,7 +1822,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         let generation = tags.generation
         Task { @MainActor [weak self] in
             guard let self else { return }
-            let colors = await self.loaders.tagColors(wanted)
+            let colors = await self.loaders.tags(wanted)
             let belongs = NameKeys.Exact(listKey) == NameKeys.Exact(self.listKey)
             guard let readAgain = self.tags.finish(wanted, from: generation, answers: belongs ? colors : nil), belongs
             else { return }
@@ -1813,6 +1835,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     func tagsChanged(_ paths: [String]) {
         tags.markChanged(paths)
         requestTags(for: paths)
+        onTagsChanged?()
     }
 
     // MARK: Folder sizes

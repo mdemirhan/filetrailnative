@@ -85,6 +85,10 @@ final class FakeFileSystem: ExplorerFileSystem, @unchecked Sendable {
         return firstTagHandler(path)
     }
 
+    func tagNames(_ path: String) -> [String] {
+        firstTagName(path).map { [$0] } ?? []
+    }
+
     func tagColors(_ path: String) -> [FinderTagColor] {
         lock.lock()
         tagPaths.append(path)

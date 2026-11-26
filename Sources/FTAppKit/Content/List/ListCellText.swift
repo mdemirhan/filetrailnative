@@ -58,9 +58,17 @@ enum ListCellText {
         return ListCellContent(text: parts.octal, tooltip: parts.symbolic)
     }
 
-    /// A cell's text as the list shows it, for fitting a column to its widest value.
+    /// The tags' names with commas, as the Tags cell reads them, and as its tooltip.
+    static func tags(_ tags: [FinderTag]?) -> ListCellContent {
+        let text = (tags ?? []).map(\.name).joined(separator: ", ")
+        return ListCellContent(text: text, tooltip: text.isEmpty ? nil : text)
+    }
+
+    /// A cell's text as the list shows it, for fitting a column to its widest value. `tags` are the item's as a read of
+    /// the rows on screen found them, for the Tags cell.
     static func content(
-        column: DetailColumn, entry: DirectoryEntry, metadata: EntryMetadata?, folderSize: FolderSizeEntry, now: Date
+        column: DetailColumn, entry: DirectoryEntry, metadata: EntryMetadata?, folderSize: FolderSizeEntry, now: Date,
+        tags: [FinderTag]? = nil
     ) -> ListCellContent {
         switch column {
         case .name: return ListCellContent(text: entry.name)
@@ -72,6 +80,7 @@ enum ListCellText {
         case .created: return date(createdAt(entry, metadata), now: now)
         case .added: return date(addedAt(entry, metadata), now: now)
         case .lastOpened: return date(metadata?.lastOpenedAt, now: now)
+        case .tags: return Self.tags(tags)
         }
     }
 

@@ -858,6 +858,9 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         let font = column == .permissions ? ListFonts.permissions(layout) : ListFonts.row(layout)
         let now = RelativeClock.shared.relativeNow
         let widths = zip(entries, keys).map { entry, key -> Double in
+            if column == .tags {
+                return Double(TagsLabel.text(host.tags(for: entry) ?? [], font: font, color: .labelColor).size().width)
+            }
             let content = ListCellText.content(
                 column: column, entry: entry, metadata: host.metadata(for: entry.path),
                 folderSize: host.folderSizeEntry(entry.path), now: now)

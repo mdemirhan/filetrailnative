@@ -38,6 +38,39 @@ struct InfoPanelModelTests {
         #expect(content.rows[6].value == .whereLink(label: "demo", path: "/Users/demo"))
     }
 
+    // The Tags row comes after Modified for an item, and after Size for several: a dash until read, muted with none,
+    // and no row at all past the items read for it.
+    @Test func theTagsRowFollowsModifiedOrSize() {
+        let tags = InfoTags(
+            tags: [InfoTag(name: "Work", colorNumber: nil, count: 2), InfoTag(name: "Red", colorNumber: 6, count: 1)],
+            itemCount: 2, editable: true)
+        let rows = InfoPanelModel.itemContent(
+            item: Self.file(), pending: false, volume: nil, isVolumeRoot: false, hasFolderSize: false,
+            folderSize: nil, opensWith: .hidden, dates: Self.dates, tags: .read(tags)
+        ).rows
+        #expect(rows.map(\.label) == ["Kind", "Size", "Created", "Modified", "Tags", "Permissions", "Where"])
+        #expect(rows[4] == InfoRow(label: "Tags", value: .tags(tags), muted: false))
+        #expect(tags.summary == "Work, Red (1)")
+        let pending = InfoPanelModel.itemContent(
+            item: Self.file(), pending: false, volume: nil, isVolumeRoot: false, hasFolderSize: false,
+            folderSize: nil, opensWith: .hidden, dates: Self.dates, tags: .pending
+        ).rows
+        #expect(pending[4] == InfoRow(label: "Tags", value: .text("—"), muted: true))
+        let none = InfoTags(tags: [], itemCount: 1, editable: true)
+        let empty = InfoPanelModel.itemContent(
+            item: Self.file(), pending: false, volume: nil, isVolumeRoot: false, hasFolderSize: false,
+            folderSize: nil, opensWith: .hidden, dates: Self.dates, tags: .read(none)
+        ).rows
+        #expect(empty[4] == InfoRow(label: "Tags", value: .tags(none), muted: true))
+        let selection = InfoSelection(count: 2, folderCount: 0, fileCount: 2, totalBytes: 10, parentPath: "/a")
+        #expect(
+            InfoPanelModel.selectionRows(selection, hasFolderSize: false, folderSize: nil, tags: .read(tags)).map(
+                \.label) == ["Size", "Tags", "Where"])
+        #expect(
+            InfoPanelModel.selectionRows(selection, hasFolderSize: false, folderSize: nil, tags: .hidden).map(\.label)
+                == ["Size", "Where"])
+    }
+
     @Test func pendingValuesKeepTheirRowsWithADash() {
         var item = Self.file(size: nil)
         item.createdAt = nil

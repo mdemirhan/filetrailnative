@@ -387,9 +387,10 @@ public enum CommandAvailability {
             .showPreviews1, .groupByNone, .groupByName, .groupByModified,
             .groupByCreated, .groupByLastOpened, .groupByAdded, .groupBySize, .groupByKind, .groupByTags,
             .groupByFolder, .reverseGroupOrder, .sortByName, .sortByFolder, .sortByModified, .sortByCreated,
-            .sortByAdded, .sortByLastOpened, .sortBySize, .sortByKind, .toggleFoldersFirst, .toggleHiddenFiles,
-            .showModifiedColumn, .showSizeColumn, .showKindColumn, .showCreatedColumn, .showAddedColumn,
-            .showLastOpenedColumn, .showPermissionsColumn, .showFolderColumn, .rememberFolderView, .updateFolderView,
+            .sortByAdded, .sortByLastOpened, .sortBySize, .sortByKind, .sortByTags, .toggleFoldersFirst,
+            .toggleHiddenFiles, .showModifiedColumn, .showSizeColumn, .showKindColumn, .showCreatedColumn,
+            .showAddedColumn, .showLastOpenedColumn, .showPermissionsColumn, .showTagsColumn, .showFolderColumn,
+            .rememberFolderView, .updateFolderView,
             .revertFolderView,
             .folderViewOptions, .resetFolderView, .togglePinFilter, .focusFileSearch, .showLastSearchResults,
             .advancedSearch, .clearSearchConditions,
@@ -542,6 +543,10 @@ public enum CommandAvailability {
             // The items of the list, wherever they are but in the Trash: what is there is taken out or deleted for good.
             guard focusedPane != .tree, selectedCount > 0 else { return false }
             return !selectionIsInTrash(context)
+        case .editTags:
+            // As the right-click menu's colors: the items of a folder or of search results, not of the Trash.
+            guard focusedPane != .tree, selectedCount > 0 else { return false }
+            return !selectionIsInTrash(context)
         case .copyPath:
             if focusedPane == .tree {
                 return context.selectedTreeTargetPath != nil
@@ -586,7 +591,8 @@ public enum CommandAvailability {
             // Only while the list is grouped; a context that doesn't say is taken as grouped.
             return context.listIsGrouped ?? true
         // Search results sort by every field a folder does and by their folder; they have no Folders First.
-        case .sortByName, .sortByModified, .sortByCreated, .sortByAdded, .sortByLastOpened, .sortBySize, .sortByKind:
+        case .sortByName, .sortByModified, .sortByCreated, .sortByAdded, .sortByLastOpened, .sortBySize, .sortByKind,
+            .sortByTags:
             return true
         case .sortByFolder:
             return context.isSearchMode
@@ -596,7 +602,7 @@ public enum CommandAvailability {
             return context.filterPinnable != false
         // A folder's columns, or search results' own while they show: Folder is theirs alone.
         case .showModifiedColumn, .showSizeColumn, .showKindColumn, .showCreatedColumn, .showAddedColumn,
-            .showLastOpenedColumn, .showPermissionsColumn:
+            .showLastOpenedColumn, .showPermissionsColumn, .showTagsColumn:
             return true
         case .showFolderColumn:
             return context.isSearchMode

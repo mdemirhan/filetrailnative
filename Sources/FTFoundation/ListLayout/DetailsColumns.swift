@@ -31,7 +31,7 @@ public enum DetailsColumns {
             .name: Double(saved.name), .modified: Double(saved.modified), .size: Double(saved.size),
             .kind: Double(saved.kind), .created: Double(saved.created), .added: Double(saved.added),
             .lastOpened: Double(saved.lastOpened),
-            .permissions: Double(saved.permissions), .folder: 0,
+            .permissions: Double(saved.permissions), .tags: Double(saved.tags), .folder: 0,
         ]
     }
 
@@ -41,6 +41,7 @@ public enum DetailsColumns {
             .size: Double(saved.size), .kind: Double(saved.kind), .created: Double(saved.created),
             .added: Double(saved.added),
             .lastOpened: Double(saved.lastOpened), .permissions: Double(saved.permissions),
+            .tags: Double(saved.tags),
         ]
     }
 

@@ -32,6 +32,8 @@ import Testing
                 "Edit in Text Editor", "Quick Look", "Calculate Size", "Reveal in Folder", "Show Original", "-",
                 "Rename", "Duplicate", "Make Alias", "Move to…", "-",
                 "Compress", "Extract", "Extract To…", "Convert Images…", "-",
+                // The row of tag colors, a view of its own, and Tags… under it.
+                "Tag Colors", "Tags…", "-",
                 "Share…", "Add to Favorites", "Open in Terminal", "Show in Finder", "-",
                 // Delete Immediately…, the item ⌥ shows in Move to Trash's place.
                 "Move to Trash", "Delete Immediately…", "Eject", "-",
@@ -385,7 +387,7 @@ import Testing
             ("Name", .sortByName), ("Folder", .sortByFolder), ("Date Modified", .sortByModified),
             ("Date Created", .sortByCreated),
             ("Date Last Opened", .sortByLastOpened),
-            ("Date Added", .sortByAdded), ("Size", .sortBySize), ("Kind", .sortByKind),
+            ("Date Added", .sortByAdded), ("Size", .sortBySize), ("Kind", .sortByKind), ("Tags", .sortByTags),
         ]
         #expect(titles(sortMenu) == expected.map(\.0))
         for (title, command) in expected {

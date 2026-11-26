@@ -211,6 +211,7 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
         let tagColors = host.tagColors(for: entry)
         let tagsChanged = tagDots.colors != tagColors
         tagDots.colors = tagColors
+        tagDots.toolTip = ListCellText.tags(host.tags(for: entry)).tooltip
         if wasMarked != (mark != nil) || tagsChanged { layoutParts() }
     }
 

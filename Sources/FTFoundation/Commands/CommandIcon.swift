@@ -14,7 +14,7 @@ public enum CommandIcon: String, CaseIterable, Sendable, Hashable {
     // Clipboard and organizing
     case cut, copy, paste, pasteAsFile, copyPath, copyContents, share, move, rename, duplicate, newFolder, newFile
     case removeFromClipboard
-    case favorite
+    case favorite, tags
     case convertImages, makeAlias
     // Archives
     case compress, extract

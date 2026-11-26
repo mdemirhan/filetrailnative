@@ -41,6 +41,60 @@ public enum InfoValue: Equatable, Sendable {
     case originalLink(label: String, path: String)
     /// The app the file opens in, as a pop-up.
     case opensWith
+    /// The items' tags: clicked, the Tags popover.
+    case tags(InfoTags)
+}
+
+/// A tag of the items the Info panel describes.
+public struct InfoTag: Equatable, Sendable {
+    public var name: String
+    /// Finder's number of its color (1 gray to 7 orange); nil for a tag without one.
+    public var colorNumber: Int?
+    /// How many of the items have it.
+    public var count: Int
+
+    public init(name: String, colorNumber: Int?, count: Int) {
+        self.name = name
+        self.colorNumber = colorNumber
+        self.count = count
+    }
+}
+
+/// The tags of the item or the items the Info panel describes.
+public struct InfoTags: Equatable, Sendable {
+    public var tags: [InfoTag]
+    public var itemCount: Int
+    /// Whether a click opens the Tags popover: not for what is in the Trash, nor the disk or folder on screen.
+    public var editable: Bool
+
+    public init(tags: [InfoTag], itemCount: Int, editable: Bool) {
+        self.tags = tags
+        self.itemCount = itemCount
+        self.editable = editable
+    }
+
+    /// The row's text where no chip shows it: its tags' names, those on some of the items with how many.
+    public var summary: String {
+        tags.map { $0.count < itemCount ? "\($0.name) (\($0.count))" : $0.name }.joined(separator: ", ")
+    }
+}
+
+/// Whether the Info panel has a Tags row, and what it says.
+public enum InfoTagsState: Equatable, Sendable {
+    /// No row: more items than are read for it.
+    case hidden
+    /// A dash until they are read.
+    case pending
+    case read(InfoTags)
+
+    /// The row, if there is one.
+    var row: InfoRow? {
+        switch self {
+        case .hidden: nil
+        case .pending: InfoRow(label: "Tags", value: .text(InfoPanelModel.pending), muted: true)
+        case .read(let tags): InfoRow(label: "Tags", value: .tags(tags), muted: tags.tags.isEmpty)
+        }
+    }
 }
 
 public struct InfoRow: Equatable, Sendable {
@@ -90,10 +144,10 @@ public enum InfoPanelModel {
         return InfoRow(label: "Contains", value: .text(contents ?? pending), muted: contents == nil)
     }
 
-    /// The summary's rows: Contains when folders are among the items, Size and Where.
+    /// The summary's rows: Contains when folders are among the items, Size, Tags and Where.
     public static func selectionRows(
         _ selection: InfoSelection, hasFolderSize: Bool, folderSize: FolderSizeEntry?, homePath: String = "",
-        startupDiskName: String = VolumePaths.defaultStartupDiskName
+        startupDiskName: String = VolumePaths.defaultStartupDiskName, tags: InfoTagsState = .hidden
     ) -> [InfoRow] {
         let size = selection.totalBytes.map { SizeText.size($0) }
         let sizeRow: InfoRow
@@ -116,7 +170,7 @@ public enum InfoPanelModel {
             whereRow = InfoRow(label: "Where", value: .text("Several folders"), muted: true)
         }
         let containsRows = hasFolderSize && folderSize != nil ? [containsRow(folderSize)] : []
-        return containsRows + [sizeRow, whereRow]
+        return containsRows + [sizeRow] + [tags.row].compactMap { $0 } + [whereRow]
     }
 
     /// Everything the panel shows of one item.
@@ -134,12 +188,12 @@ public enum InfoPanelModel {
     }
 
     /// The rows and the subtitle of one item. The rows, top to bottom: Kind; Opens with (a file); Capacity, Available
-    /// and Used for a disk, or else Contains (a folder) and Size; then Created, Modified, Permissions and Where. The
-    /// subtitle is the kind, and the size when it is known.
+    /// and Used for a disk, or else Contains (a folder) and Size; then Created, Modified, Tags, Permissions and Where.
+    /// The subtitle is the kind, and the size when it is known.
     public static func itemContent(
         item: InfoItem, pending isPending: Bool, volume: InfoVolume?, isVolumeRoot: Bool, hasFolderSize: Bool,
         folderSize: FolderSizeEntry?, opensWith: OpensWithState, dates: DateText = .shared, homePath: String = "",
-        startupDiskName: String = VolumePaths.defaultStartupDiskName
+        startupDiskName: String = VolumePaths.defaultStartupDiskName, tags: InfoTagsState = .hidden
     ) -> ItemContent {
         let isFile = item.kind == .file || item.kind == .symlinkFile
         let folderEligible = item.kind.isFolderSizeEligible
@@ -190,6 +244,7 @@ public enum InfoPanelModel {
         func date(_ value: Date?) -> String { value == nil && isPending ? pending : dates.dateTime(value) }
         rows.append(InfoRow(label: "Created", value: .text(date(item.createdAt)), muted: item.createdAt == nil))
         rows.append(InfoRow(label: "Modified", value: .text(date(item.modifiedAt)), muted: item.modifiedAt == nil))
+        if let row = tags.row { rows.append(row) }
         if let parts = PermissionText.split(item.permissionMode) {
             rows.append(
                 InfoRow(

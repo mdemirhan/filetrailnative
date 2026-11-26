@@ -138,6 +138,14 @@ final class TagColorsMenuRow: NSView {
 
     private let choose: (FinderTagColor) -> Void
     private(set) var buttons: [TagColorButton] = []
+    /// Asked each time the menu opens with the row in it: the File menu's reads its checks then.
+    var onShow: (() -> Void)?
+    /// Dimmed, and choosing nothing, with no items to tag.
+    var isEnabled = true {
+        didSet { alphaValue = isEnabled ? 1 : 0.35 }
+    }
+    /// The most items whose colors are read for the checks.
+    static let stateLimit = 1000
 
     init(choose: @escaping (FinderTagColor) -> Void) {
         self.choose = choose
@@ -159,7 +167,13 @@ final class TagColorsMenuRow: NSView {
         for button in buttons { button.state = states[button.color] }
     }
 
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        if window != nil { onShow?() }
+    }
+
     private func chosen(_ color: FinderTagColor) {
+        guard isEnabled else { return }
         enclosingMenuItem?.menu?.cancelTracking()
         choose(color)
     }

@@ -200,7 +200,8 @@ struct AppStateReaderTests {
         #expect(
             reloaded.detailColumns
                 == DetailColumnVisibility(modified: false, size: true, kind: true, created: false, permissions: true))
-        #expect(reloaded.detailColumnOrder == [.kind, .size, .modified, .created, .lastOpened, .added, .permissions])
+        #expect(
+            reloaded.detailColumnOrder == [.kind, .size, .modified, .created, .lastOpened, .added, .tags, .permissions])
         #expect(
             reloaded.detailColumnWidths
                 == DetailColumnWidths(name: 1000, modified: 180, size: 60, kind: 148, created: 168, permissions: 40))
@@ -211,7 +212,7 @@ struct AppStateReaderTests {
                     folder: false, modified: true, size: true, kind: false, created: true, permissions: false))
         #expect(
             reloaded.searchColumnOrder == [
-                .size, .folder, .modified, .created, .lastOpened, .added, .kind, .permissions,
+                .size, .folder, .modified, .created, .lastOpened, .added, .kind, .tags, .permissions,
             ])
         #expect(reloaded.searchColumnWidths.name == 400)
         #expect(reloaded.searchColumnWidths.folder == 80)

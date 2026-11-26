@@ -182,6 +182,7 @@ public enum PreferencesSanitizer {
         case "added": .added
         case "lastOpened": .lastOpened
         case "created": .created
+        case "tags": .tags
         default: .name
         }
     }

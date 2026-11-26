@@ -183,7 +183,7 @@ public enum SearchResults {
             first = kinds != 0 ? kinds : byName()
         case .path:
             first = order.compare(left.path, right.path)
-        case .modified, .created, .lastOpened, .added, .size:
+        case .modified, .created, .lastOpened, .added, .size, .tags:
             // Ordered by values read for every result once they come (`ContentPaneController`): until then, and among
             // results of the same value, by name.
             first = byName()

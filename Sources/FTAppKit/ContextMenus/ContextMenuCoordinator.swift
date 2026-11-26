@@ -304,14 +304,34 @@ final class ContextMenuCoordinator: ContextMenuResponder {
                 FinderTags.toggle(color, name: name, on: paths)
             }
             tab.content.tagsChanged(paths)
-            guard let first = failures.first else { return }
-            notices.show(
-                title: "Couldn’t Change the Tag",
-                message: "\(ClipboardSummary.leafName(first.path)): \(first.message)"
-                    + (failures.count > 1
-                        ? " \(FormatLocale.count(failures.count - 1)) more couldn’t be changed." : ""),
-                in: tab.window)
+            showTagFailures(failures)
         }
+    }
+
+    /// A choice of the Tags popover: written, the items' tags read again for it, and what couldn't be written said.
+    /// Nil when the tags couldn't be read again.
+    func changeTags(_ change: TagChange, paths: [String]) async -> FinderTagsOnItems? {
+        let (failures, read) = await BlockingWork.run(qos: .userInitiated) {
+            let failures =
+                switch change {
+                case .toggle(let tag): FinderTags.toggle(tag, on: paths)
+                case .removeAll: FinderTags.removeAll(from: paths)
+                }
+            return (failures, FinderTags.onItems(paths))
+        }
+        tab.content.tagsChanged(paths)
+        showTagFailures(failures)
+        return read
+    }
+
+    private func showTagFailures(_ failures: [FinderTagFailure]) {
+        guard let first = failures.first else { return }
+        notices.show(
+            title: "Couldn’t Change the Tag",
+            message: "\(ClipboardSummary.leafName(first.path)): \(first.message)"
+                + (failures.count > 1
+                    ? " \(FormatLocale.count(failures.count - 1)) more couldn’t be changed." : ""),
+            in: tab.window)
     }
 
     func contextMenu(perform action: ContextMenuActionID, subject: ContextMenuSubject) {
@@ -338,6 +358,8 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             tab.openConvertImagesSheet(subject.paths)
         case .share:
             tab.share(subject.paths)
+        case .tags:
+            tab.editTags(subject.paths)
         case .open:
             holdingTheTab { [self] in await openPaths(subject) }
         case .quickLook:

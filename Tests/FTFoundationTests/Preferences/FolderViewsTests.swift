@@ -250,9 +250,9 @@ struct FolderViewsTests {
         visibility.created = true
         visibility.permissions = true
         #expect(columns.visibility == visibility)
-        #expect(!columns.visibility.added && !columns.visibility.lastOpened)
+        #expect(!columns.visibility.added && !columns.visibility.lastOpened && !columns.visibility.tags)
         // The order saved first, then the columns it doesn't have, in the menus' order.
-        #expect(columns.order == [.size, .created, .permissions, .modified, .kind, .lastOpened, .added])
+        #expect(columns.order == [.size, .created, .permissions, .modified, .kind, .lastOpened, .added, .tags])
         #expect(columns.widths.name == 410 && columns.widths.size == 90)
         #expect(columns.widths.added == DetailColumnWidths.defaults.added)
         #expect(views.own("/a")?.keeps.view == .details)
@@ -298,7 +298,8 @@ struct FolderViewsTests {
                 view: .details, sort: FolderViewSort(by: .added, direction: .desc), foldersFirst: false,
                 columns: FolderViewColumns(
                     visibility: visibility,
-                    order: [.added, .modified, .created, .lastOpened, .size, .kind, .permissions], widths: widths),
+                    order: [.added, .modified, .created, .lastOpened, .size, .kind, .tags, .permissions],
+                    widths: widths),
                 size: FolderViewSizes(
                     iconSizes: DensitySizes(standard: 96, finder: 48),
                     compactListWidths: DensitySizes(standard: 400, finder: 252),

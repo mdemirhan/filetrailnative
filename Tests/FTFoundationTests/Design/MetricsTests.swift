@@ -65,7 +65,7 @@ import Testing
     static let columns: [DetailColumn: [Double]] = [
         .name: [320, 140, 1000], .modified: [152, 80, 280], .size: [108, 60, 240], .kind: [148, 60, 320],
         .created: [152, 80, 280], .added: [152, 80, 280], .lastOpened: [152, 80, 280], .permissions: [108, 36, 260],
-        .folder: [240, 80, 1000],
+        .tags: [190, 60, 600], .folder: [240, 80, 1000],
     ]
 
     // MARK: Checking

@@ -41,6 +41,7 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case copyPath
     case copyContents
     case shareSelection
+    case editTags
     case addToCopied
     case addToCut
     case moveItemsHere
@@ -125,12 +126,14 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case sortByLastOpened
     case sortBySize
     case sortByKind
+    case sortByTags
     case toggleFoldersFirst
     case toggleHiddenFiles
     case showFolderColumn
     case showModifiedColumn
     case showSizeColumn
     case showKindColumn
+    case showTagsColumn
     case showCreatedColumn
     case showAddedColumn
     case showLastOpenedColumn

@@ -91,7 +91,8 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // A menu opened while an operation runs leaves out what would start another, and keeps the row of colors.
+        // A menu opened while an operation runs leaves out what would start another, and keeps the row of colors and
+        // Tags… under it.
         @Test func aMenuOpenedWhileAnOperationRunsKeepsTheRowOfColors() async throws {
             let window = try await open()
             let actions = try #require(window.tab.writeActions)
@@ -102,7 +103,8 @@ extension ExplorerWindowlessTests {
             let menu = try contentMenu(window, ["note.txt"])
             #expect(!menu.items.contains { $0.title == "Rename" || $0.title == "Move to Trash" })
             #expect(menu.items.filter { $0.view is TagColorsMenuRow }.count == 1)
-            #expect(menu.items.last?.view is TagColorsMenuRow)
+            let row = try #require(menu.items.firstIndex { $0.view is TagColorsMenuRow })
+            #expect(menu.items.indices.contains(row + 1) && menu.items[row + 1].identifier?.rawValue == "tags")
             // The folder's own menu has no items to color.
             #expect(try backgroundMenu(window).items.contains { $0.view is TagColorsMenuRow } == false)
             actions.session.applyCard(nil)

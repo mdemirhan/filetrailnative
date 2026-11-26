@@ -31,6 +31,8 @@ public enum DirectorySortKey: String, Sendable, Hashable, Codable, CaseIterable 
     case lastOpened
     /// When each item was made (Date Created), as the folder read gives it.
     case created
+    /// The names of each item's tags, read for each item.
+    case tags
 }
 
 /// What a listing reads besides what its order needs, for the groups the items are shown in: a date of each item, its

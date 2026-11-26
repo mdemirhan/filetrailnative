@@ -50,9 +50,9 @@ public enum SearchMatchScopePreference: String, Codable, CaseIterable, Sendable,
 /// Search results sort by name, by the folder they are in or by kind, from what each result carries; or by a date or
 /// the size, read for every result while they are sorted by it.
 public enum SearchResultsSortByPreference: String, Codable, CaseIterable, Sendable, Hashable {
-    case name, path, kind, modified, created, lastOpened, added, size
+    case name, path, kind, modified, created, lastOpened, added, size, tags
 
-    /// Whether the order needs a value read for every result (a date, the size).
+    /// Whether the order needs a value read for every result (a date, the size, the tags).
     public var readsEveryResult: Bool { ![.name, .path, .kind].contains(self) }
 
     /// The field a View ▸ Sort By command orders results by: Folder is `path`.
@@ -66,6 +66,7 @@ public enum SearchResultsSortByPreference: String, Codable, CaseIterable, Sendab
         case .sortByLastOpened: self = .lastOpened
         case .sortByAdded: self = .added
         case .sortBySize: self = .size
+        case .sortByTags: self = .tags
         default: return nil
         }
     }
@@ -81,12 +82,13 @@ public enum SearchResultsSortByPreference: String, Codable, CaseIterable, Sendab
         case .lastOpened: .sortByLastOpened
         case .added: .sortByAdded
         case .size: .sortBySize
+        case .tags: .sortByTags
         }
     }
 
     /// The order the menus list them in: a folder's fields', with Folder after Name.
     public static let menuOrder: [SearchResultsSortByPreference] = [
-        .name, .path, .modified, .created, .lastOpened, .added, .size, .kind,
+        .name, .path, .modified, .created, .lastOpened, .added, .size, .kind, .tags,
     ]
 
     /// What every menu calls it.
@@ -100,6 +102,7 @@ public enum SearchResultsSortByPreference: String, Codable, CaseIterable, Sendab
         case .lastOpened: SortByPreference.lastOpened.title
         case .added: SortByPreference.added.title
         case .size: SortByPreference.size.title
+        case .tags: SortByPreference.tags.title
         }
     }
 }
@@ -110,11 +113,11 @@ public enum SortDirectionPreference: String, Codable, CaseIterable, Sendable, Ha
 
 /// What the file list can be sorted by.
 public enum SortByPreference: String, Codable, CaseIterable, Sendable, Hashable {
-    case name, modified, kind, size, added, lastOpened, created
+    case name, modified, kind, size, added, lastOpened, created, tags
 
     /// The order every menu lists the fields in: the List's columns' order.
     public static let menuOrder: [SortByPreference] = [
-        .name, .modified, .created, .lastOpened, .added, .size, .kind,
+        .name, .modified, .created, .lastOpened, .added, .size, .kind, .tags,
     ]
 
     /// The View ▸ Sort By command for this field.
@@ -127,6 +130,7 @@ public enum SortByPreference: String, Codable, CaseIterable, Sendable, Hashable 
         case .added: .sortByAdded
         case .lastOpened: .sortByLastOpened
         case .size: .sortBySize
+        case .tags: .sortByTags
         }
     }
 
@@ -140,6 +144,7 @@ public enum SortByPreference: String, Codable, CaseIterable, Sendable, Hashable 
         case .added: "Date Added"
         case .lastOpened: "Date Last Opened"
         case .created: "Date Created"
+        case .tags: "Tags"
         }
     }
 }
@@ -232,7 +237,7 @@ public enum ReturnKeyAction: String, Codable, CaseIterable, Sendable, Hashable {
 
 /// The columns of the List view, in display order.
 public enum DetailColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
-    case name, modified, size, kind, created, added, lastOpened, permissions
+    case name, modified, size, kind, created, added, lastOpened, permissions, tags
 
     /// The column's title.
     public var label: String {
@@ -245,6 +250,7 @@ public enum DetailColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
         case .added: "Date Added"
         case .lastOpened: "Date Last Opened"
         case .permissions: "Permissions"
+        case .tags: "Tags"
         }
     }
 
@@ -257,24 +263,25 @@ public enum DetailColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
         case .kind: 60...320
         case .created, .added, .lastOpened: 80...280
         case .permissions: 36...260
+        case .tags: 60...600
         }
     }
 }
 
 /// The List's columns but Name, which is always shown: the ones that can be hidden and moved.
 public enum OptionalDetailColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
-    case modified, size, kind, created, added, lastOpened, permissions
+    case modified, size, kind, created, added, lastOpened, permissions, tags
 
     /// The order the menus list them in (the column header's right-click menu, View ▸ Columns): Finder's, the dates
-    /// together after Date Modified.
+    /// together after Date Modified and Tags after Kind, then Permissions, which Finder doesn't have.
     public static let menuOrder: [OptionalDetailColumnKey] = [
-        .modified, .created, .lastOpened, .added, .size, .kind, .permissions,
+        .modified, .created, .lastOpened, .added, .size, .kind, .tags, .permissions,
     ]
 }
 
 /// The columns of search results' List view (SearchColumnKey).
 public enum SearchColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
-    case name, folder, modified, size, kind, created, added, lastOpened, permissions
+    case name, folder, modified, size, kind, created, added, lastOpened, permissions, tags
 
     /// The column's title: Folder's own, the others as in a folder's List.
     public var label: String {
@@ -289,11 +296,11 @@ public enum SearchColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
 
 /// Search results' columns but Name, which is always shown, in the order of the columns.
 public enum OptionalSearchColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
-    case folder, modified, size, kind, created, added, lastOpened, permissions
+    case folder, modified, size, kind, created, added, lastOpened, permissions, tags
 
-    /// The order the column header's right-click menu lists them in: Folder, then a folder's columns in Finder's order.
+    /// The order the column header's right-click menu lists them in: Folder, then a folder's columns in their order.
     public static let menuOrder: [OptionalSearchColumnKey] = [
-        .folder, .modified, .created, .lastOpened, .added, .size, .kind, .permissions,
+        .folder, .modified, .created, .lastOpened, .added, .size, .kind, .tags, .permissions,
     ]
 }
 
@@ -306,11 +313,12 @@ public struct DetailColumnVisibility: Codable, Equatable, Sendable {
     public var added: Bool = false
     public var lastOpened: Bool = false
     public var permissions: Bool
+    public var tags: Bool = false
 
-    /// Before any is changed: Finder's list view columns; the other dates and Permissions are opt-in.
+    /// Before any is changed: Finder's list view columns; the other dates, Tags and Permissions are opt-in.
     public static let defaults = DetailColumnVisibility(
         modified: true, size: true, kind: true, created: false, added: false, lastOpened: false,
-        permissions: false)
+        permissions: false, tags: false)
 
     public subscript(key: OptionalDetailColumnKey) -> Bool {
         get {
@@ -322,6 +330,7 @@ public struct DetailColumnVisibility: Codable, Equatable, Sendable {
             case .added: added
             case .lastOpened: lastOpened
             case .permissions: permissions
+            case .tags: tags
             }
         }
         set {
@@ -333,6 +342,7 @@ public struct DetailColumnVisibility: Codable, Equatable, Sendable {
             case .added: added = newValue
             case .lastOpened: lastOpened = newValue
             case .permissions: permissions = newValue
+            case .tags: tags = newValue
             }
         }
     }
@@ -347,11 +357,12 @@ public struct DetailColumnWidths: Codable, Equatable, Sendable {
     public var added: Int = 152
     public var lastOpened: Int = 152
     public var permissions: Int
+    public var tags: Int = 190
 
     /// The widths before any column is resized.
     public static let defaults = DetailColumnWidths(
         name: 320, modified: 152, size: 108, kind: 148, created: 152, added: 152, lastOpened: 152,
-        permissions: 108)
+        permissions: 108, tags: 190)
 
     public subscript(key: DetailColumnKey) -> Int {
         get {
@@ -364,6 +375,7 @@ public struct DetailColumnWidths: Codable, Equatable, Sendable {
             case .added: added
             case .lastOpened: lastOpened
             case .permissions: permissions
+            case .tags: tags
             }
         }
         set {
@@ -376,6 +388,7 @@ public struct DetailColumnWidths: Codable, Equatable, Sendable {
             case .added: added = newValue
             case .lastOpened: lastOpened = newValue
             case .permissions: permissions = newValue
+            case .tags: tags = newValue
             }
         }
     }
@@ -424,11 +437,12 @@ public struct SearchColumnVisibility: Codable, Equatable, Sendable {
     public var added: Bool = false
     public var lastOpened: Bool = false
     public var permissions: Bool
+    public var tags: Bool = false
 
     /// Before any is changed: Folder, Date Modified and Size.
     public static let defaults = SearchColumnVisibility(
         folder: true, modified: true, size: true, kind: false, created: false, added: false, lastOpened: false,
-        permissions: false)
+        permissions: false, tags: false)
 
     public subscript(key: OptionalSearchColumnKey) -> Bool {
         get {
@@ -441,6 +455,7 @@ public struct SearchColumnVisibility: Codable, Equatable, Sendable {
             case .added: added
             case .lastOpened: lastOpened
             case .permissions: permissions
+            case .tags: tags
             }
         }
         set {
@@ -453,6 +468,7 @@ public struct SearchColumnVisibility: Codable, Equatable, Sendable {
             case .added: added = newValue
             case .lastOpened: lastOpened = newValue
             case .permissions: permissions = newValue
+            case .tags: tags = newValue
             }
         }
     }
@@ -468,13 +484,14 @@ public struct SearchColumnWidths: Codable, Equatable, Sendable {
     public var added: Int = DetailColumnWidths.defaults.added
     public var lastOpened: Int = DetailColumnWidths.defaults.lastOpened
     public var permissions: Int
+    public var tags: Int = DetailColumnWidths.defaults.tags
 
     /// The widths before any column is resized: Name and Folder their own, the others as in a folder's List.
     public static let defaults = SearchColumnWidths(
         name: 300, folder: 240, modified: DetailColumnWidths.defaults.modified, size: DetailColumnWidths.defaults.size,
         kind: DetailColumnWidths.defaults.kind, created: DetailColumnWidths.defaults.created,
         added: DetailColumnWidths.defaults.added, lastOpened: DetailColumnWidths.defaults.lastOpened,
-        permissions: DetailColumnWidths.defaults.permissions)
+        permissions: DetailColumnWidths.defaults.permissions, tags: DetailColumnWidths.defaults.tags)
 
     public subscript(key: SearchColumnKey) -> Int {
         get {
@@ -488,6 +505,7 @@ public struct SearchColumnWidths: Codable, Equatable, Sendable {
             case .added: added
             case .lastOpened: lastOpened
             case .permissions: permissions
+            case .tags: tags
             }
         }
         set {
@@ -501,6 +519,7 @@ public struct SearchColumnWidths: Codable, Equatable, Sendable {
             case .added: added = newValue
             case .lastOpened: lastOpened = newValue
             case .permissions: permissions = newValue
+            case .tags: tags = newValue
             }
         }
     }

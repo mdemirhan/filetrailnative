@@ -401,3 +401,28 @@ public enum FolderGroups {
             group: EntryGroup(id: "folder-\(parent)", title: label), rank: .text(isSearchedFolder ? "" : label))
     }
 }
+
+/// An item's tag names kept as one text, for an order by tags and for search results' values: one line a name, as the
+/// stored attribute can't hold a line break in a name.
+public enum TagNameList {
+    /// The names as one text; nil for none, which an order puts last.
+    public static func joined(_ names: [String]) -> String? {
+        names.isEmpty ? nil : names.joined(separator: "\n")
+    }
+
+    /// The first name, for the group of the item.
+    public static func first(of joined: String?) -> String? {
+        joined?.split(separator: "\n", maxSplits: 1, omittingEmptySubsequences: false).first.map(String.init)
+    }
+
+    /// Two items' names in order: name by name as names sort, an item whose names begin the other's first.
+    public static func compare(_ left: String, _ right: String, order: NameOrder) -> Int {
+        let leftNames = left.split(separator: "\n", omittingEmptySubsequences: false)
+        let rightNames = right.split(separator: "\n", omittingEmptySubsequences: false)
+        for (l, r) in zip(leftNames, rightNames) {
+            let compared = order.compare(String(l), String(r))
+            if compared != 0 { return compared }
+        }
+        return leftNames.count == rightNames.count ? 0 : (leftNames.count < rightNames.count ? -1 : 1)
+    }
+}

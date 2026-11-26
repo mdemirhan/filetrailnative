@@ -343,7 +343,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Tags",
                             description:
-                                "Tagged items show colored dots by their name, before it in Icons view and after it in the lists, and a tagged folder takes the tag’s color. Right-click items for Finder’s tag colors: a color goes on the items that don’t have it, or comes off when they all do. The tags are Finder’s own, so Finder shows them too. Undo doesn’t change tags back."
+                                "Tagged items show colored dots by their name, before it in Icons view and after it in the lists, and a tagged folder takes the tag’s color; the pointer on the dots names the tags. Right-click items for Finder’s tag colors: a color goes on the items that don’t have it, or comes off when they all do. Tags…, under the colors and in the File menu, lists every tag in use on this Mac: click one, or type to narrow the list and press Return, to put it on the selected items, or take it off when they all have it. A check marks a tag on all of them, a dash one on some, with how many. The List’s Tags column, View > Sort By > Tags and the Info panel’s Tags row show them by name. The tags are Finder’s own, so Finder shows them too. Undo doesn’t change tags back."
                         ),
                     ]),
                 HelpSection(
@@ -1016,6 +1016,9 @@ extension HelpContent {
         HelpShortcutItem(
             group: .files, .command(.toggleFavorite), "Add the folder to Favorites, or remove it when it is one already"
         ),
+        HelpShortcutItem(
+            group: .files, .command(.editTags), "Put tags on the selected items or take them off, from every tag in use"
+        ),
         HelpShortcutItem(group: .files, .fixed("Esc"), "Cancel a dialog (Cmd+. also works)"),
         HelpShortcutItem(
             group: .search, .command(.focusFileSearch), "Search the folder you are in, and the folders inside it"),
@@ -1092,6 +1095,7 @@ extension HelpContent {
             group: .views, .command(.sortByAdded), "Order the list by when each item was put in the folder"),
         HelpShortcutItem(group: .views, .command(.sortBySize), "Order the list by size"),
         HelpShortcutItem(group: .views, .command(.sortByKind), "Order the list by kind, each type of file together"),
+        HelpShortcutItem(group: .views, .command(.sortByTags), "Order the list by the names of each item’s tags"),
         HelpShortcutItem(
             group: .views, .command(.toggleFoldersFirst), "List the folders before the files, or among them"),
         HelpShortcutItem(
@@ -1105,6 +1109,7 @@ extension HelpContent {
         HelpShortcutItem(group: .views, .command(.showAddedColumn), "Show or hide the Date Added column in List view"),
         HelpShortcutItem(group: .views, .command(.showSizeColumn), "Show or hide the Size column in List view"),
         HelpShortcutItem(group: .views, .command(.showKindColumn), "Show or hide the Kind column in List view"),
+        HelpShortcutItem(group: .views, .command(.showTagsColumn), "Show or hide the Tags column in List view"),
         HelpShortcutItem(
             group: .views, .command(.showPermissionsColumn), "Show or hide the Permissions column in List view"),
         HelpShortcutItem(

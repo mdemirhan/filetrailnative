@@ -118,10 +118,10 @@ The [README](../README.md) has the highlights. This page lists everything, by ar
 - **PDFs, pictures and documents in the viewer** take the keyboard as they open, so the arrows, Space and the page and half-page keys move them at once, the arrows gliding as a web page's do; ← and → go to the next or previous page or slide, and Go to Page (⌥⌘G) to one by its number. ⌘+, ⌘- and ⌘0 zoom a PDF, a picture, a Word document or a spreadsheet, and make text bigger or smaller; A PDF or a Word document opens with its page as wide as the pane, and ⌘9 (View ▸ Zoom to Fit) takes it back there or fits a picture in the pane. The next file opens at the same zoom. ⌘F finds in a PDF. Text can be selected in a PDF, a Word document or a spreadsheet, and Copy copies it.
 - **Movies and sounds play in the viewer**: Space plays and pauses, ← and → go five seconds back and forward.
 - **Groups**: put a folder's items in groups by name, a date (Today, Yesterday, Previous 7 Days and on), size, kind or tag, in every view, under a title for each, with the sort ordering the items inside each group, and the groups' own order reversed when you want the oldest or largest first. Search results group by any of these or by folder, and sort by a date or size too, and a folder can keep its grouping in its own view.
-- **Sorting** by name, date modified, date created, date last opened, date added, size or kind, with folders kept first when you want them, and hidden files on a key (⇧⌘.).
+- **Sorting** by name, date modified, date created, date last opened, date added, size, kind or tags, with folders kept first when you want them, and hidden files on a key (⇧⌘.).
 - **Names sorted the way your language sorts them**, with numbers in order (`file2` before `file10`), and documents such as Keynote files shown as one item, not a folder.
 - **Dates that read the way you would say them** ("24 min ago", "Yesterday, 6:03 PM").
-- **Finder's tags** show as colored dots, and the right-click menu sets them.
+- **Finder's tags** show as colored dots, and by name in a Tags column, a tooltip on the dots and the Info panel. The right-click menu and the File menu set the colors, and **Tags…** puts any tag in use on your Mac on the selected items or takes it off, with a check for a tag on all of them and a dash for one on some.
 
 ## Sizes and information
 

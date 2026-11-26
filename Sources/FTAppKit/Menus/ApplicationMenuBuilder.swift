@@ -115,6 +115,10 @@ enum ApplicationMenuBuilder {
             // "Convert 3 Images…" for the images selected.
             menu.addItem(context.command(.convertImages, ConvertImagesText.commandLabel))
             menu.addItem(.separator())
+            // The tag colors and Tags…, where the right-click menu has them.
+            menu.addItem(context.view(MenuBarTagColors.shared.makeItem()))
+            menu.addItem(context.command(.editTags, "Tags…"))
+            menu.addItem(.separator())
             // What hands the items to something else.
             menu.addItem(context.command(.shareSelection, "Share…"))
             // "Remove from Favorites" while the folder is one.
@@ -230,6 +234,7 @@ enum ApplicationMenuBuilder {
             sortMenu.addItem(context.command(.sortByAdded, "Date Added"))
             sortMenu.addItem(context.command(.sortBySize, "Size"))
             sortMenu.addItem(context.command(.sortByKind, "Kind"))
+            sortMenu.addItem(context.command(.sortByTags, "Tags"))
             sortBy.submenu = sortMenu
             menu.addItem(sortBy)
             menu.addItem(context.command(.toggleFoldersFirst, "Folders First"))
@@ -408,6 +413,12 @@ enum ApplicationMenuBuilder {
                 apply(chosenKey(shortcutID) ?? windowKey(shortcutID), to: item)
             }
             register(item, id: type.rawValue)
+            return item
+        }
+
+        /// An item that is a view of its own (the File menu's tag colors), kept by its id.
+        func view(_ item: NSMenuItem) -> NSMenuItem {
+            if let id = item.identifier?.rawValue { register(item, id: id) }
             return item
         }
 

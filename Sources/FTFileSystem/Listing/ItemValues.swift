@@ -7,8 +7,8 @@ public enum ItemValueField: String, Sendable, Hashable, CaseIterable {
     case modified, created, added, lastOpened, size, tags
 }
 
-/// An item's value of a field: a time in milliseconds since 1970 or a size in bytes; or a tag's name. Nil where the
-/// item has none (never opened, a folder's size, no tags) or can't be read.
+/// An item's value of a field: a time in milliseconds since 1970 or a size in bytes; or its tags' names, one line a
+/// name (`TagNameList`). Nil where the item has none (never opened, a folder's size, no tags) or can't be read.
 public enum ItemValue: Sendable, Hashable {
     case number(Int64?)
     case text(String?)
@@ -51,7 +51,7 @@ extension ExplorerListing {
             let reader = fileSystem.lastOpenedReader()
             return paths.map { .number(reader($0)) }
         case .tags:
-            return paths.map { .text(fileSystem.firstTagName($0)) }
+            return paths.map { .text(TagNameList.joined(fileSystem.tagNames($0))) }
         }
     }
 }

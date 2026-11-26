@@ -20,9 +20,10 @@
             "created": false,
             "added": false,
             "lastOpened": false,
-            "permissions": false
+            "permissions": false,
+            "tags": false
           },
-          "detailColumnOrder": ["modified", "created", "lastOpened", "added", "size", "kind", "permissions"],
+          "detailColumnOrder": ["modified", "created", "lastOpened", "added", "size", "kind", "tags", "permissions"],
           "detailColumnWidths": {
             "name": 320,
             "modified": 152,
@@ -31,7 +32,8 @@
             "created": 152,
             "added": 152,
             "lastOpened": 152,
-            "permissions": 108
+            "permissions": 108,
+            "tags": 190
           },
           "searchColumns": {
             "folder": true,
@@ -41,9 +43,10 @@
             "created": false,
             "added": false,
             "lastOpened": false,
-            "permissions": false
+            "permissions": false,
+            "tags": false
           },
-          "searchColumnOrder": ["folder", "modified", "created", "lastOpened", "added", "size", "kind", "permissions"],
+          "searchColumnOrder": ["folder", "modified", "created", "lastOpened", "added", "size", "kind", "tags", "permissions"],
           "searchColumnWidths": {
             "name": 300,
             "folder": 240,
@@ -53,7 +56,8 @@
             "created": 152,
             "added": 152,
             "lastOpened": 152,
-            "permissions": 108
+            "permissions": 108,
+            "tags": 190
           },
           "compactListWidths": {"standard": 292, "finder": 252},
           "iconSizes": {"standard": 64, "finder": 64},
@@ -200,7 +204,8 @@
                 "created": 152,
                 "added": 152,
                 "lastOpened": 152,
-                "permissions": 108
+                "permissions": 108,
+                "tags": 190
               },
               "searchColumnWidths": {
                 "name": 300,
@@ -211,7 +216,8 @@
                 "created": 152,
                 "added": 152,
                 "lastOpened": 152,
-                "permissions": 108
+                "permissions": 108,
+                "tags": 190
               }
             }
           }
@@ -241,9 +247,10 @@
             "created": false,
             "added": false,
             "lastOpened": false,
-            "permissions": false
+            "permissions": false,
+            "tags": false
           },
-          "detailColumnOrder": ["modified", "created", "lastOpened", "added", "size", "kind", "permissions"],
+          "detailColumnOrder": ["modified", "created", "lastOpened", "added", "size", "kind", "tags", "permissions"],
           "detailColumnWidths": {
             "name": 320,
             "modified": 152,
@@ -252,7 +259,8 @@
             "created": 152,
             "added": 152,
             "lastOpened": 152,
-            "permissions": 108
+            "permissions": 108,
+            "tags": 190
           },
           "searchColumns": {
             "folder": true,
@@ -262,9 +270,10 @@
             "created": false,
             "added": false,
             "lastOpened": false,
-            "permissions": false
+            "permissions": false,
+            "tags": false
           },
-          "searchColumnOrder": ["folder", "modified", "created", "lastOpened", "added", "size", "kind", "permissions"],
+          "searchColumnOrder": ["folder", "modified", "created", "lastOpened", "added", "size", "kind", "tags", "permissions"],
           "searchColumnWidths": {
             "name": 300,
             "folder": 240,
@@ -274,7 +283,8 @@
             "created": 152,
             "added": 152,
             "lastOpened": 152,
-            "permissions": 108
+            "permissions": 108,
+            "tags": 190
           },
           "compactListWidths": {"standard": 292, "finder": 252},
           "iconSizes": {"standard": 64, "finder": 64},
@@ -420,7 +430,8 @@
               "created": 152,
               "added": 152,
               "lastOpened": 152,
-              "permissions": 108
+              "permissions": 108,
+              "tags": 190
             },
             "searchColumnWidths": {
               "name": 300,
@@ -431,7 +442,8 @@
               "created": 152,
               "added": 152,
               "lastOpened": 152,
-              "permissions": 108
+              "permissions": 108,
+              "tags": 190
             }
           }
         },
@@ -468,7 +480,8 @@
                 "created": 80,
                 "added": 152,
                 "lastOpened": 152,
-                "permissions": 108
+                "permissions": 108,
+                "tags": 190
               },
               "searchColumnWidths": {
                 "name": 300,
@@ -479,7 +492,8 @@
                 "created": 152,
                 "added": 152,
                 "lastOpened": 152,
-                "permissions": 108
+                "permissions": 108,
+                "tags": 190
               }
             }
           },
@@ -515,7 +529,8 @@
                 "created": 152,
                 "added": 152,
                 "lastOpened": 152,
-                "permissions": 80
+                "permissions": 80,
+                "tags": 190
               },
               "searchColumnWidths": {
                 "name": 300,
@@ -526,7 +541,8 @@
                 "created": 280,
                 "added": 152,
                 "lastOpened": 152,
-                "permissions": 36
+                "permissions": 36,
+                "tags": 190
               }
             }
           },
@@ -562,7 +578,8 @@
                 "created": 152,
                 "added": 152,
                 "lastOpened": 152,
-                "permissions": 108
+                "permissions": 108,
+                "tags": 190
               },
               "searchColumnWidths": {
                 "name": 300,
@@ -573,7 +590,8 @@
                 "created": 152,
                 "added": 152,
                 "lastOpened": 152,
-                "permissions": 260
+                "permissions": 260,
+                "tags": 190
               }
             }
           },
@@ -609,7 +627,8 @@
                 "created": 152,
                 "added": 152,
                 "lastOpened": 152,
-                "permissions": 108
+                "permissions": 108,
+                "tags": 190
               },
               "searchColumnWidths": {
                 "name": 300,
@@ -620,7 +639,8 @@
                 "created": 152,
                 "added": 152,
                 "lastOpened": 152,
-                "permissions": 108
+                "permissions": 108,
+                "tags": 190
               }
             }
           }
@@ -5033,7 +5053,7 @@
           "sortBy": "kind",
           "sortDirection": "desc",
           "detailColumns": {"kind": false, "created": true, "permissions": true},
-          "detailColumnOrder": ["modified", "size", "kind", "permissions", "created", "lastOpened", "added"],
+          "detailColumnOrder": ["modified", "size", "kind", "permissions", "created", "lastOpened", "added", "tags"],
           "detailColumnWidths": {"name": 140, "size": 80, "kind": 60, "created": 280, "permissions": 260},
           "searchColumns": {"kind": true, "permissions": true},
           "searchColumnOrder": {
@@ -5250,7 +5270,7 @@
           "searchViewMode": "icons",
           "sortBy": "size",
           "detailColumns": {"modified": false},
-          "detailColumnOrder": ["modified", "size", "kind", "created", "lastOpened", "added", "permissions"],
+          "detailColumnOrder": ["modified", "size", "kind", "created", "lastOpened", "added", "tags", "permissions"],
           "detailColumnWidths": {"name": 140, "modified": 280, "kind": 320, "permissions": 60},
           "searchColumns": {"folder": false, "size": false},
           "searchColumnOrder": {"$remove": ["created"], "$insert": [[null, "created"]]},
@@ -5836,7 +5856,7 @@
           "searchViewMode": "list",
           "sortDirection": "desc",
           "detailColumns": {"size": false, "created": true, "permissions": true},
-          "detailColumnOrder": ["permissions", "kind", "modified", "created", "lastOpened", "added", "size"],
+          "detailColumnOrder": ["permissions", "kind", "modified", "created", "lastOpened", "added", "size", "tags"],
           "detailColumnWidths": {"name": 140, "size": 240, "permissions": 36},
           "searchColumnWidths": {"size": 60, "kind": 320, "created": 80},
           "markClipboardItems": false,

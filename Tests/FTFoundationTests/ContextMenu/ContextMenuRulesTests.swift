@@ -148,6 +148,8 @@ struct ContextMenuRulesTests {
                 "Copy Path",
                 "Copy Text", "Rename", "Duplicate", "Make Alias", "Move to…",
                 "Compress \u{201C}b.txt\u{201D}",
+                // Under the row of tag colors, which the menu adds.
+                "Tags…",
                 // What hands the file to something else, leaving it as it is.
                 "Share…", "Save as Template", "Open in Terminal", "Show in Finder", "Move to Trash",
             ])
@@ -159,7 +161,8 @@ struct ContextMenuRulesTests {
                 "Get Info",
                 "Calculate Size", "Cut", "Copy", "Paste into Folder", "Copy Path", "Rename", "Duplicate",
                 "Make Alias", "Move to…",
-                "New Folder", "Compress \u{201C}F\u{201D}", "Share…", "Remove from Favorites", "Open in Terminal",
+                "New Folder", "Compress \u{201C}F\u{201D}", "Tags…", "Share…", "Remove from Favorites",
+                "Open in Terminal",
                 "Show in Finder",
                 "Move to Trash",
             ])

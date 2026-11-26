@@ -118,15 +118,21 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
         let tagColorsSeparator =
             items.contains(.separator(key: "separator-organize")) ? "separator-organize" : "separator-rename"
         let offersTagColors = subject.surface == .content || subject.surface == .search
+        // With Tags…, the colors come right before it, as in Finder; without it, in a group of their own.
+        let offersTagsItem = items.contains {
+            if case .action(id: .tags, _, _, _, _) = $0 { return true }
+            return false
+        }
         for item in items {
             switch item {
             case .separator(let key):
                 menu.addItem(.separator())
-                if key == tagColorsSeparator, offersTagColors {
+                if key == tagColorsSeparator, offersTagColors, !offersTagsItem {
                     addTagColors()
                     menu.addItem(.separator())
                 }
             case .action(let id, let label, let icon, let destructive, let hasSubmenu):
+                if id == .tags, offersTagColors, tagColors == nil { addTagColors() }
                 let entry = NSMenuItem(title: label, action: #selector(choose(_:)), keyEquivalent: "")
                 entry.target = self
                 entry.identifier = NSUserInterfaceItemIdentifier(id.rawValue)
@@ -169,14 +175,13 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
         item.view = row
         menu.addItem(item)
         tagColors = row
-        guard paths.count <= Self.tagStateLimit else { return }
+        guard paths.count <= TagColorsMenuRow.stateLimit else { return }
         Task { @MainActor [weak row] in
             let states = await BlockingWork.run { FinderTags.states(of: paths) }
             row?.show(states)
         }
     }
 
-    private static let tagStateLimit = 1000
     private(set) weak var tagColors: TagColorsMenuRow?
 
     /// Option turns Open With into Always Open With: offered for files only, and only for one kind. The

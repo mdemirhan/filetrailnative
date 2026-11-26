@@ -44,8 +44,8 @@ extension GroupByPreference {
 }
 
 extension GroupByPreference {
-    /// The field a column of the List shows, to group by from its header (Folder in search results'); nil for
-    /// Permissions.
+    /// The field a column of the List shows, to group by from its header (Folder in search results', the first tag in
+    /// Tags'); nil for Permissions.
     static func of(_ column: DetailColumn) -> GroupByPreference? {
         switch column.rawValue {
         case "name": .name
@@ -55,6 +55,7 @@ extension GroupByPreference {
         case "added": .added
         case "size": .size
         case "kind": .kind
+        case "tags": .tags
         case "folder": .folder
         default: nil
         }

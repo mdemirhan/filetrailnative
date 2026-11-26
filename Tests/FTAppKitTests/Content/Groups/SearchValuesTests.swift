@@ -108,7 +108,7 @@ struct SearchValuesTests {
     @Test func eachOrderAndGroupingNamesTheFieldItReads() {
         #expect(
             SearchResultsSortByPreference.allCases.filter(\.readsEveryResult).compactMap(\.valueField) == [
-                .modified, .created, .lastOpened, .added, .size,
+                .modified, .created, .lastOpened, .added, .size, .tags,
             ])
         #expect(
             SearchResultsSortByPreference.name.valueField == nil && !SearchResultsSortByPreference.kind.readsEveryResult
