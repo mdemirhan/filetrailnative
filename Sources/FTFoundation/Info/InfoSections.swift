@@ -218,6 +218,27 @@ public enum InfoText {
         return String(characters[..<low]) + tail
     }
 
+    /// An extended attribute's name in words where it is one macOS or Finder keeps: "Quarantined", "Code signature";
+    /// any other by its own name.
+    public static func attribute(_ name: String) -> String {
+        if name.hasPrefix("com.apple.cs.") { return "Code signature" }
+        return attributeWords[name] ?? name
+    }
+
+    static let attributeWords: [String: String] = [
+        "com.apple.quarantine": "Quarantined",
+        "com.apple.metadata:kMDItemWhereFroms": "Downloaded from",
+        "com.apple.metadata:kMDItemDownloadedDate": "Download date",
+        "com.apple.metadata:_kMDItemUserTags": "Tags",
+        "com.apple.metadata:kMDItemFinderComment": "Finder comment",
+        "com.apple.FinderInfo": "Finder info",
+        "com.apple.ResourceFork": "Resource fork",
+        "com.apple.lastuseddate#PS": "Last opened date",
+        "com.apple.TextEncoding": "Text encoding",
+        "com.apple.macl": "App access",
+        "com.apple.rootless": "Protected by macOS",
+    ]
+
     /// The kinds of several items, the most first: "HEIF Image (9), QuickTime movie (2), Folder", and what stands for
     /// it where it doesn't fit on one line: "3 kinds".
     public static func kinds(_ labels: [String]) -> (full: String, short: String) {

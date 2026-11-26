@@ -93,7 +93,11 @@ extension InfoPanelModel {
                 fitting(
                     "Available", available.map { SizeText.size($0) }, more: purgeable.map { "(\($0))" }, joiner: " "))
         } else {
-            if isFile {
+            if item.kind.isLink {
+                // Where it leads, in the place a file's Opens with and a folder's Contains take: the rows under it
+                // keep their places from item to item, as Finder's Get Info has no Open with for an alias.
+                general.append(originalRow(item, homePath: homePath, startupDiskName: startupDiskName))
+            } else if isFile {
                 switch opensWith {
                 case .available: general.append(InfoRow(label: "Opens with", value: .opensWith, muted: false))
                 case .pending, .hidden: general.append(row("Opens with", nil))
@@ -118,21 +122,6 @@ extension InfoPanelModel {
             } else {
                 general.append(InfoRow(label: "Where", value: .text(pending), muted: true))
             }
-        }
-        // A symbolic link or an alias says where it leads, as Finder's Get Info does.
-        switch item.original {
-        case .found(let path):
-            general.append(
-                InfoRow(
-                    label: "Original",
-                    value: .originalLink(
-                        label: PathBarModel.label(path, homePath: homePath, startupDiskName: startupDiskName),
-                        path: path),
-                    muted: false, copyText: path))
-        case .missing:
-            general.append(InfoRow(label: "Original", value: .text("Can\u{2019}t be found"), muted: true))
-        case nil:
-            break
         }
         var sections = [InfoSection(id: .general, rows: general)]
 
@@ -187,6 +176,20 @@ extension InfoPanelModel {
             summary = SizeText.size(item.sizeBytes, status: item.sizeStatus)
         }
         return ItemContent(sections: sections, subtitle: summary.map { "\(kind) · \($0)" } ?? kind)
+    }
+
+    /// Where a symbolic link or an alias leads: a link to it, "Can't be found", or a dash until it is resolved.
+    private static func originalRow(_ item: InfoItem, homePath: String, startupDiskName: String) -> InfoRow {
+        switch item.original {
+        case .found(let path):
+            InfoRow(
+                label: "Original",
+                value: .originalLink(
+                    label: PathBarModel.label(path, homePath: homePath, startupDiskName: startupDiskName), path: path),
+                muted: false, copyText: path)
+        case .missing: InfoRow(label: "Original", value: .text("Can\u{2019}t be found"), muted: true)
+        case nil: row("Original", nil)
+        }
     }
 
     /// Size is one line for every item, so the rows under it stay where they are from a file to a folder and while a
@@ -443,8 +446,7 @@ extension InfoPanelModel {
         }
         var rows = [
             row("Type", more?.contentType),
-            row("Cloud", cloud), row("Volume", volume), row("File ID", fileID),
-            row("Attributes", more.map { $0.attributes.isEmpty ? "None" : $0.attributes.joined(separator: "\n") }),
+            row("Cloud", cloud), row("Disk", volume), row("File ID", fileID), attributesRow(more?.attributes),
         ]
         if let comment = details?.comment { rows.append(row("Comments", comment)) }
         // The lists of More, at the panel's end, take their lines: nothing under them moves.
@@ -452,6 +454,18 @@ extension InfoPanelModel {
             rows[index].wraps = true
         }
         return rows
+    }
+
+    /// The item's extended attributes, named in words where they are known, each once; com.apple.provenance, which
+    /// macOS puts on nearly every file, left out. Their own names are the row's tooltip.
+    private static func attributesRow(_ names: [String]?) -> InfoRow {
+        guard let names else { return row("Attributes", nil) }
+        let kept = names.filter { $0 != "com.apple.provenance" }
+        var seen = Set<String>()
+        let words = kept.map(InfoText.attribute).filter { seen.insert($0).inserted }
+        var row = row("Attributes", words.isEmpty ? "None" : words.joined(separator: "\n"))
+        row.tooltip = kept.isEmpty ? nil : kept.joined(separator: "\n")
+        return row
     }
 
     // MARK: Several items

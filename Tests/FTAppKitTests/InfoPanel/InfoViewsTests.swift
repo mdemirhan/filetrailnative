@@ -231,6 +231,30 @@ struct InfoPanelViewTests {
         #expect(narrow.frame.minX >= 16)
     }
 
+    // A list in More, one item a line, takes its lines however short they are: none is cut off.
+    @Test func moreListsTakeTheirLines() throws {
+        var details = InfoDetails()
+        details.more.attributes = ["com.apple.metadata:kMDItemWhereFroms", "com.apple.quarantine"]
+        let content = InfoPanelModel.itemContent(
+            item: Self.file, pending: false, volume: nil, isVolumeRoot: false, hasFolderSize: false, folderSize: nil,
+            opensWith: .available, dates: DateText(locale: Locale(identifier: "en_US"), timeZone: .gmt),
+            details: .read(details))
+        let shown = InfoPanelDisplay(
+            body: .item(.init(item: Self.file, content: content, folderSize: nil, openApp: nil)), wantsSpinner: false)
+        // More open, for this test alone: it runs without waiting, so no other test sees it.
+        InfoSectionFolds.reset()
+        if InfoSectionFolds.isFolded(.more) { InfoSectionFolds.toggle(.more) }
+        defer { InfoSectionFolds.reset() }
+        let view = InfoPanelView()
+        view.show(shown)
+        let laid = laidOut(view, width: 320, height: 2000)
+        let field = try #require(
+            findViews("infoPanel.row.value", in: laid).compactMap { $0 as? NSTextField }
+                .first { $0.stringValue == "Downloaded from\nQuarantined" })
+        let line = try #require(field.font).boundingRectForFont.height
+        #expect(field.frame.height >= 2 * line * 0.9)
+    }
+
     // A long Where is cut at its start within its row: it never reaches over its label or past the panel's edge,
     // and the field is no wider than its row gives it.
     @Test func aLongWhereStaysInItsRow() throws {

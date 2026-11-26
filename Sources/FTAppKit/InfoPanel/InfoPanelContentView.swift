@@ -384,9 +384,9 @@ final class InfoPanelContentView: NSView {
     private func updateValue(_ views: RowViews, _ row: InfoRow) {
         switch row.value {
         case .text(let text), .place(let text):
-            if let field = views.value as? NSTextField, field.stringValue != text {
-                field.stringValue = text
-                field.toolTip = row.wraps ? nil : (row.copyText ?? text)
+            if let field = views.value as? NSTextField {
+                if field.stringValue != text { field.stringValue = text }
+                field.toolTip = row.tooltip ?? (row.wraps ? nil : (row.copyText ?? text))
             }
         case .fitting(let full, _):
             // Its text is chosen as the row is laid out.
@@ -560,7 +560,9 @@ final class InfoPanelContentView: NSView {
         let value: NSView
         switch row.value {
         case .text(let text):
-            value = valueField(text, wraps: row.wraps)
+            let field = valueField(text, wraps: row.wraps)
+            if let tooltip = row.tooltip { field.toolTip = tooltip }
+            value = field
         case .fitting(let full, _):
             // Which of its texts shows is chosen as the row is laid out, by the room it has.
             let field = SelectableTextField.label(full)
@@ -981,9 +983,14 @@ final class InfoPanelContentView: NSView {
                 let measured = ceil(
                     (field.cell?.cellSize(forBounds: NSRect(x: 0, y: 0, width: maxValue + room, height: 10000)).height)
                         .map { Double($0) } ?? bodyLine)
-                let wraps = textWidth(field) > maxValue + 0.5
+                // A list, one item a line, takes its lines however short they are.
+                let wraps = textWidth(field) > maxValue + 0.5 || field.stringValue.contains("\n")
                 valueHeight = wraps ? max(bodyLine, measured) : bodyLine
-                let shownWidth = wraps ? maxValue : valueWidth
+                // A list whose lines each fit is as wide as its longest, so the room beside it is the row's, as it is
+                // beside any value: a right-click there gives the row's Copy.
+                let longest =
+                    field.stringValue.split(separator: "\n").map { textExtent(String($0), field.font) }.max() ?? 0
+                let shownWidth = wraps ? (longest <= maxValue ? longest : maxValue) : valueWidth
                 put(field, NSRect(x: inset + width - shownWidth, y: top, width: shownWidth, height: valueHeight))
             }
         case let link as TextLinkView:

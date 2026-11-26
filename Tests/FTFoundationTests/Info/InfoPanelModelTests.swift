@@ -246,6 +246,59 @@ struct InfoPanelModelTests {
         #expect(Self.labels(content(ignores: nil), .permissions) == ["Owner", "Group", "Everyone", "Ownership"])
     }
 
+    // Every item that isn't a disk has five rows in General, in the same places: only the second says what it is to
+    // the kind, what opens a file, what a folder holds, where an alias or a link leads (and no Opens with for it).
+    @Test func generalKeepsItsRowsInPlaceFromKindToKind() {
+        func labels(_ kind: EntryKind, original: InfoOriginal? = nil) -> [String] {
+            var item = Self.file()
+            item.kind = kind
+            item.original = original
+            return InfoPanelModel.itemContent(
+                item: item, pending: false, volume: nil, isVolumeRoot: false, hasFolderSize: kind == .directory,
+                folderSize: kind == .directory ? .idle : nil, opensWith: .available, dates: Self.dates,
+                tags: .pending
+            ).section(.general)?.rows.map(\.label) ?? []
+        }
+        let rest = ["Size", "Tags", "Where"]
+        #expect(labels(.file) == ["Kind", "Opens with"] + rest)
+        #expect(labels(.directory) == ["Kind", "Contains"] + rest)
+        for kind in [EntryKind.alias, .aliasDirectory, .symlinkFile, .symlinkDirectory] {
+            #expect(labels(kind, original: .found("/Users/demo/x")) == ["Kind", "Original"] + rest, "\(kind)")
+        }
+        // Not resolved yet: a dash in its place; gone: said so.
+        var link = Self.file()
+        link.kind = .symlinkFile
+        #expect(Self.row(Self.content(link), .general, "Original")?.value == .text("—"))
+        link.original = .missing
+        #expect(Self.row(Self.content(link), .general, "Original")?.value == .text("Can\u{2019}t be found"))
+    }
+
+    // More names the item's disk, and its attributes in words, com.apple.provenance left out.
+    @Test func moreNamesTheDiskAndTheAttributesInWords() {
+        var details = InfoDetails()
+        details.more.volumeName = "Macintosh HD"
+        details.more.volumeFormat = "APFS"
+        details.more.attributes = [
+            "com.apple.cs.CodeDirectory", "com.apple.cs.CodeSignature", "com.apple.metadata:kMDItemWhereFroms",
+            "com.apple.provenance", "com.apple.quarantine", "org.example.custom",
+        ]
+        func more(_ details: InfoDetails) -> InfoPanelModel.ItemContent {
+            InfoPanelModel.itemContent(
+                item: Self.file(), pending: false, volume: nil, isVolumeRoot: false, hasFolderSize: false,
+                folderSize: nil, opensWith: .hidden, dates: Self.dates, details: .read(details))
+        }
+        let content = more(details)
+        #expect(Self.row(content, .more, "Disk")?.value == .text("Macintosh HD · APFS"))
+        #expect(Self.row(content, .more, "Volume") == nil)
+        let attributes = Self.row(content, .more, "Attributes")
+        #expect(attributes?.value == .text("Code signature\nDownloaded from\nQuarantined\norg.example.custom"))
+        #expect(attributes?.tooltip?.contains("com.apple.quarantine") == true)
+        #expect(attributes?.tooltip?.contains("com.apple.provenance") == false)
+        // Only provenance: none to name.
+        details.more.attributes = ["com.apple.provenance"]
+        #expect(Self.row(more(details), .more, "Attributes")?.value == .text("None"))
+    }
+
     // A disk image, a file or a sparse bundle's folder, has a section of its own: the same rows for every one, a dash
     // where it doesn't say.
     @Test func aDiskImageSaysWhatItHolds() {

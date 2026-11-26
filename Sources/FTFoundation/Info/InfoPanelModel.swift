@@ -112,6 +112,8 @@ public struct InfoRow: Equatable, Sendable {
     public var muted: Bool
     /// What the row's right-click Copy copies, where it isn't the value's text (the whole path of Where).
     public var copyText: String?
+    /// What its tooltip says, where it isn't the value's text (an attribute's own names).
+    public var tooltip: String?
     /// Its text takes as many lines as it needs. Every other value is one line, its whole text in its tooltip and
     /// there to select, so no row grows as its value comes in.
     public var wraps = false
