@@ -463,8 +463,17 @@ final class WorkspaceView: NSView {
                 self.slide = nil
                 self.rehomeInspectorCell(in: self.inspectorColumn)
                 self.needsLayout = true
+                if kind == .slidingIn { Self.placeTooltips(in: self.inspectorCell) }
             }
         }
+    }
+
+    /// A tooltip covers what of its view showed when its tracking areas were last placed. A panel shown again starts its
+    /// slide out of sight and nothing places its header's buttons again, so their tooltips covered nothing: once it is
+    /// in place, every view in it places its tracking areas, the tooltips' among them.
+    private static func placeTooltips(in view: NSView) {
+        view.updateTrackingAreas()
+        for subview in view.subviews { placeTooltips(in: subview) }
     }
 
     private func rehomeInspectorCell(in column: NSView) {

@@ -192,6 +192,34 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // Shown again, the panel starts its slide out of sight, and a tooltip covers what of its view showed when its
+        // tracking areas were last placed: on a window on screen the header's buttons were left with tooltips over
+        // nothing. Once the panel is in place, every view in it places them again.
+        @Test func theInfoPanelPlacesItsTooltipsOnceItHasSlidIn() async throws {
+            final class Spy: NSView {
+                var placed = 0
+                override func updateTrackingAreas() {
+                    super.updateTrackingAreas()
+                    placed += 1
+                }
+            }
+            let harness = try ExplorerHarness.windowless()
+            harness.store.update { $0.propertiesOpen = true }
+            let tab = try await harness.open()
+            let workspace = tab.workspace
+            let header = try #require(findViews("infoPanel.header", in: workspace.inspectorCell).first)
+            let spy = Spy(frame: NSRect(x: 0, y: 0, width: 24, height: 24))
+            header.addSubview(spy)
+            tab.perform(.toggleInfoPanel)
+            #expect(await waitUntil { workspace.slide == nil })
+            tab.perform(.toggleInfoPanel)
+            #expect(workspace.slide == .slidingIn)
+            spy.placed = 0
+            #expect(await waitUntil { workspace.slide == nil })
+            #expect(spy.placed >= 1)
+            await harness.close()
+        }
+
         // The status bar runs from the sidebar's edge to the window's right under the content and the Info panel: opening
         // the panel neither moves nor narrows it, and the panes stop on its top.
         @Test func theStatusBarStaysWholeUnderTheInfoPanel() async throws {
