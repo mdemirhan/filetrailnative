@@ -45,8 +45,8 @@ enum InfoGlyph {
     /// Draws the symbol as large as fits in `rect`, centered there. Semibold, as the panel's small boxes need for a
     /// stroke as strong as its text's.
     @MainActor
-    func draw(in rect: NSRect, color: NSColor) {
-        SymbolGlyph.draw(symbolName, in: rect, color: color, weight: .semibold)
+    func draw(in rect: NSRect, color: NSColor, weight: NSFont.Weight = .semibold) {
+        SymbolGlyph.draw(symbolName, in: rect, color: color, weight: weight)
     }
 }
 
@@ -71,6 +71,8 @@ final class InfoIconButton: NSView {
     var iconSize: Double
     var cornerRadius: Double
     /// (normal, hovered) colors, and the fill under the pointer.
+    /// How heavy the symbol's lines are.
+    var weight: NSFont.Weight = .semibold { didSet { needsDisplay = true } }
     var normalColor: (Theme) -> RGBA = { $0.palette.textSecondary }
     var hoverColor: (Theme) -> RGBA = { $0.palette.textPrimary }
     private var isHovered = false { didSet { needsDisplay = true } }
@@ -116,7 +118,7 @@ final class InfoIconButton: NSView {
         }
         let rect = NSRect(
             x: (bounds.width - iconSize) / 2, y: (bounds.height - iconSize) / 2, width: iconSize, height: iconSize)
-        glyph.draw(in: rect, color: NSColor(hover ? hoverColor(theme) : normalColor(theme)))
+        glyph.draw(in: rect, color: NSColor(hover ? hoverColor(theme) : normalColor(theme)), weight: weight)
     }
 
     override func updateTrackingAreas() {

@@ -181,10 +181,13 @@ final class InfoPanelHeader: NSView {
         spinner.setAccessibilityIdentifier("infoPanel.spinner")
         spinner.setAccessibilityLabel("Loading info")
         spinner.isHidden = true
-        close.normalColor = { $0.palette.getInfoCloseIcon }
-        close.hoverColor = { $0.palette.getInfoCloseIconHover }
-        popOut.normalColor = { $0.palette.getInfoCloseIcon }
-        popOut.hoverColor = { $0.palette.getInfoCloseIconHover }
+        // In the text's own color, the hover's fill behind them under the pointer, and heavy: in grey they read as
+        // dimmed beside the window's own buttons.
+        for button in [close, popOut] {
+            button.normalColor = { $0.palette.textPrimary }
+            button.hoverColor = { $0.palette.textPrimary }
+            button.weight = .heavy
+        }
         popOut.tooltip = Self.popOutLabel
         for view in [title, spinner, close, popOut] as [NSView] { addSubview(view) }
         applyColors()

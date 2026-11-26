@@ -69,12 +69,6 @@ public struct ThemePalette: Equatable, Sendable {
     /// The thin edge of a text field.
     public let fieldEdge: [ShadowLayer]
 
-    /// The Info panel's close button.
-    public let getInfoCloseIcon: RGBA
-
-    /// The Info panel's close button under the pointer.
-    public let getInfoCloseIconHover: RGBA
-
     /// A value in the Info panel's rows.
     public let getInfoMetaValue: RGBA
 
@@ -182,8 +176,6 @@ public struct ThemePalette: Equatable, Sendable {
         fieldEdge: [
             ShadowLayer(inset: true, x: 0, y: 0, blur: 0, spread: 0.5, color: RGBA(r: 0, g: 0, b: 0, alpha: 0.12))
         ],
-        getInfoCloseIcon: RGBA(r: 176, g: 176, b: 181),
-        getInfoCloseIconHover: RGBA(r: 74, g: 74, b: 80),
         getInfoMetaValue: RGBA(r: 29, g: 29, b: 31),
         getInfoMetaValueMuted: RGBA(r: 161, g: 161, b: 166),
         iconNeutral: RGBA(r: 110, g: 110, b: 115),
@@ -245,8 +237,6 @@ public struct ThemePalette: Equatable, Sendable {
         fieldEdge: [
             ShadowLayer(inset: true, x: 0, y: 0, blur: 0, spread: 0.5, color: RGBA(r: 255, g: 255, b: 255, alpha: 0.1))
         ],
-        getInfoCloseIcon: RGBA(r: 95, g: 95, b: 100),
-        getInfoCloseIconHover: RGBA(r: 199, g: 199, b: 204),
         getInfoMetaValue: RGBA(r: 242, g: 242, b: 245),
         getInfoMetaValueMuted: RGBA(r: 110, g: 110, b: 115),
         iconNeutral: RGBA(r: 161, g: 161, b: 166),
