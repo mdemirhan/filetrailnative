@@ -24,7 +24,7 @@ Part of the owner's decisions: [the index](../decisions.md) lists the other part
     Replaced each group starting a column of its own, which read as disjointed.
   - The grouping is the pane's, as its order is;
     a saved tab keeps it, and a folder's view and a tab view can keep it.
-  - For search results, dates, sizes and tags are read in the background, only the field needed and only while the results are ordered or grouped by it ("Nothing is read before it is needed").
+  - For search results, dates, sizes and tags are read in the background, only the field needed and only while the results are ordered or grouped by it ("What the folder on screen needs is read for it" in decisions.md).
     The list is ordered and grouped again when the read ends and at most once a second while it goes on.
     Values read stay while the same folder is searched;
     the same search run again reads them again.
@@ -46,7 +46,7 @@ Part of the owner's decisions: [the index](../decisions.md) lists the other part
   Sort by Tags (View ▸ Sort By ▸ Tags, or the column's title) orders by each item's names A to Z, name by name, so items with the same tags sit together whatever order the tags were put on in (the owner, 2026-11-26; first built on the order they were put on in, which set "Work, Apple" apart from "Apple, Work");
   the column still shows them in that stored order.
   Items without tags come last either way.
-  The names are read for every item only while the list is sorted by them ("Nothing is read before it is needed"), and for search results as a date is.
+  The names are read for every item only while the list is sorted by them ("What the folder on screen needs is read for it" in decisions.md), and for search results as a date is.
   The column's header groups by Tags.
   The dots beside a name say the tags' names as their tooltip, as a tag without a color has no dot.
 - **Fields and columns are listed in one order** (2026-11-19): Name, Date Modified, Date Created, Date Last Opened, Date Added, Size, Kind, Tags, Permissions (search results put Folder after Name; Tags after Kind as Finder has it, 2026-11-26), in every menu, the palette, Settings and Help: the order of Finder's column header menu, used everywhere.

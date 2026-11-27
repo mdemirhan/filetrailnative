@@ -3,8 +3,8 @@
 // walk makes (size, the modified and created dates, permissions, locked, owner, only in the cloud, a file's emptiness),
 // then Finder's flags (an alias, broken), the date added, one list of the item's attribute names (downloaded, then
 // tags and their colors, last opened and where from, read only of an item that has them), `access`, and last a
-// folder opened (empty), each only for a search that asks for it, as "Nothing is read before it is needed" allows:
-// the search asks for it.
+// folder opened (empty), each only for a search that asks for it, as "What the folder on screen needs is read for it"
+// (docs/decisions.md) allows: the search asks for it.
 import Darwin
 import FTFoundation
 import Foundation

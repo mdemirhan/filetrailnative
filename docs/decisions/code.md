@@ -55,12 +55,15 @@ this file keeps why.
 - **The stop and crash recordings run through the write engine**, not only against themselves.
   A recording that ever can't is deleted with the tests that only describe it.
   The shape tests of the recordings stay, each saying what it guards.
-- **The frame times of scrolling are measured on demand** (the owner, 2026-11-25), not by a release or CI.
+- **Speed is measured on demand, in the worst cases** (the owner, 2026-11-25; widened 2026-11-27), not by a release or CI.
   `scripts/frame-times.sh` runs `FrameTimeGUITests` (the List, the Icons view and the Compact List, each at its default size and at its largest, on the fixture folder `large/files-3000`, each number the median of three scrolls) and shows the numbers against an earlier run's file or the last release measured on the same Mac model in `docs/frame-timings.json`, which keeps the releases from 0.20.1 to 1.7.0.
-  Nothing passes or fails on them.
-  Anything else wanting speed is guarded by tests that bound CPU time (`CPUTime.measureThread`): no other benchmark tests, budgets or `--bench` modes.
+  It is to measure the smallest sizes too (32 pt icons, 160 pt columns), in a window as large as the screen: a screen of the smallest items is where scrolling stutters, and the largest sizes put few items on screen.
+  A second script, on demand as well, is to time the main thread's blocks over 8 ms while a large folder is opened, gone back into and filtered, which scrolling's frame times never see: they were the worst stalls found (200 to 800 ms, `docs/plans/performance.md`).
+  The frame times compare with an earlier run's file or the last release measured on the same Mac model, the stalls with a run made just before on the same Mac; nothing passes or fails on either.
+  Anything else wanting speed is guarded by tests that bound CPU time (`CPUTime.measureThread`): no benchmark in CI, no budgets, no `--bench` modes.
   The fixture tree `large` holds the two folders the folder-size golden measures and the folder the frame times scroll.
   Replaced the frame times gating every release against the last one on the same Mac model: 1.8.0 was stopped for scrolling 40 to 70% slower, and 1.7.0 measured just as slow on the same Mac that day, and a few hours later the same commit was 18 to 42% faster, so the gate measured how busy the Mac was, not the code.
+  Widened on 2026-11-27 from the default and largest sizes, and from scrolling alone: those missed both the packed screens that stutter and the stalls of opening and filtering a folder.
 
 ## Reading in the background
 

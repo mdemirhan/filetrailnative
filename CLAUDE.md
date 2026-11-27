@@ -40,4 +40,4 @@ A native macOS file browser in Swift and AppKit. It's a Swift package with no Xc
 
 ## Benchmarks
 
-- Only the frame times of scrolling, measured on demand by `scripts/frame-times.sh`, never by a release or CI (`docs/decisions/code.md`, "The frame times of scrolling are measured on demand"). No other bench scripts, benchmark tests, budgets or `--bench` modes; a CPU-time test (`CPUTime.measureThread`) guards a speed fix where one is needed.
+- Measured on demand only, never by a release or CI (`docs/decisions/code.md`, "Speed is measured on demand, in the worst cases"): the frame times of scrolling by `scripts/frame-times.sh`, to include the smallest sizes in a screen-sized window, and the main thread's stalls while large folders are opened and filtered (a script still to come, `docs/plans/performance.md`). No benchmark in CI, no budgets, no `--bench` modes; a CPU-time test (`CPUTime.measureThread`) guards a speed fix where one is needed.

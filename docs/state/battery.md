@@ -50,6 +50,9 @@ Other repeating timers run only while something is going on, and stop when it en
 - **The Previews view** waits a moment after a mouse wheel or a drag-to-select scrolled it, to settle on a row, ten seconds after its last pane went, to let go of its previews, a fifth of a second for a preview not known yet before it shows the file's icon, a quarter of a second after the pane's size last changed before it asks for its previews at that size, and two seconds after a preview being made was told to stop, to see whether it did;
   each fires once.
   It asks Quick Look for the page past the one on screen and the page before it, ahead of need: those kept already cost nothing, and the others are asked for once.
+- **A filter typed in a folder of 500 items or more**, while keys wait to be handled, leaves the list undrawn for the last of them, and a timer draws it 0.15 s later if nothing else has;
+  it fires once.
+  The Icons view's previews and the names it has laid out are let go when macOS says memory is short, as the Previews view's previews are.
 - **A copy** updates its progress while it runs;
   **an open menu** that changes with Option checks the key 20 times a second;
   **animations** (a tree row's arrow turning, the Info Row sliding) run at 60 frames a second while they last.

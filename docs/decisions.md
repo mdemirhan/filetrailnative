@@ -38,12 +38,16 @@ The longer story is in git.
   Segmented controls, buttons, pop-ups and fields in the panes' bars and in sheets are the regular size, 24 pt, so a row of them shares one shape and one height: the search scopes, the Rename sheet's modes and the paste review's "For all conflicts" are regular segmented controls, the results filter's Fuzzy/Contains chip has the small radius inside the field's corners, and the search bar's Done and Stop and the Trash bar's Empty are 24 pt. The selected segment keeps the accent.
   The toolbar's groups and search field stay capsules, as Finder's are.
   Replaced large segmented controls, capsules beside rounded fields.
-- **Nothing is read before it is needed** (the owner, 2026-11-20).
-  An item's details beyond what its listing or search result gives (dates, sizes, tags, Date Last Opened) are read only when something on screen needs them: a column shown reads them for the rows on screen;
-  an order or groups by them read them for every item, only while that order or those groups are chosen, and only the one field they need.
-  Nothing is read ahead in case it is asked for, and speed is not given up for a feature unless the feature needs it.
-  The rule is about further calls to the disk, not about what a read already returned: what the folder read gives with each item (a file's size, its dates and permissions) is kept, in every view, whatever the order (the owner, 2026-11-21).
-  Search results order and group by name, folder and kind from what the search gives, and by any other field only through such a read.
+- **What the folder on screen needs is read for it, ahead of the scroll; nothing is read for what isn't shown** (the owner, 2026-11-27).
+  The aim is that the app doesn't work in the background for nothing, not that scrolling waits.
+  While a folder or search results are on screen, what their view shows as it is scrolled may be read and prepared ahead, off the main thread and at low priority: the details the view shows (dates, sizes, tags, Date Last Opened), previews, icons and the layout of names, for the whole folder or for the screens around the one shown.
+  Reading ahead stops when the folder is left, or its tab or window is hidden, and what was read is kept only while it may be shown again.
+  Nothing is read for a folder not shown, and nothing keeps running in the background with no window showing it.
+  A field the view doesn't show (a column hidden, an order or groups not chosen) is still read only once something asks for it: an order or groups by it read it for every item, only while chosen, and only the one field.
+  What the folder read gives with each item (a file's size, its dates and permissions) is kept, in every view, whatever the order (the owner, 2026-11-21).
+  Search results order and group by name, folder and kind from what the search gives, and by any other field through a read of that field.
+  Replaced "Nothing is read before it is needed" (the owner, 2026-11-20), which read details only for the rows on screen and nothing ahead "in case it is asked for".
+  It was there to keep the app from needless background work; the details and previews of a folder being looked at are needed as it is scrolled, and reading them only as rows came on screen left the rows waiting for them (`docs/plans/performance.md`).
 - **Font sizes and row heights are the app's own, not Finder's**: sidebar 14 pt, icon labels 13, list 14, path bar 12.
   From Finder the app takes the Favorites and Locations icons as system symbols, the Locations icon color, the unfocused selected fill and the toolbar's sizes.
   Favorites icons use the accent.

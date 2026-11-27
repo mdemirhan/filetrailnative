@@ -5,7 +5,8 @@ import Foundation
 
 /// The values search results are ordered or grouped by when they don't carry them (a date, the size, the tags): read
 /// for every result in the background, in batches, only for the fields the order and the groups on screen need, and
-/// only while they need them ("Nothing is read before it is needed"). A field no longer needed stops being read and its
+/// only while they need them ("What the folder on screen needs is read for it" in docs/decisions.md: a field no
+/// view shows is read only while something asks for it). A field no longer needed stops being read and its
 /// values go; results that come later are read as they come, and a value read stays while its field is needed, so
 /// a query narrowed or changed reads only the results that have none yet.
 @MainActor
