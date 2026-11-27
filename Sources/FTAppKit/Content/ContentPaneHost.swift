@@ -99,6 +99,9 @@ protocol ContentPaneHost: AnyObject {
     var listFilter: ListFilterTyping { get }
     /// Typing, Backspace or Esc in the list.
     func applyFilterKey(_ key: ListFilterKey)
+    /// Draws the list for a filter typed in a large folder, if that waits for the typing to pause: before a key or a
+    /// click acts on what the list shows.
+    func applyPendingFilter()
     /// The filter pinned to the pane, if one is: typing then selects names instead.
     var pinnedFilter: PinnedListFilter? { get }
     /// A character typed with the filter pinned selects the first name that starts with the letters typed so far; nil

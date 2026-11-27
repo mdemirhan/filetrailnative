@@ -349,7 +349,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// The folders' icons were dropped as System Settings' colors changed: the rows ask for them again.
     @objc private func accentDrawnIconsDropped(_ notification: Notification) {
         guard let store = iconStore, notification.object as AnyObject? === store else { return }
-        pane?.reload(scrollToTop: false)
+        reloadPane(scrollToTop: false)
     }
 
     private func observeWindow(_ window: NSWindow?) {
@@ -386,7 +386,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         mode = newMode
         installPane()
         // The new view starts at the top and then brings the selection's lead into view.
-        pane?.reload(scrollToTop: true)
+        reloadPane(scrollToTop: true)
         pane?.syncSelection()
         if let focus = pane?.focusView, view.window?.firstResponder == nil || hadKeyboard {
             view.window?.makeFirstResponder(focus)
@@ -472,6 +472,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         folder path: String, entries newEntries: [DirectoryEntry], selecting paths: [String]?, keepingScroll: Bool,
         changedPaths: [String]? = nil, restoring memory: FolderViewMemory? = nil
     ) {
+        // A list left undrawn for a filter's keys is drawn whole, whatever changed.
+        let redrawWaited = pendingFilterRedraw != nil
         readError = nil
         let sameFolder = DiskPath(path) == DiskPath(folderPath)
         if !sameFolder {
@@ -535,17 +537,19 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         closeRenameIfItemLeft()
         // Other groups are another order, whose rows are all drawn again.
         let regrouped = groups != groupsBefore
-        if let kept, !unchanged, keepingScroll, inlineRename == nil, previousKeys == entryKeys, !regrouped {
+        if let kept, !unchanged, keepingScroll, inlineRename == nil, previousKeys == entryKeys, !regrouped,
+            !redrawWaited
+        {
             // The same rows in the same order: only the rows of the items that changed are drawn again.
             let reloaded = Set(kept.changedPaths.lazy.map(DiskPath.init)).union(customIconPaths)
             pane?.reloadRows(paths: reloaded)
             filesChanged(changedPaths, besides: reloaded)
-        } else if !unchanged || !keepingScroll || regrouped {
+        } else if !unchanged || !keepingScroll || regrouped || redrawWaited {
             // Every row drawn again, as a new listing: each preview is checked against its file again.
             // The same folder in another order (a sort, Folders First, hidden files) starts at its top, and the List
             // stays where it was scrolled sideways: the column whose header was clicked stays in view.
             let keptLeft = sameFolder && !keepingScroll && pane is ListViewController ? pane?.scrollPosition.left : nil
-            pane?.reload(scrollToTop: !keepingScroll)
+            reloadPane(scrollToTop: !keepingScroll)
             if let keptLeft, let top = pane?.scrollPosition.top { pane?.scrollPosition = (top, keptLeft) }
         } else {
             pane?.refresh(paths: changedSet)
@@ -588,7 +592,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         settle(.failed(error))
         setSelection(.empty, notify: true)
         closeRenameIfItemLeft()
-        pane?.reload(scrollToTop: true)
+        reloadPane(scrollToTop: true)
         refreshState()
         updateStatus()
     }
@@ -619,7 +623,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         settle(.idle)
         setSelection(.empty, notify: true)
         closeRenameIfItemLeft()
-        pane?.reload(scrollToTop: true)
+        reloadPane(scrollToTop: true)
         refreshState()
         updateStatus()
     }
@@ -786,7 +790,9 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     /// The filter's text, its mode or the pin changed, whatever changed it: the list is narrowed again and drawn, and
     /// the results bar's field and Pin Filter are told, so neither is left showing what was.
-    private func filterChanged(_ after: SelectionAfterFilter) {
+    private func filterChanged(_ after: SelectionAfterFilter, coalescing: Bool = false) {
+        let deferred = coalescing && listed.count >= Self.coalescedFilterMinimum && keyIsWaiting()
+        if deferred { redrawFilteredSoon() }
         onFilterChanged?(filter)
         reorder()
         if case .kept(let previousPaths) = after { resanitizeSelection(previousPaths: previousPaths) }
@@ -795,15 +801,81 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         if case .keptWhereShown(let previousPaths) = after {
             resanitizeSelection(previousPaths: previousPaths, keepingHidden: false)
         }
-        pane?.reload(scrollToTop: false)
+        if !deferred {
+            pendingFilterRedraw = nil
+            pane?.reload(scrollToTop: false)
+        }
         if case .bestMatch = after, !filter.isEmpty {
             let match = ListFilter.selection(in: entries, query: filter, mode: filterMode, cache: foldedNames)
-            setSelection(match.map { ContentSelection.single($0.path) } ?? .empty, notify: true)
+            setSelection(match.map { ContentSelection.single($0.path) } ?? .empty, notify: !deferred)
         }
-        pane?.syncSelection()
+        if !deferred {
+            pane?.syncSelection()
+            // A list left undrawn for keys that were waiting owes its selection's news to whoever follows it.
+            announceOwedSelection()
+        }
         refreshState()
         updateStatus()
         onFilterStateChanged?()
+    }
+
+    // MARK: Typing a filter in a large folder
+
+    /// From this many items, a typed key's list isn't drawn while more keys are already waiting: drawing every item on
+    /// screen again took 70 to 220 ms a key in a folder of thousands at the smallest sizes, and keys typed meanwhile
+    /// waited behind it, each to draw a list the next one replaced. The list itself, its order and its selection
+    /// follow each key at once; the last key waiting draws it.
+    static let coalescedFilterMinimum = 500
+    /// A list left undrawn for a key that then went elsewhere is drawn this long after, at most.
+    static let filterRedrawLongest: TimeInterval = 0.15
+
+    /// The redraw left for the keys waiting, and the timer that draws it if none of them does.
+    private var pendingFilterRedraw: TimerToken? {
+        didSet { if pendingFilterRedraw !== oldValue { oldValue?.cancel() } }
+    }
+
+    private func redrawFilteredSoon() {
+        guard pendingFilterRedraw == nil else { return }
+        pendingFilterRedraw = timers.schedule(after: Self.filterRedrawLongest) { [weak self] in
+            self?.applyPendingFilter()
+        }
+    }
+
+    /// Whether another key is already waiting to be handled: the app is behind the typing. The queue is looked at in a
+    /// run-loop mode of its own, which nothing else is scheduled in: looked at in the default mode, the run loop ran the
+    /// work waiting there (a block, a timer) in the middle of a key, before the list was ordered again.
+    var keyIsWaiting: () -> Bool = {
+        NSApp.nextEvent(matching: .keyDown, until: .distantPast, inMode: ContentPaneController.peekMode, dequeue: false)
+            != nil
+    }
+
+    /// The run-loop mode the event queue is looked at in.
+    static let peekMode = RunLoop.Mode("com.filetrail.native.filterKeyPeek")
+
+    /// The list drawn for the filter typed, if it waits: before a key, a click, a context menu or a selection made
+    /// from outside acts on what the list shows.
+    func applyPendingFilter() {
+        guard pendingFilterRedraw != nil else { return }
+        pendingFilterRedraw = nil
+        pane?.reload(scrollToTop: false)
+        pane?.syncSelection()
+        announceOwedSelection()
+    }
+
+    /// Every item drawn again, by anything but a filter's key: it takes the place of a redraw waiting for the typing.
+    private func reloadPane(scrollToTop: Bool) {
+        pendingFilterRedraw = nil
+        pane?.reload(scrollToTop: scrollToTop)
+        announceOwedSelection()
+    }
+
+    /// A selection made while the list waited to be drawn, not told yet.
+    private var selectionAnnouncementOwed = false
+
+    private func announceOwedSelection() {
+        guard selectionAnnouncementOwed else { return }
+        selectionAnnouncementOwed = false
+        onSelectionChanged?(selection)
     }
 
     /// A key typed into the list: the text narrows it and selects the first name that starts with it, otherwise the
@@ -821,7 +893,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         case .eraseWord:
             listFilter.eraseWord()
         }
-        filterChanged(.bestMatch)
+        filterChanged(.bestMatch, coalescing: true)
     }
 
     /// The mode the view starts in, as it opens: a filter already typed keeps its own.
@@ -965,7 +1037,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         reorder()
         guard entryKeys != keysBefore || groups != groupsBefore else { return }
         resanitizeSelection(previousPaths: before)
-        pane?.reload(scrollToTop: false)
+        reloadPane(scrollToTop: false)
         pane?.syncSelection()
         updateStatus()
     }
@@ -1051,7 +1123,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         let previousPaths = entryPaths
         reorder()
         resanitizeSelection(previousPaths: previousPaths)
-        pane?.reload(scrollToTop: false)
+        reloadPane(scrollToTop: false)
         pane?.syncSelection()
         refreshState()
         updateStatus()
@@ -1176,9 +1248,15 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         guard next != selection else { return }
         orderBeforeRemoval = nil
         selection = next
-        pane?.syncSelection()
+        // A list left undrawn for the keys waiting takes the selection as it's drawn, and tells it then.
+        if pendingFilterRedraw == nil { pane?.syncSelection() }
         updateStatus()
-        if notify { onSelectionChanged?(next) }
+        if notify {
+            selectionAnnouncementOwed = false
+            onSelectionChanged?(next)
+        } else if pendingFilterRedraw != nil {
+            selectionAnnouncementOwed = true
+        }
     }
 
     /// Whenever the visible entries change (a folder, a sort, a filter), every selected path that is no longer in the
@@ -1221,6 +1299,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// Selects the paths that are listed; the view keeps their lead in view (`RevealKeeper`). A lead a filter hides is
     /// shown: the filter that hides it goes (`showHidden`).
     func select(paths: [String]) {
+        applyPendingFilter()
         let existing = paths.filter { rowsByPath[DiskPath($0)] != nil }
         let selecting = ContentSelection.of(existing)
         // Every one a filter hides is shown, not only the lead: one left hidden would stay selected unseen, and be
@@ -1238,17 +1317,20 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     /// ⌘A with the list focused: every entry on screen (only the matching ones while a filter is typed).
     func selectAllEntries() {
+        applyPendingFilter()
         selectionChanged(.all(entryPaths: entryPaths))
     }
 
     /// Edit ▸ Deselect All.
     func deselectAllEntries() {
+        applyPendingFilter()
         selectionChanged(.empty)
     }
 
     /// Edit ▸ Invert Selection: every entry on screen that isn't selected, and none of those that are, nor any a
     /// filter hides.
     func invertSelection() {
+        applyPendingFilter()
         selectionChanged(selection.inverted(entryPaths: entryPaths))
     }
 
@@ -1291,6 +1373,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// Whether the item is listed.
     @discardableResult
     func beginRename(path: String) -> Bool {
+        applyPendingFilter()
         let key = DiskPath(path)
         guard rowsByPath[key] != nil else { return false }
         showHidden(path)
@@ -1383,7 +1466,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         // The views see the results' columns and order.
         if newList || previousKeys != entryKeys || groups != groupsBefore {
             selection = selection.sanitized(entryPaths: entryPaths)
-            pane?.reload(scrollToTop: newList)
+            reloadPane(scrollToTop: newList)
         } else {
             pane?.refreshLook()
         }
@@ -1414,7 +1497,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         rowsCache = nil
         reorder()
         selection = selection.sanitized(entryPaths: entryPaths)
-        pane?.reload(scrollToTop: false)
+        reloadPane(scrollToTop: false)
         if let scroll = kept?.scroll { pane?.scrollPosition = scroll }
         pane?.syncSelection()
         refreshState()
@@ -1455,6 +1538,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// Applies a selection to the list on screen, bringing its lead into view; results just brought back stay
     /// scrolled where they were left.
     func applySelection(_ next: ContentSelection) {
+        applyPendingFilter()
         setSelection(next, notify: true)
         pane?.syncSelection()
         if let scroll = restoredScroll {
@@ -1859,7 +1943,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             let groupsBefore = groups
             reorder()
             if entryKeys != before || groups != groupsBefore {
-                pane?.reload(scrollToTop: false)
+                reloadPane(scrollToTop: false)
                 pane?.syncSelection()
                 updateStatus()
                 return

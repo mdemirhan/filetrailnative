@@ -109,6 +109,7 @@ final class ContentKeyboard {
                 for: Self.shortcutEvent(event), shortcuts: host.shortcuts, filter: host.listFilter,
                 hasEntries: !paths.isEmpty, hasSelection: !host.selection.isEmpty, pinned: host.pinnedFilter != nil)
         else { return false }
+        if case .filter = action {} else { host.applyPendingFilter() }
         switch action {
         case .filter(let key):
             host.applyFilterKey(key)

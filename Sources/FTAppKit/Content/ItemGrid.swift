@@ -182,10 +182,13 @@ final class ItemGridView: NSCollectionView, NSUserInterfaceValidations {
     }
 
     override func menu(for event: NSEvent) -> NSMenu? {
-        pane?.menu(forEventAt: convert(event.locationInWindow, from: nil))
+        pane?.host?.applyPendingFilter()
+        return pane?.menu(forEventAt: convert(event.locationInWindow, from: nil))
     }
 
     override func mouseDown(with event: NSEvent) {
+        // A filter typed a moment ago is drawn before the click picks what it lands on.
+        pane?.host?.applyPendingFilter()
         if let pane { pane.handleMouseDown(event) } else { super.mouseDown(with: event) }
     }
 

@@ -2047,6 +2047,8 @@ extension MainWindowController: ExplorerWindowHandle {
 
     /// Carries out a menu command in this tab, or in its explorer window.
     func perform(_ command: AppCommand) {
+        // A filter typed a moment ago is drawn, and its selection told, before a command acts on the list.
+        activePane.content.applyPendingFilter()
         // While the toolbar is customized the window waits, as under a sheet: only editing still works.
         if isCustomizingToolbar, MenuCommandRouter.nativeEditSelector(command) == nil, command != .customizeToolbar {
             return
