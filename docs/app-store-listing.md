@@ -77,7 +77,7 @@ TRUE CUT AND PASTE
 • Anything replaced goes to the Trash, moves to another disk are verified before the original is removed, and one Undo reverses the whole paste.
 
 READ AND EDIT IN PLACE
-• Open a file in the window with Space: code and text highlighted for about 60 languages, Markdown rendered, pictures, PDFs, movies and documents shown in full.
+• Open a file in the window with Space: code and text highlighted for nearly 80 languages, Markdown rendered, pictures, PDFs, movies and documents shown in full.
 • Switch to Edit, make a change and save, without leaving the folder.
 • Show files in the second pane and they follow your selection as you move through the list.
 
@@ -125,7 +125,7 @@ Each gets a short caption above the window, in this order:
 | 2 | `two-panes.json` | **Two folders in one window.** Copy with F5, move with F6. |
 | 3 | `cut-paste.json` | **True cut and paste.** Gather from many folders, paste once. |
 | 4 | `paste-conflict.json` | **Built never to lose a file.** Replaced items go to the Trash. |
-| 5 | `viewer.json` | **Read and edit beside the folder.** About 60 languages in color. |
+| 5 | `viewer.json` | **Read and edit beside the folder.** Nearly 80 languages in color. |
 | 6 | `go-to.json` | **Any folder in a few keystrokes.** Go To learns where you go. |
 | 7 | `command-palette.json` | **Every command at your fingertips.** And shortcuts you choose. |
 | 8 | `folder-sizes.json` | **See what takes the space.** Every folder measured in one pass. |
