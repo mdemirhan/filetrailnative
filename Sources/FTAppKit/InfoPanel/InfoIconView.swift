@@ -106,8 +106,12 @@ final class InfoIconView: NSView {
         picturePath = path
         pictureReading = NSObject()
         guard let store else { return }
-        pictureHandle = store.load(path: path, kind: kind, size: ThumbnailStore.largePixelSize, listing: pictureReading)
-        { [weak self] loaded in
+        // A preview of the Icons view's smallest size (64 pixels) would show soft at this size while the large one
+        // comes: the icon stays until then, as it did before that size existed.
+        pictureHandle = store.load(
+            path: path, kind: kind, size: ThumbnailStore.largePixelSize, listing: pictureReading,
+            standInAtLeast: ThumbnailStore.pixelSize
+        ) { [weak self] loaded in
             guard let self, self.pictureKey == key, let loaded else { return }
             self.picture = loaded
             self.needsDisplay = true

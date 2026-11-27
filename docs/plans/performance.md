@@ -67,6 +67,8 @@ On the branch `claude/perf-phase1`.
   Found while checking it, and older than it, and fixed: in a window brought back maximized with several tabs, Un-maximize from a tab other than the one in front went to AppKit's default size, not the normal one; the window's delegate now sends it to the normal frame (checked in the app with three tabs).
   Measured, launching into the folder, median of the runs after the first: items drawn **12–19% sooner** (10000 Icons 545 → 480 ms, 1000 Icons 620 → 500, 5000 Compact 620 → 500), the biggest block **16–24% shorter**, settled 5–10% sooner.
 
+Scrolling is unchanged by phase 1, which doesn't aim at it, measured on 2026-11-28 against the commit it starts from: `scripts/frame-times.sh` within 5% in every view and size, late frames the same or fewer; and in the owner's packed folders (median of three, 120 Hz) 1000 Icons 32 pt 8.1 → 7.8 ms, 2500 List 7.3 → 7.3, 5000 Compact List 160 pt 13.3 → 13.4, 10000 Compact List 160 pt 13.9 → 13.9, 10000 Icons 32 pt 11.0 → 11.0.
+
 Left out of phase 1, after measuring:
 
 - **3. The Compact List laid out again as tags arrive**: planned as the cause of names drawn several times over, it wasn't; with it gone the frames were the same.

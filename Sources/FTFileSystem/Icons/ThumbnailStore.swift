@@ -236,12 +236,17 @@ public final class ThumbnailStore {
     /// for again at this one. `listing` stands for one reading of the folder:
     /// any object that changes when the list of items does. A load of the file under way that serves the request is
     /// waited for rather than asked again, and moves up the queue if it was asked for ahead of need.
+    /// A preview kept at a smaller size is given at once, to show while the one asked for is made, when it was made for
+    /// at least `standInAtLeast` pixels: the Info panel's large icon takes no stand-in under 128, which scaled up
+    /// shows soft.
     @discardableResult
     public func load(
         path: String, kind: IconEntryKind, size: Int = ThumbnailStore.pixelSize, listing: AnyObject,
-        completion: @escaping @MainActor (ThumbnailPicture?) -> Void
+        standInAtLeast: Int = 0, completion: @escaping @MainActor (ThumbnailPicture?) -> Void
     ) -> LoadHandle {
-        load(path: path, kind: kind, size: size, listing: listing, ahead: false, completion: completion)
+        load(
+            path: path, kind: kind, size: size, listing: listing, ahead: false, standInAtLeast: standInAtLeast,
+            completion: completion)
     }
 
     /// Asks for the file's preview ahead of need, as `load` would, so that it is cached once it is wanted: it waits
@@ -258,7 +263,7 @@ public final class ThumbnailStore {
     }
 
     private func load(
-        path: String, kind: IconEntryKind, size: Int, listing: AnyObject, ahead: Bool,
+        path: String, kind: IconEntryKind, size: Int, listing: AnyObject, ahead: Bool, standInAtLeast: Int = 0,
         completion: @escaping @MainActor (ThumbnailPicture?) -> Void
     ) -> LoadHandle {
         guard mayHaveThumbnail(kind) else {
@@ -269,7 +274,11 @@ public final class ThumbnailStore {
         // The file's key, made once for the request: what is kept and what is under way are both looked up by it.
         let key = DiskPath(path)
         let cached = cache.read(key)
-        completion(cached?.picture)
+        if let cached, !cached.covers(size), cached.size < standInAtLeast {
+            // Too small a stand-in for where it shows: the picture asked for comes alone.
+        } else {
+            completion(cached?.picture)
+        }
         if let cached, cached.checkedFor === listing, cached.covers(size) {
             return LoadHandle()
         }

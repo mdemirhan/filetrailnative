@@ -204,6 +204,33 @@ private func request(
         #expect(receiver.last != nil && store.count == 1)
     }
 
+    // While a larger preview is made, a smaller one kept shows in its place, unless the asker takes none that small:
+    // the Info panel's large icon keeps its icon rather than a 64-pixel preview scaled up.
+    @Test func aStandInTooSmallForTheAskerIsNotGiven() async {
+        let provider = ScriptedProvider { _ in ThumbnailResponse(version: "1:1", unchanged: false, picture: picture()) }
+        let queue = ThumbnailLoadQueue()
+        let store = ThumbnailStore(provider: provider, queue: queue)
+        let listing = Listing()
+        store.load(path: "/p/a.png", kind: .file, size: 64, listing: listing) { _ in }
+        await idle(queue)
+        var answers: [ThumbnailPicture?] = []
+        store.load(path: "/p/a.png", kind: .file, size: 256, listing: listing, standInAtLeast: 128) {
+            answers.append($0)
+        }
+        #expect(answers.isEmpty)
+        await idle(queue)
+        #expect(answers.count == 1 && answers[0] != nil)
+
+        // With no floor, the 64-pixel one is given at once, as before.
+        let other = ThumbnailStore(provider: provider, queue: queue)
+        other.load(path: "/p/b.png", kind: .file, size: 64, listing: listing) { _ in }
+        await idle(queue)
+        var given: [ThumbnailPicture?] = []
+        other.load(path: "/p/b.png", kind: .file, size: 256, listing: listing) { given.append($0) }
+        #expect(given.count == 1 && given[0] != nil)
+        await idle(queue)
+    }
+
     // A preview made again at a larger size takes the smaller one's place in the count of memory too.
     @Test func aLargerPreviewOfTheSameFileCountsOnce() async {
         let provider = ScriptedProvider { call in
