@@ -3,7 +3,7 @@ import FTFileSystem
 import FTFoundation
 
 /// The previews of icon view, one cache for the app. They load `ThumbnailLoadQueue.iconLoads` at a time, and all go
-/// when macOS says memory is short, as the Previews view's do.
+/// when macOS says memory is short, as the Previews view's do, with the names laid out (`IconLabelText`).
 @MainActor
 enum IconThumbnails {
     static let store: ThumbnailStore = {
@@ -12,7 +12,10 @@ enum IconThumbnails {
             maxEntries: ThumbnailStore.iconEntries, memoryLimit: ThumbnailStore.iconMemoryLimit)
         let source = DispatchSource.makeMemoryPressureSource(eventMask: [.warning, .critical], queue: .main)
         source.setEventHandler {
-            MainActor.assumeIsolated { store.dropCached() }
+            MainActor.assumeIsolated {
+                store.dropCached()
+                IconLabelText.forgetNames()
+            }
         }
         source.resume()
         memoryPressure = source

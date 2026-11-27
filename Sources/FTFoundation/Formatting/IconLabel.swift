@@ -8,8 +8,9 @@ public enum IconLabel {
     /// How much of the name before the extension is kept at the end.
     public static let tailStemCharacters = 5
     public static let lineCount = 2
-    /// Fitted labels remembered before the cache starts over.
-    public static let fittedLabelCacheMax = 4000
+    /// Fitted labels (and their lines and widths) remembered before each cache starts over: more than a folder of
+    /// ten thousand items needs, so going through one doesn't empty it. It was 4,000, which a large folder outgrew.
+    public static let fittedLabelCacheMax = 60_000
 
     /// Shortens `name` in the middle until `fits` accepts it, keeping as much of its start as
     /// possible. `fits` must not accept a longer text after refusing a shorter one (true of a single

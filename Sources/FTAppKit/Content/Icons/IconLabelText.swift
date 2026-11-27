@@ -62,14 +62,44 @@ enum IconLabelText {
         return made
     }
 
+    /// The lines and the widths of names laid out before, by font size (and width and indent for lines) and name:
+    /// laying a name out is most of what an item costs as it comes on screen, and the same names come back on every
+    /// filter, scroll back, Back and Forward. They start over past `IconLabel.fittedLabelCacheMax` names, more than
+    /// a folder of ten thousand items needs.
+    private static var linesCache: [String: [String]] = [:]
+    private static var widthCache: [String: Double] = [:]
+
+    /// Lets go of every name remembered: when macOS says memory is short.
+    static func forgetNames() {
+        fitted = [:]
+        linesCache = [:]
+        widthCache = [:]
+    }
+
     /// The lines `text` wraps into under an icon.
     static func lines(_ text: String, layout: IconGridLayout, firstLineIndent: CGFloat = 0) -> [String] {
+        let key = "\(layout.labelFontSize):\(layout.labelTextWidth):\(firstLineIndent)\0\(text)"
+        if let cached = linesCache[key] { return cached }
         let string = text as NSString
-        return wrapper(layout).lines(text, firstLineIndent: firstLineIndent).map { string.substring(with: $0) }
+        let result = wrapper(layout).lines(text, firstLineIndent: firstLineIndent).map { string.substring(with: $0) }
+        if linesCache.count >= IconLabel.fittedLabelCacheMax { linesCache.removeAll() }
+        linesCache[key] = result
+        return result
     }
 
     /// The width `text` takes on one line.
     static func width(_ text: String, layout: IconGridLayout) -> Double {
+        let key = "\(layout.labelFontSize)\0\(text)"
+        if let cached = widthCache[key] { return cached }
+        let result = measure(text, layout: layout)
+        if widthCache.count >= IconLabel.fittedLabelCacheMax { widthCache.removeAll() }
+        widthCache[key] = result
+        return result
+    }
+
+    /// The width `text` takes on one line, not remembered: the shortenings tried while fitting a name, which would
+    /// fill the cache with widths read once.
+    private static func measure(_ text: String, layout: IconGridLayout) -> Double {
         Double((text as NSString).size(withAttributes: [.font: wrapper(layout).font]).width)
     }
 
@@ -100,7 +130,7 @@ enum IconLabelText {
         let lineWidth = layout.labelTextWidth + 0.5
         let rest = IconLabel.shortenInMiddle(
             name: string.substring(from: firstLength), extension: fileExtension
-        ) { width($0, layout: layout) <= lineWidth }
+        ) { measure($0, layout: layout) <= lineWidth }
         let candidate = string.substring(to: firstLength) + rest
         return engine.lines(candidate, firstLineIndent: firstLineIndent).count <= IconLabel.lineCount ? candidate : name
     }
