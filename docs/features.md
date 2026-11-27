@@ -23,7 +23,7 @@ How to do each thing is in the app's own Help, which also lists every shortcut, 
 - **Locations**: Home, Macintosh HD, other disks and disk images with an Eject button, servers, and the Trash.
 - **Go To (⌘K)** lists the folders you use most lately and your favorites, and finds one from a few letters.
   Start with `/` or `~` to type a path, and Tab completes it.
-- **The path bar**: click a folder to jump to it, click a `›` to see the folders at that level, or double-click the bar to edit the path as text.
+- **The path bar**: click a folder to jump to it, click a `›` to see the folders at that level, or double-click the bar to type a path, with the folders it could lead to listed under it, as in Go To.
 - **Back and Forward** remember more than one step: hold either button to pick from the folders it leads to.
 - **The Go menu** has Home, Documents, Desktop, Downloads, Library, Macintosh HD, Applications and the Trash, like Finder's, each on a shortcut you choose.
 - **The folder on screen stays current**: what other apps add, rename or remove there shows up as it happens.
@@ -50,6 +50,7 @@ How to do each thing is in the app's own Help, which also lists every shortcut, 
 - **Windows**, each with its own tabs.
   Move a tab into a window of its own, or merge every window back into one.
 - **Tab views**: save what you choose of a tab under a name, two panes with the left in List and the right in Previews, say, with or without their folders, and give any tab that setup with one choice from Layout, or ⌥⌘1 to ⌥⌘5.
+  It can keep the look of every view, not only the one it opened in, and how search results look.
   What you don't choose stays as the tab has it.
   A tab view can also be what every new tab opens with.
 - **Window views**: a window of tabs, each opened with a tab view, its size and panels if you like.
@@ -67,7 +68,7 @@ How to do each thing is in the app's own Help, which also lists every shortcut, 
   One click widens it to Home or the whole disk.
 - **Plain text** ignores case, and a plain letter finds its accented forms: `resume` finds Résumé.
 - **Options**: hidden files, and leaving out `.git` folders.
-- **Conditions typed in the search**: `kind:pdf`, `ext:docx`, `size:>10mb`, `modified:7d` (and `created:`, `added:`, `opened:`), `tag:red`, `color:red` (a tag's color, whatever its name), `is:locked`, `not:hidden`, `owner:me`, `perm:755`, `from:github.com` (where it was downloaded from), `skip:node_modules`, beside the name to find;
+- **Conditions typed in the search**: `kind:pdf`, `ext:docx`, `size:>10mb`, `modified:7d` (and `created:`, `added:`, `opened:`), `tag:red`, `color:red` (a tag's color, whatever its name), `is:locked`, `not:hidden`, `owner:me` (or a user's name or number), `perm:755`, `from:github.com` (where it was downloaded from), `skip:node_modules`, beside the name to find;
   `ext:none` is a name without an extension, and `is:` takes file, folder, alias, link, hidden, locked, readonly, executable, empty, tagged, cloud (a file not downloaded from iCloud or another cloud, which finding it doesn't download), downloaded and broken (a link or an alias whose original is gone), tinted in the field as you type.
   Every word must match and a comma gives a choice (`tag:red tag:blue` has both tags, `tag:red,blue` either);
   `!` asks for anything else (`kind:!pdf`, `!draft` for names without “draft”);
@@ -82,7 +83,7 @@ How to do each thing is in the app's own Help, which also lists every shortcut, 
   What a name or a folder's listing can't say is read only for the items the rest of the search kept, the cheapest first, and no file is opened for it.
   Results narrow a moment after you stop typing, not at each letter.
 - **Results grouped and sorted your way**: by the folder each result is in, by name or kind, or by a date, size or tag, which File Trail reads for the results in the background while they are grouped or sorted by it.
-- **Results in any view**, with columns of their own that you choose and sort, and a filter field that trims them by name or by folder without searching again.
+- **Results in any view**, with columns, sizes and an order of their own in each pane, apart from its folders', and a filter field that trims them by name or by folder without searching again.
   A search stops at 50,000 results.
 - **Each tab keeps its own search**, a search keeps running while you look at another tab, and ⇧⌘F shows the last results again.
 - **Results stay put while you work in them**: what you move away or delete leaves the list, what you rename keeps its place, and when you add something to the folder searched a note offers Search Again rather than searching on its own.
@@ -100,7 +101,7 @@ How to do each thing is in the app's own Help, which also lists every shortcut, 
   Anything replaced goes to the Trash.
 - **Careful with your files**: a move to another disk checks each copy before it removes the original, and a Replace that was cut short carries on the next time File Trail opens.
 - **Move To** asks for a folder and finds it from a few letters;
-  **Duplicate**, **New Folder**, **New Folder with Selection (⌃⌘N)** and **Move to Trash** work as in Finder.
+  **Duplicate**, **New Folder**, **New Folder with Selection (⌃⌘N)**, **Move to Trash (⌘⌫)**, **Delete Immediately… (⌥⌘⌫)** and **Empty Trash… (⇧⌘⌫)** work as in Finder.
 - **A folder that isn't there yet**, typed in Move To or Extract To, is made on the way after a second Return, and undone apart from the move.
 - **Drag and drop** inside File Trail and with Finder and other apps, in both directions, by Finder's rules: Option copies, Command moves, and resting on a folder opens it.
 - **Replace Older** brings a backup up to date: when the same folders meet, only files newer than the ones there replace them.
@@ -175,12 +176,15 @@ How to do each thing is in the app's own Help, which also lists every shortcut, 
   <img src="screenshots/markdown-pane.png" alt="A project folder with README.md selected, and the pane beside it showing the Markdown as it reads, with headings, a list, a table and numbered steps" width="900">
 </p>
 
-- **Open in Viewer (Space or ⇧⌘E)** shows a file's text in place of the folder, with colors for about 60 languages and formats, to read or to edit and save, in Read or Edit as you last chose;
+- **Open in Viewer (Space or ⇧⌘E)** shows a file's text in place of the folder, with colors for nearly 80 languages and formats, to read or to edit and save, in Read or Edit as you last chose;
+  the code inside a web page, a Vue or Svelte file or a Markdown code block is colored as its own language;
   in Read the arrows glide the text as a web page's do.
   It's a step of Back and Forward, so Back returns to the folder with the file selected, and ⌥→ and ⌥← (or the viewer's bar) step to the next and previous file.
 - **Open in Other Pane (⌥⌘↓ or ⌥⌘E)** on a file shows it in the other pane, which then follows the list as you move through it: text with colors, Markdown as it reads, pictures and other files as Quick Look shows them.
   It keeps following while you edit, and asks to save before it moves on.
-  A workspace keeps it, and the file it showed.
+  A tab view can keep it, and your tabs come back with it and the file it showed when File Trail opens again.
+- **Markdown as it reads**: its links lead where they point, a file at the section the link names, a folder, or a web page in your browser, and Back returns;
+  the arrows, Space and the page keys scroll it, Return starts editing at the line you were reading, and Esc goes back to the Preview at the same place.
 - **Markdown's pictures**: a picture beside the file, or anywhere on your Mac, shows in the Preview, shrunk to fit the pane, written in Markdown or as an HTML picture at the size and centering it gives.
   A picture on the web is never fetched, so a README can't tell anyone you read it;
   it shows as its description.
@@ -188,7 +192,8 @@ How to do each thing is in the app's own Help, which also lists every shortcut, 
 - **PDFs, pictures and documents in the viewer** take the keyboard as they open, so the arrows, Space and the page and half-page keys move them at once, the arrows gliding as a web page's do;
   ← and → go to the next or previous page or slide, and Go to Page (⌥⌘G) to one by its number. ⌘+, ⌘- and ⌘0 zoom a PDF, a picture, a Word document or a spreadsheet, and make text bigger or smaller;
   A PDF or a Word document opens with its page as wide as the pane, and ⌘9 (View ▸ Zoom to Fit) takes it back there or fits a picture in the pane.
-  The next file opens at the same zoom. ⌘F finds in a PDF.
+  The next file opens at the same zoom, and a picture can be shown at its actual size.
+  ⌘F finds in a PDF, a Word, Excel, OpenDocument or RTF document and a Markdown preview, with every match marked, and an RTF document shows formatted.
   Text can be selected in a PDF, a Word document or a spreadsheet, and Copy copies it.
 - **Movies and sounds play in the viewer**: Space plays and pauses, ← and → go five seconds back and forward.
 - **Groups**: put a folder's items in groups by name, a date (Today, Yesterday, Previous 7 Days and on), size, kind or tag, in every view, under a title for each, with the sort ordering the items inside each group, and the groups' own order reversed when you want the oldest or largest first.
@@ -215,9 +220,12 @@ How to do each thing is in the app's own Help, which also lists every shortcut, 
   a click lists them, the file operation and the folder sizes being measured or waiting, each with Stop.
 - **The Activity list keeps its rows in place** while it is open: one that ended stays where it was, dimmed, saying how it ended, so Stop is never under the wrong row.
 - **The Info panel** shows everything an item has, in sections that fold: its kind, size, place and tags, its dates, who may read and write it, what it is (a picture's size and camera, a movie's length, a document's pages, an app's version and who signed it, a disk's format, a disk image's format and file system), where a download came from, and more.
+  A disk image shows its format, file system and capacity, or that it is encrypted, without being opened, and an alias or a link its original.
   Several items are summed up on one line each.
+  Every value keeps to one line: point at it to see it whole, and Copy in its right-click menu copies it whole, the exact bytes or a download's full address;
+  the button beside Where copies the item's path, and the sections you fold stay folded.
   **Edit…** beside Sharing & Permissions changes who may read, write and open the item or the selected items, its mode, Locked and the Hidden flag, written as you click, with one Undo for it all.
-  It can be a window of its own beside the app's windows, following the window in front.
+  ⌘I shows and hides it, and it can be a window of its own beside the app's windows, following the window in front.
   The **Info Row** along the bottom says what the selected item is in one line: its kind, the fact that matters for it, and when it changed.
 
 ## Keyboard and commands
@@ -244,7 +252,7 @@ How to do each thing is in the app's own Help, which also lists every shortcut, 
 - **Light and Dark**, following macOS or staying in the one you pick, with the accent color of System Settings or one you choose.
 - **The toolbar** is customized the way Finder's is: choose View ▸ Customize Toolbar, or right-click it, and drag buttons in, along or out.
 - **A long name in a menu** loses its middle, as in Finder's menus, so the menu keeps its width.
-- **Settings** cover the everyday choices: which app edits text files and which terminal opens, what Return does, whether disk images open in a new window or a new tab, and whether your tabs and last folder come back at launch.
+- **Settings** cover the everyday choices: which app edits text files and which terminal opens, which apps come first in Open With, what Return does, whether a single click expands a folder in the tree, whether disk images and extracted archives open in a new window or a new tab, whether your tabs and last folder come back at launch, and File Trail's own text and icon sizes or Finder's.
 
 ## With the rest of the Mac
 

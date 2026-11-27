@@ -16,11 +16,12 @@
 
 | | |
 |---|---|
-| **Search as you type** | Results from the folder you are in appear instantly, by name or full path, in plain text, glob or regex. No index to build, nothing left out. |
+| **Search as you type** | Results from the folder you are in appear instantly, by name or full path, in plain text, glob or regex, narrowed by kind, size, date or tag. No index to build, nothing left out. |
 | **A real folder tree** | See where you are and what is around it. Expand any folder in place without leaving the one you are in. |
 | **Two panes, one window** | Split any tab into two folders and copy or move between them with a single key. |
 | **True cut and paste** | ⌘X and ⌘V move files. Gather items from many folders, then paste them all at once. |
-| **Read and edit in place** | Code and text in color for about 60 languages, Markdown rendered, pictures shown, all beside the folder they live in. |
+| **Read and edit in place** | Code and text in color for nearly 80 languages, Markdown rendered, PDFs, documents and pictures shown, movies played, all beside the folder they live in. |
+| **Everything about a file** | The Info panel shows all an item has, from a photo's camera to who signed an app, and changes its permissions. |
 | **Built for the keyboard** | A command palette for every command, Go To for every folder, and shortcuts you choose. |
 | **Safe by design** | Every replaced file goes to the Trash, moves across disks are verified, and Undo takes it all back. |
 | **Private** | No account, no analytics, no network connections. Open source under the MIT License. |
@@ -79,10 +80,11 @@ File Trail's clipboard for files is its own, so cut and copied files are pasted 
   <img src="docs/screenshots/viewer.png" alt="A folder of components in a list, with TripCard.jsx selected and its code shown in color in the pane beside it, Follow checked" width="900">
 </p>
 
-Press Space or ⇧⌘E to open the selected file right in the window, highlighted for about 60 languages and formats. Switch to Edit to make a change and ⌘S to save. Or show files in the other pane and they follow your selection as you move through the list.
+Press Space or ⇧⌘E to open the selected file right in the window, highlighted for nearly 80 languages and formats. Switch to Edit to make a change and ⌘S to save. Or show files in the other pane and they follow your selection as you move through the list.
 
-- **More than text.** Markdown is rendered, pictures are shown as pictures, and everything else appears as Quick Look shows it.
+- **More than text.** Markdown is rendered, and its links open the files they point to. PDFs and Word documents open at the width of their page, slides step with the arrow keys, pictures zoom, movies and sounds play, and everything else appears as Quick Look shows it.
 - **Part of browsing.** Back returns to the folder with the file selected, ⌥→ and ⌥← step through files, and unsaved edits are never lost without asking.
+- **Find in documents too.** ⌘F finds in text, PDFs, Word and Excel files and Markdown previews, with every match marked.
 - **Read your way.** Light and dark themes, text size, line numbers, wrapping and Find.
 
 ## Small jobs, no extra apps
@@ -125,6 +127,14 @@ Press Space or ⇧⌘E to open the selected file right in the window, highlighte
 
 Ask for a folder's size and File Trail measures it, and every folder inside it, in a single pass. Sort by size and each row gets a bar, so the heavy folders stand out at a glance. Sizes are computed only when you ask, so browsing large folders stays instant.
 
+## Everything about a file
+
+The Info panel (⌘I) shows all an item has, in sections you fold: its size to the byte and on disk, its dates, who may read and write it, where a download came from, and what it is, from a photo's camera and a movie's length to an app's version and who signed it, or a disk image's format and capacity without opening it. Keep it in the window, or in a window of its own that follows the window in front.
+
+- **Change permissions** for one item or many, Locked and Hidden included, with one Undo for it all.
+- **Tags by name**, not only colors: put any tag used on your Mac on the selection, then sort, group and search by it.
+- **Copy any value** from its right-click menu, whole: the exact bytes, a download's full address.
+
 ## Every folder the way you want it
 
 <p align="center">
@@ -143,9 +153,9 @@ Previews (⌘4) fills the pane with 9, 4, 2 or 1 large previews, each in its own
 
 ## Fast, private and open source
 
-- **Built for big folders.** Scrolling stays smooth with thousands of files, and every release is measured against the one before it. A slow or unresponsive disk or server never freezes the window.
+- **Built for big folders.** Scrolling stays smooth with thousands of files, and a slow or unresponsive disk or server never freezes the window.
 - **Nothing leaves your Mac.** No account, no analytics, and no network connections of its own.
-- **Native and small.** Written in Swift with AppKit, about 13 MB, in the system's look in Light and Dark.
+- **Native and small.** Written in Swift with AppKit, about 15 MB, in the system's look in Light and Dark.
 - **Open source** under the [MIT License](LICENSE).
 
 ## Download
