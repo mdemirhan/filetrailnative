@@ -171,6 +171,21 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         if !window.isZoomed { window.zoom(nil) }
     }
 
+    /// Zooms the window while it is still hidden, before its folder is read: the folder is laid out at the maximized
+    /// size, where it was laid out at the normal size and then again once the window was zoomed as it was shown
+    /// (100 to 150 ms more at launch in a folder of thousands at the smallest sizes). Zooming through AppKit keeps the
+    /// normal frame for the green button and Un-maximize. A window on screen already is zoomed as `maximize` does.
+    func maximizeBeforeShowing() {
+        guard !isMaterialized else {
+            maximize()
+            return
+        }
+        guard let window = selected?.window else { return }
+        pendingZoom = true
+        window.setFrame(normalFrame, display: false)
+        if !window.isZoomed { window.zoom(nil) }
+    }
+
     func close() {
         guard !isDestroyed, events.shouldClose() else { return }
         closingAll = true
@@ -191,7 +206,10 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         isMaterialized = true
         isArranging = true
         defer { isArranging = false }
-        for tab in tabs { tab.window?.setFrame(normalFrame, display: false) }
+        // A window zoomed before it was shown keeps its zoomed frame; the others take the normal one, and the tab
+        // group takes the frame of the window in front.
+        let zoomedAlready = pendingZoom && activeWindow.isZoomed
+        for tab in tabs where !(zoomedAlready && tab === active) { tab.window?.setFrame(normalFrame, display: false) }
         if makeKey { activeWindow.makeKeyAndOrderFront(nil) } else { activeWindow.orderFront(nil) }
         let index = tabs.firstIndex { $0 === active } ?? 0
         var anchor = activeWindow

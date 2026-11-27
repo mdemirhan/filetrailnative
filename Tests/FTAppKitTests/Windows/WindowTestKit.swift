@@ -162,6 +162,10 @@ final class FakeWindow: ExplorerWindowLike {
         log("maximize \(recordID)")
     }
 
+    func maximizeBeforeShowing() {
+        maximized = true
+    }
+
     func openRequestsWaiting() { openRequestsTold += 1 }
 
     var mergeAnswer: WindowTabsAnswer { answer ?? WindowTabsAnswer(tabs: savedTabs(), busy: false) }

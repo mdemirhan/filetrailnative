@@ -55,7 +55,7 @@ extension ExplorerWindows {
         let held: () -> Void = { [weak self] in self?.beep() }
         opened = controller.openSavedWindow(
             session: session, size: size, replacing: tab?.group?.windowID, shown: shownAndSized, held: held)
-        if view.sizing == .maximized { opened?.maximize() }
+        if view.sizing == .maximized { opened?.maximizeBeforeShowing() }
     }
 
     /// Window View 1 to 5: the window view at `slot` in the list, in a window of its own or in place of `tab`'s.

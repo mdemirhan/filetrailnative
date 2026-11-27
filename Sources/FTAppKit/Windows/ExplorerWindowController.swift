@@ -44,6 +44,9 @@ public protocol ExplorerWindowLike: AnyObject {
     var isMinimized: Bool { get }
     func restore()
     func maximize()
+    /// A window opened maximized (brought back at launch, opened with none open, a window view) is maximized before
+    /// it's shown, so its folder is laid out once, at the size it shows at; one shown already is maximized.
+    func maximizeBeforeShowing()
     var isMaximized: Bool { get }
     var isFullScreen: Bool { get }
     /// The place and size it goes back to out of full screen or zoomed.
@@ -164,6 +167,7 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
             let window = open(
                 record,
                 launch: ExplorerLaunchContext(startupFolderPath: index == 0 ? startupFolderPath : nil), place: .back)
+            if record.bounds.maximized { window.maximizeBeforeShowing() }
             startup.pending.insert(window.windowID)
             startup.opened.append((Weak(window), record.bounds.maximized))
             let windowID = window.windowID
@@ -520,6 +524,7 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
 
         var events = window.events
         if place == .front {
+            if record.bounds.maximized { window.maximizeBeforeShowing() }
             events.readyToShow = { [weak window] in
                 guard let window, !state.shown else { return }
                 state.shown = true
