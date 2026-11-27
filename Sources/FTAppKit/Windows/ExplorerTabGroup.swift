@@ -613,6 +613,15 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         host?.tabNavigated(tab)
     }
 
+    /// Where Un-maximize takes `window` when AppKit would take it elsewhere: the group's normal frame. A tab of a window
+    /// brought back maximized was given the zoomed frame as it joined the tab group, never zoomed by AppKit, which
+    /// then had no frame to go back to and used one of its own. Nil when AppKit's is the normal frame, or the window
+    /// isn't zoomed (zooming in) or is in full screen.
+    func unzoomFrame(for window: NSWindow, toward proposed: NSRect) -> NSRect? {
+        guard window.isZoomed, !window.styleMask.contains(.fullScreen), proposed != normalFrame else { return nil }
+        return normalFrame
+    }
+
     func tabBoundsChanged(_ tab: MainWindowController) {
         guard tab === selected, let window = tab.window, isMaterialized, !isArranging else { return }
         if !window.isZoomed, !window.styleMask.contains(.fullScreen) { normalFrame = window.frame }

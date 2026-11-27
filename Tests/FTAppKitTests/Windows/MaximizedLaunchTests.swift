@@ -52,6 +52,25 @@ extension ExplorerWindowlessTests {
             await app.closeAll()
         }
 
+        // Un-maximize from a tab AppKit didn't zoom itself (one given the zoomed frame as it joined the tab group) goes
+        // to the window's normal size, not to a size of AppKit's own.
+        @Test func unMaximizeGoesToTheNormalSizeWhereAppKitWouldGoElsewhere() async throws {
+            let folder = try NativeApp.folders(prefix: "filetrail-maximized")
+            defer { folder.remove() }
+            let app = launch(folder, bounds: StoredWindowState(x: 40, y: 60, width: 900, height: 600, maximized: true))
+            let tab = try #require(app.frontTab)
+            let window = try #require(tab.window)
+            #expect(window.isZoomed)
+            // What AppKit proposed for a tab it never zoomed, on the owner's Mac.
+            let appKitsOwn = NSRect(x: 0, y: 20, width: 1646, height: 1064)
+            #expect(!tab.windowShouldZoom(window, toFrame: appKitsOwn))
+            #expect(!window.isZoomed)
+            #expect(window.frame.width == 900 && window.frame.height == 600)
+            // Zooming in, and a proposal that is the normal frame already, are AppKit's own.
+            #expect(tab.windowShouldZoom(window, toFrame: window.frame))
+            await app.closeAll()
+        }
+
         @Test func aWindowNotKeptMaximizedKeepsItsSize() async throws {
             let folder = try NativeApp.folders(prefix: "filetrail-maximized")
             defer { folder.remove() }

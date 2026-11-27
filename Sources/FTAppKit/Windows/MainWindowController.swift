@@ -1966,6 +1966,13 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         explorerToolbar.windowResized()
     }
 
+    /// Un-maximize goes back to the window's normal frame, from any tab (`ExplorerTabGroup.unzoomFrame`).
+    func windowShouldZoom(_ window: NSWindow, toFrame newFrame: NSRect) -> Bool {
+        guard let normal = group?.unzoomFrame(for: window, toward: newFrame) else { return true }
+        window.setFrame(normal, display: true, animate: window.isVisible)
+        return false
+    }
+
     func windowDidExitFullScreen(_ notification: Notification) {
         group?.tabBoundsChanged(self)
     }

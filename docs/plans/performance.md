@@ -64,7 +64,7 @@ On the branch `claude/perf-phase1`.
   Measured with the five keys put in the app's own queue at once, the way keys typed while the app is busy wait there; keys sent through the window server need the Accessibility permission the tests don't have, so real typing is to be tried by hand. AppKit takes the keys waiting from the window server in a batch as it takes one, so a key typed while the app is two or more keys behind is seen, and the first of a burst draws.
   A menu command (⌘I, ⌘⌫, ⌘F) draws a waiting list and tells its selection before it acts.
 - **6. A window opened maximized is zoomed before its folder is laid out** (built): brought back at launch, opened with none open when the last one closed maximized, or a window view set to Maximized. It is zoomed through AppKit while still hidden, so the green button and Un-maximize go back to the normal frame.
-  Found while checking it, and older than it: in a window brought back maximized with several tabs, Un-maximize from a tab other than the one in front goes to AppKit's default size, not the normal one, as it did before.
+  Found while checking it, and older than it, and fixed: in a window brought back maximized with several tabs, Un-maximize from a tab other than the one in front went to AppKit's default size, not the normal one; the window's delegate now sends it to the normal frame (checked in the app with three tabs).
   Measured, launching into the folder, median of the runs after the first: items drawn **12–19% sooner** (10000 Icons 545 → 480 ms, 1000 Icons 620 → 500, 5000 Compact 620 → 500), the biggest block **16–24% shorter**, settled 5–10% sooner.
 
 Left out of phase 1, after measuring:
