@@ -2,10 +2,24 @@ import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// The previews of icon view, one cache for the app.
+/// The previews of icon view, one cache for the app. They load `ThumbnailLoadQueue.iconLoads` at a time, and all go
+/// when macOS says memory is short, as the Previews view's do.
 @MainActor
 enum IconThumbnails {
-    static let store = ThumbnailStore()
+    static let store: ThumbnailStore = {
+        let store = ThumbnailStore(
+            queue: ThumbnailLoadQueue(maxConcurrent: ThumbnailLoadQueue.iconLoads),
+            maxEntries: ThumbnailStore.iconEntries, memoryLimit: ThumbnailStore.iconMemoryLimit)
+        let source = DispatchSource.makeMemoryPressureSource(eventMask: [.warning, .critical], queue: .main)
+        source.setEventHandler {
+            MainActor.assumeIsolated { store.dropCached() }
+        }
+        source.resume()
+        memoryPressure = source
+        return store
+    }()
+    /// Tells of macOS running short of memory, for as long as the app runs.
+    private static var memoryPressure: (any DispatchSourceMemoryPressure)?
 }
 
 /// The name under an icon: centred lines, at most two, on the selection's pill when the item is selected. The field

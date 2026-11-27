@@ -121,9 +121,10 @@ private func request(
         #expect(NodePath.basename(asked) == "photo.png")
     }
 
-    // Icons up to 64 points take 128-pixel previews; larger ones 256.
+    // Icons of 32 points take 64-pixel previews, up to 64 points 128-pixel ones; larger ones 256.
     @Test func largerIconsAskForLargerPreviews() {
-        #expect(ThumbnailStore.pixelSize(forIconSize: 32) == 128)
+        #expect(ThumbnailStore.pixelSize(forIconSize: 32) == 64)
+        #expect(ThumbnailStore.pixelSize(forIconSize: 40) == 128)
         #expect(ThumbnailStore.pixelSize(forIconSize: 64) == 128)
         #expect(ThumbnailStore.pixelSize(forIconSize: 72) == 256)
         #expect(ThumbnailStore.pixelSize(forIconSize: 128) == 256)

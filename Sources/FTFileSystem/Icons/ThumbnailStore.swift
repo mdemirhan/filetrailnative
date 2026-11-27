@@ -5,12 +5,15 @@ import Foundation
 /// byte for byte: two files whose names differ only in how an accent is spelled each have their preview and their
 /// load.
 ///
-/// Previews are asked for at `pixelSize(forIconSize:)` on their longest side: twice the icon, for a Retina display.
-/// Previews are kept in memory only (Quick Look has its own cache on disk), most recently used last. 500 cover
-/// several screens of icon view; older ones are asked for again. A store of large previews also keeps under a memory
-/// limit, counting each preview by the bytes of its picture.
+/// Previews are asked for at `pixelSize(forIconSize:)` on their longest side: twice the icon, for a Retina display,
+/// in three steps. Previews are kept in memory only (Quick Look has its own cache on disk), most recently used last,
+/// and older ones are asked for again. A store can also keep under a memory limit, counting each preview by the bytes
+/// of its picture.
 @MainActor
 public final class ThumbnailStore {
+    /// Previews for icons up to 32 points, the smallest: a quarter of the pixels of the next step, quicker to make and
+    /// to draw where a screen shows hundreds.
+    public nonisolated static let smallPixelSize = 64
     /// Previews for icons up to 64 points.
     public nonisolated static let pixelSize = 128
     /// Previews for larger icons.
@@ -18,10 +21,18 @@ public final class ThumbnailStore {
 
     /// The preview size that stays sharp for icons `iconSize` points square on a Retina display.
     public nonisolated static func pixelSize(forIconSize iconSize: Double) -> Int {
-        iconSize <= Double(pixelSize) / 2 ? pixelSize : largePixelSize
+        if iconSize <= Double(smallPixelSize) / 2 { return smallPixelSize }
+        return iconSize <= Double(pixelSize) / 2 ? pixelSize : largePixelSize
     }
 
+    /// The previews a store keeps by default: several screens of the Previews view.
     public nonisolated static let maxEntries = 500
+    /// The Icons view's store: a maximized window at 32 points shows about 600 items, so 500 didn't keep one screen
+    /// for a scroll back. Its memory limit keeps it bounded at the larger sizes.
+    public nonisolated static let iconEntries = 2000
+    /// At most this many bytes of previews in the Icons view's store: 2,000 previews of 64 pixels, or about 400 of
+    /// 256.
+    public nonisolated static let iconMemoryLimit = 96 * 1024 * 1024
 
     private struct Cached {
         /// The file's state the preview was made from; nil when the file could not be read.

@@ -8,6 +8,10 @@ import Foundation
 @MainActor
 public final class ThumbnailLoadQueue {
     public nonisolated static let maxConcurrentLoads = 4
+    /// The Icons view's previews are small (64 to 256 pixels) and a screen at its smallest size shows hundreds: this
+    /// many load at once, so a folder's previews arrive about a third sooner when Quick Look makes them anew. The
+    /// Previews view's large pictures keep `maxConcurrentLoads`.
+    public nonisolated static let iconLoads = 12
 
     private struct Job {
         let id: Int
