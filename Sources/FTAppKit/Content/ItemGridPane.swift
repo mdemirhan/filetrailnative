@@ -274,6 +274,28 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
         syncRename()
     }
 
+    /// Items put in and taken out of the one section there is while nothing is grouped.
+    func apply(_ change: ListChange) -> Bool {
+        guard groups.isEmpty, host?.groups.isEmpty != false, let host,
+            collection.numberOfItems(inSection: 0) == keys.count, host.entries.count == host.entryKeys.count,
+            change.takes(keys, to: host.entryKeys)
+        else { return false }
+        // The same listing: the previews of the items that stay aren't checked against their files again; those of the
+        // files that changed are (`filesChanged`).
+        let sameListing = listing
+        readEntries()
+        listing = sameListing
+        collection.performBatchUpdates {
+            collection.deleteItems(at: Set(change.removed.map { IndexPath(item: $0, section: 0) }))
+            collection.insertItems(at: Set(change.inserted.map { IndexPath(item: $0, section: 0) }))
+        }
+        placeItems()
+        syncSelection()
+        keepInView(.list)
+        syncRename()
+        return true
+    }
+
     func reloadRows(paths: Set<DiskPath>) {
         readEntries()
         let indexPaths = Set(paths.compactMap { indexByPath[$0] }.map { IndexPath(item: $0, section: 0) })

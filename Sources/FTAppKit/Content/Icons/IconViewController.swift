@@ -96,6 +96,18 @@ class IconViewController: ItemGridPane {
         }
     }
 
+    /// The previews of the items taken out and put in are checked against their files again, as a new listing's are: a
+    /// file put in where one was taken out, under its name, is another file.
+    /// Marked before the items are put in, which ask for their previews as they are made; marking more than goes in,
+    /// when the change is refused and every item drawn again, costs only a look at those files.
+    override func apply(_ change: ListChange) -> Bool {
+        let after = host?.entryKeys ?? []
+        let removed = change.removed.compactMap { keys.indices.contains($0) ? keys[$0] : nil }
+        let inserted = change.inserted.compactMap { after.indices.contains($0) ? after[$0] : nil }
+        thumbnailStore.markChanged(Set(removed + inserted))
+        return super.apply(change)
+    }
+
     // MARK: Placement
 
     /// How many columns the pane holds; the arrow keys and pages step by them.

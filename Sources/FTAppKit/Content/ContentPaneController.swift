@@ -544,6 +544,15 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             let reloaded = Set(kept.changedPaths.lazy.map(DiskPath.init)).union(customIconPaths)
             pane?.reloadRows(paths: reloaded)
             filesChanged(changedPaths, besides: reloaded)
+        } else if let kept, !unchanged, keepingScroll, inlineRename == nil, !regrouped, groups.isEmpty, !redrawWaited,
+            let change = ListChange.between(previousKeys, entryKeys), pane?.apply(change) == true
+        {
+            // Items came or went, the others in the order they were: only they are put in and taken out, and the rows
+            // of the items that changed besides are drawn again.
+            let inserted = Set(change.inserted.map { entryKeys[$0] })
+            let reloaded = Set(kept.changedPaths.lazy.map(DiskPath.init)).union(customIconPaths).subtracting(inserted)
+            if !reloaded.isEmpty { pane?.reloadRows(paths: reloaded) }
+            filesChanged(changedPaths, besides: reloaded.union(inserted))
         } else if !unchanged || !keepingScroll || regrouped || redrawWaited {
             // Every row drawn again, as a new listing: each preview is checked against its file again.
             // The same folder in another order (a sort, Folders First, hidden files) starts at its top, and the List
@@ -862,8 +871,12 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         announceOwedSelection()
     }
 
+    /// How many times every row was drawn again, for a test.
+    private(set) var wholeRedraws = 0
+
     /// Every item drawn again, by anything but a filter's key: it takes the place of a redraw waiting for the typing.
     private func reloadPane(scrollToTop: Bool) {
+        wholeRedraws += 1
         pendingFilterRedraw = nil
         pane?.reload(scrollToTop: scrollToTop)
         announceOwedSelection()

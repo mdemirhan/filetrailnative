@@ -319,6 +319,36 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         syncRename()
     }
 
+    /// Rows put in and taken out while nothing is grouped, where a row is an entry.
+    func apply(_ change: ListChange) -> Bool {
+        guard rows.isEmpty, host?.groups.isEmpty != false, let host, table.numberOfRows == keys.count,
+            host.entries.count == host.entryKeys.count, change.takes(keys, to: host.entryKeys)
+        else { return false }
+        readEntries()
+        makeRows()
+        rowsCache = nil
+        isSyncing = true
+        table.beginUpdates()
+        table.removeRows(at: change.removed, withAnimation: [])
+        table.insertRows(at: change.inserted, withAnimation: [])
+        table.endUpdates()
+        // The rows from the first change on are striped by their new places: those AppKit holds are drawn again.
+        if let first = [change.removed.first, change.inserted.first].compactMap({ $0 }).min(),
+            first < table.numberOfRows
+        {
+            table.reloadData(
+                forRowIndexes: IndexSet(first..<table.numberOfRows),
+                columnIndexes: IndexSet(integersIn: 0..<table.numberOfColumns))
+        }
+        isSyncing = false
+        applySelection()
+        keepInView(.list)
+        updateMinuteHold()
+        requestMetadata()
+        syncRename()
+        return true
+    }
+
     func reloadRows(paths: Set<DiskPath>) {
         readEntries()
         let asked = asksRowHeights

@@ -195,6 +195,9 @@ protocol FolderPane: NSViewController {
     func refresh(paths: Set<DiskPath>?)
     /// The entries at these paths changed, and no row moved: only their rows are drawn again.
     func reloadRows(paths: Set<DiskPath>)
+    /// Items came and went, the others in the order they were: only they are put in and taken out. False when the view
+    /// can't (groups, a list it holds that doesn't match), and then nothing changed.
+    func apply(_ change: ListChange) -> Bool
     /// The files at these paths (nil: any in the folder) may have changed on disk though their entries did not, as
     /// an edit changes nothing an entry shows: the previews drawn of them are checked against the files again.
     func filesChanged(paths: Set<DiskPath>?)
@@ -226,6 +229,7 @@ extension FolderPane {
     var hasKeyboard: Bool { focusView.window?.firstResponder === focusView }
     func refresh(paths: Set<DiskPath>?) { reload(scrollToTop: false) }
     func reloadRows(paths: Set<DiskPath>) { reload(scrollToTop: false) }
+    func apply(_ change: ListChange) -> Bool { false }
     func filesChanged(paths: Set<DiskPath>?) {}
     func syncSelection() {}
     func refreshLook() {}

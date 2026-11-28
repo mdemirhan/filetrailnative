@@ -33,13 +33,10 @@ Open faults are in [known-issues.md](known-issues.md).
 
 ## Lists
 
-- **Items added or removed shown in place, not by drawing every row again.**
-  Today an item added or removed, or a change of order, draws every row again (the scroll and the selection kept, each preview checked again);
-  a change to an item's details draws only its row.
-  Measured on 2026-11-22 in a release build, a folder of 3,000 items scrolled to where the changes landed, one change every 1.5 s: no flicker was seen, and drawing every row held the main thread 26 to 60 ms (median, by view; 76 ms at worst), against 7 to 10 ms of work for a row alone.
-  A held frame shows only as a stutter while scrolling or dragging.
-  Worth doing once a measurement shows a stutter that would be seen, a folder of tens of thousands of items that keeps changing, say.
-  It is the riskiest change of the lists: the rows and the listing must agree exactly, with groups, renames by identity, the scroll kept on the item at the top, and a rename, a drag or a marquee under way.
+- **Items added or removed shown in place while grouped, and a change of order.**
+  Since 2026-11-28 items that come and go while the others keep their order are put in and taken out in place in the List, the Icons view and the Compact List (`ListChange`, up to 200 at a time), and a change to an item's details draws only its row.
+  Grouped, in the Previews view, with a rename under way or for a new order, every row is still drawn again (the scroll and the selection kept, each preview checked again): drawing every row held the main thread 26 to 60 ms in a folder of 3,000 items (median, by view; 76 ms at worst, 2026-11-22), about 200 ms in the packed views of 10,000.
+  Groups need their headers moved with the items, and the List's rows aren't its entries there.
 
 ## Small things left as they are
 
