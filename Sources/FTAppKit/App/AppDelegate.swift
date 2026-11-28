@@ -65,6 +65,10 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     /// the appearance, the services (the window host among them), the menu and the Dock menu, the startup windows,
     /// then the items that came before them.
     public func applicationDidFinishLaunching(_ notification: Notification) {
+        StallLog.start()
+        #if DEBUG
+            if StallLog.isOn { MeasuredRun.leaveTheFront() }
+        #endif
         AppClock.start()
         let arguments = Array(CommandLine.arguments.dropFirst())
         guard !handOverToRunningInstance(arguments) else { return }
@@ -119,7 +123,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
                 SecondInstance.arrived(shutdownInProgress: self.quit.shutdownInProgress, host: self.host)
             }
         }
-        NSApp.activate()
+        if !StallLog.isOn { NSApp.activate() }
         guard let controller = explorerWindows.front as? MainWindowController else { return }
 
         #if DEBUG
@@ -467,3 +471,34 @@ struct TerminateReplies {
         }
     }
 }
+
+#if DEBUG
+    /// A run measured by scripts/stalls.sh never keeps the front, so the keyboard stays with whatever the person at the
+    /// Mac is using: each time the app is made active, the front goes back to the app that last had it.
+    @MainActor
+    enum MeasuredRun {
+        /// The other app in front last.
+        private static var before: NSRunningApplication?
+        private static var observers: [NSObjectProtocol] = []
+
+        static func leaveTheFront() {
+            let front = NSWorkspace.shared.frontmostApplication
+            if front != NSRunningApplication.current { before = front }
+            observers.append(
+                NSWorkspace.shared.notificationCenter.addObserver(
+                    forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main
+                ) { note in
+                    let app = note.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
+                    MainActor.assumeIsolated {
+                        if let app, app != NSRunningApplication.current { before = app }
+                    }
+                })
+            observers.append(
+                NotificationCenter.default.addObserver(
+                    forName: NSApplication.didBecomeActiveNotification, object: nil, queue: .main
+                ) { _ in
+                    MainActor.assumeIsolated { _ = before?.activate() }
+                })
+        }
+    }
+#endif

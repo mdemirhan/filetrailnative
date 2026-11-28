@@ -1,3 +1,4 @@
+import FTFoundation
 import Foundation
 
 /// Previews wanted at once are loaded a few at a time, so one scrolled past before its turn can still be
@@ -126,6 +127,7 @@ public final class ThumbnailLoadQueue {
                 // Its place was given up already when it was let go of.
                 if self.abandoned.remove(job.id) == nil { self.active -= 1 }
                 self.startQueued()
+                if self.active == 0, self.queued.isEmpty { StallLog.mark("previews", ["queue": self.maxConcurrent]) }
             }
         }
     }

@@ -867,6 +867,11 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         pendingFilterRedraw = nil
         pane?.reload(scrollToTop: scrollToTop)
         announceOwedSelection()
+        // A measured run (scripts/stalls.sh) looks for when the list is drawn whole: by the next turn of the run loop.
+        if StallLog.isOn {
+            let fields: [String: any Sendable] = ["items": entries.count, "folder": DiskPath(folderPath).name]
+            RunLoop.main.perform(inModes: [.common]) { StallLog.mark("drawn", fields) }
+        }
     }
 
     /// A selection made while the list waited to be drawn, not told yet.

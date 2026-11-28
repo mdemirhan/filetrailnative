@@ -28,13 +28,22 @@ by a scratch scenario:
   checked and anything that seems off, and commit.
 - While trying, build and run; the full `scripts/ci.sh` is for once the behavior is right, before committing.
 
+## Timing the main thread
+
+`scripts/stalls.sh` launches into large folders, goes in, back in, Back, Forward and filters them, and lists the main
+thread's blocks against a run made before (its header says how). Its runs set `FILETRAIL_STALLS_LOG`, which makes the
+app write each block of 8 ms or more and a few moments (a step begun, a list drawn whole, the previews all in) to that
+file, and leave the front to whatever app has it. Two steps are for it: `{"step": "maximize"}` zooms the window as the
+green button does, and `{"step": "type", "text": "image", "queued": true}` puts the keys at the end of the app's queue at
+once, as keys typed faster than the app draws wait there.
+
 ## Timing a scroll, once
 
 The `scroll` step (`{"step": "scroll", "distance": 4000, "ms": 1500}`) moves the folder's view a step each frame at
-120 Hz and reports, in `report.json`, how long the main thread took per frame. A frame has about 8.3 ms. It moves the
-clip view itself, so it times the main thread's part even where a trackpad would scroll on AppKit's own thread. Nothing
-runs it by default: it's for checking a change by hand. `scripts/frame-times.sh` measures with the same code, in
-`FrameTimeGUITests`, in the debug build the tests run in. Automation is in debug builds only, so for numbers close to a
+120 Hz and reports, in `report.json`, how long the main thread took per frame, stopping at the end of the folder. A
+frame has about 8.3 ms. It moves the clip view itself, so it times the main thread's part even where a trackpad would
+scroll on AppKit's own thread. Nothing runs it by default: it's for checking a change by hand. `scripts/frame-times.sh`
+measures with the same code, in `FrameTimeGUITests`, in the debug build the tests run in. Automation is in debug builds only, so for numbers close to a
 release build, build optimized with `DEBUG` defined, into a folder of its own:
 
 ```bash

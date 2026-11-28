@@ -28,7 +28,8 @@
         /// Scrolls the folder's view by `distance` points over `milliseconds`, a step each frame at 120 Hz (sideways in
         /// the Compact List), timing the main thread over each frame: the scroll, the layout of the items it brings in,
         /// their drawing and the commit. It moves the clip view itself, so it times the main thread's part of scrolling,
-        /// which a trackpad's responsive scrolling would otherwise hide. Nil with no folder view.
+        /// which a trackpad's responsive scrolling would otherwise hide. It stops at the end of the folder: a scroll longer
+        /// than the folder times only the frames that moved. Nil with no folder view.
         @MainActor
         static func measure(by distance: Double, milliseconds: Int, window: NSWindow) async -> ScrollFrameTimes? {
             guard let scrollView = folderScrollView(in: window) else { return nil }
@@ -40,13 +41,19 @@
             let sideways = (scrollView as? ItemGridScrollView)?.wheelScrollsSideways == true
             let count = max(1, Int(Double(milliseconds) / frameMs))
             var times: [Double] = []
+            var last = start
             for step in 1...count {
-                let began = ContinuousClock.now
                 let along = distance * Double(step) / Double(count)
-                clip.scroll(
-                    to: sideways
-                        ? NSPoint(x: min(maxX, max(0, start.x + along)), y: start.y)
-                        : NSPoint(x: start.x, y: min(maxY, max(0, start.y + along))))
+                let target =
+                    sideways
+                    ? NSPoint(x: min(maxX, max(0, start.x + along)), y: start.y)
+                    : NSPoint(x: start.x, y: min(maxY, max(0, start.y + along)))
+                // At the end of the folder the target stops moving: the frames after it would move nothing and only
+                // lower the numbers.
+                if target == last { break }
+                last = target
+                let began = ContinuousClock.now
+                clip.scroll(to: target)
                 scrollView.reflectScrolledClipView(clip)
                 window.contentView?.layoutSubtreeIfNeeded()
                 window.displayIfNeeded()

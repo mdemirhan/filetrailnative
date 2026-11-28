@@ -86,4 +86,35 @@
             }
         }
     }
+
+    /// Keys a `type` step put in the app's queue, sent to their window as the app takes them out of it: a measured run
+    /// leaves the app out of the front (`StallLog`), and NSApplication gives keys only to the key window of an app in
+    /// front.
+    @MainActor
+    enum QueuedKeys {
+        private static var monitor: Any?
+        private static weak var target: NSWindow?
+        private static var waiting = 0
+
+        static func deliver(_ count: Int, to window: NSWindow) {
+            target = window
+            waiting += count
+            guard monitor == nil else { return }
+            monitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .keyUp]) { event in
+                // Monitors are called on the main thread, as the app takes the event out of its queue.
+                nonisolated(unsafe) let event = event
+                let sent = MainActor.assumeIsolated {
+                    guard waiting > 0, let target, event.windowNumber == target.windowNumber else { return false }
+                    waiting -= 1
+                    if waiting == 0, let monitor {
+                        NSEvent.removeMonitor(monitor)
+                        Self.monitor = nil
+                    }
+                    target.sendEvent(event)
+                    return true
+                }
+                return sent ? nil : event
+            }
+        }
+    }
 #endif

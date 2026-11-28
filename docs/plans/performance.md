@@ -101,7 +101,8 @@ Left out of phase 1, after measuring:
 ## Phase 3: measuring, planned
 
 - `scripts/frame-times.sh` at the smallest sizes too, in a window as large as the screen.
-- An on-demand script that runs the open, go back in, Back, Forward and filter scenario with the probe above and lists the main thread's blocks over 8 ms, against a run made just before.
+- Built: `scripts/stalls.sh` launches into each folder named, then goes in, scrolls, goes back in, Back, Forward, types a filter a key at a time and five keys faster than the app draws, in each view at its smallest size in a maximized window, and lists the main thread's blocks of 8 ms or more (the median of three runs) against a run made before.
+  Its app writes them only when `FILETRAIL_STALLS_LOG` names a file (`Sources/FTFoundation/StallLog.swift`), in debug builds, and never takes the front.
   Both are in "Speed is measured on demand, in the worst cases" (`docs/decisions/code.md`).
 
 ## Decisions changed for this

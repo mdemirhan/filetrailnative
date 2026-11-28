@@ -58,7 +58,9 @@ this file keeps why.
 - **Speed is measured on demand, in the worst cases** (the owner, 2026-11-25; widened 2026-11-27), not by a release or CI.
   `scripts/frame-times.sh` runs `FrameTimeGUITests` (the List, the Icons view and the Compact List, each at its default size and at its largest, on the fixture folder `large/files-3000`, each number the median of three scrolls) and shows the numbers against an earlier run's file or the last release measured on the same Mac model in `docs/frame-timings.json`, which keeps the releases from 0.20.1 to 1.7.0.
   It is to measure the smallest sizes too (32 pt icons, 160 pt columns), in a window as large as the screen: a screen of the smallest items is where scrolling stutters, and the largest sizes put few items on screen.
-  A second script, on demand as well, is to time the main thread's blocks over 8 ms while a large folder is opened, gone back into and filtered, which scrolling's frame times never see: they were the worst stalls found (200 to 800 ms, `docs/plans/performance.md`).
+  `scripts/stalls.sh`, on demand as well, times the main thread's blocks of 8 ms or more while large folders are launched into, opened, gone back into and filtered in each view at its smallest size in a maximized window, which scrolling's frame times never see: they were the worst stalls found (200 to 800 ms, `docs/plans/performance.md`).
+  It also times the frames of a flick, 20,000 points in 0.5 s, as fast as a trackpad's flick is at its start (the owner, 2026-11-28, after flicks through large folders stuttered where the measured scroll didn't).
+  Its runs never take the front, so the keyboard stays with the app in use, and go behind the test lock.
   The frame times compare with an earlier run's file or the last release measured on the same Mac model, the stalls with a run made just before on the same Mac; nothing passes or fails on either.
   Anything else wanting speed is guarded by tests that bound CPU time (`CPUTime.measureThread`): no benchmark in CI, no budgets, no `--bench` modes.
   The fixture tree `large` holds the two folders the folder-size golden measures and the folder the frame times scroll.

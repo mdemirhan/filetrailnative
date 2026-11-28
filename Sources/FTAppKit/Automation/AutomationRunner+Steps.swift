@@ -204,6 +204,7 @@
         func scroll(by distance: Double, milliseconds: Int, window: NSWindow) async -> Outcome {
             guard let timed = await ScrollFrameTimes.measure(by: distance, milliseconds: milliseconds, window: window)
             else { return Outcome(.failed, "no folder view to scroll") }
+            guard timed.count > 0 else { return Outcome(.failed, "the folder's view didn't move: it is at its end") }
             return Outcome(
                 .ok,
                 String(

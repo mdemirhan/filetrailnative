@@ -1,5 +1,6 @@
 #if DEBUG
     import AppKit
+    import FTFoundation
 
     /// An automation run's window has the look a user's has: the app in front and the window key or main.
     ///
@@ -26,7 +27,8 @@
 
         /// Takes the front from whichever app has it.
         static func activate() {
-            guard !NSApp.isActive else { return }
+            // A measured run leaves the keyboard with whatever is in front: the person at the Mac may be using it.
+            guard !NSApp.isActive, !StallLog.isOn else { return }
             NSApp.activate(ignoringOtherApps: true)
         }
 

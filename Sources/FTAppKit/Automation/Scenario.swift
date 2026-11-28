@@ -39,11 +39,15 @@
 
         enum Step: Equatable, Sendable {
             case window(width: Double, height: Double)
+            /// Zooms the window to fill the screen, as the green button does.
+            case maximize
             case prefs([String: PrefValue])
             case open(path: String)
             case select(names: [String])
             case key(key: String, modifiers: [String])
-            case type(text: String)
+            /// With `queued`, the keys are put at the end of the app's queue at once, where keys typed faster than the
+            /// app keeps up wait, and taken from it as the app gets to them; otherwise each is handled as it is sent.
+            case type(text: String, queued: Bool)
             case command(id: String)
             case wait(milliseconds: Int)
             case snapshot(name: String)
@@ -71,6 +75,7 @@
             var kind: String {
                 switch self {
                 case .window: "window"
+                case .maximize: "maximize"
                 case .prefs: "prefs"
                 case .open: "open"
                 case .select: "select"
@@ -213,6 +218,8 @@
             switch kind {
             case "window":
                 return .window(width: try number("width"), height: try number("height"))
+            case "maximize":
+                return .maximize
             case "prefs":
                 guard let values = step["prefs"] as? [String: Any] else { throw fail("missing \"prefs\"") }
                 var prefs: [String: PrefValue] = [:]
@@ -229,7 +236,7 @@
             case "key":
                 return .key(key: try string("key"), modifiers: try modifiers())
             case "type":
-                return .type(text: try string("text"))
+                return .type(text: try string("text"), queued: step["queued"] as? Bool ?? false)
             case "command":
                 return .command(id: try string("id"))
             case "wait":

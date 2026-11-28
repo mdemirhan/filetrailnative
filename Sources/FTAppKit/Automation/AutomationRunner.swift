@@ -111,6 +111,7 @@
             let seeded = await seedPreferences()
             for (offset, step) in scenario.steps.enumerated() {
                 let started = ContinuousClock.now
+                StallLog.mark("step", ["i": offset + 1, "kind": step.kind])
                 armHardWatchdog(index: offset + 1, step: step)
                 let outcome: Outcome
                 if let done = seeded[offset] {
@@ -267,6 +268,9 @@
                     window.center()
                 }
                 return Outcome(.ok)
+            case .maximize:
+                if !window.isZoomed { window.zoom(nil) }
+                return window.isZoomed ? Outcome(.ok) : Outcome(.failed, "the window didn't zoom")
             case .prefs(let prefs):
                 return AutomationPrefs.apply(
                     prefs, context: .init(controller: currentController, window: window, prefs: prefs))
@@ -288,8 +292,8 @@
                 return select(names, in: window)
             case .key(let key, let modifiers):
                 return press(key, modifiers: modifiers, window: window)
-            case .type(let text):
-                return type(text, window: window)
+            case .type(let text, let queued):
+                return type(text, queued: queued, window: window)
             case .command(let id):
                 guard let controller = currentController else { return Outcome(.failed, "no explorer window") }
                 return AutomationCommands.run(id, controller: controller, window: window)
@@ -424,7 +428,7 @@
             return Outcome(.ok)
         }
 
-        private func type(_ text: String, window: NSWindow) -> Outcome {
+        private func type(_ text: String, queued: Bool, window: NSWindow) -> Outcome {
             let target = ElementFinder.windows(around: window).lazy.compactMap { $0.firstResponder as? NSTextView }
                 .first
             if let editor = target {
@@ -433,12 +437,19 @@
             }
             // Nothing is being edited: the characters are key presses on whatever has the keyboard (the file list takes
             // them as a filter).
+            var events: [NSEvent] = []
             for character in text {
                 guard let key = KeyEvents.key(named: String(character)) else {
                     return Outcome(.unsupported, "no key for “\(character)”")
                 }
-                for event in KeyEvents.events(key, modifiers: [], window: window) { window.sendEvent(event) }
+                events += KeyEvents.events(key, modifiers: [], window: window)
             }
+            guard queued else {
+                for event in events { window.sendEvent(event) }
+                return Outcome(.ok)
+            }
+            QueuedKeys.deliver(events.count, to: window)
+            for event in events { NSApp.postEvent(event, atStart: false) }
             return Outcome(.ok)
         }
 
