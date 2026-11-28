@@ -238,10 +238,10 @@ final class ItemGridRootView: NSView, RowsBelowCard {
 }
 
 /// A transparent view over an item that names a state of it for automation (selected, the name's pill); it reports
-/// the item's text.
+/// the item's text: its name's, a text field or a name drawn as a picture (`PictureLabel`).
 final class GridMarkerView: NSView, TextStyleSource {
-    weak var source: NSTextField?
-    var styleTextField: NSTextField? { source }
+    weak var source: NSView?
+    var styleTextField: NSTextField? { source as? NSTextField }
 
     init(id: String) {
         super.init(frame: .zero)

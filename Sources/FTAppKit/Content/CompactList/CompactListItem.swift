@@ -4,7 +4,7 @@ import FTFoundation
 
 /// A name in the Compact List: the stem, which ends in an ellipsis when the column is too narrow, and the extension
 /// after it, which always shows (in the softer selection text on a selected item). The field holds the whole name.
-final class CompactNameLabel: ListLabel {
+final class CompactNameLabel: PictureLabel {
     var fileExtension = "" {
         didSet { needsDisplay = true }
     }
@@ -146,7 +146,6 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
         root.addSubview(label)
         root.addSubview(tagDots)
         view = root
-        textField = label
     }
 
     override func prepareForReuse() {
@@ -266,7 +265,11 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
                     width: size, height: size)
             }
         }
-        label.frame = NSRect(x: x, y: (view.bounds.height - height) / 2, width: width, height: height)
+        // Whole pixels high, so the name's picture is its size exactly (`PictureLabel`): from the pixel above the centred
+        // line to as far from the bottom, so the line, centred in it, is where it was.
+        let scale = view.window?.backingScaleFactor ?? 2
+        let top = ((view.bounds.height - height) / 2 * scale).rounded(.down) / scale
+        label.frame = NSRect(x: x, y: top, width: width, height: view.bounds.height - 2 * top)
         selectedMarker.frame = view.bounds
         dropMarker.frame = view.bounds
     }

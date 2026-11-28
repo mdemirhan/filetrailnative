@@ -70,12 +70,14 @@
             return Frame(x: round(origin.minX), y: round(y), width: round(origin.width), height: round(origin.height))
         }
 
-        /// The text a view shows itself: a text field's (its placeholder when empty), a table cell's, a titled
-        /// button's, or that of the text field it is drawn around.
+        /// The text a view shows itself: a text field's (its placeholder when empty), a name drawn as a picture, a table
+        /// cell's, a titled button's, or that of the text field or name it is drawn around.
         static func ownText(of view: NSView) -> String? {
+            if let marker = view as? GridMarkerView, let source = marker.source { return ownText(of: source) }
             if let source = view as? TextStyleSource, let field = source.styleTextField, field !== view {
                 return ownText(of: field)
             }
+            if let drawn = view as? PictureLabel { return drawn.stringValue }
             if let field = view as? NSTextField {
                 return field.stringValue.isEmpty ? (field.placeholderString ?? "") : field.stringValue
             }
