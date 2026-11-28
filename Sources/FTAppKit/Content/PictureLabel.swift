@@ -82,6 +82,15 @@ class PictureLabel: NSView {
         needsDisplay = true
     }
 
+    /// `rect` with its edges on whole pixels of a screen of `scale` pixels a point, for a view whose picture is to be its
+    /// size exactly: its origin moved to the nearest pixel, its size to the next whole pixel, by under a pixel each.
+    static func onWholePixels(_ rect: NSRect, scale: CGFloat) -> NSRect {
+        func pixels(_ value: CGFloat, _ rule: FloatingPointRoundingRule) -> CGFloat { (value * scale).rounded(rule) / scale }
+        return NSRect(
+            x: pixels(rect.minX, .toNearestOrAwayFromZero), y: pixels(rect.minY, .toNearestOrAwayFromZero),
+            width: pixels(rect.width, .up), height: pixels(rect.height, .up))
+    }
+
     /// What `draw(_:)` draws over the whole view, as a picture of `scale` pixels a point, in the view's appearance; nil
     /// when the view has no size. The view is to be whole pixels high and wide, so the picture is its size exactly.
     func picture(scale: CGFloat) -> CGImage? {

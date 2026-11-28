@@ -25,9 +25,11 @@ enum IconThumbnails {
     private static var memoryPressure: (any DispatchSourceMemoryPressure)?
 }
 
-/// The name under an icon: centred lines, at most two, on the selection's pill when the item is selected. The field
-/// holds the label's text (the name as shortened) and draws it itself.
-final class IconNameLabel: ListLabel {
+/// The name under an icon: centred lines, at most two, on the selection's pill when the item is selected. It holds the
+/// label's text (the name as shortened) and draws it whole into its layer's picture (`PictureLabel`), once each time
+/// what it shows changes: drawn by AppKit, it was drawn a strip at a time as it scrolled in, and a frame of a scroll
+/// took twice as long.
+final class IconNameLabel: PictureLabel {
     var density = Density.standard
     var pillColor: NSColor? {
         didSet { needsDisplay = true }
@@ -288,8 +290,6 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
         tile.setAccessibilityIdentifier("icons.item.tile")
         iconBox.setAccessibilityIdentifier("icons.item.icon")
         label.setAccessibilityIdentifier("icons.item.name")
-        label.usesSingleLineMode = false
-        label.cell?.wraps = true
         badge.setAccessibilityIdentifier("icons.item.badge")
         badge.isHidden = true
         thumbnail.isHidden = true
@@ -549,7 +549,9 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
             thumbnail.frame = NSRect(x: (side - width) / 2, y: (side - height) / 2, width: width, height: height)
         }
         let labelFrame = layout.labelFrame(textWidth: labelTextWidth, lines: label.lines.count)
-        label.frame = NSRect(x: labelFrame.x, y: labelFrame.y, width: labelFrame.width, height: labelFrame.height)
+        label.frame = PictureLabel.onWholePixels(
+            NSRect(x: labelFrame.x, y: labelFrame.y, width: labelFrame.width, height: labelFrame.height),
+            scale: root.window?.backingScaleFactor ?? 2)
         pill.frame = label.bounds
         label.placeTagDots()
         dropMarker.frame = root.bounds
@@ -574,8 +576,9 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
         iconBox.frame = NSRect(x: inset, y: inset, width: picture.width, height: picture.height)
         iconView.frame = iconBox.bounds
         thumbnail.frame = iconBox.bounds
-        label.frame = NSRect(
-            x: parts.name.x, y: parts.name.y, width: parts.name.width, height: parts.name.height)
+        label.frame = PictureLabel.onWholePixels(
+            NSRect(x: parts.name.x, y: parts.name.y, width: parts.name.width, height: parts.name.height),
+            scale: root.window?.backingScaleFactor ?? 2)
         pill.frame = label.bounds
         label.placeTagDots()
         dropMarker.frame = root.bounds

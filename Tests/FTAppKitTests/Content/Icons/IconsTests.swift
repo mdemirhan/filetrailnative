@@ -35,9 +35,13 @@ extension ExplorerWindowlessTests {
                 #expect(item.view.toolTip == entry.name)
                 #expect(item.tile.frame == NSRect(x: 16, y: 5, width: 72, height: 72))
                 #expect(item.iconBox.frame == NSRect(x: 4, y: 4, width: 64, height: 64))
-                // A short name is one line of 16 on a 1 pt padding, as wide as its text and its 4 pt padding.
+                // A short name is one line of 16 on a 1 pt padding, as wide as its text and its 4 pt padding, centred
+                // under the icon on whole pixels (its picture is its size exactly), so within a pixel of the middle.
                 #expect(item.label.frame.minY == 81 && item.label.frame.height == 18)
-                #expect(abs(item.label.frame.midX - 52) < 0.01)
+                let scale = item.view.window?.backingScaleFactor ?? 2
+                #expect(abs(item.label.frame.midX - 52) <= 1 / scale + 0.01)
+                let pixels = [item.label.frame.minX, item.label.frame.width].map { $0 * scale }
+                #expect(pixels.allSatisfy { $0 == $0.rounded() })
                 #expect(item.label.font?.pointSize == 13)
             }
             await harness.close()
