@@ -265,6 +265,10 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
             scroll.reflectScrolledClipView(scroll.contentView)
             revealKeeper.forget()
         }
+        // Only what is on screen is made now: AppKit kept the larger area a scroll had prepared, and going back into a
+        // folder after scrolling made 600 items where the screen showed 230. The viewport is the area, as the
+        // collection may not be the new folder's size yet; AppKit grows it again itself as the view scrolls.
+        collection.prepareContent(in: scroll.contentView.bounds)
         placeItems()
         keepInView(.list)
         syncRename()
