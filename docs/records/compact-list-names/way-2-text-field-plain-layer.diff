@@ -1,0 +1,193 @@
+diff --git b/Sources/FTAppKit/Automation/AutomationElements.swift a/Sources/FTAppKit/Automation/AutomationElements.swift
+index a037116b..4c4dafd7 100644
+--- b/Sources/FTAppKit/Automation/AutomationElements.swift
++++ a/Sources/FTAppKit/Automation/AutomationElements.swift
+@@ -70,14 +70,12 @@
+             return Frame(x: round(origin.minX), y: round(y), width: round(origin.width), height: round(origin.height))
+         }
+ 
+-        /// The text a view shows itself: a text field's (its placeholder when empty), a name drawn as a picture, a table
+-        /// cell's, a titled button's, or that of the text field or name it is drawn around.
++        /// The text a view shows itself: a text field's (its placeholder when empty), a table cell's, a titled
++        /// button's, or that of the text field it is drawn around.
+         static func ownText(of view: NSView) -> String? {
+-            if let marker = view as? GridMarkerView, let source = marker.source { return ownText(of: source) }
+             if let source = view as? TextStyleSource, let field = source.styleTextField, field !== view {
+                 return ownText(of: field)
+             }
+-            if let drawn = view as? PictureLabel { return drawn.stringValue }
+             if let field = view as? NSTextField {
+                 return field.stringValue.isEmpty ? (field.placeholderString ?? "") : field.stringValue
+             }
+diff --git b/Sources/FTAppKit/Content/CompactList/CompactListItem.swift a/Sources/FTAppKit/Content/CompactList/CompactListItem.swift
+index 793c6d98..7069e82c 100644
+--- b/Sources/FTAppKit/Content/CompactList/CompactListItem.swift
++++ a/Sources/FTAppKit/Content/CompactList/CompactListItem.swift
+@@ -146,6 +146,7 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
+         root.addSubview(label)
+         root.addSubview(tagDots)
+         view = root
++        textField = label
+     }
+ 
+     override func prepareForReuse() {
+@@ -265,8 +266,8 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
+                     width: size, height: size)
+             }
+         }
+-        // Whole pixels high, so the name's picture is its size exactly (`PictureLabel`): from the pixel above the centred
+-        // line to as far from the bottom, so the line, centred in it, is where it was.
++        // On whole pixels of the item, which its column puts on whole points, as its plain layer needs (`PictureLabel`):
++        // from the pixel above the centred line to as far from the bottom, so the line, centred in it, is where it was.
+         let scale = view.window?.backingScaleFactor ?? 2
+         let top = ((view.bounds.height - height) / 2 * scale).rounded(.down) / scale
+         label.frame = NSRect(x: x, y: top, width: width, height: view.bounds.height - 2 * top)
+diff --git b/Sources/FTAppKit/Content/ItemGrid.swift a/Sources/FTAppKit/Content/ItemGrid.swift
+index 21a7e351..fdae7f51 100644
+--- b/Sources/FTAppKit/Content/ItemGrid.swift
++++ a/Sources/FTAppKit/Content/ItemGrid.swift
+@@ -238,10 +238,10 @@ final class ItemGridRootView: NSView, RowsBelowCard {
+ }
+ 
+ /// A transparent view over an item that names a state of it for automation (selected, the name's pill); it reports
+-/// the item's text: its name's, a text field or a name drawn as a picture (`PictureLabel`).
++/// the item's text.
+ final class GridMarkerView: NSView, TextStyleSource {
+-    weak var source: NSView?
+-    var styleTextField: NSTextField? { source as? NSTextField }
++    weak var source: NSTextField?
++    var styleTextField: NSTextField? { source }
+ 
+     init(id: String) {
+         super.init(frame: .zero)
+diff --git b/Sources/FTAppKit/Content/PictureLabel.swift a/Sources/FTAppKit/Content/PictureLabel.swift
+index 5fcbcbca..a5bc9a49 100644
+--- b/Sources/FTAppKit/Content/PictureLabel.swift
++++ a/Sources/FTAppKit/Content/PictureLabel.swift
+@@ -1,104 +1,38 @@
+ import AppKit
+ 
+-/// A line of text drawn whole into a picture given to the view's layer (`updateLayer`), again only when what it shows,
+-/// its size, the screen's scale or the appearance changes. A text field coming into sight in a scroll was drawn by AppKit
+-/// a strip at a time, the part just come into view, so each name of the Compact List was laid out and drawn about five
+-/// times as it came in; Core Animation shows the strips from the one picture. The Icons view's names gained nothing
+-/// measurable from it and are drawn as AppKit draws them.
++/// A name drawn whole, once each time what it shows changes. A text field coming into sight in a scroll was drawn by
++/// AppKit a strip at a time, the part just come into view, so each name of the Compact List was laid out and drawn about
++/// five times as it came in. Its layer here is a plain one, which keeps the whole name once drawn: `draw(_:)` draws it
++/// all, at the screen's scale and in the window's appearance, and again when what it shows changes or it is resized.
++/// The Icons view's names gained nothing measurable from it and are drawn as AppKit draws them.
+ ///
+-/// It is a view of its own, not a text field: a text field that draws its own layer is given a label of AppKit's own
+-/// on screen, which drew the name a second time. AppKit gives the layer the screen's scale and puts it on whole pixels,
+-/// as it does the icons' (`IconPictureView`). Automation reads its text as a text field's (`AutomationElements`), and
+-/// VoiceOver as static text. The other ways tried, with their code and numbers, are in
+-/// `docs/records/compact-list-names/`.
+-class PictureLabel: NSView {
+-    var stringValue = "" {
+-        didSet {
+-            guard stringValue != oldValue else { return }
+-            setAccessibilityValue(stringValue)
+-            needsDisplay = true
+-        }
+-    }
+-    var font: NSFont? {
+-        didSet { if font != oldValue { needsDisplay = true } }
+-    }
+-    var textColor: NSColor? {
+-        didSet { if textColor != oldValue { needsDisplay = true } }
+-    }
+-
+-    init() {
+-        super.init(frame: .zero)
++/// The label doesn't draw its layer itself (`wantsUpdateLayer`): a text field that does is given a label of AppKit's
++/// own over it on screen, which drew the name a second time, cut short its own way. AppKit puts the layers it makes on
++/// whole pixels of the screen and gives them its scale; this one is given the scale here, and its frame is to be on
++/// whole pixels (the Compact List's items are on whole points, and it puts the name on whole pixels in them), or the
++/// name is resampled and looks soft.
++class PictureLabel: ListLabel {
++    override init() {
++        super.init()
+         wantsLayer = true
+         layerContentsRedrawPolicy = .onSetNeedsDisplay
+-        setAccessibilityElement(true)
+-        setAccessibilityRole(.staticText)
+     }
+ 
+     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+ 
+-    override var isFlipped: Bool { true }
+-
+-    override func hitTest(_ point: NSPoint) -> NSView? { nil }
+-
+-    /// The height one line of the text takes: the font's own line (ascent, descent and leading).
+-    var lineHeight: CGFloat {
+-        guard let font else { return 0 }
+-        return font.ascender - font.descender + font.leading
+-    }
+-
+-    /// The width the text takes on one line.
+-    var textWidth: CGFloat {
+-        guard let font else { return 0 }
+-        return (stringValue as NSString).size(withAttributes: [.font: font]).width
+-    }
+-
+-    override var wantsUpdateLayer: Bool { true }
+-
+-    override func updateLayer() {
+-        guard let layer else { return }
+-        let scale = window?.backingScaleFactor ?? NSScreen.main?.backingScaleFactor ?? 2
+-        let drawn = picture(scale: scale)
+-        CATransaction.begin()
+-        CATransaction.setDisableActions(true)
+-        layer.contentsScale = scale
+-        layer.contentsGravity = .resize
+-        layer.contents = drawn
+-        CATransaction.commit()
+-    }
+-
+-    override func setFrameSize(_ newSize: NSSize) {
+-        let changed = newSize != frame.size
+-        super.setFrameSize(newSize)
+-        if changed { needsDisplay = true }
++    override func makeBackingLayer() -> CALayer {
++        let layer = CALayer()
++        layer.needsDisplayOnBoundsChange = true
++        layer.contentsScale = window?.backingScaleFactor ?? NSScreen.main?.backingScaleFactor ?? 2
++        return layer
+     }
+ 
++    /// AppKit gives the screen's scale to the layers it makes, not to one a view makes itself: without it the name was
++    /// drawn at 1× on a Retina screen.
+     override func viewDidChangeBackingProperties() {
+         super.viewDidChangeBackingProperties()
++        guard let layer, let scale = window?.backingScaleFactor, layer.contentsScale != scale else { return }
++        layer.contentsScale = scale
+         needsDisplay = true
+     }
+-
+-    override func viewDidChangeEffectiveAppearance() {
+-        super.viewDidChangeEffectiveAppearance()
+-        needsDisplay = true
+-    }
+-
+-    /// What `draw(_:)` draws over the whole view, as a picture of `scale` pixels a point, in the view's appearance; nil
+-    /// when the view has no size. The view is to be whole pixels high and wide, so the picture is its size exactly.
+-    func picture(scale: CGFloat) -> CGImage? {
+-        let width = Int((bounds.width * scale).rounded(.up))
+-        let height = Int((bounds.height * scale).rounded(.up))
+-        guard width > 0, height > 0,
+-            let space = window?.colorSpace?.cgColorSpace ?? CGColorSpace(name: CGColorSpace.sRGB),
+-            let context = CGContext(
+-                data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0, space: space,
+-                bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
+-        else { return nil }
+-        context.translateBy(x: 0, y: CGFloat(height))
+-        context.scaleBy(x: scale, y: -scale)
+-        NSGraphicsContext.saveGraphicsState()
+-        defer { NSGraphicsContext.restoreGraphicsState() }
+-        NSGraphicsContext.current = NSGraphicsContext(cgContext: context, flipped: true)
+-        effectiveAppearance.performAsCurrentDrawingAppearance { draw(bounds) }
+-        return context.makeImage()
+-    }
+ }

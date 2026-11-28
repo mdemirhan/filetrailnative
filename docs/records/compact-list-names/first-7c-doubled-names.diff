@@ -1,0 +1,88 @@
+diff --git a/Sources/FTAppKit/Content/CompactList/CompactListItem.swift b/Sources/FTAppKit/Content/CompactList/CompactListItem.swift
+index 9db655f0..4dce3b34 100644
+--- a/Sources/FTAppKit/Content/CompactList/CompactListItem.swift
++++ b/Sources/FTAppKit/Content/CompactList/CompactListItem.swift
+@@ -4,7 +4,7 @@ import FTFoundation
+ 
+ /// A name in the Compact List: the stem, which ends in an ellipsis when the column is too narrow, and the extension
+ /// after it, which always shows (in the softer selection text on a selected item). The field holds the whole name.
+-final class CompactNameLabel: ListLabel {
++final class CompactNameLabel: PictureLabel {
+     var fileExtension = "" {
+         didSet { needsDisplay = true }
+     }
+diff --git a/Sources/FTAppKit/Content/PictureLabel.swift b/Sources/FTAppKit/Content/PictureLabel.swift
+new file mode 100644
+index 00000000..fdad7a35
+--- /dev/null
++++ b/Sources/FTAppKit/Content/PictureLabel.swift
+@@ -0,0 +1,69 @@
++import AppKit
++
++/// A name drawn whole, once each time what it shows changes, into a picture given to its layer. A text field coming
++/// into sight in a scroll was drawn by AppKit a strip at a time, the part just come into view, so each name of the
++/// Compact List was laid out and drawn about five times as it came in; here Core Animation shows the strips from the
++/// one picture, and a frame of its scroll takes a sixth less. The Icons view's names gained nothing measurable from it
++/// and are drawn by AppKit. The picture is drawn by the label's own `draw(_:)`, at the screen's scale and in
++/// the window's appearance, and again when either changes or the label is resized.
++class PictureLabel: ListLabel {
++    override init() {
++        super.init()
++        wantsLayer = true
++        layerContentsRedrawPolicy = .onSetNeedsDisplay
++    }
++
++    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
++
++    override var wantsUpdateLayer: Bool { true }
++
++    override func updateLayer() {
++        guard let layer else { return }
++        let scale = window?.backingScaleFactor ?? NSScreen.main?.backingScaleFactor ?? 2
++        let drawn = picture(scale: scale)
++        CATransaction.begin()
++        CATransaction.setDisableActions(true)
++        layer.contentsScale = scale
++        layer.contentsGravity = .resize
++        layer.contents = drawn
++        CATransaction.commit()
++    }
++
++    override func setFrameSize(_ newSize: NSSize) {
++        let changed = newSize != frame.size
++        super.setFrameSize(newSize)
++        if changed { needsDisplay = true }
++    }
++
++    override func viewDidChangeBackingProperties() {
++        super.viewDidChangeBackingProperties()
++        needsDisplay = true
++    }
++
++    override func viewDidChangeEffectiveAppearance() {
++        super.viewDidChangeEffectiveAppearance()
++        needsDisplay = true
++    }
++
++    /// What `draw(_:)` draws over the whole label, as a picture of `scale` pixels a point; nil when the label has no
++    /// size.
++    func picture(scale: CGFloat) -> CGImage? {
++        let width = Int((bounds.width * scale).rounded(.up))
++        let height = Int((bounds.height * scale).rounded(.up))
++        guard width > 0, height > 0,
++            let space = window?.colorSpace?.cgColorSpace ?? CGColorSpace(name: CGColorSpace.sRGB),
++            let context = CGContext(
++                data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0, space: space,
++                bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
++        else { return nil }
++        // Drawn as AppKit draws a layer of its own with nothing opaque under the text: no font smoothing.
++        context.setShouldSmoothFonts(false)
++        context.translateBy(x: 0, y: CGFloat(height))
++        context.scaleBy(x: scale, y: -scale)
++        NSGraphicsContext.saveGraphicsState()
++        defer { NSGraphicsContext.restoreGraphicsState() }
++        NSGraphicsContext.current = NSGraphicsContext(cgContext: context, flipped: true)
++        effectiveAppearance.performAsCurrentDrawingAppearance { draw(bounds) }
++        return context.makeImage()
++    }
++}

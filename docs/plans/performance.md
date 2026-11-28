@@ -1,6 +1,6 @@
 # Speed in large folders
 
-Under way: phase 1 is built; phases 2 and 3 are planned.
+Under way: phases 1 and 2 are built, and the stalls script of phase 3; the smallest sizes in `scripts/frame-times.sh` are left.
 Investigated on 2026-11-27 at the owner's request: opening, scrolling and filtering folders of 1,000 to 10,000 files at the smallest sizes in a maximized window, as the owner's own views show them, with no stutter or freeze as far as can be.
 
 ## What was measured
@@ -79,29 +79,43 @@ Left out of phase 1, after measuring:
 - **5. The sidebar off the first frame**: measured, it already comes after it.
   It is a block of its own of about 60 ms right after (the tree laying out its rows), which phase 2 can look at.
 
-## Phase 2: planned
+## Phase 2: built
 
-- **7. Lighter items** (the most work, medium risk), in three steps each measured and landed alone:
-  - 7a: icons drawn once at their size and given to the layer as a picture, redrawn when the screen's scale, the appearance or the accent (folder icons are drawn in it) change, or the icon is replaced by a custom one or a preview;
-  - 7b: the views there for automation replaced by accessibility identifiers on the views that stay, the same in debug and release builds;
-  - 7c: about 5 views an item, frames set by hand, and names as views that draw themselves (or a picture as their layer's contents), so a name is drawn once whatever the strips.
-  Expected: 35–50% less an item; first entries from about 500 to about 250 ms, a rebuild from about 220 to about 120, Icons scrolling from about 10.5 to 6–7 ms a frame.
-  What reads the views (drag images, Quick Look's zoom, the rename field, spring-loading, the selection, cut and hidden items, tags, drops) is moved and checked.
-- **8. Names fitted ahead**, off the main thread, right after a folder is read, with the same TextKit engine, font and width as on screen (another engine could wrap differently): about 60 ms less on first entry per 600 items.
-  Allowed by the decision "What the folder on screen needs is read for it, ahead of the scroll".
-- **9. What AppKit prepares**: after a navigation or a reload, only what's on screen and a row or two, then the rest a slice at a time in the moments the main thread is idle, stopping while scrolling or when the window is hidden.
-  The folder shows after about 230 items instead of 600 (going back in from about 220 to about 140 ms), the same total work spread over the frames after.
-  To check in a spike: that `NSCollectionView` keeps the limit after a reload, and that a fling straight after going in shows no blank.
+On the branch `claude/perf-phase2`, measured on 2026-11-28 with `scripts/stalls.sh` (below) against `main` with the same measuring code, in the owner's packed folders, median of three runs, the screen unlocked, on battery. Main thread held, in ms, before → after:
+
+| Folder and view | First entry: drawn | Going back in: busy | Forward: busy | A filter key: busy | Scroll: frame | Flick down / back: frame |
+|---|---|---|---|---|---|---|
+| 1000, Icons 32 | 195 → 137 | 305 → 107 (−65%) | 281 → 106 | 191 → 94 (−51%) | 8.1 → 7.3 | 25.1 / 31.0 → 18.4 / 23.8 |
+| 2500, List | 94 → 92 | 108 → 94 | 108 → 103 | 117 → 107 | 7.4 → 7.3 | 13.2 / 13.4 → 11.9 / 11.8 |
+| 5000, Compact 160 | 187 → 111 | 330 → 134 (−59%) | 319 → 134 | 386 → 230 (−40%) | 10.8 → 1.3 | 40.2 / 42.9 → 24.0 / 23.4 |
+| 10000, Icons 32 | 191 → 161 | 251 → 84 (−67%) | 267 → 82 | 220 → 151 (−31%) | 7.8 → 7.3 | 46.7 / 36.1 → 37.9 / 27.5 |
+| 10000, Compact 160 | 199 → 134 | 337 → 126 (−63%) | 325 → 129 | 309 → 197 (−36%) | 11.1 → 1.3 | 42.5 / 44.9 → 25.0 / 24.4 |
+
+Launching into each folder draws it 0 to 19% sooner; Back is within the runs' spread.
+A flick is 20,000 points in half a second, about 40 a frame, as fast as a trackpad's flick is at its start: at that speed every view still takes longer than a frame (8.3 ms at 120 Hz) to bring in what comes into sight, as `main` does, by a quarter to a half less.
+A scroll stops at the end of the folder now (`ScrollFrameTimes`), so the frames of 1000 Icons count only those that moved; before, they counted the frames past the end as well.
+
+- **7a. Icons drawn once** for each size, scale and appearance, the picture given to the layer of every item showing that icon (`IconPictureView`), in the Icons view, the Compact List and the List.
+- **7b. Markers and the clipboard mark in an item only while they show** (`NSView.keep(in:)`).
+  Previews and tag dots stay in every item: put in as they came, while the folder scrolls, they held a frame of a scroll down a folder of pictures by a tenth more (7.4 → 8.4 ms, found by switching each change off in turn).
+- **7c. The Compact List's names drawn once, whole**: each a view of its own that gives its layer a picture of the name (`PictureLabel`), as AppKit documents for a view that draws its own layer. A frame of its scroll from 11 to 1.3 ms, a flick's from 33 to 24.
+  Six ways were built and measured, among them a text field with a plain layer and the first version, a text field that drew its own layer, which AppKit gave a label of its own on screen and so showed every name twice; their code, numbers and pictures, and why this one was kept, are in `docs/records/compact-list-names/`.
+  The Icons view's names gained nothing measurable from it and are drawn by AppKit; its views stay about as many, with frames set by hand already.
+- **9. Only the screen made after a reload**: AppKit kept the three screens a scroll had prepared, and going back into a folder made all their items; it now prepares the viewport and grows the area again itself as the view scrolls (logged: during a scroll it prepares the same areas as before).
+  Preparing the area around the screen right after drawing, tried as well, took a block of its own on every entry and filter key and was dropped.
+- **11. Items that come and go put in and taken out in place** (`ListChange`, up to 200, the others in the same order), in the List, the Icons view and the Compact List; grouped, in the Previews view, or for a new order every item is drawn again (`docs/state/tech-debt.md`).
+- **12. Details read a screen of rows ahead in the List, tags a page either side in the grids, the Icons view's previews a page ahead** the way it scrolls.
+
+Left out of phase 2, after measuring:
+
+- **8. Names fitted ahead** off the main thread: built and measured, it drew a first entry into `10000-files` later (225 against 159 ms) while waiting for 1,500 names, and saved nothing on the main thread once only the screen's items are made (9).
 - **10. The Compact List on AppKit's scrolling thread** (set aside by the owner, 2026-11-27).
   Turning the wheel sideways by overriding it gives up that thread; keeping both probably means a trackpad's vertical swipe no longer moves it sideways, which is the owner's to decide.
-- **11. Changes to the folder applied in place** (`docs/state/tech-debt.md`, "Items added or removed shown in place"): about 200 ms a change in packed views of 10,000 to about 10–30 ms.
-  A batch update whose counts don't match the data throws: a strict check falls back to a full reload for anything unusual (groups, a sort, a rename under way).
-- **12. Details, tags and previews read ahead** for the folder on screen, at low priority and stopped when it's left: rows coming on screen no longer wait for them.
 
-## Phase 3: measuring, planned
+## Phase 3: measuring
 
 - `scripts/frame-times.sh` at the smallest sizes too, in a window as large as the screen.
-- Built: `scripts/stalls.sh` launches into each folder named, then goes in, scrolls, goes back in, Back, Forward, types a filter a key at a time and five keys faster than the app draws, in each view at its smallest size in a maximized window, and lists the main thread's blocks of 8 ms or more (the median of three runs) against a run made before.
+- Built: `scripts/stalls.sh` launches into each folder named, then goes in, scrolls, flicks, goes back in, Back, Forward, types a filter a key at a time and five keys faster than the app draws, in each view at its smallest size in a maximized window, and lists the main thread's blocks of 8 ms or more (the median of three runs) against a run made before.
   Its app writes them only when `FILETRAIL_STALLS_LOG` names a file (`Sources/FTFoundation/StallLog.swift`), in debug builds, and never takes the front.
   Both are in "Speed is measured on demand, in the worst cases" (`docs/decisions/code.md`).
 
