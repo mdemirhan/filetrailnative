@@ -631,6 +631,7 @@ final class PreviewsViewController: IconViewController {
 
     /// Its pages ahead are its own (`prefetchNextPages`).
     override var asksForThePageAhead: Bool { false }
+    override var fitsNamesAhead: Bool { false }
 
     override func reload(scrollToTop: Bool) {
         // What was listed, for telling whether this listing took the selected file away; only 1 at a time asks.

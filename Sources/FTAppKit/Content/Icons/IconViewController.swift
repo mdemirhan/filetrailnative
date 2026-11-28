@@ -50,6 +50,9 @@ class IconViewController: ItemGridPane {
     /// moved: the rows coming into view no longer wait for theirs ("What the folder on screen needs is read for it,
     /// ahead of the scroll"). Those no longer that near are taken back if they have not started.
     override func itemsOnScreenChanged() {
+        lastMoved = ContinuousClock.now
+        // Fitting that stopped while the tab was out of sight goes on.
+        if fitWork == nil, fitNext < namesToFitAhead { fitNextNames(after: 0.25) }
         guard asksForThePageAhead else { return }
         let top = Double(scroll.contentView.bounds.origin.y)
         if top != lastTopAhead { aheadGoesUp = top < lastTopAhead }
@@ -93,9 +96,78 @@ class IconViewController: ItemGridPane {
         // Another folder, or the same from its top: the way the last one was scrolled says nothing of this one.
         lastTopAhead = Double(scroll.contentView.bounds.origin.y)
         aheadGoesUp = false
+        fitNamesAhead()
+    }
+
+    // MARK: Names fitted ahead
+
+    /// The next item whose name is fitted ahead, and the turn of the main thread that fits the next few.
+    private var fitNext = 0
+    private var fitWork: DispatchWorkItem?
+    /// When the items on screen last changed: a scroll, a reload.
+    private var lastMoved = ContinuousClock.now
+    /// How many times in a row the fitting found its tab out of sight.
+    private var fitLooksWhileHidden = 0
+
+    /// Fits the names of the folder's items under their icons while the main thread is idle, so that the items a first
+    /// scroll brings in find theirs ready (`IconLabelText` keeps them): fitting a name is most of what an item costs
+    /// as it comes on screen, and a first flick through ten thousand items took a third longer than a second one. It
+    /// starts once the folder is drawn, takes 2 ms at most at a time, and waits while the folder scrolls, when the
+    /// items coming in fit their own, and while its tab is out of sight. It reads nothing, so it is within "nothing is
+    /// read for what isn't shown". A name is fitted as an item without tag dots fits it, as most are.
+    private func fitNamesAhead() {
+        fitWork?.cancel()
+        fitNext = 0
+        fitLooksWhileHidden = 0
+        fitNextNames(after: 0.25)
+    }
+
+    private func fitNextNames(after delay: TimeInterval) {
+        let work = DispatchWorkItem { [weak self] in
+            MainActor.assumeIsolated { self?.fitSomeNames() }
+        }
+        fitWork = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: work)
+    }
+
+    /// Whether the pane fits its names ahead: the Previews view shows a few items a screen, at a label width that
+    /// follows the pane's, and fitting the rest would be work thrown away at each width.
+    var fitsNamesAhead: Bool { true }
+
+    /// How many names are fitted ahead: half of what `IconLabelText` keeps before it starts over, so that one large
+    /// folder, fitted from nothing kept, never makes it start over itself. Names kept from other folders may still
+    /// bring it there; the names of the items on screen are then fitted again as they are drawn.
+    private var namesToFitAhead: Int { fitsNamesAhead ? min(entries.count, IconLabel.fittedLabelCacheMax / 2) : 0 }
+
+    private func fitSomeNames() {
+        fitWork = nil
+        guard fitNext < namesToFitAhead else { return }
+        // Only while the tab shows: a tab out of sight looks again each second for half a minute, then waits for its
+        // items to change again (`itemsOnScreenChanged`), as when it comes back.
+        guard view.window?.isVisible == true, !view.isHiddenOrHasHiddenAncestor else {
+            fitLooksWhileHidden += 1
+            if fitLooksWhileHidden < 30 { fitNextNames(after: 1) }
+            return
+        }
+        fitLooksWhileHidden = 0
+        let now = ContinuousClock.now
+        guard now - lastMoved > .milliseconds(250) else {
+            fitNextNames(after: 0.25)
+            return
+        }
+        let layout = self.layout
+        while fitNext < namesToFitAhead, ContinuousClock.now - now < .milliseconds(2) {
+            let entry = entries[fitNext]
+            fitNext += 1
+            let fitted = IconLabelText.fit(name: entry.name, extension: entry.fileExtension, layout: layout)
+            _ = IconLabelText.lines(fitted, layout: layout)
+            _ = IconLabelText.width(fitted, layout: layout)
+        }
+        if fitNext < namesToFitAhead { fitNextNames(after: 0.001) }
     }
 
     isolated deinit {
+        fitWork?.cancel()
         aheadWait?.cancel()
         for handle in aheadOfScreen.values { handle.cancel() }
     }
@@ -111,9 +183,13 @@ class IconViewController: ItemGridPane {
 
     /// Another grid for the items: the Previews view fits its own to the pane.
     func setGrid(density: Density, layout: IconGridLayout) {
+        let changed =
+            layout.labelFontSize != self.layout.labelFontSize
+            || layout.labelTextWidth != self.layout.labelTextWidth
         self.density = density
         self.layout = layout
         style = IconItemStyle.make(density: density)
+        if changed { fitNamesAhead() }
     }
 
     /// The density's grid, at the icon size saved for it.
@@ -125,6 +201,7 @@ class IconViewController: ItemGridPane {
         layout = DesignTokens.iconGrid(density: next).sized(iconSize: size)
         style = IconItemStyle.make(density: next)
         collection.collectionViewLayout?.invalidateLayout()
+        fitNamesAhead()
         return true
     }
 
@@ -171,7 +248,10 @@ class IconViewController: ItemGridPane {
         let removed = change.removed.compactMap { keys.indices.contains($0) ? keys[$0] : nil }
         let inserted = change.inserted.compactMap { after.indices.contains($0) ? after[$0] : nil }
         thumbnailStore.markChanged(Set(removed + inserted))
-        return super.apply(change)
+        guard super.apply(change) else { return false }
+        // The names put in are fitted with the rest; those fitted before are kept, and pass at once.
+        fitNamesAhead()
+        return true
     }
 
     // MARK: Placement
