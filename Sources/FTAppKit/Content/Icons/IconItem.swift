@@ -256,7 +256,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
     let tile = IconTileView()
     /// The box the icon or the preview is drawn in.
     let iconBox = PassThroughView()
-    let iconView = NSImageView()
+    let iconView = IconPictureView()
     let thumbnail = IconThumbnailView()
     let badge = ClipboardBadgeView()
     let label = IconNameLabel()
@@ -287,9 +287,6 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
         root.setAccessibilityRole(.cell)
         tile.setAccessibilityIdentifier("icons.item.tile")
         iconBox.setAccessibilityIdentifier("icons.item.icon")
-        iconView.imageScaling = .scaleProportionallyUpOrDown
-        iconView.isEditable = false
-        iconView.unregisterDraggedTypes()
         label.setAccessibilityIdentifier("icons.item.name")
         label.usesSingleLineMode = false
         label.cell?.wraps = true

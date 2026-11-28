@@ -69,7 +69,7 @@ final class DetailsCellView: NSTableCellView {
 
 /// The Name cell: the icon, then the name.
 final class NameCellView: NSView, TextStyleSource {
-    let iconView = NSImageView()
+    let iconView = IconPictureView()
     let label = NameLabel()
     /// The copy or cut glyph after the name of an item on the clipboard.
     let markGlyph = ClipboardMarkGlyph(identifier: "list.row.clipboardMark")
@@ -79,8 +79,6 @@ final class NameCellView: NSView, TextStyleSource {
 
     init() {
         super.init(frame: .zero)
-        iconView.imageScaling = .scaleProportionallyUpOrDown
-        iconView.isEditable = false
         addSubview(iconView)
         addSubview(label)
         addSubview(markGlyph)

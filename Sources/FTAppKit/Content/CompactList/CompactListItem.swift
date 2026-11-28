@@ -118,7 +118,7 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
     static let identifier = NSUserInterfaceItemIdentifier("compactList.item")
 
     let root = CompactItemRootView()
-    let iconView = NSImageView()
+    let iconView = IconPictureView()
     let label = CompactNameLabel()
     let selectedMarker = GridMarkerView(id: "compactList.item.selected")
     /// The copy or cut glyph after the name of an item on the clipboard.
@@ -136,9 +136,6 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
     override func loadView() {
         root.setAccessibilityIdentifier("compactList.item")
         root.setAccessibilityRole(.cell)
-        iconView.imageScaling = .scaleProportionallyUpOrDown
-        iconView.isEditable = false
-        iconView.unregisterDraggedTypes()
         iconView.setAccessibilityIdentifier("compactList.item.icon")
         label.setAccessibilityIdentifier("compactList.item.name")
         selectedMarker.source = label

@@ -266,7 +266,7 @@ class PassThroughView: NSView {
 enum GridIcons {
     /// Shows the icon of `entry` in `view`, now when it is cached; the returned handle takes the request back.
     static func show(
-        _ entry: DirectoryEntry, in view: NSImageView, host: any ContentPaneHost, isCurrent: @escaping () -> Bool
+        _ entry: DirectoryEntry, in view: IconPictureView, host: any ContentPaneHost, isCurrent: @escaping () -> Bool
     ) -> LoadHandle? {
         view.image = nil
         guard let store = host.iconStore else { return nil }
