@@ -79,7 +79,7 @@ final class CompactItemRootView: PassThroughView {
                 dropView = nil
                 return
             }
-            let view = dropView ?? CompactDropView(frame: bounds)
+            let view = dropView ?? DropHighlightView(frame: bounds)
             if dropView == nil {
                 view.autoresizingMask = [.width, .height]
                 addSubview(view, positioned: .below, relativeTo: nil)
@@ -89,7 +89,7 @@ final class CompactItemRootView: PassThroughView {
             view.drop = drop
         }
     }
-    private var dropView: CompactDropView?
+    private var dropView: DropHighlightView?
 
     override var wantsUpdateLayer: Bool { true }
 
@@ -99,8 +99,9 @@ final class CompactItemRootView: PassThroughView {
     }
 }
 
-/// The drop highlight of a Compact List item, under its icon and name.
-private final class CompactDropView: PassThroughView {
+/// The drop highlight of a Compact List item or a List row, under its icon and name, there only while a drag is over
+/// it: the item's own background is its layer's color.
+final class DropHighlightView: PassThroughView {
     var drop: (state: DropTargetState, theme: Theme)? {
         didSet { needsDisplay = true }
     }

@@ -277,6 +277,7 @@ final class DetailsBarView: NSView {
         nameCell.tagDots.toolTip = ListCellText.tags(host.tags(for: entry)).tooltip
         cutMarker.isHidden = mark != .cut
         dropState = host.dropState(for: entry.path)
+        showDrop(dropState.map { ($0, host.theme) })
         dropMarker.isHidden = dropState == nil || dropState == .invalid
         DropHighlight.setWiggle(nameCell.iconView, on: dropState == .springing)
         sizeBarFraction = nil
@@ -379,16 +380,34 @@ final class DetailsBarView: NSView {
 
     // MARK: Drawing and layout
 
-    override func draw(_ dirtyRect: NSRect) {
-        let radius = CGFloat(layoutMetrics.rowRadius)
-        if let background = colors.background {
-            NSColor(background).setFill()
-            NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius).fill()
-        }
-        if let dropState, let host {
-            DropHighlight.drawRow(dropState, in: bounds, radius: radius, theme: host.theme)
-        }
+    /// The stripe or the selection is the layer's color and corners, which Core Animation draws: drawn by the bar,
+    /// AppKit drew it a strip at a time as the row came into view, and again as each row scrolled in.
+    override var wantsUpdateLayer: Bool { true }
+
+    override func updateLayer() {
+        guard let layer else { return }
+        layer.backgroundColor = colors.background.map { NSColor($0).cgColor }
+        layer.cornerRadius = CGFloat(layoutMetrics.rowRadius)
     }
+
+    /// What a drop on the row would do, while a drag is over it: drawn over the stripe by a view that is there only as
+    /// long as the drag is.
+    private func showDrop(_ drop: (state: DropTargetState, theme: Theme)?) {
+        guard let drop else {
+            dropView?.removeFromSuperview()
+            dropView = nil
+            return
+        }
+        let view = dropView ?? DropHighlightView(frame: bounds)
+        if dropView == nil {
+            view.autoresizingMask = [.width, .height]
+            addSubview(view, positioned: .below, relativeTo: nil)
+            dropView = view
+        }
+        view.radius = CGFloat(layoutMetrics.rowRadius)
+        view.drop = drop
+    }
+    private var dropView: DropHighlightView?
 
     /// A selected row in the focused list of the window in front: the glyph and the flash take the text's color.
     private var marksOnSelection: Bool {
