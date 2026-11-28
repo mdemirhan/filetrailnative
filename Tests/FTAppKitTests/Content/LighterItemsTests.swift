@@ -121,6 +121,30 @@ struct LighterItemsTests {
         #expect(ElementFinder.ownText(of: marker) == "Notes.txt")
     }
 
+    // A line of text in a row is placed on whole pixels, at 1x and 2x, with the rows and fonts the List and the Compact
+    // List have: whole pixels high and wide, the line centred in it as in the row, so its picture is its size exactly.
+    @Test func aLineIsPlacedOnWholePixels() {
+        for scale in [1.0, 2.0] {
+            for (row, size) in [(28.0, 14.0), (24.0, 13.0), (18.0, 12.0)] {
+                let font = NSFont.monospacedDigitSystemFont(ofSize: size, weight: .regular)
+                let lineHeight = font.ascender - font.descender + font.leading
+                let frame = RowTextLabel.lineFrame(
+                    x: 10.3, width: 71.6, height: row, lineHeight: lineHeight, scale: scale)
+                for edge in [frame.minX, frame.minY, frame.width, frame.height] {
+                    #expect((edge * scale).rounded() == edge * scale, "\(scale)x, \(row)/\(size): \(frame)")
+                }
+                #expect(frame.height >= lineHeight)
+                // Centred as in the row: the same room above the line as below it, to within a pixel.
+                let centredTop = (row - lineHeight) / 2
+                #expect(frame.minY <= centredTop && centredTop - frame.minY < 1 / scale)
+                #expect(abs(frame.minY - (row - frame.maxY)) < 0.001)
+                // Never narrower than given, and moved by under a pixel.
+                #expect(frame.width >= 71.6 && frame.width - 71.6 < 1 / scale + 0.001)
+                #expect(abs(frame.minX - 10.3) <= 0.5 / scale + 0.001)
+            }
+        }
+    }
+
     // A part that shows now and then is in its item only while it shows.
     @Test func aPartIsInItsItemOnlyWhileItShows() {
         let parent = NSView()
