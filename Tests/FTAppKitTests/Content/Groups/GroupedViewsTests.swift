@@ -155,15 +155,16 @@ extension ExplorerWindowlessTests {
             #expect(pane.rowCount == 26 + 26)
             pane.scrollPosition = (Double(pane.table.rect(ofRow: pane.rowCount - 1).maxY), 0)
             let rows = pane.table.rows(in: pane.table.visibleRect)
-            // The case: the first row on screen, less the ten before it, is past the last item.
-            #expect(rows.location - 10 > 26)
+            let overscan = ListViewController.overscan(onScreen: rows.length)
+            // The case: the first row on screen, less the ones before it read with it, is past the last item.
+            #expect(rows.location - overscan > 26)
             let near = try #require(pane.entriesNearScreen)
             #expect(near.upperBound == 26 && near.lowerBound < 25 && near.lowerBound >= 0)
             let first = try #require(
                 pane.entryIndex(atRow: rows.location) ?? pane.entryIndex(atRow: rows.location + 1)
                     ?? pane.entryIndex(atRow: rows.location + 2))
-            #expect(near.lowerBound == max(0, first - 10))
-            // At the top, the first items and ten after those on screen.
+            #expect(near.lowerBound == max(0, first - overscan))
+            // At the top, the first items and those after the ones on screen.
             pane.scrollPosition = (0, 0)
             #expect(pane.entriesNearScreen?.lowerBound == 0)
             await harness.close()

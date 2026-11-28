@@ -518,12 +518,19 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
         reportVisiblePaths()
     }
 
+    /// The tags (and a search's details) of the items made, and as many again either side of them: read ahead of the
+    /// scroll ("What the folder on screen needs is read for it, ahead of the scroll").
     private func reportVisiblePaths() {
         guard let host, !entries.isEmpty else { return }
         let visible = collection.indexPathsForVisibleItems().map(\.item).filter { entries.indices.contains($0) }
         guard let lower = visible.min(), let upper = visible.max() else { return }
-        let paths = entries[lower...upper].map(\.path)
+        let ahead = upper - lower + 1
+        let paths = entries[max(0, lower - ahead)...min(entries.count - 1, upper + ahead)].map(\.path)
         host.requestTags(for: paths)
         if host.search != nil { host.requestMetadata(for: paths) }
+        itemsOnScreenChanged()
     }
+
+    /// The items made changed: scrolled, or the folder shown again.
+    func itemsOnScreenChanged() {}
 }

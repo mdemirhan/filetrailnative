@@ -629,6 +629,9 @@ final class PreviewsViewController: IconViewController {
     /// Drawn again whole: a file taken away from the one shown is replaced by the one in its place (`reload`).
     override func apply(_ change: ListChange) -> Bool { false }
 
+    /// Its pages ahead are its own (`prefetchNextPages`).
+    override var asksForThePageAhead: Bool { false }
+
     override func reload(scrollToTop: Bool) {
         // What was listed, for telling whether this listing took the selected file away; only 1 at a time asks.
         let listedBefore = count == 1 && !scrollToTop ? entryPaths : []

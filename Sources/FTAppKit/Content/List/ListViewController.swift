@@ -925,8 +925,8 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
 
     // MARK: Details of the rows on screen
 
-    /// Asks for the details of the rows on screen and ten either side of them (`overscan: 10`), once the scrolling has
-    /// settled for a moment.
+    /// Asks for the details of the rows on screen and a screen of rows either side of them (`overscan`), once the
+    /// scrolling has settled for a moment.
     private func requestMetadata() {
         metadataWork?.cancel()
         let work = DispatchWorkItem { [weak self] in
@@ -936,16 +936,20 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01, execute: work)
     }
 
-    /// The entries on screen and ten either side of them. Grouped, a row is not an entry: the rows on screen are
-    /// looked up, and titles and the rows before them passed over.
+    /// The entries on screen and `overscan` either side of them. Grouped, a row is not an entry: the rows on screen
+    /// are looked up, and titles and the rows before them passed over.
     var entriesNearScreen: Range<Int>? {
         let rows = table.rows(in: table.visibleRect)
         guard rows.length > 0, !entries.isEmpty else { return nil }
         let onScreen = (rows.location..<rows.location + rows.length).compactMap { entryIndex(atRow: $0) }
         guard let first = onScreen.first, let last = onScreen.last else { return nil }
-        let overscan = 10
+        let overscan = Self.overscan(onScreen: rows.length)
         return max(0, first - overscan)..<min(entries.count, last + 1 + overscan)
     }
+
+    /// The rows either side of those on screen whose details are read with them: a screen of rows, and ten at least,
+    /// read ahead of the scroll ("What the folder on screen needs is read for it, ahead of the scroll").
+    static func overscan(onScreen rows: Int) -> Int { max(10, rows) }
 
     private func requestMetadataNow() {
         guard let host, let near = entriesNearScreen else { return }

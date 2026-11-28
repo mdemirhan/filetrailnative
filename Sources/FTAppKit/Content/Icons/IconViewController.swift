@@ -34,6 +34,72 @@ class IconViewController: ItemGridPane {
     /// What shows when the pointer rests on an item: its whole name, for one shortened in the middle.
     func toolTip(for entry: DirectoryEntry) -> String { entry.name }
 
+    // MARK: Previews ahead
+
+    /// Whether the pane asks for the previews of the page past the items made: the Previews view asks for its own
+    /// pages (`PreviewsViewController.prefetchNextPages`).
+    var asksForThePageAhead: Bool { true }
+    /// The previews asked for ahead of need, by path.
+    private var aheadOfScreen: [DiskPath: LoadHandle] = [:]
+    private var aheadWait: DispatchWorkItem?
+    private var lastTopAhead = 0.0
+    private var aheadGoesUp = false
+
+    /// The previews of a screen of items past those made, the way the pane last scrolled first and then the other way,
+    /// asked for behind every preview on screen, so they never hold one up, a tenth of a second after the scroll last
+    /// moved: the rows coming into view no longer wait for theirs ("What the folder on screen needs is read for it,
+    /// ahead of the scroll"). Those no longer that near are taken back if they have not started.
+    override func itemsOnScreenChanged() {
+        guard asksForThePageAhead else { return }
+        let top = Double(scroll.contentView.bounds.origin.y)
+        if top != lastTopAhead { aheadGoesUp = top < lastTopAhead }
+        lastTopAhead = top
+        aheadWait?.cancel()
+        let work = DispatchWorkItem { [weak self] in
+            MainActor.assumeIsolated { self?.askForThePageAhead() }
+        }
+        aheadWait = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: work)
+    }
+
+    private func askForThePageAhead() {
+        aheadWait = nil
+        let made = collection.indexPathsForVisibleItems().map(\.item).filter { entries.indices.contains($0) }
+        var wanted: [Int] = []
+        let clip = scroll.contentView.bounds
+        if view.window != nil, let lower = made.min(), let upper = made.max() {
+            let page = max(1, items(in: clip, viewport: clip.size).count)
+            let below = Array((upper + 1)..<min(entries.count, upper + 1 + page))
+            let above = Array((max(0, lower - page)..<lower).reversed())
+            wanted = aheadGoesUp ? above + below : below + above
+        }
+        let paths = Set(wanted.lazy.map { self.keys[$0] })
+        for (path, handle) in aheadOfScreen where !paths.contains(path) { handle.cancel() }
+        aheadOfScreen = aheadOfScreen.filter { paths.contains($0.key) }
+        let size = thumbnailPixelSize
+        for index in wanted where aheadOfScreen[keys[index]] == nil {
+            let entry = entries[index]
+            guard thumbnailStore.mayHaveThumbnail(entry.iconEntry.kind) else { continue }
+            aheadOfScreen[keys[index]] = thumbnailStore.prefetch(
+                path: entry.path, kind: entry.iconEntry.kind, size: size, listing: listing)
+        }
+    }
+
+    override func reload(scrollToTop: Bool) {
+        // Another listing: what was asked for ahead is asked again for it.
+        for handle in aheadOfScreen.values { handle.cancel() }
+        aheadOfScreen = [:]
+        super.reload(scrollToTop: scrollToTop)
+        // Another folder, or the same from its top: the way the last one was scrolled says nothing of this one.
+        lastTopAhead = Double(scroll.contentView.bounds.origin.y)
+        aheadGoesUp = false
+    }
+
+    isolated deinit {
+        aheadWait?.cancel()
+        for handle in aheadOfScreen.values { handle.cancel() }
+    }
+
     override func loadView() {
         super.loadView()
         collection.register(IconItem.self, forItemWithIdentifier: IconItem.identifier)
