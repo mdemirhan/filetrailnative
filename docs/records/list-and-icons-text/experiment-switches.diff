@@ -1,0 +1,225 @@
+diff --git a/Sources/FTAppKit/Content/Icons/IconItem.swift b/Sources/FTAppKit/Content/Icons/IconItem.swift
+index 1e946307..881f2093 100644
+--- a/Sources/FTAppKit/Content/Icons/IconItem.swift
++++ b/Sources/FTAppKit/Content/Icons/IconItem.swift
+@@ -302,6 +302,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
+         iconBox.addSubview(thumbnail)
+         tile.addSubview(iconBox)
+         root.addSubview(tile)
++        if ProcessInfo.processInfo.environment["FT_EXP_ICONS_WHOLE"] == "1" { label.drawWholeForExperiment(force: true) }
+         root.addSubview(label)
+         label.addSubview(label.tagDots)
+         view = root
+diff --git a/Sources/FTAppKit/Content/Icons/IconViewController.swift b/Sources/FTAppKit/Content/Icons/IconViewController.swift
+index 5c8f598f..6386a333 100644
+--- a/Sources/FTAppKit/Content/Icons/IconViewController.swift
++++ b/Sources/FTAppKit/Content/Icons/IconViewController.swift
+@@ -93,6 +93,43 @@ class IconViewController: ItemGridPane {
+         // Another folder, or the same from its top: the way the last one was scrolled says nothing of this one.
+         lastTopAhead = Double(scroll.contentView.bounds.origin.y)
+         aheadGoesUp = false
++        startWarmingNames()
++    }
++
++    // MARK: EXPERIMENT: names fitted while idle
++
++    private static let warmsNames = ProcessInfo.processInfo.environment["FT_EXP_ICONS_WARM"] == "1"
++    private var warmNext = 0
++    private var warmWork: DispatchWorkItem?
++
++    private func startWarmingNames() {
++        guard Self.warmsNames else { return }
++        warmWork?.cancel()
++        warmNext = 0
++        scheduleWarm(after: 0.3)
++    }
++
++    private func scheduleWarm(after delay: Double) {
++        let work = DispatchWorkItem { [weak self] in
++            MainActor.assumeIsolated { self?.warmSlice() }
++        }
++        warmWork = work
++        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: work)
++    }
++
++    /// Fits names for at most 4 ms, then gives the main thread back for a turn.
++    private func warmSlice() {
++        let began = ContinuousClock.now
++        let layout = self.layout
++        while warmNext < entries.count {
++            let entry = entries[warmNext]
++            warmNext += 1
++            let fitted = IconLabelText.fit(name: entry.name, extension: entry.fileExtension, layout: layout)
++            _ = IconLabelText.lines(fitted, layout: layout)
++            _ = IconLabelText.width(fitted, layout: layout)
++            if ContinuousClock.now - began > .milliseconds(4) { break }
++        }
++        if warmNext < entries.count { scheduleWarm(after: 0.001) }
+     }
+ 
+     isolated deinit {
+diff --git a/Sources/FTAppKit/Content/List/DetailsRowViews.swift b/Sources/FTAppKit/Content/List/DetailsRowViews.swift
+index 960dcaaf..0d07537d 100644
+--- a/Sources/FTAppKit/Content/List/DetailsRowViews.swift
++++ b/Sources/FTAppKit/Content/List/DetailsRowViews.swift
+@@ -79,9 +79,10 @@ final class NameCellView: NSView, TextStyleSource {
+ 
+     init() {
+         super.init(frame: .zero)
++        label.drawWholeForExperiment()
+         addSubview(iconView)
+         addSubview(label)
+-        addSubview(markGlyph)
++        if !ListExperiment.fewer { addSubview(markGlyph) }
+         addSubview(tagDots)
+         setAccessibilityIdentifier("list.row.name")
+     }
+@@ -161,6 +162,7 @@ final class SizeCellView: NSView {
+ 
+     init() {
+         super.init(frame: .zero)
++        label.drawWholeForExperiment()
+         addSubview(bar)
+         addSubview(label)
+         // The bar's overhang and its right-hand rounding are cut at the cell's edge.
+@@ -208,10 +210,12 @@ final class DetailsBarView: NSView {
+ 
+     init() {
+         super.init(frame: .zero)
+-        addSubview(oddMarker)
+-        addSubview(selectedMarker)
+-        addSubview(cutMarker)
+-        addSubview(dropMarker)
++        if !ListExperiment.fewer {
++            addSubview(oddMarker)
++            addSubview(selectedMarker)
++            addSubview(cutMarker)
++            addSubview(dropMarker)
++        }
+         addSubview(nameCell)
+         addSubview(sizeCell)
+         setAccessibilityIdentifier("list.row")
+@@ -245,7 +249,7 @@ final class DetailsBarView: NSView {
+         nameLabel.stringValue = entry.name
+         nameLabel.fileExtension = entry.fileExtension
+         nameLabel.marks = host.nameMarks(entry.name)
+-        toolTip = entry.path
++        if !ListExperiment.noTips { toolTip = entry.path }
+         showIcon(for: entry, key: key, host: host)
+         refreshCells()
+         needsLayout = true
+@@ -274,10 +278,13 @@ final class DetailsBarView: NSView {
+         nameLabel.alphaValue = mark == .cut ? CGFloat(ClipboardLayout.Mark.cutLabelAlpha) : 1
+         nameCell.iconView.alphaValue = entry.isHidden ? CGFloat(HiddenItemLook.iconAlpha) : 1
+         nameCell.tagDots.colors = host.tagColors(for: entry)
+-        nameCell.tagDots.toolTip = ListCellText.tags(host.tags(for: entry)).tooltip
++        if !ListExperiment.noTips { nameCell.tagDots.toolTip = ListCellText.tags(host.tags(for: entry)).tooltip }
++        if ListExperiment.fewer { nameCell.markGlyph.keep(in: nameCell) }
+         cutMarker.isHidden = mark != .cut
++        if ListExperiment.fewer { cutMarker.keep(in: self) }
+         dropState = host.dropState(for: entry.path)
+         dropMarker.isHidden = dropState == nil || dropState == .invalid
++        if ListExperiment.fewer { dropMarker.keep(in: self) }
+         DropHighlight.setWiggle(nameCell.iconView, on: dropState == .springing)
+         sizeBarFraction = nil
+         for column in columnSet.columns where column != .name {
+@@ -300,24 +307,28 @@ final class DetailsBarView: NSView {
+                 label.font = font
+                 label.stringValue = host.search?.folderLabel(key) ?? ""
+                 label.textColor = NSColor(colors.cell)
+-                label.toolTip = NodePath.dirname(entry.path)
++                if !ListExperiment.noTips { label.toolTip = NodePath.dirname(entry.path) }
+             case .tags:
+                 let label = label(for: column)
+                 label.font = font
+                 label.textColor = NSColor(colors.cell)
+                 (label as? TagsLabel)?.tags = host.tags(for: entry) ?? []
+                 label.stringValue = content.text
+-                label.toolTip = content.tooltip
++                if !ListExperiment.noTips { label.toolTip = content.tooltip }
+             default:
+                 let label = label(for: column)
+                 label.font = column == .permissions ? ListFonts.permissions(layout) : font
+                 label.stringValue = content.text
+                 label.textColor = NSColor(colors.cell)
+-                label.toolTip = content.tooltip
++                if !ListExperiment.noTips { label.toolTip = content.tooltip }
+             }
+         }
+         oddMarker.isHidden = row % 2 != 1
+         selectedMarker.isHidden = !selected
++        if ListExperiment.fewer {
++            oddMarker.keep(in: self)
++            selectedMarker.keep(in: self)
++        }
+         needsLayout = true
+         needsDisplay = true
+     }
+@@ -331,6 +342,7 @@ final class DetailsBarView: NSView {
+             default: ListLabel()
+             }
+         label.setAccessibilityIdentifier("list.row.cell.\(column.rawValue)")
++        label.drawWholeForExperiment()
+         addSubview(label)
+         labels[column] = label
+         return label
+@@ -379,6 +391,14 @@ final class DetailsBarView: NSView {
+ 
+     // MARK: Drawing and layout
+ 
++    /// EXPERIMENT: the bar's color and corners as its layer's, while no drop is over it.
++    override var wantsUpdateLayer: Bool { ListExperiment.barLayer && dropState == nil }
++
++    override func updateLayer() {
++        layer?.backgroundColor = colors.background.map { NSColor($0).cgColor }
++        layer?.cornerRadius = CGFloat(layoutMetrics.rowRadius)
++    }
++
+     override func draw(_ dirtyRect: NSRect) {
+         let radius = CGFloat(layoutMetrics.rowRadius)
+         if let background = colors.background {
+diff --git a/Sources/FTAppKit/Content/List/ListLabels.swift b/Sources/FTAppKit/Content/List/ListLabels.swift
+index dd14763a..caf13d75 100644
+--- a/Sources/FTAppKit/Content/List/ListLabels.swift
++++ b/Sources/FTAppKit/Content/List/ListLabels.swift
+@@ -5,7 +5,40 @@ import FTFoundation
+ 
+ /// A line of text in a cell. The text starts at the left edge of its frame, and the pointer
+ /// goes through it to the row.
++/// EXPERIMENT, measuring only: switches for the List's row costs.
++enum ListExperiment {
++    static let whole = ProcessInfo.processInfo.environment["FT_EXP_LIST_WHOLE"] == "1"
++    static let noTips = ProcessInfo.processInfo.environment["FT_EXP_LIST_NOTIPS"] == "1"
++    static let fewer = ProcessInfo.processInfo.environment["FT_EXP_LIST_FEWER"] == "1"
++    static let barLayer = ProcessInfo.processInfo.environment["FT_EXP_LIST_BARLAYER"] == "1"
++}
++
+ class ListLabel: NSTextField {
++    /// EXPERIMENT: drawn whole into a plain layer of its own.
++    private var drawsWhole = false
++
++    func drawWholeForExperiment(force: Bool = false) {
++        guard ListExperiment.whole || force else { return }
++        drawsWhole = true
++        wantsLayer = true
++        layerContentsRedrawPolicy = .onSetNeedsDisplay
++    }
++
++    override func makeBackingLayer() -> CALayer {
++        guard drawsWhole else { return super.makeBackingLayer() }
++        let layer = CALayer()
++        layer.needsDisplayOnBoundsChange = true
++        layer.contentsScale = window?.backingScaleFactor ?? NSScreen.main?.backingScaleFactor ?? 2
++        return layer
++    }
++
++    override func viewDidChangeBackingProperties() {
++        super.viewDidChangeBackingProperties()
++        guard drawsWhole, let layer, let scale = window?.backingScaleFactor, layer.contentsScale != scale else { return }
++        layer.contentsScale = scale
++        needsDisplay = true
++    }
++
+     override class var cellClass: AnyClass? {
+         get { ThemedTextCell.self }
+         set {}

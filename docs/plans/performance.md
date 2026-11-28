@@ -81,17 +81,17 @@ Left out of phase 1, after measuring:
 
 ## Phase 2: built
 
-On the branch `claude/perf-phase2`, measured on 2026-11-28 with `scripts/stalls.sh` (below) against `main` with the same measuring code, in the owner's packed folders, median of three runs, the screen unlocked, on battery. Main thread held, in ms, before → after:
+On the branch `claude/perf-phase2`, measured on 2026-11-28 with `scripts/stalls.sh` (below) against `main` with the same measuring code, in the owner's packed folders, median of three runs, the screen unlocked, plugged in. Main thread held, in ms, before → after:
 
 | Folder and view | First entry: drawn | Going back in: busy | Forward: busy | A filter key: busy | Scroll: frame | Flick down / back: frame |
 |---|---|---|---|---|---|---|
-| 1000, Icons 32 | 195 → 137 | 305 → 107 (−65%) | 281 → 106 | 191 → 94 (−51%) | 8.1 → 7.3 | 25.1 / 31.0 → 18.4 / 23.8 |
-| 2500, List | 94 → 92 | 108 → 94 | 108 → 103 | 117 → 107 | 7.4 → 7.3 | 13.2 / 13.4 → 11.9 / 11.8 |
-| 5000, Compact 160 | 187 → 111 | 330 → 134 (−59%) | 319 → 134 | 386 → 230 (−40%) | 10.8 → 1.3 | 40.2 / 42.9 → 24.0 / 23.4 |
-| 10000, Icons 32 | 191 → 161 | 251 → 84 (−67%) | 267 → 82 | 220 → 151 (−31%) | 7.8 → 7.3 | 46.7 / 36.1 → 37.9 / 27.5 |
-| 10000, Compact 160 | 199 → 134 | 337 → 126 (−63%) | 325 → 129 | 309 → 197 (−36%) | 11.1 → 1.3 | 42.5 / 44.9 → 25.0 / 24.4 |
+| 1000, Icons 32 | 195 → 127 | 305 → 99 (−68%) | 281 → 101 | 191 → 87 (−54%) | 8.1 → 1.3 | 25.1 / 31.0 → 13.9 / 16.8 |
+| 2500, List | 94 → 71 | 108 → 56 (−48%) | 108 → 64 | 117 → 76 (−35%) | 7.4 → 2.7 | 13.2 / 13.4 → 7.4 / 7.6 |
+| 5000, Compact 160 | 187 → 112 | 330 → 133 (−60%) | 319 → 140 | 386 → 230 (−40%) | 10.8 → 1.3 | 40.2 / 42.9 → 23.9 / 23.8 |
+| 10000, Icons 32 | 191 → 151 | 251 → 79 (−69%) | 267 → 82 | 220 → 129 (−41%) | 7.8 → 1.4 | 46.7 / 36.1 → 28.0 / 22.0 |
+| 10000, Compact 160 | 199 → 130 | 337 → 126 (−63%) | 325 → 127 | 309 → 197 (−36%) | 11.1 → 1.3 | 42.5 / 44.9 → 25.0 / 24.5 |
 
-Launching into each folder draws it 0 to 19% sooner; Back is within the runs' spread.
+Launching into each folder draws it 4 to 19% sooner; Back is 10 to 22% quicker, and within the runs' spread in `10000-files`' Compact List.
 A flick is 20,000 points in half a second, about 40 a frame, as fast as a trackpad's flick is at its start: at that speed every view still takes longer than a frame (8.3 ms at 120 Hz) to bring in what comes into sight, as `main` does, by a quarter to a half less.
 A scroll stops at the end of the folder now (`ScrollFrameTimes`), so the frames of 1000 Icons count only those that moved; before, they counted the frames past the end as well.
 
@@ -105,6 +105,12 @@ A scroll stops at the end of the folder now (`ScrollFrameTimes`), so the frames 
   Preparing the area around the screen right after drawing, tried as well, took a block of its own on every entry and filter key and was dropped.
 - **11. Items that come and go put in and taken out in place** (`ListChange`, up to 200, the others in the same order), in the List, the Icons view and the Compact List; grouped, in the Previews view, or for a new order every item is drawn again (`docs/state/tech-debt.md`).
 - **12. Details read a screen of rows ahead in the List, tags a page either side in the grids, the Icons view's previews a page ahead** the way it scrolls.
+- **After the owner tried phase 2** (the List the choppiest by hand), six ideas were measured behind switches against the state tried, kept as the branch `claude/perf-phase2-golden`, and four built; their numbers and code are in `docs/records/list-and-icons-text/`:
+  - **13. The List's row background as its layer's color and corners**, not drawn: a frame of its scroll a tenth less.
+  - **14. The Icons view's names fitted while idle**, after the folder is drawn, 2 ms at a time and not while it scrolls: a first flick through `10000-files` a sixth less.
+  - **15. The Icons view's names drawn whole**, as the Compact List's (way 5): a frame of its scroll from 7.5 to 1.4 ms.
+  - **16. The List's text drawn whole**, each cell a view of its own: with 13, a frame of its scroll from 7.4 to 2.8 ms and a flick's from 12 to 7.6.
+  - Left: tooltips set without a tracking area for each cell, and fewer views in a row, measured no different; tooltips cost 13% of a scroll by hand, which only a recording of a real scroll can price.
 
 Left out of phase 2, after measuring:
 
