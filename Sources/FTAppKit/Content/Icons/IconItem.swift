@@ -295,14 +295,15 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
         thumbnail.isHidden = true
         pill.source = label
         dropMarker.source = label
+        // The markers are in the item only while they show (`keep(in:)`). The preview and the tag dots are in every
+        // item, hidden while there are none: put in as each item's preview or tags came, while the folder scrolls, they
+        // held each frame of a scroll down a folder of pictures by a tenth more.
         iconBox.addSubview(iconView)
         iconBox.addSubview(thumbnail)
         tile.addSubview(iconBox)
         root.addSubview(tile)
         root.addSubview(label)
-        label.addSubview(pill)
         label.addSubview(label.tagDots)
-        root.addSubview(dropMarker)
         view = root
         textField = nameField
     }
@@ -489,6 +490,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
         label.marksUnderlined = selected && pane.paneFocused && pane.windowActive
         label.isHidden = renaming
         pill.isHidden = !selected || renaming
+        pill.keep(in: label)
         // The badge is in the item only while it shows, as `IconTileView` says.
         if let mark = host.clipboardMark(for: entry.path) {
             badge.mark = mark
@@ -517,6 +519,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
         root.theme = theme
         root.drop = dropState
         dropMarker.isHidden = dropState == nil || dropState == .invalid
+        dropMarker.keep(in: root)
         DropHighlight.setWiggle(iconBox, on: dropState == .springing)
         if hasThumbnail, !thumbnail.isHidden, let picture = pane.thumbnailStore.loadedPicture(forPath: entry.path) {
             thumbnail.show(picture, theme: theme, style: pane.style)

@@ -140,12 +140,11 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
         label.setAccessibilityIdentifier("compactList.item.name")
         selectedMarker.source = label
         dropMarker.source = label
+        // The clipboard mark and the markers are in the item only while they show (`keep(in:)`). The tag dots are in
+        // every item, hidden while it has no tags: they come as the folder scrolls (`IconItem`).
         root.addSubview(iconView)
         root.addSubview(label)
-        root.addSubview(markGlyph)
         root.addSubview(tagDots)
-        root.addSubview(selectedMarker)
-        root.addSubview(dropMarker)
         view = root
         textField = label
     }
@@ -194,16 +193,19 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
         label.marksUnderlined = selected && pane.paneFocused && pane.windowActive
         label.isHidden = renaming
         selectedMarker.isHidden = !selected
+        selectedMarker.keep(in: root)
         // An item on the clipboard: its glyph after the name, and a cut one dimmed.
         let mark = host.clipboardMarks?.mark(for: entry.path)
         let wasMarked = !markGlyph.isHidden
         markGlyph.mark = mark
         markGlyph.color = ClipboardMarkGlyph.color(theme: host.theme, onSelection: marksOnSelection(pane, selected))
+        markGlyph.keep(in: root)
         label.alphaValue = mark == .cut ? CGFloat(ClipboardLayout.Mark.cutLabelAlpha) : 1
         iconView.alphaValue = entry.isHidden ? CGFloat(HiddenItemLook.iconAlpha) : 1
         let dropState = host.dropState(for: entry.path)
         root.drop = dropState.map { ($0, host.theme) }
         dropMarker.isHidden = dropState == nil || dropState == .invalid
+        dropMarker.keep(in: root)
         DropHighlight.setWiggle(iconView, on: dropState == .springing)
         let tagColors = host.tagColors(for: entry)
         let tagsChanged = tagDots.colors != tagColors

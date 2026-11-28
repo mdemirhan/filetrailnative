@@ -255,6 +255,20 @@ final class GridMarkerView: NSView, TextStyleSource {
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
 }
 
+extension NSView {
+    /// Puts the view in `parent` while it shows and takes it out while it is hidden. A hidden view still costs every
+    /// item of a folder's views its making and its layout, and AppKit visits it on each frame of a scroll: the parts of
+    /// an item that show only when someone acts (a selection's or a drop's marker, a clipboard mark) are there only
+    /// while they do. Not for what comes as a folder scrolls (previews, tags): putting views in then costs the scroll.
+    func keep(in parent: NSView) {
+        if isHidden {
+            if superview != nil { removeFromSuperview() }
+        } else if superview !== parent {
+            parent.addSubview(self)
+        }
+    }
+}
+
 /// A view that draws nothing of its own and lets the pointer through to the collection view.
 class PassThroughView: NSView {
     override var isFlipped: Bool { true }
