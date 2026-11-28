@@ -191,7 +191,8 @@ final class DetailsBarView: NSView {
     /// The entry's path as its row spells it: what tells the row from that of a name that differs only in how an
     /// accent is encoded.
     private var key: DiskPath?
-    private var row = 0
+    /// The row it is striped as.
+    private(set) var row = 0
     private var selected = false
     private var iconRequest: LoadHandle?
     private var sizeBarFraction: Double?
