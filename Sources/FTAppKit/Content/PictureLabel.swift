@@ -54,9 +54,14 @@ class PictureLabel: NSView {
 
     override var wantsUpdateLayer: Bool { true }
 
+    /// The scale `view`'s text is drawn and placed for: its window's, or the main screen's before it is in one.
+    static func scale(of view: NSView) -> CGFloat {
+        view.window?.backingScaleFactor ?? NSScreen.main?.backingScaleFactor ?? 2
+    }
+
     override func updateLayer() {
         guard let layer else { return }
-        let scale = window?.backingScaleFactor ?? NSScreen.main?.backingScaleFactor ?? 2
+        let scale = Self.scale(of: self)
         let drawn = picture(scale: scale)
         CATransaction.begin()
         CATransaction.setDisableActions(true)

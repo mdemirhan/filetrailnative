@@ -117,7 +117,7 @@ final class NameCellView: NSView, TextStyleSource {
             }
         }
         label.frame = RowTextLabel.lineFrame(
-            x: x, width: width, height: bounds.height, lineHeight: height, scale: window?.backingScaleFactor ?? 2)
+            x: x, width: width, height: bounds.height, lineHeight: height, scale: PictureLabel.scale(of: self))
     }
 }
 
@@ -429,6 +429,20 @@ final class DetailsBarView: NSView {
         needsLayout = true
     }
 
+    /// On a screen of another scale the text is placed again, on that screen's whole pixels.
+    override func viewDidChangeBackingProperties() {
+        super.viewDidChangeBackingProperties()
+        needsLayout = true
+    }
+
+    /// The scale the text was last placed for; a view put in a window of another scale places it again.
+    private var placedScale: CGFloat = 0
+
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        if window != nil, PictureLabel.scale(of: self) != placedScale { needsLayout = true }
+    }
+
     override func layout() {
         super.layout()
         let layout = layoutMetrics
@@ -438,7 +452,8 @@ final class DetailsBarView: NSView {
         dropMarker.frame = bounds
         for label in labels.values { label.isHidden = true }
         sizeCell.isHidden = true
-        let scale = window?.backingScaleFactor ?? 2
+        let scale = PictureLabel.scale(of: self)
+        placedScale = scale
         var x = layout.rowPaddingInline
         for column in columnSet.columns {
             let width = columnSet.width(column)

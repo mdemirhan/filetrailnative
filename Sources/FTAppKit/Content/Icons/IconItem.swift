@@ -248,6 +248,20 @@ final class IconItemRootView: PassThroughView {
         layer.borderWidth = look?.edgeWidth ?? 0
         layer.cornerRadius = radius
     }
+
+    /// On a screen of another scale the text is placed again, on that screen's whole pixels.
+    override func viewDidChangeBackingProperties() {
+        super.viewDidChangeBackingProperties()
+        needsLayout = true
+    }
+
+    /// The scale the text was last placed for; a view put in a window of another scale places it again.
+    var placedScale: CGFloat = 0
+
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        if window != nil, PictureLabel.scale(of: self) != placedScale { needsLayout = true }
+    }
 }
 
 /// An item of the Icon view.
@@ -529,6 +543,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
     // MARK: Layout
 
     private func layoutParts() {
+        root.placedScale = PictureLabel.scale(of: root)
         if fillsPlace {
             layoutFillingThePlace()
             // The name sits under the picture, whatever its shape: a name being edited follows it.
@@ -551,7 +566,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
         let labelFrame = layout.labelFrame(textWidth: labelTextWidth, lines: label.lines.count)
         label.frame = PictureLabel.onWholePixels(
             NSRect(x: labelFrame.x, y: labelFrame.y, width: labelFrame.width, height: labelFrame.height),
-            scale: root.window?.backingScaleFactor ?? 2)
+            scale: root.placedScale)
         pill.frame = label.bounds
         label.placeTagDots()
         dropMarker.frame = root.bounds
@@ -578,7 +593,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, Quic
         thumbnail.frame = iconBox.bounds
         label.frame = PictureLabel.onWholePixels(
             NSRect(x: parts.name.x, y: parts.name.y, width: parts.name.width, height: parts.name.height),
-            scale: root.window?.backingScaleFactor ?? 2)
+            scale: root.placedScale)
         pill.frame = label.bounds
         label.placeTagDots()
         dropMarker.frame = root.bounds

@@ -3,7 +3,7 @@ import FTFileSystem
 import FTFoundation
 
 /// A name in the Compact List: the stem, which ends in an ellipsis when the column is too narrow, and the extension
-/// after it, which always shows (in the softer selection text on a selected item). The field holds the whole name.
+/// after it, which always shows (in the softer selection text on a selected item). It holds the whole name.
 final class CompactNameLabel: PictureLabel {
     var fileExtension = "" {
         didSet { needsDisplay = true }
@@ -96,6 +96,20 @@ final class CompactItemRootView: PassThroughView {
     override func updateLayer() {
         layer?.backgroundColor = highlight?.cgColor
         layer?.cornerRadius = radius
+    }
+
+    /// On a screen of another scale the text is placed again, on that screen's whole pixels.
+    override func viewDidChangeBackingProperties() {
+        super.viewDidChangeBackingProperties()
+        needsLayout = true
+    }
+
+    /// The scale the text was last placed for; a view put in a window of another scale places it again.
+    var placedScale: CGFloat = 0
+
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        if window != nil, PictureLabel.scale(of: self) != placedScale { needsLayout = true }
     }
 }
 
@@ -267,8 +281,9 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
             }
         }
         // Whole pixels high, so the name's picture is its size exactly (`PictureLabel`): from the pixel above the centred
-        // line to as far from the bottom, so the line, centred in it, is where it was.
-        let scale = view.window?.backingScaleFactor ?? 2
+        // line to as far from the bottom, so the line is centred in it as in the item (`RowTextLabel.lineFrame`).
+        let scale = PictureLabel.scale(of: view)
+        root.placedScale = scale
         let top = ((view.bounds.height - height) / 2 * scale).rounded(.down) / scale
         label.frame = NSRect(x: x, y: top, width: width, height: view.bounds.height - 2 * top)
         selectedMarker.frame = view.bounds
