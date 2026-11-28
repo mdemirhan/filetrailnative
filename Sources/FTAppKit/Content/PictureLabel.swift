@@ -3,14 +3,14 @@ import AppKit
 /// A line of text drawn whole into a picture given to the view's layer (`updateLayer`), again only when what it shows,
 /// its size, the screen's scale or the appearance changes. A text field coming into sight in a scroll was drawn by AppKit
 /// a strip at a time, the part just come into view, so each name of the Compact List was laid out and drawn about five
-/// times as it came in; Core Animation shows the strips from the one picture. The Icons view's names gained nothing
-/// measurable from it and are drawn as AppKit draws them.
+/// times as it came in; Core Animation shows the strips from the one picture. The Icons view's names (`IconNameLabel`)
+/// and the List's text (`RowTextLabel`) are drawn the same way.
 ///
 /// It is a view of its own, not a text field: a text field that draws its own layer is given a label of AppKit's own
-/// on screen, which drew the name a second time. AppKit gives the layer the screen's scale and puts it on whole pixels,
-/// as it does the icons' (`IconPictureView`). Automation reads its text as a text field's (`AutomationElements`), and
-/// VoiceOver as static text. The other ways tried, with their code and numbers, are in
-/// `docs/records/compact-list-names/`.
+/// on screen, which drew the name a second time. AppKit gives the layer the screen's scale, as it does the icons'
+/// (`IconPictureView`); the view is placed whole pixels wide and high, so its picture is its size exactly. Automation
+/// reads its text as a text field's (`AutomationElements`), and VoiceOver as static text. The other ways tried, with
+/// their code and numbers, are in `docs/records/compact-list-names/` and `docs/records/list-and-icons-text/`.
 class PictureLabel: NSView {
     var stringValue = "" {
         didSet {
@@ -85,7 +85,9 @@ class PictureLabel: NSView {
     /// `rect` with its edges on whole pixels of a screen of `scale` pixels a point, for a view whose picture is to be its
     /// size exactly: its origin moved to the nearest pixel, its size to the next whole pixel, by under a pixel each.
     static func onWholePixels(_ rect: NSRect, scale: CGFloat) -> NSRect {
-        func pixels(_ value: CGFloat, _ rule: FloatingPointRoundingRule) -> CGFloat { (value * scale).rounded(rule) / scale }
+        func pixels(_ value: CGFloat, _ rule: FloatingPointRoundingRule) -> CGFloat {
+            (value * scale).rounded(rule) / scale
+        }
         return NSRect(
             x: pixels(rect.minX, .toNearestOrAwayFromZero), y: pixels(rect.minY, .toNearestOrAwayFromZero),
             width: pixels(rect.width, .up), height: pixels(rect.height, .up))

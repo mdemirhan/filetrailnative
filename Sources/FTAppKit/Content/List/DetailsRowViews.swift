@@ -46,7 +46,6 @@ final class DetailsCellView: NSTableCellView {
         super.init(frame: .zero)
         identifier = Self.identifier
         addSubview(bar)
-        textField = bar.nameLabel
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
@@ -75,7 +74,8 @@ final class NameCellView: NSView, TextStyleSource {
     let markGlyph = ClipboardMarkGlyph(identifier: "list.row.clipboardMark")
     let tagDots = TagDotsView()
 
-    var styleTextField: NSTextField? { label }
+    /// No text field: the name is drawn as a picture, and automation reads it from the label (`ElementFinder`).
+    var styleTextField: NSTextField? { nil }
 
     init() {
         super.init(frame: .zero)
@@ -116,15 +116,16 @@ final class NameCellView: NSView, TextStyleSource {
                     width: size, height: size)
             }
         }
-        label.frame = NSRect(x: x, y: (bounds.height - height) / 2, width: width, height: height)
+        label.frame = RowTextLabel.lineFrame(
+            x: x, width: width, height: bounds.height, lineHeight: height, scale: window?.backingScaleFactor ?? 2)
     }
 }
 
 /// A transparent view over a row that marks it for automation: an odd (striped) row, a selected one. It reports the
 /// row's name as its text.
 final class RowMarkerView: NSView, TextStyleSource {
-    weak var source: NSTextField?
-    var styleTextField: NSTextField? { source }
+    weak var source: NSView?
+    var styleTextField: NSTextField? { source as? NSTextField }
 
     init(id: String) {
         super.init(frame: .zero)
@@ -156,11 +157,12 @@ final class SizeBarView: NSView {
 
 /// The Size cell: the text at the right edge, and the bar behind it while sorted by size.
 final class SizeCellView: NSView {
-    let label = ListLabel()
+    let label = RowTextLabel()
     let bar = SizeBarView()
 
     init() {
         super.init(frame: .zero)
+        label.alignment = .right
         addSubview(bar)
         addSubview(label)
         // The bar's overhang and its right-hand rounding are cut at the cell's edge.
@@ -179,7 +181,7 @@ final class SizeCellView: NSView {
 final class DetailsBarView: NSView {
     let nameCell = NameCellView()
     let sizeCell = SizeCellView()
-    private var labels: [DetailColumn: ListLabel] = [:]
+    private var labels: [DetailColumn: RowTextLabel] = [:]
 
     private(set) var layoutMetrics = DesignTokens.details(density: .standard)
     private var columnSet = DetailsColumnSet(columns: [.name], widths: [:])
@@ -323,13 +325,13 @@ final class DetailsBarView: NSView {
         needsDisplay = true
     }
 
-    private func label(for column: DetailColumn) -> ListLabel {
+    private func label(for column: DetailColumn) -> RowTextLabel {
         if let existing = labels[column] { return existing }
-        let label: ListLabel =
+        let label: RowTextLabel =
             switch column {
             case .folder: FolderColumnLabel()
             case .tags: TagsLabel()
-            default: ListLabel()
+            default: RowTextLabel()
             }
         label.setAccessibilityIdentifier("list.row.cell.\(column.rawValue)")
         addSubview(label)
@@ -436,6 +438,7 @@ final class DetailsBarView: NSView {
         dropMarker.frame = bounds
         for label in labels.values { label.isHidden = true }
         sizeCell.isHidden = true
+        let scale = window?.backingScaleFactor ?? 2
         var x = layout.rowPaddingInline
         for column in columnSet.columns {
             let width = columnSet.width(column)
@@ -447,10 +450,12 @@ final class DetailsBarView: NSView {
             case .size:
                 sizeCell.isHidden = false
                 sizeCell.frame = NSRect(x: x, y: 0, width: width, height: bounds.height)
-                let height = sizeCell.label.lineHeight
-                let textWidth = min(width, sizeCell.label.textWidth)
-                sizeCell.label.frame = NSRect(
-                    x: width - textWidth, y: (bounds.height - height) / 2, width: textWidth, height: height)
+                // Right-aligned from a right edge on a whole pixel, so the sizes of every row end in one line.
+                let right = (width * scale).rounded(.down) / scale
+                let textWidth = min(right, (sizeCell.label.textWidth * scale).rounded(.up) / scale)
+                sizeCell.label.frame = RowTextLabel.lineFrame(
+                    x: right - textWidth, width: textWidth, height: bounds.height,
+                    lineHeight: sizeCell.label.lineHeight, scale: scale)
                 if let span = SizeBars.span(fraction: sizeBarFraction, cellWidth: width, layout: layout) {
                     sizeCell.bar.isHidden = false
                     sizeCell.bar.frame = NSRect(
@@ -462,8 +467,8 @@ final class DetailsBarView: NSView {
             default:
                 let label = label(for: column)
                 label.isHidden = false
-                let height = label.lineHeight
-                label.frame = NSRect(x: x, y: (bounds.height - height) / 2, width: width, height: height)
+                label.frame = RowTextLabel.lineFrame(
+                    x: x, width: width, height: bounds.height, lineHeight: label.lineHeight, scale: scale)
             }
             x += width + layout.columnGap
         }

@@ -1,7 +1,8 @@
 // How an explorer window's events reach the open menu, the tooltips and the toolbar's customizing
 import AppKit
 
-/// A view that shows its text through a text field inside it: a scenario finds the view by that field's text.
+/// A view that shows its text through a text field inside it: a scenario finds the view by that field's text. One whose
+/// text is drawn as a picture (`PictureLabel`) answers nil, and automation reads that text itself (`ElementFinder`).
 @MainActor
 protocol TextStyleSource: AnyObject {
     var styleTextField: NSTextField? { get }

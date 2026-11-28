@@ -232,6 +232,16 @@
             icon.setAccessibilityIdentifier("toolbar.back")
             icon.setAccessibilityLabel("Back")
             content.addSubview(icon)
+            // A List row draws its text as pictures, in views inside it, not in a text field.
+            let drawnRow = NSView(frame: NSRect(x: 10, y: 190, width: 300, height: 20))
+            drawnRow.setAccessibilityIdentifier("list.row")
+            for (index, text) in ["d.txt", "Today"].enumerated() {
+                let cell = RowTextLabel()
+                cell.stringValue = text
+                cell.frame = NSRect(x: 150 * Double(index), y: 0, width: 140, height: 20)
+                drawnRow.addSubview(cell)
+            }
+            content.addSubview(drawnRow)
             let below = NSTextField(labelWithString: "c.txt")
             below.frame = NSRect(x: 10, y: -15, width: 100, height: 20)
             below.setAccessibilityIdentifier("list.row")
@@ -247,7 +257,8 @@
             #expect(found(.init("list row")) == "b.txt")
             #expect(found(.init("list row", index: 1)) == "a.txt")
             #expect(found(.init("list row", text: "a.txt")) == "a.txt")
-            #expect(found(.init("list row", index: 2)) == nil)
+            #expect(found(.init("list row", text: "d.txt")) == "d.txt Today")
+            #expect(found(.init("list row", index: 3)) == nil)
             #expect(found(.init("back button", text: "Back")) != nil)
             guard case .failure(let failure) = ElementFinder.find(.init("nope"), elements: elements, in: window) else {
                 Issue.record("found an unknown element")

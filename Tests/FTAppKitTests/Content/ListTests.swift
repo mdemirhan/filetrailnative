@@ -29,10 +29,11 @@ extension ListTesting {
         listViews("list.header", in: tab.window?.contentView).first as? DetailsHeaderView
     }
 
+    /// The texts a row shows: its cells draw them as pictures (`RowTextLabel`).
     func texts(_ bar: DetailsBarView) -> [String] {
         bar.subviews.flatMap { view -> [String] in
-            if let label = view as? NSTextField { return [label.stringValue] }
-            return view.subviews.compactMap { ($0 as? NSTextField)?.stringValue }
+            if let label = view as? PictureLabel { return [label.stringValue] }
+            return view.subviews.compactMap { ($0 as? PictureLabel)?.stringValue }
         }
     }
 }
@@ -96,6 +97,11 @@ extension ExplorerWindowlessTests {
             #expect(titles == ["Name", "Date Modified", "Size", "Kind"])
             let alpha = try #require(rows.first { $0.entry?.name == "Alpha" })
             #expect(texts(alpha).contains("--"))
+            // Every row's size ends on the same whole pixel, its column's right edge.
+            let scale = first.window?.backingScaleFactor ?? 2
+            let ends = Set(rows.map { $0.sizeCell.label.frame.maxX })
+            #expect(ends.count == 1)
+            for end in ends { #expect((end * scale).rounded() == end * scale) }
             await harness.close()
         }
 

@@ -44,9 +44,41 @@ class ListLabel: NSTextField {
     }
 }
 
+/// A line of text in a List row: drawn whole into its layer's picture (`PictureLabel`), once each time what it shows
+/// changes. Drawn by AppKit as a text field, the row's text was drawn a strip at a time as each row scrolled in, and
+/// took most of a frame of the scroll. The text starts at the left edge, in the middle of the view's height, and ends
+/// in an ellipsis where the column is too narrow. What else was measured for the List's rows is in
+/// `docs/records/list-and-icons-text/`.
+class RowTextLabel: PictureLabel {
+    /// Where the text sits in the view's width: the size ends at its column's right edge.
+    var alignment = NSTextAlignment.left {
+        didSet { if alignment != oldValue { needsDisplay = true } }
+    }
+
+    override func draw(_ dirtyRect: NSRect) {
+        guard let font else { return }
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.alignment = alignment
+        paragraph.lineBreakMode = .byTruncatingTail
+        (stringValue as NSString).draw(
+            with: NSRect(x: 0, y: (bounds.height - lineHeight) / 2, width: bounds.width, height: lineHeight),
+            options: [.usesLineFragmentOrigin, .truncatesLastVisibleLine],
+            attributes: [.font: font, .foregroundColor: textColor ?? NSColor.labelColor, .paragraphStyle: paragraph])
+    }
+
+    /// Where a line of text goes in a row `height` high: as wide as given, on whole pixels, from the pixel above the
+    /// centred line to as far from the bottom, so the line is centred in it as in the row, and the picture is the
+    /// view's size exactly. The text itself is drawn on the next whole pixel down, under a pixel lower than centred.
+    static func lineFrame(x: CGFloat, width: CGFloat, height: CGFloat, lineHeight: CGFloat, scale: CGFloat) -> NSRect {
+        let top = ((height - lineHeight) / 2 * scale).rounded(.down) / scale
+        return PictureLabel.onWholePixels(
+            NSRect(x: x, y: top, width: width, height: max(0, height - 2 * top)), scale: scale)
+    }
+}
+
 /// The name of a file: the stem, which ends in an ellipsis when the column is too narrow, and the extension after it,
-/// which always shows. The field holds the whole name, and draws it itself.
-final class NameLabel: ListLabel {
+/// which always shows. It holds the whole name, and draws it itself.
+final class NameLabel: RowTextLabel {
     /// The stored extension, where the name is split.
     var fileExtension = "" {
         didSet { needsDisplay = true }
@@ -140,8 +172,8 @@ enum FolderColumnText {
     }
 }
 
-/// The folder of a search result; the field holds the whole label, and draws what fits.
-final class FolderColumnLabel: ListLabel {
+/// The folder of a search result; it holds the whole label, and draws what fits.
+final class FolderColumnLabel: RowTextLabel {
     override func draw(_ dirtyRect: NSRect) {
         guard let font else { return }
         let fit = FolderColumnText.fit(stringValue, width: bounds.width, font: font)
@@ -152,8 +184,8 @@ final class FolderColumnLabel: ListLabel {
         let slack = TextBoxCell.slack
         (fit.text as NSString).draw(
             with: NSRect(
-                x: fit.isCut ? -slack : 0, y: 0,
-                width: bounds.width + slack, height: bounds.height),
+                x: fit.isCut ? -slack : 0, y: (bounds.height - lineHeight) / 2,
+                width: bounds.width + slack, height: lineHeight),
             options: [.usesLineFragmentOrigin],
             attributes: [
                 .font: font, .foregroundColor: textColor ?? NSColor.labelColor, .paragraphStyle: paragraph,
@@ -182,7 +214,7 @@ enum ListFonts {
 
 /// The Tags cell: each tag's dot and its name, one after another with commas, as Finder's Tags column has them. A tag
 /// without a color has a ring in the text's color; the text ends in an ellipsis where the column is too narrow.
-final class TagsLabel: ListLabel {
+final class TagsLabel: RowTextLabel {
     var tags: [FinderTag] = [] {
         didSet { if tags != oldValue { needsDisplay = true } }
     }

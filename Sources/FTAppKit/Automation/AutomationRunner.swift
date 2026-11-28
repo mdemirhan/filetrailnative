@@ -364,8 +364,8 @@
                 guard column >= 0 else { return Outcome(.failed, "no Name column") }
                 var rows = IndexSet()
                 for row in 0..<table.numberOfRows {
-                    let cell = table.view(atColumn: column, row: row, makeIfNecessary: true) as? NSTableCellView
-                    if let name = cell?.textField?.stringValue, missing.remove(name) != nil { rows.insert(row) }
+                    let cell = table.view(atColumn: column, row: row, makeIfNecessary: true) as? DetailsCellView
+                    if let name = cell?.bar.nameLabel.stringValue, missing.remove(name) != nil { rows.insert(row) }
                 }
                 table.selectRowIndexes(rows, byExtendingSelection: false)
                 if let first = rows.first { table.scrollRowToVisible(first) }

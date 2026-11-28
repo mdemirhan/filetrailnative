@@ -74,6 +74,9 @@
         /// cell's, a titled button's, or that of the text field or name it is drawn around.
         static func ownText(of view: NSView) -> String? {
             if let marker = view as? GridMarkerView, let source = marker.source { return ownText(of: source) }
+            if let marker = view as? RowMarkerView, let source = marker.source { return ownText(of: source) }
+            if let cell = view as? NameCellView { return cell.label.stringValue }
+            if let cell = view as? DetailsCellView { return cell.bar.nameLabel.stringValue }
             if let source = view as? TextStyleSource, let field = source.styleTextField, field !== view {
                 return ownText(of: field)
             }
@@ -163,12 +166,12 @@
             return .success(matches[index])
         }
 
-        /// Whether the view shows `text`: as its own text, a text field inside it, or (an icon button) as
-        /// its accessibility label.
+        /// Whether the view shows `text`: as its own text, a text field or a text drawn as a picture inside it, or (an
+        /// icon button) as its accessibility label.
         static func shows(_ text: String, _ view: NSView) -> Bool {
             if ownText(of: view) == text { return true }
             if view.accessibilityLabel() == text { return true }
-            return Views.first(NSTextField.self, in: view) { $0.stringValue == text } != nil
+            return texts(in: view).contains(text)
         }
 
         /// The text of the element `name`: the accessibility label for a `labelled` name, otherwise what the view
@@ -177,11 +180,20 @@
             elements.labelled.contains(name) ? (view.accessibilityLabel() ?? "") : text(of: view)
         }
 
-        /// The text a view shows: its own, or its text fields' joined by a space.
+        /// The text a view shows: its own, or that of its text fields and texts drawn as pictures, in order, joined by a
+        /// space.
         static func text(of view: NSView) -> String {
             if let own = ownText(of: view) { return own }
-            return Views.all(NSTextField.self, in: view).map(\.stringValue).filter { !$0.isEmpty }
-                .joined(separator: " ")
+            return texts(in: view).filter { !$0.isEmpty }.joined(separator: " ")
+        }
+
+        /// The texts of the text fields and the texts drawn as pictures (`PictureLabel`) in a view that shows, in the
+        /// order of the view tree.
+        private static func texts(in view: NSView) -> [String] {
+            guard !view.isHidden else { return [] }
+            if let field = view as? NSTextField { return [field.stringValue] }
+            if let drawn = view as? PictureLabel { return [drawn.stringValue] }
+            return view.subviews.flatMap(texts(in:))
         }
     }
 #endif
